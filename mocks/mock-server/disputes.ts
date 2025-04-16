@@ -1,18 +1,23 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getAdditionalDisputeDetails, getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
 const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
+const getDisputeForRequestPathParams = (params: PathParams) => {
+    const dispute = DISPUTES.find(dispute => dispute.id === params.id);
+    if (!dispute) throw HttpResponse.json({ error: 'Cannot find dispute' }, { status: 404 });
+    return dispute;
+};
+
 export const disputesMocks = [
     http.get(mockEndpoints.list, async ({ request }) => {
-        if (networkError) {
-            return HttpResponse.error();
-        }
+        if (networkError) return HttpResponse.error();
+
         const url = new URL(request.url);
         const statusGroup = (url.searchParams.get('statusGroup') as 'open' | 'closed') ?? 'open';
         const createdSince = url.searchParams.get('createdSince');
@@ -39,34 +44,35 @@ export const disputesMocks = [
     }),
 
     http.get(mockEndpoints.details, async ({ params }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
-
+        const dispute = getDisputeForRequestPathParams(params);
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.id, matchingMock.status) });
+        return HttpResponse.json({ ...dispute, ...getAdditionalDisputeDetails(dispute) });
     }),
 
     http.get(mockEndpoints.documents, async ({ params }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.json({ error: 'Cannot find matching dispute' }, { status: 404 });
-
+        getDisputeForRequestPathParams(params);
         await delay(400);
 
         // Return the same list of applicable documents for all disputes
         return HttpResponse.json({ data: DISPUTE_DEFENSE_DOCUMENTS });
     }),
 
-    http.post(mockEndpoints.accept, async () => {
+    http.post(mockEndpoints.accept, async ({ params }) => {
+        if (networkError) return HttpResponse.error();
+
+        getDisputeForRequestPathParams(params);
         await delay(1000);
-        return HttpResponse.json('ok');
+        return new HttpResponse(null, { status: 204 });
     }),
 
     http.post(mockEndpoints.defend, async ({ params, request }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.json({ error: 'Cannot find matching dispute' }, { status: 404 });
+        getDisputeForRequestPathParams(params);
 
         try {
             // Expects a multipart/form-data request
@@ -94,7 +100,7 @@ export const disputesMocks = [
                 }
             }
 
-            await delay(400);
+            await delay(1000);
             return new HttpResponse(null, { status: 204 });
         } catch {
             // This request is most likely not a multipart/form-data request (it is a bad request)
@@ -102,12 +108,13 @@ export const disputesMocks = [
         }
     }),
 
-    http.get(mockEndpoints.download, async ({ request }) => {
+    http.get(mockEndpoints.download, async ({ params, request }) => {
+        if (networkError) return HttpResponse.error();
+
+        getDisputeForRequestPathParams(params);
         await delay(1000);
 
-        if (downloadFileError) {
-            return HttpResponse.error();
-        }
+        if (downloadFileError) return HttpResponse.error();
 
         const url = new URL(request.url);
         const filename = url.searchParams.get('documentType');

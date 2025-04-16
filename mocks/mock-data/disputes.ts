@@ -433,16 +433,6 @@ export const DISPUTES = [
     },
 ] as const satisfies Readonly<IDispute[]>;
 
-export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
-    return DISPUTES.filter(dispute =>
-        status === 'open'
-            ? dispute.status === 'action_needed' || dispute.status === 'under_review'
-            : dispute.status === 'won' || dispute.status === 'lost'
-    );
-};
-
-type additional_dispute_details = Omit<IDisputeDetail, keyof IDispute>;
-
 export const DISPUTE_DEFENSE_DOCUMENTS = [
     { type: 'writtenrebuttal', requirement: 'required' } as const,
     { type: 'AirlineCompellingEvidence', requirement: 'optional' } as const,
@@ -451,16 +441,25 @@ export const DISPUTE_DEFENSE_DOCUMENTS = [
     { type: 'goodsOrServicesProvided', requirement: 'optional' } as const,
 ] satisfies IDisputeDefenseDocument[];
 
+const EXTERNALLY_DEFENSIBLE_DISPUTES = DISPUTES.filter(dispute => {
+    if (dispute.status !== 'action_needed') return;
+    if (['mc', 'visa'].includes(dispute.paymentMethod.type)) return;
+    if (['consumer', 'fraudulent'].includes(dispute.reasonGroup)) return;
+    return dispute;
+});
+
+type AdditionalDisputeDetails = Omit<IDisputeDetail, keyof IDispute>;
+
 export const DISPUTE_DETAIL_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
     defensibility: 'defendable',
     allowedDefenseReasons: ['AirlineCompellingEvidence'],
-} satisfies additional_dispute_details;
+} satisfies AdditionalDisputeDetails;
 
 export const DISPUTE_EXTERNALLY_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
     defensibility: 'defendable_externally',
-} satisfies additional_dispute_details;
+} satisfies AdditionalDisputeDetails;
 
 export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',
@@ -471,16 +470,21 @@ export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
     },
     defensibility: 'not_defendable',
     allowedDefenseReasons: [],
-} satisfies additional_dispute_details;
+} satisfies AdditionalDisputeDetails;
 
-export const getDisputeDetailByStatus = (id: IDispute['id'], status: IDispute['status']) => {
-    switch (status) {
+export const getAdditionalDisputeDetails = (dispute: IDispute) => {
+    switch (dispute.status) {
         case 'action_needed':
-            if (id === 'a1b2c3d4-e5f6-4789-abcd-000000000009') {
-                return DISPUTE_EXTERNALLY_DEFENDABLE;
-            }
-            return DISPUTE_DETAIL_DEFENDABLE;
+            return (EXTERNALLY_DEFENSIBLE_DISPUTES as IDispute[]).includes(dispute) ? DISPUTE_EXTERNALLY_DEFENDABLE : DISPUTE_DETAIL_DEFENDABLE;
         default:
             return DISPUTE_DETAIL_NOT_DEFENDABLE;
     }
+};
+
+export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
+    return DISPUTES.filter(dispute =>
+        status === 'open'
+            ? dispute.status === 'action_needed' || dispute.status === 'under_review'
+            : dispute.status === 'won' || dispute.status === 'lost'
+    );
 };
