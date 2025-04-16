@@ -51,13 +51,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const tag = `v${{ env.NEW_VERSION }}`;
+            const fs = require('fs');
+            const tag = `v${process.env.NEW_VERSION}`;
             const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag: tag
             });
-            core.setOutput('upload_url', release.upload_url);
+            // Write the output to the file defined by GITHUB_OUTPUT (new method)
+            const outputFile = process.env.GITHUB_OUTPUT;
+            fs.appendFileSync(outputFile, `upload_url=${release.upload_url}\n`);
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
