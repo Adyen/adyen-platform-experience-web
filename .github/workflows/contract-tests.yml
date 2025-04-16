@@ -7,6 +7,9 @@ on:
 
 jobs:
   contract-tests:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
