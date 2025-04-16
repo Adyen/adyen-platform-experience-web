@@ -11,6 +11,9 @@ on:
 jobs:
   upload-files:
     name: Upload translation source files
+    permissions:
+      contents: write
+      actions: write
     if: github.event_name == 'workflow_dispatch' && (github.ref_name == 'develop' || startsWith(github.ref_name, 'group/'))
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
