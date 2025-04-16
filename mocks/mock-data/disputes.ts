@@ -1,4 +1,4 @@
-import { IDispute, IDisputeDetail } from '../../src/types/api/models/disputes';
+import { IDispute, IDisputeDefenseDocument, IDisputeDetail } from '../../src/types/api/models/disputes';
 
 const todayDate = new Date();
 
@@ -442,6 +442,14 @@ export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
 };
 
 type additional_dispute_details = Omit<IDisputeDetail, keyof IDispute>;
+
+export const DISPUTE_DEFENSE_DOCUMENTS = [
+    { type: 'writtenrebuttal', requirement: 'required' } as const,
+    { type: 'AirlineCompellingEvidence', requirement: 'optional' } as const,
+    { type: 'CompellingEvidence', requirement: 'optional' } as const,
+    { type: 'FlightTicket', requirement: 'optional' } as const,
+    { type: 'goodsOrServicesProvided', requirement: 'optional' } as const,
+] satisfies IDisputeDefenseDocument[];
 
 export const DISPUTE_DETAIL_DEFENDABLE = {
     paymentPspReference: 'KLAHFUW1329523KKL',

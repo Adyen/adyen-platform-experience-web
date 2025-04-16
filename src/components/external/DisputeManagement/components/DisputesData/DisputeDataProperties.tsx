@@ -121,7 +121,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                           <>
                               {latestDefense.suppliedDocuments.map((document, index) => {
                                   const queryParam = {
-                                      path: { id: dispute.id },
+                                      path: { disputePspReference: dispute.id },
                                       query: { documentType: document },
                                   };
                                   return (

@@ -5,10 +5,6 @@
 import { IBalanceAccountBase } from '../models';
 
 export interface paths {
-    '/v1/disputes/{disputePspReference}/documents/required': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getApplicableDefenseDocuments'];
-    };
     '/v1/disputes/{disputePspReference}': {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
@@ -17,11 +13,16 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['acceptDispute'];
     };
-    '/v1/dispute/{id}/documents/download': {
-        /**
-         * Download a report
-         * @description Given a balance account, type and creation date of report, downloads the desired report
-         */
+    '/v1/disputes/{disputePspReference}/defend': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['defendDispute'];
+    };
+    '/v1/disputes/{disputePspReference}/documents': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getApplicableDefenseDocuments'];
+    };
+    '/v1/disputes/{disputePspReference}/documents/download': {
+        /** @description Add @Operation annotation to provide a description */
         get: operations["downloadDisputeFile"];
     };
 }
@@ -30,9 +31,10 @@ export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
+        ApplicableDefenseDocumentRequirement: 'one_or_more' | 'required' | 'optional';
         ApplicableDefenseDocument: {
-            documentTypeCode?: string;
-            requirementLevel?: string;
+            type: string;
+            requirement: components['schemas']['ApplicableDefenseDocumentRequirement'];
         };
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
@@ -176,6 +178,7 @@ export interface operations {
             };
         };
     };
+    /** @description Add @Operation annotation to provide a description */
     acceptDispute: {
         parameters: {
             path: {
@@ -191,10 +194,32 @@ export interface operations {
             };
         };
     };
+    /** @description Add @Operation annotation to provide a description */
+    defendDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'multipart/form-data': FormData;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': {};
+                };
+            };
+        };
+    };
+    /** @description Add @Operation annotation to provide a description */
     downloadDisputeFile: {
         parameters: {
             path: {
-                id: string;
+                disputePspReference: string;
             }
             query: {
                 documentType: string;
