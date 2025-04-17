@@ -1,18 +1,57 @@
 import { IDispute, IDisputeDefenseDocument, IDisputeDetail } from '../../src/types/api/models/disputes';
 
-const todayDate = new Date();
-
-const getDate = (day = 0) => {
-    const today = new Date();
-    today.setDate(today.getDate() + day);
-    return today.toISOString();
+const getDate = (daysOffset = 0, originDate = new Date()) => {
+    const date = new Date(originDate);
+    date.setDate(date.getDate() + daysOffset);
+    return date.toISOString();
 };
+
+const MC_CONSUMER_DEFENSE_REASONS = [
+    'AirlineFlightProvided',
+    'CancellationOrReturns',
+    'CancellationTermsFailed',
+    'CreditOrCancellationPolicyProperlyDisclosed',
+    'GoodsNotReturned',
+    'GoodsOrServicesProvided',
+    'GoodsRepairedOrReplaced',
+    'GoodsWereAsDescribed',
+    'InvalidChargeback',
+    'InvalidChargebackBundling',
+    'NotRecurring',
+    'PaymentByOtherMeans',
+    'PurchaseProperlyPosted',
+    'ServicesProvidedAfterCancellation',
+    'SupplyDefenseMaterial',
+] as const;
+
+const MC_FRAUD_DEFENSE_REASONS = [
+    'AirlineCompellingEvidence',
+    'ChipAndPinLiabilityShift',
+    'ChipLiabilityShift',
+    'CompellingEvidence',
+    'CVC2ValidationProgram',
+    'IdentifiedAddendum',
+    'InvalidChargeback',
+    'InvalidChargebackBundling',
+    'NoShowTransaction',
+    'ProofOfCardPresenceAndSignatureChipNoPIN',
+    'ProofOfCardPresenceAndSignatureNotMasterCardWorldWideNetwork',
+    'ProofOfCardPresenceAndSignatureWithTerminalReceipt',
+    'RecurringTransactionsCompellingEvidence',
+    'RecurringTransactionsCompellingMerchantEvidence',
+    'ShippedToAVS',
+    'SupplyDefenseMaterial',
+] as const;
+
+const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived', 'ServicesProvided'] as const;
+
+const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 
 export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         status: 'action_needed',
-        dueDate: new Date(todayDate.setHours(23)).toISOString(),
+        dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
         reasonGroup: 'fraudulent',
@@ -22,7 +61,7 @@ export const DISPUTES = [
     {
         id: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
         status: 'action_needed',
-        dueDate: new Date(todayDate.setHours(20)).toISOString(),
+        dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
         reasonGroup: 'fraudulent',
@@ -433,54 +472,223 @@ export const DISPUTES = [
     },
 ] as const satisfies Readonly<IDispute[]>;
 
+export const getAllowedDisputeDefenseReasons = (dispute: (typeof DISPUTES)[number]) => {
+    switch (dispute.paymentMethod.type) {
+        case 'mc': {
+            if (dispute.reasonGroup === 'consumer') return MC_CONSUMER_DEFENSE_REASONS;
+            if (dispute.reasonGroup === 'fraudulent') return MC_FRAUD_DEFENSE_REASONS;
+            break;
+        }
+        case 'visa': {
+            if (dispute.reasonGroup === 'consumer') return VISA_CONSUMER_DEFENSE_REASONS;
+            if (dispute.reasonGroup === 'fraudulent') return VISA_FRAUD_DEFENSE_REASONS;
+            break;
+        }
+    }
+};
+
+export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[number], defenseReason: string) => {
+    const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
+    const disputeDefenseReason = defenseReason as NonNullable<typeof allowedDefenseReasons>[number];
+
+    if (!allowedDefenseReasons || !(allowedDefenseReasons as any).includes(disputeDefenseReason)) return;
+
+    switch (dispute.paymentMethod.type) {
+        case 'mc': {
+            if (dispute.reasonGroup === 'consumer') {
+                switch (disputeDefenseReason) {
+                    case 'AirlineFlightProvided':
+                        return [
+                            { documentTypeCode: 'FlightTicketUsed', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'FlightTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'PaperAirlineTicket', requirementLevel: 'ONE_OR_MORE' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'CancellationOrReturns':
+                        return [
+                            { documentTypeCode: 'CancellationNeverAccepted', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'GoodsNotReturned', requirementLevel: 'ONE_OR_MORE' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'CancellationTermsFailed':
+                    case 'InvalidChargebackBundling':
+                    case 'NotRecurring':
+                    case 'ServicesProvidedAfterCancellation':
+                        return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'REQUIRED' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'CreditOrCancellationPolicyProperlyDisclosed':
+                        return [
+                            { documentTypeCode: 'DisclosureAtPointOfInteraction', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'GoodsNotReturned':
+                        return [
+                            { documentTypeCode: 'GoodsNotReturned', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'GoodsOrServicesProvided':
+                        return [
+                            { documentTypeCode: 'ProofOfAbilityToProvideServices', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'ONE_OR_MORE' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'GoodsRepairedOrReplaced':
+                        return [
+                            { documentTypeCode: 'GoodsRepairedOrReplaced', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'GoodsWereAsDescribed':
+                        return [
+                            { documentTypeCode: 'GoodsWereAsDescribed', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'InvalidChargeback':
+                        return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'OPTIONAL' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'PaymentByOtherMeans':
+                        return [
+                            { documentTypeCode: 'PaymentByOtherMeans', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'PurchaseProperlyPosted':
+                        return [
+                            { documentTypeCode: 'ProofOfRetailSaleRatherThanCredit', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'SupplyDefenseMaterial':
+                        return [
+                            { documentTypeCode: 'DefenseMaterial', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+                }
+            } else if (dispute.reasonGroup === 'fraudulent') {
+                switch (disputeDefenseReason) {
+                    case 'AirlineCompellingEvidence':
+                        return [
+                            { documentTypeCode: 'CompellingEvidence', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'AdditionalTransactions', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'FlightManifest', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'FlightTicket', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'FlightTicketAtBillingAddress', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'FrequentFlyer', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'PassengerIdentification', requirementLevel: 'ONE_OR_MORE' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'ChipAndPinLiabilityShift':
+                    case 'ChipLiabilityShift':
+                    case 'CVC2ValidationProgram':
+                    case 'ProofOfCardPresenceAndSignatureChipNoPIN':
+                    case 'ProofOfCardPresenceAndSignatureNotMasterCardWorldWideNetwork':
+                    case 'ProofOfCardPresenceAndSignatureWithTerminalReceipt':
+                        return [
+                            { documentTypeCode: 'PrintedSignedTerminalReceipt', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'CompellingEvidence':
+                        return [
+                            { documentTypeCode: 'CardholderIdentification', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'IdentifiedAddendum':
+                        return [
+                            { documentTypeCode: 'AddendumDocumentation', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'InvalidChargeback':
+                        return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'OPTIONAL' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'InvalidChargebackBundling':
+                        return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'REQUIRED' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'NoShowTransaction':
+                        return [{ documentTypeCode: 'ProofOfNoShow', requirementLevel: 'REQUIRED' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'RecurringTransactionsCompellingEvidence':
+                        return [
+                            { documentTypeCode: 'CompellingEvidence', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'RecurringTransactionsCompellingMerchantEvidence':
+                        return [
+                            { documentTypeCode: 'MerchantProofOfRecurringTransaction', requirementLevel: 'OPTIONAL' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'ShippedToAVS':
+                        return [
+                            { documentTypeCode: 'PositiveAVS', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'ShippedToAVS', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'SupplyDefenseMaterial':
+                        return [
+                            { documentTypeCode: 'DefenseMaterial', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+                }
+            }
+
+            break;
+        }
+
+        case 'visa': {
+            if (dispute.reasonGroup === 'consumer') {
+                switch (disputeDefenseReason) {
+                    case 'InvalidChargeback':
+                        return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'OPTIONAL' } as const] satisfies IDisputeDefenseDocument[];
+
+                    case 'MerchandiseReceived':
+                        return [
+                            { documentTypeCode: 'DateMerchandiseShipped', requirementLevel: 'REQUIRED' } as const,
+                            { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+
+                    case 'ServicesProvided':
+                        return [
+                            { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'REQUIRED' } as const,
+                        ] satisfies IDisputeDefenseDocument[];
+                }
+            } else if (dispute.reasonGroup === 'fraudulent') {
+                switch (disputeDefenseReason) {
+                    case 'AdditionalInformation':
+                        return [{ documentTypeCode: 'DefenseMaterial', requirementLevel: 'REQUIRED' } as const] satisfies IDisputeDefenseDocument[];
+                }
+            }
+
+            break;
+        }
+    }
+};
+
+type AdditionalDisputeDetails = Omit<IDisputeDetail, keyof IDispute>;
+
+export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) => {
+    const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
+    const additionalDisputeDetails = {} as AdditionalDisputeDetails;
+
+    additionalDisputeDetails.paymentPspReference = 'KLAHFUW1329523KKL';
+    additionalDisputeDetails.allowedDefenseReasons = allowedDefenseReasons && [...allowedDefenseReasons];
+
+    if (dispute.status === 'action_needed') {
+        additionalDisputeDetails.defensibility = allowedDefenseReasons ? 'defendable' : 'defendable_externally';
+    } else {
+        additionalDisputeDetails.defensibility = 'not_defendable';
+        additionalDisputeDetails.latestDefense = {
+            reason: 'ServicesProvided',
+            suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
+            defendedOn: getDate(1, new Date(dispute.createdAt)),
+        };
+    }
+
+    return { ...additionalDisputeDetails } as const;
+};
+
 export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
     return DISPUTES.filter(dispute =>
         status === 'open'
             ? dispute.status === 'action_needed' || dispute.status === 'under_review'
             : dispute.status === 'won' || dispute.status === 'lost'
     );
-};
-
-type additional_dispute_details = Omit<IDisputeDetail, keyof IDispute>;
-
-export const DISPUTE_DEFENSE_DOCUMENTS = [
-    { type: 'writtenrebuttal', requirement: 'required' } as const,
-    { type: 'AirlineCompellingEvidence', requirement: 'optional' } as const,
-    { type: 'CompellingEvidence', requirement: 'optional' } as const,
-    { type: 'FlightTicket', requirement: 'optional' } as const,
-    { type: 'goodsOrServicesProvided', requirement: 'optional' } as const,
-] satisfies IDisputeDefenseDocument[];
-
-export const DISPUTE_DETAIL_DEFENDABLE = {
-    paymentPspReference: 'KLAHFUW1329523KKL',
-    defensibility: 'defendable',
-    allowedDefenseReasons: ['AirlineCompellingEvidence'],
-} satisfies additional_dispute_details;
-
-export const DISPUTE_EXTERNALLY_DEFENDABLE = {
-    paymentPspReference: 'KLAHFUW1329523KKL',
-    defensibility: 'defendable_externally',
-} satisfies additional_dispute_details;
-
-export const DISPUTE_DETAIL_NOT_DEFENDABLE = {
-    paymentPspReference: 'KLAHFUW1329523KKL',
-    latestDefense: {
-        defendedOn: '2019-08-24T14:15:22Z',
-        reason: '4853',
-        suppliedDocuments: ['goodsOrServicesProvided', 'writtenrebuttal'],
-    },
-    defensibility: 'not_defendable',
-    allowedDefenseReasons: [],
-} satisfies additional_dispute_details;
-
-export const getDisputeDetailByStatus = (id: IDispute['id'], status: IDispute['status']) => {
-    switch (status) {
-        case 'action_needed':
-            if (id === 'a1b2c3d4-e5f6-4789-abcd-000000000009') {
-                return DISPUTE_EXTERNALLY_DEFENDABLE;
-            }
-            return DISPUTE_DETAIL_DEFENDABLE;
-        default:
-            return DISPUTE_DETAIL_NOT_DEFENDABLE;
-    }
 };

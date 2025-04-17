@@ -31,10 +31,10 @@ export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
-        ApplicableDefenseDocumentRequirement: 'one_or_more' | 'required' | 'optional';
+        ApplicableDefenseDocumentRequirementLevel: 'OPTIONAL' | 'ONE_OR_MORE' | 'REQUIRED';
         ApplicableDefenseDocument: {
-            type: string;
-            requirement: components['schemas']['ApplicableDefenseDocumentRequirement'];
+            documentTypeCode: string;
+            requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
