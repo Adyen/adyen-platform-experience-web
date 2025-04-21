@@ -37,6 +37,9 @@ jobs:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
 
       - name: Push tags and create a release
         id: changesets
@@ -79,3 +82,5 @@ jobs:
     needs: create-github-release
     uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
     secrets: inherit
+    with:
+      source_run_id: ${{ github.run_id }}

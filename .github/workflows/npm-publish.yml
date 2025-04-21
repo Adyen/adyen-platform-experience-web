@@ -14,6 +14,10 @@ on:
         type: boolean
         required: false
         default: true
+      source_run_id:
+        description: 'Run ID that produced the build artifact'
+        required: true
+        type: string
 
 jobs:
   npm-publish:
@@ -40,19 +44,23 @@ jobs:
         run: mkdir -p ${{ runner.temp }}/artifacts/
 
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
-          path: ${{ runner.temp }}/artifacts/
+          run-id: ${{ inputs.source_run_id }}
+          path: ${{ runner.temp }}/artifact
+          merge-multiple: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Expand build artifact to trusted directory
+      - name: Extract archive in $RUNNER_TEMP
+        working-directory: ${{ runner.temp }}/artifact
         run: |
-          mkdir -p trusted-dir
-          tar -xzf ${{ runner.temp }}/artifacts/adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 -C trusted-dir
+          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz \
+              --strip-components=1 package
 
-      - name: Check that `dist` directory is present and not empty
+      - name: Copy dist/ to workspace
         run: |
-          [ -d trusted-dir/dist ] && [ ! -z "$(ls -A trusted-dir/dist)" ]
+          cp -R ${{ runner.temp }}/artifact/dist ./dist
 
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
