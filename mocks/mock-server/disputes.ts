@@ -1,18 +1,23 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTE_DEFENSE_DOCUMENTS, DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTES, getAdditionalDisputeDetails, getApplicableDisputeDefenseDocuments, getDisputesByStatusGroup } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
 const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
+const getDisputeForRequestPathParams = (params: PathParams) => {
+    const dispute = DISPUTES.find(dispute => dispute.id === params.id);
+    if (!dispute) throw HttpResponse.json({ error: 'Cannot find dispute' }, { status: 404 });
+    return dispute;
+};
+
 export const disputesMocks = [
     http.get(mockEndpoints.list, async ({ request }) => {
-        if (networkError) {
-            return HttpResponse.error();
-        }
+        if (networkError) return HttpResponse.error();
+
         const url = new URL(request.url);
         const statusGroup = (url.searchParams.get('statusGroup') as 'open' | 'closed') ?? 'open';
         const createdSince = url.searchParams.get('createdSince');
@@ -39,34 +44,36 @@ export const disputesMocks = [
     }),
 
     http.get(mockEndpoints.details, async ({ params }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
-
+        const dispute = getDisputeForRequestPathParams(params);
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.id, matchingMock.status) });
+        return HttpResponse.json({ ...dispute, ...getAdditionalDisputeDetails(dispute) });
     }),
 
-    http.get(mockEndpoints.documents, async ({ params }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+    http.get(mockEndpoints.documents, async ({ params, request }) => {
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.json({ error: 'Cannot find matching dispute' }, { status: 404 });
+        const dispute = getDisputeForRequestPathParams(params);
+        const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
+        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!) ?? [];
 
         await delay(400);
-
-        // Return the same list of applicable documents for all disputes
-        return HttpResponse.json({ data: DISPUTE_DEFENSE_DOCUMENTS });
+        return HttpResponse.json({ data: defenseDocuments });
     }),
 
-    http.post(mockEndpoints.accept, async () => {
+    http.post(mockEndpoints.accept, async ({ params }) => {
+        if (networkError) return HttpResponse.error();
+
+        getDisputeForRequestPathParams(params);
         await delay(1000);
-        return HttpResponse.json('ok');
+        return new HttpResponse(null, { status: 204 });
     }),
 
     http.post(mockEndpoints.defend, async ({ params, request }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        if (networkError) return HttpResponse.error();
 
-        if (!matchingMock) return HttpResponse.json({ error: 'Cannot find matching dispute' }, { status: 404 });
+        const dispute = getDisputeForRequestPathParams(params);
 
         try {
             // Expects a multipart/form-data request
@@ -80,21 +87,41 @@ export const disputesMocks = [
                 return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
             }
 
-            // Check through the applicable defense documents for the specified defense reason
-            for (const applicableDocument of DISPUTE_DEFENSE_DOCUMENTS) {
-                const file = formData.get(applicableDocument.type);
+            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim()) ?? [];
 
-                // A file was uploaded for the corresponding form data field (everything is good)
-                if (file instanceof File) continue;
+            // Some defense reasons require that at least one of certain types of documents be provided
+            // Initially check to see if the current defense reason is one of such
+            let missingOneOrMoreDocuments = defenseDocuments.some(({ requirementLevel }) => requirementLevel === 'ONE_OR_MORE');
 
-                if (applicableDocument.requirement === 'required') {
+            for (const applicableDocument of defenseDocuments) {
+                // Check through the applicable defense documents
+                const file = formData.get(applicableDocument.documentTypeCode);
+
+                if (file instanceof File) {
+                    // A file was uploaded for the corresponding form data field
+
+                    if (applicableDocument.requirementLevel === 'ONE_OR_MORE') {
+                        // Since a file has been uploaded for at least one of some expected types of documents,
+                        // mark as no longer missing the expected documents
+                        missingOneOrMoreDocuments = false;
+                    }
+
+                    // everything is good (continue to next applicable document)
+                    continue;
+                }
+
+                if (applicableDocument.requirementLevel === 'REQUIRED') {
                     // No file was uploaded for the corresponding form data field
                     // Since this document is required (this is definitely a bad request)
-                    return HttpResponse.json({ error: `Missing ${applicableDocument.type} document` }, { status: 400 });
+                    return HttpResponse.json({ error: `Missing ${applicableDocument.documentTypeCode} document` }, { status: 400 });
                 }
             }
 
-            await delay(400);
+            if (missingOneOrMoreDocuments) {
+                return HttpResponse.json({ error: 'Missing one or more expected documents' }, { status: 400 });
+            }
+
+            await delay(1000);
             return new HttpResponse(null, { status: 204 });
         } catch {
             // This request is most likely not a multipart/form-data request (it is a bad request)
@@ -102,12 +129,13 @@ export const disputesMocks = [
         }
     }),
 
-    http.get(mockEndpoints.download, async ({ request }) => {
+    http.get(mockEndpoints.download, async ({ params, request }) => {
+        if (networkError) return HttpResponse.error();
+
+        getDisputeForRequestPathParams(params);
         await delay(1000);
 
-        if (downloadFileError) {
-            return HttpResponse.error();
-        }
+        if (downloadFileError) return HttpResponse.error();
 
         const url = new URL(request.url);
         const filename = url.searchParams.get('documentType');
