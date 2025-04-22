@@ -9,3 +9,4 @@ export type IDisputeStatusGroup = Schema<components, 'StatusGroup'>;
 export type IDisputeStatus = Schema<components, 'DisputeStatus'>;
 export type IDisputeType = Schema<components, 'DisputeType'>;
 export type IDisputeDefenseDocument = Schema<components, 'ApplicableDefenseDocument'>;
+export type IApplicableDefenseDocument = Schema<components, 'ApplicableDefenseDocument'>;

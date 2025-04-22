@@ -17,7 +17,7 @@ import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
-import { useDisputeFlow } from '../../hooks/useDisputeFlow';
+import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
@@ -78,7 +78,7 @@ export const DisputeData = ({
     dataCustomization?: { details?: DisputeDetailsCustomization };
 }) => {
     const { i18n } = useCoreContext();
-    const { setDispute, setFlowState } = useDisputeFlow();
+    const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
 
     const { getDisputeDetail } = useConfigContext().endpoints;
 
@@ -86,11 +86,11 @@ export const DisputeData = ({
     const defendAuthorization = isFunction(useConfigContext().endpoints.getApplicableDefenseDocuments);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
-    const { data: dispute, isFetching } = useFetch(
+    const { data, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!disputeId && !!getDisputeDetail,
+                    enabled: !!disputeId && !!getDisputeDetail && !storedDispute,
                     onSuccess: ((dispute: IDisputeDetail) => {
                         setDispute(dispute);
                     }) as any,
@@ -103,9 +103,11 @@ export const DisputeData = ({
                     });
                 },
             }),
-            [disputeId, getDisputeDetail, setDispute]
+            [storedDispute, disputeId, getDisputeDetail, setDispute]
         )
     );
+
+    const dispute = storedDispute || data;
 
     const statusBoxOptions = useStatusBoxData({
         timezone: dispute?.payment.balanceAccount?.timeZone,
@@ -122,6 +124,13 @@ export const DisputeData = ({
     const onAcceptClick = useCallback(() => {
         dispute && setDispute(dispute);
         setFlowState('accept');
+    }, [dispute, setDispute, setFlowState]);
+
+    const onDefendClick = useCallback(() => {
+        dispute && setDispute(dispute);
+        if (dispute?.defensibility === 'defendable') {
+            setFlowState('defendReasonSelectionView');
+        }
     }, [dispute, setDispute, setFlowState]);
 
     const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
