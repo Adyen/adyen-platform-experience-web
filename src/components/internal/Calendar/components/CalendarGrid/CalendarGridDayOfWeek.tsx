@@ -41,7 +41,7 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, shor
     };
 
     const renderProps = getGridDayOfWeekRenderProps(props, prepare);
-    const { children: _, className, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
+    const { children: _, className, onCommand, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
 
     const classes = getClassName(renderProps.className, DEFAULT_CELL_CLASSNAME, className);
 
