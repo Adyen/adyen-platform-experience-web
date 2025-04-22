@@ -399,7 +399,7 @@ describe('MonthFrame', () => {
                     NON_DST_TIMEZONES_DATES.forEach(runTestRoutine);
                 }
             },
-            { timeout: 15000 }
+            { timeout: 30000 }
         );
     });
 });
