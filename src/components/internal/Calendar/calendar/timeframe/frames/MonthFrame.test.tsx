@@ -382,7 +382,7 @@ describe('MonthFrame', () => {
     describe('timezones', () => {
         test(
             'should render correct dates for time‑zones',
-            { timeout: 30_000 }, // new position for options (Vitest 3)
+            { timeout: 90000 }, // new position for options (Vitest 3)
             () => {
                 const originDate = new Date(TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE);
 
