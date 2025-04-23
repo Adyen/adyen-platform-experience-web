@@ -123,6 +123,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
+                    reasonGroup: ({ item }) => <span>{i18n.get(`dispute.${item.reason.category}`)}</span>,
                 }}
             >
                 {showPagination && (

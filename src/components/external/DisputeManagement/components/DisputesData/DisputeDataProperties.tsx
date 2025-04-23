@@ -16,9 +16,9 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../../TransactionDetails/components/constants';
 import { DisputeDetailsCustomization } from '../../types';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -38,6 +38,7 @@ const disputeDataKeys = {
 } satisfies Record<string, TranslationKey>;
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
+    const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount?.timeZone);
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
@@ -75,7 +76,9 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // balanceAccount?.description ? { key: 'accountKey' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
             // dispute reason
-            disputeReason ? { key: disputeDataKeys.disputeReason, value: disputeReason, id: 'disputeReason' } : SKIP_ITEM,
+            disputeReason
+                ? { key: disputeDataKeys.disputeReason, value: i18n.get(`dispute.${disputeReason.category}`), id: 'disputeReason' }
+                : SKIP_ITEM,
 
             // reason code
             // reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,

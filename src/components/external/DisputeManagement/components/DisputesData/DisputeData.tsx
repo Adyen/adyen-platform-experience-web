@@ -140,7 +140,6 @@ export const DisputeData = ({
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
-
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>

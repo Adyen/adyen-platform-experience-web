@@ -792,8 +792,13 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
     const additionalDisputeDetails = {} as AdditionalDisputeDetails;
 
-    additionalDisputeDetails.payment = { pspReference: 'KLAHFUW1329523KKL', balanceAccountDescription: 'Main account', isRefunded: false };
-    additionalDisputeDetails.dispute = { allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [] };
+    additionalDisputeDetails.payment = {
+        pspReference: 'KLAHFUW1329523KKL',
+        balanceAccountDescription: 'Main account',
+        isRefunded: false,
+        paymentMethod: dispute.paymentMethod,
+    };
+    additionalDisputeDetails.dispute = { ...dispute, allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [] };
 
     if (dispute.status === 'action_needed') {
         additionalDisputeDetails.dispute.defensibility = allowedDefenseReasons ? 'defendable' : 'defendable_externally';
