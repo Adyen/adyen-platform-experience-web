@@ -1,5 +1,4 @@
 @use '../../../../../style';
-@use '../../../../../style/accesibility' as accesibility;
 
 .adyen-pe-accept-dispute {
     &__container {
@@ -34,12 +33,8 @@
             display: flex;
         }
 
-        input {
-            @include accesibility.adyen-pe-visually-hidden-element();
-        }
-
-        /* stylelint-disable */
-        input:focus-visible + label > .adyen-pe-icon {
+        // stylelint-disable selector-max-compound-selectors
+        input:focus-visible ~ label > .adyen-pe-icon {
             outline: -webkit-focus-ring-color auto 1px;
         }
 

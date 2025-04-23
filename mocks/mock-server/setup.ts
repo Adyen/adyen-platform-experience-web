@@ -83,11 +83,19 @@ export const setupBasicResponse = {
         },
         getApplicableDefenseDocuments: {
             method: 'GET',
-            url: 'disputes/{disputePspReference}',
+            url: 'disputes/{disputePspReference}/documents',
         },
         acceptDispute: {
             method: 'POST',
             url: 'disputes/{disputePspReference}/accept',
+        },
+        defendDispute: {
+            method: 'POST',
+            url: 'disputes/{disputePspReference}/defend',
+        },
+        downloadDisputeFile: {
+            method: 'GET',
+            url: 'disputes/{disputePspReference}/documents/download',
         },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };

@@ -20,15 +20,27 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
+    '/v1/disputes/{disputePspReference}/defend': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['defendDispute'];
+    };
+    '/v1/disputes/{disputePspReference}/documents': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getApplicableDefenseDocuments'];
+    };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
+        ApplicableDefenseDocumentRequirementLevel: 'OPTIONAL' | 'ONE_OR_MORE' | 'REQUIRED';
         AcceptDisputeResponse: {
             disputePspReference: string;
             status: string;
+        };
+        BalanceAccount: {
+            timeZone: string;
         };
         StreamingOutput: Record<string, never>;
         /** @description Standardized error response following RFC-7807 format */
@@ -62,8 +74,8 @@ export interface components {
             message: string;
         };
         ApplicableDefenseDocument: {
-            documentTypeCode?: string;
-            requirementLevel?: string;
+            documentTypeCode: string;
+            requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
@@ -121,6 +133,7 @@ export interface components {
         /** @enum {string} */
         DisputeType: 'chargeback' | 'request_for_information' | 'notification_of_fraud';
         Payment: {
+            balanceAccount?: components['schemas']['BalanceAccount'];
             balanceAccountDescription: string;
             isRefunded: boolean;
             merchantReference?: string;
@@ -149,6 +162,7 @@ export interface components {
             /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
+        DownloadDisputeFileResponseDTO: Uint8Array;
     };
     responses: never;
     parameters: never;
@@ -261,6 +275,45 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['DisputesListResponseDTO'];
+                };
+            };
+        };
+    };
+    defendDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'multipart/form-data': FormData;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': {};
+                };
+            };
+        };
+    };
+    /** @description Add @Operation annotation to provide a description */
+    downloadDisputeFile: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+            query: {
+                documentType: string;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'text/csv': components['schemas']['DownloadDisputeFileResponseDTO'];
                 };
             };
         };

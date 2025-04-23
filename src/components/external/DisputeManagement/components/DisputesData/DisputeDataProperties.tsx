@@ -1,23 +1,24 @@
 import cx from 'classnames';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
-import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import Icon from '../../../../internal/DataGrid/components/Icon';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import Link from '../../../../internal/Link/Link';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
-import Download from '../../../../internal/SVGIcons/Download';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import { CustomColumn } from '../../../../types';
+import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../../TransactionDetails/components/constants';
 import { DisputeDetailsCustomization } from '../../types';
-import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -36,9 +37,30 @@ const disputeDataKeys = {
     reasonCode: 'dispute.reasonCode',
 } satisfies Record<string, TranslationKey>;
 
-const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: DisputeDataPropertiesProps) => {
-    // const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
-    const { dateFormat } = useTimezoneAwareDateFormatting(); // TODO - Get balanceAccount timezone
+const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
+    const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount?.timeZone);
+
+    const [extraFields, setExtraFields] = useState<Record<string, any>>();
+
+    const getExtraFields = useCallback(async () => {
+        if (dispute) {
+            const detailsData = await dataCustomization?.details?.onDataRetrieve?.(dispute);
+
+            setExtraFields(
+                dataCustomization?.details?.fields.reduce((acc, field) => {
+                    return DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
+                        PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
+                        field?.visibility === 'hidden'
+                        ? acc
+                        : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
+                }, {} as CustomColumn<any>)
+            );
+        }
+    }, [dispute, dataCustomization]);
+
+    useEffect(() => {
+        void getExtraFields();
+    }, [getExtraFields]);
 
     return useMemo(() => {
         //  latestDefense, reasonCode, reasonGroup
@@ -62,7 +84,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
             {
                 key: disputeDataKeys.disputeReference,
                 value: <CopyText type={'Default'} textToCopy={pspReference} showCopyTextTooltip={false} />,
-                id: 'id',
+                id: 'disputeId',
             },
 
             //psp reference
@@ -101,12 +123,25 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                       key: disputeDataKeys.disputeEvidence,
                       value: (
                           <>
-                              {suppliedDocuments.map(document => (
-                                  <Button variant={ButtonVariant.TERTIARY} key={`button-${document}`} onClick={() => {}}>
-                                      <Tag>{document}</Tag>
-                                      <Download />
-                                  </Button>
-                              ))}
+                              {suppliedDocuments.map((document, index) => {
+                                  const queryParam = {
+                                      path: { disputePspReference: pspReference },
+                                      query: { documentType: document },
+                                  };
+                                  return (
+                                      <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
+                                          <Tag label={document} />
+                                          <DownloadButton
+                                              className={'adyen-pe-dispute-document-download'}
+                                              endpointName={'downloadDisputeFile'}
+                                              disabled={false}
+                                              requestParams={queryParam}
+                                              iconButton={true}
+                                              onDownloadRequested={() => {}}
+                                          />
+                                      </div>
+                                  );
+                              })}
                           </>
                       ),
                       id: 'disputeEvidence',
