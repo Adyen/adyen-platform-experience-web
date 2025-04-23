@@ -41,7 +41,7 @@ const StatusBox = ({ ...props }: StatusBoxProps) => {
         : { dispute: props.dispute };
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(statusBoxOptions.transaction?.balanceAccount?.timeZone);
-    const { amount, createdAt /*, status*/ } = statusBoxOptions.transaction ?? statusBoxOptions.dispute;
+    const { amount, createdAt /*, status*/ } = statusBoxOptions.transaction ?? statusBoxOptions.dispute.dispute;
     const { category } = statusBoxOptions.transaction ?? {};
 
     const formattedAmount = useMemo(() => {
@@ -70,7 +70,7 @@ const StatusBox = ({ ...props }: StatusBoxProps) => {
             <div className={TX_DATA_TAGS}>
                 {/*{status && <Tag label={i18n.get(status)} variant={getTagVariantForTransaction(transaction)} />}*/}
                 {category && <Tag label={i18n.get(`txType.${category}`)} variant={TagVariant.DEFAULT} />}
-                {statusBoxOptions?.dispute?.status && <DisputeStatusTag dispute={statusBoxOptions?.dispute}></DisputeStatusTag>}
+                {statusBoxOptions?.dispute?.dispute.status && <DisputeStatusTag dispute={statusBoxOptions?.dispute.dispute}></DisputeStatusTag>}
 
                 {/* refund type: only available for transaction.category == Refund */}
                 {refundType && (

@@ -53,7 +53,7 @@ export const DisputeData = ({ disputeId }: { disputeId: string }) => {
 
             <DisputeDataProperties dispute={dispute} />
 
-            {dispute?.status === 'action_needed' ? (
+            {dispute?.dispute?.status === 'action_needed' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions
                         actions={[

@@ -65,8 +65,8 @@ const DisputeStatusTag = ({ dispute, activeBalanceAccount }: { dispute: IDispute
         );
     }
 
-    if (value === 'under_review' || value === 'docs_submitted') {
-        return <Tag label={i18n.get('disputes.inProgress')} />;
+    if (value && value !== 'action_needed') {
+        return <Tag label={i18n.get(`disputes.${value}`)} />;
     }
     return <Tag label={i18n.get('noData')} />;
 };

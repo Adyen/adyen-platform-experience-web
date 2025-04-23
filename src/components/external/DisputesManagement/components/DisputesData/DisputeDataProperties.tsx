@@ -37,10 +37,15 @@ const disputeDataKeys = {
 } satisfies Record<string, TranslationKey>;
 
 const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: DisputeDataPropertiesProps) => {
-    const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
+    // const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
+    const { dateFormat } = useTimezoneAwareDateFormatting(); // TODO - Get balanceAccount timezone
 
     return useMemo(() => {
-        const { paymentPspReference, latestDefense, reasonCode, paymentMerchantReference, reasonGroup } = dispute;
+        //  latestDefense, reasonCode, reasonGroup
+        const { pspReference: paymentPspReference, merchantReference: paymentMerchantReference } = dispute.payment;
+        const { reason: disputeReason, pspReference } = dispute.dispute;
+        const { defendedOn, reason: defenseReason, suppliedDocuments } = dispute.defense || {};
+
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
         const listItems: StructuredListProps['items'] = [
@@ -48,15 +53,15 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
             // balanceAccount?.description ? { key: 'accountKey' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
             // dispute reason
-            reasonGroup ? { key: disputeDataKeys.disputeReason, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
+            disputeReason ? { key: disputeDataKeys.disputeReason, value: disputeReason, id: 'disputeReason' } : SKIP_ITEM,
 
             // reason code
-            reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
+            // reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
 
             // dispute reference
             {
                 key: disputeDataKeys.disputeReference,
-                value: <CopyText type={'Default'} textToCopy={dispute.id} showCopyTextTooltip={false} />,
+                value: <CopyText type={'Default'} textToCopy={pspReference} showCopyTextTooltip={false} />,
                 id: 'id',
             },
 
@@ -79,24 +84,24 @@ const DisputeDataProperties = ({ dispute, dataCustomization, extraFields }: Disp
                 : SKIP_ITEM,
 
             // defense reason
-            latestDefense?.reason ? { key: disputeDataKeys.defenseReason, value: latestDefense.reason, id: 'defenseReason' } : SKIP_ITEM,
+            defenseReason ? { key: disputeDataKeys.defenseReason, value: defenseReason, id: 'defenseReason' } : SKIP_ITEM,
 
             //TODO: Clarify if it will be possible to get balance account from backend
-            latestDefense?.defendedOn
+            defendedOn
                 ? {
                       key: disputeDataKeys.defendedOn,
-                      value: dateFormat(latestDefense.defendedOn, DATE_FORMAT_DISPUTES_TAG),
+                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTES_TAG),
                       id: 'defendedOn',
                   }
                 : SKIP_ITEM,
 
             //TODO: Change this when download endpoint is ready
-            latestDefense?.suppliedDocuments
+            suppliedDocuments
                 ? {
                       key: disputeDataKeys.disputeEvidence,
                       value: (
                           <>
-                              {latestDefense.suppliedDocuments.map(document => (
+                              {suppliedDocuments.map(document => (
                                   <Button variant={ButtonVariant.TERTIARY} key={`button-${document}`} onClick={() => {}}>
                                       <Tag>{document}</Tag>
                                       <Download />

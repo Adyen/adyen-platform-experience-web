@@ -1,7 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTES, getDisputeDetailByStatus, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { DISPUTES, getDisputeDetailByDefensibility, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { IDispute, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -13,13 +14,13 @@ export const disputesMocks = [
             return HttpResponse.error();
         }
         const url = new URL(request.url);
-        const statusGroup = (url.searchParams.get('statusGroup') as 'open' | 'closed') ?? 'open';
+        const statusGroup = ((url.searchParams.get('statusGroup') as IDisputeStatusGroup) ?? 'NEW_CHARGEBACKS') satisfies IDisputeStatusGroup;
         const createdSince = url.searchParams.get('createdSince');
         const createdUntil = url.searchParams.get('createdUntil');
         const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(url.searchParams.get('cursor') ?? 0);
 
-        let disputes = getDisputesByStatusGroup(statusGroup);
+        let disputes: IDispute[] = getDisputesByStatusGroup(statusGroup);
         let responseDelay = 200;
 
         if (createdSince || createdUntil) {
@@ -38,12 +39,12 @@ export const disputesMocks = [
     }),
 
     http.get(mockEndpoints.details, async ({ params }) => {
-        const matchingMock = DISPUTES.find(mock => mock.id === params.id);
+        const matchingMock = DISPUTES.find(mock => mock.pspReference === params.id);
 
         if (!matchingMock) return HttpResponse.text('Cannot find matching dispute mock', { status: 404 });
 
         await delay(1000);
-        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByStatus(matchingMock.status) });
+        return HttpResponse.json({ ...matchingMock, ...getDisputeDetailByDefensibility(matchingMock) });
     }),
     http.post(mockEndpoints.accept, async () => {
         await delay(1000);

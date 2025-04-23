@@ -106,7 +106,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    status: ({ value, item }) => {
+                    status: ({ item }) => {
                         return <DisputeStatusTag dispute={item} activeBalanceAccount={activeBalanceAccount} />;
                     },
                     amount: ({ value }) => {

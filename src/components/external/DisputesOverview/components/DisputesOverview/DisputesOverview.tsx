@@ -114,14 +114,14 @@ export const DisputesOverview = ({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        ({ id }: IDispute) => {
+        ({ pspReference }: IDispute) => {
             updateDetails({
                 selection: {
                     type: 'dispute',
-                    data: id,
+                    data: pspReference,
                 },
                 modalSize: 'small',
-            }).callback({ id });
+            }).callback({ id: pspReference });
         },
         [updateDetails]
     );
