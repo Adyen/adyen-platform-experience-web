@@ -1,6 +1,6 @@
 @use '../../../style';
 
-.adyen-fp-tabs {
+.adyen-pe-tabs {
     display: flex;
     gap: style.token(spacer-090);
     margin: style.token(spacer-070) 0 style.token(spacer-030);
@@ -20,7 +20,7 @@
         text-align: center;
         text-decoration: none;
 
-        &::after {
+        &::before {
             background: style.token(color-outline-primary-active);
             bottom: -1px;
             content: '';
@@ -32,19 +32,32 @@
             width: 100%;
         }
 
+        &::after {
+            border-radius: style.token(border-radius-s);
+            content: '';
+            inset: -3px;
+            margin-bottom: style.token(spacer-020);
+            position: absolute;
+        }
+
+        &:focus-visible::after {
+            box-shadow: 0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+                0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
+        }
+
         &:focus,
         &:hover:not(:disabled),
         &[aria-selected='true'] {
             color: style.token(color-label-primary);
 
-            &::after {
+            &::before {
                 opacity: 1;
             }
         }
     }
 }
 
-.adyen-fp-tabpanels {
+.adyen-pe-tabpanels {
     padding-top: style.token(spacer-080);
 
     &__panel {

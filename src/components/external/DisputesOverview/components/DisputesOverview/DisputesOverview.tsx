@@ -13,23 +13,23 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { BASE_CLASS, DISPUTE_STATUS_GROUPS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
-import {
-    EARLIEST_DISPUTES_SINCE_DATE,
-    BASE_CLASS,
-    DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS,
-    DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS,
-    DISPUTES_OVERVIEW_STATUS_GROUP_CLASS,
-} from './constants';
 import './DisputesOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import cx from 'classnames';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
+import { TabProps } from '../../../../internal/Tabs/types';
+import Tabs from '../../../../internal/Tabs/Tabs';
+
+const disputeStatusGroupTabs = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
+    id: statusGroup as IDisputeStatusGroup,
+    label: labelTranslationKey,
+    content: null,
+})) satisfies TabProps<IDisputeStatusGroup>[];
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -50,7 +50,8 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
-    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');
+    const defaultStatusGroup: IDisputeStatusGroup = 'CHARGEBACKS';
+    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(defaultStatusGroup);
 
     const disputeDetails = useMemo(
         () => ({
@@ -131,45 +132,17 @@ export const DisputesOverview = ({
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
 
-    const { i18n } = useCoreContext();
-
     return (
         <div className={BASE_CLASS}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'CHARGEBACKS',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('CHARGEBACKS')}
-                >
-                    {i18n.get('disputes.chargebacks')}
-                </button>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'FRAUD_ALERTS',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('FRAUD_ALERTS')}
-                >
-                    {i18n.get('disputes.fraudAlerts')}
-                </button>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ONGOING_AND_CLOSED',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('ONGOING_AND_CLOSED')}
-                >
-                    {i18n.get('disputes.ongoingAndClosed')}
-                </button>
-            </div>
+
+            <Tabs
+                tabs={disputeStatusGroupTabs}
+                defaultActiveTab={defaultStatusGroup}
+                onChange={({ id: disputeStatusGroup }) => setStatusGroup(disputeStatusGroup)}
+            />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector

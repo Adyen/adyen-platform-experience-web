@@ -1,6 +1,6 @@
 @use '../../../style';
 
-.adyen-fp-segmented-control {
+.adyen-pe-segmented-control {
     align-items: flex-start;
     background: style.token(color-background-tertiary);
     border: 0;
@@ -37,10 +37,10 @@
     }
 }
 
-.adyen-fp-segmented-content-container {
+.adyen-pe-segmented-content-container {
     padding-top: style.token(spacer-080);
 }
 
-.adyen-fp-segmented-content {
+.adyen-pe-segmented-content {
     padding: 0;
 }

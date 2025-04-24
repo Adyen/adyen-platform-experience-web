@@ -6,8 +6,8 @@ import { fireEvent, render, renderHook, screen } from '@testing-library/preact';
 import { TabbedControlOptions, useTabbedControl } from './useTabbedControl';
 import { InteractionKeyCode } from '../components/types';
 
-function TestComponent<T extends TabbedControlOptions>({ options }: { options: T }) {
-    const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl(options);
+function TestComponent<OptionId extends string, Options extends TabbedControlOptions<OptionId>>({ options }: { options: Options }) {
+    const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl({ options });
     return (
         <>
             {options.map((option, index) => (
@@ -19,24 +19,27 @@ function TestComponent<T extends TabbedControlOptions>({ options }: { options: T
     );
 }
 
+// [TODO]: Introduce test cases for the "onChange" callback prop
 describe('useTabbedControl', () => {
     const OPTIONS = [{ id: 'option_1' }, { id: 'option_2' }, { id: 'option_3' }];
 
-    const getHookResult = <T extends TabbedControlOptions>(...args: Parameters<typeof useTabbedControl<T>>) => {
+    const getHookResult = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>(
+        ...args: Parameters<typeof useTabbedControl<OptionId, Options>>
+    ) => {
         const { result } = renderHook(() => useTabbedControl(...args));
         return result.current;
     };
 
     test('should have the correct active index depending on default option', () => {
-        let result = getHookResult(OPTIONS);
+        let result = getHookResult({ options: OPTIONS });
         expect(result.activeIndex).toBe(0);
 
         for (let i = 0; i < OPTIONS.length; i++) {
-            result = getHookResult(OPTIONS, OPTIONS[i]!.id);
+            result = getHookResult({ options: OPTIONS, defaultOption: OPTIONS[i]!.id });
             expect(result.activeIndex).toBe(i);
         }
 
-        result = getHookResult([], 'unknown_option');
+        result = getHookResult({ options: [], defaultOption: 'unknown_option' });
         expect(result.activeIndex).toBe(0);
     });
 
@@ -107,10 +110,10 @@ describe('useTabbedControl', () => {
     });
 
     test('should have a unique id for each consumer', () => {
-        let previousResult = getHookResult(OPTIONS);
+        let previousResult = getHookResult({ options: OPTIONS });
 
         for (let i = 0; i < OPTIONS.length; i++) {
-            const currentResult = getHookResult(OPTIONS);
+            const currentResult = getHookResult({ options: OPTIONS });
             expect(currentResult.uniqueId).not.toBe(previousResult.uniqueId);
             previousResult = currentResult;
         }

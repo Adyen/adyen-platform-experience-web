@@ -1,15 +1,15 @@
 import { ComponentChild } from 'preact';
 import { TranslationKey } from '../../../translations';
-import { TabbedControlOptionId } from '../../../hooks/useTabbedControl';
 
-export interface SegmentedControlItem {
+export interface SegmentedControlItem<ItemId extends string> {
     content: ComponentChild;
     disabled?: boolean;
-    id: string;
+    id: ItemId;
     label: TranslationKey;
 }
 
-export interface SegmentedControlProps<T extends SegmentedControlItem[]> {
-    defaultItem?: TabbedControlOptionId<T>;
-    items: T;
+export interface SegmentedControlProps<ItemId extends string> {
+    onChange?: <ActiveItem extends SegmentedControlItem<ItemId>>(activeItem: ActiveItem) => void;
+    defaultItem?: ItemId;
+    items: readonly SegmentedControlItem<ItemId>[];
 }
