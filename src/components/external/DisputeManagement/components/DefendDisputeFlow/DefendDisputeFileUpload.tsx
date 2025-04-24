@@ -87,7 +87,6 @@ export const DefendDisputeFileUpload = () => {
                     </ul>
                 </ExpandableCard>
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
-                    z
                     {applicableDocuments?.map((document: IApplicableDefenseDocument) => (
                         <FileInput
                             ref={ref}
