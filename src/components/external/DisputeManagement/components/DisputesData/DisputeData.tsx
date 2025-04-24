@@ -39,10 +39,10 @@ const DisputeDataAlert = ({
 }) => {
     const { i18n } = useCoreContext();
 
-    if ((status === 'lost' && !isDefended) || status === 'expired') {
-        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('dispute.notDefended')} />;
+    if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
+        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
-    if (status === 'action_needed' && showContactSupport) {
+    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport) {
         //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
         const contactSupportLabel = i18n.get('contactSupport');
         return (
@@ -51,7 +51,7 @@ const DisputeDataAlert = ({
                 variant={AlertVariantOption.TIP}
                 description={
                     <Translation
-                        translationKey={'dispute.contactSupportToDefendThisDispute'}
+                        translationKey={'disputes.contactSupportToDefendThisDispute'}
                         fills={{
                             contactSupport: (
                                 <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
@@ -131,7 +131,7 @@ export const DisputeData = ({
         ];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('dispute.defendDispute'),
+                title: i18n.get('disputes.defendDispute'),
                 event: () => {},
             });
         return ctaButtons;
@@ -154,7 +154,7 @@ export const DisputeData = ({
                 showContactSupport={showContactSupport}
             />
 
-            {dispute?.dispute.status === 'action_needed' ? (
+            {dispute?.dispute.status === 'UNRESPONDED' || dispute?.dispute.status === 'UNDEFENDED' ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions actions={actionButtons} />
                 </div>

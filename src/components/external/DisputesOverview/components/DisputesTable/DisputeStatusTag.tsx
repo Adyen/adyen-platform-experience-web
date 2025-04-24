@@ -1,34 +1,43 @@
-import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { getTranslation } from '../../../../../core/Localization/utils';
-import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { TranslationKey } from '../../../../../translations';
-import { IBalanceAccountBase } from '../../../../../types';
 import { IDispute } from '../../../../../types/api/models/disputes';
 import Icon from '../../../../internal/Icon';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { PropsWithChildren } from 'preact/compat';
+import cx from 'classnames';
+import { TranslationKey } from '../../../../../translations';
 
-const DATE_TRANSLATIONS = {
-    'disputes.daysToRespond__plural': 'disputes.daysToRespond__plural',
-    'disputes.daysToRespond': 'disputes.daysToRespond__singular',
-};
+const STATUS_LABELS = {
+    UNDEFENDED: 'disputes.undefended',
+    UNRESPONDED: 'disputes.unresponded',
+    EXPIRED: 'disputes.expired',
+    ACCEPTED: 'disputes.accepted',
+    PENDING: 'disputes.pending',
+    RESPONDED: 'disputes.responded',
+    LOST: 'disputes.lost',
+    WON: 'disputes.won',
+} satisfies { [k in IDispute['status']]: TranslationKey };
 
-const DisputeStatusTag = ({ dispute, activeBalanceAccount }: { dispute: IDispute; activeBalanceAccount?: IBalanceAccountBase }) => {
+const DisputeStatusTag = ({
+    dispute,
+    type = 'tag',
+    children,
+}: PropsWithChildren<{
+    dispute: IDispute;
+    type?: 'text' | 'tag';
+}>) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
 
     const value = dispute.status;
 
-    if (value === 'won') {
+    if (value === 'WON') {
         return <Tag variant={TagVariant.SUCCESS} label={i18n.get('disputes.won')} />;
     }
-    if (value === 'lost') {
+    if (value === 'LOST') {
         return <Tag label={i18n.get('disputes.lost')} />;
     }
 
-    if (value === 'action_needed' && dispute.dueDate) {
+    if ((value === 'UNDEFENDED' || value === 'UNRESPONDED') && dispute.dueDate) {
         const targetDate = new Date(dispute.dueDate);
         const now = Date.now();
         const diffMs = targetDate.getTime() - now;
@@ -39,36 +48,33 @@ const DisputeStatusTag = ({ dispute, activeBalanceAccount }: { dispute: IDispute
 
         const isUrgent = days < 10;
 
-        const formattedDueDate = dateFormat(dispute.dueDate, DATE_FORMAT_DISPUTES_TAG);
+        const Value = () => {
+            return (
+                <div
+                    className={cx('adyen-pe-disputes-table__status-content', {
+                        ['adyen-pe-disputes-table__status-content--urgent']: isUrgent,
+                    })}
+                >
+                    {isUrgent && type === 'text' ? <Icon name={'warning-filled'} /> : null}
+                    {children || i18n.get(STATUS_LABELS[value])}
+                </div>
+            );
+        };
 
         return (
-            <Tooltip
-                content={
-                    !isUrgent
-                        ? formattedDueDate
-                        : hours <= 24
-                        ? i18n.get('disputes.respondToday', { values: { date: formattedDueDate } })
-                        : i18n.get(getTranslation(DATE_TRANSLATIONS, 'disputes.daysToRespond', { count: days }) as TranslationKey, {
-                              values: { date: formattedDueDate, days },
-                          })
-                }
-            >
-                <div>
-                    <Tag variant={isUrgent ? TagVariant.ERROR : TagVariant.WARNING}>
-                        <div className={'adyen-pe-disputes-table__tag-content'}>
-                            {i18n.get('disputes.actionNeeded')}
-                            {isUrgent ? <Icon name={'warning-filled'} /> : null}
-                        </div>
+            <div>
+                {type === 'tag' ? (
+                    <Tag variant={isUrgent ? TagVariant.ERROR : TagVariant.DEFAULT}>
+                        <Value />
                     </Tag>
-                </div>
-            </Tooltip>
+                ) : (
+                    <Value />
+                )}
+            </div>
         );
     }
 
-    if (value && value !== 'action_needed') {
-        return <Tag label={i18n.get(`disputes.${value}`)} />;
-    }
-    return <Tag label={i18n.get('noData')} />;
+    return <Tag label={i18n.get(STATUS_LABELS[value])} />;
 };
 
 export default DisputeStatusTag;

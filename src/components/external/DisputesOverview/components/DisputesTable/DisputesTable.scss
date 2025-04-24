@@ -19,10 +19,14 @@
         }
     }
 
-    &__tag-content {
+    &__status-content {
         align-items: center;
         display: flex;
         gap: style.token(spacer-030);
+
+        &--urgent {
+            color: style.token(color-label-critical);
+        }
     }
 
     .adyen-pe-download {

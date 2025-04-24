@@ -129,7 +129,7 @@ export interface components {
             title: string;
         };
         /** @enum {string} */
-        DisputeStatus: 'action_needed' | 'won' | 'lost' | 'accepted' | 'pending' | 'expired';
+        DisputeStatus: 'UNRESPONDED' | 'RESPONDED' | 'EXPIRED' | 'LOST' | 'WON' | 'PENDING' | 'UNDEFENDED' | 'ACCEPTED';
         /** @enum {string} */
         DisputeType: 'chargeback' | 'request_for_information' | 'notification_of_fraud';
         Payment: {

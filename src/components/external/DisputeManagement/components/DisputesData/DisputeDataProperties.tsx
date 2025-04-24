@@ -27,14 +27,14 @@ type DisputeDataPropertiesProps = {
 };
 
 const disputeDataKeys = {
-    defendedOn: 'dispute.defendedOn',
-    defenseReason: 'dispute.defenseReason',
-    disputeEvidence: 'dispute.evidence',
-    disputeReason: 'dispute.disputeReason',
-    disputeReference: 'dispute.disputeReference',
-    merchantReference: 'dispute.merchantReference',
-    paymentReference: 'dispute.paymentReference',
-    reasonCode: 'dispute.reasonCode',
+    defendedOn: 'disputes.defendedOn',
+    defenseReason: 'disputes.defenseReason',
+    disputeEvidence: 'disputes.evidence',
+    disputeReason: 'disputes.disputeReason',
+    disputeReference: 'disputes.disputeReference',
+    merchantReference: 'disputes.merchantReference',
+    paymentReference: 'disputes.paymentReference',
+    reasonCode: 'disputes.reasonCode',
 } satisfies Record<string, TranslationKey>;
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
@@ -77,7 +77,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
 
             // dispute reason
             disputeReason
-                ? { key: disputeDataKeys.disputeReason, value: i18n.get(`dispute.${disputeReason.category}`), id: 'disputeReason' }
+                ? { key: disputeDataKeys.disputeReason, value: i18n.get(`disputes.${disputeReason.category}`), id: 'disputeReason' }
                 : SKIP_ITEM,
 
             // reason code
@@ -201,7 +201,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 }}
             />
         );
-    }, [dispute, dateFormat, dataCustomization?.details?.fields, extraFields]);
+    }, [dispute.payment, dispute.dispute, dispute.defense, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
 };
 
 export default DisputeDataProperties;

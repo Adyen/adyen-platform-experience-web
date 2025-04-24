@@ -8,7 +8,7 @@ import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwar
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
-import { DATE_FORMAT_DISPUTES } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -24,7 +24,7 @@ import PaymentMethodCell from '../../../TransactionsOverview/components/Transact
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 
-export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonGroup', 'amount'] as const;
+export const FIELDS = ['respondBy', 'createdAt', 'paymentMethod', 'reasonGroup', 'amount'] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -64,7 +64,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             reasonGroup: 'disputes.reason',
             paymentMethod: 'disputes.paymentMethod',
             createdAt: 'disputes.openedOn',
-            status: 'disputes.status',
+            respondBy: 'disputes.respondBy',
         },
         customColumns,
         columnConfig: useMemo(
@@ -106,8 +106,12 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    status: ({ item }) => {
-                        return <DisputeStatusTag dispute={item} activeBalanceAccount={activeBalanceAccount} />;
+                    respondBy: ({ item }) => {
+                        return (
+                            <DisputeStatusTag type={'text'} dispute={item}>
+                                {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
+                            </DisputeStatusTag>
+                        );
                     },
                     amount: ({ value }) => {
                         return (
@@ -123,7 +127,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    reasonGroup: ({ item }) => <span>{i18n.get(`dispute.${item.reason.category}`)}</span>,
+                    reasonGroup: ({ item }) => <span>{i18n.get(`disputes.${item.reason.category}`)}</span>,
                 }}
             >
                 {showPagination && (

@@ -52,7 +52,7 @@ const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 const NEW_CHARGEBACKS = [
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
@@ -64,7 +64,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
@@ -76,7 +76,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000003',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
@@ -88,7 +88,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000004',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
@@ -100,7 +100,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
@@ -112,7 +112,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
@@ -124,7 +124,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000007',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
@@ -136,7 +136,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000008',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
@@ -148,7 +148,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000009',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
@@ -160,7 +160,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000010',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
@@ -172,7 +172,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000011',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
@@ -184,7 +184,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000012',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
@@ -196,7 +196,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000013',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
@@ -208,7 +208,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000014',
-        status: 'action_needed',
+        status: 'UNDEFENDED',
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
@@ -220,7 +220,7 @@ const NEW_CHARGEBACKS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000015',
-        status: 'action_needed',
+        status: 'UNRESPONDED',
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
@@ -235,7 +235,7 @@ const NEW_CHARGEBACKS = [
 const ALL_DISPUTES = [
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000016',
-        status: 'pending',
+        status: 'PENDING',
         createdAt: getDate(-3),
         paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'MasterCard' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -246,7 +246,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000017',
-        status: 'expired',
+        status: 'EXPIRED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -257,7 +257,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000018',
-        status: 'accepted',
+        status: 'ACCEPTED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0018', description: 'PayPal' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -268,7 +268,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000019',
-        status: 'won',
+        status: 'WON',
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0019', description: 'Klarna Pay Later' },
         reason: { category: 'other', code: '4835', title: 'title' },
@@ -279,7 +279,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000020',
-        status: 'lost',
+        status: 'LOST',
         createdAt: getDate(-5),
         paymentMethod: { type: 'amex', lastFourDigits: '0020', description: 'American Express' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -290,7 +290,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000021',
-        status: 'pending',
+        status: 'PENDING',
         createdAt: getDate(-5),
         paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'MasterCard' },
         reason: { category: 'consumer_dispute', code: '4835', title: 'title' },
@@ -301,7 +301,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000022',
-        status: 'won',
+        status: 'WON',
         createdAt: getDate(-5),
         paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa Credit Card' },
         reason: { category: 'other', code: '4835', title: 'title' },
@@ -312,7 +312,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000024',
-        status: 'lost',
+        status: 'LOST',
         createdAt: getDate(-6),
         paymentMethod: { type: 'klarna', lastFourDigits: '0024', description: 'Klarna Pay Later' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -323,7 +323,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000025',
-        status: 'expired',
+        status: 'EXPIRED',
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -334,7 +334,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000026',
-        status: 'pending',
+        status: 'PENDING',
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -345,7 +345,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000027',
-        status: 'lost',
+        status: 'LOST',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
         reason: { category: 'consumer_dispute', code: '4835', title: 'title' },
@@ -356,7 +356,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000031',
-        status: 'won',
+        status: 'WON',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
         reason: { category: 'other', code: '4835', title: 'title' },
@@ -367,7 +367,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000033',
-        status: 'accepted',
+        status: 'ACCEPTED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -378,7 +378,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000034',
-        status: 'expired',
+        status: 'EXPIRED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
         reason: { category: 'fraud', code: '4835', title: 'title' },
@@ -389,7 +389,7 @@ const ALL_DISPUTES = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000038',
-        status: 'lost',
+        status: 'LOST',
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', lastFourDigits: '0038', description: 'PayPal' },
         reason: { category: 'consumer_dispute', code: '4835', title: 'title' },
@@ -403,7 +403,7 @@ const ALL_DISPUTES = [
 const FRAUD_ALERTS = [
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: new Date(todayDate.setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
@@ -415,7 +415,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000042',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: new Date(todayDate.setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
@@ -427,7 +427,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000043',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
@@ -439,7 +439,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000044',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
@@ -451,7 +451,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000045',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
@@ -463,7 +463,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000046',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
@@ -475,7 +475,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000047',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
@@ -487,7 +487,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000048',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
@@ -499,7 +499,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000049',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
@@ -511,7 +511,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000050',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
@@ -523,7 +523,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000051',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
@@ -535,7 +535,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000052',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
@@ -547,7 +547,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000053',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
@@ -559,7 +559,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000054',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
@@ -571,7 +571,7 @@ const FRAUD_ALERTS = [
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000055',
-        status: 'action_needed',
+        status: 'LOST',
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
@@ -800,7 +800,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     };
     additionalDisputeDetails.dispute = { ...dispute, allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [] };
 
-    if (dispute.status === 'action_needed') {
+    if (dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED') {
         additionalDisputeDetails.dispute.defensibility = allowedDefenseReasons ? 'defendable' : 'defendable_externally';
     } else {
         additionalDisputeDetails.dispute.defensibility = 'not_defendable';
