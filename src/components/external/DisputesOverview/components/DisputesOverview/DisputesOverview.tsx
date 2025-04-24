@@ -49,6 +49,7 @@ export const DisputesOverview = ({
     const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
+
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');
 
     const disputeDetails = useMemo(
@@ -89,7 +90,7 @@ export const DisputesOverview = ({
         useCursorPaginatedRecords<IDispute, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
-            filterParams: defaultParams.current.defaultFilterParams,
+            filterParams: useMemo(() => ({ ...defaultParams.current.defaultFilterParams, statusGroup }), [defaultParams, statusGroup]),
             initialFiltersSameAsDefault: true,
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,

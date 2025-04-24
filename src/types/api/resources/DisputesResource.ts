@@ -132,6 +132,8 @@ export interface components {
         DisputeStatus: 'UNRESPONDED' | 'RESPONDED' | 'EXPIRED' | 'LOST' | 'WON' | 'PENDING' | 'UNDEFENDED' | 'ACCEPTED';
         /** @enum {string} */
         DisputeType: 'chargeback' | 'request_for_information' | 'notification_of_fraud';
+        /** @enum {string} */
+        StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
         Payment: {
             balanceAccount?: components['schemas']['BalanceAccount'];
             balanceAccountDescription: string;
@@ -261,7 +263,7 @@ export interface operations {
     getDisputes: {
         parameters: {
             query: {
-                statusGroup?: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
+                statusGroup?: components['schemas']['StatusGroup'];
                 balanceAccountId?: string;
                 createdSince?: string;
                 createdUntil?: string;
