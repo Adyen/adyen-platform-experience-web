@@ -13,7 +13,7 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { BASE_CLASS, DISPUTE_STATUS_GROUPS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
+import { BASE_CLASS, DEFAULT_DISPUTE_STATUS_GROUP, DISPUTE_STATUS_GROUPS_TABS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import './DisputesOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
@@ -22,14 +22,8 @@ import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
-import { TabProps } from '../../../../internal/Tabs/types';
+import { TabComponentProps } from '../../../../internal/Tabs/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
-
-const disputeStatusGroupTabs = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
-    id: statusGroup as IDisputeStatusGroup,
-    label: labelTranslationKey,
-    content: null,
-})) satisfies TabProps<IDisputeStatusGroup>[];
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -50,8 +44,7 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
-    const defaultStatusGroup: IDisputeStatusGroup = 'CHARGEBACKS';
-    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(defaultStatusGroup);
+    const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
     const disputeDetails = useMemo(
         () => ({
@@ -64,13 +57,12 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async (pageRequestParams: Record<FilterParam | 'cursor', string> & Record<'statusGroup', IDisputeStatusGroup>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
-                    statusGroup: statusGroup,
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -79,7 +71,7 @@ export const DisputesOverview = ({
                 },
             });
         },
-        [activeBalanceAccount?.id, defaultParams, getDisputesCall, statusGroup]
+        [activeBalanceAccount?.id, defaultParams, getDisputesCall]
     );
 
     // FILTERS
@@ -91,12 +83,12 @@ export const DisputesOverview = ({
         useCursorPaginatedRecords<IDispute, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
-            filterParams: useMemo(() => ({ ...defaultParams.current.defaultFilterParams, statusGroup }), [defaultParams, statusGroup]),
+            filterParams: Object.assign(defaultParams.current.defaultFilterParams, { statusGroup: DEFAULT_DISPUTE_STATUS_GROUP }),
             initialFiltersSameAsDefault: true,
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
-            enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
+            enabled: !!activeBalanceAccount?.id && !!getDisputesCall && !statusGroupFetchPending,
         });
 
     const mergeCustomData = useCallback(
@@ -128,6 +120,22 @@ export const DisputesOverview = ({
         [updateDetails]
     );
 
+    const onStatusGroupChange = useMemo<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(() => {
+        let debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+        return ({ id: statusGroup }) => {
+            debounceTimeoutId && clearTimeout(debounceTimeoutId);
+
+            debounceTimeoutId = setTimeout(() => {
+                setStatusGroupFetchPending(false);
+                updateFilters({ statusGroup } as any);
+                debounceTimeoutId = null;
+            }, 500);
+
+            setStatusGroupFetchPending(true);
+        };
+    }, [updateFilters]);
+
     useEffect(() => {
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
@@ -138,11 +146,7 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <Tabs
-                tabs={disputeStatusGroupTabs}
-                defaultActiveTab={defaultStatusGroup}
-                onChange={({ id: disputeStatusGroup }) => setStatusGroup(disputeStatusGroup)}
-            />
+            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} defaultActiveTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
@@ -181,7 +185,7 @@ export const DisputesOverview = ({
                     error={error as AdyenPlatformExperienceError}
                     onRowClick={onRowClick}
                     customColumns={dataCustomization?.list?.fields}
-                    statusGroup={statusGroup}
+                    statusGroup={(filters as any).statusGroup}
                     {...paginationProps}
                 />
             </DisputeManagementModal>
