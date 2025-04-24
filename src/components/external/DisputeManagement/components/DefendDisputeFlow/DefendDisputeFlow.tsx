@@ -5,18 +5,22 @@ import { useDisputeFlow } from '../../context/dispute/context';
 import { DefendDisputeFileUpload } from './DefendDisputeFileUpload';
 import { DefendDisputeReason } from './DefendDisputeReason';
 import './DefendDisputeFlow.scss';
+import { DefendDisputeResponse } from './DefendDisputeResponse';
 
 export const DefendDisputeFlow = () => {
     const { i18n } = useCoreContext();
-    const { applicableDocuments, flowState } = useDisputeFlow();
+    const { applicableDocuments, flowState, defendResponse } = useDisputeFlow();
 
     return (
         <div className="adyen-pe-defend-dispute__container">
-            <Typography className="adyen-pe-defend-dispute__title" variant={TypographyVariant.BODY} medium>
-                {i18n.get('dispute.defendDisputeTitle')}
-            </Typography>
+            {flowState !== 'defenseSubmitResponseView' && (
+                <Typography className="adyen-pe-defend-dispute__title" variant={TypographyVariant.BODY} medium>
+                    {i18n.get('dispute.defendDisputeTitle')}
+                </Typography>
+            )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}
             {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload />}
+            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse />}
         </div>
     );
 };

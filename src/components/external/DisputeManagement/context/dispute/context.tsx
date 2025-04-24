@@ -2,8 +2,9 @@ import { createContext } from 'preact';
 import { memo, PropsWithChildren } from 'preact/compat';
 import { useCallback, useContext, useState } from 'preact/hooks';
 import { IApplicableDefenseDocument, IDisputeDetail } from '../../../../../types/api/models/disputes';
+import uploadedFile from '../../../../internal/FormFields/FileInput/components/UploadedFile';
 
-export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView';
+export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView' | 'defenseSubmitResponseView';
 
 interface DisputeFlowContextValue {
     flowState: DisputeFlowState;
@@ -15,9 +16,12 @@ interface DisputeFlowContextValue {
     setSelectedDefenseReason: (selectedDefenseReason: string) => void;
     applicableDocuments: IApplicableDefenseDocument[] | null;
     setApplicableDocuments: (documents: IApplicableDefenseDocument[]) => void;
+    clearFiles: () => void;
     clearStates: () => void;
-    uploadedFiles: any[] | null;
-    setUploadedFiles: (files: any[]) => void;
+    uploadedFiles: FormData | null;
+    addUploadedFile: (name: string, file: File) => void;
+    defendResponse: 'error' | 'success' | null;
+    onDefendSubmit: (response: 'success' | 'error') => void;
 }
 
 interface DisputeProviderProps {
@@ -32,6 +36,11 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const [selectedDefenseReason, setSelectedDefenseReason] = useState<string | null>(null);
     const [applicableDocuments, setApplicableDocuments] = useState<IApplicableDefenseDocument[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<any | null>(null);
+    const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
+
+    const clearFiles = () => {
+        setUploadedFiles(null);
+    };
 
     const goBack = useCallback(() => {
         switch (flowState) {
@@ -42,6 +51,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setFlowState('details');
                 break;
             case 'uploadDefenseFilesView':
+                clearFiles();
                 setFlowState('defendReasonSelectionView');
                 break;
             default:
@@ -55,13 +65,36 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setApplicableDocuments([]);
         setDispute(undefined);
         setUploadedFiles(null);
+        setDefendResponse(null);
     }, [setApplicableDocuments, setDispute, setSelectedDefenseReason]);
+
+    const addUploadedFile = useCallback(
+        (name: string, file: File) => {
+            let uploadedFile = new FormData();
+            if (uploadedFiles?.values() && [...uploadedFiles?.values()].length !== 0) {
+                uploadedFile = uploadedFiles;
+            } else {
+                uploadedFile.set('defenseReason', selectedDefenseReason!);
+            }
+            uploadedFile.append(name, file);
+            setUploadedFiles(uploadedFile);
+        },
+        [setUploadedFiles, uploadedFiles]
+    );
+
+    const onDefendSubmit = useCallback((response: 'success' | 'error') => {
+        setDefendResponse(response);
+        setFlowState('defenseSubmitResponseView');
+    }, []);
 
     return (
         <DisputeFlowContext.Provider
             value={{
+                addUploadedFile,
                 applicableDocuments,
+                clearFiles,
                 clearStates,
+                defendResponse,
                 dispute,
                 flowState,
                 goBack,
@@ -70,8 +103,8 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setDispute,
                 selectedDefenseReason,
                 setSelectedDefenseReason,
-                setUploadedFiles,
                 uploadedFiles,
+                onDefendSubmit,
             }}
         >
             {children}

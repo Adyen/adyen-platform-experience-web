@@ -24,6 +24,7 @@ export const DisputeDetailsContainer = ({
             return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
         case 'defendReasonSelectionView':
         case 'uploadDefenseFilesView':
+        case 'defenseSubmitResponseView':
             return <DefendDisputeFlow />;
         default:
             return null;
