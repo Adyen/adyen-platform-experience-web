@@ -88,7 +88,7 @@ export const DisputesOverview = ({
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
-            enabled: !!activeBalanceAccount?.id && !!getDisputesCall && !statusGroupFetchPending,
+            enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
 
     const mergeCustomData = useCallback(
@@ -127,7 +127,7 @@ export const DisputesOverview = ({
             debounceTimeoutId && clearTimeout(debounceTimeoutId);
 
             debounceTimeoutId = setTimeout(() => {
-                setStatusGroupFetchPending(false);
+                requestAnimationFrame(() => setStatusGroupFetchPending(false));
                 updateFilters({ statusGroup } as any);
                 debounceTimeoutId = null;
             }, 500);
@@ -175,7 +175,14 @@ export const DisputesOverview = ({
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountId={activeBalanceAccount?.id}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
+                    loading={
+                        statusGroupFetchPending ||
+                        fetching ||
+                        isLoadingBalanceAccount ||
+                        !balanceAccounts ||
+                        !activeBalanceAccount ||
+                        loadingCustomRecords
+                    }
                     data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
                     showPagination={true}
                     limit={limit}
