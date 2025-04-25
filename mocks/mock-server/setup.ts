@@ -73,7 +73,7 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/signToS',
         },
-        getDisputes: {
+        getDisputeList: {
             method: 'GET',
             url: 'disputes',
         },

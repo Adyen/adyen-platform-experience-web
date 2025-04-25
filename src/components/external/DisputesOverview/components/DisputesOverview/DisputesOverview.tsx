@@ -46,7 +46,7 @@ export const DisputesOverview = ({
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
+    const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');

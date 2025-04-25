@@ -20,6 +20,10 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
+    '/v1/disputes': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getDisputeList'];
+    };
     '/v1/disputes/{disputePspReference}/defend': {
         /** @description Add @Operation annotation to provide a description */
         get: operations['defendDispute'];
@@ -74,7 +78,7 @@ export interface components {
             message: string;
         };
         ApplicableDefenseDocument: {
-            documentTypeCode: string;
+            documentTypeCode?: string;
             requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
         Amount: {
@@ -111,13 +115,13 @@ export interface components {
         };
         /** @enum {string} */
         DisputeCategory:
-            | 'fraud'
-            | 'consumer_dispute'
-            | 'processing_error'
-            | 'request_for_information'
-            | 'authorisation_error'
-            | 'adjustment'
-            | 'other';
+            | 'FRAUD'
+            | 'CONSUMER_DISPUTE'
+            | 'PROCESSING_ERROR'
+            | 'REQUEST_FOR_INFORMATION'
+            | 'AUTHORISATION_ERROR'
+            | 'ADJUSTMENT'
+            | 'OTHER';
         DisputeDetailResponse: {
             defense?: components['schemas']['Defense'];
             dispute: components['schemas']['Dispute'];
@@ -140,10 +144,6 @@ export interface components {
             paymentMethod?: components['schemas']['PaymentMethod'];
             pspReference: string;
         };
-        DisputesListResponseDTO: {
-            _links?: components['schemas']['Links'];
-            data: components['schemas']['Dispute'][];
-        };
         PaymentMethod: {
             /** @description Payment method name, such as PayPal, Mastercard etc. */
             description?: string;
@@ -152,16 +152,22 @@ export interface components {
             /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
             type: string;
         };
-        Link: {
-            /** @description Cursor for a different page */
-            cursor: string;
+        DisputeListItem: {
+            amount: components['schemas']['Amount'];
+            /** Format: date-time */
+            createdAt: string;
+            disputePspReference: string;
+            /** Format: date-time */
+            dueDate?: string;
+            paymentMethod: components['schemas']['PaymentMethod'];
+            reason: components['schemas']['DisputeReason'];
+            status: components['schemas']['DisputeStatus'];
         };
-        Links: {
-            /** @description Link to a different page */
-            next: components['schemas']['Link'];
-            /** @description Link to a different page */
-            prev: components['schemas']['Link'];
+        DisputeListResponse: {
+            disputes?: components['schemas']['DisputeListItem'][];
         };
+        /** @enum {string} */
+        StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
         DownloadDisputeFileResponseDTO: Uint8Array;
     };
     responses: never;
@@ -258,14 +264,18 @@ export interface operations {
             };
         };
     };
-    getDisputes: {
+    /** @description Add @Operation annotation to provide a description */
+    getDisputeList: {
         parameters: {
             query: {
-                statusGroup?: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
+                statusGroup: components['schemas']['StatusGroup'];
                 balanceAccountId?: string;
+                reasonCategories?: components['schemas']['DisputeCategory'][];
+                schemeCodes?: string[];
                 createdSince?: string;
                 createdUntil?: string;
-                reasonCode?: string;
+                pageSize?: number;
+                pageNumber?: number;
                 limit?: number;
                 cursor?: string;
             };
@@ -274,7 +284,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['DisputesListResponseDTO'];
+                    'application/json': {};
                 };
             };
         };
