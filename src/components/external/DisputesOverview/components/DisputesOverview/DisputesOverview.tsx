@@ -44,6 +44,7 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
+    const [statusGroup, setStatusGroup] = useState(DEFAULT_DISPUTE_STATUS_GROUP);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
     const disputeDetails = useMemo(
@@ -57,7 +58,7 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async (pageRequestParams: Record<FilterParam | 'cursor', string> & { statusGroup: IDisputeStatusGroup }, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
@@ -132,6 +133,7 @@ export const DisputesOverview = ({
                 debounceTimeoutId = null;
             }, 500);
 
+            setStatusGroup(statusGroup);
             setStatusGroupFetchPending(true);
         };
     }, [updateFilters]);
@@ -175,7 +177,6 @@ export const DisputesOverview = ({
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountId={activeBalanceAccount?.id}
-                    statusGroup={(filters as any).statusGroup}
                     loading={
                         statusGroupFetchPending ||
                         fetching ||
@@ -193,6 +194,7 @@ export const DisputesOverview = ({
                     error={error as AdyenPlatformExperienceError}
                     onRowClick={onRowClick}
                     customColumns={dataCustomization?.list?.fields}
+                    statusGroup={statusGroup}
                     {...paginationProps}
                 />
             </DisputeManagementModal>

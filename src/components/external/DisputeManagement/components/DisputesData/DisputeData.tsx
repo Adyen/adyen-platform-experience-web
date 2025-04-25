@@ -119,8 +119,8 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'defendable_externally';
-    const isDefendable = dispute?.dispute.defensibility === 'defendable' && defendAuthorization;
+    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY';
+    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [
