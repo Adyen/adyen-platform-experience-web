@@ -75,6 +75,7 @@ export const DefendDisputeFileUpload = () => {
                         </Typography>
                     }
                     inFlow
+                    headerDirection={'row'}
                     filled
                     fullWidth
                 >

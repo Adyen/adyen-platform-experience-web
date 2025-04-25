@@ -23,7 +23,15 @@ import {
     CONTENT_EXPANDABLE_CLASS,
 } from './constants';
 
-const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
+const ExpandableCard = ({
+    renderHeader,
+    children,
+    headerDirection = 'column',
+    filled,
+    fullWidth,
+    inFlow,
+    ...listeners
+}: PropsWithChildren<ExpandableCardProps>) => {
     const { i18n } = useCoreContext();
     const [isOpen, setIsOpen] = useState(false);
     const [collapsedCardHeight, setCollapsedCardHeight] = useState(0);
@@ -110,10 +118,12 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         data-testid={'expand-button'}
                         {...listeners}
                     >
-                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
-                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
-                        <div className={CHEVRON_CLASS}>
-                            <ChevronDown role="presentation" />
+                        <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
+                            <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
+                            <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
+                            <div className={CHEVRON_CLASS}>
+                                <ChevronDown role="presentation" />
+                            </div>
                         </div>
                     </BaseButton>
                     <BaseButton
@@ -133,14 +143,29 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         data-testid={'collapse-button'}
                         {...listeners}
                     >
-                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
-                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
-                            {renderHeader}
-                            <div>{children}</div>
-                        </div>
-                        <div className={CHEVRON_CLASS}>
-                            <ChevronUp role="presentation" />
-                        </div>
+                        {headerDirection === 'column' ? (
+                            <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
+                                <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
+                                <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
+                                    {renderHeader}
+                                    <div>{children}</div>
+                                </div>
+                                <div className={CHEVRON_CLASS}>
+                                    <ChevronUp role="presentation" />
+                                </div>
+                            </div>
+                        ) : (
+                            <div className={`${CONTENT_EXPANDABLE_CLASS}`}>
+                                <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
+                                    <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
+                                    <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
+                                    <div className={CHEVRON_CLASS}>
+                                        <ChevronUp role="presentation" />
+                                    </div>
+                                </div>
+                                <div className={`${CONTENT_EXPANDABLE_CLASS}-body`}>{children}</div>
+                            </div>
+                        )}
                     </BaseButton>
                 </>
             ) : (

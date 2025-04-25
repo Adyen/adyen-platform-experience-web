@@ -59,6 +59,27 @@
 
         &--expandable {
             padding-bottom: style.token(spacer-040);
+
+            &-body {
+                padding: 0 style.token(spacer-090) style.token(spacer-060);
+            }
+
+            &-row {
+                align-items: center;
+                display: flex;
+                flex-direction: row-reverse;
+                justify-content: start;
+                padding: style.token(spacer-060) style.token(spacer-090);
+
+                #{$adyen-pe-expandable-card}__chevron {
+                    background-color: inherit !important;
+                }
+            }
+
+            &-column {
+                display: flex;
+                flex-direction: column;
+            }
         }
     }
 
