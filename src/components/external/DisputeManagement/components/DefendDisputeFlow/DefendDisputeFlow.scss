@@ -9,8 +9,13 @@
         width: 100%;
     }
 
-    &-document--requirements {
-        padding-left: style.token(spacer-070);
+    &-document-requirements {
+        font-family: system-ui;
+
+        &--list {
+            margin: 0;
+            padding-left: style.token(spacer-070);
+        }
     }
 
     &__title {

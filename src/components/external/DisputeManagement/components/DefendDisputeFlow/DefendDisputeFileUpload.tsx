@@ -14,7 +14,11 @@ import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
 //TODO: Add translation
-const documentRequirements = ['Must be in English', 'Recommended A4 or US letter size', 'JPEG, TIFF, or PDF formats only'];
+const documentRequirements: TranslationKey[] = [
+    'dispute.defendDocumentMustBeInEnglish',
+    'dispute.defendDocumentRecommendedSize',
+    'dispute.defendDocumentAcceptableFormats',
+];
 
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
@@ -64,13 +68,9 @@ export const DefendDisputeFileUpload = () => {
                 <Typography className="adyen-pe-defend-dispute-file-uploader__description" variant={TypographyVariant.BODY}>
                     {i18n.get('dispute.uploadDocumentChargebackFeeInformation')}
                 </Typography>
-                <Typography variant={TypographyVariant.BODY} stronger>
-                    {i18n.get('dispute.documentRequirements')}
-                </Typography>
-
                 <ExpandableCard
                     renderHeader={
-                        <Typography variant={TypographyVariant.BODY} stronger>
+                        <Typography variant={TypographyVariant.BODY} stronger className={'adyen-pe-defend-dispute-document-requirements'}>
                             {i18n.get('dispute.documentRequirements')}
                         </Typography>
                     }
@@ -79,10 +79,10 @@ export const DefendDisputeFileUpload = () => {
                     filled
                     fullWidth
                 >
-                    <ul className={'adyen-pe-defend-dispute-document--requirements'}>
+                    <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (
-                            <li className={'adyen-pe-defend-dispute-document--requirements-item'}>
-                                <Typography variant={TypographyVariant.BODY}>{item}</Typography>
+                            <li className={'adyen-pe-defend-dispute-document-requirements--item'}>
+                                <Typography variant={TypographyVariant.BODY}>{i18n.get(item)}</Typography>
                             </li>
                         ))}
                     </ul>
