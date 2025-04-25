@@ -14,6 +14,7 @@ import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import { DISPUTE_REASON_CATEGORIES } from '../DisputesOverview/constants';
 import { BASE_CLASS } from './constants';
 import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
@@ -38,16 +39,6 @@ export const FIELDS = [
 ] as const;
 
 export type DisputesTableFields = (typeof FIELDS)[number];
-
-export const DISPUTE_CATEGORY_LABELS = {
-    FRAUD: 'disputes.fraud',
-    CONSUMER_DISPUTE: 'disputes.consumer_dispute',
-    PROCESSING_ERROR: 'disputes.processing_error',
-    REQUEST_FOR_INFORMATION: 'disputes.request_for_information',
-    AUTHORISATION_ERROR: 'disputes.authorisation_error',
-    ADJUSTMENT: 'disputes.adjustment',
-    OTHER: 'disputes.other',
-} satisfies { [k in IDispute['reason']['category']]: TranslationKey };
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -186,7 +177,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_CATEGORY_LABELS[item.reason.category])}</span>,
+                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (

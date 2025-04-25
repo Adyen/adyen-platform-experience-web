@@ -1,19 +1,28 @@
+import {
+    BASE_CLASS,
+    DEFAULT_DISPUTE_STATUS_GROUP,
+    DISPUTE_PAYMENT_SCHEMES,
+    DISPUTE_REASON_CATEGORIES,
+    DISPUTE_STATUS_GROUPS_TABS,
+    EARLIEST_DISPUTES_SINCE_DATE,
+} from './constants';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
-import { isFunction } from '../../../../../utils';
+import { isFunction, listFrom } from '../../../../../utils';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { BASE_CLASS, DEFAULT_DISPUTE_STATUS_GROUP, DISPUTE_STATUS_GROUPS_TABS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { FIELDS } from '../DisputesTable/DisputesTable';
 import './DisputesOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
@@ -24,6 +33,15 @@ import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/d
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
 import { TabComponentProps } from '../../../../internal/Tabs/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
+
+const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
+const DISPUTE_REASONS_FILTER_PARAM = 'reasonCategories';
+
+type DisputeScheme = keyof typeof DISPUTE_PAYMENT_SCHEMES;
+type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
+
+const DISPUTE_SCHEMES_FILTER_VALUES = Object.keys(DISPUTE_PAYMENT_SCHEMES) as DisputeScheme[];
+const DISPUTE_REASONS_FILTER_VALUES = Object.keys(DISPUTE_REASON_CATEGORIES) as DisputeReason[];
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -40,6 +58,7 @@ export const DisputesOverview = ({
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
+    const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
@@ -58,12 +77,17 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string> & { statusGroup: IDisputeStatusGroup }, signal?: AbortSignal) => {
+        async (
+            pageRequestParams: Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> & { statusGroup: IDisputeStatusGroup },
+            signal?: AbortSignal
+        ) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    reasonCategories: listFrom(pageRequestParams[DISPUTE_REASONS_FILTER_PARAM]),
+                    schemeCodes: listFrom(pageRequestParams[DISPUTE_SCHEMES_FILTER_PARAM]),
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -80,17 +104,41 @@ export const DisputesOverview = ({
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
+    const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
+        [DISPUTE_REASONS_FILTER_PARAM]: undefined,
+        [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
+        statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
+    });
+
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
         useCursorPaginatedRecords<IDispute, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
-            filterParams: Object.assign(defaultParams.current.defaultFilterParams, { statusGroup: DEFAULT_DISPUTE_STATUS_GROUP }),
+            filterParams: defaultFilters,
             initialFiltersSameAsDefault: true,
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
+
+    const disputeReasonsFilter = useMultiSelectionFilter({
+        mapFilterOptionName: useCallback((reason: DisputeReason) => i18n.get(DISPUTE_REASON_CATEGORIES[reason]), [i18n]),
+        filterParam: DISPUTE_REASONS_FILTER_PARAM,
+        filterValues: DISPUTE_REASONS_FILTER_VALUES,
+        defaultFilters,
+        updateFilters,
+        filters,
+    });
+
+    const disputeSchemesFilter = useMultiSelectionFilter({
+        mapFilterOptionName: useCallback((scheme: DisputeScheme) => DISPUTE_PAYMENT_SCHEMES[scheme], []),
+        filterParam: DISPUTE_SCHEMES_FILTER_PARAM,
+        filterValues: DISPUTE_SCHEMES_FILTER_VALUES,
+        defaultFilters,
+        updateFilters,
+        filters,
+    });
 
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: IDispute[]; retrievedData: CustomDataRetrieved[] }) =>
@@ -166,6 +214,8 @@ export const DisputesOverview = ({
                     timezone={'UTC'}
                     updateFilters={updateFilters}
                 />
+                <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
+                <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
             </FilterBar>
 
             <DisputeManagementModal

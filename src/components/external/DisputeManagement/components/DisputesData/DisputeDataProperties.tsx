@@ -18,8 +18,8 @@ import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DisputeDetailsCustomization } from '../../types';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import { DISPUTE_REASON_CATEGORIES } from '../../../DisputesOverview/components/DisputesOverview/constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { DISPUTE_CATEGORY_LABELS } from '../../../DisputesOverview/components/DisputesTable/DisputesTable';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -78,7 +78,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
 
             // dispute reason
             disputeReason
-                ? { key: disputeDataKeys.disputeReason, value: i18n.get(DISPUTE_CATEGORY_LABELS[disputeReason.category]), id: 'disputeReason' }
+                ? { key: disputeDataKeys.disputeReason, value: i18n.get(DISPUTE_REASON_CATEGORIES[disputeReason.category]), id: 'disputeReason' }
                 : SKIP_ITEM,
 
             // reason code
