@@ -55,8 +55,8 @@ const DisputeStatusTag = ({
                         ['adyen-pe-disputes-table__status-content--urgent']: isUrgent,
                     })}
                 >
-                    {isUrgent && type === 'text' ? <Icon name={'warning-filled'} /> : null}
                     {children || i18n.get(STATUS_LABELS[value])}
+                    {isUrgent && type === 'text' ? <Icon name={'warning-filled'} /> : null}
                 </div>
             );
         };
