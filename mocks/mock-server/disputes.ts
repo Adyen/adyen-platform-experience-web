@@ -20,7 +20,7 @@ export const disputesMocks = [
         if (networkError) return HttpResponse.error();
 
         const url = new URL(request.url);
-        const statusGroup = ((url.searchParams.get('statusGroup') as IDisputeStatusGroup) ?? 'NEW_CHARGEBACKS') satisfies IDisputeStatusGroup;
+        const statusGroup = ((url.searchParams.get('statusGroup') as IDisputeStatusGroup) ?? 'CHARGEBACKS') satisfies IDisputeStatusGroup;
         const createdSince = url.searchParams.get('createdSince');
         const createdUntil = url.searchParams.get('createdUntil');
         const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
