@@ -37,7 +37,7 @@ export interface components {
             | 'requestFunds'
             | 'signToSActionDetails'
             | 'initiateRefund'
-            | 'getDisputes'
+            | 'getDisputeList'
             | 'getDisputeDetail'
             | 'getApplicableDefenseDocuments'
             | 'acceptDispute'
