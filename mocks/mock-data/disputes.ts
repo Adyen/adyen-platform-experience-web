@@ -407,7 +407,7 @@ const FRAUD_ALERTS = [
         dueDate: new Date(todayDate.setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -419,7 +419,7 @@ const FRAUD_ALERTS = [
         dueDate: new Date(todayDate.setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -431,7 +431,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -443,7 +443,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -455,7 +455,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -467,7 +467,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -479,7 +479,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -491,7 +491,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -503,7 +503,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -515,7 +515,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -527,7 +527,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -539,7 +539,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -551,7 +551,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -563,7 +563,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -575,7 +575,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
-        reason: { category: 'fraud', code: '4835', title: 'title' },
+        reason: { category: 'fraud', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'not_defendable',
         type: 'request_for_information',
@@ -587,11 +587,11 @@ export const DISPUTES = [...NEW_CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] a
 
 export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
     switch (status) {
-        case 'NEW_CHARGEBACKS':
+        case 'CHARGEBACKS':
             return NEW_CHARGEBACKS;
         case 'FRAUD_ALERTS':
             return FRAUD_ALERTS;
-        case 'ALL_DISPUTES':
+        case 'ONGOING_AND_CLOSED':
         default:
             return ALL_DISPUTES;
     }

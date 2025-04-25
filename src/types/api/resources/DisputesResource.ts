@@ -261,7 +261,7 @@ export interface operations {
     getDisputes: {
         parameters: {
             query: {
-                statusGroup?: 'NEW_CHARGEBACKS' | 'ALL_DISPUTES' | 'FRAUD_ALERTS';
+                statusGroup?: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
                 balanceAccountId?: string;
                 createdSince?: string;
                 createdUntil?: string;

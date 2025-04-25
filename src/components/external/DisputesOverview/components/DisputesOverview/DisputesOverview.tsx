@@ -26,7 +26,7 @@ import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData'
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
@@ -49,7 +49,7 @@ export const DisputesOverview = ({
     const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
-    const [statusGroup, setStatusGroup] = useState<'NEW_CHARGEBACKS' | 'ALL_DISPUTES' | 'FRAUD_ALERTS'>('NEW_CHARGEBACKS');
+    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');
 
     const disputeDetails = useMemo(
         () => ({
@@ -140,23 +140,13 @@ export const DisputesOverview = ({
             <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'NEW_CHARGEBACKS',
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'CHARGEBACKS',
                     })}
                     type={'button'}
                     tabIndex={0}
-                    onClick={() => setStatusGroup('NEW_CHARGEBACKS')}
+                    onClick={() => setStatusGroup('CHARGEBACKS')}
                 >
-                    {i18n.get('disputes.newChargebacks')}
-                </button>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ALL_DISPUTES',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('ALL_DISPUTES')}
-                >
-                    {i18n.get('disputes.allDisputes')}
+                    {i18n.get('disputes.chargebacks')}
                 </button>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
@@ -167,6 +157,16 @@ export const DisputesOverview = ({
                     onClick={() => setStatusGroup('FRAUD_ALERTS')}
                 >
                     {i18n.get('disputes.fraudAlerts')}
+                </button>
+                <button
+                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ONGOING_AND_CLOSED',
+                    })}
+                    type={'button'}
+                    tabIndex={0}
+                    onClick={() => setStatusGroup('ONGOING_AND_CLOSED')}
+                >
+                    {i18n.get('disputes.ongoingAndClosed')}
                 </button>
             </div>
 
@@ -207,6 +207,7 @@ export const DisputesOverview = ({
                     error={error as AdyenPlatformExperienceError}
                     onRowClick={onRowClick}
                     customColumns={dataCustomization?.list?.fields}
+                    statusGroup={statusGroup}
                     {...paginationProps}
                 />
             </DisputeManagementModal>

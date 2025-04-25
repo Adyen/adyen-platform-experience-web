@@ -19,12 +19,23 @@ import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
+import { Tag } from '../../../../internal/Tag/Tag';
 
-export const FIELDS = ['respondBy', 'createdAt', 'paymentMethod', 'reasonGroup', 'amount'] as const;
+export const FIELDS = [
+    'status',
+    'respondBy',
+    'createdAt',
+    'paymentMethod',
+    'disputeReason',
+    'reason',
+    'currency',
+    'disputedAmount',
+    'totalPaymentAmount',
+] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -37,6 +48,7 @@ export interface DisputesTableProps extends WithPaginationLimitSelection<Paginat
     activeBalanceAccount?: IBalanceAccountBase;
     onRowClick: (value: IDispute) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
+    statusGroup: IDisputeStatusGroup;
 }
 
 export const DisputesTable: FC<DisputesTableProps> = ({
@@ -49,6 +61,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     data,
     customColumns,
     activeBalanceAccount,
+    statusGroup,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -60,20 +73,47 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const columns = useTableColumns({
         fields: FIELDS,
         fieldsKeys: {
-            amount: 'disputes.disputedAmount',
-            reasonGroup: 'disputes.reason',
+            status: 'disputes.status',
+            disputedAmount: 'disputes.disputedAmount',
+            disputeReason: 'disputes.disputeReason',
+            reason: 'disputes.reason',
             paymentMethod: 'disputes.paymentMethod',
             createdAt: 'disputes.openedOn',
             respondBy: 'disputes.respondBy',
+            currency: 'disputes.currency',
+            totalPaymentAmount: 'disputes.totalPaymentAmount',
         },
         customColumns,
         columnConfig: useMemo(
             () => ({
+                status: {
+                    visible: statusGroup === 'ONGOING_AND_CLOSED',
+                },
                 amount: {
                     position: 'right',
                 },
+                disputedAmount: {
+                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                },
+                disputeReason: {
+                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                },
+                respondBy: {
+                    visible: statusGroup === 'CHARGEBACKS',
+                },
+                reason: {
+                    visible: statusGroup === 'FRAUD_ALERTS',
+                    flex: 2,
+                },
+                currency: {
+                    flex: 0.5,
+                },
+                totalPaymentAmount: {
+                    visible: statusGroup === 'FRAUD_ALERTS',
+                    position: 'right',
+                },
             }),
-            []
+            [statusGroup]
         ),
     });
 
@@ -106,6 +146,12 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
+                    status: ({ value, item }) => {
+                        return <DisputeStatusTag dispute={item}>{value}</DisputeStatusTag>;
+                    },
+                    reason: ({ item }) => {
+                        return item.reason.title;
+                    },
                     respondBy: ({ item }) => {
                         return (
                             <DisputeStatusTag type={'text'} dispute={item}>
@@ -113,11 +159,14 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             </DisputeStatusTag>
                         );
                     },
-                    amount: ({ value }) => {
+                    currency: ({ item }) => {
+                        return <Tag>{item.amount.currency}</Tag>;
+                    },
+                    disputedAmount: ({ item }) => {
                         return (
-                            value && (
-                                <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(value.value, value.currency, { hideCurrency: true })}
+                            item.amount && (
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
                         );
@@ -127,7 +176,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    reasonGroup: ({ item }) => <span>{i18n.get(`disputes.${item.reason.category}`)}</span>,
+                    disputeReason: ({ item }) => <span>{i18n.get(`disputes.${item.reason.category}`)}</span>,
+                    totalPaymentAmount: ({ item }) => {
+                        return (
+                            item && (
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
+                                </Typography>
+                            )
+                        );
+                    },
                 }}
             >
                 {showPagination && (
