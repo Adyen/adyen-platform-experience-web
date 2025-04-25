@@ -1,5 +1,5 @@
 import { FC } from 'preact/compat';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -36,6 +36,7 @@ export const FIELDS = [
     'disputedAmount',
     'totalPaymentAmount',
 ] as const;
+
 export type DisputesTableFields = (typeof FIELDS)[number];
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -65,9 +66,10 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
-    const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
+
+    const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
 
     const columns = useTableColumns({
@@ -89,11 +91,9 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 status: {
                     visible: statusGroup === 'ONGOING_AND_CLOSED',
                 },
-                amount: {
-                    position: 'right',
-                },
                 disputedAmount: {
                     visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                    position: 'right',
                 },
                 disputeReason: {
                     visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
@@ -117,9 +117,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         ),
     });
 
-    const removeAlert = useCallback(() => {
-        setAlert(null);
-    }, []);
+    const removeAlert = useCallback(() => setAlert(null), []);
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noReportsFound',
@@ -131,7 +129,9 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         [error, onContactSupport]
     );
 
-    if (loading) setAlert(null);
+    useEffect(() => {
+        if (isLoading) removeAlert();
+    }, [isLoading, removeAlert]);
 
     return (
         <div className={BASE_CLASS}>

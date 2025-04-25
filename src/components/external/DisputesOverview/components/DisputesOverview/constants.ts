@@ -4,12 +4,12 @@ import { TranslationKey } from '../../../../../translations';
 
 export const BASE_CLASS = 'adyen-pe-disputes-overview';
 
-export const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'NEW_CHARGEBACKS';
+export const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 
 export const DISPUTE_STATUS_GROUPS = {
-    NEW_CHARGEBACKS: 'disputes.newChargebacks',
-    ALL_DISPUTES: 'disputes.allDisputes',
+    CHARGEBACKS: 'disputes.chargebacks',
     FRAUD_ALERTS: 'disputes.fraudAlerts',
+    ONGOING_AND_CLOSED: 'disputes.ongoingAndClosed',
 } as const satisfies Record<IDisputeStatusGroup, TranslationKey>;
 
 export const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
