@@ -98,7 +98,7 @@ export interface components {
             suppliedDocuments?: string[];
         };
         /** @enum {string} */
-        Defensibility: 'defendable' | 'defendable_externally' | 'not_defendable';
+        Defensibility: 'DEFENDABLE' | 'DEFENDABLE_EXTERNALLY' | 'ACCEPTABLE' | 'NOT_ACTIONABLE';
         Dispute: {
             allowedDefenseReasons: string[];
             amount: components['schemas']['Amount'];
