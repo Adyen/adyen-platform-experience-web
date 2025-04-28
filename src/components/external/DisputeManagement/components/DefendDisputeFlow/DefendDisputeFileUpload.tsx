@@ -92,12 +92,12 @@ export const DefendDisputeFileUpload = () => {
                         <FileInput
                             ref={ref}
                             key={document}
-                            required={document.requirement === 'required'}
+                            required={document.requirementLevel === 'REQUIRED'}
                             onChange={file => {
-                                if (file[0]) addUploadedFile(document.type, file[0]);
+                                if (file[0]) addUploadedFile(document.documentTypeCode, file[0]);
                             }}
                         >
-                            {i18n.get(document.type as TranslationKey)}
+                            {i18n.get(document.documentTypeCode as TranslationKey)}
                         </FileInput>
                     ))}
                 </div>
