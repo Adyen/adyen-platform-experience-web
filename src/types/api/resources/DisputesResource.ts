@@ -12,10 +12,6 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['downloadDefenseDocument'];
     };
-    '/v1/disputes/{disputePspReference}/documents/required': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getApplicableDefenseDocuments'];
-    };
     '/v1/disputes/{disputePspReference}': {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
@@ -77,8 +73,18 @@ export interface components {
             /** @description Description of the validation error. */
             message: string;
         };
+        Link: {
+            /** @description Cursor for a different page */
+            cursor: string;
+        };
+        Links: {
+            /** @description Link to a different page */
+            next: components['schemas']['Link'];
+            /** @description Link to a different page */
+            prev: components['schemas']['Link'];
+        };
         ApplicableDefenseDocument: {
-            documentTypeCode?: string;
+            documentTypeCode: string;
             requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
         Amount: {
@@ -135,7 +141,7 @@ export interface components {
         /** @enum {string} */
         DisputeStatus: 'UNRESPONDED' | 'RESPONDED' | 'EXPIRED' | 'LOST' | 'WON' | 'PENDING' | 'UNDEFENDED' | 'ACCEPTED';
         /** @enum {string} */
-        DisputeType: 'chargeback' | 'request_for_information' | 'notification_of_fraud';
+        DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
         Payment: {
             balanceAccount?: components['schemas']['BalanceAccount'];
             balanceAccountDescription: string;
@@ -164,7 +170,8 @@ export interface components {
             status: components['schemas']['DisputeStatus'];
         };
         DisputeListResponse: {
-            disputes?: components['schemas']['DisputeListItem'][];
+            _links: components['schemas']['Links'];
+            data: components['schemas']['DisputeListItem'][];
         };
         /** @enum {string} */
         StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
@@ -284,7 +291,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': {};
+                    'application/json': components['schemas']['DisputeListResponse'];
                 };
             };
         };
@@ -304,26 +311,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': {};
-                };
-            };
-        };
-    };
-    /** @description Add @Operation annotation to provide a description */
-    downloadDisputeFile: {
-        parameters: {
-            path: {
-                disputePspReference: string;
-            };
-            query: {
-                documentType: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'text/csv': components['schemas']['DownloadDisputeFileResponseDTO'];
+                    'application/json': components['schemas']['AcceptDisputeResponse'];
                 };
             };
         };

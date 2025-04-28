@@ -60,7 +60,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 211100 },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
@@ -72,7 +72,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 222200 },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'REQUEST_FOR_INFORMATION',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000003',
@@ -84,7 +84,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 233300 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000004',
@@ -96,7 +96,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 244400 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
@@ -108,7 +108,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 255500 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
@@ -120,7 +120,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 266600 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000007',
@@ -132,7 +132,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 277700 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE_EXTERNALLY',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000008',
@@ -144,7 +144,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 288800 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE_EXTERNALLY',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000009',
@@ -156,7 +156,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 299900 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE_EXTERNALLY',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000010',
@@ -168,7 +168,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 311000 },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000011',
@@ -180,7 +180,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 322100 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000012',
@@ -192,7 +192,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 333200 },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000013',
@@ -204,7 +204,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 344300 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE_EXTERNALLY',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000014',
@@ -216,7 +216,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'USD', value: 355400 },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
     {
         pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000015',
@@ -228,7 +228,7 @@ const NEW_CHARGEBACKS = [
         amount: { currency: 'EUR', value: 366500 },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
     },
 ] satisfies Readonly<IDispute[]>;
 
@@ -241,7 +241,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 377600 },
     },
     {
@@ -252,7 +252,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'EUR', value: 388700 },
     },
     {
@@ -263,7 +263,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'USD', value: 399800 },
     },
     {
@@ -274,7 +274,7 @@ const ALL_DISPUTES = [
         reason: { category: 'OTHER', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE_EXTERNALLY',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'EUR', value: 410900 },
     },
     {
@@ -285,7 +285,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 422000 },
     },
     {
@@ -296,7 +296,7 @@ const ALL_DISPUTES = [
         reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'EUR', value: 433100 },
     },
     {
@@ -307,7 +307,7 @@ const ALL_DISPUTES = [
         reason: { category: 'OTHER', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 444200 },
     },
     {
@@ -318,7 +318,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'USD', value: 466400 },
     },
     {
@@ -329,7 +329,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'EUR', value: 477500 },
     },
     {
@@ -340,7 +340,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'DEFENDABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 488600 },
     },
     {
@@ -351,7 +351,7 @@ const ALL_DISPUTES = [
         reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'EUR', value: 499700 },
     },
     {
@@ -362,7 +362,7 @@ const ALL_DISPUTES = [
         reason: { category: 'OTHER', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'EUR', value: 244100 },
     },
     {
@@ -373,7 +373,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'chargeback',
+        type: 'CHARGEBACK',
         amount: { currency: 'EUR', value: 266300 },
     },
     {
@@ -384,7 +384,7 @@ const ALL_DISPUTES = [
         reason: { category: 'FRAUD', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 277400 },
     },
     {
@@ -395,7 +395,7 @@ const ALL_DISPUTES = [
         reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'REQUEST_FOR_INFORMATION',
         amount: { currency: 'USD', value: 321800 },
     },
 ] satisfies Readonly<IDispute[]>;
@@ -410,7 +410,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 211100 },
     },
     {
@@ -422,7 +422,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 222200 },
     },
     {
@@ -434,7 +434,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 233300 },
     },
     {
@@ -446,7 +446,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 244400 },
     },
     {
@@ -458,7 +458,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 255500 },
     },
     {
@@ -470,7 +470,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 266600 },
     },
     {
@@ -482,7 +482,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 577700 },
     },
     {
@@ -494,7 +494,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 200000 },
     },
     {
@@ -506,7 +506,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 299900 },
     },
     {
@@ -518,7 +518,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 311000 },
     },
     {
@@ -530,7 +530,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 412000 },
     },
     {
@@ -542,7 +542,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 911200 },
     },
     {
@@ -554,7 +554,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 344300 },
     },
     {
@@ -566,7 +566,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'USD', value: 755400 },
     },
     {
@@ -578,7 +578,7 @@ const FRAUD_ALERTS = [
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
         allowedDefenseReasons: [],
         defensibility: 'NOT_ACTIONABLE',
-        type: 'request_for_information',
+        type: 'NOTIFICATION_OF_FRAUD',
         amount: { currency: 'EUR', value: 510500 },
     },
 ] satisfies Readonly<IDispute[]>;

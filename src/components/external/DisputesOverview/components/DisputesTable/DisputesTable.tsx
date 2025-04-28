@@ -19,10 +19,10 @@ import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
+import { IDispute, IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
-import DisputeStatusTag from './DisputeStatusTag';
+import DisputeStatusDisplay from './DisputeStatusDisplay';
 import { Tag } from '../../../../internal/Tag/Tag';
 
 export const FIELDS = [
@@ -40,10 +40,10 @@ export type DisputesTableFields = (typeof FIELDS)[number];
 
 export const DISPUTE_CATEGORY_LABELS = {
     FRAUD: 'disputes.fraud',
-    CONSUMER_DISPUTE: 'disputes.consumer_dispute',
-    PROCESSING_ERROR: 'disputes.processing_error',
-    REQUEST_FOR_INFORMATION: 'disputes.request_for_information',
-    AUTHORISATION_ERROR: 'disputes.authorisation_error',
+    CONSUMER_DISPUTE: 'disputes.consumerDispute',
+    PROCESSING_ERROR: 'disputes.processingError',
+    REQUEST_FOR_INFORMATION: 'disputes.requestForInformation',
+    AUTHORISATION_ERROR: 'disputes.authorisationError',
     ADJUSTMENT: 'disputes.adjustment',
     OTHER: 'disputes.other',
 } satisfies { [k in IDispute['reason']['category']]: TranslationKey };
@@ -54,9 +54,9 @@ export interface DisputesTableProps extends WithPaginationLimitSelection<Paginat
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
     showPagination: boolean;
-    data: IDispute[] | undefined;
+    data: IDisputeListItem[] | undefined;
     activeBalanceAccount?: IBalanceAccountBase;
-    onRowClick: (value: IDispute) => void;
+    onRowClick: (value: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
     statusGroup: IDisputeStatusGroup;
 }
@@ -157,16 +157,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value, item }) => {
-                        return <DisputeStatusTag dispute={item}>{value}</DisputeStatusTag>;
+                        return <DisputeStatusDisplay dispute={item}>{value}</DisputeStatusDisplay>;
                     },
                     reason: ({ item }) => {
                         return item.reason.title;
                     },
                     respondBy: ({ item }) => {
                         return (
-                            <DisputeStatusTag type={'text'} dispute={item}>
+                            <DisputeStatusDisplay type={'text'} dispute={item}>
                                 {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
-                            </DisputeStatusTag>
+                            </DisputeStatusDisplay>
                         );
                     },
                     currency: ({ item }) => {

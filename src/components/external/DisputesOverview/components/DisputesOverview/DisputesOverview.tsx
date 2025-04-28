@@ -26,7 +26,7 @@ import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData'
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
-import { IDispute, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
+import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
@@ -86,7 +86,7 @@ export const DisputesOverview = ({
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<IDispute, 'data', string, FilterParam>({
+        useCursorPaginatedRecords<IDisputeListItem, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
@@ -98,30 +98,29 @@ export const DisputesOverview = ({
         });
 
     const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: IDispute[]; retrievedData: CustomDataRetrieved[] }) =>
+        ({ records, retrievedData }: { records: IDisputeListItem[]; retrievedData: CustomDataRetrieved[] }) =>
             mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
         []
     );
 
     const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
-    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDispute>({
+    const { loadingCustomRecords } = useCustomColumnsData<IDisputeListItem>({
         records,
         hasCustomColumn,
-        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
         mergeCustomData,
     });
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        ({ pspReference }: IDispute) => {
+        ({ disputePspReference }: IDisputeListItem) => {
             updateDetails({
                 selection: {
                     type: 'dispute',
-                    data: pspReference,
+                    data: disputePspReference,
                 },
                 modalSize: 'small',
-            }).callback({ id: pspReference });
+            }).callback({ id: disputePspReference });
         },
         [updateDetails]
     );
@@ -198,7 +197,7 @@ export const DisputesOverview = ({
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountId={activeBalanceAccount?.id}
                     loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
-                    data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
+                    data={records}
                     showPagination={true}
                     limit={limit}
                     limitOptions={limitOptions}

@@ -7,7 +7,7 @@ import { ReportsTableFields } from './external/ReportsOverview/components/Report
 import { StringWithAutocompleteOptions } from '../utils/types';
 import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsFields } from './external';
-import { IDispute } from '../types/api/models/disputes';
+import { IDispute, IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 
 export const enum InteractionKeyCode {
@@ -190,7 +190,7 @@ export interface PayoutsOverviewComponentProps
 
 export interface DisputeOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<DisputesTableFields, IDispute, any, any>>,
+        _CustomizableDataOverview<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export const enum FilterParam {
