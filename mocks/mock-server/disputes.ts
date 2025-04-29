@@ -49,7 +49,7 @@ export const disputesMocks = [
 
         const dispute = getDisputeForRequestPathParams(params);
         await delay(1000);
-        return HttpResponse.json({ ...dispute, ...getAdditionalDisputeDetails(dispute) });
+        return HttpResponse.json({ ...getAdditionalDisputeDetails(dispute) });
     }),
 
     http.get(mockEndpoints.documents, async ({ params, request }) => {

@@ -1,11 +1,3 @@
-import {
-    BASE_CLASS,
-    DEFAULT_DISPUTE_STATUS_GROUP,
-    DISPUTE_PAYMENT_SCHEMES,
-    DISPUTE_REASON_CATEGORIES,
-    DISPUTE_STATUS_GROUPS_TABS,
-    EARLIEST_DISPUTES_SINCE_DATE,
-} from './constants';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -19,7 +11,9 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
+import { BASE_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
@@ -30,6 +24,7 @@ import { TabComponentProps } from '../../../../internal/Tabs/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
 import './DisputesOverview.scss';
 
+const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
 const DISPUTE_REASONS_FILTER_PARAM = 'reasonCategories';
 
@@ -38,6 +33,12 @@ type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
 
 const DISPUTE_SCHEMES_FILTER_VALUES = Object.keys(DISPUTE_PAYMENT_SCHEMES) as DisputeScheme[];
 const DISPUTE_REASONS_FILTER_VALUES = Object.keys(DISPUTE_REASON_CATEGORIES) as DisputeReason[];
+
+const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
+    id: statusGroup as IDisputeStatusGroup,
+    label: labelTranslationKey,
+    content: null,
+})) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -59,7 +60,7 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
-    const [statusGroup, setStatusGroup] = useState(DEFAULT_DISPUTE_STATUS_GROUP);
+    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
     const disputeDetails = useMemo(

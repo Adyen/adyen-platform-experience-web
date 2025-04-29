@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { FC } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
@@ -6,39 +7,48 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Alert from '../../../../internal/Alert/Alert';
+import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
+import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
+import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { DISPUTE_REASON_CATEGORIES } from '../DisputesOverview/constants';
 import { BASE_CLASS } from './constants';
-import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
-import DisputeStatusDisplay from './DisputeStatusDisplay';
+import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import './DisputesTable.scss';
 
-export const FIELDS = [
-    'status',
-    'respondBy',
-    'createdAt',
-    'paymentMethod',
-    'disputeReason',
-    'reason',
-    'currency',
-    'disputedAmount',
-    'totalPaymentAmount',
-] as const;
+export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
-export type DisputesTableFields = (typeof FIELDS)[number];
+export const FIELD_KEYS = {
+    status: 'disputes.status',
+    respondBy: 'disputes.respondBy',
+    createdAt: 'disputes.openedOn',
+    paymentMethod: 'disputes.paymentMethod',
+    disputeReason: 'disputes.disputeReason',
+    reason: 'disputes.reason',
+    currency: 'disputes.currency',
+    disputedAmount: 'disputes.disputedAmount',
+    totalPaymentAmount: 'disputes.totalPaymentAmount',
+} as const satisfies Record<string, TranslationKey>;
+
+export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
+
+const classes = {
+    statusContent: `${BASE_CLASS}__status-content`,
+    statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
+};
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -75,17 +85,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const columns = useTableColumns({
         fields: FIELDS,
-        fieldsKeys: {
-            status: 'disputes.status',
-            disputedAmount: 'disputes.disputedAmount',
-            disputeReason: 'disputes.disputeReason',
-            reason: 'disputes.reason',
-            paymentMethod: 'disputes.paymentMethod',
-            createdAt: 'disputes.openedOn',
-            respondBy: 'disputes.respondBy',
-            currency: 'disputes.currency',
-            totalPaymentAmount: 'disputes.totalPaymentAmount',
-        },
+        fieldsKeys: FIELD_KEYS,
         customColumns,
         columnConfig: useMemo(
             () => ({
@@ -147,17 +147,22 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    status: ({ value, item }) => {
-                        return <DisputeStatusDisplay dispute={item}>{value}</DisputeStatusDisplay>;
+                    status: ({ item }) => {
+                        return <DisputeStatusTag dispute={item} />;
                     },
                     reason: ({ item }) => {
                         return item.reason.title;
                     },
                     respondBy: ({ item }) => {
+                        const isUrgent = isDisputeActionNeededUrgently(item);
                         return (
-                            <DisputeStatusDisplay type={'text'} dispute={item}>
+                            <Typography
+                                variant={TypographyVariant.BODY}
+                                className={cx(classes.statusContent, { [classes.statusContentUrgent]: isUrgent })}
+                            >
                                 {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
-                            </DisputeStatusDisplay>
+                                {isUrgent && <Icon name={'warning-filled'} />}
+                            </Typography>
                         );
                     },
                     currency: ({ item }) => {

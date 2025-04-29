@@ -17,8 +17,8 @@ import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DisputeDetailsCustomization } from '../../types';
+import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
-import { DISPUTE_REASON_CATEGORIES } from '../../../DisputesOverview/components/DisputesOverview/constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 type DisputeDataPropertiesProps = {

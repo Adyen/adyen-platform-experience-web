@@ -1,4 +1,4 @@
-import { IDisputeDetail, IDisputeStatusGroup, IDisputeDefenseDocument, IDisputeListItem } from '../../src/types/api/models/disputes';
+import { IDisputeDetail, IDisputeStatusGroup, IDisputeDefenseDocument, IDisputeListItem, IDisputeType } from '../../src/types/api/models/disputes';
 
 const todayDate = new Date();
 
@@ -657,6 +657,22 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
     const additionalDisputeDetails = {} as AdditionalDisputeDetails;
 
+    let disputeType: IDisputeType = 'CHARGEBACK';
+
+    switch (dispute.status) {
+        case 'UNDEFENDED':
+            disputeType = 'CHARGEBACK';
+            break;
+        case 'UNRESPONDED':
+            disputeType = 'REQUEST_FOR_INFORMATION';
+            break;
+        case 'LOST':
+            if (dispute.reason.category === 'FRAUD') {
+                disputeType = 'NOTIFICATION_OF_FRAUD';
+            }
+            break;
+    }
+
     additionalDisputeDetails.payment = {
         pspReference: 'KLAHFUW1329523KKL',
         balanceAccount: { description: 'Main account', timeZone: 'UTC' },
@@ -666,7 +682,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     additionalDisputeDetails.dispute = {
         ...dispute,
         pspReference: dispute.disputePspReference,
-        type: dispute.reason.category === 'FRAUD' ? 'NOTIFICATION_OF_FRAUD' : 'CHARGEBACK',
+        type: disputeType,
         allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
         ...(dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED'
             ? {
