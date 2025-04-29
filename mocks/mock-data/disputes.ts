@@ -49,7 +49,7 @@ const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived
 
 const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 
-const NEW_CHARGEBACKS = [
+const CHARGEBACKS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         status: 'UNDEFENDED',
@@ -448,12 +448,12 @@ const FRAUD_ALERTS = [
     },
 ] satisfies Readonly<IDisputeListItem[]>;
 
-export const DISPUTES = [...NEW_CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] as const satisfies Readonly<IDisputeListItem[]>;
+export const DISPUTES = [...CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] as const satisfies Readonly<IDisputeListItem[]>;
 
 export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
     switch (status) {
         case 'CHARGEBACKS':
-            return NEW_CHARGEBACKS;
+            return CHARGEBACKS;
         case 'FRAUD_ALERTS':
             return FRAUD_ALERTS;
         case 'ONGOING_AND_CLOSED':
