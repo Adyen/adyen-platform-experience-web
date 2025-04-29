@@ -41,7 +41,7 @@ export interface components {
         };
         BalanceAccount: {
             timeZone: string;
-            balanceAccountDescription: string;
+            description: string;
         };
         StreamingOutput: Record<string, never>;
         /** @description Standardized error response following RFC-7807 format */
