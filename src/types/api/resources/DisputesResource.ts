@@ -118,7 +118,6 @@ export interface components {
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
             type: components['schemas']['DisputeType'];
-            paymentMethod?: components['schemas']['PaymentMethod'];
         };
         /** @enum {string} */
         DisputeCategory:
@@ -281,8 +280,6 @@ export interface operations {
                 schemeCodes?: string[];
                 createdSince?: string;
                 createdUntil?: string;
-                pageSize?: number;
-                pageNumber?: number;
                 limit?: number;
                 cursor?: string;
             };
