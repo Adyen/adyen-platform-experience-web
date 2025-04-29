@@ -93,7 +93,7 @@ export const setupBasicResponse = {
             method: 'POST',
             url: 'disputes/{disputePspReference}/defend',
         },
-        downloadDisputeFile: {
+        downloadDefenseDocument: {
             method: 'GET',
             url: 'disputes/{disputePspReference}/documents/download',
         },
