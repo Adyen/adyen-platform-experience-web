@@ -92,8 +92,6 @@
     "disputes.chargebacks": "Label referring to chargeback disputes.",
     "disputes.consumerDispute": "Reason indicating the consumer initiated the dispute.",
     "disputes.currency": "Label indicating the currency used in the disputed transaction.",
-    "disputes.daysToRespond__plural": "Used when there are multiple days remaining to respond.",
-    "disputes.daysToRespond__singular": " Used when there is exactly 1 day remaining to respond.",
     "disputes.defendDispute": "Button label allowing users to defend against a dispute.",
     "disputes.defendedOn": "Label showing the date on which the dispute was defended.",
     "disputes.defenseReason": "Label indicating the reason provided when defending a dispute.",
