@@ -1,4 +1,6 @@
-import { IDispute, IDisputeDefenseDocument, IDisputeDetail } from '../../src/types/api/models/disputes';
+import { IDisputeDetail, IDisputeStatusGroup, IDisputeDefenseDocument, IDisputeListItem } from '../../src/types/api/models/disputes';
+
+const todayDate = new Date();
 
 const getDate = (daysOffset = 0, originDate = new Date()) => {
     const date = new Date(originDate);
@@ -47,441 +49,428 @@ const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived
 
 const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 
-export const DISPUTES = [
+const CHARGEBACKS = [
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
+        status: 'UNDEFENDED',
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 211100 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
+        status: 'UNDEFENDED',
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 222200 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000003',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000003',
+        status: 'UNRESPONDED',
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'ADJUSTMENT', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 233300 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000004',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000004',
+        status: 'UNDEFENDED',
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 244400 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000005',
+        status: 'UNRESPONDED',
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 255500 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
+        status: 'UNDEFENDED',
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 266600 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000007',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000007',
+        status: 'UNRESPONDED',
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 277700 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000008',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000008',
+        status: 'UNRESPONDED',
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 288800 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000009',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000009',
+        status: 'UNRESPONDED',
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 299900 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000010',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000010',
+        status: 'UNDEFENDED',
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 311000 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000011',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000011',
+        status: 'UNDEFENDED',
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 322100 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000012',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000012',
+        status: 'UNDEFENDED',
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 333200 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000013',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000013',
+        status: 'UNDEFENDED',
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 344300 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000014',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000014',
+        status: 'UNDEFENDED',
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 355400 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000015',
-        status: 'action_needed',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000015',
+        status: 'UNRESPONDED',
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 366500 },
     },
+] satisfies Readonly<IDisputeListItem[]>;
 
+const ALL_DISPUTES = [
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000016',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000016',
+        status: 'PENDING',
         createdAt: getDate(-3),
         paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'MasterCard' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 377600 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000017',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000017',
+        status: 'EXPIRED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 388700 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000018',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000018',
+        status: 'ACCEPTED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0018', description: 'PayPal' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 399800 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000019',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000019',
+        status: 'WON',
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0019', description: 'Klarna Pay Later' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 410900 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000020',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000020',
+        status: 'LOST',
         createdAt: getDate(-5),
         paymentMethod: { type: 'amex', lastFourDigits: '0020', description: 'American Express' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 422000 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000021',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000021',
+        status: 'PENDING',
         createdAt: getDate(-5),
         paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'MasterCard' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 433100 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000022',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000022',
+        status: 'WON',
         createdAt: getDate(-5),
         paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa Credit Card' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 444200 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000023',
-        status: 'under_review',
-        createdAt: getDate(-6),
-        paymentMethod: { type: 'paypal', lastFourDigits: '0023', description: 'PayPal' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 455300 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000024',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000024',
+        status: 'LOST',
         createdAt: getDate(-6),
         paymentMethod: { type: 'klarna', lastFourDigits: '0024', description: 'Klarna Pay Later' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 466400 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000025',
-        status: 'under_review',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000025',
+        status: 'EXPIRED',
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 477500 },
     },
-
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000026',
-        status: 'won',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000026',
+        status: 'PENDING',
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 488600 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000027',
-        status: 'lost',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000027',
+        status: 'LOST',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 499700 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000028',
-        status: 'lost',
-        createdAt: getDate(-8),
-        paymentMethod: { type: 'paypal', lastFourDigits: '0028', description: 'PayPal' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 210800 },
-    },
-    {
-        id: getDate(-8),
-        status: 'lost',
-        createdAt: '2025-02-04T11:00:00.000Z',
-        paymentMethod: { type: 'amex', lastFourDigits: '0029', description: 'American Express' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 221900 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000030',
-        status: 'won',
-        createdAt: getDate(-8),
-        paymentMethod: { type: 'mc', lastFourDigits: '0030', description: 'MasterCard' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 233000 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000031',
-        status: 'won',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000031',
+        status: 'WON',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'OTHER', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 244100 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000032',
-        status: 'won',
-        createdAt: '2025-02-07T11:00:00.000Z',
-        paymentMethod: { type: 'paypal', lastFourDigits: '0032', description: 'PayPal' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 255200 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000033',
-        status: 'lost',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000033',
+        status: 'ACCEPTED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'EUR', value: 266300 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000034',
-        status: 'won',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000034',
+        status: 'EXPIRED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
+        reason: { category: 'FRAUD', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 277400 },
     },
     {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000035',
-        status: 'won',
-        createdAt: getDate(-12),
-        paymentMethod: { type: 'paypal', lastFourDigits: '0035', description: 'PayPal' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 288500 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000036',
-        status: 'won',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'mc', lastFourDigits: '0036', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 299600 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000037',
-        status: 'won',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'visa', lastFourDigits: '0037', description: 'Visa Credit Card' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 310700 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000038',
-        status: 'lost',
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000038',
+        status: 'LOST',
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', lastFourDigits: '0038', description: 'PayPal' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
         amount: { currency: 'USD', value: 321800 },
     },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000039',
-        status: 'lost',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'mc', lastFourDigits: '0039', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 332900 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000040',
-        status: 'lost',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'visa', lastFourDigits: '0040', description: 'Visa Credit Card' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 344000 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
-        status: 'lost',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'mc', lastFourDigits: '0041', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 355100 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000042',
-        status: 'lost',
-        createdAt: getDate(-15),
-        paymentMethod: { type: 'visa', lastFourDigits: '0042', description: 'Visa Credit Card' },
-        reasonGroup: 'other',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 366200 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000043',
-        status: 'lost',
-        createdAt: getDate(-18),
-        paymentMethod: { type: 'mc', lastFourDigits: '0043', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 377300 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000044',
-        status: 'lost',
-        createdAt: getDate(-18),
-        paymentMethod: { type: 'visa', lastFourDigits: '0044', description: 'Visa Credit Card' },
-        reasonGroup: 'consumer',
-        reasonCode: '4835',
-        amount: { currency: 'USD', value: 388400 },
-    },
-    {
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000045',
-        status: 'won',
-        createdAt: getDate(-18),
-        paymentMethod: { type: 'mc', lastFourDigits: '0045', description: 'MasterCard' },
-        reasonGroup: 'fraudulent',
-        reasonCode: '4835',
-        amount: { currency: 'EUR', value: 399500 },
-    },
-] as const satisfies Readonly<IDispute[]>;
+] satisfies Readonly<IDisputeListItem[]>;
 
+const FRAUD_ALERTS = [
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
+        status: 'LOST',
+        dueDate: new Date(todayDate.setHours(23)).toISOString(),
+        createdAt: getDate(-10),
+        paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 211100 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000042',
+        status: 'LOST',
+        dueDate: new Date(todayDate.setHours(20)).toISOString(),
+        createdAt: getDate(-9),
+        paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 222200 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000043',
+        status: 'LOST',
+        dueDate: getDate(2),
+        createdAt: getDate(-7),
+        paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 233300 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000044',
+        status: 'LOST',
+        dueDate: getDate(20),
+        createdAt: getDate(-7),
+        paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 244400 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000045',
+        status: 'LOST',
+        dueDate: getDate(11),
+        createdAt: getDate(-4),
+        paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 255500 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000046',
+        status: 'LOST',
+        dueDate: getDate(13),
+        createdAt: getDate(-4),
+        paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 266600 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000047',
+        status: 'LOST',
+        dueDate: getDate(15),
+        createdAt: getDate(-3),
+        paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 577700 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000048',
+        status: 'LOST',
+        dueDate: getDate(16),
+        createdAt: getDate(-3),
+        paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 200000 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000049',
+        status: 'LOST',
+        dueDate: getDate(18),
+        createdAt: getDate(-3),
+        paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 299900 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000050',
+        status: 'LOST',
+        dueDate: getDate(20),
+        createdAt: getDate(-2),
+        paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 311000 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000051',
+        status: 'LOST',
+        dueDate: getDate(22),
+        createdAt: getDate(-2),
+        paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 412000 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000052',
+        status: 'LOST',
+        dueDate: getDate(23),
+        createdAt: getDate(-2),
+        paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 911200 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000053',
+        status: 'LOST',
+        dueDate: getDate(26),
+        createdAt: getDate(-2),
+        paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 344300 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000054',
+        status: 'LOST',
+        dueDate: getDate(29),
+        createdAt: getDate(-1),
+        paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'USD', value: 755400 },
+    },
+    {
+        disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000055',
+        status: 'LOST',
+        dueDate: getDate(30),
+        createdAt: getDate(-2),
+        paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
+        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        amount: { currency: 'EUR', value: 510500 },
+    },
+] satisfies Readonly<IDisputeListItem[]>;
+
+export const DISPUTES = [...CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] as const satisfies Readonly<IDisputeListItem[]>;
+
+export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
+    switch (status) {
+        case 'CHARGEBACKS':
+            return CHARGEBACKS;
+        case 'FRAUD_ALERTS':
+            return FRAUD_ALERTS;
+        case 'ONGOING_AND_CLOSED':
+        default:
+            return ALL_DISPUTES;
+    }
+};
 export const getAllowedDisputeDefenseReasons = (dispute: (typeof DISPUTES)[number]) => {
     switch (dispute.paymentMethod.type) {
         case 'mc': {
-            if (dispute.reasonGroup === 'consumer') return MC_CONSUMER_DEFENSE_REASONS;
-            if (dispute.reasonGroup === 'fraudulent') return MC_FRAUD_DEFENSE_REASONS;
+            if (dispute.reason.category === 'CONSUMER_DISPUTE') return MC_CONSUMER_DEFENSE_REASONS;
+            if (dispute.reason.category === 'FRAUD') return MC_FRAUD_DEFENSE_REASONS;
             break;
         }
         case 'visa': {
-            if (dispute.reasonGroup === 'consumer') return VISA_CONSUMER_DEFENSE_REASONS;
-            if (dispute.reasonGroup === 'fraudulent') return VISA_FRAUD_DEFENSE_REASONS;
+            if (dispute.reason.category === 'CONSUMER_DISPUTE') return VISA_CONSUMER_DEFENSE_REASONS;
+            if (dispute.reason.category === 'FRAUD') return VISA_FRAUD_DEFENSE_REASONS;
             break;
         }
     }
@@ -495,7 +484,7 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
 
     switch (dispute.paymentMethod.type) {
         case 'mc': {
-            if (dispute.reasonGroup === 'consumer') {
+            if (dispute.reason.category === 'CONSUMER_DISPUTE') {
                 switch (disputeDefenseReason) {
                     case 'AirlineFlightProvided':
                         return [
@@ -564,7 +553,7 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
                             { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
                         ] satisfies IDisputeDefenseDocument[];
                 }
-            } else if (dispute.reasonGroup === 'fraudulent') {
+            } else if (dispute.reason.category === 'FRAUD') {
                 switch (disputeDefenseReason) {
                     case 'AirlineCompellingEvidence':
                         return [
@@ -634,7 +623,7 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
         }
 
         case 'visa': {
-            if (dispute.reasonGroup === 'consumer') {
+            if (dispute.reason.category === 'CONSUMER_DISPUTE') {
                 switch (disputeDefenseReason) {
                     case 'InvalidChargeback':
                         return [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'OPTIONAL' } as const] satisfies IDisputeDefenseDocument[];
@@ -650,7 +639,7 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
                             { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'REQUIRED' } as const,
                         ] satisfies IDisputeDefenseDocument[];
                 }
-            } else if (dispute.reasonGroup === 'fraudulent') {
+            } else if (dispute.reason.category === 'FRAUD') {
                 switch (disputeDefenseReason) {
                     case 'AdditionalInformation':
                         return [{ documentTypeCode: 'DefenseMaterial', requirementLevel: 'REQUIRED' } as const] satisfies IDisputeDefenseDocument[];
@@ -662,33 +651,49 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
     }
 };
 
-type AdditionalDisputeDetails = Omit<IDisputeDetail, keyof IDispute>;
+type AdditionalDisputeDetails = Omit<IDisputeDetail, 'dispute'> & { dispute: IDisputeDetail['dispute'] };
 
 export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) => {
     const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
     const additionalDisputeDetails = {} as AdditionalDisputeDetails;
 
-    additionalDisputeDetails.paymentPspReference = 'KLAHFUW1329523KKL';
-    additionalDisputeDetails.allowedDefenseReasons = allowedDefenseReasons && [...allowedDefenseReasons];
+    additionalDisputeDetails.payment = {
+        pspReference: 'KLAHFUW1329523KKL',
+        balanceAccount: { description: 'Main account', timeZone: 'UTC' },
+        isRefunded: false,
+        paymentMethod: dispute.paymentMethod,
+    };
+    additionalDisputeDetails.dispute = {
+        ...dispute,
+        pspReference: dispute.disputePspReference,
+        type: dispute.reason.category === 'FRAUD' ? 'NOTIFICATION_OF_FRAUD' : 'CHARGEBACK',
+        allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
+        ...(dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED'
+            ? {
+                  defensibility: allowedDefenseReasons ? 'DEFENDABLE' : 'DEFENDABLE_EXTERNALLY',
+              }
+            : {
+                  defensibility: 'NOT_ACTIONABLE',
+                  defense: {
+                      reason: 'ServicesProvided',
+                      suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
+                      defendedOn: getDate(1, new Date(dispute.createdAt)),
+                      defendedThroughComponent: true,
+                  },
+              }),
+    };
 
-    if (dispute.status === 'action_needed') {
-        additionalDisputeDetails.defensibility = allowedDefenseReasons ? 'defendable' : 'defendable_externally';
+    if (dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED') {
+        additionalDisputeDetails.dispute.defensibility = allowedDefenseReasons ? 'DEFENDABLE' : 'DEFENDABLE_EXTERNALLY';
     } else {
-        additionalDisputeDetails.defensibility = 'not_defendable';
-        additionalDisputeDetails.latestDefense = {
+        additionalDisputeDetails.dispute.defensibility = 'NOT_ACTIONABLE';
+        additionalDisputeDetails.defense = {
             reason: 'ServicesProvided',
             suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
             defendedOn: getDate(1, new Date(dispute.createdAt)),
+            defendedThroughComponent: true,
         };
     }
 
     return { ...additionalDisputeDetails } as const;
-};
-
-export const getDisputesByStatusGroup = (status: 'open' | 'closed') => {
-    return DISPUTES.filter(dispute =>
-        status === 'open'
-            ? dispute.status === 'action_needed' || dispute.status === 'under_review'
-            : dispute.status === 'won' || dispute.status === 'lost'
-    );
 };

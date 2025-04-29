@@ -45,8 +45,5 @@ export const DATE_FORMAT_TRANSACTION_DETAILS: Intl.DateTimeFormatOptions = {
 export const DATE_FORMAT_DISPUTES: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
 
 export const DATE_FORMAT_DISPUTES_TAG: Intl.DateTimeFormatOptions = {
-    ...BASE_DATE_FORMAT,
-    ...BASE_TIME_FORMAT,
     month: SHORT,
-    timeZoneName: SHORT_OFFSET,
 };

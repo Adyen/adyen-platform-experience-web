@@ -2,6 +2,7 @@ import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { DISPUTES, getAdditionalDisputeDetails, getApplicableDisputeDefenseDocuments, getDisputesByStatusGroup } from '../mock-data/disputes';
+import { IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -9,7 +10,7 @@ const downloadFileError = false;
 const defaultPaginationLimit = 10;
 
 const getDisputeForRequestPathParams = (params: PathParams) => {
-    const dispute = DISPUTES.find(dispute => dispute.id === params.id);
+    const dispute = DISPUTES.find(dispute => dispute.disputePspReference === params.id);
     if (!dispute) throw HttpResponse.json({ error: 'Cannot find dispute' }, { status: 404 });
     return dispute;
 };
@@ -19,13 +20,13 @@ export const disputesMocks = [
         if (networkError) return HttpResponse.error();
 
         const url = new URL(request.url);
-        const statusGroup = (url.searchParams.get('statusGroup') as 'open' | 'closed') ?? 'open';
+        const statusGroup = ((url.searchParams.get('statusGroup') as IDisputeStatusGroup) ?? 'CHARGEBACKS') satisfies IDisputeStatusGroup;
         const createdSince = url.searchParams.get('createdSince');
         const createdUntil = url.searchParams.get('createdUntil');
         const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(url.searchParams.get('cursor') ?? 0);
 
-        let disputes = getDisputesByStatusGroup(statusGroup);
+        let disputes: IDisputeListItem[] = getDisputesByStatusGroup(statusGroup);
         let responseDelay = 200;
 
         if (createdSince || createdUntil) {
