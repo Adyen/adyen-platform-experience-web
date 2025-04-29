@@ -794,7 +794,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
 
     additionalDisputeDetails.payment = {
         pspReference: 'KLAHFUW1329523KKL',
-        balanceAccountDescription: 'Main account',
+        balanceAccount: { balanceAccountDescription: 'Main account', timeZone: 'UTC' },
         isRefunded: false,
         paymentMethod: dispute.paymentMethod,
     };

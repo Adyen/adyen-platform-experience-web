@@ -41,6 +41,7 @@ export interface components {
         };
         BalanceAccount: {
             timeZone: string;
+            balanceAccountDescription: string;
         };
         StreamingOutput: Record<string, never>;
         /** @description Standardized error response following RFC-7807 format */
@@ -144,7 +145,6 @@ export interface components {
         DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
         Payment: {
             balanceAccount?: components['schemas']['BalanceAccount'];
-            balanceAccountDescription: string;
             isRefunded: boolean;
             merchantReference?: string;
             paymentMethod?: components['schemas']['PaymentMethod'];
