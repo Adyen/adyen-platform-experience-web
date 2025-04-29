@@ -42,7 +42,7 @@ export interface components {
             | 'getApplicableDefenseDocuments'
             | 'acceptDispute'
             | 'defendDispute'
-            | 'downloadDisputeFile';
+            | 'downloadDefenseDocument';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];

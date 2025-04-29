@@ -29,10 +29,10 @@ export const DISPUTE_PAYMENT_SCHEMES = {
 
 export const DISPUTE_REASON_CATEGORIES = {
     FRAUD: 'disputes.fraud',
-    CONSUMER_DISPUTE: 'disputes.consumer_dispute',
-    PROCESSING_ERROR: 'disputes.processing_error',
-    REQUEST_FOR_INFORMATION: 'disputes.request_for_information',
-    AUTHORISATION_ERROR: 'disputes.authorisation_error',
+    CONSUMER_DISPUTE: 'disputes.consumerDispute',
+    PROCESSING_ERROR: 'disputes.processingError',
+    REQUEST_FOR_INFORMATION: 'disputes.requestForInformation',
+    AUTHORISATION_ERROR: 'disputes.authorisationError',
     ADJUSTMENT: 'disputes.adjustment',
     OTHER: 'disputes.other',
 } satisfies Record<IDispute['reason']['category'], TranslationKey>;

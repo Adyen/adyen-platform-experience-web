@@ -39,8 +39,13 @@ export interface components {
             disputePspReference: string;
             status: string;
         };
+        DefendDisputeResponse: {
+            disputePspReference: string;
+            status: string;
+        };
         BalanceAccount: {
             timeZone: string;
+            description: string;
         };
         StreamingOutput: Record<string, never>;
         /** @description Standardized error response following RFC-7807 format */
@@ -74,7 +79,7 @@ export interface components {
             message: string;
         };
         ApplicableDefenseDocument: {
-            documentTypeCode?: string;
+            documentTypeCode: string;
             requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
         Amount: {
@@ -107,7 +112,6 @@ export interface components {
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
             type: components['schemas']['DisputeType'];
-            paymentMethod?: components['schemas']['PaymentMethod'];
         };
         /** @enum {string} */
         DisputeCategory:
@@ -118,7 +122,7 @@ export interface components {
             | 'AUTHORISATION_ERROR'
             | 'ADJUSTMENT'
             | 'OTHER';
-        DisputeDetailResponse: {
+        DisputeDetailResponseDTO: {
             defense?: components['schemas']['Defense'];
             dispute: components['schemas']['Dispute'];
             payment: components['schemas']['Payment'];
@@ -131,10 +135,9 @@ export interface components {
         /** @enum {string} */
         DisputeStatus: 'UNRESPONDED' | 'RESPONDED' | 'EXPIRED' | 'LOST' | 'WON' | 'PENDING' | 'UNDEFENDED' | 'ACCEPTED';
         /** @enum {string} */
-        DisputeType: 'chargeback' | 'request_for_information' | 'notification_of_fraud';
+        DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
         Payment: {
             balanceAccount?: components['schemas']['BalanceAccount'];
-            balanceAccountDescription: string;
             isRefunded: boolean;
             merchantReference?: string;
             paymentMethod?: components['schemas']['PaymentMethod'];
@@ -148,6 +151,16 @@ export interface components {
             /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
             type: string;
         };
+        Link: {
+            /** @description Cursor for a different page */
+            cursor: string;
+        };
+        Links: {
+            /** @description Link to a different page */
+            next: components['schemas']['Link'];
+            /** @description Link to a different page */
+            prev: components['schemas']['Link'];
+        };
         DisputeListItem: {
             amount: components['schemas']['Amount'];
             /** Format: date-time */
@@ -159,8 +172,9 @@ export interface components {
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
         };
-        DisputeListResponse: {
-            disputes?: components['schemas']['DisputeListItem'][];
+        DisputeListResponseDTO: {
+            _links: components['schemas']['Links'];
+            data: components['schemas']['DisputeListItem'][];
         };
         /** @enum {string} */
         StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
@@ -190,6 +204,26 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['AcceptDisputeResponse'];
+                };
+            };
+        };
+    };
+    defendDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'multipart/form-data': FormData;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['DefendDisputeResponse'];
                 };
             };
         };
@@ -255,7 +289,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['DisputeDetailResponse'];
+                    'application/json': components['schemas']['DisputeDetailResponseDTO'];
                 };
             };
         };
@@ -270,8 +304,6 @@ export interface operations {
                 schemeCodes?: string[];
                 createdSince?: string;
                 createdUntil?: string;
-                pageSize?: number;
-                pageNumber?: number;
                 limit?: number;
                 cursor?: string;
             };
@@ -280,46 +312,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': {};
-                };
-            };
-        };
-    };
-    defendDispute: {
-        parameters: {
-            path: {
-                disputePspReference: string;
-            };
-        };
-        requestBody: {
-            content: {
-                'multipart/form-data': FormData;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': {};
-                };
-            };
-        };
-    };
-    /** @description Add @Operation annotation to provide a description */
-    downloadDisputeFile: {
-        parameters: {
-            path: {
-                disputePspReference: string;
-            };
-            query: {
-                documentType: string;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'text/csv': components['schemas']['DownloadDisputeFileResponseDTO'];
+                    'application/json': components['schemas']['DisputeListResponseDTO'];
                 };
             };
         };

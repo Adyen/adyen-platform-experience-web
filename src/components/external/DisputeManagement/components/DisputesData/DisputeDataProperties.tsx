@@ -137,7 +137,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                           <Tag label={document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
-                                              endpointName={'downloadDisputeFile'}
+                                              endpointName={'downloadDefenseDocument'}
                                               disabled={false}
                                               requestParams={queryParam}
                                               iconButton={true}
@@ -202,7 +202,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 }}
             />
         );
-    }, [dispute.payment, dispute.dispute, dispute.defense, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
+    }, [dispute, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
 };
 
 export default DisputeDataProperties;

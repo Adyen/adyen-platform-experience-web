@@ -4,7 +4,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -15,7 +15,7 @@ import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Translation } from '../../../../internal/Translation';
-import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
+import DisputeStatusDisplay from '../../../DisputesOverview/components/DisputesTable/DisputeStatusDisplay';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
@@ -33,7 +33,7 @@ const DisputeDataAlert = ({
     isDefended,
     showContactSupport = true,
 }: {
-    status: IDispute['status'];
+    status: IDisputeListItem['status'];
     isDefended: boolean;
     showContactSupport: boolean;
 }) => {
@@ -119,23 +119,25 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY';
+    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
     const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
 
     const actionButtons = useMemo(() => {
-        const ctaButtons = [
-            {
+        const ctaButtons = [];
+        if (isAcceptable) {
+            ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
-            },
-        ];
+            });
+        }
         if (isDefendable)
             ctaButtons.push({
                 title: i18n.get('disputes.defendDispute'),
                 event: () => {},
             });
         return ctaButtons;
-    }, [i18n, isDefendable, onAcceptClick]);
+    }, [i18n, isAcceptable, isDefendable, onAcceptClick]);
 
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
@@ -143,7 +145,7 @@ export const DisputeData = ({
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox {...statusBoxOptions} tag={<DisputeStatusTag dispute={dispute.dispute} />} />
+                <StatusBox {...statusBoxOptions} tag={<DisputeStatusDisplay dispute={dispute.dispute} />} />
             </div>
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
@@ -154,7 +156,7 @@ export const DisputeData = ({
                 showContactSupport={showContactSupport}
             />
 
-            {dispute?.dispute.status === 'UNRESPONDED' || dispute?.dispute.status === 'UNDEFENDED' ? (
+            {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions actions={actionButtons} />
                 </div>

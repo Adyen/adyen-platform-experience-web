@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDispute, IDisputeListItem } from '../../../../../types/api/models/disputes';
 import Icon from '../../../../internal/Icon';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
@@ -16,14 +16,14 @@ const STATUS_LABELS = {
     RESPONDED: 'disputes.responded',
     LOST: 'disputes.lost',
     WON: 'disputes.won',
-} satisfies { [k in IDispute['status']]: TranslationKey };
+} satisfies { [k in IDisputeListItem['status']]: TranslationKey };
 
-const DisputeStatusTag = ({
+const DisputeStatusDisplay = ({
     dispute,
     type = 'tag',
     children,
 }: PropsWithChildren<{
-    dispute: IDispute;
+    dispute: IDisputeListItem | IDispute;
     type?: 'text' | 'tag';
 }>) => {
     const { i18n } = useCoreContext();
@@ -48,7 +48,7 @@ const DisputeStatusTag = ({
 
         const isUrgent = days < 10;
 
-        const Value = () => {
+        const StatusLabel = () => {
             return (
                 <div
                     className={cx('adyen-pe-disputes-table__status-content', {
@@ -65,10 +65,10 @@ const DisputeStatusTag = ({
             <div>
                 {type === 'tag' ? (
                     <Tag variant={isUrgent ? TagVariant.ERROR : TagVariant.DEFAULT}>
-                        <Value />
+                        <StatusLabel />
                     </Tag>
                 ) : (
-                    <Value />
+                    <StatusLabel />
                 )}
             </div>
         );
@@ -77,4 +77,4 @@ const DisputeStatusTag = ({
     return <Tag label={i18n.get(STATUS_LABELS[value])} />;
 };
 
-export default DisputeStatusTag;
+export default DisputeStatusDisplay;

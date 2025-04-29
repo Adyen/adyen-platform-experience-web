@@ -6,6 +6,7 @@ import DisputeData from '../DisputesData/DisputeData';
 export const DisputeDetailsContainer = ({
     disputeId,
     onAcceptDispute,
+    dataCustomization,
 }: {
     disputeId: string;
     onAcceptDispute?: () => void;
@@ -15,7 +16,7 @@ export const DisputeDetailsContainer = ({
 
     switch (flowState) {
         case 'details':
-            return <DisputeData disputeId={disputeId} />;
+            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} />;
         case 'accept':
             return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
         default:
