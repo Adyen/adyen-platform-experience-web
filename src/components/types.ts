@@ -190,7 +190,7 @@ export interface PayoutsOverviewComponentProps
 
 export interface DisputeOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>>,
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export const enum FilterParam {
