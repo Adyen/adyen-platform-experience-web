@@ -8,7 +8,7 @@ import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwar
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
-import { DATE_FORMAT_DISPUTES } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -19,13 +19,34 @@ import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDispute, IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
-import DisputeStatusTag from './DisputeStatusTag';
+import DisputeStatusDisplay from './DisputeStatusDisplay';
+import { Tag } from '../../../../internal/Tag/Tag';
 
-export const FIELDS = ['status', 'createdAt', 'paymentMethod', 'reasonGroup', 'amount'] as const;
+export const FIELDS = [
+    'status',
+    'respondBy',
+    'createdAt',
+    'paymentMethod',
+    'disputeReason',
+    'reason',
+    'currency',
+    'disputedAmount',
+    'totalPaymentAmount',
+] as const;
 export type DisputesTableFields = (typeof FIELDS)[number];
+
+export const DISPUTE_CATEGORY_LABELS = {
+    FRAUD: 'disputes.fraud',
+    CONSUMER_DISPUTE: 'disputes.consumerDispute',
+    PROCESSING_ERROR: 'disputes.processingError',
+    REQUEST_FOR_INFORMATION: 'disputes.requestForInformation',
+    AUTHORISATION_ERROR: 'disputes.authorisationError',
+    ADJUSTMENT: 'disputes.adjustment',
+    OTHER: 'disputes.other',
+} satisfies { [k in IDispute['reason']['category']]: TranslationKey };
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -33,10 +54,11 @@ export interface DisputesTableProps extends WithPaginationLimitSelection<Paginat
     error?: AdyenPlatformExperienceError;
     onContactSupport?: () => void;
     showPagination: boolean;
-    data: IDispute[] | undefined;
+    data: IDisputeListItem[] | undefined;
     activeBalanceAccount?: IBalanceAccountBase;
-    onRowClick: (value: IDispute) => void;
+    onRowClick: (value: IDisputeListItem) => void;
     customColumns?: CustomColumn<StringWithAutocompleteOptions<DisputesTableFields>>[];
+    statusGroup: IDisputeStatusGroup;
 }
 
 export const DisputesTable: FC<DisputesTableProps> = ({
@@ -49,6 +71,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     data,
     customColumns,
     activeBalanceAccount,
+    statusGroup,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -60,20 +83,47 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const columns = useTableColumns({
         fields: FIELDS,
         fieldsKeys: {
-            amount: 'disputes.disputedAmount',
-            reasonGroup: 'disputes.reason',
+            status: 'disputes.status',
+            disputedAmount: 'disputes.disputedAmount',
+            disputeReason: 'disputes.disputeReason',
+            reason: 'disputes.reason',
             paymentMethod: 'disputes.paymentMethod',
             createdAt: 'disputes.openedOn',
-            status: 'disputes.status',
+            respondBy: 'disputes.respondBy',
+            currency: 'disputes.currency',
+            totalPaymentAmount: 'disputes.totalPaymentAmount',
         },
         customColumns,
         columnConfig: useMemo(
             () => ({
+                status: {
+                    visible: statusGroup === 'ONGOING_AND_CLOSED',
+                },
                 amount: {
                     position: 'right',
                 },
+                disputedAmount: {
+                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                },
+                disputeReason: {
+                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                },
+                respondBy: {
+                    visible: statusGroup === 'CHARGEBACKS',
+                },
+                reason: {
+                    visible: statusGroup === 'FRAUD_ALERTS',
+                    flex: 2,
+                },
+                currency: {
+                    flex: 0.5,
+                },
+                totalPaymentAmount: {
+                    visible: statusGroup === 'FRAUD_ALERTS',
+                    position: 'right',
+                },
             }),
-            []
+            [statusGroup]
         ),
     });
 
@@ -107,13 +157,26 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ value, item }) => {
-                        return <DisputeStatusTag dispute={item} activeBalanceAccount={activeBalanceAccount} />;
+                        return <DisputeStatusDisplay dispute={item}>{value}</DisputeStatusDisplay>;
                     },
-                    amount: ({ value }) => {
+                    reason: ({ item }) => {
+                        return item.reason.title;
+                    },
+                    respondBy: ({ item }) => {
                         return (
-                            value && (
-                                <Typography variant={TypographyVariant.BODY}>
-                                    {i18n.amount(value.value, value.currency, { hideCurrency: true })}
+                            <DisputeStatusDisplay type={'text'} dispute={item}>
+                                {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
+                            </DisputeStatusDisplay>
+                        );
+                    },
+                    currency: ({ item }) => {
+                        return <Tag>{item.amount.currency}</Tag>;
+                    },
+                    disputedAmount: ({ item }) => {
+                        return (
+                            item.amount && (
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
                         );
@@ -123,6 +186,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
+                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_CATEGORY_LABELS[item.reason.category])}</span>,
+                    totalPaymentAmount: ({ item }) => {
+                        return (
+                            item && (
+                                <Typography variant={TypographyVariant.BODY} stronger>
+                                    {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
+                                </Typography>
+                            )
+                        );
+                    },
                 }}
             >
                 {showPagination && (

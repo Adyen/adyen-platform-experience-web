@@ -73,7 +73,7 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/signToS',
         },
-        getDisputes: {
+        getDisputeList: {
             method: 'GET',
             url: 'disputes',
         },
@@ -93,7 +93,7 @@ export const setupBasicResponse = {
             method: 'POST',
             url: 'disputes/{disputePspReference}/defend',
         },
-        downloadDisputeFile: {
+        downloadDefenseDocument: {
             method: 'GET',
             url: 'disputes/{disputePspReference}/documents/download',
         },

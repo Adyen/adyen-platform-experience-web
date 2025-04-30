@@ -12,8 +12,7 @@ import BalanceAccountSelector from '../../../../internal/FormFields/Select/Balan
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
-import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { FIELDS } from '../DisputesTable/DisputesTable';
+import { DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
 import {
     EARLIEST_DISPUTES_SINCE_DATE,
     BASE_CLASS,
@@ -22,11 +21,8 @@ import {
     DISPUTES_OVERVIEW_STATUS_GROUP_CLASS,
 } from './constants';
 import './DisputesOverview.scss';
-import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
-import hasCustomField from '../../../../utils/customData/hasCustomField';
-import mergeRecords from '../../../../utils/customData/mergeRecords';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import cx from 'classnames';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
@@ -46,10 +42,10 @@ export const DisputesOverview = ({
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { getDisputes: getDisputesCall } = useConfigContext().endpoints;
+    const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
-    const [statusGroup, setStatusGroup] = useState<'open' | 'closed'>('open');
+    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');
 
     const disputeDetails = useMemo(
         () => ({
@@ -86,7 +82,7 @@ export const DisputesOverview = ({
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<IDispute, 'data', string, FilterParam>({
+        useCursorPaginatedRecords<IDisputeListItem, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
@@ -97,31 +93,17 @@ export const DisputesOverview = ({
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
 
-    const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: IDispute[]; retrievedData: CustomDataRetrieved[] }) =>
-            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
-        []
-    );
-
-    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
-    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDispute>({
-        records,
-        hasCustomColumn,
-        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
-        mergeCustomData,
-    });
-
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        ({ id }: IDispute) => {
+        ({ disputePspReference }: IDisputeListItem) => {
             updateDetails({
                 selection: {
                     type: 'dispute',
-                    data: id,
+                    data: disputePspReference,
                 },
                 modalSize: 'small',
-            }).callback({ id });
+            }).callback({ id: disputePspReference });
         },
         [updateDetails]
     );
@@ -140,23 +122,33 @@ export const DisputesOverview = ({
             <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'open',
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'CHARGEBACKS',
                     })}
                     type={'button'}
                     tabIndex={0}
-                    onClick={() => setStatusGroup('open')}
+                    onClick={() => setStatusGroup('CHARGEBACKS')}
                 >
-                    {i18n.get('disputes.open')}
+                    {i18n.get('disputes.chargebacks')}
                 </button>
                 <button
                     className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'closed',
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'FRAUD_ALERTS',
                     })}
                     type={'button'}
                     tabIndex={0}
-                    onClick={() => setStatusGroup('closed')}
+                    onClick={() => setStatusGroup('FRAUD_ALERTS')}
                 >
-                    {i18n.get('disputes.closed')}
+                    {i18n.get('disputes.fraudAlerts')}
+                </button>
+                <button
+                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
+                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ONGOING_AND_CLOSED',
+                    })}
+                    type={'button'}
+                    tabIndex={0}
+                    onClick={() => setStatusGroup('ONGOING_AND_CLOSED')}
+                >
+                    {i18n.get('disputes.ongoingAndClosed')}
                 </button>
             </div>
 
@@ -187,8 +179,8 @@ export const DisputesOverview = ({
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountId={activeBalanceAccount?.id}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
-                    data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
+                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
+                    data={records}
                     showPagination={true}
                     limit={limit}
                     limitOptions={limitOptions}
@@ -196,7 +188,7 @@ export const DisputesOverview = ({
                     onLimitSelection={updateLimit}
                     error={error as AdyenPlatformExperienceError}
                     onRowClick={onRowClick}
-                    customColumns={dataCustomization?.list?.fields}
+                    statusGroup={statusGroup}
                     {...paginationProps}
                 />
             </DisputeManagementModal>

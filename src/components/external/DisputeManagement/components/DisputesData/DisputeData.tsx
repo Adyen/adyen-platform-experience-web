@@ -4,7 +4,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDispute } from '../../../../../types/api/models/disputes';
+import { IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -15,7 +15,7 @@ import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Translation } from '../../../../internal/Translation';
-import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
+import DisputeStatusDisplay from '../../../DisputesOverview/components/DisputesTable/DisputeStatusDisplay';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
@@ -33,16 +33,16 @@ const DisputeDataAlert = ({
     isDefended,
     showContactSupport = true,
 }: {
-    status: IDispute['status'];
+    status: IDisputeListItem['status'];
     isDefended: boolean;
     showContactSupport: boolean;
 }) => {
     const { i18n } = useCoreContext();
 
-    if ((status === 'lost' && !isDefended) || status === 'expired') {
-        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('dispute.notDefended')} />;
+    if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
+        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
-    if (status === 'action_needed' && showContactSupport) {
+    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport) {
         //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
         const contactSupportLabel = i18n.get('contactSupport');
         return (
@@ -51,7 +51,7 @@ const DisputeDataAlert = ({
                 variant={AlertVariantOption.TIP}
                 description={
                     <Translation
-                        translationKey={'dispute.contactSupportToDefendThisDispute'}
+                        translationKey={'disputes.contactSupportToDefendThisDispute'}
                         fills={{
                             contactSupport: (
                                 <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
@@ -106,10 +106,10 @@ export const DisputeData = ({
     );
 
     const statusBoxProps = {
-        timezone: dispute?.balanceAccount?.timeZone,
-        createdAt: dispute?.createdAt,
-        amountData: dispute?.amount,
-        paymentMethodData: dispute?.paymentMethod,
+        timezone: dispute?.payment.balanceAccount?.timeZone,
+        createdAt: dispute?.dispute.createdAt,
+        amountData: dispute?.dispute.amount,
+        paymentMethodData: dispute?.payment.paymentMethod,
     } as const;
 
     const statusBoxOptions = useStatusBoxData(statusBoxProps);
@@ -119,43 +119,44 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    if (!dispute || isFetching) {
-        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
-    }
-
-    const showContactSupport = dispute.defensibility === 'defendable_externally';
-    const isDefendable = dispute.defensibility === 'defendable' && defendAuthorization;
+    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
+    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
 
     const actionButtons = useMemo(() => {
-        const ctaButtons = [
-            {
+        const ctaButtons = [];
+        if (isAcceptable) {
+            ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
-            },
-        ];
+            });
+        }
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('dispute.defendDispute'),
+                title: i18n.get('disputes.defendDispute'),
                 event: () => {},
             });
         return ctaButtons;
-    }, [isDefendable]);
+    }, [i18n, isAcceptable, isDefendable, onAcceptClick]);
 
+    if (!dispute || isFetching) {
+        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
+    }
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox {...statusBoxOptions} tag={<DisputeStatusTag dispute={dispute} />} />
+                <StatusBox {...statusBoxOptions} tag={<DisputeStatusDisplay dispute={dispute.dispute} />} />
             </div>
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
             <DisputeDataAlert
-                status={dispute.status}
-                isDefended={!!dispute?.latestDefense && !!dispute?.latestDefense?.defendedOn}
+                status={dispute.dispute.status}
+                isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
                 showContactSupport={showContactSupport}
             />
 
-            {dispute?.status === 'action_needed' ? (
+            {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions actions={actionButtons} />
                 </div>

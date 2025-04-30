@@ -10,9 +10,9 @@ export type EndpointsOperations = BalanceAccountOps & CapitalOps & PayoutsOps & 
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
-type CSVEndpoints = 'downloadReport' | 'downloadDisputeFile';
+type CSVEndpoints = 'downloadReport';
 
-type JSONEndpoints = Exclude<EndpointName, CSVEndpoints>;
+type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument'>;
 
 export type EndpointJSONData<T extends JSONEndpoints> = EndpointsOperations[T]['responses'][200]['content']['application/json'];
 

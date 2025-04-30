@@ -16,9 +16,10 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../../TransactionDetails/components/constants';
 import { DisputeDetailsCustomization } from '../../types';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { DISPUTE_CATEGORY_LABELS } from '../../../DisputesOverview/components/DisputesTable/DisputesTable';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -27,18 +28,19 @@ type DisputeDataPropertiesProps = {
 };
 
 const disputeDataKeys = {
-    defendedOn: 'dispute.defendedOn',
-    defenseReason: 'dispute.defenseReason',
-    disputeEvidence: 'dispute.evidence',
-    disputeReason: 'dispute.disputeReason',
-    disputeReference: 'dispute.disputeReference',
-    merchantReference: 'dispute.merchantReference',
-    paymentReference: 'dispute.paymentReference',
-    reasonCode: 'dispute.reasonCode',
+    defendedOn: 'disputes.defendedOn',
+    defenseReason: 'disputes.defenseReason',
+    disputeEvidence: 'disputes.evidence',
+    disputeReason: 'disputes.disputeReason',
+    disputeReference: 'disputes.disputeReference',
+    merchantReference: 'disputes.merchantReference',
+    paymentReference: 'disputes.paymentReference',
+    reasonCode: 'disputes.reasonCode',
 } satisfies Record<string, TranslationKey>;
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
-    const { dateFormat } = useTimezoneAwareDateFormatting(dispute?.balanceAccount?.timeZone);
+    const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount?.timeZone);
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
 
@@ -63,7 +65,11 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
     }, [getExtraFields]);
 
     return useMemo(() => {
-        const { paymentPspReference, latestDefense, reasonCode, paymentMerchantReference, reasonGroup } = dispute;
+        //  latestDefense, reasonCode, reasonGroup
+        const { pspReference: paymentPspReference, merchantReference: paymentMerchantReference } = dispute.payment;
+        const { reason: disputeReason, pspReference } = dispute.dispute;
+        const { defendedOn, reason: defenseReason, suppliedDocuments } = dispute.defense || {};
+
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
         const listItems: StructuredListProps['items'] = [
@@ -71,15 +77,17 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // balanceAccount?.description ? { key: 'accountKey' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
 
             // dispute reason
-            reasonGroup ? { key: disputeDataKeys.disputeReason, value: reasonGroup, id: 'reasonGroup' } : SKIP_ITEM,
+            disputeReason
+                ? { key: disputeDataKeys.disputeReason, value: i18n.get(DISPUTE_CATEGORY_LABELS[disputeReason.category]), id: 'disputeReason' }
+                : SKIP_ITEM,
 
             // reason code
-            reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
+            // reasonCode ? { key: disputeDataKeys.reasonCode, value: reasonCode, id: 'reasonCode' } : SKIP_ITEM,
 
             // dispute reference
             {
                 key: disputeDataKeys.disputeReference,
-                value: <CopyText type={'Default' as const} textToCopy={dispute.id} showCopyTextTooltip={false} />,
+                value: <CopyText type={'Default' as const} textToCopy={pspReference} showCopyTextTooltip={false} />,
                 id: 'disputeId',
             },
 
@@ -102,26 +110,26 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 : SKIP_ITEM,
 
             // defense reason
-            latestDefense?.reason ? { key: disputeDataKeys.defenseReason, value: latestDefense.reason, id: 'defenseReason' } : SKIP_ITEM,
+            defenseReason ? { key: disputeDataKeys.defenseReason, value: defenseReason, id: 'defenseReason' } : SKIP_ITEM,
 
             //TODO: Clarify if it will be possible to get balance account from backend
-            latestDefense?.defendedOn
+            defendedOn
                 ? {
                       key: disputeDataKeys.defendedOn,
-                      value: dateFormat(latestDefense.defendedOn, DATE_FORMAT_DISPUTES_TAG),
+                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTES_TAG),
                       id: 'defendedOn',
                   }
                 : SKIP_ITEM,
 
             //TODO: Change this when download endpoint is ready
-            latestDefense?.suppliedDocuments
+            suppliedDocuments
                 ? {
                       key: disputeDataKeys.disputeEvidence,
                       value: (
                           <>
-                              {latestDefense.suppliedDocuments.map((document, index) => {
+                              {suppliedDocuments.map((document, index) => {
                                   const queryParam = {
-                                      path: { disputePspReference: dispute.id },
+                                      path: { disputePspReference: pspReference },
                                       query: { documentType: document },
                                   };
                                   return (
@@ -129,7 +137,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                           <Tag label={document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
-                                              endpointName={'downloadDisputeFile'}
+                                              endpointName={'downloadDefenseDocument'}
                                               disabled={false}
                                               requestParams={queryParam}
                                               iconButton={true}
@@ -194,7 +202,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 }}
             />
         );
-    }, [dispute, dateFormat, dataCustomization?.details?.fields, extraFields]);
+    }, [dispute, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
 };
 
 export default DisputeDataProperties;
