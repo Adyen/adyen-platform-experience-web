@@ -1,8 +1,14 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { DISPUTES, getAdditionalDisputeDetails, getApplicableDisputeDefenseDocuments, getDisputesByStatusGroup } from '../mock-data/disputes';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
+import {
+    DISPUTES,
+    getAdditionalDisputeDetails,
+    getApplicableDisputeDefenseDocuments,
+    getDisputesByStatusGroup,
+    MAIN_BALANCE_ACCOUNT,
+} from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -20,20 +26,27 @@ export const disputesMocks = [
         if (networkError) return HttpResponse.error();
 
         const url = new URL(request.url);
-        const statusGroup = ((url.searchParams.get('statusGroup') as IDisputeStatusGroup) ?? 'CHARGEBACKS') satisfies IDisputeStatusGroup;
-        const createdSince = url.searchParams.get('createdSince');
-        const createdUntil = url.searchParams.get('createdUntil');
-        const limit = +(url.searchParams.get('limit') ?? defaultPaginationLimit);
-        const cursor = +(url.searchParams.get('cursor') ?? 0);
+        const searchParams = url.searchParams;
 
-        let disputes: IDisputeListItem[] = getDisputesByStatusGroup(statusGroup);
+        const balanceAccount = searchParams.get('balanceAccountId');
+        const statusGroup = searchParams.get('statusGroup')! as IDisputeStatusGroup;
+        const reasonCategories = searchParams.getAll('reasonCategories');
+        const schemeCodes = searchParams.getAll('schemeCodes');
+        const createdSince = searchParams.get('createdSince');
+        const createdUntil = searchParams.get('createdUntil');
+        const limit = +(searchParams.get('limit') ?? defaultPaginationLimit);
+        const cursor = +(searchParams.get('cursor') ?? 0);
+
+        let disputes: IDisputeListItem[] = balanceAccount === MAIN_BALANCE_ACCOUNT.id ? getDisputesByStatusGroup(statusGroup) : [];
         let responseDelay = 200;
 
         if (createdSince || createdUntil) {
             disputes = disputes.filter(
-                dispute =>
-                    (!createdSince || compareDates(dispute.createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(dispute.createdAt, createdUntil, 'le'))
+                ({ createdAt, paymentMethod, reason }) =>
+                    (!reasonCategories.length || reasonCategories.includes(reason.category)) &&
+                    (!schemeCodes.length || schemeCodes.includes(paymentMethod.type)) &&
+                    (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
+                    (!createdUntil || compareDates(createdAt, createdUntil, 'le'))
             );
             responseDelay = 400;
         }
