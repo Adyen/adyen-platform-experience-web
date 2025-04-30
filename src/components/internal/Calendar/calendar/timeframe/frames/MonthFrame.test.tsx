@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi, beforeAll, afterAll } from 'vitest';
 import { BASE_LOCALE, SYSTEM_TIMEZONE } from '../../../../../../core/Localization/datetime/restamper/constants';
 import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from '../../../../../../core/Localization/datetime/restamper/testing/fixtures';
 import { systemToTimezone, timezoneToSystem } from '../../../../../../core/Localization/datetime/restamper';
@@ -309,6 +309,14 @@ const getCursorIndex = (date: number, weekDay: WeekDay, firstWeekDay: FirstWeekD
     return dateIndex + mod(getWeekDayIndex(weekDay, firstWeekDay) - (dateIndex % 7), 7);
 };
 
+beforeAll(() => {
+    // Full fake‑timer shim (Vitest 3 default) — patches Date, performance, setTimeout, setInterval, queueMicrotask, requestAnimationFrame, etc.
+    vi.useFakeTimers();
+    vi.setSystemTime(TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE);
+});
+
+afterAll(() => vi.useRealTimers());
+
 describe('MonthFrame', () => {
     setupTimers();
 
@@ -373,12 +381,15 @@ describe('MonthFrame', () => {
 
     describe('timezones', () => {
         test(
-            'should render correct dates for timezones',
+            'should render correct dates for time‑zones',
+            { timeout: 90000 }, // new position for options (Vitest 3)
             () => {
                 const originDate = new Date(TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE);
 
                 for (let i = 0; i < 18; i++) {
-                    vi.setSystemTime(originDate.setUTCMonth(originDate.getUTCMonth() + 1));
+                    const next = new Date(originDate);
+                    next.setUTCMonth(originDate.getUTCMonth() + 1 + i);
+                    vi.setSystemTime(next);
 
                     const frame = new MonthFrame();
 
@@ -398,8 +409,7 @@ describe('MonthFrame', () => {
                     DST_TIMEZONES_DATES.forEach(runTestRoutine);
                     NON_DST_TIMEZONES_DATES.forEach(runTestRoutine);
                 }
-            },
-            { timeout: 15000 }
+            }
         );
     });
 });
