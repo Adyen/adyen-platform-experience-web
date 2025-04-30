@@ -79,7 +79,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reference
             {
                 key: disputeDataKeys.disputeReference,
-                value: <CopyText type={'Default'} textToCopy={dispute.id} showCopyTextTooltip={false} />,
+                value: <CopyText type={'Default' as const} textToCopy={dispute.id} showCopyTextTooltip={false} />,
                 id: 'disputeId',
             },
 
@@ -87,7 +87,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             paymentPspReference
                 ? {
                       key: disputeDataKeys.paymentReference,
-                      value: <CopyText type={'Default'} textToCopy={paymentPspReference} showCopyTextTooltip={false} />,
+                      value: <CopyText type={'Default' as const} textToCopy={paymentPspReference} showCopyTextTooltip={false} />,
                       id: 'paymentPspReference',
                   }
                 : SKIP_ITEM,
@@ -96,7 +96,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             paymentMerchantReference
                 ? {
                       key: disputeDataKeys.merchantReference,
-                      value: <CopyText type={'Default'} textToCopy={paymentMerchantReference} showCopyTextTooltip={false} />,
+                      value: <CopyText type={'Default' as const} textToCopy={paymentMerchantReference} showCopyTextTooltip={false} />,
                       id: 'paymentMerchantReference',
                   }
                 : SKIP_ITEM,
