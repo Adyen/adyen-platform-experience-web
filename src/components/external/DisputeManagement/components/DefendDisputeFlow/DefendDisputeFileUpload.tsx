@@ -70,7 +70,7 @@ export const DefendDisputeFileUpload = () => {
         <>
             <>
                 <Typography className="adyen-pe-defend-dispute-file-uploader__description" variant={TypographyVariant.BODY}>
-                    {i18n.get('dispute.uploadDocumentChargebackFeeInformation')}
+                    {i18n.get('dispute.uploadDefenseDocumentsInformation')}
                 </Typography>
                 <ExpandableCard
                     renderHeader={

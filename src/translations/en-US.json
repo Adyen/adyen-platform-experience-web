@@ -139,7 +139,7 @@
     "dispute.selectDefenseReasonDescription": "Select the reason you’re defending this dispute.",
     "dispute.showDetails": "Show details",
     "dispute.submit": "Submit",
-    "dispute.uploadDocumentChargebackFeeInformation": "Upload documents that support your dispute defense. Once submitted, no changes can be made.",
+    "dispute.uploadDefenseDocumentsInformation": "Upload documents that support your dispute defense. Once submitted, no changes can be made.",
     "disputeDetails": "Dispute management",
     "disputes.accept": "Accept",
     "disputes.acceptDispute": "Accept dispute",
