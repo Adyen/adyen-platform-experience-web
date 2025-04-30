@@ -3,7 +3,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { TranslationKey } from '../../../../../translations';
-import { IApplicableDefenseDocument } from '../../../../../types/api/models/disputes';
+import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
@@ -18,8 +18,8 @@ export const DefendDisputeReason = () => {
     const { applicableDocuments, dispute, goBack, setFlowState, setSelectedDefenseReason, selectedDefenseReason, setApplicableDocuments } =
         useDisputeFlow();
 
-    const allowedDefenseReasons = dispute?.allowedDefenseReasons;
-    const disputeId = dispute?.id;
+    const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
+    const disputeId = dispute?.dispute?.pspReference;
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
     //TODO: Fix the translations for defend reason
@@ -45,7 +45,7 @@ export const DefendDisputeReason = () => {
         queryFn: getApplicableDefenseDocuments,
         options: {
             onSuccess: useCallback(
-                ({ data }: { data: IApplicableDefenseDocument[] }) => {
+                ({ data }: { data: IDisputeDefenseDocument[] }) => {
                     setIsFetching(false);
                     setApplicableDocuments(data ?? null);
                     if (data?.length > 0) setFlowState('uploadDefenseFilesView');

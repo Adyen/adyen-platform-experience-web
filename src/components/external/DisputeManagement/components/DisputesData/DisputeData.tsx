@@ -128,7 +128,7 @@ export const DisputeData = ({
 
     const onDefendClick = useCallback(() => {
         dispute && setDispute(dispute);
-        if (dispute?.defensibility === 'defendable') {
+        if (dispute?.dispute.defensibility === 'DEFENDABLE') {
             setFlowState('defendReasonSelectionView');
         }
     }, [dispute, setDispute, setFlowState]);
@@ -139,17 +139,17 @@ export const DisputeData = ({
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
+        if (isDefendable)
+            ctaButtons.push({
+                title: i18n.get('disputes.defendDispute'),
+                event: onDefendClick,
+            });
         if (isAcceptable) {
             ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
             });
         }
-        if (isDefendable)
-            ctaButtons.push({
-                title: i18n.get('disputes.defendDispute'),
-                event: () => {},
-            });
         return ctaButtons;
     }, [i18n, isAcceptable, isDefendable, onAcceptClick]);
 

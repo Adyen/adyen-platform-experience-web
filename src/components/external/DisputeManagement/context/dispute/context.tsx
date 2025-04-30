@@ -1,7 +1,7 @@
 import { createContext } from 'preact';
 import { memo, PropsWithChildren } from 'preact/compat';
 import { useCallback, useContext, useState } from 'preact/hooks';
-import { IApplicableDefenseDocument, IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { IDisputeDefenseDocument, IDisputeDetail } from '../../../../../types/api/models/disputes';
 import uploadedFile from '../../../../internal/FormFields/FileInput/components/UploadedFile';
 
 export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView' | 'defenseSubmitResponseView';
@@ -14,8 +14,8 @@ interface DisputeFlowContextValue {
     setDispute: (dispute: IDisputeDetail | undefined) => void;
     selectedDefenseReason: string | null;
     setSelectedDefenseReason: (selectedDefenseReason: string) => void;
-    applicableDocuments: IApplicableDefenseDocument[] | null;
-    setApplicableDocuments: (documents: IApplicableDefenseDocument[]) => void;
+    applicableDocuments: IDisputeDefenseDocument[] | null;
+    setApplicableDocuments: (documents: IDisputeDefenseDocument[]) => void;
     clearFiles: () => void;
     clearStates: () => void;
     uploadedFiles: FormData | null;
@@ -34,7 +34,7 @@ export const DisputeFlowContext = createContext<DisputeFlowContextValue | undefi
 export const DisputeContextProvider = memo(({ dispute, setDispute, children }: PropsWithChildren<DisputeProviderProps>) => {
     const [flowState, setFlowState] = useState<DisputeFlowState>('details');
     const [selectedDefenseReason, setSelectedDefenseReason] = useState<string | null>(null);
-    const [applicableDocuments, setApplicableDocuments] = useState<IApplicableDefenseDocument[]>([]);
+    const [applicableDocuments, setApplicableDocuments] = useState<IDisputeDefenseDocument[]>([]);
     const [uploadedFiles, setUploadedFiles] = useState<any | null>(null);
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 

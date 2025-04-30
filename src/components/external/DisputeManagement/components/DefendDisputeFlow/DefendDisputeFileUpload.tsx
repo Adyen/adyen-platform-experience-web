@@ -1,10 +1,10 @@
 import { useRef } from 'preact/compat';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { TranslationKey } from '../../../../../translations';
-import { IApplicableDefenseDocument } from '../../../../../types/api/models/disputes';
+import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import FileInput from '../../../../internal/FormFields/FileInput/FileInput';
@@ -23,18 +23,21 @@ const documentRequirements: TranslationKey[] = [
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
     const { clearFiles, dispute, applicableDocuments, goBack, addUploadedFile, uploadedFiles, onDefendSubmit } = useDisputeFlow();
-    const disputeId = dispute?.id;
+    const disputeId = dispute?.dispute.pspReference;
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
+    const [isFetching, setIsFetching] = useState(false);
 
     const defendDisputeMutation = useMutation({
         queryFn: defendDispute,
         options: {
             onSuccess: useCallback(() => {
+                setIsFetching(false);
                 clearFiles();
                 onDefendSubmit('success');
             }, []),
             onError: useCallback(() => {
+                setIsFetching(false);
                 clearFiles();
                 onDefendSubmit('error');
             }, []),
@@ -44,6 +47,7 @@ export const DefendDisputeFileUpload = () => {
     const defendDisputeCallback = useCallback(() => {
         //TODO: add error case
         if (!uploadedFiles) return;
+        setIsFetching(true);
         void defendDisputeMutation.mutate({ contentType: 'multipart/form-data', body: uploadedFiles }, { path: { disputePspReference: disputeId! } });
     }, [disputeId, defendDisputeMutation, uploadedFiles]);
 
@@ -51,16 +55,16 @@ export const DefendDisputeFileUpload = () => {
         return [
             {
                 title: i18n.get('dispute.submit'),
-                disabled: false,
+                disabled: isFetching,
                 event: defendDisputeCallback,
             },
             {
                 title: i18n.get('disputes.goBack'),
-                disabled: false,
+                disabled: isFetching,
                 event: goBack,
             },
         ];
-    }, [goBack, defendDisputeCallback, i18n]);
+    }, [goBack, defendDisputeCallback, i18n, isFetching]);
 
     return (
         <>
@@ -88,7 +92,7 @@ export const DefendDisputeFileUpload = () => {
                     </ul>
                 </ExpandableCard>
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
-                    {applicableDocuments?.map((document: IApplicableDefenseDocument) => (
+                    {applicableDocuments?.map((document: IDisputeDefenseDocument) => (
                         <FileInput
                             ref={ref}
                             key={document}
