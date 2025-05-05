@@ -37,9 +37,8 @@ export const DefendDisputeFileUpload = () => {
             }, [setIsFetching, clearFiles, onDefendSubmit]),
             onError: useCallback(() => {
                 setIsFetching(false);
-                clearFiles();
                 onDefendSubmit('error');
-            }, [setIsFetching, clearFiles, onDefendSubmit]),
+            }, [setIsFetching, onDefendSubmit]),
         },
     });
 

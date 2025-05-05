@@ -21,7 +21,7 @@ export const DefendDisputeReason = () => {
 
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
     const disputePspReference = dispute?.dispute?.pspReference;
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const [isReasonSubmitted, setIsReasonSubmitted] = useState<boolean>(false);
 
     //TODO: Fix the translations for defend reason
     const defenseReasons: Readonly<{ id: string; name: string }[] | null> = useMemo(
@@ -51,31 +51,31 @@ export const DefendDisputeReason = () => {
                 disputePspReference: disputePspReference!,
             },
         });
-    }, [i18n, selectedDefenseReason, disputePspReference, getApplicableDefenseDocuments]);
+    }, [selectedDefenseReason, disputePspReference, getApplicableDefenseDocuments]);
 
     const { error } = useFetch({
         queryFn: fetchCallback,
         fetchOptions: {
-            enabled: isFetching,
+            enabled: isReasonSubmitted,
             onSuccess: useCallback(
                 (response: { data: IDisputeDefenseDocument[] } | undefined) => {
-                    setIsFetching(false);
+                    setIsReasonSubmitted(false);
                     setApplicableDocuments(response?.data ?? null);
                     if (response?.data && response?.data.length > 0) setFlowState('uploadDefenseFilesView');
                 },
-                [setApplicableDocuments, setIsFetching, setFlowState]
+                [setApplicableDocuments, setIsReasonSubmitted, setFlowState]
             ),
         },
     });
 
     useEffect(() => {
-        setIsFetching(false);
+        setIsReasonSubmitted(false);
     }, [error]);
 
     const onDefenseReasonSubmit = useCallback(() => {
         if (applicableDocuments?.length) return setFlowState('uploadDefenseFilesView');
 
-        setIsFetching(true);
+        setIsReasonSubmitted(true);
     }, [applicableDocuments, setFlowState]);
 
     const onChange = useCallback(
@@ -90,16 +90,16 @@ export const DefendDisputeReason = () => {
         return [
             {
                 title: i18n.get('dispute.continue'),
-                disabled: isFetching,
+                disabled: isReasonSubmitted,
                 event: onDefenseReasonSubmit,
             },
             {
                 title: i18n.get('disputes.goBack'),
-                disabled: isFetching,
+                disabled: isReasonSubmitted,
                 event: goBack,
             },
         ];
-    }, [isFetching, i18n, goBack, onDefenseReasonSubmit]);
+    }, [isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
 
     if (!defenseReasons || !selected) {
         return null;
