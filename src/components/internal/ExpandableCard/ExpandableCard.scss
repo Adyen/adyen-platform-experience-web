@@ -22,15 +22,20 @@
             padding: style.token(spacer-070) style.token(spacer-090);
 
             .adyen-pe-expandable-card__content {
-                padding-left: style.token(spacer-070);
+                padding-left: style.token(spacer-100);
+            }
+
+            &--title {
+                padding: style.token(spacer-070) style.token(spacer-100);
             }
 
             .adyen-pe-expandable-card__chevron--row {
                 align-items: center;
                 background-color: transparent;
                 display: flex;
-                height: 20px;
+                height: style.token(spacer-080);
                 justify-content: center;
+                position: absolute;
             }
         }
 
@@ -44,7 +49,7 @@
                 padding: 0;
 
                 &--title {
-                    padding: style.token(spacer-070) 32px;
+                    padding: style.token(spacer-070) style.token(spacer-100);
                 }
             }
 
@@ -52,7 +57,7 @@
                 align-items: center;
                 background-color: transparent;
                 display: flex;
-                height: 20px;
+                height: style.token(spacer-080);
                 justify-content: center;
                 margin-top: style.token(spacer-070);
                 position: absolute;

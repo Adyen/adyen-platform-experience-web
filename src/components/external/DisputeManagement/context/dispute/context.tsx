@@ -40,7 +40,6 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const clearFiles = useCallback(() => {
         const formData = new FormData();
         if (selectedDefenseReason) formData.set('defenseReason', selectedDefenseReason);
-        setSelectedDefenseReason(selectedDefenseReason);
         setDefendDisputePayload(formData);
     }, [selectedDefenseReason]);
 
