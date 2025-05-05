@@ -14,7 +14,12 @@ export const DisputeDetails = (props: ExternalUIComponentProps<DisputeManagement
 
     return (
         <DisputeContextProvider dispute={dispute} setDispute={setDisputeCallback}>
-            <DisputeDetailsContainer disputeId={props.id} onAcceptDispute={props.onAcceptDispute} dataCustomization={props.dataCustomization} />
+            <DisputeDetailsContainer
+                disputeId={props.id}
+                onAcceptDispute={props.onAcceptDispute}
+                onDefendDispute={props.onDefendDispute}
+                dataCustomization={props.dataCustomization}
+            />
         </DisputeContextProvider>
     );
 };
