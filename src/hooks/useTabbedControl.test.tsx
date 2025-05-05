@@ -1,13 +1,16 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, renderHook, screen } from '@testing-library/preact';
-import { TabbedControlOptions, useTabbedControl } from './useTabbedControl';
+import { TabbedControlConfig, TabbedControlOptions, useTabbedControl } from './useTabbedControl';
 import { InteractionKeyCode } from '../components/types';
 
-function TestComponent<T extends TabbedControlOptions>({ options }: { options: T }) {
-    const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl(options);
+function TestComponent<OptionId extends string, Options extends TabbedControlOptions<OptionId>>({
+    options,
+    ...restProps
+}: TabbedControlConfig<OptionId, Options>) {
+    const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl({ options, ...restProps });
     return (
         <>
             {options.map((option, index) => (
@@ -22,21 +25,23 @@ function TestComponent<T extends TabbedControlOptions>({ options }: { options: T
 describe('useTabbedControl', () => {
     const OPTIONS = [{ id: 'option_1' }, { id: 'option_2' }, { id: 'option_3' }];
 
-    const getHookResult = <T extends TabbedControlOptions>(...args: Parameters<typeof useTabbedControl<T>>) => {
+    const getHookResult = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>(
+        ...args: Parameters<typeof useTabbedControl<OptionId, Options>>
+    ) => {
         const { result } = renderHook(() => useTabbedControl(...args));
         return result.current;
     };
 
     test('should have the correct active index depending on default option', () => {
-        let result = getHookResult(OPTIONS);
+        let result = getHookResult({ options: OPTIONS });
         expect(result.activeIndex).toBe(0);
 
         for (let i = 0; i < OPTIONS.length; i++) {
-            result = getHookResult(OPTIONS, OPTIONS[i]!.id);
+            result = getHookResult({ options: OPTIONS, defaultOption: OPTIONS[i]!.id });
             expect(result.activeIndex).toBe(i);
         }
 
-        result = getHookResult([], 'unknown_option');
+        result = getHookResult({ options: [], defaultOption: 'unknown_option' });
         expect(result.activeIndex).toBe(0);
     });
 
@@ -107,12 +112,56 @@ describe('useTabbedControl', () => {
     });
 
     test('should have a unique id for each consumer', () => {
-        let previousResult = getHookResult(OPTIONS);
+        let previousResult = getHookResult({ options: OPTIONS });
 
         for (let i = 0; i < OPTIONS.length; i++) {
-            const currentResult = getHookResult(OPTIONS);
+            const currentResult = getHookResult({ options: OPTIONS });
             expect(currentResult.uniqueId).not.toBe(previousResult.uniqueId);
             previousResult = currentResult;
         }
+    });
+
+    test('should trigger onChange callback with the active option', () => {
+        const lastOption = OPTIONS[OPTIONS.length - 1];
+        const onChange = vi.fn();
+
+        render(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange} />);
+
+        const optionButtons = screen.getAllByRole('button');
+
+        for (let i = 0; i < OPTIONS.length; i++) {
+            fireEvent.click(optionButtons[i]!);
+            expect(onChange).toHaveBeenCalledTimes(i + 1);
+            expect(onChange).toHaveBeenLastCalledWith(OPTIONS[i]);
+        }
+    });
+
+    test('should only trigger onChange callback when active option changed', () => {
+        const lastOption = OPTIONS[OPTIONS.length - 1];
+        const onChange = vi.fn();
+
+        let clickOptionIndex = 1;
+
+        const { rerender } = render(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange} />);
+
+        expect(onChange).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getAllByRole('button')[clickOptionIndex]!);
+
+        expect(onChange).toHaveBeenCalledOnce();
+        expect(onChange).toHaveBeenLastCalledWith(OPTIONS[clickOptionIndex]);
+
+        const onChange2 = vi.fn();
+
+        clickOptionIndex = 0;
+
+        rerender(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange2} />);
+
+        expect(onChange2).not.toHaveBeenCalled();
+
+        fireEvent.click(screen.getAllByRole('button')[clickOptionIndex]!);
+
+        expect(onChange2).toHaveBeenCalledOnce();
+        expect(onChange2).toHaveBeenLastCalledWith(OPTIONS[clickOptionIndex]);
     });
 });

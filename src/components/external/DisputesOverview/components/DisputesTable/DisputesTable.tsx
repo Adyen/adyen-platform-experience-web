@@ -1,13 +1,17 @@
+import cx from 'classnames';
 import { FC } from 'preact/compat';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Alert from '../../../../internal/Alert/Alert';
+import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
+import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
+import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
@@ -15,38 +19,36 @@ import { PaginationProps, WithPaginationLimitSelection } from '../../../../inter
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { BASE_CLASS } from './constants';
-import './DisputesTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { IDispute, IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
+import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
-import DisputeStatusDisplay from './DisputeStatusDisplay';
+import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import './DisputesTable.scss';
 
-export const FIELDS = [
-    'status',
-    'respondBy',
-    'createdAt',
-    'paymentMethod',
-    'disputeReason',
-    'reason',
-    'currency',
-    'disputedAmount',
-    'totalPaymentAmount',
-] as const;
-export type DisputesTableFields = (typeof FIELDS)[number];
+export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
-export const DISPUTE_CATEGORY_LABELS = {
-    FRAUD: 'disputes.fraud',
-    CONSUMER_DISPUTE: 'disputes.consumerDispute',
-    PROCESSING_ERROR: 'disputes.processingError',
-    REQUEST_FOR_INFORMATION: 'disputes.requestForInformation',
-    AUTHORISATION_ERROR: 'disputes.authorisationError',
-    ADJUSTMENT: 'disputes.adjustment',
-    OTHER: 'disputes.other',
-} satisfies { [k in IDispute['reason']['category']]: TranslationKey };
+export const FIELD_KEYS = {
+    status: 'disputes.status',
+    respondBy: 'disputes.respondBy',
+    createdAt: 'disputes.openedOn',
+    paymentMethod: 'disputes.paymentMethod',
+    disputeReason: 'disputes.disputeReason',
+    reason: 'disputes.reason',
+    currency: 'disputes.currency',
+    disputedAmount: 'disputes.disputedAmount',
+    totalPaymentAmount: 'disputes.totalPaymentAmount',
+} as const satisfies Record<string, TranslationKey>;
+
+export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
+
+const classes = {
+    statusContent: `${BASE_CLASS}__status-content`,
+    statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
+};
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
@@ -75,35 +77,24 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
-    const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
+
+    const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
 
     const columns = useTableColumns({
         fields: FIELDS,
-        fieldsKeys: {
-            status: 'disputes.status',
-            disputedAmount: 'disputes.disputedAmount',
-            disputeReason: 'disputes.disputeReason',
-            reason: 'disputes.reason',
-            paymentMethod: 'disputes.paymentMethod',
-            createdAt: 'disputes.openedOn',
-            respondBy: 'disputes.respondBy',
-            currency: 'disputes.currency',
-            totalPaymentAmount: 'disputes.totalPaymentAmount',
-        },
+        fieldsKeys: FIELD_KEYS,
         customColumns,
         columnConfig: useMemo(
             () => ({
                 status: {
                     visible: statusGroup === 'ONGOING_AND_CLOSED',
                 },
-                amount: {
-                    position: 'right',
-                },
                 disputedAmount: {
                     visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                    position: 'right',
                 },
                 disputeReason: {
                     visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
@@ -127,9 +118,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         ),
     });
 
-    const removeAlert = useCallback(() => {
-        setAlert(null);
-    }, []);
+    const removeAlert = useCallback(() => setAlert(null), []);
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'noReportsFound',
@@ -141,7 +130,9 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         [error, onContactSupport]
     );
 
-    if (loading) setAlert(null);
+    useEffect(() => {
+        if (isLoading) removeAlert();
+    }, [isLoading, removeAlert]);
 
     return (
         <div className={BASE_CLASS}>
@@ -156,17 +147,22 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 onRowClick={{ callback: onRowClick }}
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
-                    status: ({ value, item }) => {
-                        return <DisputeStatusDisplay dispute={item}>{value}</DisputeStatusDisplay>;
+                    status: ({ item }) => {
+                        return <DisputeStatusTag dispute={item} />;
                     },
                     reason: ({ item }) => {
                         return item.reason.title;
                     },
                     respondBy: ({ item }) => {
+                        const isUrgent = isDisputeActionNeededUrgently(item);
                         return (
-                            <DisputeStatusDisplay type={'text'} dispute={item}>
+                            <Typography
+                                variant={TypographyVariant.BODY}
+                                className={cx(classes.statusContent, { [classes.statusContentUrgent]: isUrgent })}
+                            >
                                 {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
-                            </DisputeStatusDisplay>
+                                {isUrgent && <Icon name={'warning-filled'} />}
+                            </Typography>
                         );
                     },
                     currency: ({ item }) => {
@@ -186,7 +182,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_CATEGORY_LABELS[item.reason.category])}</span>,
+                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (

@@ -14,11 +14,14 @@ import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetail
 import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
+import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
-import DisputeStatusDisplay from '../../../DisputesOverview/components/DisputesTable/DisputeStatusDisplay';
+import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
+import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_CLASS,
@@ -26,7 +29,6 @@ import {
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
-import DisputeDataProperties from './DisputeDataProperties';
 
 const DisputeDataAlert = ({
     status,
@@ -105,14 +107,17 @@ export const DisputeData = ({
         )
     );
 
-    const statusBoxProps = {
+    const statusBoxOptions = useStatusBoxData({
         timezone: dispute?.payment.balanceAccount?.timeZone,
         createdAt: dispute?.dispute.createdAt,
         amountData: dispute?.dispute.amount,
         paymentMethodData: dispute?.payment.paymentMethod,
-    } as const;
+    } as const);
 
-    const statusBoxOptions = useStatusBoxData(statusBoxProps);
+    const disputeType = useMemo(() => {
+        const type = dispute?.dispute.type;
+        return type && i18n.get(DISPUTE_TYPES[type]);
+    }, [i18n, dispute]);
 
     const onAcceptClick = useCallback(() => {
         dispute && setDispute(dispute);
@@ -145,7 +150,15 @@ export const DisputeData = ({
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox {...statusBoxOptions} tag={<DisputeStatusDisplay dispute={dispute.dispute} />} />
+                <StatusBox
+                    {...statusBoxOptions}
+                    tag={
+                        <>
+                            {disputeType && <Tag label={disputeType} />}
+                            {dispute?.dispute && dispute.dispute.type !== 'NOTIFICATION_OF_FRAUD' && <DisputeStatusTag dispute={dispute.dispute} />}
+                        </>
+                    }
+                />
             </div>
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />

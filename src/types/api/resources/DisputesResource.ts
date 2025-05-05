@@ -4,21 +4,17 @@
  */
 
 export interface paths {
-    '/v1/disputes/{disputePspReference}/accept': {
+    '/v1/disputes': {
         /** @description Add @Operation annotation to provide a description */
-        post: operations['acceptDispute'];
-    };
-    '/v1/disputes/{disputePspReference}/documents/download': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['downloadDefenseDocument'];
+        get: operations['getDisputeList'];
     };
     '/v1/disputes/{disputePspReference}': {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getDisputeDetail'];
     };
-    '/v1/disputes': {
+    '/v1/disputes/{disputePspReference}/accept': {
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getDisputeList'];
+        post: operations['acceptDispute'];
     };
     '/v1/disputes/{disputePspReference}/defend': {
         /** @description Add @Operation annotation to provide a description */
@@ -28,6 +24,10 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations['getApplicableDefenseDocuments'];
     };
+    '/v1/disputes/{disputePspReference}/documents/download': {
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['downloadDefenseDocument'];
+    };
 }
 
 export type webhooks = Record<string, never>;
@@ -36,6 +36,10 @@ export interface components {
     schemas: {
         ApplicableDefenseDocumentRequirementLevel: 'OPTIONAL' | 'ONE_OR_MORE' | 'REQUIRED';
         AcceptDisputeResponse: {
+            disputePspReference: string;
+            status: string;
+        };
+        DefendDisputeResponse: {
             disputePspReference: string;
             status: string;
         };
@@ -73,16 +77,6 @@ export interface components {
             value: string;
             /** @description Description of the validation error. */
             message: string;
-        };
-        Link: {
-            /** @description Cursor for a different page */
-            cursor: string;
-        };
-        Links: {
-            /** @description Link to a different page */
-            next: components['schemas']['Link'];
-            /** @description Link to a different page */
-            prev: components['schemas']['Link'];
         };
         ApplicableDefenseDocument: {
             documentTypeCode: string;
@@ -128,7 +122,7 @@ export interface components {
             | 'AUTHORISATION_ERROR'
             | 'ADJUSTMENT'
             | 'OTHER';
-        DisputeDetailResponse: {
+        DisputeDetailResponseDTO: {
             defense?: components['schemas']['Defense'];
             dispute: components['schemas']['Dispute'];
             payment: components['schemas']['Payment'];
@@ -157,6 +151,16 @@ export interface components {
             /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
             type: string;
         };
+        Link: {
+            /** @description Cursor for a different page */
+            cursor: string;
+        };
+        Links: {
+            /** @description Link to a different page */
+            next: components['schemas']['Link'];
+            /** @description Link to a different page */
+            prev: components['schemas']['Link'];
+        };
         DisputeListItem: {
             amount: components['schemas']['Amount'];
             /** Format: date-time */
@@ -168,7 +172,7 @@ export interface components {
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
         };
-        DisputeListResponse: {
+        DisputeListResponseDTO: {
             _links: components['schemas']['Links'];
             data: components['schemas']['DisputeListItem'][];
         };
@@ -200,6 +204,26 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['AcceptDisputeResponse'];
+                };
+            };
+        };
+    };
+    defendDispute: {
+        parameters: {
+            path: {
+                disputePspReference: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'multipart/form-data': FormData;
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['DefendDisputeResponse'];
                 };
             };
         };
@@ -265,7 +289,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['DisputeDetailResponse'];
+                    'application/json': components['schemas']['DisputeDetailResponseDTO'];
                 };
             };
         };
@@ -288,27 +312,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['DisputeListResponse'];
-                };
-            };
-        };
-    };
-    defendDispute: {
-        parameters: {
-            path: {
-                disputePspReference: string;
-            };
-        };
-        requestBody: {
-            content: {
-                'multipart/form-data': FormData;
-            };
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                content: {
-                    'application/json': components['schemas']['AcceptDisputeResponse'];
+                    'application/json': components['schemas']['DisputeListResponseDTO'];
                 };
             };
         };

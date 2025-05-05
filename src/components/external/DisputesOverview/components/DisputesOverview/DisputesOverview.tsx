@@ -1,31 +1,44 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
-import { isFunction } from '../../../../../utils';
+import { isFunction, listFrom } from '../../../../../utils';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
+import { BASE_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import {
-    EARLIEST_DISPUTES_SINCE_DATE,
-    BASE_CLASS,
-    DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS,
-    DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS,
-    DISPUTES_OVERVIEW_STATUS_GROUP_CLASS,
-} from './constants';
-import './DisputesOverview.scss';
 import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import cx from 'classnames';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
+import { TabComponentProps } from '../../../../internal/Tabs/types';
+import Tabs from '../../../../internal/Tabs/Tabs';
+import './DisputesOverview.scss';
+
+const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
+const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
+const DISPUTE_REASONS_FILTER_PARAM = 'reasonCategories';
+
+type DisputeScheme = keyof typeof DISPUTE_PAYMENT_SCHEMES;
+type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
+
+const DISPUTE_SCHEMES_FILTER_VALUES = Object.keys(DISPUTE_PAYMENT_SCHEMES) as DisputeScheme[];
+const DISPUTE_REASONS_FILTER_VALUES = Object.keys(DISPUTE_REASON_CATEGORIES) as DisputeReason[];
+
+const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
+    id: statusGroup as IDisputeStatusGroup,
+    label: labelTranslationKey,
+    content: null,
+})) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -42,10 +55,13 @@ export const DisputesOverview = ({
 }: ExternalUIComponentProps<
     DisputeOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
+    const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
-    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>('CHARGEBACKS');
+
+    const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
+    const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
     const disputeDetails = useMemo(
         () => ({
@@ -58,13 +74,17 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (pageRequestParams: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async (
+            pageRequestParams: Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> & { statusGroup: IDisputeStatusGroup },
+            signal?: AbortSignal
+        ) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
-                    statusGroup: statusGroup,
+                    reasonCategories: listFrom(pageRequestParams[DISPUTE_REASONS_FILTER_PARAM]),
+                    schemeCodes: listFrom(pageRequestParams[DISPUTE_SCHEMES_FILTER_PARAM]),
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -73,7 +93,7 @@ export const DisputesOverview = ({
                 },
             });
         },
-        [activeBalanceAccount?.id, defaultParams, getDisputesCall, statusGroup]
+        [activeBalanceAccount?.id, defaultParams, getDisputesCall]
     );
 
     // FILTERS
@@ -81,17 +101,41 @@ export const DisputesOverview = ({
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
+    const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
+        [DISPUTE_REASONS_FILTER_PARAM]: undefined,
+        [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
+        statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
+    });
+
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
         useCursorPaginatedRecords<IDisputeListItem, 'data', string, FilterParam>({
             fetchRecords: getDisputes,
             dataField: 'data',
-            filterParams: defaultParams.current.defaultFilterParams,
+            filterParams: defaultFilters,
             initialFiltersSameAsDefault: true,
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
+
+    const disputeReasonsFilter = useMultiSelectionFilter({
+        mapFilterOptionName: useCallback((reason: DisputeReason) => i18n.get(DISPUTE_REASON_CATEGORIES[reason]), [i18n]),
+        filterParam: DISPUTE_REASONS_FILTER_PARAM,
+        filterValues: DISPUTE_REASONS_FILTER_VALUES,
+        defaultFilters,
+        updateFilters,
+        filters,
+    });
+
+    const disputeSchemesFilter = useMultiSelectionFilter({
+        mapFilterOptionName: useCallback((scheme: DisputeScheme) => DISPUTE_PAYMENT_SCHEMES[scheme], []),
+        filterParam: DISPUTE_SCHEMES_FILTER_PARAM,
+        filterValues: DISPUTE_SCHEMES_FILTER_VALUES,
+        defaultFilters,
+        updateFilters,
+        filters,
+    });
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
@@ -108,49 +152,34 @@ export const DisputesOverview = ({
         [updateDetails]
     );
 
+    const onStatusGroupChange = useMemo<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(() => {
+        let debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+        return ({ id: statusGroup }) => {
+            debounceTimeoutId && clearTimeout(debounceTimeoutId);
+
+            debounceTimeoutId = setTimeout(() => {
+                requestAnimationFrame(() => setStatusGroupFetchPending(false));
+                updateFilters({ statusGroup } as any);
+                debounceTimeoutId = null;
+            }, 500);
+
+            setStatusGroup(statusGroup);
+            setStatusGroupFetchPending(true);
+        };
+    }, [updateFilters]);
+
     useEffect(() => {
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
-
-    const { i18n } = useCoreContext();
 
     return (
         <div className={BASE_CLASS}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <div className={DISPUTES_OVERVIEW_GROUP_SELECTOR_CLASS}>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'CHARGEBACKS',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('CHARGEBACKS')}
-                >
-                    {i18n.get('disputes.chargebacks')}
-                </button>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'FRAUD_ALERTS',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('FRAUD_ALERTS')}
-                >
-                    {i18n.get('disputes.fraudAlerts')}
-                </button>
-                <button
-                    className={cx(DISPUTES_OVERVIEW_STATUS_GROUP_CLASS, {
-                        [DISPUTES_OVERVIEW_STATUS_GROUP_ACTIVE_CLASS]: statusGroup === 'ONGOING_AND_CLOSED',
-                    })}
-                    type={'button'}
-                    tabIndex={0}
-                    onClick={() => setStatusGroup('ONGOING_AND_CLOSED')}
-                >
-                    {i18n.get('disputes.ongoingAndClosed')}
-                </button>
-            </div>
+
+            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} defaultActiveTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
@@ -168,6 +197,8 @@ export const DisputesOverview = ({
                     timezone={'UTC'}
                     updateFilters={updateFilters}
                 />
+                <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
+                <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
             </FilterBar>
 
             <DisputeManagementModal
@@ -179,7 +210,7 @@ export const DisputesOverview = ({
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountId={activeBalanceAccount?.id}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
+                    loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
                     data={records}
                     showPagination={true}
                     limit={limit}

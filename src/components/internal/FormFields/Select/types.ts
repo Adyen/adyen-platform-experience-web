@@ -9,10 +9,10 @@ type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item'
     iconClassName?: HTMLAttributes<any>['className'];
 };
 
-export interface SelectItem {
+export interface SelectItem<T extends string = string> {
     disabled?: boolean;
     icon?: string;
-    id: string;
+    id: T;
     name: string;
     selectedOptionName?: string;
 }

@@ -1,6 +1,5 @@
-import { IDisputeDetail, IDisputeStatusGroup, IDisputeDefenseDocument, IDisputeListItem } from '../../src/types/api/models/disputes';
-
-const todayDate = new Date();
+import { IDisputeDetail, IDisputeStatusGroup, IDisputeDefenseDocument, IDisputeListItem, IDisputeType } from '../../src/types/api/models/disputes';
+import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 const getDate = (daysOffset = 0, originDate = new Date()) => {
     const date = new Date(originDate);
@@ -314,7 +313,7 @@ const FRAUD_ALERTS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
         status: 'LOST',
-        dueDate: new Date(todayDate.setHours(23)).toISOString(),
+        dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
@@ -323,7 +322,7 @@ const FRAUD_ALERTS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000042',
         status: 'LOST',
-        dueDate: new Date(todayDate.setHours(20)).toISOString(),
+        dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
         reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
@@ -449,6 +448,8 @@ const FRAUD_ALERTS = [
 ] satisfies Readonly<IDisputeListItem[]>;
 
 export const DISPUTES = [...CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] as const satisfies Readonly<IDisputeListItem[]>;
+
+export const MAIN_BALANCE_ACCOUNT = BALANCE_ACCOUNTS.find(({ id }) => id === 'BA32272223222B5CTDQPM6W2H')!;
 
 export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
     switch (status) {
@@ -657,16 +658,35 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     const allowedDefenseReasons = getAllowedDisputeDefenseReasons(dispute);
     const additionalDisputeDetails = {} as AdditionalDisputeDetails;
 
+    let disputeType: IDisputeType = 'CHARGEBACK';
+
+    switch (dispute.status) {
+        case 'UNDEFENDED':
+            disputeType = 'CHARGEBACK';
+            break;
+        case 'UNRESPONDED':
+            disputeType = 'REQUEST_FOR_INFORMATION';
+            break;
+        case 'LOST':
+            if (dispute.reason.category === 'FRAUD') {
+                disputeType = 'NOTIFICATION_OF_FRAUD';
+            }
+            break;
+    }
+
     additionalDisputeDetails.payment = {
         pspReference: 'KLAHFUW1329523KKL',
-        balanceAccount: { description: 'Main account', timeZone: 'UTC' },
+        balanceAccount: {
+            description: MAIN_BALANCE_ACCOUNT.description ?? MAIN_BALANCE_ACCOUNT.id,
+            timeZone: MAIN_BALANCE_ACCOUNT.timeZone,
+        },
         isRefunded: false,
         paymentMethod: dispute.paymentMethod,
     };
     additionalDisputeDetails.dispute = {
         ...dispute,
         pspReference: dispute.disputePspReference,
-        type: dispute.reason.category === 'FRAUD' ? 'NOTIFICATION_OF_FRAUD' : 'CHARGEBACK',
+        type: disputeType,
         allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
         ...(dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED'
             ? {
