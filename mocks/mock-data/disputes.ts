@@ -679,12 +679,9 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
                 switch (disputeDefenseReason) {
                     case 'AirlineFlightProvided':
                         return [
-                            { documentTypeCode: 'DisclosureAtPointOfInteraction', requirementLevel: 'REQUIRED' } as const,
                             { documentTypeCode: 'FlightTicketUsed', requirementLevel: 'ONE_OR_MORE' } as const,
                             { documentTypeCode: 'FlightTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
                             { documentTypeCode: 'PaperAirlineTicket', requirementLevel: 'ONE_OR_MORE' } as const,
-                            { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'OPTIONAL' } as const,
-                            { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
                         ] satisfies IDisputeDefenseDocument[];
 
                     case 'CancellationOrReturns':

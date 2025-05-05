@@ -84,6 +84,7 @@ export const DisputeData = ({
 
     //TODO: Also check if /defend endpoint has been returned from setup call which relates to submit button action
     const defendAuthorization = isFunction(useConfigContext().endpoints.getApplicableDefenseDocuments);
+    const acceptAuthorization = isFunction(useConfigContext().endpoints.acceptDispute);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
     const { data, isFetching } = useFetch(
@@ -121,17 +122,18 @@ export const DisputeData = ({
         return type && i18n.get(DISPUTE_TYPES[type]);
     }, [i18n, dispute]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
-    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
-    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
+    const showContactSupport = !!dispute?.dispute.defensibility && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(dispute?.dispute.defensibility);
+    const isDefendable = !!dispute?.dispute.defensibility && dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable =
+        !!dispute?.dispute.defensibility && ['ACCEPTABLE', 'DEFENDABLE'].includes(dispute?.dispute.defensibility) && acceptAuthorization;
 
     const onAcceptClick = useCallback(() => {
         if (isAcceptable) setFlowState('accept');
-    }, [isAcceptable, setDispute, setFlowState]);
+    }, [isAcceptable, setFlowState]);
 
     const onDefendClick = useCallback(() => {
-        if (isDefendable) setFlowState('defendReasonSelectionView');
-    }, [isDefendable, setDispute, setFlowState]);
+        setFlowState('defendReasonSelectionView');
+    }, [setFlowState]);
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];

@@ -19,16 +19,18 @@ import {
     CONTAINER_IN_FLOW_CLASS,
     CONTAINER_OVERLAY_CLASS,
     CONTAINER_OVERLAY_ID,
+    CONTENT_BODY_CLASS,
     CONTENT_CLASS,
     CONTENT_EXPANDABLE_CLASS,
+    CONTENT_TITLE_CLASS,
 } from './constants';
 
 const ExpandableCard = ({
     renderHeader,
     children,
-    headerDirection = 'column',
     filled,
     fullWidth,
+    headerDirection = 'column',
     inFlow,
     ...listeners
 }: PropsWithChildren<ExpandableCardProps>) => {
@@ -107,7 +109,9 @@ const ExpandableCard = ({
             {children ? (
                 <>
                     <BaseButton
-                        className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}
+                        className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, `${CONTAINER_CLASS}--${headerDirection}`, {
+                            [CONTAINER_FILLED_CLASS]: filled,
+                        })}
                         disabled={isOpen}
                         fullWidth={fullWidth}
                         aria-controls={CONTAINER_OVERLAY_ID}
@@ -118,21 +122,25 @@ const ExpandableCard = ({
                         data-testid={'expand-button'}
                         {...listeners}
                     >
-                        <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
-                            <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
-                            <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
-                            <div className={CHEVRON_CLASS}>
-                                <ChevronDown role="presentation" />
-                            </div>
+                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
+                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
+                        <div className={`${CHEVRON_CLASS}--${headerDirection}`}>
+                            <ChevronDown role="presentation" />
                         </div>
                     </BaseButton>
                     <BaseButton
                         id={CONTAINER_OVERLAY_ID}
-                        className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, CONTAINER_OVERLAY_CLASS, {
-                            [CONTAINER_FILLED_CLASS]: filled,
-                            [CONTAINER_HIDDEN_CLASS]: !isOpen,
-                            [CONTAINER_IN_FLOW_CLASS]: inNormalFlow,
-                        })}
+                        className={classNames(
+                            CONTAINER_CLASS,
+                            CONTAINER_BUTTON_CLASS,
+                            CONTAINER_OVERLAY_CLASS,
+                            `${CONTAINER_CLASS}--expanded-${headerDirection}`,
+                            {
+                                [CONTAINER_FILLED_CLASS]: filled,
+                                [CONTAINER_HIDDEN_CLASS]: !isOpen,
+                                [CONTAINER_IN_FLOW_CLASS]: inNormalFlow,
+                            }
+                        )}
                         disabled={!isOpen}
                         fullWidth={fullWidth}
                         aria-controls={CONTAINER_OVERLAY_ID}
@@ -143,29 +151,14 @@ const ExpandableCard = ({
                         data-testid={'collapse-button'}
                         {...listeners}
                     >
-                        {headerDirection === 'column' ? (
-                            <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
-                                <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
-                                <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
-                                    {renderHeader}
-                                    <div>{children}</div>
-                                </div>
-                                <div className={CHEVRON_CLASS}>
-                                    <ChevronUp role="presentation" />
-                                </div>
-                            </div>
-                        ) : (
-                            <div className={`${CONTENT_EXPANDABLE_CLASS}`}>
-                                <div className={`${CONTENT_EXPANDABLE_CLASS}-${headerDirection}`}>
-                                    <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
-                                    <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
-                                    <div className={CHEVRON_CLASS}>
-                                        <ChevronUp role="presentation" />
-                                    </div>
-                                </div>
-                                <div className={`${CONTENT_EXPANDABLE_CLASS}-body`}>{children}</div>
-                            </div>
-                        )}
+                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
+                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
+                            <div className={CONTENT_TITLE_CLASS}>{renderHeader}</div>
+                            <div className={CONTENT_BODY_CLASS}>{children}</div>
+                        </div>
+                        <div className={`${CHEVRON_CLASS}--${headerDirection}`}>
+                            <ChevronUp role="presentation" />
+                        </div>
                     </BaseButton>
                 </>
             ) : (

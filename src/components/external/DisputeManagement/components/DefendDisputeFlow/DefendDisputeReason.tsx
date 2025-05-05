@@ -51,7 +51,7 @@ export const DefendDisputeReason = () => {
                 disputePspReference: disputePspReference!,
             },
         });
-    }, [i18n.locale, selectedDefenseReason, disputePspReference]);
+    }, [i18n, selectedDefenseReason, disputePspReference, getApplicableDefenseDocuments]);
 
     const { error } = useFetch({
         queryFn: fetchCallback,

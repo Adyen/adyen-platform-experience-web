@@ -6,6 +6,8 @@ export const BASE_CLASS = NAMESPACE;
 // Element classes
 export const CONTAINER_CLASS = BASE_CLASS + '__container';
 export const CONTENT_CLASS = BASE_CLASS + '__content';
+export const CONTENT_TITLE_CLASS = CONTENT_CLASS + '--title';
+export const CONTENT_BODY_CLASS = CONTENT_CLASS + '--body';
 export const CHEVRON_CLASS = BASE_CLASS + '__chevron';
 
 // Modifier classes

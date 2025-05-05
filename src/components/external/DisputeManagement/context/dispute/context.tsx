@@ -18,7 +18,7 @@ interface DisputeFlowContextValue {
     clearFiles: () => void;
     clearStates: () => void;
     defendDisputePayload: FormData;
-    addDefendPayload: (name: string, file: File) => void;
+    addFileToDefendPayload: (name: string, file: File) => void;
     defendResponse: 'error' | 'success' | null;
     onDefendSubmit: (response: 'success' | 'error') => void;
 }
@@ -37,15 +37,16 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const [defendDisputePayload, setDefendDisputePayload] = useState<any | null>(null);
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 
-    const clearFiles = () => {
+    const clearFiles = useCallback(() => {
         const formData = new FormData();
         if (selectedDefenseReason) formData.set('defenseReason', selectedDefenseReason);
+        setSelectedDefenseReason(selectedDefenseReason);
         setDefendDisputePayload(formData);
-    };
+    }, [selectedDefenseReason]);
 
     useEffect(() => {
         clearFiles();
-    }, [selectedDefenseReason]);
+    }, [clearFiles]);
 
     const goBack = useCallback(() => {
         switch (flowState) {
@@ -63,7 +64,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setFlowState('details');
                 break;
         }
-    }, [flowState]);
+    }, [clearFiles, flowState]);
 
     const clearStates = useCallback(() => {
         setSelectedDefenseReason(null);
@@ -73,22 +74,21 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDefendResponse(null);
     }, [setApplicableDocuments, setDispute, setSelectedDefenseReason]);
 
-    const addDefendPayload = useCallback(
+    const addFileToDefendPayload = useCallback(
         (name: string, file: File) => {
             setDefendDisputePayload((previousFormData: FormData) => {
                 const formData = new FormData();
-                formData.set(name, file, file.name);
-
                 for (const [field, value] of previousFormData.entries()) {
                     if (value instanceof File) {
                         formData.set(field, value, value.name);
                     } else formData.set(field, value);
                 }
 
+                formData.set(name, file, file.name);
                 return formData;
             });
         },
-        [setDefendDisputePayload, defendDisputePayload]
+        [setDefendDisputePayload]
     );
 
     const onDefendSubmit = useCallback((response: 'success' | 'error') => {
@@ -99,7 +99,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     return (
         <DisputeFlowContext.Provider
             value={{
-                addDefendPayload,
+                addFileToDefendPayload,
                 applicableDocuments,
                 clearFiles,
                 clearStates,

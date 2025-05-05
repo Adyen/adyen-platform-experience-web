@@ -21,7 +21,7 @@ const documentRequirements: TranslationKey[] = [
 
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
-    const { clearFiles, dispute, applicableDocuments, goBack, addDefendPayload, defendDisputePayload, onDefendSubmit } = useDisputeFlow();
+    const { clearFiles, dispute, applicableDocuments, goBack, addFileToDefendPayload, defendDisputePayload, onDefendSubmit } = useDisputeFlow();
     const disputePspReference = dispute?.dispute.pspReference;
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
@@ -34,12 +34,12 @@ export const DefendDisputeFileUpload = () => {
                 setIsFetching(false);
                 clearFiles();
                 onDefendSubmit('success');
-            }, []),
+            }, [setIsFetching, clearFiles, onDefendSubmit]),
             onError: useCallback(() => {
                 setIsFetching(false);
                 clearFiles();
                 onDefendSubmit('error');
-            }, []),
+            }, [setIsFetching, clearFiles, onDefendSubmit]),
         },
     });
 
@@ -86,7 +86,7 @@ export const DefendDisputeFileUpload = () => {
                 >
                     <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (
-                            <li className={'adyen-pe-defend-dispute-document-requirements--item'}>
+                            <li className={'adyen-pe-defend-dispute-document-requirements--item'} key={`${item}-${index}`}>
                                 <Typography variant={TypographyVariant.BODY}>{i18n.get(item)}</Typography>
                             </li>
                         ))}
@@ -99,7 +99,7 @@ export const DefendDisputeFileUpload = () => {
                             key={document}
                             required={document.requirementLevel === 'REQUIRED'}
                             onChange={file => {
-                                if (file[0]) addDefendPayload(document.documentTypeCode, file[0]);
+                                if (file[0]) addFileToDefendPayload(document.documentTypeCode, file[0]);
                             }}
                         >
                             {i18n.get(document.documentTypeCode as TranslationKey)}
