@@ -1,3 +1,4 @@
+import { useEffect } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Button from '../../../../internal/Button/Button';
@@ -8,14 +9,18 @@ import Typography from '../../../../internal/Typography/Typography';
 import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
-export const DefendDisputeResponse = () => {
+export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
     const { i18n } = useCoreContext();
     const { clearStates, setFlowState, defendResponse } = useDisputeFlow();
+
+    useEffect(() => {
+        if (defendResponse === 'success') onDefendDispute?.();
+    }, [defendResponse, onDefendDispute]);
 
     const goBackToDetails = useCallback(() => {
         clearStates();
         setFlowState('details');
-    }, [setFlowState]);
+    }, [clearStates, setFlowState]);
 
     const goBackToFileUploadView = useCallback(() => {
         setFlowState('uploadDefenseFilesView');

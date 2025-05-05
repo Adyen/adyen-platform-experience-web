@@ -13,7 +13,6 @@ import Typography from '../../../../internal/Typography/Typography';
 import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
-//TODO: Add translation
 const documentRequirements: TranslationKey[] = [
     'dispute.defendDocumentMustBeInEnglish',
     'dispute.defendDocumentRecommendedSize',
@@ -22,8 +21,8 @@ const documentRequirements: TranslationKey[] = [
 
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
-    const { clearFiles, dispute, applicableDocuments, goBack, addUploadedFile, uploadedFiles, onDefendSubmit } = useDisputeFlow();
-    const disputeId = dispute?.dispute.pspReference;
+    const { clearFiles, dispute, applicableDocuments, goBack, addDefendPayload, defendDisputePayload, onDefendSubmit } = useDisputeFlow();
+    const disputePspReference = dispute?.dispute.pspReference;
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
     const [isFetching, setIsFetching] = useState(false);
@@ -46,10 +45,12 @@ export const DefendDisputeFileUpload = () => {
 
     const defendDisputeCallback = useCallback(() => {
         //TODO: add error case
-        if (!uploadedFiles) return;
         setIsFetching(true);
-        void defendDisputeMutation.mutate({ contentType: 'multipart/form-data', body: uploadedFiles }, { path: { disputePspReference: disputeId! } });
-    }, [disputeId, defendDisputeMutation, uploadedFiles]);
+        void defendDisputeMutation.mutate(
+            { contentType: 'multipart/form-data', body: defendDisputePayload },
+            { path: { disputePspReference: disputePspReference! } }
+        );
+    }, [disputePspReference, defendDisputeMutation, defendDisputePayload]);
 
     const actionButtons = useMemo(() => {
         return [
@@ -98,7 +99,7 @@ export const DefendDisputeFileUpload = () => {
                             key={document}
                             required={document.requirementLevel === 'REQUIRED'}
                             onChange={file => {
-                                if (file[0]) addUploadedFile(document.documentTypeCode, file[0]);
+                                if (file[0]) addDefendPayload(document.documentTypeCode, file[0]);
                             }}
                         >
                             {i18n.get(document.documentTypeCode as TranslationKey)}

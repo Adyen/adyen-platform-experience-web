@@ -7,9 +7,9 @@ import { DefendDisputeReason } from './DefendDisputeReason';
 import './DefendDisputeFlow.scss';
 import { DefendDisputeResponse } from './DefendDisputeResponse';
 
-export const DefendDisputeFlow = () => {
+export const DefendDisputeFlow = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
     const { i18n } = useCoreContext();
-    const { applicableDocuments, flowState, defendResponse } = useDisputeFlow();
+    const { applicableDocuments, flowState } = useDisputeFlow();
 
     return (
         <div className="adyen-pe-defend-dispute__container">
@@ -20,7 +20,7 @@ export const DefendDisputeFlow = () => {
             )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}
             {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload />}
-            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse />}
+            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse onDefendDispute={onDefendDispute} />}
         </div>
     );
 };

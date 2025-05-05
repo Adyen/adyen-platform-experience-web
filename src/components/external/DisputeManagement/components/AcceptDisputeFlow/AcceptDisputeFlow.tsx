@@ -36,9 +36,9 @@ export const AcceptDisputeFlow = ({
         queryFn: acceptDispute,
         options: {
             onSuccess: useCallback(() => {
-                onAcceptDispute?.();
                 clearStates();
                 setDisputeAccepted(true);
+                onAcceptDispute?.();
             }, [clearStates, onAcceptDispute]),
         },
     });

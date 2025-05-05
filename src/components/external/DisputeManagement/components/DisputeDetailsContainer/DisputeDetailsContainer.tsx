@@ -25,7 +25,7 @@ export const DisputeDetailsContainer = ({
         case 'defendReasonSelectionView':
         case 'uploadDefenseFilesView':
         case 'defenseSubmitResponseView':
-            return <DefendDisputeFlow />;
+            return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
         default:
             return null;
     }

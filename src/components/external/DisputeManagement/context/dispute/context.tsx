@@ -1,8 +1,7 @@
 import { createContext } from 'preact';
-import { memo, PropsWithChildren } from 'preact/compat';
+import { memo, PropsWithChildren, useEffect } from 'preact/compat';
 import { useCallback, useContext, useState } from 'preact/hooks';
 import { IDisputeDefenseDocument, IDisputeDetail } from '../../../../../types/api/models/disputes';
-import uploadedFile from '../../../../internal/FormFields/FileInput/components/UploadedFile';
 
 export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView' | 'defenseSubmitResponseView';
 
@@ -15,11 +14,11 @@ interface DisputeFlowContextValue {
     selectedDefenseReason: string | null;
     setSelectedDefenseReason: (selectedDefenseReason: string) => void;
     applicableDocuments: IDisputeDefenseDocument[] | null;
-    setApplicableDocuments: (documents: IDisputeDefenseDocument[]) => void;
+    setApplicableDocuments: (documents: IDisputeDefenseDocument[] | null) => void;
     clearFiles: () => void;
     clearStates: () => void;
-    uploadedFiles: FormData | null;
-    addUploadedFile: (name: string, file: File) => void;
+    defendDisputePayload: FormData;
+    addDefendPayload: (name: string, file: File) => void;
     defendResponse: 'error' | 'success' | null;
     onDefendSubmit: (response: 'success' | 'error') => void;
 }
@@ -34,13 +33,19 @@ export const DisputeFlowContext = createContext<DisputeFlowContextValue | undefi
 export const DisputeContextProvider = memo(({ dispute, setDispute, children }: PropsWithChildren<DisputeProviderProps>) => {
     const [flowState, setFlowState] = useState<DisputeFlowState>('details');
     const [selectedDefenseReason, setSelectedDefenseReason] = useState<string | null>(null);
-    const [applicableDocuments, setApplicableDocuments] = useState<IDisputeDefenseDocument[]>([]);
-    const [uploadedFiles, setUploadedFiles] = useState<any | null>(null);
+    const [applicableDocuments, setApplicableDocuments] = useState<IDisputeDefenseDocument[] | null>([]);
+    const [defendDisputePayload, setDefendDisputePayload] = useState<any | null>(null);
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 
     const clearFiles = () => {
-        setUploadedFiles(null);
+        const formData = new FormData();
+        if (selectedDefenseReason) formData.set('defenseReason', selectedDefenseReason);
+        setDefendDisputePayload(formData);
     };
+
+    useEffect(() => {
+        clearFiles();
+    }, [selectedDefenseReason]);
 
     const goBack = useCallback(() => {
         switch (flowState) {
@@ -62,24 +67,28 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
 
     const clearStates = useCallback(() => {
         setSelectedDefenseReason(null);
-        setApplicableDocuments([]);
+        setApplicableDocuments(null);
         setDispute(undefined);
-        setUploadedFiles(null);
+        setDefendDisputePayload(null);
         setDefendResponse(null);
     }, [setApplicableDocuments, setDispute, setSelectedDefenseReason]);
 
-    const addUploadedFile = useCallback(
+    const addDefendPayload = useCallback(
         (name: string, file: File) => {
-            let uploadedFile = new FormData();
-            if (uploadedFiles?.values() && [...uploadedFiles?.values()].length !== 0) {
-                uploadedFile = uploadedFiles;
-            } else {
-                uploadedFile.set('defenseReason', selectedDefenseReason!);
-            }
-            uploadedFile.append(name, file);
-            setUploadedFiles(uploadedFile);
+            setDefendDisputePayload((previousFormData: FormData) => {
+                const formData = new FormData();
+                formData.set(name, file, file.name);
+
+                for (const [field, value] of previousFormData.entries()) {
+                    if (value instanceof File) {
+                        formData.set(field, value, value.name);
+                    } else formData.set(field, value);
+                }
+
+                return formData;
+            });
         },
-        [setUploadedFiles, uploadedFiles]
+        [setDefendDisputePayload, defendDisputePayload]
     );
 
     const onDefendSubmit = useCallback((response: 'success' | 'error') => {
@@ -90,7 +99,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     return (
         <DisputeFlowContext.Provider
             value={{
-                addUploadedFile,
+                addDefendPayload,
                 applicableDocuments,
                 clearFiles,
                 clearStates,
@@ -103,7 +112,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setDispute,
                 selectedDefenseReason,
                 setSelectedDefenseReason,
-                uploadedFiles,
+                defendDisputePayload,
                 onDefendSubmit,
             }}
         >

@@ -121,21 +121,17 @@ export const DisputeData = ({
         return type && i18n.get(DISPUTE_TYPES[type]);
     }, [i18n, dispute]);
 
-    const onAcceptClick = useCallback(() => {
-        dispute && setDispute(dispute);
-        setFlowState('accept');
-    }, [dispute, setDispute, setFlowState]);
-
-    const onDefendClick = useCallback(() => {
-        dispute && setDispute(dispute);
-        if (dispute?.dispute.defensibility === 'DEFENDABLE') {
-            setFlowState('defendReasonSelectionView');
-        }
-    }, [dispute, setDispute, setFlowState]);
-
     const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
     const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
     const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
+
+    const onAcceptClick = useCallback(() => {
+        if (isAcceptable) setFlowState('accept');
+    }, [isAcceptable, setDispute, setFlowState]);
+
+    const onDefendClick = useCallback(() => {
+        if (isDefendable) setFlowState('defendReasonSelectionView');
+    }, [isDefendable, setDispute, setFlowState]);
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];

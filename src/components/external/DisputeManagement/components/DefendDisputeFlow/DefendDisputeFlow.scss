@@ -10,7 +10,7 @@
     }
 
     &-document-requirements {
-        font-family: system-ui;
+        font-family: inherit;
 
         &--list {
             margin: 0;
@@ -25,12 +25,10 @@
 
     &__error-icon {
         color: style.token(color-background-critical-strong);
-        height: style.token(spacer-100);
-        width: style.token(spacer-100);
+        font-size: style.token(spacer-100);
 
         svg {
-            height: inherit;
-            width: inherit;
+            display: block;
         }
     }
 
@@ -48,7 +46,6 @@
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-070);
-        height: 218px;
         justify-content: center;
     }
 
@@ -57,18 +54,15 @@
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-070);
-        height: 218px;
         justify-content: center;
     }
 
     &__success-icon {
         color: style.token(color-background-success-strong);
-        height: style.token(spacer-100);
-        width: style.token(spacer-100);
+        font-size: style.token(spacer-100);
 
         svg {
-            height: inherit;
-            width: inherit;
+            display: block;
         }
     }
 }

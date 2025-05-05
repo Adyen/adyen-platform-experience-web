@@ -1,7 +1,8 @@
+import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useMutation from '../../../../../hooks/useMutation/useMutation';
+import { useFetch } from '../../../../../hooks/useFetch';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -19,7 +20,7 @@ export const DefendDisputeReason = () => {
         useDisputeFlow();
 
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
-    const disputeId = dispute?.dispute?.pspReference;
+    const disputePspReference = dispute?.dispute?.pspReference;
     const [isFetching, setIsFetching] = useState<boolean>(false);
 
     //TODO: Fix the translations for defend reason
@@ -28,7 +29,7 @@ export const DefendDisputeReason = () => {
             Object.freeze(
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
-                    name: i18n.has(`defendReason.${reason}`) ? i18n.get(`defendReason.${reason}` as TranslationKey) : reason,
+                    name: i18n.has(`disputes.defenseReason.${reason}`) ? i18n.get(`disputes.defenseReason.${reason}` as TranslationKey) : reason,
                 }))
             ) ?? [],
         [i18n, allowedDefenseReasons]
@@ -41,33 +42,41 @@ export const DefendDisputeReason = () => {
 
     const { getApplicableDefenseDocuments } = useConfigContext().endpoints;
 
-    const getApplicableDocumentsMutation = useMutation({
-        queryFn: getApplicableDefenseDocuments,
-        options: {
+    const fetchCallback = useCallback(async () => {
+        return getApplicableDefenseDocuments?.(EMPTY_OBJECT, {
+            query: {
+                defenseReason: selectedDefenseReason!,
+            },
+            path: {
+                disputePspReference: disputePspReference!,
+            },
+        });
+    }, [i18n.locale, selectedDefenseReason, disputePspReference]);
+
+    const { error } = useFetch({
+        queryFn: fetchCallback,
+        fetchOptions: {
+            enabled: isFetching,
             onSuccess: useCallback(
-                ({ data }: { data: IDisputeDefenseDocument[] }) => {
+                (response: { data: IDisputeDefenseDocument[] } | undefined) => {
                     setIsFetching(false);
-                    setApplicableDocuments(data ?? null);
-                    if (data?.length > 0) setFlowState('uploadDefenseFilesView');
+                    setApplicableDocuments(response?.data ?? null);
+                    if (response?.data && response?.data.length > 0) setFlowState('uploadDefenseFilesView');
                 },
                 [setApplicableDocuments, setIsFetching, setFlowState]
             ),
         },
     });
 
+    useEffect(() => {
+        setIsFetching(false);
+    }, [error]);
+
     const onDefenseReasonSubmit = useCallback(() => {
         if (applicableDocuments?.length) return setFlowState('uploadDefenseFilesView');
 
         setIsFetching(true);
-        void getApplicableDocumentsMutation.mutate(EMPTY_OBJECT, {
-            query: {
-                defenseReason: selectedDefenseReason!,
-            },
-            path: {
-                disputePspReference: disputeId!,
-            },
-        });
-    }, [applicableDocuments, disputeId, getApplicableDocumentsMutation, setFlowState, selectedDefenseReason]);
+    }, [applicableDocuments, setFlowState]);
 
     const onChange = useCallback(
         (param: any) => {
