@@ -1,3 +1,4 @@
+import { useMemo } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
@@ -17,15 +18,20 @@ export const DisputeDetailsContainer = ({
 }) => {
     const { flowState, goBack } = useDisputeFlow();
 
+    const isDefendFlow = useMemo(
+        () => ['defendReasonSelectionView', 'uploadDefenseFilesView', 'defenseSubmitResponseView'].includes(flowState),
+        [flowState]
+    );
+
+    if (isDefendFlow) {
+        return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
+    }
+
     switch (flowState) {
         case 'details':
             return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} />;
         case 'accept':
             return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
-        case 'defendReasonSelectionView':
-        case 'uploadDefenseFilesView':
-        case 'defenseSubmitResponseView':
-            return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
         default:
             return null;
     }
