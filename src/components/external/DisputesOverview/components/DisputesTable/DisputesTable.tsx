@@ -154,13 +154,14 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         return item.reason.title;
                     },
                     respondBy: ({ item }) => {
+                        if (!item.dueDate) return null;
                         const isUrgent = isDisputeActionNeededUrgently(item);
                         return (
                             <Typography
                                 variant={TypographyVariant.BODY}
                                 className={cx(classes.statusContent, { [classes.statusContentUrgent]: isUrgent })}
                             >
-                                {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
+                                {dateFormat(item.dueDate, DATE_FORMAT_DISPUTES)}
                                 {isUrgent && <Icon name={'warning-filled'} />}
                             </Typography>
                         );
@@ -178,8 +179,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         );
                     },
                     createdAt: ({ value }) => {
-                        if (!value) return null;
-                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
+                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
                     disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,
