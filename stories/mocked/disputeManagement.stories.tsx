@@ -38,8 +38,8 @@ export const RFIDefendableExternally: ElementStory<typeof DisputeManagementEleme
     },
 };
 
-export const NOFNoRedirect: ElementStory<typeof DisputeManagementElement> = {
-    name: 'NOF - No Redirect',
+export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Notification of fraud',
     args: {
         mockedApi: true,
     },
