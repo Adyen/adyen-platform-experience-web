@@ -7,6 +7,201 @@ const getDate = (daysOffset = 0, originDate = new Date()) => {
     return date.toISOString();
 };
 
+const DEFAULT_DETAIl_DEFENSE: IDisputeDetail['defense'] = {
+    defendedOn: getDate(-1),
+    defendedThroughComponent: true,
+    reason: 'Dispute reason',
+};
+const DEFAULT_DETAIl_PAYMENT: IDisputeDetail['payment'] = {
+    balanceAccount: { timeZone: 'UTC', description: 'Main balance account' },
+    isRefunded: false,
+    merchantReference: 'b2c3d4e5-f6g7-5890-efgh',
+    paymentMethod: { lastFourDigits: '1234', type: 'visa' },
+    pspReference: 'a1b2c3d4-e5f6-4789-abcd',
+};
+
+const DEFAULT_DETAIl_DISPUTE: IDisputeDetail['dispute'] = {
+    amount: {
+        value: 211100,
+        currency: 'EUR',
+    },
+    dueDate: new Date(new Date().setHours(23)).toISOString(),
+    createdAt: getDate(-10),
+    pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
+    //
+    reason: {
+        category: 'REQUEST_FOR_INFORMATION',
+        title: 'Request for information',
+        code: '1234',
+    },
+    allowedDefenseReasons: [],
+    defensibility: 'DEFENDABLE',
+    type: 'CHARGEBACK',
+    status: 'UNDEFENDED',
+};
+
+const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
+    dispute: DEFAULT_DETAIl_DISPUTE,
+    defense: DEFAULT_DETAIl_DEFENSE,
+    payment: DEFAULT_DETAIl_PAYMENT,
+};
+
+// CHARGEBACKS
+
+export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'UNDEFENDED',
+    },
+};
+
+export const CHARGEBACK_WON: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'WON',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+export const CHARGEBACK_LOST: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'LOST',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'ACCEPTED',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIl_DISPUTE,
+        status: 'UNDEFENDED',
+        defensibility: 'DEFENDABLE',
+    },
+};
+export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIl_DISPUTE,
+        status: 'UNDEFENDED',
+        defensibility: 'DEFENDABLE_EXTERNALLY',
+    },
+};
+export const CHARGEBACK_PENDING_ACCEPTABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIl_DISPUTE,
+        status: 'UNDEFENDED',
+        defensibility: 'ACCEPTABLE',
+    },
+};
+
+export const CHARGEBACK_PENDING: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    defense: undefined,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'PENDING',
+        defensibility: 'DEFENDABLE',
+    },
+};
+
+export const CHARGEBACK_PENDING_NOT_ACTIONABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...CHARGEBACK_PENDING.dispute,
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+export const CHARGEBACK_DEFENDED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIl_DISPUTE,
+        status: 'RESPONDED',
+    },
+    defense: {
+        ...DEFAULT_DETAIl_DEFENSE,
+        suppliedDocuments: ['Document1', 'Document2'],
+    },
+};
+export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIl_DISPUTE,
+        status: 'RESPONDED',
+    },
+    defense: {
+        ...DEFAULT_DETAIl_DEFENSE,
+        defendedThroughComponent: false,
+    },
+};
+
+// REQUEST FOR INFORMATION
+
+export const RFI_UNRESPONDED_DEFENDABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'UNRESPONDED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'DEFENDABLE',
+    },
+};
+
+export const RFI_UNRESPONDED_ACCEPTABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'UNRESPONDED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'ACCEPTABLE',
+    },
+};
+
+export const RFI_PENDING: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'PENDING',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+export const RFI_EXPIRED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'EXPIRED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+// NOTIFICATION OF FRAUD
+
+export const NOTIFICATION_OF_FRAUD: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        status: 'LOST',
+        type: 'NOTIFICATION_OF_FRAUD',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
 const MC_CONSUMER_DEFENSE_REASONS = [
     'AirlineFlightProvided',
     'CancellationOrReturns',
