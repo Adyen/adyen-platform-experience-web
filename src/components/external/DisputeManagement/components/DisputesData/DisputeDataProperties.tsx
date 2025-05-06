@@ -44,7 +44,7 @@ const disputeDataKeys = {
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount?.timeZone);
+    const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount.timeZone);
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
 
@@ -85,7 +85,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             },
 
             // reason code
-            disputeReason.code && type !== 'NOTIFICATION_OF_FRAUD'
+            type !== 'NOTIFICATION_OF_FRAUD'
                 ? {
                       key: disputeDataKeys.reasonCode,
                       value: disputeReason.code,
@@ -117,13 +117,11 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             },
 
             // balance account
-            balanceAccount?.description
-                ? {
-                      key: disputeDataKeys.account,
-                      value: balanceAccount.description,
-                      id: 'account',
-                  }
-                : SKIP_ITEM,
+            {
+                key: disputeDataKeys.account,
+                value: balanceAccount.description,
+                id: 'account',
+            },
 
             // psp reference
             {

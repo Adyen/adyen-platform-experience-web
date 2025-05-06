@@ -48,6 +48,10 @@ const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived
 
 const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 
+const CHARGEBACK_REASON_TITLE = 'Fraud - Invalid credit card use';
+const CONSUMER_DISPUTE_REASON_TITLE = 'Consumer dispute - Cardholder dispute - Defective / Not as described';
+const FRAUD_ALERT_REASON_TITLE = 'Fraudulent use of account number';
+
 const CHARGEBACKS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
@@ -55,7 +59,7 @@ const CHARGEBACKS = [
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 211100 },
     },
     {
@@ -64,7 +68,7 @@ const CHARGEBACKS = [
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
-        reason: { category: 'REQUEST_FOR_INFORMATION', code: '4835', title: 'title' },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 222200 },
     },
     {
@@ -73,7 +77,7 @@ const CHARGEBACKS = [
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
-        reason: { category: 'ADJUSTMENT', code: '4835', title: 'title' },
+        reason: { category: 'ADJUSTMENT', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 233300 },
     },
     {
@@ -82,7 +86,7 @@ const CHARGEBACKS = [
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'USD', value: 244400 },
     },
     {
@@ -91,7 +95,7 @@ const CHARGEBACKS = [
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 255500 },
     },
     {
@@ -100,7 +104,7 @@ const CHARGEBACKS = [
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'USD', value: 266600 },
     },
     {
@@ -109,7 +113,7 @@ const CHARGEBACKS = [
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 277700 },
     },
     {
@@ -118,7 +122,7 @@ const CHARGEBACKS = [
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 288800 },
     },
     {
@@ -127,7 +131,7 @@ const CHARGEBACKS = [
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 299900 },
     },
     {
@@ -136,7 +140,7 @@ const CHARGEBACKS = [
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 311000 },
     },
     {
@@ -145,7 +149,7 @@ const CHARGEBACKS = [
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'EUR', value: 322100 },
     },
     {
@@ -154,7 +158,7 @@ const CHARGEBACKS = [
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'USD', value: 333200 },
     },
     {
@@ -163,7 +167,7 @@ const CHARGEBACKS = [
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 344300 },
     },
     {
@@ -172,7 +176,7 @@ const CHARGEBACKS = [
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 355400 },
     },
     {
@@ -181,7 +185,7 @@ const CHARGEBACKS = [
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 366500 },
     },
 ] satisfies Readonly<IDisputeListItem[]>;
@@ -192,7 +196,7 @@ const ALL_DISPUTES = [
         status: 'PENDING',
         createdAt: getDate(-3),
         paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 377600 },
     },
     {
@@ -200,7 +204,7 @@ const ALL_DISPUTES = [
         status: 'EXPIRED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 388700 },
     },
     {
@@ -208,7 +212,7 @@ const ALL_DISPUTES = [
         status: 'ACCEPTED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0018', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 399800 },
     },
     {
@@ -216,7 +220,7 @@ const ALL_DISPUTES = [
         status: 'WON',
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0019', description: 'Klarna Pay Later' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 410900 },
     },
     {
@@ -224,7 +228,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-5),
         paymentMethod: { type: 'amex', lastFourDigits: '0020', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 422000 },
     },
     {
@@ -232,7 +236,7 @@ const ALL_DISPUTES = [
         status: 'PENDING',
         createdAt: getDate(-5),
         paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'EUR', value: 433100 },
     },
     {
@@ -240,7 +244,7 @@ const ALL_DISPUTES = [
         status: 'WON',
         createdAt: getDate(-5),
         paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa Credit Card' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 444200 },
     },
     {
@@ -248,7 +252,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-6),
         paymentMethod: { type: 'klarna', lastFourDigits: '0024', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 466400 },
     },
     {
@@ -256,7 +260,7 @@ const ALL_DISPUTES = [
         status: 'EXPIRED',
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 477500 },
     },
     {
@@ -264,7 +268,7 @@ const ALL_DISPUTES = [
         status: 'PENDING',
         createdAt: getDate(-8),
         paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 488600 },
     },
     {
@@ -272,7 +276,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'EUR', value: 499700 },
     },
     {
@@ -280,7 +284,7 @@ const ALL_DISPUTES = [
         status: 'WON',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
-        reason: { category: 'OTHER', code: '4835', title: 'title' },
+        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 244100 },
     },
     {
@@ -288,7 +292,7 @@ const ALL_DISPUTES = [
         status: 'ACCEPTED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'EUR', value: 266300 },
     },
     {
@@ -296,7 +300,7 @@ const ALL_DISPUTES = [
         status: 'EXPIRED',
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'title' },
+        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
         amount: { currency: 'USD', value: 277400 },
     },
     {
@@ -304,7 +308,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', lastFourDigits: '0038', description: 'PayPal' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: 'title' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
         amount: { currency: 'USD', value: 321800 },
     },
 ] satisfies Readonly<IDisputeListItem[]>;
@@ -316,7 +320,7 @@ const FRAUD_ALERTS = [
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 211100 },
     },
     {
@@ -325,7 +329,7 @@ const FRAUD_ALERTS = [
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 222200 },
     },
     {
@@ -334,7 +338,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', lastFourDigits: '0003', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 233300 },
     },
     {
@@ -343,7 +347,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', lastFourDigits: '0004', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 244400 },
     },
     {
@@ -352,7 +356,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 255500 },
     },
     {
@@ -361,7 +365,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(13),
         createdAt: getDate(-4),
         paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 266600 },
     },
     {
@@ -370,7 +374,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(15),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 577700 },
     },
     {
@@ -379,7 +383,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', lastFourDigits: '0008', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 200000 },
     },
     {
@@ -388,7 +392,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', lastFourDigits: '0009', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 299900 },
     },
     {
@@ -397,7 +401,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 311000 },
     },
     {
@@ -406,7 +410,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(22),
         createdAt: getDate(-2),
         paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 412000 },
     },
     {
@@ -415,7 +419,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(23),
         createdAt: getDate(-2),
         paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 911200 },
     },
     {
@@ -424,7 +428,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', lastFourDigits: '0013', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 344300 },
     },
     {
@@ -433,7 +437,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', lastFourDigits: '0014', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'USD', value: 755400 },
     },
     {
@@ -442,7 +446,7 @@ const FRAUD_ALERTS = [
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: 'Fraudulent use of account number' },
+        reason: { category: 'FRAUD', code: '4835', title: FRAUD_ALERT_REASON_TITLE },
         amount: { currency: 'EUR', value: 510500 },
     },
 ] satisfies Readonly<IDisputeListItem[]>;
