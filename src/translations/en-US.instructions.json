@@ -102,6 +102,7 @@
     "disputes.docsSubmitted": "Label for a tag to inform user about the status of dispute when dispute defend documents are submitted",
     "disputes.evidence": "Label referring to evidence submitted for a dispute.",
     "disputes.expired": "Label for a tag to inform user about the status of dispute when dispute defense date expired",
+    "disputes.expiredOn": "Label referring to the date a dispute got expired.",
     "disputes.fraud": "Label indicating fraud as the reason for the dispute.",
     "disputes.fraudAlerts": "Label for fraud alerts",
     "disputes.goBack": "Button label used for navigating to the previous step.",
