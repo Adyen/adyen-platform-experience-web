@@ -1,13 +1,16 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
+import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 import {
+    CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
+    NOTIFICATION_OF_FRAUD,
+    RFI_UNRESPONDED_ACCEPTABLE,
 } from '../mock-data/disputes';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 
@@ -166,3 +169,29 @@ export const disputesMocks = [
         });
     }),
 ];
+
+const httpGetDetails = http.get<any, any, IDisputeDetail>;
+
+export const DISPUTES_HANDLERS = {
+    undefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY);
+            }),
+        ],
+    },
+    rfi_acceptable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_UNRESPONDED_ACCEPTABLE);
+            }),
+        ],
+    },
+    nof_no_redirect: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(NOTIFICATION_OF_FRAUD);
+            }),
+        ],
+    },
+};

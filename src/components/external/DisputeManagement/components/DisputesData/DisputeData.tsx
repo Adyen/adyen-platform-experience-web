@@ -4,7 +4,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDisputeListItem } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail, IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -19,32 +19,43 @@ import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
+    DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 
 const DisputeDataAlert = ({
     status,
     isDefended,
+    dueDate,
+    timeZone,
+    type,
     showContactSupport = true,
 }: {
     status: IDisputeListItem['status'];
     isDefended: boolean;
     showContactSupport: boolean;
+    dueDate: string | undefined;
+    timeZone: string | undefined;
+    type: IDisputeDetail['dispute']['type'];
 }) => {
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
 
     if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
         return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
-    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport) {
+    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED' || type === 'NOTIFICATION_OF_FRAUD') && showContactSupport) {
         //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
         const contactSupportLabel = i18n.get('contactSupport');
         return (
@@ -52,16 +63,40 @@ const DisputeDataAlert = ({
                 type={AlertTypeOption.WARNING}
                 variant={AlertVariantOption.TIP}
                 description={
-                    <Translation
-                        translationKey={'disputes.contactSupportToDefendThisDispute'}
-                        fills={{
-                            contactSupport: (
-                                <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
-                                    {contactSupportLabel}
-                                </Link>
-                            ),
-                        }}
-                    />
+                    <div className={DISPUTE_DATA_ALERT}>
+                        <div>
+                            <Translation
+                                translationKey={
+                                    type === 'REQUEST_FOR_INFORMATION'
+                                        ? 'disputes.contactSupportToDefendThisRequestForInformation'
+                                        : type === 'NOTIFICATION_OF_FRAUD'
+                                        ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
+                                        : 'disputes.contactSupportToDefendThisDispute'
+                                }
+                                fills={{
+                                    contactSupport: (
+                                        <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
+                                            {contactSupportLabel}
+                                        </Link>
+                                    ),
+                                }}
+                            />
+                        </div>
+                        {type !== 'NOTIFICATION_OF_FRAUD' && (
+                            <div>
+                                <Translation
+                                    translationKey={'disputes.theResponseDeadlineIs'}
+                                    fills={{
+                                        date: (
+                                            <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
+                                                {dueDate ? dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE) : null}
+                                            </Typography>
+                                        ),
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
                 }
             />
         );
@@ -124,7 +159,10 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
+    const showContactSupport =
+        dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' ||
+        dispute?.dispute.defensibility === 'ACCEPTABLE' ||
+        dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
     const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
     const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
 
@@ -161,13 +199,16 @@ export const DisputeData = ({
                 />
             </div>
 
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
             <DisputeDataAlert
+                type={dispute.dispute.type}
+                timeZone={dispute.payment.balanceAccount?.timeZone}
+                dueDate={dispute.dispute.dueDate}
                 status={dispute.dispute.status}
                 isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
                 showContactSupport={showContactSupport}
             />
+
+            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
             {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
