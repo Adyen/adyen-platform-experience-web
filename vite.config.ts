@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { defineConfig, type PluginOption, UserConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import version from './config/version';
 import packageJson from './package.json';
@@ -13,7 +13,6 @@ import { preact } from '@preact/preset-vite';
 import { checker } from 'vite-plugin-checker';
 import { realApiProxies } from './endpoints/realApiProxies';
 import svgr from 'vite-plugin-svgr';
-import { VitestInlineConfig } from 'vitest/dist/chunks/vite.BdBj-UWY';
 const currentVersion = version();
 const externalDependencies = Object.keys(packageJson.dependencies);
 
@@ -37,11 +36,11 @@ async function getPlaygroundEntrypoints() {
     };
 }
 
-export default defineConfig(async ({ mode }): Promise<UserConfig & { test: VitestInlineConfig }> => {
+export default defineConfig(async ({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
     const { apiConfigs, playground } = getEnvironment(mode);
     return {
-        root: mode === 'demo' ? demoPlaygroundDir : './playground',
+        ...(mode === 'test' ? {} : { root: mode === 'demo' ? demoPlaygroundDir : './playground' }),
         base: '',
         json: {
             stringify: true,
@@ -122,15 +121,15 @@ export default defineConfig(async ({ mode }): Promise<UserConfig & { test: Vites
                 provider: 'v8',
                 all: true,
                 include: [
-                    'src/components/internal/**/*.{ts,tsx}',
-                    'src/components/utils/*.{ts,tsx}',
-                    'src/hooks/**/*.{ts,tsx}',
-                    'src/primitives/**/*.{ts,tsx}',
-                    'src/utils/**/*.{ts,tsx}',
-                    'src/core/**/*.{ts,tsx}',
+                    'components/internal/**/*.{ts,tsx}',
+                    'components/utils/*.{ts,tsx}',
+                    'hooks/**/*.{ts,tsx}',
+                    'primitives/**/*.{ts,tsx}',
+                    'utils/**/*.{ts,tsx}',
+                    'core/**/*.{ts,tsx}',
                 ],
-                exclude: ['src/**/index.{ts,tsx}', 'src/**/constants.{ts,tsx}', 'src/**/types.ts', 'node_modules'],
-                reporter: 'lcov',
+                exclude: ['**/index.{ts,tsx}', '**/constants.{ts,tsx}', '**/types.ts', 'node_modules'],
+                reporter: ['lcov', 'text'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
             },
             sequence: {
