@@ -10,7 +10,7 @@ import {
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
-    RFI_UNRESPONDED_ACCEPTABLE,
+    RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY,
 } from '../mock-data/disputes';
 
 const mockEndpoints = endpoints('mock').disputes;
@@ -182,7 +182,7 @@ export const DISPUTES_HANDLERS = {
     rfi_acceptable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
-                return HttpResponse.json(RFI_UNRESPONDED_ACCEPTABLE);
+                return HttpResponse.json(RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },

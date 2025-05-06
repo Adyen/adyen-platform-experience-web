@@ -9,6 +9,8 @@ test.describe('Request for information - Defendable externally', () => {
     });
 
     test('should render a contact support alert when dispute is not defensable trough the component', async ({ page }) => {
+        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Request for information' })).toBeVisible();
+
         await expect(page.getByRole('alert')).toBeVisible();
 
         const icon = page.locator('.adyen-pe-alert__icon');
