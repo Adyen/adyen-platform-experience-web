@@ -68,4 +68,22 @@
     &__contact-support {
         display: inline;
     }
+
+    &__issuer-comment {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        .adyen-pe-button--tertiary {
+            background: transparent;
+            font-family: inherit;
+            margin: calc(#{style.token(spacer-020)} * -1) 0;
+            padding: style.token(spacer-020) 0;
+            width: max-content;
+        }
+
+        .adyen-pe-button__label {
+            font-weight: style.token(text-body-strongest-font-weight);
+        }
+    }
 }

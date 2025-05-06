@@ -52,6 +52,9 @@ const CHARGEBACK_REASON_TITLE = 'Fraud - Invalid credit card use';
 const CONSUMER_DISPUTE_REASON_TITLE = 'Consumer dispute - Cardholder dispute - Defective / Not as described';
 const FRAUD_ALERT_REASON_TITLE = 'Fraudulent use of account number';
 
+const ISSUER_COMMENT =
+    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here. The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here. The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
+
 const CHARGEBACKS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
@@ -64,7 +67,7 @@ const CHARGEBACKS = [
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000002',
-        status: 'UNDEFENDED',
+        status: 'UNRESPONDED',
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
         paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
@@ -73,7 +76,7 @@ const CHARGEBACKS = [
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000003',
-        status: 'UNRESPONDED',
+        status: 'UNDEFENDED',
         dueDate: getDate(2),
         createdAt: getDate(-7),
         paymentMethod: { type: 'paypal', description: 'PayPal' },
@@ -691,6 +694,10 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         ...dispute,
         pspReference: dispute.disputePspReference,
         type: disputeType,
+        ...(dispute.status === 'UNRESPONDED' &&
+            dispute.reason.category === 'REQUEST_FOR_INFORMATION' && {
+                issuerComment: ISSUER_COMMENT,
+            }),
         allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
         ...(dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED'
             ? {

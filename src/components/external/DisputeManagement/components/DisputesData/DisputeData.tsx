@@ -1,10 +1,10 @@
 import cx from 'classnames';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDisputeListItem } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail, IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -14,21 +14,26 @@ import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetail
 import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
+    DISPUTE_DATA_ISSUER_COMMENT,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
+import { TranslationKey } from '../../../../../translations';
+import Button from '../../../../internal/Button';
+import { ButtonVariant } from '../../../../internal/Button/types';
 
 const DisputeDataAlert = ({
     status,
@@ -68,6 +73,40 @@ const DisputeDataAlert = ({
     }
 
     return null;
+};
+
+const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
+    const { i18n } = useCoreContext();
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [textClipped, setTextClipped] = useState(false);
+    return (
+        <Alert
+            type={AlertTypeOption.HIGHLIGHT}
+            variant={AlertVariantOption.TIP}
+            description={
+                <div className={DISPUTE_DATA_ISSUER_COMMENT}>
+                    <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
+                        {/* [TODO]: Add translation key entry for this string */}
+                        {i18n.get('The issuer came back with some feedback:' as TranslationKey)}
+                    </Typography>
+                    <div>
+                        <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
+                            {/* [NOTE]: Issuer comment not translated at the moment (maybe never) */}
+                            {'"'}
+                            {issuerComment}
+                            {'"'}
+                        </Typography>
+                    </div>
+                    {textClipped && (
+                        <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
+                            {/* [TODO]: Add translation key entries for these strings */}
+                            {i18n.get(isExpanded ? ('Show less' as TranslationKey) : ('Show more' as TranslationKey))}
+                        </Button>
+                    )}
+                </div>
+            }
+        />
+    );
 };
 
 export const DisputeData = ({
@@ -111,6 +150,8 @@ export const DisputeData = ({
         amountData: dispute?.dispute.amount,
         paymentMethodData: dispute?.payment.paymentMethod,
     } as const);
+
+    const issuerComment = useMemo(() => dispute?.dispute.issuerComment?.trim(), [dispute]);
 
     const disputeType = useMemo(() => {
         const type = dispute?.dispute.type;
@@ -158,6 +199,8 @@ export const DisputeData = ({
                     }
                 />
             </div>
+
+            {issuerComment && <DisputeIssuerComment issuerComment={issuerComment} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 

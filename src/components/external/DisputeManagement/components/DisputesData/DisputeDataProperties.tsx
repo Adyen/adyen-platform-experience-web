@@ -80,7 +80,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reason
             {
                 key: disputeDataKeys.disputeReason,
-                value: disputeReason.title,
+                value: disputeReason.title, // [NOTE]: Not translated at the moment (maybe in the future)
                 id: 'disputeReason',
             },
 
@@ -170,6 +170,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
+                                          {/* [NOTE]: Document label not translated at the moment (maybe in the future) */}
                                           <Tag label={document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
