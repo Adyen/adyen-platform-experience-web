@@ -12,6 +12,11 @@
         }
     }
 
+    &__status-box {
+        display: flex;
+        width: 100%;
+    }
+
     &__action-bar {
         flex-direction: row;
         width: 100%;
@@ -51,11 +56,6 @@
                 margin: style.token(spacer-030) 0;
             }
         }
-    }
-
-    &__tags {
-        display: flex;
-        gap: style.token(spacer-020);
     }
 
     &__label {

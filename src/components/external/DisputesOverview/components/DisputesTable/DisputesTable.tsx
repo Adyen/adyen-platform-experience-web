@@ -12,7 +12,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
-import { DATE_FORMAT_DISPUTES, DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTES } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -160,7 +160,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                                 variant={TypographyVariant.BODY}
                                 className={cx(classes.statusContent, { [classes.statusContentUrgent]: isUrgent })}
                             >
-                                {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES_TAG)}
+                                {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
                                 {isUrgent && <Icon name={'warning-filled'} />}
                             </Typography>
                         );

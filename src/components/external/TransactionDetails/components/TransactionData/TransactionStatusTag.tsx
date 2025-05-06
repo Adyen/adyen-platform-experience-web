@@ -1,4 +1,3 @@
-import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { ITransaction } from '../../../../../types';
 import { Tag } from '../../../../internal/Tag/Tag';

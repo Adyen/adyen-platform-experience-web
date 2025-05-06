@@ -108,8 +108,6 @@ export const DisputeData = ({
     );
 
     const statusBoxOptions = useStatusBoxData({
-        timezone: dispute?.payment.balanceAccount?.timeZone,
-        createdAt: dispute?.dispute.createdAt,
         amountData: dispute?.dispute.amount,
         paymentMethodData: dispute?.payment.paymentMethod,
     } as const);

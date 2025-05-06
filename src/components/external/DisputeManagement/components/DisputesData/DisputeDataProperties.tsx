@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { noop } from '../../../../../utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { DATE_FORMAT_DISPUTES_TAG } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTE_DETAILS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
@@ -96,7 +96,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // created at
             {
                 key: disputeDataKeys.openedOn,
-                value: dateFormat(createdAt, DATE_FORMAT_DISPUTES_TAG),
+                value: dateFormat(createdAt, DATE_FORMAT_DISPUTE_DETAILS),
                 id: 'openedOn',
             },
 
@@ -104,7 +104,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && type !== 'NOTIFICATION_OF_FRAUD' && status !== 'EXPIRED'
                 ? {
                       key: disputeDataKeys.respondBy,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTES_TAG),
+                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
                       id: 'respondBy',
                   }
                 : SKIP_ITEM,
@@ -152,7 +152,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defendedOn
                 ? {
                       key: disputeDataKeys.defendedOn,
-                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTES_TAG),
+                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTE_DETAILS),
                       id: 'defendedOn',
                   }
                 : SKIP_ITEM,
@@ -192,7 +192,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && status === 'EXPIRED'
                 ? {
                       key: disputeDataKeys.expiredOn,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTES_TAG),
+                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
                       id: 'expiredOn',
                   }
                 : SKIP_ITEM,
