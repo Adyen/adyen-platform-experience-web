@@ -9,6 +9,7 @@ test.describe('Notification of fraud', () => {
     });
 
     test('should render a contact support alert when dispute is not defensable trough the component', async ({ page }) => {
+        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Notification of fraud' })).toBeVisible();
         await expect(page.getByRole('alert')).toBeVisible();
 
         const icon = page.locator('.adyen-pe-alert__icon');

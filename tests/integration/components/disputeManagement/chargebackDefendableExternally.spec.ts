@@ -8,7 +8,8 @@ test.describe('Chargeback - Defendable externally', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
-    test('should render a contact support alert when dispute is not defensable trough the component', async ({ page }) => {
+    test('should render a contact support alert when chargeback is not defensable trough the component', async ({ page }) => {
+        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
         await expect(page.getByRole('alert')).toBeVisible();
 
         const icon = page.locator('.adyen-pe-alert__icon');

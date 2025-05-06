@@ -27,7 +27,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
 };
 
 export const RFIDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
-    name: 'RFI - Acceptable',
+    name: 'RFI - Defendable externally',
     args: {
         mockedApi: true,
     },
