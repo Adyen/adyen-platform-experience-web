@@ -129,7 +129,7 @@ export default defineConfig(async ({ mode }) => {
                     'core/**/*.{ts,tsx}',
                 ],
                 exclude: ['**/index.{ts,tsx}', '**/constants.{ts,tsx}', '**/types.ts', 'node_modules'],
-                reporter: 'lcov',
+                reporter: ['lcov', 'text'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
             },
             sequence: {
