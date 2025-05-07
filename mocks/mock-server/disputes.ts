@@ -9,6 +9,7 @@ import {
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
 } from '../mock-data/disputes';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;

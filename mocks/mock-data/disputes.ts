@@ -116,6 +116,15 @@ export const CHARGEBACK_LOST: IDisputeDetail = {
     defense: DEFAULT_DETAIL_DEFENSE,
 };
 
+export const CHARGEBACK_LOST_NO_ACTION: IDisputeDetail = {
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        defensibility: 'NOT_ACTIONABLE',
+        status: 'LOST',
+    },
+    payment: DEFAULT_DETAIL_PAYMENT,
+};
+
 export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
@@ -154,12 +163,12 @@ export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     },
 };
 export const CHARGEBACK_ACCEPTABLE: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
         defensibility: 'ACCEPTABLE',
     },
+    payment: DEFAULT_DETAIL_PAYMENT,
 };
 
 export const CHARGEBACK_DEFENDED: IDisputeDetail = {
