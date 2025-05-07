@@ -1,38 +1,25 @@
-import { useMemo } from 'preact/hooks';
-import { useDisputeFlow } from '../../context/dispute/context';
-import { DisputeDetailsCustomization } from '../../types';
-import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
-import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
-import DisputeData from '../DisputesData/DisputeData';
+import { useCallback, useState } from 'preact/hooks';
+import { DisputeContextProvider } from '../../context/dispute/context';
+import { DisputeDetails } from '../DisputeDetails/DisputeDetails';
+import type { ExternalUIComponentProps } from '../../../../types';
+import { DisputeManagementProps } from '../../types';
+import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 
-export const DisputeDetailsContainer = ({
-    disputeId,
-    onDefendDispute,
-    onAcceptDispute,
-    dataCustomization,
-}: {
-    disputeId: string;
-    onAcceptDispute?: () => void;
-    onDefendDispute?: () => void;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-}) => {
-    const { flowState, goBack } = useDisputeFlow();
+export const DisputeDetailsContainer = (props: ExternalUIComponentProps<DisputeManagementProps>) => {
+    const [dispute, setDispute] = useState<IDisputeDetail | undefined>();
 
-    const isDefendFlow = useMemo(
-        () => ['defendReasonSelectionView', 'uploadDefenseFilesView', 'defenseSubmitResponseView'].includes(flowState),
-        [flowState]
+    const setDisputeCallback = useCallback((dispute: IDisputeDetail | undefined) => {
+        setDispute(dispute);
+    }, []);
+
+    return (
+        <DisputeContextProvider dispute={dispute} setDispute={setDisputeCallback}>
+            <DisputeDetails
+                disputeId={props.id}
+                onAcceptDispute={props.onAcceptDispute}
+                onDefendDispute={props.onDefendDispute}
+                dataCustomization={props.dataCustomization}
+            />
+        </DisputeContextProvider>
     );
-
-    if (isDefendFlow) {
-        return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
-    }
-
-    switch (flowState) {
-        case 'details':
-            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} />;
-        case 'accept':
-            return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
-        default:
-            return null;
-    }
 };

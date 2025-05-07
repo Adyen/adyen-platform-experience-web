@@ -53,7 +53,7 @@ export const DefendDisputeReason = () => {
         });
     }, [selectedDefenseReason, disputePspReference, getApplicableDefenseDocuments]);
 
-    const { error } = useFetch({
+    const { error, isFetching } = useFetch({
         queryFn: fetchCallback,
         fetchOptions: {
             enabled: isReasonSubmitted,
@@ -90,16 +90,16 @@ export const DefendDisputeReason = () => {
         return [
             {
                 title: i18n.get('dispute.continue'),
-                disabled: isReasonSubmitted,
+                disabled: isReasonSubmitted || isFetching,
                 event: onDefenseReasonSubmit,
             },
             {
                 title: i18n.get('disputes.goBack'),
-                disabled: isReasonSubmitted,
+                disabled: isReasonSubmitted || isFetching,
                 event: goBack,
             },
         ];
-    }, [isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
+    }, [isFetching, isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
 
     if (!defenseReasons || !selected) {
         return null;

@@ -140,7 +140,7 @@ export const DisputeData = ({
         const ctaButtons = [];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('disputes.defendDispute'),
+                title: i18n.get('disputes.defendChargeback'),
                 event: onDefendClick,
             });
         if (isAcceptable) {
