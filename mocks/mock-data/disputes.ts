@@ -163,21 +163,12 @@ export const CHARGEBACK_PENDING_ACCEPTABLE: IDisputeDetail = {
     },
 };
 
-export const CHARGEBACK_PENDING: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
-    defense: DEFAULT_DETAIL_DEFENSE,
-    dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
-        status: 'PENDING',
-        defensibility: 'NOT_ACTIONABLE',
-    },
-};
-
 export const CHARGEBACK_DEFENDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
-        status: 'RESPONDED',
+        status: 'PENDING',
+        defensibility: 'NOT_ACTIONABLE',
     },
     defense: DEFAULT_DETAIL_DEFENSE,
 };
