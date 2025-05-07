@@ -6,7 +6,7 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { TranslationKey } from '../../../../../translations';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
-import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
+import Card from '../../../../internal/Card/Card';
 import FileInput from '../../../../internal/FormFields/FileInput/FileInput';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
@@ -72,16 +72,13 @@ export const DefendDisputeFileUpload = () => {
                 <Typography className="adyen-pe-defend-dispute-file-uploader__description" variant={TypographyVariant.BODY}>
                     {i18n.get('dispute.uploadDefenseDocumentsInformation')}
                 </Typography>
-                <ExpandableCard
+                <Card
                     renderHeader={
                         <Typography variant={TypographyVariant.BODY} stronger className={'adyen-pe-defend-dispute-document-requirements'}>
                             {i18n.get('dispute.documentRequirements')}
                         </Typography>
                     }
-                    inFlow
-                    headerDirection={'row'}
                     filled
-                    fullWidth
                 >
                     <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (
@@ -90,7 +87,7 @@ export const DefendDisputeFileUpload = () => {
                             </li>
                         ))}
                     </ul>
-                </ExpandableCard>
+                </Card>
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
                     {applicableDocuments?.map((document: IDisputeDefenseDocument) => (
                         <FileInput

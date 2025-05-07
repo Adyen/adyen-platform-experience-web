@@ -14,56 +14,6 @@
         display: block;
         overflow: hidden;
 
-        &--row {
-            align-items: center;
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: start;
-            padding: style.token(spacer-070) style.token(spacer-090);
-
-            .adyen-pe-expandable-card__content {
-                padding-left: style.token(spacer-100);
-            }
-
-            &--title {
-                padding: style.token(spacer-070) style.token(spacer-100);
-            }
-
-            .adyen-pe-expandable-card__chevron--row {
-                align-items: center;
-                background-color: transparent;
-                display: flex;
-                height: style.token(spacer-080);
-                justify-content: center;
-                position: absolute;
-            }
-        }
-
-        &--expanded-row {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: start;
-            padding: style.token(spacer-070) style.token(spacer-090);
-
-            .adyen-pe-expandable-card__content {
-                padding: 0;
-
-                &--title {
-                    padding: style.token(spacer-070) style.token(spacer-100);
-                }
-            }
-
-            .adyen-pe-expandable-card__chevron--row {
-                align-items: center;
-                background-color: transparent;
-                display: flex;
-                height: style.token(spacer-080);
-                justify-content: center;
-                margin-top: style.token(spacer-070);
-                position: absolute;
-            }
-        }
-
         &--overlay {
             box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
             position: absolute;
@@ -109,31 +59,10 @@
 
         &--expandable {
             padding-bottom: style.token(spacer-040);
-
-            &-body {
-                padding: 0 style.token(spacer-090) style.token(spacer-060);
-            }
-
-            &-row {
-                align-items: center;
-                display: flex;
-                flex-direction: row-reverse;
-                justify-content: start;
-                padding: style.token(spacer-060) style.token(spacer-090);
-
-                #{$adyen-pe-expandable-card}__chevron {
-                    background-color: inherit !important;
-                }
-            }
-
-            &-column {
-                display: flex;
-                flex-direction: column;
-            }
         }
     }
 
-    &__chevron--column {
+    &__chevron {
         align-items: center;
         background-color: style.token(color-background-tertiary);
         display: flex;

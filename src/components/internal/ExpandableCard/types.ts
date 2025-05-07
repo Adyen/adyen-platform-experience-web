@@ -9,5 +9,4 @@ export interface ExpandableCardProps {
     onFocus?: () => void;
     onMouseLeave?: () => void;
     onBlur?: () => void;
-    headerDirection?: 'row' | 'column';
 }
