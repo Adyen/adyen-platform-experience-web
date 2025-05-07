@@ -205,6 +205,7 @@ const ALL_DISPUTES = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000017',
         status: 'EXPIRED',
+        dueDate: getDate(-1),
         createdAt: getDate(-3),
         paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
         reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
@@ -261,6 +262,7 @@ const ALL_DISPUTES = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000025',
         status: 'EXPIRED',
+        dueDate: getDate(-2),
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
         reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
@@ -301,6 +303,7 @@ const ALL_DISPUTES = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000034',
         status: 'EXPIRED',
+        dueDate: getDate(-5),
         createdAt: getDate(-12),
         paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
         reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
@@ -671,12 +674,18 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         case 'UNDEFENDED':
             disputeType = 'CHARGEBACK';
             break;
+        case 'EXPIRED':
         case 'UNRESPONDED':
             disputeType = 'REQUEST_FOR_INFORMATION';
             break;
         case 'LOST':
-            if (dispute.reason.category === 'FRAUD') {
+            if (FRAUD_ALERTS.includes(dispute as any)) {
                 disputeType = 'NOTIFICATION_OF_FRAUD';
+            }
+            break;
+        case 'PENDING':
+            if (dispute.reason.category !== 'FRAUD') {
+                disputeType = 'REQUEST_FOR_INFORMATION';
             }
             break;
     }
@@ -713,18 +722,6 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
                   },
               }),
     };
-
-    if (dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED') {
-        additionalDisputeDetails.dispute.defensibility = allowedDefenseReasons ? 'DEFENDABLE' : 'DEFENDABLE_EXTERNALLY';
-    } else {
-        additionalDisputeDetails.dispute.defensibility = 'NOT_ACTIONABLE';
-        additionalDisputeDetails.defense = {
-            reason: 'ServicesProvided',
-            suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
-            defendedOn: getDate(1, new Date(dispute.createdAt)),
-            defendedThroughComponent: true,
-        };
-    }
 
     return { ...additionalDisputeDetails } as const;
 };

@@ -18,6 +18,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DisputeDetailsCustomization } from '../../types';
+import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
@@ -69,9 +70,10 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
     }, [getExtraFields]);
 
     return useMemo(() => {
-        //  latestDefense, reasonCode, reasonGroup
-        const { pspReference: paymentReference, merchantReference, balanceAccount } = dispute.payment;
+        const actionNeeded = isDisputeActionNeeded(dispute.dispute);
+
         const { pspReference: disputeReference, reason: disputeReason, createdAt, dueDate, status, type } = dispute.dispute;
+        const { pspReference: paymentReference, merchantReference, balanceAccount } = dispute.payment;
         const { reason: defenseReason, defendedOn, suppliedDocuments } = dispute.defense || {};
 
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
@@ -101,7 +103,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             },
 
             // respond by
-            dueDate && type !== 'NOTIFICATION_OF_FRAUD' && status !== 'EXPIRED'
+            dueDate && actionNeeded
                 ? {
                       key: disputeDataKeys.respondBy,
                       value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
