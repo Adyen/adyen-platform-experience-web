@@ -3,7 +3,7 @@ import DisputeManagementElement from '../../src/components/external/DisputeManag
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DISPUTES_HANDLERS } from '../../mocks/mock-server/disputes';
+import { DISPUTE_MANAGEMENT_HANDLERS } from '../../mocks/mock-server/disputes';
 
 const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
 
@@ -21,7 +21,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.undefendable,
+            ...DISPUTE_MANAGEMENT_HANDLERS.undefendable,
         },
     },
 };
@@ -33,7 +33,7 @@ export const RFIDefendableExternally: ElementStory<typeof DisputeManagementEleme
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.rfi_acceptable,
+            ...DISPUTE_MANAGEMENT_HANDLERS.rfi_acceptable,
         },
     },
 };

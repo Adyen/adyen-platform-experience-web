@@ -1,7 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
+import { IDisputeDetail, IDisputeListItem, IDisputeListResponse, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 import {
     CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY,
     DISPUTES,
@@ -12,6 +12,7 @@ import {
     NOTIFICATION_OF_FRAUD,
     RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY,
 } from '../mock-data/disputes';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -169,9 +170,45 @@ export const disputesMocks = [
     }),
 ];
 
+const httpGetList = http.get<any, any, IDisputeListResponse>;
+
+const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500) => {
+    return async () => {
+        await delay(100);
+        return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+    };
+};
+
+const DISPUTES_LIST_ERRORS = {
+    server_error_500: {
+        handlers: [
+            httpGetList(endpoints('mock').disputes.list, () => {
+                return getErrorHandler(
+                    {
+                        type: '',
+                        name: '',
+                        message: 'Unexpected Error',
+                    },
+                    500
+                )();
+            }),
+        ],
+    },
+};
+
+export const DISPUTES_LIST_HANDLERS = {
+    empty_list: {
+        handlers: [
+            httpGetList(endpoints('mock').disputes.list, () => {
+                return HttpResponse.json({ data: [], _links: { next: { cursor: '' }, prev: { cursor: '' } } });
+            }),
+        ],
+    },
+};
+
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
-export const DISPUTES_HANDLERS = {
+export const DISPUTE_MANAGEMENT_HANDLERS = {
     undefendable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
