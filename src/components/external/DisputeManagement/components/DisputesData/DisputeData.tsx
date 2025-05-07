@@ -32,7 +32,6 @@ import {
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
-import { TranslationKey } from '../../../../../translations';
 import Button from '../../../../internal/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 
@@ -80,8 +79,7 @@ const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
             description={
                 <div className={DISPUTE_DATA_ISSUER_COMMENT}>
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
-                        {/* [TODO]: Add translation key entry for this string */}
-                        {i18n.get('The issuer came back with some feedback:' as TranslationKey)}
+                        {i18n.get('disputes.issuerComment.title')}
                     </Typography>
                     <div>
                         <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
@@ -93,8 +91,7 @@ const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
                     </div>
                     {textClipped && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
-                            {/* [TODO]: Add translation key entries for these strings */}
-                            {i18n.get(isExpanded ? ('Show less' as TranslationKey) : ('Show more' as TranslationKey))}
+                            {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
                         </Button>
                     )}
                 </div>
