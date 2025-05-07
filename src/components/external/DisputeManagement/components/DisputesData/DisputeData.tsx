@@ -4,7 +4,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDisputeDetail, IDisputeListItem } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -21,6 +21,7 @@ import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
+import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
@@ -35,41 +36,34 @@ import { TranslationKey } from '../../../../../translations';
 import Button from '../../../../internal/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 
-const DisputeDataAlert = ({
-    status,
-    isDefended,
-    showContactSupport = true,
-}: {
-    status: IDisputeListItem['status'];
-    isDefended: boolean;
-    showContactSupport: boolean;
-}) => {
-    const { i18n } = useCoreContext();
+type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
-    if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
-        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
-    }
-    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport) {
-        //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
-        const contactSupportLabel = i18n.get('contactSupport');
-        return (
-            <Alert
-                type={AlertTypeOption.WARNING}
-                variant={AlertVariantOption.TIP}
-                description={
-                    <Translation
-                        translationKey={'disputes.contactSupportToDefendThisDispute'}
-                        fills={{
-                            contactSupport: (
-                                <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
-                                    {contactSupportLabel}
-                                </Link>
-                            ),
-                        }}
-                    />
-                }
-            />
-        );
+const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode | undefined }) => {
+    const { i18n } = useCoreContext();
+    switch (alertMode) {
+        case 'contactSupport':
+            return (
+                <Alert
+                    type={AlertTypeOption.WARNING}
+                    variant={AlertVariantOption.TIP}
+                    description={
+                        <Translation
+                            translationKey={'disputes.contactSupportToDefendThisDispute'}
+                            fills={{
+                                contactSupport: (
+                                    <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
+                                        {/* TODO: Change with tech writers since interpolating with another translated phrase can break meaning */}
+                                        {i18n.get('contactSupport')}
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    }
+                />
+            );
+
+        case 'notDefended':
+            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
 
     return null;
@@ -163,9 +157,15 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
-    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
-    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
+    const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
+    const isFraudNotification = dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
+    const isDefended = !!(dispute?.defense && dispute.defense.defendedOn);
+
+    const defensibility = dispute?.dispute.defensibility;
+
+    const showContactSupport = defensibility === 'DEFENDABLE_EXTERNALLY' || defensibility === 'ACCEPTABLE';
+    const isDefendable = defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable = defensibility === 'ACCEPTABLE' || defensibility === 'DEFENDABLE';
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
@@ -186,6 +186,17 @@ export const DisputeData = ({
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
+
+    let disputeAlertMode: DisputeDataAlertMode | undefined = undefined;
+
+    if (actionNeeded && showContactSupport) {
+        disputeAlertMode = 'contactSupport';
+    } else if (dispute.dispute.status === 'EXPIRED') {
+        disputeAlertMode = 'notDefended';
+    } else if (dispute.dispute.status === 'LOST' && !(isFraudNotification || isDefended)) {
+        disputeAlertMode = 'notDefended';
+    }
+
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
@@ -194,7 +205,7 @@ export const DisputeData = ({
                     tag={
                         <>
                             {disputeType && <Tag label={disputeType} />}
-                            {dispute?.dispute && dispute.dispute.type !== 'NOTIFICATION_OF_FRAUD' && <DisputeStatusTag dispute={dispute.dispute} />}
+                            {!isFraudNotification && <DisputeStatusTag dispute={dispute.dispute} />}
                         </>
                     }
                 />
@@ -203,12 +214,7 @@ export const DisputeData = ({
             {issuerComment && <DisputeIssuerComment issuerComment={issuerComment} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
-            <DisputeDataAlert
-                status={dispute.dispute.status}
-                isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
-                showContactSupport={showContactSupport}
-            />
+            <DisputeDataAlert alertMode={disputeAlertMode} />
 
             {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
