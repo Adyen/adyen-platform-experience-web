@@ -134,8 +134,7 @@ export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
     },
 };
 
-export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
+export const CHARGEBACK_DEFENDABLE: IDisputeDetail = {
     payment: {
         ...DEFAULT_DETAIL_PAYMENT,
         paymentMethod: {
@@ -155,7 +154,7 @@ export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
         allowedDefenseReasons: [...MC_CONSUMER_DEFENSE_REASONS],
     },
 };
-export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
+export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
