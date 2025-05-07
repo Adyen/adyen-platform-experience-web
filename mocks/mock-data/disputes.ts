@@ -7,10 +7,51 @@ const getDate = (daysOffset = 0, originDate = new Date()) => {
     return date.toISOString();
 };
 
+const MC_CONSUMER_DEFENSE_REASONS = [
+    'AirlineFlightProvided',
+    'CancellationOrReturns',
+    'CancellationTermsFailed',
+    'CreditOrCancellationPolicyProperlyDisclosed',
+    'GoodsNotReturned',
+    'GoodsOrServicesProvided',
+    'GoodsRepairedOrReplaced',
+    'GoodsWereAsDescribed',
+    'InvalidChargeback',
+    'InvalidChargebackBundling',
+    'NotRecurring',
+    'PaymentByOtherMeans',
+    'PurchaseProperlyPosted',
+    'ServicesProvidedAfterCancellation',
+    'SupplyDefenseMaterial',
+] as const;
+
+const MC_FRAUD_DEFENSE_REASONS = [
+    'AirlineCompellingEvidence',
+    'ChipAndPinLiabilityShift',
+    'ChipLiabilityShift',
+    'CompellingEvidence',
+    'CVC2ValidationProgram',
+    'IdentifiedAddendum',
+    'InvalidChargeback',
+    'InvalidChargebackBundling',
+    'NoShowTransaction',
+    'ProofOfCardPresenceAndSignatureChipNoPIN',
+    'ProofOfCardPresenceAndSignatureNotMasterCardWorldWideNetwork',
+    'ProofOfCardPresenceAndSignatureWithTerminalReceipt',
+    'RecurringTransactionsCompellingEvidence',
+    'RecurringTransactionsCompellingMerchantEvidence',
+    'ShippedToAVS',
+    'SupplyDefenseMaterial',
+] as const;
+
+const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived', 'ServicesProvided'] as const;
+
+const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
+
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
     defendedOn: getDate(-1),
     defendedThroughComponent: true,
-    reason: 'Dispute reason',
+    reason: 'Defense reason',
 };
 const DEFAULT_DETAIL_PAYMENT: IDisputeDetail['payment'] = {
     balanceAccount: { timeZone: 'UTC', description: 'Main balance account' },
@@ -34,7 +75,7 @@ const DEFAULT_DETAIL_DISPUTE: IDisputeDetail['dispute'] = {
         code: '1234',
     },
     allowedDefenseReasons: [],
-    defensibility: 'DEFENDABLE',
+    defensibility: 'ACCEPTABLE',
     type: 'CHARGEBACK',
     status: 'UNDEFENDED',
 };
@@ -48,11 +89,11 @@ const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
 // CHARGEBACKS
 
 export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DISPUTE_DETAIL.dispute,
         status: 'UNDEFENDED',
     },
+    payment: DEFAULT_DETAIL_PAYMENT,
 };
 
 export const CHARGEBACK_WON: IDisputeDetail = {
@@ -84,10 +125,23 @@ export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
 
 export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
+    payment: {
+        ...DEFAULT_DETAIL_PAYMENT,
+        paymentMethod: {
+            type: 'mc',
+            lastFourDigits: '4509',
+        },
+    },
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
+        reason: {
+            category: 'CONSUMER_DISPUTE',
+            code: 'AirlineFlightProvided',
+            title: 'Consumer dispute',
+        },
         status: 'UNDEFENDED',
         defensibility: 'DEFENDABLE',
+        allowedDefenseReasons: [...MC_CONSUMER_DEFENSE_REASONS],
     },
 };
 export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
@@ -139,7 +193,8 @@ export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
-        status: 'RESPONDED',
+        defensibility: 'NOT_ACTIONABLE',
+        status: 'PENDING',
     },
     defense: {
         ...DEFAULT_DETAIL_DEFENSE,
@@ -172,8 +227,8 @@ export const RFI_UNRESPONDED_ACCEPTABLE: IDisputeDetail = {
 export const RFI_PENDING: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
-        status: 'PENDING',
+        ...DEFAULT_DETAIL_DISPUTE,
+        status: 'RESPONDED',
         type: 'REQUEST_FOR_INFORMATION',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -182,7 +237,7 @@ export const RFI_PENDING: IDisputeDetail = {
 export const RFI_EXPIRED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'EXPIRED',
         type: 'REQUEST_FOR_INFORMATION',
         defensibility: 'NOT_ACTIONABLE',
@@ -200,47 +255,6 @@ export const NOTIFICATION_OF_FRAUD: IDisputeDetail = {
         defensibility: 'NOT_ACTIONABLE',
     },
 };
-
-const MC_CONSUMER_DEFENSE_REASONS = [
-    'AirlineFlightProvided',
-    'CancellationOrReturns',
-    'CancellationTermsFailed',
-    'CreditOrCancellationPolicyProperlyDisclosed',
-    'GoodsNotReturned',
-    'GoodsOrServicesProvided',
-    'GoodsRepairedOrReplaced',
-    'GoodsWereAsDescribed',
-    'InvalidChargeback',
-    'InvalidChargebackBundling',
-    'NotRecurring',
-    'PaymentByOtherMeans',
-    'PurchaseProperlyPosted',
-    'ServicesProvidedAfterCancellation',
-    'SupplyDefenseMaterial',
-] as const;
-
-const MC_FRAUD_DEFENSE_REASONS = [
-    'AirlineCompellingEvidence',
-    'ChipAndPinLiabilityShift',
-    'ChipLiabilityShift',
-    'CompellingEvidence',
-    'CVC2ValidationProgram',
-    'IdentifiedAddendum',
-    'InvalidChargeback',
-    'InvalidChargebackBundling',
-    'NoShowTransaction',
-    'ProofOfCardPresenceAndSignatureChipNoPIN',
-    'ProofOfCardPresenceAndSignatureNotMasterCardWorldWideNetwork',
-    'ProofOfCardPresenceAndSignatureWithTerminalReceipt',
-    'RecurringTransactionsCompellingEvidence',
-    'RecurringTransactionsCompellingMerchantEvidence',
-    'ShippedToAVS',
-    'SupplyDefenseMaterial',
-] as const;
-
-const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived', 'ServicesProvided'] as const;
-
-const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
 
 const CHARGEBACKS = [
     {
