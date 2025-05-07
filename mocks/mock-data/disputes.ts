@@ -7,12 +7,12 @@ const getDate = (daysOffset = 0, originDate = new Date()) => {
     return date.toISOString();
 };
 
-const DEFAULT_DETAIl_DEFENSE: IDisputeDetail['defense'] = {
+const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
     defendedOn: getDate(-1),
     defendedThroughComponent: true,
     reason: 'Dispute reason',
 };
-const DEFAULT_DETAIl_PAYMENT: IDisputeDetail['payment'] = {
+const DEFAULT_DETAIL_PAYMENT: IDisputeDetail['payment'] = {
     balanceAccount: { timeZone: 'UTC', description: 'Main balance account' },
     isRefunded: false,
     merchantReference: 'b2c3d4e5-f6g7-5890-efgh',
@@ -20,7 +20,7 @@ const DEFAULT_DETAIl_PAYMENT: IDisputeDetail['payment'] = {
     pspReference: 'a1b2c3d4-e5f6-4789-abcd',
 };
 
-const DEFAULT_DETAIl_DISPUTE: IDisputeDetail['dispute'] = {
+const DEFAULT_DETAIL_DISPUTE: IDisputeDetail['dispute'] = {
     amount: {
         value: 211100,
         currency: 'EUR',
@@ -28,7 +28,6 @@ const DEFAULT_DETAIl_DISPUTE: IDisputeDetail['dispute'] = {
     dueDate: new Date(new Date().setHours(23)).toISOString(),
     createdAt: getDate(-10),
     pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
-    //
     reason: {
         category: 'REQUEST_FOR_INFORMATION',
         title: 'Request for information',
@@ -41,9 +40,9 @@ const DEFAULT_DETAIl_DISPUTE: IDisputeDetail['dispute'] = {
 };
 
 const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
-    dispute: DEFAULT_DETAIl_DISPUTE,
-    defense: DEFAULT_DETAIl_DEFENSE,
-    payment: DEFAULT_DETAIl_PAYMENT,
+    dispute: DEFAULT_DETAIL_DISPUTE,
+    defense: DEFAULT_DETAIL_DEFENSE,
+    payment: DEFAULT_DETAIL_PAYMENT,
 };
 
 // CHARGEBACKS
@@ -86,7 +85,7 @@ export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
 export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DETAIl_DISPUTE,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
         defensibility: 'DEFENDABLE',
     },
@@ -94,7 +93,7 @@ export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
 export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DETAIl_DISPUTE,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
         defensibility: 'DEFENDABLE_EXTERNALLY',
     },
@@ -102,7 +101,7 @@ export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
 export const CHARGEBACK_PENDING_ACCEPTABLE: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DETAIl_DISPUTE,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
         defensibility: 'ACCEPTABLE',
     },
@@ -128,22 +127,22 @@ export const CHARGEBACK_PENDING_NOT_ACTIONABLE: IDisputeDetail = {
 export const CHARGEBACK_DEFENDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DETAIl_DISPUTE,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'RESPONDED',
     },
     defense: {
-        ...DEFAULT_DETAIl_DEFENSE,
+        ...DEFAULT_DETAIL_DEFENSE,
         suppliedDocuments: ['Document1', 'Document2'],
     },
 };
 export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DETAIl_DISPUTE,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'RESPONDED',
     },
     defense: {
-        ...DEFAULT_DETAIl_DEFENSE,
+        ...DEFAULT_DETAIL_DEFENSE,
         defendedThroughComponent: false,
     },
 };
