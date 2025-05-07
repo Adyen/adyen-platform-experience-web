@@ -52,6 +52,7 @@ const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
     defendedOn: getDate(-1),
     defendedThroughComponent: true,
     reason: 'Defense reason',
+    suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
 };
 const DEFAULT_DETAIL_PAYMENT: IDisputeDetail['payment'] = {
     balanceAccount: { timeZone: 'UTC', description: 'Main balance account' },
@@ -82,7 +83,6 @@ const DEFAULT_DETAIL_DISPUTE: IDisputeDetail['dispute'] = {
 
 const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
     dispute: DEFAULT_DETAIL_DISPUTE,
-    defense: DEFAULT_DETAIL_DEFENSE,
     payment: DEFAULT_DETAIL_PAYMENT,
 };
 
@@ -103,6 +103,7 @@ export const CHARGEBACK_WON: IDisputeDetail = {
         status: 'WON',
         defensibility: 'NOT_ACTIONABLE',
     },
+    defense: DEFAULT_DETAIL_DEFENSE,
 };
 
 export const CHARGEBACK_LOST: IDisputeDetail = {
@@ -112,6 +113,7 @@ export const CHARGEBACK_LOST: IDisputeDetail = {
         status: 'LOST',
         defensibility: 'NOT_ACTIONABLE',
     },
+    defense: DEFAULT_DETAIL_DEFENSE,
 };
 
 export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
@@ -163,31 +165,21 @@ export const CHARGEBACK_PENDING_ACCEPTABLE: IDisputeDetail = {
 
 export const CHARGEBACK_PENDING: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
-    defense: undefined,
+    defense: DEFAULT_DETAIL_DEFENSE,
     dispute: {
         ...DEFAULT_DISPUTE_DETAIL.dispute,
         status: 'PENDING',
-        defensibility: 'DEFENDABLE',
-    },
-};
-
-export const CHARGEBACK_PENDING_NOT_ACTIONABLE: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
-    dispute: {
-        ...CHARGEBACK_PENDING.dispute,
         defensibility: 'NOT_ACTIONABLE',
     },
 };
+
 export const CHARGEBACK_DEFENDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
         status: 'RESPONDED',
     },
-    defense: {
-        ...DEFAULT_DETAIL_DEFENSE,
-        suppliedDocuments: ['Document1', 'Document2'],
-    },
+    defense: DEFAULT_DETAIL_DEFENSE,
 };
 export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
@@ -232,6 +224,7 @@ export const RFI_PENDING: IDisputeDetail = {
         type: 'REQUEST_FOR_INFORMATION',
         defensibility: 'NOT_ACTIONABLE',
     },
+    defense: DEFAULT_DETAIL_DEFENSE,
 };
 
 export const RFI_EXPIRED: IDisputeDetail = {
