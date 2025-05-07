@@ -70,6 +70,11 @@
     }
 
     &__issuer-comment {
+        --min-text-height: calc(#{style.token(text-body-line-height)} * 3); // 3 lines of body text
+
+        $adyen-pe-comment: &;
+        $adyen-pe-comment-expanded: #{$adyen-pe-comment}--expanded;
+
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-020);
@@ -83,7 +88,26 @@
         }
 
         .adyen-pe-button__label {
-            font-weight: style.token(text-body-strongest-font-weight);
+            font-weight: style.token(text-body-stronger-font-weight);
+        }
+
+        &-textbox {
+            max-height: var(--min-text-height);
+            overflow-y: hidden;
+
+            #{$adyen-pe-comment-expanded} & {
+                max-height: none;
+            }
+        }
+
+        &-text {
+            clip-path: inset(0 0 calc(100% - var(--min-text-height, 0)));
+            margin: 0;
+            transition: clip-path 0.1s ease-out;
+
+            #{$adyen-pe-comment-expanded} & {
+                clip-path: inset(0);
+            }
         }
     }
 }

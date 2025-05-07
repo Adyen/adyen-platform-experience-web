@@ -29,6 +29,9 @@ import {
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_ISSUER_COMMENT,
+    DISPUTE_DATA_ISSUER_COMMENT_EXPANDED,
+    DISPUTE_DATA_ISSUER_COMMENT_TEXT,
+    DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
@@ -37,7 +40,7 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 
 type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
-const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode | undefined }) => {
+const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) => {
     const { i18n } = useCoreContext();
     switch (alertMode) {
         case 'contactSupport':
@@ -71,25 +74,25 @@ const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode | un
 const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
     const { i18n } = useCoreContext();
     const [isExpanded, setIsExpanded] = useState(false);
-    const [textClipped, setTextClipped] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(true); // [TODO]: Dynamically determine truncation state
     return (
         <Alert
             type={AlertTypeOption.HIGHLIGHT}
             variant={AlertVariantOption.TIP}
             description={
-                <div className={DISPUTE_DATA_ISSUER_COMMENT}>
+                <div className={cx(DISPUTE_DATA_ISSUER_COMMENT, { [DISPUTE_DATA_ISSUER_COMMENT_EXPANDED]: isExpanded })}>
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
                         {i18n.get('disputes.issuerComment.title')}
                     </Typography>
-                    <div>
-                        <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
+                    <Typography className={DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
+                        <p className={DISPUTE_DATA_ISSUER_COMMENT_TEXT}>
                             {/* [NOTE]: Issuer comment not translated at the moment (maybe never) */}
                             {'"'}
                             {issuerComment}
                             {'"'}
-                        </Typography>
-                    </div>
-                    {textClipped && (
+                        </p>
+                    </Typography>
+                    {isTruncated && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
                             {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
                         </Button>
@@ -208,10 +211,10 @@ export const DisputeData = ({
                 />
             </div>
 
+            {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
             {issuerComment && <DisputeIssuerComment issuerComment={issuerComment} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-            <DisputeDataAlert alertMode={disputeAlertMode} />
 
             {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
