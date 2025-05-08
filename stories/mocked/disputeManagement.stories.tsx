@@ -45,7 +45,7 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> 
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.notification_of_fraud,
+            ...DISPUTE_MANAGEMENT_HANDLERS.notification_of_fraud,
         },
     },
 };
