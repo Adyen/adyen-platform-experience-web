@@ -3,7 +3,7 @@ import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 import {
-    CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY,
+    CHARGEBACK_DEFENDABLE_EXTERNALLY,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
@@ -12,7 +12,6 @@ import {
     NOTIFICATION_OF_FRAUD,
     RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY,
 } from '../mock-data/disputes';
-import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -176,7 +175,7 @@ export const DISPUTES_HANDLERS = {
     undefendable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
-                return HttpResponse.json(CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY);
+                return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
