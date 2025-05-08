@@ -195,13 +195,13 @@ export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
 
 // REQUEST FOR INFORMATION
 
-export const RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
+export const RFI_UNRESPONDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DISPUTE_DETAIL.dispute,
         status: 'UNRESPONDED',
         type: 'REQUEST_FOR_INFORMATION',
-        defensibility: 'DEFENDABLE',
+        defensibility: 'DEFENDABLE_EXTERNALLY',
     },
 };
 
