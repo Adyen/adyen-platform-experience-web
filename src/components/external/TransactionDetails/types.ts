@@ -17,7 +17,6 @@ export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<a
     dataCustomization?: {
         details?: T;
     };
-    extraDetails?: Record<string, any>;
 }
 
 export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps>;

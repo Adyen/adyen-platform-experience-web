@@ -13,5 +13,5 @@ export enum TagVariant {
 
 export interface TagProps {
     variant?: TagVariant;
-    label: string;
+    label?: string;
 }

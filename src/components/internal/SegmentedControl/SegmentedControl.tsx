@@ -1,16 +1,16 @@
-import { SegmentedControlItem, SegmentedControlProps } from './types';
+import { SegmentedControlProps } from './types';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './SegmentedControl.scss';
 
-function SegmentedControl<T extends SegmentedControlItem[]>({ defaultItem, items }: SegmentedControlProps<T>) {
-    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl(items, defaultItem);
+function SegmentedControl<ItemId extends string>({ defaultItem, items, onChange }: SegmentedControlProps<ItemId>) {
+    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: items, defaultOption: defaultItem });
     const { i18n } = useCoreContext();
     return (
         <div>
-            <div role="radiogroup" className="adyen-fp-segmented-control">
+            <div role="radiogroup" className="adyen-pe-segmented-control">
                 {items.map((item, index) => {
                     const isActive = activeIndex === index;
                     return (
@@ -20,7 +20,7 @@ function SegmentedControl<T extends SegmentedControlItem[]>({ defaultItem, items
                             ref={refs[index]}
                             key={`item:${uniqueId}-${item.id}`}
                             id={`item:${uniqueId}-${item.id}`}
-                            className="adyen-fp-segmented-control__item"
+                            className="adyen-pe-segmented-control__item"
                             aria-checked={isActive}
                             aria-controls={`segment:${uniqueId}-${item.id}`}
                             onClick={isActive ? undefined : onClick}
@@ -31,7 +31,7 @@ function SegmentedControl<T extends SegmentedControlItem[]>({ defaultItem, items
                             <Typography
                                 el={TypographyElement.SPAN}
                                 variant={TypographyVariant.BODY}
-                                className="adyen-fp-segmented-control__item-label"
+                                className="adyen-pe-segmented-control__item-label"
                                 stronger
                             >
                                 {i18n.get(item.label)}
@@ -40,12 +40,12 @@ function SegmentedControl<T extends SegmentedControlItem[]>({ defaultItem, items
                     );
                 })}
             </div>
-            <div className="adyen-fp-segmented-content-container">
+            <div className="adyen-pe-segmented-content-container">
                 {items.map((item, index) => (
                     <section
                         key={`segment:${uniqueId}-${item.id}`}
                         id={`segment:${uniqueId}-${item.id}`}
-                        className="adyen-fp-segmented-content"
+                        className="adyen-pe-segmented-content"
                         aria-labelledby={`item:${uniqueId}-${item.id}`}
                         hidden={activeIndex !== index}
                     >

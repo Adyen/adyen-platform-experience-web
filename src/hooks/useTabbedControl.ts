@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import { InteractionKeyCode } from '../components/types';
 import { uniqueId as _uniqueId } from '../utils';
 
-export type TabbedControlOptions = readonly { id: string }[];
-export type TabbedControlOptionId<T extends TabbedControlOptions> = T[number] extends { id: infer U } ? U : never;
+export type TabbedControlOptions<OptionId extends string> = readonly { id: OptionId }[];
 
-export interface TabbedControlConfig<T extends TabbedControlOptions> {
-    defaultOption?: TabbedControlOptionId<T>;
-    options: T;
+export interface TabbedControlConfig<OptionId extends string, Options extends TabbedControlOptions<OptionId>> {
+    onChange?: <ActiveOption extends Options[number]>(activeOption: ActiveOption) => void;
+    defaultOption?: OptionId;
+    options: Options;
 }
 
 const enum TabDirection {
@@ -15,24 +15,27 @@ const enum TabDirection {
     FORWARD = 1,
 }
 
-const findDefaultOptionIndex = <T extends TabbedControlOptions>(
-    options: TabbedControlConfig<T>['options'],
-    defaultOption?: TabbedControlConfig<T>['defaultOption']
+const findDefaultOptionIndex = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>(
+    options: TabbedControlConfig<OptionId, Options>['options'],
+    defaultOption?: TabbedControlConfig<OptionId, Options>['defaultOption']
 ) => {
     if (!defaultOption) return 0;
     const defaultOptionIndex = options.findIndex(option => option.id === defaultOption);
     return defaultOptionIndex === -1 ? 0 : defaultOptionIndex;
 };
 
-export const useTabbedControl = <T extends TabbedControlOptions>(
-    options: TabbedControlConfig<T>['options'],
-    defaultOption?: TabbedControlConfig<T>['defaultOption']
-) => {
+export const useTabbedControl = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>({
+    options,
+    defaultOption,
+    onChange,
+}: TabbedControlConfig<OptionId, Options>) => {
     const [focusPending, setFocusPending] = useState(false);
     const [activeIndex, setActiveIndex] = useState(findDefaultOptionIndex(options, defaultOption));
     const optionElementsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const uniqueId = useRef(_uniqueId().replace(/.*?(?=\d+$)/, '')).current;
 
+    const activeOption: Options[number] = options[activeIndex]!;
+    const activeOptionRef = useRef(activeOption);
     const numberOfOptions = options.length;
 
     const refs = useMemo(() => {
@@ -90,6 +93,13 @@ export const useTabbedControl = <T extends TabbedControlOptions>(
             setFocusPending(false);
         }
     }, [activeIndex, focusPending]);
+
+    useEffect(() => {
+        if (activeOptionRef.current !== activeOption) {
+            activeOptionRef.current = activeOption;
+            onChange?.(activeOption);
+        }
+    }, [activeOption, onChange]);
 
     return { activeIndex, onClick, onKeyDown, refs, uniqueId } as const;
 };
