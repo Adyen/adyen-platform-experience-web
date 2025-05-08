@@ -71,7 +71,7 @@ const DEFAULT_DETAIL_DISPUTE: IDisputeDetail['dispute'] = {
     createdAt: getDate(-10),
     pspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
     reason: {
-        category: 'REQUEST_FOR_INFORMATION',
+        category: 'CONSUMER_DISPUTE',
         title: 'Request for information',
         code: '1234',
     },
@@ -187,7 +187,7 @@ export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
 
 // REQUEST FOR INFORMATION
 
-export const RFI_UNRESPONDED_DEFENDABLE: IDisputeDetail = {
+export const RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DISPUTE_DETAIL.dispute,
@@ -197,17 +197,7 @@ export const RFI_UNRESPONDED_DEFENDABLE: IDisputeDetail = {
     },
 };
 
-export const RFI_UNRESPONDED_ACCEPTABLE: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
-    dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
-        status: 'UNRESPONDED',
-        type: 'REQUEST_FOR_INFORMATION',
-        defensibility: 'ACCEPTABLE',
-    },
-};
-
-export const RFI_PENDING: IDisputeDetail = {
+export const RFI_RESPONDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
