@@ -25,4 +25,15 @@ export const InternalServerError: ElementStory<typeof DisputesOverview> = {
     },
 };
 
+export const NetworkError: ElementStory<typeof DisputesOverview> = {
+    name: 'Error - Network error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_LIST_HANDLERS.network_error,
+        },
+    },
+};
 export default meta;

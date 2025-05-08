@@ -174,7 +174,7 @@ export const disputesMocks = [
 type GetHttpError = AdyenPlatformExperienceError & { status: number; detail: string };
 
 const httpGetList = http.get<any, any, IDisputeListResponse>;
-const httpGetError = http.get<any, any, GetHttpError>;
+const httpGetInternalError = http.get<any, any, GetHttpError>;
 
 const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500): StrictResponse<GetHttpError> => {
     return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
@@ -185,8 +185,15 @@ const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Some
 const DISPUTES_LIST_ERRORS = {
     internal_server_error: {
         handlers: [
-            httpGetError(endpoints('mock').disputes.list, () => {
+            httpGetInternalError(endpoints('mock').disputes.list, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
+            }),
+        ],
+    },
+    network_error: {
+        handlers: [
+            http.get(endpoints('mock').disputes.list, () => {
+                return HttpResponse.error();
             }),
         ],
     },
@@ -203,9 +210,40 @@ export const DISPUTES_LIST_HANDLERS = {
     ...DISPUTES_LIST_ERRORS,
 };
 
+const DISPUTE_DETAILS_ERRORS = {
+    internal_server_error: {
+        handlers: [
+            httpGetInternalError(endpoints('mock').disputes.details, () => {
+                return getErrorHandler({ ...genericError500 }, 500);
+            }),
+        ],
+    },
+    network_error: {
+        handlers: [
+            http.get(endpoints('mock').disputes.details, () => {
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    download_server_error: {
+        handlers: [
+            httpGetInternalError(endpoints('mock').disputes.download, () => {
+                return getErrorHandler({ ...genericError500 }, 500);
+            }),
+        ],
+    },
+    accept_server_error: {
+        handlers: [
+            httpGetInternalError(endpoints('mock').disputes.download, () => {
+                return getErrorHandler({ ...genericError500 }, 500);
+            }),
+        ],
+    },
+};
+
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
-export const DISPUTE_MANAGEMENT_HANDLERS = {
+export const DISPUTE_DETAILS_HANDLERS = {
     undefendable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
@@ -227,4 +265,5 @@ export const DISPUTE_MANAGEMENT_HANDLERS = {
             }),
         ],
     },
+    ...DISPUTE_DETAILS_ERRORS,
 };
