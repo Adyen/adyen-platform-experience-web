@@ -90,7 +90,7 @@ const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
 
 export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
     },
     payment: DEFAULT_DETAIL_PAYMENT,
@@ -99,7 +99,7 @@ export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
 export const CHARGEBACK_WON: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'WON',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -109,7 +109,7 @@ export const CHARGEBACK_WON: IDisputeDetail = {
 export const CHARGEBACK_LOST: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'LOST',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -119,14 +119,13 @@ export const CHARGEBACK_LOST: IDisputeDetail = {
 export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'ACCEPTED',
         defensibility: 'NOT_ACTIONABLE',
     },
 };
 
-export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
-    ...DEFAULT_DISPUTE_DETAIL,
+export const CHARGEBACK_DEFENDABLE: IDisputeDetail = {
     payment: {
         ...DEFAULT_DETAIL_PAYMENT,
         paymentMethod: {
@@ -146,7 +145,7 @@ export const CHARGEBACK_PENDING_DEFENDABLE: IDisputeDetail = {
         allowedDefenseReasons: [...MC_CONSUMER_DEFENSE_REASONS],
     },
 };
-export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
+export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
@@ -154,7 +153,7 @@ export const CHARGEBACK_PENDING_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
         defensibility: 'DEFENDABLE_EXTERNALLY',
     },
 };
-export const CHARGEBACK_PENDING_ACCEPTABLE: IDisputeDetail = {
+export const CHARGEBACK_ACCEPTABLE: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
