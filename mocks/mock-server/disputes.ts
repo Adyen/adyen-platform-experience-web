@@ -186,7 +186,7 @@ export const DISPUTES_HANDLERS = {
             }),
         ],
     },
-    nof_no_redirect: {
+    notification_of_fraud: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(NOTIFICATION_OF_FRAUD);

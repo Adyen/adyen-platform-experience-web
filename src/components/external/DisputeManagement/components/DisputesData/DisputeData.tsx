@@ -51,11 +51,12 @@ const DisputeDataAlert = ({
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
+    const isNotificationOfFraud = type === 'NOTIFICATION_OF_FRAUD';
 
-    if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
+    if ((status === 'LOST' && !isNotificationOfFraud && !isDefended) || status === 'EXPIRED') {
         return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
-    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED' || type === 'NOTIFICATION_OF_FRAUD') && showContactSupport) {
+    if (isNotificationOfFraud || ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport)) {
         //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
         const contactSupportLabel = i18n.get('contactSupport');
         return (
