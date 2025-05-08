@@ -17,7 +17,7 @@ import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
-import { useDisputeFlow } from '../../hooks/useDisputeFlow';
+import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
@@ -78,19 +78,20 @@ export const DisputeData = ({
     dataCustomization?: { details?: DisputeDetailsCustomization };
 }) => {
     const { i18n } = useCoreContext();
-    const { setDispute, setFlowState } = useDisputeFlow();
+    const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
 
-    const { getDisputeDetail } = useConfigContext().endpoints;
+    const { getDisputeDetail, getApplicableDefenseDocuments, acceptDispute } = useConfigContext().endpoints;
 
     //TODO: Also check if /defend endpoint has been returned from setup call which relates to submit button action
-    const defendAuthorization = isFunction(useConfigContext().endpoints.getApplicableDefenseDocuments);
+    const defendAuthorization = isFunction(getApplicableDefenseDocuments);
+    const acceptAuthorization = isFunction(acceptDispute);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
-    const { data: dispute, isFetching } = useFetch(
+    const { data, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!disputeId && !!getDisputeDetail,
+                    enabled: !!disputeId && !!getDisputeDetail && !storedDispute,
                     onSuccess: ((dispute: IDisputeDetail) => {
                         setDispute(dispute);
                     }) as any,
@@ -103,9 +104,13 @@ export const DisputeData = ({
                     });
                 },
             }),
-            [disputeId, getDisputeDetail, setDispute]
+            [storedDispute, disputeId, getDisputeDetail, setDispute]
         )
     );
+
+    const dispute = storedDispute || data;
+
+    const defensibility = dispute?.dispute?.defensibility;
 
     const statusBoxOptions = useStatusBoxData({
         timezone: dispute?.payment.balanceAccount?.timeZone,
@@ -119,30 +124,33 @@ export const DisputeData = ({
         return type && i18n.get(DISPUTE_TYPES[type]);
     }, [i18n, dispute]);
 
-    const onAcceptClick = useCallback(() => {
-        dispute && setDispute(dispute);
-        setFlowState('accept');
-    }, [dispute, setDispute, setFlowState]);
+    const showContactSupport = !!defensibility && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility);
+    const isDefendable = !!defensibility && defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable = !!defensibility && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility) && acceptAuthorization;
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
-    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
-    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
+    const onAcceptClick = useCallback(() => {
+        setFlowState('accept');
+    }, [setFlowState]);
+
+    const onDefendClick = useCallback(() => {
+        setFlowState('defendReasonSelectionView');
+    }, [setFlowState]);
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
+        if (isDefendable)
+            ctaButtons.push({
+                title: i18n.get('disputes.defendChargeback'),
+                event: onDefendClick,
+            });
         if (isAcceptable) {
             ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
             });
         }
-        if (isDefendable)
-            ctaButtons.push({
-                title: i18n.get('disputes.defendDispute'),
-                event: () => {},
-            });
         return ctaButtons;
-    }, [i18n, isAcceptable, isDefendable, onAcceptClick]);
+    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick]);
 
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;

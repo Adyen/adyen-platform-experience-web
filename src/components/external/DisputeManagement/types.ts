@@ -11,4 +11,8 @@ export type DisputeDetailsFields = (typeof _fields)[number];
 
 export type DisputeDetailsCustomization = DetailsDataCustomizationObject<DisputeDetailsFields, IDisputeDetail, CustomDataRetrieved>;
 
-export type DisputeManagementProps = { id: string; onAcceptDispute?: () => void } & DetailsWithExtraData<DisputeDetailsCustomization>;
+export type DisputeManagementProps = {
+    id: string;
+    onAcceptDispute?: () => void;
+    onDefendDispute?: () => void;
+} & DetailsWithExtraData<DisputeDetailsCustomization>;

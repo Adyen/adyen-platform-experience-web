@@ -1,0 +1,62 @@
+@use '../../../../../style';
+
+.adyen-pe-defend-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &-document-requirements {
+        font-family: inherit;
+
+        &--list {
+            margin: 0;
+            padding-left: style.token(spacer-070);
+        }
+    }
+
+    &__error-icon {
+        color: style.token(color-background-critical-strong);
+        font-size: style.token(spacer-100);
+
+        svg {
+            display: block;
+        }
+    }
+
+    &__response {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        padding: style.token(spacer-100) 0;
+        text-align: center;
+    }
+
+    &__error {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        justify-content: center;
+    }
+
+    &__success {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        justify-content: center;
+    }
+
+    &__success-icon {
+        color: style.token(color-background-success-strong);
+        font-size: style.token(spacer-100);
+
+        svg {
+            display: block;
+        }
+    }
+}
