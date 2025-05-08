@@ -59,7 +59,7 @@ export const AcceptDisputeFlow = ({
                 </div>
             ) : (
                 <>
-                    <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.BODY} medium>
+                    <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
                         {i18n.get('disputes.acceptChargeback')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>

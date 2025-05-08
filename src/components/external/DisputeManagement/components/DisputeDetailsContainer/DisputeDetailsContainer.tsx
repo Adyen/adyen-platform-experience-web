@@ -4,6 +4,7 @@ import { DisputeDetails } from '../DisputeDetails/DisputeDetails';
 import type { ExternalUIComponentProps } from '../../../../types';
 import { DisputeManagementProps } from '../../types';
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import './DisputeDetailsContainer.scss';
 
 export const DisputeDetailsContainer = (props: ExternalUIComponentProps<DisputeManagementProps>) => {
     const [dispute, setDispute] = useState<IDisputeDetail | undefined>();
@@ -14,12 +15,9 @@ export const DisputeDetailsContainer = (props: ExternalUIComponentProps<DisputeM
 
     return (
         <DisputeContextProvider dispute={dispute} setDispute={setDisputeCallback}>
-            <DisputeDetails
-                disputeId={props.id}
-                onAcceptDispute={props.onAcceptDispute}
-                onDefendDispute={props.onDefendDispute}
-                dataCustomization={props.dataCustomization}
-            />
+            <div className="adyen-pe-dispute__container">
+                <DisputeDetails {...props} />
+            </div>
         </DisputeContextProvider>
     );
 };

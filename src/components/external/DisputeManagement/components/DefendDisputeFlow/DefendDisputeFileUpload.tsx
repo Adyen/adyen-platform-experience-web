@@ -79,6 +79,7 @@ export const DefendDisputeFileUpload = () => {
                         </Typography>
                     }
                     filled
+                    expandable
                 >
                     <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (

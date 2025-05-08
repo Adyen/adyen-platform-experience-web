@@ -52,6 +52,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                             id={selectedDetail.selection.data}
                             dataCustomization={dataCustomization}
                             onAcceptDispute={onAcceptDisputeCallback}
+                            hideTitle
                         />
                     </div>
                 </Modal>

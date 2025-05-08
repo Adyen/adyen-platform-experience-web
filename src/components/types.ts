@@ -7,7 +7,7 @@ import { ReportsTableFields } from './external/ReportsOverview/components/Report
 import { StringWithAutocompleteOptions } from '../utils/types';
 import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsFields } from './external';
-import { IDispute, IDisputeListItem } from '../types/api/models/disputes';
+import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 
 export const enum InteractionKeyCode {
