@@ -158,6 +158,7 @@ export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
+        dueDate: getDate(20),
         status: 'UNDEFENDED',
         defensibility: 'DEFENDABLE_EXTERNALLY',
     },
@@ -171,7 +172,7 @@ export const CHARGEBACK_ACCEPTABLE: IDisputeDetail = {
     payment: DEFAULT_DETAIL_PAYMENT,
 };
 
-export const CHARGEBACK_DEFENDED: IDisputeDetail = {
+export const CHARGEBACK_PENDING: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,

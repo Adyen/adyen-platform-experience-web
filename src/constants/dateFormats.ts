@@ -47,3 +47,12 @@ export const DATE_FORMAT_DISPUTES: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT
 export const DATE_FORMAT_DISPUTES_TAG: Intl.DateTimeFormatOptions = {
     month: SHORT,
 };
+
+export const DATE_FORMAT_RESPONSE_DEADLINE: Intl.DateTimeFormatOptions = {
+    month: SHORT,
+    weekday: LONG,
+    hour: DIGITS_2,
+    minute: NUMERIC,
+    year: undefined,
+    timeZoneName: SHORT_OFFSET,
+};

@@ -3,6 +3,7 @@ import DisputeManagementElement from '../../src/components/external/DisputeManag
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
+import { DISPUTES_HANDLERS } from '../../mocks/mock-server/disputes';
 
 const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
 
@@ -10,6 +11,42 @@ export const Default: ElementStory<typeof DisputeManagementElement> = {
     name: 'Default',
     args: {
         mockedApi: true,
+    },
+};
+
+export const ChargebackDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Defendable externally',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.defendableExternally,
+        },
+    },
+};
+
+export const RFIDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
+    name: 'RFI - Defendable externally',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.rfiAcceptable,
+        },
+    },
+};
+
+export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Notification of fraud',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.notificationOfFraud,
+        },
     },
 };
 
