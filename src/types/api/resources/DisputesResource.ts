@@ -108,6 +108,7 @@ export interface components {
             defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
+            issuerComment?: string;
             pspReference: string;
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
@@ -137,10 +138,10 @@ export interface components {
         /** @enum {string} */
         DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
         Payment: {
-            balanceAccount?: components['schemas']['BalanceAccount'];
+            balanceAccount: components['schemas']['BalanceAccount'];
             isRefunded: boolean;
             merchantReference?: string;
-            paymentMethod?: components['schemas']['PaymentMethod'];
+            paymentMethod: components['schemas']['PaymentMethod'];
             pspReference: string;
         };
         PaymentMethod: {

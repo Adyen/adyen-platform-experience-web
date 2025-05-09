@@ -1,10 +1,10 @@
 import cx from 'classnames';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { IDisputeListItem } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -14,60 +14,93 @@ import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetail
 import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
+    DISPUTE_DATA_ISSUER_COMMENT,
+    DISPUTE_DATA_ISSUER_COMMENT_EXPANDED,
+    DISPUTE_DATA_ISSUER_COMMENT_TEXT,
+    DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
+import Button from '../../../../internal/Button';
+import { ButtonVariant } from '../../../../internal/Button/types';
 
-const DisputeDataAlert = ({
-    status,
-    isDefended,
-    showContactSupport = true,
-}: {
-    status: IDisputeListItem['status'];
-    isDefended: boolean;
-    showContactSupport: boolean;
-}) => {
+type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
+
+const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) => {
     const { i18n } = useCoreContext();
+    switch (alertMode) {
+        case 'contactSupport':
+            return (
+                <Alert
+                    type={AlertTypeOption.WARNING}
+                    variant={AlertVariantOption.TIP}
+                    description={
+                        <Translation
+                            translationKey={'disputes.contactSupportToDefendThisDispute'}
+                            fills={{
+                                contactSupport: (
+                                    <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
+                                        {/* TODO: Change with tech writers since interpolating with another translated phrase can break meaning */}
+                                        {i18n.get('contactSupport')}
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    }
+                />
+            );
 
-    if ((status === 'LOST' && !isDefended) || status === 'EXPIRED') {
-        return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
-    }
-    if ((status === 'UNRESPONDED' || status === 'UNDEFENDED') && showContactSupport) {
-        //TODO: Change with tech writers since interpolating with another translated phrase can break meaning
-        const contactSupportLabel = i18n.get('contactSupport');
-        return (
-            <Alert
-                type={AlertTypeOption.WARNING}
-                variant={AlertVariantOption.TIP}
-                description={
-                    <Translation
-                        translationKey={'disputes.contactSupportToDefendThisDispute'}
-                        fills={{
-                            contactSupport: (
-                                <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
-                                    {contactSupportLabel}
-                                </Link>
-                            ),
-                        }}
-                    />
-                }
-            />
-        );
+        case 'notDefended':
+            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
 
     return null;
+};
+
+const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
+    const { i18n } = useCoreContext();
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isTruncated, setIsTruncated] = useState(true); // [TODO]: Dynamically determine truncation state
+    return (
+        <Alert
+            type={AlertTypeOption.HIGHLIGHT}
+            variant={AlertVariantOption.TIP}
+            description={
+                <div className={cx(DISPUTE_DATA_ISSUER_COMMENT, { [DISPUTE_DATA_ISSUER_COMMENT_EXPANDED]: isExpanded })}>
+                    <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
+                        {i18n.get('disputes.issuerComment.title')}
+                    </Typography>
+                    <Typography className={DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
+                        <p className={DISPUTE_DATA_ISSUER_COMMENT_TEXT}>
+                            {/* [NOTE]: Issuer comment not translated at the moment (maybe never) */}
+                            {'"'}
+                            {issuerComment}
+                            {'"'}
+                        </p>
+                    </Typography>
+                    {isTruncated && (
+                        <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
+                            {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
+                        </Button>
+                    )}
+                </div>
+            }
+        />
+    );
 };
 
 export const DisputeData = ({
@@ -108,11 +141,11 @@ export const DisputeData = ({
     );
 
     const statusBoxOptions = useStatusBoxData({
-        timezone: dispute?.payment.balanceAccount?.timeZone,
-        createdAt: dispute?.dispute.createdAt,
         amountData: dispute?.dispute.amount,
         paymentMethodData: dispute?.payment.paymentMethod,
     } as const);
+
+    const issuerComment = useMemo(() => dispute?.dispute.issuerComment?.trim(), [dispute]);
 
     const disputeType = useMemo(() => {
         const type = dispute?.dispute.type;
@@ -124,9 +157,15 @@ export const DisputeData = ({
         setFlowState('accept');
     }, [dispute, setDispute, setFlowState]);
 
-    const showContactSupport = dispute?.dispute.defensibility === 'DEFENDABLE_EXTERNALLY' || dispute?.dispute.defensibility === 'ACCEPTABLE';
-    const isDefendable = dispute?.dispute.defensibility === 'DEFENDABLE' && defendAuthorization;
-    const isAcceptable = dispute?.dispute.defensibility === 'ACCEPTABLE' || dispute?.dispute.defensibility === 'DEFENDABLE';
+    const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
+    const isFraudNotification = dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
+    const isDefended = !!(dispute?.defense && dispute.defense.defendedOn);
+
+    const defensibility = dispute?.dispute.defensibility;
+
+    const showContactSupport = defensibility === 'DEFENDABLE_EXTERNALLY' || defensibility === 'ACCEPTABLE';
+    const isDefendable = defensibility === 'DEFENDABLE' && defendAuthorization;
+    const isAcceptable = defensibility === 'ACCEPTABLE' || defensibility === 'DEFENDABLE';
 
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
@@ -147,6 +186,17 @@ export const DisputeData = ({
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
+
+    let disputeAlertMode: DisputeDataAlertMode | undefined = undefined;
+
+    if (actionNeeded && showContactSupport) {
+        disputeAlertMode = 'contactSupport';
+    } else if (dispute.dispute.status === 'EXPIRED') {
+        disputeAlertMode = 'notDefended';
+    } else if (dispute.dispute.status === 'LOST' && !(isFraudNotification || isDefended)) {
+        disputeAlertMode = 'notDefended';
+    }
+
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
             <div className={DISPUTE_STATUS_BOX}>
@@ -155,19 +205,16 @@ export const DisputeData = ({
                     tag={
                         <>
                             {disputeType && <Tag label={disputeType} />}
-                            {dispute?.dispute && dispute.dispute.type !== 'NOTIFICATION_OF_FRAUD' && <DisputeStatusTag dispute={dispute.dispute} />}
+                            {!isFraudNotification && <DisputeStatusTag dispute={dispute.dispute} />}
                         </>
                     }
                 />
             </div>
 
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+            {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
+            {issuerComment && <DisputeIssuerComment issuerComment={issuerComment} />}
 
-            <DisputeDataAlert
-                status={dispute.dispute.status}
-                isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
-                showContactSupport={showContactSupport}
-            />
+            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
             {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
