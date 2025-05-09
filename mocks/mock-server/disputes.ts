@@ -172,21 +172,21 @@ export const disputesMocks = [
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
 export const DISPUTES_HANDLERS = {
-    undefendable: {
+    defendableExternally: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
-    rfi_acceptable: {
+    rfiAcceptable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_UNRESPONDED);
             }),
         ],
     },
-    notification_of_fraud: {
+    notificationOfFraud: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(NOTIFICATION_OF_FRAUD);
