@@ -16,7 +16,12 @@ export const DisputeDetails = (props: ExternalUIComponentProps<DisputeManagement
 
     return (
         <DisputeFlowContext.Provider value={{ flowState, setFlowState, goBack, dispute: dispute, setDispute: setDisputeCallback }}>
-            <DisputeDetailsContainer disputeId={props.id} onAcceptDispute={props.onAcceptDispute} dataCustomization={props.dataCustomization} />
+            <DisputeDetailsContainer
+                disputeId={props.id}
+                onAcceptDispute={props.onAcceptDispute}
+                dataCustomization={props.dataCustomization}
+                onContactSupport={props.onContactSupport}
+            />
         </DisputeFlowContext.Provider>
     );
 };

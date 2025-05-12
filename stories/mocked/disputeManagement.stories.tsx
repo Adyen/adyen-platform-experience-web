@@ -21,7 +21,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
     parameters: {
         msw: {
-            ...DISPUTE_DETAILS_HANDLERS.undefendable,
+            ...DISPUTE_DETAILS_HANDLERS.defendableExternally,
         },
     },
 };
@@ -33,7 +33,7 @@ export const RFIDefendableExternally: ElementStory<typeof DisputeManagementEleme
     },
     parameters: {
         msw: {
-            ...DISPUTE_DETAILS_HANDLERS.rfi_acceptable,
+            ...DISPUTE_DETAILS_HANDLERS.rfiAcceptable,
         },
     },
 };
@@ -45,7 +45,7 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> 
     },
     parameters: {
         msw: {
-            ...DISPUTE_DETAILS_HANDLERS.notification_of_fraud,
+            ...DISPUTE_DETAILS_HANDLERS.notificationOfFraud,
         },
     },
 };

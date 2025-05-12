@@ -7,16 +7,18 @@ export const DisputeDetailsContainer = ({
     disputeId,
     onAcceptDispute,
     dataCustomization,
+    onContactSupport,
 }: {
     disputeId: string;
     onAcceptDispute?: () => void;
     dataCustomization?: { details?: DisputeDetailsCustomization };
+    onContactSupport?: () => void;
 }) => {
     const { flowState, goBack } = useDisputeFlow();
 
     switch (flowState) {
         case 'details':
-            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} />;
+            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} onContactSupport={onContactSupport} />;
         case 'accept':
             return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
         default:

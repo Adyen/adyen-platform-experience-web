@@ -9,8 +9,8 @@ import {
     getApplicableDisputeDefenseDocuments,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
+    RFI_UNRESPONDED,
     NOTIFICATION_OF_FRAUD,
-    RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY,
 } from '../mock-data/disputes';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
@@ -244,21 +244,21 @@ const DISPUTE_DETAILS_ERRORS = {
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
 export const DISPUTE_DETAILS_HANDLERS = {
-    undefendable: {
+    defendableExternally: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
-    rfi_acceptable: {
+    rfiAcceptable: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
-                return HttpResponse.json(RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY);
+                return HttpResponse.json(RFI_UNRESPONDED);
             }),
         ],
     },
-    notification_of_fraud: {
+    notificationOfFraud: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(NOTIFICATION_OF_FRAUD);

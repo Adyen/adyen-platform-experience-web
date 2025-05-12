@@ -90,7 +90,7 @@ const DEFAULT_DISPUTE_DETAIL: IDisputeDetail = {
 
 export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'UNDEFENDED',
     },
     payment: DEFAULT_DETAIL_PAYMENT,
@@ -99,7 +99,7 @@ export const CHARGEBACK_UNDEFENDED: IDisputeDetail = {
 export const CHARGEBACK_WON: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'WON',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -109,7 +109,7 @@ export const CHARGEBACK_WON: IDisputeDetail = {
 export const CHARGEBACK_LOST: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'LOST',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -128,7 +128,7 @@ export const CHARGEBACK_LOST_NO_ACTION: IDisputeDetail = {
 export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
-        ...DEFAULT_DISPUTE_DETAIL.dispute,
+        ...DEFAULT_DETAIL_DISPUTE,
         status: 'ACCEPTED',
         defensibility: 'NOT_ACTIONABLE',
     },
@@ -172,7 +172,7 @@ export const CHARGEBACK_ACCEPTABLE: IDisputeDetail = {
     payment: DEFAULT_DETAIL_PAYMENT,
 };
 
-export const CHARGEBACK_DEFENDED: IDisputeDetail = {
+export const CHARGEBACK_PENDING: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
@@ -196,13 +196,13 @@ export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
 
 // REQUEST FOR INFORMATION
 
-export const RFI_UNRESPONDED_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
+export const RFI_UNRESPONDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DISPUTE_DETAIL.dispute,
         status: 'UNRESPONDED',
         type: 'REQUEST_FOR_INFORMATION',
-        defensibility: 'DEFENDABLE',
+        defensibility: 'DEFENDABLE_EXTERNALLY',
     },
 };
 
