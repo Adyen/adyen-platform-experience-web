@@ -17,7 +17,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
-import { DisputeDetailsCustomization } from '../../types';
+import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
@@ -25,6 +25,7 @@ import {
     DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
+    DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
@@ -34,6 +35,10 @@ import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwar
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import Button from '../../../../internal/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getErrorMessage } from '../../../../utils/getErrorMessage';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
 
 const DisputeDataAlert = ({
     status,
@@ -119,10 +124,12 @@ export const DisputeData = ({
     disputeId,
     dataCustomization,
     onContactSupport,
+    onDetailsDismiss,
 }: {
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
+    onDetailsDismiss: DisputeManagementProps['onDetailsDismiss'];
 }) => {
     const { i18n } = useCoreContext();
     const { setDispute, setFlowState } = useDisputeFlow();
@@ -133,7 +140,11 @@ export const DisputeData = ({
     const defendAuthorization = isFunction(useConfigContext().endpoints.getApplicableDefenseDocuments);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
-    const { data: dispute, isFetching } = useFetch(
+    const {
+        data: dispute,
+        isFetching,
+        error,
+    } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -194,41 +205,69 @@ export const DisputeData = ({
         return ctaButtons;
     }, [i18n, isAcceptable, isDefendable, onAcceptClick]);
 
-    if (!dispute || isFetching) {
+    const renderBackButton = useCallback(() => {
+        return (
+            <Button variant={ButtonVariant.SECONDARY} onClick={onDetailsDismiss}>
+                {i18n.get('disputes.goBack')}
+            </Button>
+        );
+    }, [i18n, onDetailsDismiss]);
+
+    if ((!dispute && !error) || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
+
+    const errorProps = getDisputesErrorMessage(error as AdyenPlatformExperienceError, 'disputes.weCouldNotLoadYourDispute', onContactSupport);
+
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
-            <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox
-                    {...statusBoxOptions}
-                    tag={
-                        <>
-                            {disputeType && <Tag label={disputeType} />}
-                            {dispute?.dispute && dispute.dispute.type !== 'NOTIFICATION_OF_FRAUD' && <DisputeStatusTag dispute={dispute.dispute} />}
-                        </>
-                    }
-                />
-            </div>
-
-            <DisputeDataAlert
-                type={dispute.dispute.type}
-                timeZone={dispute.payment.balanceAccount?.timeZone}
-                dueDate={dispute.dispute.dueDate}
-                status={dispute.dispute.status}
-                isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
-                showContactSupport={showContactSupport}
-                onContactSupport={onContactSupport}
-            />
-
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
-            {isAcceptable || isDefendable ? (
-                <div className={DISPUTE_DATA_ACTION_BAR}>
-                    <ButtonActions actions={actionButtons} />
+            {error ? (
+                <div className={DISPUTE_DATA_ERROR_CONTAINER}>
+                    <ErrorMessageDisplay
+                        renderSecondaryButton={onDetailsDismiss ? renderBackButton : undefined}
+                        withImage
+                        outlined={false}
+                        absolutePosition={false}
+                        withBackground={false}
+                        {...errorProps}
+                    />
                 </div>
+            ) : dispute ? (
+                <>
+                    <div className={DISPUTE_STATUS_BOX}>
+                        <StatusBox
+                            {...statusBoxOptions}
+                            tag={
+                                <>
+                                    {disputeType && <Tag label={disputeType} />}
+                                    {dispute?.dispute && dispute.dispute.type !== 'NOTIFICATION_OF_FRAUD' && (
+                                        <DisputeStatusTag dispute={dispute.dispute} />
+                                    )}
+                                </>
+                            }
+                        />
+                    </div>
+
+                    <DisputeDataAlert
+                        type={dispute.dispute.type}
+                        timeZone={dispute.payment.balanceAccount?.timeZone}
+                        dueDate={dispute.dispute.dueDate}
+                        status={dispute.dispute.status}
+                        isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
+                        showContactSupport={showContactSupport}
+                        onContactSupport={onContactSupport}
+                    />
+
+                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+
+                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+
+                    {isAcceptable || isDefendable ? (
+                        <div className={DISPUTE_DATA_ACTION_BAR}>
+                            <ButtonActions actions={actionButtons} />
+                        </div>
+                    ) : null}
+                </>
             ) : null}
         </div>
     );

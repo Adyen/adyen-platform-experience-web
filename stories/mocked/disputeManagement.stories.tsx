@@ -50,6 +50,42 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> 
     },
 };
 
+export const ServerError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Server error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.internalServerError,
+        },
+    },
+};
+
+export const NetworkError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Network error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.networkError,
+        },
+    },
+};
+
+export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Unprocessable entity error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.unprocessableEntityError,
+        },
+    },
+};
+
 export const CustomData: ElementStory<typeof DisputeManagementElement> = {
     name: 'Custom Data',
     args: {

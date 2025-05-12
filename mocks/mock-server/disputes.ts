@@ -225,6 +225,15 @@ const DISPUTE_DETAILS_ERRORS = {
             }),
         ],
     },
+    unprocessableEntityError: {
+        handlers: [
+            httpGetInternalError(endpoints('mock').disputes.details, () => {
+                const adyenError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac77fd1d7ac77fd1d', 'Message', '30_112');
+
+                return getErrorHandler({ ...adyenError }, 422);
+            }),
+        ],
+    },
     downloadServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.download, () => {

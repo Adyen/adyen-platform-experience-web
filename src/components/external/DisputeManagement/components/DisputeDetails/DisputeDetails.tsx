@@ -21,6 +21,7 @@ export const DisputeDetails = (props: ExternalUIComponentProps<DisputeManagement
                 onAcceptDispute={props.onAcceptDispute}
                 dataCustomization={props.dataCustomization}
                 onContactSupport={props.onContactSupport}
+                onDetailsDismiss={props.onDetailsDismiss}
             />
         </DisputeFlowContext.Provider>
     );

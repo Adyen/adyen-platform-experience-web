@@ -1,5 +1,5 @@
 import { useDisputeFlow } from '../../hooks/useDisputeFlow';
-import { DisputeDetailsCustomization } from '../../types';
+import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import DisputeData from '../DisputesData/DisputeData';
 
@@ -8,17 +8,26 @@ export const DisputeDetailsContainer = ({
     onAcceptDispute,
     dataCustomization,
     onContactSupport,
+    onDetailsDismiss,
 }: {
     disputeId: string;
     onAcceptDispute?: () => void;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
+    onDetailsDismiss: DisputeManagementProps['onDetailsDismiss'];
 }) => {
     const { flowState, goBack } = useDisputeFlow();
 
     switch (flowState) {
         case 'details':
-            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} onContactSupport={onContactSupport} />;
+            return (
+                <DisputeData
+                    disputeId={disputeId}
+                    dataCustomization={dataCustomization}
+                    onContactSupport={onContactSupport}
+                    onDetailsDismiss={onDetailsDismiss}
+                />
+            );
         case 'accept':
             return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
         default:
