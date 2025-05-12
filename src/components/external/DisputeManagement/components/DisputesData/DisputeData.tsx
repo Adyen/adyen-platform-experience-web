@@ -29,9 +29,10 @@ import {
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_ISSUER_COMMENT,
-    DISPUTE_DATA_ISSUER_COMMENT_EXPANDED,
-    DISPUTE_DATA_ISSUER_COMMENT_TEXT,
-    DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX,
+    DISPUTE_DATA_ISSUER_COMMENTS,
+    DISPUTE_DATA_ISSUER_COMMENTS_EXPANDED,
+    DISPUTE_DATA_ISSUER_COMMENTS_GROUP,
+    DISPUTE_DATA_ISSUER_COMMENTS_TRUNCATED,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
@@ -71,7 +72,7 @@ const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) =
     return null;
 };
 
-const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
+const DisputeIssuerComment = ({ issuerComments }: { issuerComments: string[] }) => {
     const { i18n } = useCoreContext();
     const [isExpanded, setIsExpanded] = useState(false);
     const [isTruncated, setIsTruncated] = useState(true); // [TODO]: Dynamically determine truncation state
@@ -80,18 +81,27 @@ const DisputeIssuerComment = ({ issuerComment }: { issuerComment: string }) => {
             type={AlertTypeOption.HIGHLIGHT}
             variant={AlertVariantOption.TIP}
             description={
-                <div className={cx(DISPUTE_DATA_ISSUER_COMMENT, { [DISPUTE_DATA_ISSUER_COMMENT_EXPANDED]: isExpanded })}>
+                <div
+                    className={cx(DISPUTE_DATA_ISSUER_COMMENTS, {
+                        [DISPUTE_DATA_ISSUER_COMMENTS_EXPANDED]: isExpanded,
+                        [DISPUTE_DATA_ISSUER_COMMENTS_TRUNCATED]: isTruncated,
+                    })}
+                >
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
                         {i18n.get('disputes.issuerComment.title')}
                     </Typography>
-                    <Typography className={DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
-                        <p className={DISPUTE_DATA_ISSUER_COMMENT_TEXT}>
-                            {/* [NOTE]: Issuer comment not translated at the moment (maybe never) */}
-                            {'"'}
-                            {issuerComment}
-                            {'"'}
-                        </p>
-                    </Typography>
+
+                    <ul className={DISPUTE_DATA_ISSUER_COMMENTS_GROUP}>
+                        {issuerComments.map((issuerComment, index) => (
+                            <li key={index}>
+                                <Typography className={DISPUTE_DATA_ISSUER_COMMENT} el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
+                                    {/* [NOTE]: Issuer comments are not translated at the moment (maybe never) */}
+                                    {issuerComment}
+                                </Typography>
+                            </li>
+                        ))}
+                    </ul>
+
                     {isTruncated && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
                             {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
@@ -145,7 +155,18 @@ export const DisputeData = ({
         paymentMethodData: dispute?.payment.paymentMethod,
     } as const);
 
-    const issuerComment = useMemo(() => dispute?.dispute.issuerComment?.trim(), [dispute]);
+    const issuerComments = useMemo(() => {
+        const { chargeback, preArbitration } = dispute?.dispute.issuerExtraData ?? {};
+        const comments = [] as string[];
+
+        [preArbitration, chargeback].forEach(commentGroup => {
+            ['LIABILITY_NOT_ACCEPTED_FULLY', 'PRE_ARB_REASON', 'NOTE'].forEach(commentKey => {
+                comments.push(commentGroup?.[commentKey]?.trim()!);
+            });
+        });
+
+        return comments.filter(Boolean);
+    }, [dispute]);
 
     const disputeType = useMemo(() => {
         const type = dispute?.dispute.type;
@@ -212,7 +233,7 @@ export const DisputeData = ({
             </div>
 
             {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
-            {issuerComment && <DisputeIssuerComment issuerComment={issuerComment} />}
+            {issuerComments.length > 0 && <DisputeIssuerComment issuerComments={issuerComments} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 

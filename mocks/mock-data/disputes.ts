@@ -52,8 +52,12 @@ const CHARGEBACK_REASON_TITLE = 'Fraud - Invalid credit card use';
 const CONSUMER_DISPUTE_REASON_TITLE = 'Consumer dispute - Cardholder dispute - Defective / Not as described';
 const FRAUD_ALERT_REASON_TITLE = 'Fraudulent use of account number';
 
-const ISSUER_COMMENT =
-    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here. The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here. The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
+// Issuer comments
+const CHARGEBACK_NOTE =
+    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
+const CHARGEBACK_LIABILITY = 'Lorem ipsum this is a very long long text so we cut it here.';
+const PRE_ARBITRATION_REASON =
+    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
     defendedOn: getDate(-1),
@@ -899,7 +903,15 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         type: disputeType,
         ...(dispute.status === 'UNRESPONDED' &&
             dispute.reason.category === 'REQUEST_FOR_INFORMATION' && {
-                issuerComment: ISSUER_COMMENT,
+                issuerExtraData: {
+                    chargeback: {
+                        NOTE: CHARGEBACK_NOTE,
+                        LIABILITY_NOT_ACCEPTED_FULLY: CHARGEBACK_LIABILITY,
+                    },
+                    preArbitration: {
+                        PRE_ARB_REASON: PRE_ARBITRATION_REASON,
+                    },
+                },
             }),
         allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
         ...(dispute.status === 'UNDEFENDED' || dispute.status === 'UNRESPONDED'

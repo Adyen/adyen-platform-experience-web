@@ -108,7 +108,17 @@ export interface components {
             defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
-            issuerComment?: string;
+            issuerExtraData?: {
+                chargeback?: {
+                    [key: string]: string;
+                };
+                extraData?: {
+                    [key: string]: string;
+                };
+                preArbitration?: {
+                    [key: string]: string;
+                };
+            };
             pspReference: string;
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];

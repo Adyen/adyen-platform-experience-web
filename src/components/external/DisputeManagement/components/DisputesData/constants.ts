@@ -7,9 +7,10 @@ export const DISPUTE_DATA_LIST = `${DISPUTE_DATA_CLASS}__list`;
 export const DISPUTE_DATA_LIST_EVIDENCE = `${DISPUTE_DATA_CLASS}__list--evidence`;
 export const DISPUTE_DATA_CONTACT_SUPPORT = `${DISPUTE_DATA_CLASS}__contact-support`;
 export const DISPUTE_DATA_ISSUER_COMMENT = `${DISPUTE_DATA_CLASS}__issuer-comment`;
-export const DISPUTE_DATA_ISSUER_COMMENT_EXPANDED = `${DISPUTE_DATA_ISSUER_COMMENT}--expanded`;
-export const DISPUTE_DATA_ISSUER_COMMENT_TEXT = `${DISPUTE_DATA_CLASS}__issuer-comment-text`;
-export const DISPUTE_DATA_ISSUER_COMMENT_TEXT_BOX = `${DISPUTE_DATA_CLASS}__issuer-comment-textbox`;
+export const DISPUTE_DATA_ISSUER_COMMENTS = `${DISPUTE_DATA_CLASS}__issuer-comments`;
+export const DISPUTE_DATA_ISSUER_COMMENTS_EXPANDED = `${DISPUTE_DATA_ISSUER_COMMENTS}--expanded`;
+export const DISPUTE_DATA_ISSUER_COMMENTS_TRUNCATED = `${DISPUTE_DATA_ISSUER_COMMENTS}--truncated`;
+export const DISPUTE_DATA_ISSUER_COMMENTS_GROUP = `${DISPUTE_DATA_CLASS}__issuer-comments-group`;
 
 export const DISPUTE_DETAILS_RESERVED_FIELDS_SET = new Set([
     'allowedDefenseReasons',
