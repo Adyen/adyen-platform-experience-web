@@ -74,9 +74,7 @@
         display: inline;
     }
 
-    &__issuer-comments {
-        --min-text-height: calc(#{style.token(text-body-line-height)} * 3); // 3 lines of body text
-
+    &__issuer-comments-alert {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-020);
@@ -92,26 +90,24 @@
         .adyen-pe-button__label {
             font-weight: style.token(text-body-stronger-font-weight);
         }
+    }
 
-        &-group {
-            display: flex;
-            flex-direction: column;
-            gap: style.token(spacer-070);
-            list-style: none;
-            margin: 0 0 style.token(spacer-030);
-            max-height: var(--min-text-height);
-            overflow-y: hidden;
-            padding: 0;
-            position: relative;
+    &__issuer-comments-group {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        list-style: none;
+        margin: 0 0 style.token(spacer-030);
+        overflow-y: hidden;
+        padding: 0;
+        position: relative;
 
-            #{$adyen-pe-comments-truncated} & {
-                mask-image: linear-gradient(#000 -50%, transparent 125%);
-            }
+        #{$adyen-pe-comments-truncated} & {
+            mask-image: linear-gradient(#000 -50%, transparent 125%);
+        }
 
-            #{$adyen-pe-comments-expanded} & {
-                mask: none;
-                max-height: none;
-            }
+        #{$adyen-pe-comments-expanded} & {
+            mask: none;
         }
     }
 }

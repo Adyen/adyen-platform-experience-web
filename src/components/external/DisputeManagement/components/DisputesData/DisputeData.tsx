@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
@@ -14,8 +14,6 @@ import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetail
 import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
@@ -23,21 +21,15 @@ import { useDisputeFlow } from '../../hooks/useDisputeFlow';
 import { DisputeDetailsCustomization } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
+import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
-    DISPUTE_DATA_ISSUER_COMMENT,
-    DISPUTE_DATA_ISSUER_COMMENTS,
-    DISPUTE_DATA_ISSUER_COMMENTS_EXPANDED,
-    DISPUTE_DATA_ISSUER_COMMENTS_GROUP,
-    DISPUTE_DATA_ISSUER_COMMENTS_TRUNCATED,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
-import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
 
 type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
@@ -70,47 +62,6 @@ const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) =
     }
 
     return null;
-};
-
-const DisputeIssuerComment = ({ issuerComments }: { issuerComments: string[] }) => {
-    const { i18n } = useCoreContext();
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [isTruncated, setIsTruncated] = useState(true); // [TODO]: Dynamically determine truncation state
-    return (
-        <Alert
-            type={AlertTypeOption.HIGHLIGHT}
-            variant={AlertVariantOption.TIP}
-            description={
-                <div
-                    className={cx(DISPUTE_DATA_ISSUER_COMMENTS, {
-                        [DISPUTE_DATA_ISSUER_COMMENTS_EXPANDED]: isExpanded,
-                        [DISPUTE_DATA_ISSUER_COMMENTS_TRUNCATED]: isTruncated,
-                    })}
-                >
-                    <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
-                        {i18n.get('disputes.issuerComment.title')}
-                    </Typography>
-
-                    <ul className={DISPUTE_DATA_ISSUER_COMMENTS_GROUP}>
-                        {issuerComments.map((issuerComment, index) => (
-                            <li key={index}>
-                                <Typography className={DISPUTE_DATA_ISSUER_COMMENT} el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
-                                    {/* [NOTE]: Issuer comments are not translated at the moment (maybe never) */}
-                                    {issuerComment}
-                                </Typography>
-                            </li>
-                        ))}
-                    </ul>
-
-                    {isTruncated && (
-                        <Button variant={ButtonVariant.TERTIARY} onClick={() => setIsExpanded(isExpanded => !isExpanded)}>
-                            {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
-                        </Button>
-                    )}
-                </div>
-            }
-        />
-    );
 };
 
 export const DisputeData = ({
@@ -233,7 +184,7 @@ export const DisputeData = ({
             </div>
 
             {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
-            {issuerComments.length > 0 && <DisputeIssuerComment issuerComments={issuerComments} />}
+            {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
