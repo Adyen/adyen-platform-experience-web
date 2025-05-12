@@ -180,17 +180,17 @@ const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500): Str
     return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
 };
 
-const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message', '500');
+const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac77fd1d7ac77fd1d', 'Message', '00_500');
 
 const DISPUTES_LIST_ERRORS = {
-    internal_server_error: {
+    internalServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.list, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
-    network_error: {
+    networkError: {
         handlers: [
             http.get(endpoints('mock').disputes.list, () => {
                 return HttpResponse.error();
@@ -200,7 +200,7 @@ const DISPUTES_LIST_ERRORS = {
 };
 
 export const DISPUTES_LIST_HANDLERS = {
-    empty_list: {
+    emptyList: {
         handlers: [
             httpGetList(endpoints('mock').disputes.list, () => {
                 return HttpResponse.json({ data: [], _links: { next: { cursor: '' }, prev: { cursor: '' } } });
@@ -211,28 +211,28 @@ export const DISPUTES_LIST_HANDLERS = {
 };
 
 const DISPUTE_DETAILS_ERRORS = {
-    internal_server_error: {
+    internalServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.details, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
-    network_error: {
+    networkError: {
         handlers: [
             http.get(endpoints('mock').disputes.details, () => {
                 return HttpResponse.error();
             }),
         ],
     },
-    download_server_error: {
+    downloadServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.download, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
-    accept_server_error: {
+    acceptServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.download, () => {
                 return getErrorHandler({ ...genericError500 }, 500);

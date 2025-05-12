@@ -20,7 +20,7 @@ export const InternalServerError: ElementStory<typeof DisputesOverview> = {
     },
     parameters: {
         msw: {
-            ...DISPUTES_LIST_HANDLERS.internal_server_error,
+            ...DISPUTES_LIST_HANDLERS.internalServerError,
         },
     },
 };
@@ -32,7 +32,7 @@ export const NetworkError: ElementStory<typeof DisputesOverview> = {
     },
     parameters: {
         msw: {
-            ...DISPUTES_LIST_HANDLERS.network_error,
+            ...DISPUTES_LIST_HANDLERS.networkError,
         },
     },
 };

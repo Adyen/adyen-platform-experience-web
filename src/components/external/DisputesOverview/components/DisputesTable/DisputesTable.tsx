@@ -126,7 +126,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
-        () => () => <DataOverviewError error={error} errorMessage={'weCouldNotLoadYourReports'} onContactSupport={onContactSupport} />,
+        () => () => <DataOverviewError error={error} errorMessage={'disputes.weCouldNotLoadYourDisputes'} onContactSupport={onContactSupport} />,
         [error, onContactSupport]
     );
 

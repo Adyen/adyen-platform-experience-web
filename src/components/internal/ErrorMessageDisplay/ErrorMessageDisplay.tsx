@@ -66,7 +66,7 @@ export const ErrorMessageDisplay = ({
         },
         [i18n, translationValues]
     );
-
+    console.log(Boolean(onContactSupport));
     return (
         <div
             className={cx(['adyen-pe-error-message-display'], {
