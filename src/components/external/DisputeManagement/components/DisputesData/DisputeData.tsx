@@ -11,7 +11,6 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
-import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Tag } from '../../../../internal/Tag/Tag';
@@ -33,6 +32,8 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
+import Button from '../../../../internal/Button';
+import { ButtonVariant } from '../../../../internal/Button/types';
 
 const DisputeDataAlert = ({
     status,
@@ -41,6 +42,7 @@ const DisputeDataAlert = ({
     timeZone,
     type,
     showContactSupport = true,
+    onContactSupport,
 }: {
     status: IDisputeListItem['status'];
     isDefended: boolean;
@@ -48,6 +50,7 @@ const DisputeDataAlert = ({
     dueDate: string | undefined;
     timeZone: string | undefined;
     type: IDisputeDetail['dispute']['type'];
+    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
@@ -75,10 +78,16 @@ const DisputeDataAlert = ({
                                         : 'disputes.contactSupportToDefendThisDispute'
                                 }
                                 fills={{
-                                    contactSupport: (
-                                        <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
+                                    contactSupport: onContactSupport ? (
+                                        <Button
+                                            variant={ButtonVariant.TERTIARY}
+                                            classNameModifiers={[DISPUTE_DATA_CONTACT_SUPPORT]}
+                                            onClick={onContactSupport}
+                                        >
                                             {contactSupportLabel}
-                                        </Link>
+                                        </Button>
+                                    ) : (
+                                        contactSupportLabel
                                     ),
                                 }}
                             />
@@ -109,9 +118,11 @@ const DisputeDataAlert = ({
 export const DisputeData = ({
     disputeId,
     dataCustomization,
+    onContactSupport,
 }: {
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
+    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const { setDispute, setFlowState } = useDisputeFlow();
@@ -207,6 +218,7 @@ export const DisputeData = ({
                 status={dispute.dispute.status}
                 isDefended={!!dispute?.defense && !!dispute?.defense?.defendedOn}
                 showContactSupport={showContactSupport}
+                onContactSupport={onContactSupport}
             />
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
