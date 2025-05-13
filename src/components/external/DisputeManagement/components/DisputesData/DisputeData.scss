@@ -103,7 +103,7 @@
         position: relative;
 
         #{$adyen-pe-comments-truncated} & {
-            mask-image: linear-gradient(#000 -50%, transparent 125%);
+            mask-image: linear-gradient(#000 40%, transparent 100%);
         }
 
         #{$adyen-pe-comments-expanded} & {

@@ -38,7 +38,7 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
             const firstComment = commentsGroup.querySelector(`.${DISPUTE_DATA_ISSUER_COMMENT}`);
             const lineHeight = parseInt(getComputedStyle(firstComment!)?.getPropertyValue('line-height'));
 
-            const minimumHeight = Math.min(firstComment?.clientHeight || Infinity, lineHeight * 2); // 2 lines
+            const minimumHeight = Math.min(firstComment?.clientHeight || Infinity, lineHeight * 3); // first 3 lines
             const maximumHeight = commentsGroup.scrollHeight;
 
             setMinimumHeight(minimumHeight);
