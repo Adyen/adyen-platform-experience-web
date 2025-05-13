@@ -18,4 +18,4 @@ export interface CardProps {
     expandable?: boolean;
 }
 
-export type AriaRole = Pick<JSXInternal.HTMLAttributes<HTMLDivElement>, 'role'>;
+export type AriaRole = JSXInternal.HTMLAttributes<HTMLDivElement>['role'];

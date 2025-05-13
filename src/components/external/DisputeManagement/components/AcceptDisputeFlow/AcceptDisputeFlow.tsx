@@ -12,18 +12,12 @@ import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
-export const AcceptDisputeFlow = ({
-    disputeId,
-    onBack,
-    onAcceptDispute,
-}: {
-    disputeId: string;
-    onBack: () => void;
-    onAcceptDispute?: () => void;
-}) => {
+export const AcceptDisputeFlow = ({ onBack, onAcceptDispute }: { onBack: () => void; onAcceptDispute?: () => void }) => {
     const { i18n } = useCoreContext();
     const { acceptDispute } = useConfigContext().endpoints;
-    const { setFlowState, clearStates } = useDisputeFlow();
+    const { dispute, setFlowState, clearStates } = useDisputeFlow();
+
+    const disputeId = dispute?.dispute.pspReference;
 
     const [disputeAccepted, setDisputeAccepted] = useState(false);
     const [termsAgreed, setTermsAgreed] = useState(false);
@@ -44,7 +38,7 @@ export const AcceptDisputeFlow = ({
     });
 
     const acceptDisputeCallback = useCallback(() => {
-        void acceptDisputeMutation.mutate(EMPTY_OBJECT, { path: { disputePspReference: disputeId } });
+        void acceptDisputeMutation.mutate(EMPTY_OBJECT, { path: { disputePspReference: disputeId! } });
     }, [disputeId, acceptDisputeMutation]);
 
     return (

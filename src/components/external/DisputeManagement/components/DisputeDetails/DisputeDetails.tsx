@@ -19,31 +19,24 @@ export const DisputeDetails = ({
     const { flowState, goBack } = useDisputeFlow();
     const { i18n } = useCoreContext();
 
-    const isDefendFlow = useMemo(
-        () => ['defendReasonSelectionView', 'uploadDefenseFilesView', 'defenseSubmitResponseView'].includes(flowState),
-        [flowState]
-    );
-
-    if (isDefendFlow) {
-        return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
-    }
-
     switch (flowState) {
         case 'details':
             return (
                 <>
-                    {flowState === 'details' && !hideTitle && (
-                        <div>
-                            <Typography variant={TypographyVariant.TITLE} medium>
-                                {i18n.get('dispute.management')}
-                            </Typography>
-                        </div>
+                    {!hideTitle && (
+                        <Typography variant={TypographyVariant.TITLE} medium>
+                            {i18n.get('dispute.management')}
+                        </Typography>
                     )}
                     <DisputeData disputeId={id} dataCustomization={dataCustomization} />
                 </>
             );
         case 'accept':
-            return <AcceptDisputeFlow disputeId={id} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
+            return <AcceptDisputeFlow onBack={goBack} onAcceptDispute={onAcceptDispute} />;
+        case 'defendReasonSelectionView':
+        case 'defenseSubmitResponseView':
+        case 'uploadDefenseFilesView':
+            return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
         default:
             return null;
     }

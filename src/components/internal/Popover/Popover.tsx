@@ -72,6 +72,8 @@ function Popover({
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
     const popoverOpen = useRef<boolean>();
 
+    console.log(targetElement);
+
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
             dismiss && dismiss();

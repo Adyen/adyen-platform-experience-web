@@ -23,13 +23,13 @@ export const DefendDisputeReason = () => {
     const disputePspReference = dispute?.dispute?.pspReference;
     const [isReasonSubmitted, setIsReasonSubmitted] = useState<boolean>(false);
 
-    //TODO: Fix the translations for defend reason
+    //TODO: Add the translations for defend reason
     const defenseReasons: Readonly<{ id: string; name: string }[] | null> = useMemo(
         () =>
             Object.freeze(
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
-                    name: i18n.has(`disputes.defenseReason.${reason}`) ? i18n.get(`disputes.defenseReason.${reason}` as TranslationKey) : reason,
+                    name: i18n.has(`dispute.defenseReason.${reason}`) ? i18n.get(`dispute.defenseReason.${reason}` as TranslationKey) : reason,
                 }))
             ) ?? [],
         [i18n, allowedDefenseReasons]

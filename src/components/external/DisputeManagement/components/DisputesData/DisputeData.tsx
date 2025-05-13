@@ -177,7 +177,7 @@ export const DisputeData = ({
                 showContactSupport={showContactSupport}
             />
 
-            {isAcceptable || isDefendable ? (
+            {actionButtons.length > 0 ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>
                     <ButtonActions actions={actionButtons} />
                 </div>

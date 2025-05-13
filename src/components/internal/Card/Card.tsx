@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { uuid } from '../../../utils';
 import { InteractionKeyCode } from '../../types';
-import ChevronDown from '../SVGIcons/ChevronDown';
-import ChevronUp from '../SVGIcons/ChevronUp';
+import Icon from '../Icon';
 import {
     CARD_BASE_CLASS,
     CARD_BODY,
-    CARD_BODY_EXPANDABLE,
     CARD_BODY_WITH_TITLE,
     CARD_FILLED,
     CARD_FOOTER,
@@ -44,61 +42,65 @@ const Card = ({
 
     const toggleExpansion = useCallback(() => {
         if (expandable) {
-            setShowContent(!showContent);
+            setShowContent(showContent => !showContent);
         }
-    }, [expandable, showContent]);
+    }, [expandable]);
 
     const onKeyDown = useCallback(
         (evt: KeyboardEvent) => {
-            if (evt.code === InteractionKeyCode.ENTER || evt.code === InteractionKeyCode.SPACE) {
-                toggleExpansion();
+            switch (evt.code) {
+                case InteractionKeyCode.ENTER:
+                case InteractionKeyCode.SPACE:
+                    evt.preventDefault();
+                    toggleExpansion();
+                    return;
             }
         },
         [toggleExpansion]
     );
 
     const cardContainerAttributes = useMemo(() => {
-        return {
-            ...(expandable && ({ role: 'button' } as AriaRole)),
-            ...(expandable && { tabIndex: 0 }),
-            ...(expandable && { 'aria-controls': cardId }),
-            ...(expandable && { 'aria-expanded': showContent }),
-            ...(expandable && { onClick: toggleExpansion }),
-            ...(expandable && { onKeyDown: onKeyDown }),
-        };
+        return expandable
+            ? {
+                  role: 'button' as AriaRole,
+                  tabIndex: 0,
+                  onClick: toggleExpansion,
+                  onKeyDown: onKeyDown,
+                  'aria-controls': cardId,
+                  'aria-expanded': showContent,
+              }
+            : {};
     }, [expandable, showContent, cardId, onKeyDown, toggleExpansion]);
 
     return (
         <section
             className={classNames(
                 CARD_BASE_CLASS,
-                { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline, [CARD_NO_PADDING]: noPadding },
+                { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline, [CARD_NO_PADDING]: noPadding, [`${CARD_BASE_CLASS}--expandable`]: expandable },
                 classNameModifiers
             )}
             data-testid={testId}
             {...cardContainerAttributes}
         >
             {(title || renderHeader) && (
-                <Tag className={classNames(CARD_HEADER, { [`${CARD_HEADER}--expandable`]: expandable })}>
-                    {(title || renderHeader) && (
-                        <div className={classNames(CARD_HEADER_CONTENT, { [`${CARD_HEADER_CONTENT}--expandable`]: expandable })}>
-                            {expandable && (
-                                <div className={CARD_TOGGLE_CLASS}>
-                                    {showContent ? <ChevronUp role="presentation" /> : <ChevronDown role="presentation" />}
-                                </div>
-                            )}
-                            {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
-                            {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
-                        </div>
-                    )}
+                <Tag className={classNames(CARD_HEADER)}>
+                    <div className={classNames(CARD_HEADER_CONTENT)}>
+                        {expandable &&
+                            (showContent ? (
+                                <Icon name={'chevron-up'} role="presentation" className={CARD_TOGGLE_CLASS} />
+                            ) : (
+                                <Icon name={'chevron-down'} role="presentation" className={CARD_TOGGLE_CLASS} />
+                            ))}
+                        {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
+                        {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
+                    </div>
                 </Tag>
             )}
-            {(!expandable || (expandable && showContent)) && (
+            {(!expandable || showContent) && (
                 <div
                     id={cardId}
                     className={classNames(CARD_BODY, {
                         [CARD_BODY_WITH_TITLE]: title || renderHeader,
-                        [CARD_BODY_EXPANDABLE]: expandable,
                     })}
                 >
                     {children}
