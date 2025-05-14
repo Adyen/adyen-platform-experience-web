@@ -1,28 +1,49 @@
-import { useCallback, useState } from 'preact/hooks';
-import { DisputeFlowContext, DisputeFlowState } from '../../hooks/useDisputeFlow';
-import { DisputeDetailsContainer } from '../DisputeDetailsContainer/DisputeDetailsContainer';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
 import type { ExternalUIComponentProps } from '../../../../types';
+import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeManagementProps } from '../../types';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
+import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
+import DisputeData from '../DisputesData/DisputeData';
 
-export const DisputeDetails = (props: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const [flowState, setFlowState] = useState<DisputeFlowState>('details');
-    const goBack = () => setFlowState('details');
-    const [dispute, setDispute] = useState<IDisputeDetail | undefined>();
+export const DisputeDetails = ({
+    id,
+    hideTitle,
+    onDefendDispute,
+    onAcceptDispute,
+    dataCustomization,
+    onDetailsDismiss,
+    onContactSupport,
+}: ExternalUIComponentProps<DisputeManagementProps>) => {
+    const { flowState, goBack } = useDisputeFlow();
+    const { i18n } = useCoreContext();
 
-    const setDisputeCallback = useCallback((dispute: IDisputeDetail) => {
-        setDispute(dispute);
-    }, []);
-
-    return (
-        <DisputeFlowContext.Provider value={{ flowState, setFlowState, goBack, dispute: dispute, setDispute: setDisputeCallback }}>
-            <DisputeDetailsContainer
-                disputeId={props.id}
-                onAcceptDispute={props.onAcceptDispute}
-                dataCustomization={props.dataCustomization}
-                onContactSupport={props.onContactSupport}
-                onDetailsDismiss={props.onDetailsDismiss}
-            />
-        </DisputeFlowContext.Provider>
-    );
+    switch (flowState) {
+        case 'details':
+            return (
+                <>
+                    {!hideTitle && (
+                        <Typography variant={TypographyVariant.TITLE} medium>
+                            {i18n.get('dispute.management')}
+                        </Typography>
+                    )}
+                    <DisputeData
+                        disputeId={id}
+                        dataCustomization={dataCustomization}
+                        onContactSupport={onContactSupport}
+                        onDetailsDismiss={onDetailsDismiss}
+                    />
+                </>
+            );
+        case 'accept':
+            return <AcceptDisputeFlow onBack={goBack} onAcceptDispute={onAcceptDispute} />;
+        case 'defendReasonSelectionView':
+        case 'defenseSubmitResponseView':
+        case 'uploadDefenseFilesView':
+            return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
+        default:
+            return null;
+    }
 };

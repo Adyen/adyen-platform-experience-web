@@ -1,4 +1,5 @@
 export const CARD_BASE_CLASS = 'adyen-pe-card';
+export const CARD_TOGGLE_CLASS = `${CARD_BASE_CLASS}__toggle`;
 export const CARD_BODY = `${CARD_BASE_CLASS}__body`;
 export const CARD_HEADER = `${CARD_BASE_CLASS}__header`;
 export const CARD_TITLE = `${CARD_BASE_CLASS}__title`;
