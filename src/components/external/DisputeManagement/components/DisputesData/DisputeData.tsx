@@ -183,10 +183,11 @@ export const DisputeData = ({
                 />
             </div>
 
-            {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
             {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+
+            {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
 
             {isAcceptable || isDefendable ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>

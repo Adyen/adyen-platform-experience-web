@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import { noop } from '../../../../../utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_DISPUTE_DETAILS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -180,7 +179,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                               disabled={false}
                                               requestParams={queryParam}
                                               iconButton={true}
-                                              onDownloadRequested={noop}
+                                              onDownloadRequested={() => console.warn('Download failed for', document)}
                                           />
                                       </div>
                                   );
