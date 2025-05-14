@@ -260,8 +260,6 @@ export const DisputeData = ({
 
                     <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
-                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
                     {isAcceptable || isDefendable ? (
                         <div className={DISPUTE_DATA_ACTION_BAR}>
                             <ButtonActions actions={actionButtons} />

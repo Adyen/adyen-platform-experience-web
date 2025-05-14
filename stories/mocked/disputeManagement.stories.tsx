@@ -75,13 +75,25 @@ export const NetworkError: ElementStory<typeof DisputeManagementElement> = {
 };
 
 export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElement> = {
-    name: 'Error - Unprocessable entity error',
+    name: 'Error - Unprocessable entity',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
             ...DISPUTE_DETAILS_HANDLERS.unprocessableEntityError,
+        },
+    },
+};
+
+export const DownloadEvidenceError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Download evidence',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.downloadServerError,
         },
     },
 };

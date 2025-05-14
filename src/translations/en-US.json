@@ -141,6 +141,7 @@
     "disputes.entityWasNotFoundDetail": "Dispute not found for the specified Account Holder",
     "disputes.evidence": "Evidence",
     "disputes.expired": "Expired",
+    "disputes.failedRetry": "Failed, retry",
     "disputes.fraud": "Fraud",
     "disputes.fraudAlerts": "Fraud alerts",
     "disputes.goBack": "Go back",

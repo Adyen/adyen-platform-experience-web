@@ -5,6 +5,7 @@ export const DISPUTE_DATA_ACTION_BAR = `${DISPUTE_DATA_CLASS}__action-bar`;
 export const DISPUTE_DATA_LABEL = `${DISPUTE_DATA_CLASS}__label`;
 export const DISPUTE_DATA_LIST = `${DISPUTE_DATA_CLASS}__list`;
 export const DISPUTE_DATA_LIST_EVIDENCE = `${DISPUTE_DATA_CLASS}__list--evidence`;
+export const DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE = `${DISPUTE_DATA_CLASS}__list-evidence-error-message`;
 export const DISPUTE_DATA_CONTACT_SUPPORT = `${DISPUTE_DATA_CLASS}__contact-support`;
 export const DISPUTE_DATA_ALERT = 'adyen-pe-dispute-data-alert';
 export const DISPUTE_DATA_ERROR_CONTAINER = 'adyen-pe-dispute-data__error-container';

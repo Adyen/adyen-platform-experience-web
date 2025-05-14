@@ -11,6 +11,7 @@ import {
     MAIN_BALANCE_ACCOUNT,
     RFI_UNRESPONDED,
     NOTIFICATION_OF_FRAUD,
+    CHARGEBACK_LOST,
 } from '../mock-data/disputes';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
@@ -174,6 +175,7 @@ export const disputesMocks = [
 type GetHttpError = AdyenPlatformExperienceError & { status: number; detail: string };
 
 const httpGetList = http.get<any, any, IDisputeListResponse>;
+const httpGetDetails = http.get<any, any, IDisputeDetail>;
 const httpGetInternalError = http.get<any, any, GetHttpError>;
 
 const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500): StrictResponse<GetHttpError> => {
@@ -236,7 +238,11 @@ const DISPUTE_DETAILS_ERRORS = {
     },
     downloadServerError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.download, () => {
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_LOST);
+            }),
+            httpGetInternalError(endpoints('mock').disputes.download, async () => {
+                await delay(400);
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
@@ -249,8 +255,6 @@ const DISPUTE_DETAILS_ERRORS = {
         ],
     },
 };
-
-const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
 export const DISPUTE_DETAILS_HANDLERS = {
     defendableExternally: {

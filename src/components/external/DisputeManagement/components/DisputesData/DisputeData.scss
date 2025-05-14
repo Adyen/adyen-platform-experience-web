@@ -53,6 +53,13 @@
         }
     }
 
+    &__list-evidence-error-message {
+        align-items: center;
+        color: style.token(color-label-critical);
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
     &__tags {
         display: flex;
         gap: style.token(spacer-020);
