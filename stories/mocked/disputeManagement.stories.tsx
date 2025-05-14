@@ -98,6 +98,18 @@ export const DownloadEvidenceError: ElementStory<typeof DisputeManagementElement
     },
 };
 
+export const DefenseServerError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Defense server error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.defendServerError,
+        },
+    },
+};
+
 export const CustomData: ElementStory<typeof DisputeManagementElement> = {
     name: 'Custom Data',
     args: {

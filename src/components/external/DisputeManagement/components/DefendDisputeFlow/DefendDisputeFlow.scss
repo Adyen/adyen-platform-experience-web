@@ -23,6 +23,8 @@
 
         svg {
             display: block;
+            height: 40px;
+            width: 40px;
         }
     }
 
@@ -41,6 +43,7 @@
         flex-direction: column;
         gap: style.token(spacer-070);
         justify-content: center;
+        max-width: 436px;
     }
 
     &__success {

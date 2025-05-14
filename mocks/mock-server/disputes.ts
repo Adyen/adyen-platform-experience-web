@@ -177,6 +177,7 @@ type GetHttpError = AdyenPlatformExperienceError & { status: number; detail: str
 const httpGetList = http.get<any, any, IDisputeListResponse>;
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 const httpGetInternalError = http.get<any, any, GetHttpError>;
+const httpPostInternalError = http.post<any, any, GetHttpError>;
 
 const getErrorHandler = (error: AdyenPlatformExperienceError, status = 500): StrictResponse<GetHttpError> => {
     return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
@@ -250,6 +251,13 @@ const DISPUTE_DETAILS_ERRORS = {
     acceptServerError: {
         handlers: [
             httpGetInternalError(endpoints('mock').disputes.download, () => {
+                return getErrorHandler({ ...genericError500 }, 500);
+            }),
+        ],
+    },
+    defendServerError: {
+        handlers: [
+            httpPostInternalError(endpoints('mock').disputes.defend, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
