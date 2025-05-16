@@ -82,6 +82,7 @@ export interface components {
             documentTypeCode: string;
             requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
+        ApplicableDefenseDocumentData: {data: components['schemas']['ApplicableDefenseDocument'][]};
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -284,7 +285,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['ApplicableDefenseDocument'][];
+                    'application/json': components['schemas']['ApplicableDefenseDocumentData'];
                 };
             };
         };
