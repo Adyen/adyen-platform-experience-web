@@ -14,7 +14,7 @@ test.describe('Request for information - Defendable externally', () => {
         await expect(page.getByRole('alert')).toBeVisible();
 
         const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor();
+        await icon.waitFor({ state: 'visible' });
         await expect(icon).toBeVisible();
 
         await expect(page.getByText('Contact support to respond to this request for information.')).toBeVisible();
