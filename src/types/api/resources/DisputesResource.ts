@@ -82,6 +82,7 @@ export interface components {
             documentTypeCode: string;
             requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
         };
+        ApplicableDefenseDocumentData: {data: components['schemas']['ApplicableDefenseDocument'][]};
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -108,6 +109,17 @@ export interface components {
             defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
+            issuerExtraData?: {
+                chargeback?: {
+                    [key: string]: string;
+                };
+                extraData?: {
+                    [key: string]: string;
+                };
+                preArbitration?: {
+                    [key: string]: string;
+                };
+            };
             pspReference: string;
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
@@ -137,10 +149,10 @@ export interface components {
         /** @enum {string} */
         DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
         Payment: {
-            balanceAccount?: components['schemas']['BalanceAccount'];
+            balanceAccount: components['schemas']['BalanceAccount'];
             isRefunded: boolean;
             merchantReference?: string;
-            paymentMethod?: components['schemas']['PaymentMethod'];
+            paymentMethod: components['schemas']['PaymentMethod'];
             pspReference: string;
         };
         PaymentMethod: {
@@ -273,7 +285,7 @@ export interface operations {
             /** @description OK - the request has succeeded. */
             200: {
                 content: {
-                    'application/json': components['schemas']['ApplicableDefenseDocument'][];
+                    'application/json': components['schemas']['ApplicableDefenseDocumentData'];
                 };
             };
         };
