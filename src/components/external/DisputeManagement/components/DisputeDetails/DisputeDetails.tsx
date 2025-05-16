@@ -1,4 +1,3 @@
-import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
@@ -16,7 +15,7 @@ export const DisputeDetails = ({
     onAcceptDispute,
     dataCustomization,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const { flowState, goBack } = useDisputeFlow();
+    const { flowState } = useDisputeFlow();
     const { i18n } = useCoreContext();
 
     switch (flowState) {
@@ -32,7 +31,7 @@ export const DisputeDetails = ({
                 </>
             );
         case 'accept':
-            return <AcceptDisputeFlow onBack={goBack} onAcceptDispute={onAcceptDispute} />;
+            return <AcceptDisputeFlow onAcceptDispute={onAcceptDispute} />;
         case 'defendReasonSelectionView':
         case 'defenseSubmitResponseView':
         case 'uploadDefenseFilesView':

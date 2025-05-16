@@ -1,5 +1,4 @@
 import { ComponentChild } from 'preact';
-import { JSXInternal } from 'preact/src/jsx';
 
 export interface CardProps {
     onClickHandler?: () => void;
@@ -17,5 +16,3 @@ export interface CardProps {
     testId?: string;
     expandable?: boolean;
 }
-
-export type AriaRole = JSXInternal.HTMLAttributes<HTMLDivElement>['role'];
