@@ -11,7 +11,6 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
-import Link from '../../../../internal/Link/Link';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { Tag } from '../../../../internal/Tag/Tag';
@@ -25,16 +24,38 @@ import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
+    DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
+import Button from '../../../../internal/Button';
+import { ButtonVariant } from '../../../../internal/Button/types';
 
 type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
-const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) => {
+const DisputeDataAlert = ({
+    alertMode,
+    onContactSupport,
+    dueDate,
+    timeZone,
+    type,
+}: {
+    alertMode?: DisputeDataAlertMode;
+    dueDate: string | undefined;
+    timeZone: string | undefined;
+    type: IDisputeDetail['dispute']['type'];
+    onContactSupport?: () => void;
+}) => {
     const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
+    const contactSupportLabel = i18n.get('contactSupport');
+
     switch (alertMode) {
         case 'contactSupport':
             return (
@@ -42,17 +63,46 @@ const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) =
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
-                        <Translation
-                            translationKey={'disputes.contactSupportToDefendThisDispute'}
-                            fills={{
-                                contactSupport: (
-                                    <Link classNames={[DISPUTE_DATA_CONTACT_SUPPORT]} withIcon={false} href={'https://www.adyen.com/'}>
-                                        {/* TODO: Change with tech writers since interpolating with another translated phrase can break meaning */}
-                                        {i18n.get('contactSupport')}
-                                    </Link>
-                                ),
-                            }}
-                        />
+                        <div className={DISPUTE_DATA_ALERT}>
+                            <div>
+                                <Translation
+                                    translationKey={
+                                        type === 'REQUEST_FOR_INFORMATION'
+                                            ? 'disputes.contactSupportToDefendThisRequestForInformation'
+                                            : type === 'NOTIFICATION_OF_FRAUD'
+                                            ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
+                                            : 'disputes.contactSupportToDefendThisDispute'
+                                    }
+                                    fills={{
+                                        contactSupport: onContactSupport ? (
+                                            <Button
+                                                variant={ButtonVariant.TERTIARY}
+                                                classNameModifiers={[DISPUTE_DATA_CONTACT_SUPPORT]}
+                                                onClick={onContactSupport}
+                                            >
+                                                {contactSupportLabel}
+                                            </Button>
+                                        ) : (
+                                            contactSupportLabel
+                                        ),
+                                    }}
+                                />
+                            </div>
+                            {type !== 'NOTIFICATION_OF_FRAUD' && (
+                                <div>
+                                    <Translation
+                                        translationKey={'disputes.theResponseDeadlineIs'}
+                                        fills={{
+                                            date: (
+                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
+                                                    {dueDate ? dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE) : null}
+                                                </Typography>
+                                            ),
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     }
                 />
             );
@@ -67,9 +117,11 @@ const DisputeDataAlert = ({ alertMode }: { alertMode?: DisputeDataAlertMode }) =
 export const DisputeData = ({
     disputeId,
     dataCustomization,
+    onContactSupport,
 }: {
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
+    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
@@ -115,8 +167,11 @@ export const DisputeData = ({
         const comments = [] as string[];
 
         [preArbitration, chargeback].forEach(commentGroup => {
+            if (!commentGroup) return;
             ['LIABILITY_NOT_ACCEPTED_FULLY', 'PRE_ARB_REASON', 'NOTE'].forEach(commentKey => {
-                comments.push(commentGroup?.[commentKey]?.trim()!);
+                const raw = commentGroup[commentKey];
+                const trimmed = raw?.trim();
+                if (trimmed) comments.push(trimmed);
             });
         });
 
@@ -128,7 +183,8 @@ export const DisputeData = ({
         return type && i18n.get(DISPUTE_TYPES[type]);
     }, [i18n, dispute]);
 
-    const showContactSupport = !!defensibility && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility);
+    const showContactSupport =
+        (!!defensibility && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility)) || dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
     const isDefendable = !!defensibility && defensibility === 'DEFENDABLE' && defendAuthorization;
     const isAcceptable = !!defensibility && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility) && acceptAuthorization;
 
@@ -156,17 +212,18 @@ export const DisputeData = ({
         return ctaButtons;
     }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick]);
 
+    const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
+
     if (!dispute || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
 
-    const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
     const isFraudNotification = dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
     const isDefended = !!(dispute?.defense && dispute.defense.defendedOn);
 
     let disputeAlertMode: DisputeDataAlertMode | undefined = undefined;
 
-    if (actionNeeded && showContactSupport) {
+    if ((actionNeeded && showContactSupport) || (showContactSupport && isFraudNotification)) {
         disputeAlertMode = 'contactSupport';
     } else if (dispute.dispute.status === 'EXPIRED') {
         disputeAlertMode = 'notDefended';
@@ -190,9 +247,17 @@ export const DisputeData = ({
 
             {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
 
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+            {disputeAlertMode && (
+                <DisputeDataAlert
+                    alertMode={disputeAlertMode}
+                    onContactSupport={onContactSupport}
+                    type={dispute.dispute.type}
+                    timeZone={dispute.payment.balanceAccount?.timeZone}
+                    dueDate={dispute.dispute.dueDate}
+                />
+            )}
 
-            {disputeAlertMode && <DisputeDataAlert alertMode={disputeAlertMode} />}
+            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
 
             {actionButtons.length > 0 ? (
                 <div className={DISPUTE_DATA_ACTION_BAR}>

@@ -14,6 +14,7 @@ export const DisputeDetails = ({
     onDefendDispute,
     onAcceptDispute,
     dataCustomization,
+    onContactSupport,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
     const { flowState } = useDisputeFlow();
     const { i18n } = useCoreContext();
@@ -27,7 +28,7 @@ export const DisputeDetails = ({
                             {i18n.get('dispute.management')}
                         </Typography>
                     )}
-                    <DisputeData disputeId={id} dataCustomization={dataCustomization} />
+                    <DisputeData disputeId={id} dataCustomization={dataCustomization} onContactSupport={onContactSupport} />
                 </>
             );
         case 'accept':
