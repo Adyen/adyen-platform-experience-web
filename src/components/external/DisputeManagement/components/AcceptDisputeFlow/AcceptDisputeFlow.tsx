@@ -12,10 +12,10 @@ import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
-export const AcceptDisputeFlow = ({ onBack, onAcceptDispute }: { onBack: () => void; onAcceptDispute?: () => void }) => {
+export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () => void }) => {
     const { i18n } = useCoreContext();
     const { acceptDispute } = useConfigContext().endpoints;
-    const { dispute, setFlowState, clearStates } = useDisputeFlow();
+    const { dispute, setFlowState, clearStates, goBack } = useDisputeFlow();
 
     const disputeId = dispute?.dispute.pspReference;
 
@@ -82,7 +82,7 @@ export const AcceptDisputeFlow = ({ onBack, onAcceptDispute }: { onBack: () => v
                                 },
                                 {
                                     title: i18n.get('disputes.goBack'),
-                                    event: onBack,
+                                    event: goBack,
                                     variant: ButtonVariant.SECONDARY,
                                     disabled: acceptDisputeMutation.isLoading,
                                 },

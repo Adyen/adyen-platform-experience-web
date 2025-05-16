@@ -1,4 +1,6 @@
+import classNames from 'classnames';
 import { useCallback, useMemo, useState } from 'preact/hooks';
+import { JSXInternal } from 'preact/src/jsx';
 import { uuid } from '../../../utils';
 import { InteractionKeyCode } from '../../types';
 import Icon from '../Icon';
@@ -6,6 +8,7 @@ import {
     CARD_BASE_CLASS,
     CARD_BODY,
     CARD_BODY_WITH_TITLE,
+    CARD_EXPANDABLE_CLASS,
     CARD_FILLED,
     CARD_FOOTER,
     CARD_HEADER,
@@ -16,10 +19,11 @@ import {
     CARD_TITLE,
     CARD_TOGGLE_CLASS,
 } from './constants';
-import { AriaRole, CardProps } from './types';
+import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
-import classNames from 'classnames';
 import './Card.scss';
+
+type AriaRole = JSXInternal.HTMLAttributes<HTMLDivElement>['role'];
 
 const Card = ({
     title,
@@ -74,23 +78,19 @@ const Card = ({
 
     return (
         <section
-            className={classNames(
-                CARD_BASE_CLASS,
-                { [CARD_FILLED]: filled, [CARD_NO_OUTLINE]: noOutline, [CARD_NO_PADDING]: noPadding, [`${CARD_BASE_CLASS}--expandable`]: expandable },
-                classNameModifiers
-            )}
             data-testid={testId}
+            className={classNames(CARD_BASE_CLASS, classNameModifiers, {
+                [CARD_FILLED]: filled,
+                [CARD_NO_OUTLINE]: noOutline,
+                [CARD_NO_PADDING]: noPadding,
+                [CARD_EXPANDABLE_CLASS]: expandable,
+            })}
             {...cardContainerAttributes}
         >
             {(title || renderHeader) && (
                 <Tag className={classNames(CARD_HEADER)}>
                     <div className={classNames(CARD_HEADER_CONTENT)}>
-                        {expandable &&
-                            (showContent ? (
-                                <Icon name={'chevron-up'} role="presentation" className={CARD_TOGGLE_CLASS} />
-                            ) : (
-                                <Icon name={'chevron-down'} role="presentation" className={CARD_TOGGLE_CLASS} />
-                            ))}
+                        {expandable && <Icon name={showContent ? 'chevron-up' : 'chevron-down'} className={CARD_TOGGLE_CLASS} role="presentation" />}
                         {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
                         {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
                     </div>

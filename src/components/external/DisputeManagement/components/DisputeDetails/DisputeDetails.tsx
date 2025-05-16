@@ -17,7 +17,7 @@ export const DisputeDetails = ({
     onDetailsDismiss,
     onContactSupport,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const { flowState, goBack } = useDisputeFlow();
+    const { flowState } = useDisputeFlow();
     const { i18n } = useCoreContext();
 
     switch (flowState) {
@@ -38,7 +38,7 @@ export const DisputeDetails = ({
                 </>
             );
         case 'accept':
-            return <AcceptDisputeFlow onBack={goBack} onAcceptDispute={onAcceptDispute} />;
+            return <AcceptDisputeFlow onAcceptDispute={onAcceptDispute} />;
         case 'defendReasonSelectionView':
         case 'defenseSubmitResponseView':
         case 'uploadDefenseFilesView':

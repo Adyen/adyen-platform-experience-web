@@ -71,24 +71,21 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDispute(undefined);
         setDefendDisputePayload(null);
         setDefendResponse(null);
-    }, [setApplicableDocuments, setDispute, setSelectedDefenseReason]);
+    }, [setDispute]);
 
-    const addFileToDefendPayload = useCallback(
-        (name: string, file: File) => {
-            setDefendDisputePayload((previousFormData: FormData) => {
-                const formData = new FormData();
-                for (const [field, value] of previousFormData.entries()) {
-                    if (value instanceof File) {
-                        formData.set(field, value, value.name);
-                    } else formData.set(field, value);
-                }
+    const addFileToDefendPayload = useCallback((name: string, file: File) => {
+        setDefendDisputePayload((previousFormData: FormData) => {
+            const formData = new FormData();
+            for (const [field, value] of previousFormData.entries()) {
+                if (value instanceof File) {
+                    formData.set(field, value, value.name);
+                } else formData.set(field, value);
+            }
 
-                formData.set(name, file, file.name);
-                return formData;
-            });
-        },
-        [setDefendDisputePayload]
-    );
+            formData.set(name, file, file.name);
+            return formData;
+        });
+    }, []);
 
     const onDefendSubmit = useCallback((response: 'success' | 'error') => {
         setDefendResponse(response);

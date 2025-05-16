@@ -1,6 +1,11 @@
 @use '../../../../../style';
 
 .adyen-pe-dispute-data {
+    $adyen-pe-self: &;
+    $adyen-pe-comments: #{$adyen-pe-self}__issuer-comments;
+    $adyen-pe-comments-expanded: #{$adyen-pe-comments}--expanded;
+    $adyen-pe-comments-truncated: #{$adyen-pe-comments}--truncated;
+
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-080);
@@ -10,6 +15,11 @@
         .adyen-pe-structured-list__item {
             flex-direction: column;
         }
+    }
+
+    &__status-box {
+        display: flex;
+        width: 100%;
     }
 
     &__action-bar {
@@ -60,11 +70,6 @@
         gap: style.token(spacer-030);
     }
 
-    &__tags {
-        display: flex;
-        gap: style.token(spacer-020);
-    }
-
     &__label {
         color: style.token(color-label-secondary);
         font-size: style.token(text-body-font-size);
@@ -74,6 +79,43 @@
 
     &__contact-support {
         display: inline;
+    }
+
+    &__issuer-comments-alert {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        .adyen-pe-button--tertiary {
+            background: transparent;
+            font-family: inherit;
+            margin: calc(#{style.token(spacer-010)} * -1) calc(#{style.token(spacer-020)} * -1);
+            padding: style.token(spacer-010) style.token(spacer-020);
+            width: max-content;
+        }
+
+        .adyen-pe-button__label {
+            font-weight: style.token(text-body-stronger-font-weight);
+        }
+    }
+
+    &__issuer-comments-group {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        list-style: none;
+        margin: 0 0 style.token(spacer-030);
+        overflow-y: hidden;
+        padding: 0;
+        position: relative;
+
+        #{$adyen-pe-comments-truncated} & {
+            mask-image: linear-gradient(#000 40%, transparent 100%);
+        }
+
+        #{$adyen-pe-comments-expanded} & {
+            mask: none;
+        }
     }
 }
 

@@ -7,8 +7,8 @@
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-030);
+    min-width: 75%;
     padding: style.token(spacer-060);
-    width: max-content;
 
     &__amount {
         color: style.token(color-label-primary);
@@ -53,7 +53,6 @@
     }
 
     .adyen-pe-tag {
-        margin: style.token(spacer-020);
         padding: style.token(spacer-020) style.token(spacer-030);
     }
 }
