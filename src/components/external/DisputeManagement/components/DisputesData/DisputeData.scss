@@ -1,3 +1,4 @@
+@use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style';
 
 .adyen-pe-dispute-data {
@@ -116,6 +117,98 @@
         #{$adyen-pe-comments-expanded} & {
             mask: none;
         }
+    }
+
+    &__skeleton-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-090);
+    }
+
+    &__status-box-skeleton {
+        border: 1px solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-l);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        height: 118px;
+        padding: style.token(spacer-060);
+        width: 338px;
+    }
+
+    &__status-box-status-container {
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
+    &__status-box-status {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-s);
+        display: block;
+        height: 22px;
+        width: 84px;
+    }
+
+    &__status-box-amount {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-s);
+        display: block;
+        height: 33px;
+        width: 221px;
+    }
+
+    &__status-box-payment-method-container {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
+    &__status-box-payment-method {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        display: block;
+    }
+
+    &__status-box-payment-method:nth-of-type(1) {
+        border-radius: style.token(border-radius-xs);
+        height: 24px;
+        width: 36px;
+    }
+
+    &__status-box-payment-method:nth-of-type(2) {
+        border-radius: style.token(border-radius-l);
+        height: 16px;
+        width: 221px;
+    }
+
+    &__properties-skeleton-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__properties-skeleton {
+        display: flex;
+        gap: style.token(spacer-090);
+    }
+
+    &__properties-skeleton span {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-l);
+        display: block;
+    }
+
+    &__properties-skeleton span:nth-child(1) {
+        height: 15px;
+        width: 141px;
+    }
+
+    &__properties-skeleton span:nth-child(2) {
+        height: 15px;
+        width: 221px;
     }
 }
 
