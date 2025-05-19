@@ -19,12 +19,10 @@
 
     &__error-icon {
         color: style.token(color-background-critical-strong);
-        font-size: style.token(spacer-100);
+        font-size: style.token(spacer-110);
 
         svg {
             display: block;
-            height: 40px;
-            width: 40px;
         }
     }
 
