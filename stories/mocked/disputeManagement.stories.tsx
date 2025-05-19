@@ -54,6 +54,7 @@ export const ServerError: ElementStory<typeof DisputeManagementElement> = {
     name: 'Error - Server error',
     args: {
         mockedApi: true,
+        onContactSupport: undefined,
     },
     parameters: {
         msw: {
@@ -78,6 +79,7 @@ export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElem
     name: 'Error - Unprocessable entity',
     args: {
         mockedApi: true,
+        onContactSupport: undefined,
     },
     parameters: {
         msw: {
