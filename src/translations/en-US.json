@@ -19,7 +19,7 @@
     "calendar.timezone": "Timezone is set on: GMT%{offset} (%{time})",
     "capital.accountIsInactive": "Your account is inactive",
     "capital.actionNeeded": "Action needed",
-    "capital.annualPercentageRate": "Annual percentage rate",
+    "capital.annualPercentageRate": "Annual percentage rate (APR)",
     "capital.bankAccountDetails": "Bank account details",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Account number",
