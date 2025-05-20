@@ -110,14 +110,15 @@ test.describe('legalEntity from the US', () => {
     test('should render right legal text with email link', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { ['legalEntity.countryCode']: 'US' } });
         await page.getByRole('button', { name: 'Review offer' }).click();
+
+        // Verify creditor and address
         await expect(page.getByText('Creditor: Adyen N.V. – San Francisco Branch')).toBeVisible();
         await expect(page.getByText('505 Brannan Street, San Francisco, CA 94107.')).toBeVisible();
 
+        // Assert the paragraph is present
         const legalParagraph = page.locator('p', {
             hasText: 'If your application for business credit is denied',
         });
-
-        // Assert the paragraph is present
         await expect(legalParagraph).toBeVisible();
 
         // Locate the link inside the paragraph
