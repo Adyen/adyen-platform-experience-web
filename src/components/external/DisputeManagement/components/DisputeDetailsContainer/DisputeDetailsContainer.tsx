@@ -1,25 +1,23 @@
-import { useDisputeFlow } from '../../hooks/useDisputeFlow';
-import { DisputeDetailsCustomization } from '../../types';
-import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
-import DisputeData from '../DisputesData/DisputeData';
+import { useCallback, useState } from 'preact/hooks';
+import { DisputeContextProvider } from '../../context/dispute/context';
+import { DisputeDetails } from '../DisputeDetails/DisputeDetails';
+import type { ExternalUIComponentProps } from '../../../../types';
+import { DisputeManagementProps } from '../../types';
+import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import './DisputeDetailsContainer.scss';
 
-export const DisputeDetailsContainer = ({
-    disputeId,
-    onAcceptDispute,
-    dataCustomization,
-}: {
-    disputeId: string;
-    onAcceptDispute?: () => void;
-    dataCustomization?: { details?: DisputeDetailsCustomization };
-}) => {
-    const { flowState, goBack } = useDisputeFlow();
+export const DisputeDetailsContainer = (props: ExternalUIComponentProps<DisputeManagementProps>) => {
+    const [dispute, setDispute] = useState<IDisputeDetail | undefined>();
 
-    switch (flowState) {
-        case 'details':
-            return <DisputeData disputeId={disputeId} dataCustomization={dataCustomization} />;
-        case 'accept':
-            return <AcceptDisputeFlow disputeId={disputeId} onBack={goBack} onAcceptDispute={onAcceptDispute} />;
-        default:
-            return null;
-    }
+    const setDisputeCallback = useCallback((dispute: IDisputeDetail | undefined) => {
+        setDispute(dispute);
+    }, []);
+
+    return (
+        <DisputeContextProvider dispute={dispute} setDispute={setDisputeCallback}>
+            <div className="adyen-pe-dispute__container">
+                <DisputeDetails {...props} />
+            </div>
+        </DisputeContextProvider>
+    );
 };

@@ -1,7 +1,7 @@
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { DisputeManagementProps } from './types';
-import { DisputeDetails } from './components/DisputeDetails/DisputeDetails';
+import { DisputeDetailsContainer } from './components/DisputeDetailsContainer/DisputeDetailsContainer';
 
 export class DisputeManagementElement extends UIElement<DisputeManagementProps> {
     public static type: ExternalComponentType = 'disputesManagement';
@@ -12,7 +12,7 @@ export class DisputeManagementElement extends UIElement<DisputeManagementProps> 
     }
 
     public componentToRender = () => {
-        return <DisputeDetails {...this.props} ref={(ref: UIElement<DisputeManagementProps>) => void (this.componentRef = ref)} />;
+        return <DisputeDetailsContainer {...this.props} ref={(ref: UIElement<DisputeManagementProps>) => void (this.componentRef = ref)} />;
     };
 }
 

@@ -5,7 +5,7 @@ import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
-import { DisputeDetails } from '../../../DisputeManagement/components/DisputeDetails/DisputeDetails';
+import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';
 import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {
@@ -48,10 +48,11 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                     size={selectedDetail.modalSize || 'large'}
                 >
                     <div className="adyen-pe-dispute-management-modal-content">
-                        <DisputeDetails
+                        <DisputeDetailsContainer
                             id={selectedDetail.selection.data}
                             dataCustomization={dataCustomization}
                             onAcceptDispute={onAcceptDisputeCallback}
+                            hideTitle
                         />
                     </div>
                 </Modal>
