@@ -1,18 +1,21 @@
-import { useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
 import Modal from '../../../../internal/Modal';
 import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
+import { IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';
 import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {
+    updateDisputesListStatusGroup: (statusGroup?: IDisputeStatusGroup) => void;
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     dataCustomization?: { details: DisputeDetailsCustomization };
     onAcceptDispute?: () => void;
+    onDefendDispute?: () => void;
 }
 
 export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
@@ -21,8 +24,11 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     resetDetails,
     dataCustomization,
     onAcceptDispute,
+    onDefendDispute,
+    updateDisputesListStatusGroup,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
+    const [disputesListStatusGroup, setDisputesListStatusGroup] = useState<IDisputeStatusGroup | undefined>(undefined);
     const isModalOpen = !!selectedDetail;
 
     useEffect(() => {
@@ -32,8 +38,21 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     }, [isModalOpen]);
 
     const onAcceptDisputeCallback = useCallback(() => {
+        // [TODO]: Uncomment the following line on confirmation that accepted disputes get hoisted to top of the list
+        // setDisputesListStatusGroup('ONGOING_AND_CLOSED');
         onAcceptDispute?.();
     }, [onAcceptDispute]);
+
+    const onDefendDisputeCallback = useCallback(() => {
+        setDisputesListStatusGroup('ONGOING_AND_CLOSED');
+        onDefendDispute?.();
+    }, [onDefendDispute]);
+
+    const onCloseCallback = useCallback(() => {
+        updateDisputesListStatusGroup(disputesListStatusGroup);
+        setDisputesListStatusGroup(undefined);
+        resetDetails();
+    }, [disputesListStatusGroup, updateDisputesListStatusGroup, resetDetails]);
 
     return (
         <div>
@@ -42,7 +61,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                 <Modal
                     isOpen={!!selectedDetail}
                     aria-label={i18n.get('disputes.disputeManagementTitle')}
-                    onClose={resetDetails}
+                    onClose={onCloseCallback}
                     isDismissible={true}
                     headerWithBorder={false}
                     size={selectedDetail.modalSize || 'large'}
@@ -52,6 +71,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                             id={selectedDetail.selection.data}
                             dataCustomization={dataCustomization}
                             onAcceptDispute={onAcceptDisputeCallback}
+                            onDefendDispute={onDefendDisputeCallback}
                             hideTitle
                         />
                     </div>

@@ -33,6 +33,7 @@ type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
 
 const DISPUTE_SCHEMES_FILTER_VALUES = Object.keys(DISPUTE_PAYMENT_SCHEMES) as DisputeScheme[];
 const DISPUTE_REASONS_FILTER_VALUES = Object.keys(DISPUTE_REASON_CATEGORIES) as DisputeReason[];
+const DISPUTE_STATUS_GROUPS_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
 const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
     id: statusGroup as IDisputeStatusGroup,
@@ -61,6 +62,7 @@ export const DisputesOverview = ({
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
+    const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
     const disputeDetails = useMemo(
@@ -165,9 +167,16 @@ export const DisputesOverview = ({
             }, 500);
 
             setStatusGroup(statusGroup);
+            setStatusGroupActiveTab(undefined);
             setStatusGroupFetchPending(true);
         };
     }, [updateFilters]);
+
+    const updateDisputesListStatusGroup = useCallback((statusGroup?: IDisputeStatusGroup) => {
+        setStatusGroupActiveTab(currentStatusGroupActiveTab =>
+            statusGroup ? (DISPUTE_STATUS_GROUPS_VALUES.includes(statusGroup) ? statusGroup : currentStatusGroupActiveTab) : undefined
+        );
+    }, []);
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -179,7 +188,7 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
+            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
@@ -206,6 +215,7 @@ export const DisputesOverview = ({
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 onAcceptDispute={onAcceptDispute}
+                updateDisputesListStatusGroup={updateDisputesListStatusGroup}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
