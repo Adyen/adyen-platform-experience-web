@@ -118,7 +118,7 @@
     "dispute.contactSupportToDefendThisDispute": "%{contactSupport} to defend this dispute",
     "dispute.continue": "Continue",
     "dispute.defendDisputeTitle": "Defend chargeback",
-    "dispute.defendDocumentAcceptableFormats": "JPEG, TIFF, or PDF formats only",
+    "dispute.defendDocumentAcceptableFormatAndSize": "Max 2MB for PDF or 10MB for JPEG, TIFF",
     "dispute.defendDocumentMustBeInEnglish": "Must be in English",
     "dispute.defendDocumentRecommendedSize": "Recommended A4 or US letter size",
     "dispute.defendedOn": "Defended on",
