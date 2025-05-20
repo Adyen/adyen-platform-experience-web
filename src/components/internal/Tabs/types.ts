@@ -10,6 +10,6 @@ export type TabProps<TabId extends string> = {
 
 export type TabComponentProps<TabId extends string> = {
     onChange?: <ActiveTab extends TabProps<TabId>>(activeTab: ActiveTab) => void;
-    defaultActiveTab?: TabId;
     tabs: readonly TabProps<TabId>[];
+    activeTab?: TabId;
 };

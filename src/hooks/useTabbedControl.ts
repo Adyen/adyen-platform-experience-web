@@ -6,7 +6,7 @@ export type TabbedControlOptions<OptionId extends string> = readonly { id: Optio
 
 export interface TabbedControlConfig<OptionId extends string, Options extends TabbedControlOptions<OptionId>> {
     onChange?: <ActiveOption extends Options[number]>(activeOption: ActiveOption) => void;
-    defaultOption?: OptionId;
+    activeOption?: OptionId;
     options: Options;
 }
 
@@ -15,22 +15,22 @@ const enum TabDirection {
     FORWARD = 1,
 }
 
-const findDefaultOptionIndex = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>(
+const findActiveOptionIndex = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>(
     options: TabbedControlConfig<OptionId, Options>['options'],
-    defaultOption?: TabbedControlConfig<OptionId, Options>['defaultOption']
+    activeOption?: TabbedControlConfig<OptionId, Options>['activeOption']
 ) => {
-    if (!defaultOption) return 0;
-    const defaultOptionIndex = options.findIndex(option => option.id === defaultOption);
-    return defaultOptionIndex === -1 ? 0 : defaultOptionIndex;
+    if (!activeOption) return 0;
+    const activeOptionIndex = options.findIndex(option => option.id === activeOption);
+    return activeOptionIndex === -1 ? 0 : activeOptionIndex;
 };
 
 export const useTabbedControl = <OptionId extends string, Options extends TabbedControlOptions<OptionId>>({
     options,
-    defaultOption,
+    activeOption: activeOptionFromProps,
     onChange,
 }: TabbedControlConfig<OptionId, Options>) => {
     const [focusPending, setFocusPending] = useState(false);
-    const [activeIndex, setActiveIndex] = useState(findDefaultOptionIndex(options, defaultOption));
+    const [activeIndex, setActiveIndex] = useState(findActiveOptionIndex(options, activeOptionFromProps));
     const optionElementsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const uniqueId = useRef(_uniqueId().replace(/.*?(?=\d+$)/, '')).current;
 
@@ -50,7 +50,7 @@ export const useTabbedControl = <OptionId extends string, Options extends Tabbed
         (index: number, direction: TabDirection) => {
             let currentIndex = index;
             do {
-                if (currentIndex < 0) currentIndex += numberOfOptions;
+                while (currentIndex < 0) currentIndex += numberOfOptions;
                 if (currentIndex >= numberOfOptions) currentIndex %= numberOfOptions;
                 if (optionElementsRef.current[currentIndex]?.disabled === false) break;
             } while ((currentIndex += direction) !== index);

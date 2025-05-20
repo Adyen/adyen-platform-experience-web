@@ -179,7 +179,7 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} defaultActiveTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
+            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector

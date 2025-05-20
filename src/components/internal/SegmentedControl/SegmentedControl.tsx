@@ -5,8 +5,8 @@ import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './SegmentedControl.scss';
 
-function SegmentedControl<ItemId extends string>({ defaultItem, items, onChange }: SegmentedControlProps<ItemId>) {
-    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: items, defaultOption: defaultItem });
+function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }: SegmentedControlProps<ItemId>) {
+    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: items, activeOption: activeItem });
     const { i18n } = useCoreContext();
     return (
         <div>
