@@ -112,26 +112,16 @@ test.describe('legalEntity from the US', () => {
         await page.getByRole('button', { name: 'Review offer' }).click();
         await expect(page.getByText('Creditor: Adyen N.V. – San Francisco Branch')).toBeVisible();
         await expect(page.getByText('505 Brannan Street, San Francisco, CA 94107.')).toBeVisible();
-        /*await expect(
-            page.getByText(
-                "If your application for business credit is denied, you have the right to a written statement of the specific reasons for the denial. To obtain the statement, please contact Adyen's Credit Support Team by emailing within 60 days from the date you are notified of our decision. We will send you a written statement of reasons for the denial within 30 days of receiving your request for the statement."
-            )
-        ).toBeVisible();
-        await expect(
-            page.getByText(
-                "The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided that the applicant has the legal capacity to enter into a binding contract), because all or part of the applicant's income derives from any public assistance program, or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Office of the Comptroller of the Currency (OCC), Customer Assistance Group, PO Box 53570, Houston, TX 77052."
-            )
-        ).toBeVisible();*/
 
-        const denialParagraph = page.locator('p', {
+        const legalParagraph = page.locator('p', {
             hasText: 'If your application for business credit is denied',
         });
 
         // Assert the paragraph is present
-        await expect(denialParagraph).toBeVisible();
+        await expect(legalParagraph).toBeVisible();
 
         // Locate the link inside the paragraph
-        const emailLink = denialParagraph.getByRole('link', {
+        const emailLink = legalParagraph.getByRole('link', {
             name: 'capital-support@adyen.com',
         });
 
@@ -140,7 +130,7 @@ test.describe('legalEntity from the US', () => {
         await expect(emailLink).toHaveAttribute('href', 'mailto:capital-support@adyen.com');
 
         // Verify address
-        await expect(denialParagraph).toContainText(
+        await expect(legalParagraph).toContainText(
             'Office of the Comptroller of the Currency (OCC), Customer Assistance Group, PO Box 53570, Houston, TX 77052.'
         );
     });
