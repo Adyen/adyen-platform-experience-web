@@ -5,7 +5,7 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction, listFrom } from '../../../../../utils';
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
@@ -57,7 +57,7 @@ export const DisputesOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
@@ -83,13 +83,15 @@ export const DisputesOverview = ({
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    ...(activeBalanceAccount?.id !== ALL_BALANCE_ACCOUNTS_SELECTION_ID && {
+                        balanceAccountId: activeBalanceAccount?.id ?? '',
+                    }),
                     reasonCategories: listFrom(pageRequestParams[DISPUTE_REASONS_FILTER_PARAM]),
                     schemeCodes: listFrom(pageRequestParams[DISPUTE_SCHEMES_FILTER_PARAM]),
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
-                    balanceAccountId: activeBalanceAccount?.id ?? '',
                 },
             });
         },
