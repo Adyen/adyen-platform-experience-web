@@ -124,10 +124,10 @@ export const CapitalOfferSummary = ({
             });
         }
 
-        if (grantOffer.annualPercentageRate) {
+        if (grantOffer.aprBasisPoints) {
             summaryItems.splice(4, 0, {
                 key: 'capital.annualPercentageRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.annualPercentageRate) } }),
+                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.aprBasisPoints) } }),
             });
         }
 

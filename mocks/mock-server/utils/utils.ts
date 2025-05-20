@@ -104,6 +104,6 @@ export const calculateGrant = (amount: number | string, currency: string) => {
         id: uuid(),
     } satisfies IGrantOfferResponseDTO;
 
-    if (CURRENCIES_WITH_APR.includes(currency)) return { ...response, annualPercentageRate: 2000 };
+    if (CURRENCIES_WITH_APR.includes(currency)) return { ...response, aprBasisPoints: 2000 };
     return response;
 };
