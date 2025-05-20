@@ -31,6 +31,18 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     },
 };
 
+export const APRField: ElementStory<typeof CapitalOffer> = {
+    name: 'Grant with APR field',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOfferMockedResponses.aprField,
+        },
+    },
+};
+
 export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer> = {
     name: 'Error - Dynamic offer config - No config',
     args: {

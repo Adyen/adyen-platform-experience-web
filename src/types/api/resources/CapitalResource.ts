@@ -79,6 +79,7 @@ export interface components {
             maximumRepaymentPeriodDays?: number;
             /** Format: int32 */
             repaymentRate: number;
+            annualPercentageRate?: number;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
         };

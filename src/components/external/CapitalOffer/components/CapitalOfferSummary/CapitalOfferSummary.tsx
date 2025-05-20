@@ -114,7 +114,7 @@ export const CapitalOfferSummary = ({
             { key: 'account', value: i18n.get('capital.primaryAccount') },
         ];
 
-        if (maximumRepaymentPeriod)
+        if (maximumRepaymentPeriod) {
             summaryItems.splice(4, 0, {
                 key: 'capital.maximumRepaymentPeriod',
                 value:
@@ -122,6 +122,15 @@ export const CapitalOfferSummary = ({
                         ? i18n.get('capital.oneMonth')
                         : i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriod } }),
             });
+        }
+
+        if (grantOffer.annualPercentageRate) {
+            summaryItems.splice(4, 0, {
+                key: 'capital.annualPercentageRate',
+                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.annualPercentageRate) } }),
+            });
+        }
+
         return summaryItems;
     }, [grantOffer, i18n, maximumRepaymentPeriod]);
 
