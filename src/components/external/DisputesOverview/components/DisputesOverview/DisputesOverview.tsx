@@ -62,8 +62,13 @@ export const DisputesOverview = ({
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
-    const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
+
+    // The statusGroupActiveTab state externally updates the active status group tab,
+    // which is useful for programmatic status group tab navigation. Its value can be
+    // set to undefined, in which case it has no effect on the status group tab state
+    // (will not cause the active status group tab to change).
+    const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
 
     const disputeDetails = useMemo(
         () => ({
@@ -167,15 +172,19 @@ export const DisputesOverview = ({
             }, 500);
 
             setStatusGroup(statusGroup);
-            setStatusGroupActiveTab(undefined);
             setStatusGroupFetchPending(true);
+
+            // Resetting statusGroupActiveTab to undefined here to allow for subsequent
+            // programmatic status group tab navigation (will not change the active tab).
+            setStatusGroupActiveTab(undefined);
         };
     }, [updateFilters]);
 
     const updateDisputesListStatusGroup = useCallback((statusGroup?: IDisputeStatusGroup) => {
-        setStatusGroupActiveTab(currentStatusGroupActiveTab =>
-            statusGroup ? (DISPUTE_STATUS_GROUPS_VALUES.includes(statusGroup) ? statusGroup : currentStatusGroupActiveTab) : undefined
-        );
+        // Setting statusGroupActiveTab to undefined here for unknown values passed to
+        // the callback ensures that the current active tab remains unchanged, while
+        // still allowing for subsequent programmatic status group tab navigation.
+        setStatusGroupActiveTab(DISPUTE_STATUS_GROUPS_VALUES.includes(statusGroup!) ? statusGroup : undefined);
     }, []);
 
     useEffect(() => {

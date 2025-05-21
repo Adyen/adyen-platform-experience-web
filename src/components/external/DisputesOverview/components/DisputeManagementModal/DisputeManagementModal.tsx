@@ -50,6 +50,9 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
 
     const onCloseCallback = useCallback(() => {
         updateDisputesListStatusGroup(disputesListStatusGroup);
+        // After updating the disputes list status group, ensure to reset `disputesListStatusGroup`
+        // state value to undefined, to prevent unintended tab navigation from future calls to this
+        // onCloseCallback.
         setDisputesListStatusGroup(undefined);
         resetDetails();
     }, [disputesListStatusGroup, updateDisputesListStatusGroup, resetDetails]);
