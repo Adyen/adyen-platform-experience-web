@@ -14,9 +14,9 @@ import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 
 const documentRequirements: TranslationKey[] = [
-    'dispute.defendDocumentMustBeInEnglish',
-    'dispute.defendDocumentRecommendedSize',
-    'dispute.defendDocumentAcceptableFormats',
+    'disputes.documentRequirements.mustBeInEnglish',
+    'disputes.documentRequirements.recommendedSize',
+    'disputes.documentRequirements.recommendedSize',
 ];
 
 export const DefendDisputeFileUpload = () => {
@@ -54,7 +54,7 @@ export const DefendDisputeFileUpload = () => {
     const actionButtons = useMemo(() => {
         return [
             {
-                title: i18n.get('dispute.submit'),
+                title: i18n.get('disputes.defend.submit'),
                 disabled: isFetching,
                 event: defendDisputeCallback,
             },
@@ -70,12 +70,12 @@ export const DefendDisputeFileUpload = () => {
         <>
             <>
                 <Typography className="adyen-pe-defend-dispute-file-uploader__description" variant={TypographyVariant.BODY}>
-                    {i18n.get('dispute.uploadDefenseDocumentsInformation')}
+                    {i18n.get('disputes.defend.uploadDocumentsInformation')}
                 </Typography>
                 <Card
                     renderHeader={
                         <Typography variant={TypographyVariant.BODY} stronger className={'adyen-pe-defend-dispute-document-requirements'}>
-                            {i18n.get('dispute.documentRequirements')}
+                            {i18n.get('disputes.documentRequirements')}
                         </Typography>
                     }
                     filled
