@@ -60,6 +60,7 @@
         }
     }
 }
+
 .adyen-pe-defend-dispute-file-uploader {
     &__container {
         display: flex;
@@ -69,8 +70,8 @@
 }
 
 .adyen-pe-defend-dispute-document-container {
-    border-radius: style.token(border-radius-l);
     border: 1px solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-l);
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-070);
