@@ -7,11 +7,11 @@ import { TranslationKey } from '../../../../../translations';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import Card from '../../../../internal/Card/Card';
-import FileInput from '../../../../internal/FormFields/FileInput/FileInput';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { DefendDocumentUploadContainer } from './DefendDocumentUploadContainer';
 
 const documentRequirements: TranslationKey[] = [
     'dispute.defendDocumentMustBeInEnglish',
@@ -90,18 +90,16 @@ export const DefendDisputeFileUpload = () => {
                     </ul>
                 </Card>
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
-                    {applicableDocuments?.map((document: IDisputeDefenseDocument) => (
-                        <FileInput
-                            ref={ref}
-                            key={document}
-                            required={document.requirementLevel === 'REQUIRED'}
-                            onChange={file => {
-                                if (file[0]) addFileToDefendPayload(document.documentTypeCode, file[0]);
-                            }}
-                        >
-                            {i18n.get(document.documentTypeCode as TranslationKey)}
-                        </FileInput>
-                    ))}
+                    {applicableDocuments?.map((document: IDisputeDefenseDocument) => {
+                        return (
+                            <DefendDocumentUploadContainer
+                                key={document.documentTypeCode}
+                                document={document}
+                                ref={ref}
+                                addFileToDefendPayload={addFileToDefendPayload}
+                            />
+                        );
+                    })}
                 </div>
                 <div className={'adyen-pe-defend-file-uploader__actions'}>
                     <ButtonActions actions={actionButtons} />

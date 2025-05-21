@@ -60,3 +60,30 @@
         }
     }
 }
+.adyen-pe-defend-dispute-file-uploader {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+}
+
+.adyen-pe-defend-dispute-document-container {
+    border-radius: style.token(border-radius-l);
+    border: 1px solid style.token(color-outline-primary);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+    padding: style.token(spacer-070);
+
+    &__title {
+        display: flex;
+        font-size: style.token(text-title-font-size);
+        font-weight: 700;
+        line-height: style.token(text-caption-line-height);
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+    }
+}
