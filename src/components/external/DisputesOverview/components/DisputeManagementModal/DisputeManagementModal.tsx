@@ -44,7 +44,8 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     }, [onAcceptDispute]);
 
     const onDefendDisputeCallback = useCallback(() => {
-        setDisputesListStatusGroup('ONGOING_AND_CLOSED');
+        // [TODO]: Uncomment the following line on confirmation that defended disputes get hoisted to top of the list
+        // setDisputesListStatusGroup('ONGOING_AND_CLOSED');
         onDefendDispute?.();
     }, [onDefendDispute]);
 
