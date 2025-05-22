@@ -282,7 +282,7 @@
         "help": "claimNotJustifiedSinceTransactionNotChargebacked"
     },
     "NotChargebackedAuto": {
-        "title": "no prior chargeback received",
+        "title": "noPriorChargebackReceived",
         "help": "transactionNotChargebackedAutoDefense"
     },
     "NotNotified": {
