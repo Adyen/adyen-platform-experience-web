@@ -71,7 +71,7 @@
     "dispute.account": "Label for a balance account",
     "dispute.continue": "Button label to continue uploading defend documents.",
     "dispute.defendDisputeTitle": "Button label to start defend dispute flow.",
-    "dispute.defendDocumentAcceptableFormats": "Guidance text to inform user dispute defense documents should have only specified file formats",
+    "dispute.defendDocumentAcceptableFormatAndSize": "Guidance text to inform user dispute defense documents should have only specified file formats with specified file size",
     "dispute.defendDocumentMustBeInEnglish": "Guidance text to inform user dispute defense documents should be in English",
     "dispute.defendDocumentRecommendedSize": "Guidance text to inform user dispute defense documents should be A4 or US letter size",
     "dispute.defendedOn": "Label for a defense date",
