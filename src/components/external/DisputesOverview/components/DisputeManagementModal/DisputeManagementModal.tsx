@@ -16,6 +16,7 @@ export interface DisputeManagementModalProps {
     dataCustomization?: { details: DisputeDetailsCustomization };
     onAcceptDispute?: () => void;
     onDefendDispute?: () => void;
+    onContactSupport?: () => void;
 }
 
 export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
@@ -25,6 +26,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     dataCustomization,
     onAcceptDispute,
     onDefendDispute,
+    onContactSupport,
     updateDisputesListStatusGroup,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
@@ -76,6 +78,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                             dataCustomization={dataCustomization}
                             onAcceptDispute={onAcceptDisputeCallback}
                             onDefendDispute={onDefendDisputeCallback}
+                            onContactSupport={onContactSupport}
                             hideTitle
                         />
                     </div>

@@ -224,6 +224,7 @@ export const DisputesOverview = ({
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 onAcceptDispute={onAcceptDispute}
+                onContactSupport={onContactSupport}
                 updateDisputesListStatusGroup={updateDisputesListStatusGroup}
             >
                 <DisputesTable
