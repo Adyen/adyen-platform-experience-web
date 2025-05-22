@@ -13,6 +13,7 @@ export interface DisputeManagementModalProps {
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     dataCustomization?: { details: DisputeDetailsCustomization };
     onAcceptDispute?: () => void;
+    onContactSupport?: () => void;
 }
 
 export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
@@ -21,6 +22,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     resetDetails,
     dataCustomization,
     onAcceptDispute,
+    onContactSupport,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
     const isModalOpen = !!selectedDetail;
@@ -52,6 +54,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                             id={selectedDetail.selection.data}
                             dataCustomization={dataCustomization}
                             onAcceptDispute={onAcceptDisputeCallback}
+                            onContactSupport={onContactSupport}
                             hideTitle
                         />
                     </div>
