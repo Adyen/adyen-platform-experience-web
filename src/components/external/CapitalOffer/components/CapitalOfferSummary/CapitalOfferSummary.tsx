@@ -176,6 +176,23 @@ export const CapitalOfferSummary = ({
                             </Tooltip>
                         );
                     }
+
+                    if (key === 'capital.annualPercentageRate') {
+                        return (
+                            <Tooltip isContainerHovered content={i18n.get('capital.annualPercentageRateIsTheCostOfBorrowingForALoan')}>
+                                <span>
+                                    <Typography
+                                        className={'adyen-pe-capital-offer-summary__list-label'}
+                                        el={TypographyElement.SPAN}
+                                        variant={TypographyVariant.CAPTION}
+                                    >
+                                        {val}
+                                    </Typography>
+                                </span>
+                            </Tooltip>
+                        );
+                    }
+
                     return (
                         <Typography
                             className={'adyen-pe-capital-offer-summary__list-label'}
