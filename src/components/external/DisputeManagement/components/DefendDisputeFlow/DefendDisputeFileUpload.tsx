@@ -16,7 +16,7 @@ import { useDisputeFlow } from '../../context/dispute/context';
 const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.mustBeInEnglish',
     'disputes.documentRequirements.recommendedSize',
-    'disputes.documentRequirements.recommendedSize',
+    'disputes.documentRequirements.acceptableFormatAndSize',
 ];
 
 export const DefendDisputeFileUpload = () => {

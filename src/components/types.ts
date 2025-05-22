@@ -108,6 +108,7 @@ interface _DataOverviewComponentProps {
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
     onAcceptDispute?: () => void;
+    onContactSupport?: () => void;
 }
 
 export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
