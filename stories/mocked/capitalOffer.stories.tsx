@@ -31,10 +31,14 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     },
 };
 
-export const APRField: ElementStory<typeof CapitalOffer> = {
+export const APRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
     name: 'Grant with APR field',
     args: {
         mockedApi: true,
+        legalEntity: {
+            countryCode: 'CA',
+            regions: [],
+        },
     },
     parameters: {
         msw: {
