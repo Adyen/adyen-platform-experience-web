@@ -250,7 +250,7 @@ const DISPUTE_DETAILS_ERRORS = {
     },
     acceptServerError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.download, () => {
+            httpGetInternalError(endpoints('mock').disputes.accept, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
