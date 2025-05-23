@@ -12,6 +12,18 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+export const CAD_CAPITAL_OFFER = {
+    minAmount: {
+        value: 100000,
+        currency: 'CAD',
+    },
+    maxAmount: {
+        value: 2500000,
+        currency: 'CAD',
+    },
+    step: 10000,
+} satisfies IDynamicOffersConfig;
+
 export const GRANT_US_ACCOUNT = {
     region: 'US',
     accountNumber: '123456789012',

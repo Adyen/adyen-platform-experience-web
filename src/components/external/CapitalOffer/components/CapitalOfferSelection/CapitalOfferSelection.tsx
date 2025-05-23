@@ -11,7 +11,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { debounce, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
+import { debounce, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
@@ -70,7 +70,7 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
                     {
                         key: 'capital.dailyRepaymentRate',
                         value: `${i18n.get('capital.xPercent', {
-                            values: { percentage: getPaymentRatePercentage(data.repaymentRate) },
+                            values: { percentage: getPercentage(data.repaymentRate) },
                         })}`,
                     },
                     {
