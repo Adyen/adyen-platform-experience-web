@@ -15,4 +15,5 @@ export type DisputeManagementProps = {
     id: string;
     onAcceptDispute?: () => void;
     onDefendDispute?: () => void;
+    onContactSupport?: () => void;
 } & DetailsWithExtraData<DisputeDetailsCustomization>;
