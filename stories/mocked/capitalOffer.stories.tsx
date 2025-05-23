@@ -31,8 +31,8 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     },
 };
 
-export const APRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
-    name: 'Grant with APR field',
+export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
+    name: 'With APR field',
     args: {
         mockedApi: true,
         legalEntity: {

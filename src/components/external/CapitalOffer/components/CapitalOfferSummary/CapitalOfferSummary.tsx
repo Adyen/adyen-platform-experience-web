@@ -2,7 +2,7 @@ import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
+import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import StructuredList from '../../../../internal/StructuredList';
@@ -105,7 +105,7 @@ export const CapitalOfferSummary = ({
             },
             {
                 key: 'capital.dailyRepaymentRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) } }),
+                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
             },
             {
                 key: 'capital.expectedRepaymentPeriod',
@@ -127,7 +127,7 @@ export const CapitalOfferSummary = ({
         if (grantOffer.aprBasisPoints) {
             summaryItems.splice(1, 0, {
                 key: 'capital.annualPercentageRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.aprBasisPoints) } }),
+                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.aprBasisPoints) } }),
             });
         }
 
