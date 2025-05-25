@@ -97,6 +97,7 @@
     "disputes.acceptDispute": "Button label to confirm acceptance of a dispute.",
     "disputes.acceptDisputeDisclaimer": "Disclaimer informing users they agree to certain terms upon accepting a dispute.",
     "disputes.accepted": "Status indicating the dispute has been accepted.",
+    "disputes.acceptedOn": "Label referring to the date a dispute got accepted.",
     "disputes.account": "Label for the account associated with the dispute.",
     "disputes.actionNeeded": "Dispute that requires the user to perform an action",
     "disputes.adjustment": "Indicates an adjustment related to a dispute",

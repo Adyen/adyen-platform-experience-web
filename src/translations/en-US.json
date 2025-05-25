@@ -143,6 +143,7 @@
     "disputes.acceptChargeback": "Accept chargeback",
     "disputes.acceptDisputeDisclaimer": "By accepting, you agree that the disputed amount will not be returned to your account and the dispute will be marked as Lost.",
     "disputes.accepted": "Accepted",
+    "disputes.acceptedOn": "Accepted on",
     "disputes.account": "Account",
     "disputes.actionNeeded": "Action needed",
     "disputes.adjustment": "Adjustment",

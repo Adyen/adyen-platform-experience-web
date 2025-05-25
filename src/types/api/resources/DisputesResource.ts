@@ -102,6 +102,8 @@ export interface components {
         /** @enum {string} */
         Defensibility: 'DEFENDABLE' | 'DEFENDABLE_EXTERNALLY' | 'ACCEPTABLE' | 'NOT_ACTIONABLE';
         Dispute: {
+            /** Format: date-time */
+            acceptedDate?: string;
             allowedDefenseReasons: string[];
             amount: components['schemas']['Amount'];
             /** Format: date-time */

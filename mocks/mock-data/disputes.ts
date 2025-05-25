@@ -886,6 +886,8 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         ? 'REQUEST_FOR_INFORMATION'
         : 'CHARGEBACK';
 
+    const disputeModificationDate = getDate(1, new Date(dispute.createdAt));
+
     const actionNeeded = ACTION_NEEDED_STATUSES.includes(disputeStatus);
     const isAcceptableChargeback = ACCEPTABLE_CHARGEBACK_REASONS.includes(disputeCategory);
     const isAcceptedOrExpired = ACCEPTED_OR_EXPIRED_STATUSES.includes(disputeStatus);
@@ -910,7 +912,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         additionalDisputeDetails.defense = {
             reason: 'ServicesProvided',
             suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
-            defendedOn: getDate(1, new Date(dispute.createdAt)),
+            defendedOn: disputeModificationDate,
             defendedThroughComponent: false,
         };
     }
@@ -921,6 +923,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
         allowedDefenseReasons: allowedDefenseReasons ? [...allowedDefenseReasons] : [],
         pspReference: disputePspReference,
         type: disputeType,
+        ...(disputeStatus === 'ACCEPTED' && { acceptedDate: disputeModificationDate }),
         ...(hasIssuerFeedback && {
             issuerExtraData: {
                 ...(isChargeback && {
