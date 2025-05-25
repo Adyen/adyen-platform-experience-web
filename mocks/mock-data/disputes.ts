@@ -14,7 +14,7 @@ type AdditionalDisputeDetails = Omit<IDisputeDetail, 'dispute'> & { dispute: IDi
 const ACCEPTABLE_CHARGEBACK_REASONS: IDisputeReasonCategory[] = ['CONSUMER_DISPUTE', 'FRAUD', 'PROCESSING_ERROR'];
 const ACCEPTED_OR_EXPIRED_STATUSES: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 const ACTION_NEEDED_STATUSES: IDisputeStatus[] = ['UNDEFENDED', 'UNRESPONDED'];
-const RFI_ONLY_STATUSES: IDisputeStatus[] = ['RESPONDED', 'UNRESPONDED'];
+const RFI_ONLY_STATUSES: IDisputeStatus[] = ['EXPIRED', 'RESPONDED', 'UNRESPONDED'];
 
 export const MAIN_BALANCE_ACCOUNT = BALANCE_ACCOUNTS.find(({ id }) => id === 'BA32272223222B5CTDQPM6W2H')!;
 
@@ -71,9 +71,6 @@ const MC_FRAUD_DEFENSE_REASONS = [
 const VISA_CONSUMER_DEFENSE_REASONS = ['InvalidChargeback', 'MerchandiseReceived', 'ServicesProvided'] as const;
 
 const VISA_FRAUD_DEFENSE_REASONS = ['AdditionalInformation'] as const;
-
-const CHARGEBACK_REASON_TITLE = 'Fraud - Invalid credit card use';
-const CONSUMER_DISPUTE_REASON_TITLE = 'Consumer dispute - Cardholder dispute - Defective / Not as described';
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
     defendedOn: getDate(-1),
@@ -276,8 +273,8 @@ const CHARGEBACKS = [
         status: 'UNDEFENDED',
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
-        paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'Mastercard' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective/Not as described' },
         amount: { currency: 'EUR', value: 211100 },
     },
     {
@@ -285,8 +282,8 @@ const CHARGEBACKS = [
         status: 'UNRESPONDED',
         dueDate: new Date(new Date().setHours(20)).toISOString(),
         createdAt: getDate(-9),
-        paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa Credit Card' },
-        reason: { category: 'REQUEST_FOR_INFORMATION', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0002', description: 'Visa' },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '30', title: 'Cardholder/Seller dispute, cardholder/seller request for copy' },
         amount: { currency: 'USD', value: 222200 },
     },
     {
@@ -294,8 +291,8 @@ const CHARGEBACKS = [
         status: 'UNDEFENDED',
         dueDate: getDate(2),
         createdAt: getDate(-7),
-        paymentMethod: { type: 'paypal', description: 'PayPal' },
-        reason: { category: 'ADJUSTMENT', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '2004', description: 'Visa' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '13.1', title: 'Merchandise/Services Not Received' },
         amount: { currency: 'EUR', value: 233300 },
     },
     {
@@ -304,7 +301,7 @@ const CHARGEBACKS = [
         dueDate: getDate(20),
         createdAt: getDate(-7),
         paymentMethod: { type: 'klarna', description: 'Klarna Pay Later' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: 'faulty_goods', title: 'The user reported that he/she received a faulty good' },
         amount: { currency: 'USD', value: 244400 },
     },
     {
@@ -313,16 +310,16 @@ const CHARGEBACKS = [
         dueDate: getDate(11),
         createdAt: getDate(-4),
         paymentMethod: { type: 'amex', lastFourDigits: '0005', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
-        amount: { currency: 'EUR', value: 255500 },
+        reason: { category: 'FRAUD', code: '684', title: 'Charge was paid by another form of payment.' },
+        amount: { currency: 'USD', value: 255500 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000006',
         status: 'UNDEFENDED',
         dueDate: getDate(13),
         createdAt: getDate(-4),
-        paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0006', description: 'Mastercard' },
+        reason: { category: 'FRAUD', code: '4837', title: 'No Cardholder Authorisation' },
         amount: { currency: 'USD', value: 266600 },
     },
     {
@@ -330,8 +327,8 @@ const CHARGEBACKS = [
         status: 'UNRESPONDED',
         dueDate: getDate(15),
         createdAt: getDate(-3),
-        paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0007', description: 'Visa' },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '29', title: 'Request for draft of vehicle leasing or airline transaction' },
         amount: { currency: 'EUR', value: 277700 },
     },
     {
@@ -340,7 +337,11 @@ const CHARGEBACKS = [
         dueDate: getDate(16),
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: {
+            category: 'REQUEST_FOR_INFORMATION',
+            code: 'PAYMENT_BY_OTHER_MEANS',
+            title: 'The customer paid for the transaction through other means.',
+        },
         amount: { currency: 'USD', value: 288800 },
     },
     {
@@ -349,7 +350,7 @@ const CHARGEBACKS = [
         dueDate: getDate(18),
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', description: 'Klarna Pay Later' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: 'incorrect_invoice', title: 'The user informed that the invoice is incorrect' },
         amount: { currency: 'EUR', value: 299900 },
     },
     {
@@ -358,7 +359,7 @@ const CHARGEBACKS = [
         dueDate: getDate(20),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0010', description: 'American Express' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'PROCESSING_ERROR', code: '4512', title: 'Multiple Processing' },
         amount: { currency: 'USD', value: 311000 },
     },
     {
@@ -366,8 +367,8 @@ const CHARGEBACKS = [
         status: 'UNDEFENDED',
         dueDate: getDate(22),
         createdAt: getDate(-2),
-        paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0011', description: 'Mastercard' },
+        reason: { category: 'AUTHORISATION_ERROR', code: '4809', title: 'Transaction Not Reconciled' },
         amount: { currency: 'EUR', value: 322100 },
     },
     {
@@ -375,8 +376,8 @@ const CHARGEBACKS = [
         status: 'UNDEFENDED',
         dueDate: getDate(23),
         createdAt: getDate(-2),
-        paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa Credit Card' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0012', description: 'Visa' },
+        reason: { category: 'PROCESSING_ERROR', code: '12.6', title: 'Duplicate Processing/Paid by Other Means' },
         amount: { currency: 'USD', value: 333200 },
     },
     {
@@ -385,7 +386,11 @@ const CHARGEBACKS = [
         dueDate: getDate(26),
         createdAt: getDate(-2),
         paymentMethod: { type: 'paypal', description: 'PayPal' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: {
+            category: 'OTHER',
+            code: 'CANCELED_RECURRING_BILLING',
+            title: 'The customer was incorrectly charged because he or she canceled recurring billing.',
+        },
         amount: { currency: 'EUR', value: 344300 },
     },
     {
@@ -394,7 +399,7 @@ const CHARGEBACKS = [
         dueDate: getDate(29),
         createdAt: getDate(-1),
         paymentMethod: { type: 'klarna', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: 'return', title: 'The user reported that a full/partial return was made' },
         amount: { currency: 'USD', value: 355400 },
     },
     {
@@ -403,8 +408,8 @@ const CHARGEBACKS = [
         dueDate: getDate(30),
         createdAt: getDate(-2),
         paymentMethod: { type: 'amex', lastFourDigits: '0015', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
-        amount: { currency: 'EUR', value: 366500 },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '62', title: 'Referenced Charge should have been submitted as a credit.' },
+        amount: { currency: 'USD', value: 366500 },
     },
 ] satisfies Readonly<IDisputeListItem[]>;
 
@@ -413,8 +418,8 @@ const ALL_DISPUTES = [
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000016',
         status: 'PENDING',
         createdAt: getDate(-3),
-        paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0016', description: 'Mastercard' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4879', title: 'Goods or Service Not Provided' },
         amount: { currency: 'USD', value: 377600 },
     },
     {
@@ -422,8 +427,8 @@ const ALL_DISPUTES = [
         status: 'EXPIRED',
         dueDate: getDate(-1),
         createdAt: getDate(-3),
-        paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0017', description: 'Visa' },
+        reason: { category: 'OTHER', code: 'unknownRFI', title: 'Unknown Request for Information' },
         amount: { currency: 'EUR', value: 388700 },
     },
     {
@@ -431,7 +436,11 @@ const ALL_DISPUTES = [
         status: 'ACCEPTED',
         createdAt: getDate(-3),
         paymentMethod: { type: 'paypal', description: 'PayPal' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: {
+            category: 'CONSUMER_DISPUTE',
+            code: 'MERCHANDISE_OR_SERVICE_NOT_RECEIVED',
+            title: 'The customer did not receive the merchandise or service.',
+        },
         amount: { currency: 'USD', value: 399800 },
     },
     {
@@ -439,7 +448,7 @@ const ALL_DISPUTES = [
         status: 'WON',
         createdAt: getDate(-3),
         paymentMethod: { type: 'klarna', description: 'Klarna Pay Later' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: 'faulty_goods', title: 'The user reported that he/she received a faulty good' },
         amount: { currency: 'EUR', value: 410900 },
     },
     {
@@ -447,23 +456,23 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-5),
         paymentMethod: { type: 'amex', lastFourDigits: '0020', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4532', title: 'Damaged and/or Defective Goods/Services' },
         amount: { currency: 'USD', value: 422000 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000021',
         status: 'PENDING',
         createdAt: getDate(-5),
-        paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'MasterCard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'Mastercard' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective/Not as described' },
         amount: { currency: 'EUR', value: 433100 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000022',
         status: 'WON',
         createdAt: getDate(-5),
-        paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa Credit Card' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0022', description: 'Visa' },
+        reason: { category: 'FRAUD', code: '10.4', title: 'Other Fraud-Card Absent Environment' },
         amount: { currency: 'USD', value: 444200 },
     },
     {
@@ -471,7 +480,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-6),
         paymentMethod: { type: 'klarna', description: 'Klarna Pay Later' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'OTHER', code: 'unauthorized_purchase', title: 'The user informs that he/she did not made the purchase' },
         amount: { currency: 'USD', value: 466400 },
     },
     {
@@ -480,39 +489,39 @@ const ALL_DISPUTES = [
         dueDate: getDate(-2),
         createdAt: getDate(-6),
         paymentMethod: { type: 'amex', lastFourDigits: '0025', description: 'American Express' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        reason: { category: 'OTHER', code: '6008', title: 'C/M Requests Copy Bearing Signature' },
         amount: { currency: 'EUR', value: 477500 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000026',
         status: 'PENDING',
         createdAt: getDate(-8),
-        paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0026', description: 'Mastercard' },
+        reason: { category: 'FRAUD', code: '4837', title: 'No Cardholder Authorisation' },
         amount: { currency: 'USD', value: 488600 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000027',
         status: 'LOST',
         createdAt: getDate(-8),
-        paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa Credit Card' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '13.2', title: 'Cancelled Recurring' },
         amount: { currency: 'EUR', value: 499700 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000031',
         status: 'WON',
         createdAt: getDate(-12),
-        paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa Credit Card' },
-        reason: { category: 'OTHER', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0031', description: 'Visa' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '30', title: 'Services Not Rendered' },
         amount: { currency: 'EUR', value: 244100 },
     },
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000033',
         status: 'ACCEPTED',
         createdAt: getDate(-12),
-        paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'MasterCard' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'mc', lastFourDigits: '0033', description: 'Mastercard' },
+        reason: { category: 'PROCESSING_ERROR', code: '4873', title: 'Duplicate Processing' },
         amount: { currency: 'EUR', value: 266300 },
     },
     {
@@ -520,8 +529,8 @@ const ALL_DISPUTES = [
         status: 'EXPIRED',
         dueDate: getDate(-5),
         createdAt: getDate(-12),
-        paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa Credit Card' },
-        reason: { category: 'FRAUD', code: '4835', title: CHARGEBACK_REASON_TITLE },
+        paymentMethod: { type: 'visa', lastFourDigits: '0034', description: 'Visa' },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: '29', title: 'Request for draft of vehicle leasing or airline transaction' },
         amount: { currency: 'USD', value: 277400 },
     },
     {
@@ -529,7 +538,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-15),
         paymentMethod: { type: 'paypal', description: 'PayPal' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4835', title: CONSUMER_DISPUTE_REASON_TITLE },
+        reason: { category: 'CONSUMER_DISPUTE', code: 'DUPLICATE_TRANSACTION', title: 'The transaction was a duplicate.' },
         amount: { currency: 'USD', value: 321800 },
     },
 ] satisfies Readonly<IDisputeListItem[]>;
@@ -891,13 +900,14 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
     const actionNeeded = ACTION_NEEDED_STATUSES.includes(disputeStatus);
     const isAcceptableChargeback = ACCEPTABLE_CHARGEBACK_REASONS.includes(disputeCategory);
     const isAcceptedOrExpired = ACCEPTED_OR_EXPIRED_STATUSES.includes(disputeStatus);
+    const isDefendedThroughComponent = !!allowedDefenseReasons;
 
     const isChargeback = disputeType === 'CHARGEBACK';
     const isFraudAlert = disputeType === 'NOTIFICATION_OF_FRAUD';
     const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
 
     const hasDefenseEvidence = !isFraudAlert && !actionNeeded && !isAcceptedOrExpired;
-    const hasIssuerFeedback = !isFraudAlert && disputeStatus === 'LOST' && hasDefenseEvidence;
+    const hasIssuerFeedback = !isFraudAlert && disputeStatus === 'LOST' && hasDefenseEvidence && isDefendedThroughComponent;
 
     let defensibility: IDisputeDetail['dispute']['defensibility'] = isFraudAlert ? 'DEFENDABLE_EXTERNALLY' : 'NOT_ACTIONABLE';
 
@@ -913,7 +923,7 @@ export const getAdditionalDisputeDetails = (dispute: (typeof DISPUTES)[number]) 
             reason: 'ServicesProvided',
             suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
             defendedOn: disputeModificationDate,
-            defendedThroughComponent: false,
+            defendedThroughComponent: isDefendedThroughComponent,
         };
     }
 
