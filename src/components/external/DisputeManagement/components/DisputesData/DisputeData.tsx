@@ -39,6 +39,7 @@ import {
     DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER,
     DISPUTE_DATA_PROPERTIES_SKELETON,
     DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER,
+    DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT,
 } from './constants';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -255,8 +256,8 @@ export const DisputeData = ({
                 <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
                     {skeletonRows.map((_, index) => (
                         <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
-                            <span />
-                            <span />
+                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
                         </div>
                     ))}
                 </div>

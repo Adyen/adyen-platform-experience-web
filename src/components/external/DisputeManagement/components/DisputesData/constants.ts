@@ -17,6 +17,7 @@ export const DISPUTE_DATA_ALERT = 'adyen-pe-dispute-data-alert';
 export const DISPUTE_DATA_ERROR_CONTAINER = 'adyen-pe-dispute-data__error-container';
 export const DISPUTE_DATA_STATUS_BOX_SKELETON = 'adyen-pe-dispute-data__status-box-skeleton';
 export const DISPUTE_DATA_PROPERTIES_SKELETON = 'adyen-pe-dispute-data__properties-skeleton';
+export const DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT = 'adyen-pe-dispute-data__properties-skeleton-element';
 export const DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER = 'adyen-pe-dispute-data__properties-skeleton-container';
 export const DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER = 'adyen-pe-dispute-data__status-box-status-container';
 export const DISPUTE_DATA_STATUS_BOX_STATUS = 'adyen-pe-dispute-data__status-box-status';

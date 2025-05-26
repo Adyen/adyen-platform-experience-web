@@ -167,8 +167,6 @@
 
     &__status-box-payment-method {
         @include skeleton.adyen-pe-skeleton-animation();
-
-        display: block;
     }
 
     &__status-box-payment-method:nth-of-type(1) {
@@ -194,11 +192,10 @@
         gap: style.token(spacer-090);
     }
 
-    &__properties-skeleton span {
+    &__properties-skeleton-element {
         @include skeleton.adyen-pe-skeleton-animation();
 
         border-radius: style.token(border-radius-l);
-        display: block;
     }
 
     &__properties-skeleton span:nth-child(1) {

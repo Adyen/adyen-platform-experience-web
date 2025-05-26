@@ -67,7 +67,7 @@ export const disputesMocks = [
         if (networkError) return HttpResponse.error();
 
         const dispute = getDisputeForRequestPathParams(params);
-        await delay(1000);
+        await delay('infinite');
         return HttpResponse.json({ ...getAdditionalDisputeDetails(dispute) });
     }),
 
