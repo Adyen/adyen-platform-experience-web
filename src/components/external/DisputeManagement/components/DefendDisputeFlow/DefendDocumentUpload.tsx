@@ -17,7 +17,7 @@ export const DefendDocumentUpload = ({
     isRequired: boolean;
 }) => {
     const { i18n } = useCoreContext();
-    const { title, description } = getDefenseDocumentContent(i18n, document) || {};
+    const { title, primaryDescriptionItems } = getDefenseDocumentContent(i18n, document) || {};
     return (
         <div className="adyen-pe-defend-dispute-document-upload">
             <div>
@@ -29,8 +29,8 @@ export const DefendDocumentUpload = ({
                 >
                     {title || document}
                 </Typography>
-                {description && description.length > 0
-                    ? description.map((desc, i) => {
+                {primaryDescriptionItems && primaryDescriptionItems.length > 0
+                    ? primaryDescriptionItems.map((desc, i) => {
                           return (
                               <Typography
                                   key={`${i}-description`}

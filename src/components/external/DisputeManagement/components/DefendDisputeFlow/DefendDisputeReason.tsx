@@ -3,16 +3,16 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
-import { TranslationKey } from '../../../../../translations';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import Select from '../../../../internal/FormFields/Select';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { getDefenseReasonContent } from '../../utils';
 
 export const DefendDisputeReason = () => {
     const { i18n } = useCoreContext();
@@ -29,7 +29,7 @@ export const DefendDisputeReason = () => {
             Object.freeze(
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
-                    name: i18n.has(`dispute.defenseReason.${reason}`) ? i18n.get(`dispute.defenseReason.${reason}` as TranslationKey) : reason,
+                    name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
                 }))
             ) ?? [],
         [i18n, allowedDefenseReasons]
@@ -107,10 +107,19 @@ export const DefendDisputeReason = () => {
 
     return (
         <>
-            <Select items={defenseReasons} onChange={onChange} selected={selected} />
-            <Typography className="adyen-pe-defend-dispute-reason__description" variant={TypographyVariant.BODY}>
-                {i18n.get('dispute.selectDefenseReasonDescription')}
-            </Typography>
+            <div className="adyen-pe-defend-dispute-reason__selector">
+                <Select items={defenseReasons} onChange={onChange} selected={selected} />
+                {getDefenseReasonContent(i18n, selected)?.primaryDescriptionItems?.map((description, i) => (
+                    <Typography
+                        el={TypographyElement.PARAGRAPH}
+                        key={`description-${i}`}
+                        className="adyen-pe-defend-dispute-reason__description"
+                        variant={TypographyVariant.BODY}
+                    >
+                        {description}
+                    </Typography>
+                ))}
+            </div>
             <Alert
                 type={AlertTypeOption.HIGHLIGHT}
                 description={i18n.get('dispute.defenseReasonChargebackFeeInformation')}

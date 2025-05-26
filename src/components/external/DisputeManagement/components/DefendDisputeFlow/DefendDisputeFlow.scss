@@ -62,6 +62,19 @@
     }
 }
 
+.adyen-pe-defend-dispute-reason {
+    &__selector {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-caption-font-size);
+    }
+}
+
 .adyen-pe-defend-dispute-file-uploader {
     &__container {
         display: flex;

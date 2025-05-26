@@ -71,7 +71,7 @@ const SelectAndUploadOptionalDoc = ({
                         placeholder={i18n.get('disputes.selectDocumentType')}
                     />
                     {selection &&
-                        getDocInfo(selection)?.description?.map(desc => {
+                        getDocInfo(selection)?.primaryDescriptionItems?.map(desc => {
                             return (
                                 <Typography
                                     key={desc}
