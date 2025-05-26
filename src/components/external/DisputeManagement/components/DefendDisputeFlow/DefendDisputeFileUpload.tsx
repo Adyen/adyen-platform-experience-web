@@ -214,7 +214,7 @@ export const DefendDisputeFileUpload = () => {
                     {optionalSelectedDocuments.length
                         ? optionalSelectedDocuments.map((doc, index) => {
                               return (
-                                  <div key={doc} className="adyen-pe-defend-dispute-document-upload-box">
+                                  <div key={`optional-doc-${index}`} className="adyen-pe-defend-dispute-document-upload-box">
                                       <SelectAndUploadOptionalDoc
                                           onRemoveOption={removeSelectedOptionalDocument}
                                           selection={doc}
@@ -223,7 +223,7 @@ export const DefendDisputeFileUpload = () => {
                                           items={availableOptionalDocuments}
                                           ref={ref}
                                           title={i18n.get('disputes.optionalDocument')}
-                                          required
+                                          required={false}
                                       />
                                   </div>
                               );
