@@ -1,0 +1,459 @@
+{
+    "AcquirerMemberMessageText": {
+        "title": "clearingText",
+        "help": "descriptionOfDisputeReason"
+    },
+    "AcquirerRecurringTransactionDetails": {
+        "title": "latestRecurringTransactions",
+        "help": "latestRecurringTransactions"
+    },
+    "AcquirerRepresentmentForm": {
+        "title": "acquirerRepresentmentForm",
+        "help": "acquirerRepresentmentFormAutomaticallyGenerated"
+    },
+    "AcquirerRetrievalFulfilmentForm": {
+        "title": "acquirerRetrievalFulfilmentForm",
+        "help": "acquirerRetrievalFulfilmentFormAutomaticallyGenerated"
+    },
+    "AcquirerRFItransactionDetails": {
+        "title": "automaticallyGeneratedTransactionDetails",
+        "help": "automaticallyGeneratedTransactionDetails"
+    },
+    "AddendumDocumentation": {
+        "title": "proofOfAddendum",
+        "help": "cardholderResponsibleForAddendumTransaction"
+    },
+    "AdditionalInformation": {
+        "title": "additionalInformation",
+        "help": "docIdentifyTransaction"
+    },
+    "AdditionalTransactions": {
+        "title": "additionalTransactions",
+        "help": "additionalTransactionsConnectedWithDisputedFlight"
+    },
+    "AlternativeDefenseMaterial": {
+        "title": "alternativeDefenseMaterial",
+        "help": "docRemediesChargeback"
+    },
+    "AmexFaxCover": {
+        "title": "amexFaxCover",
+        "help": "coverPageForAmexDisputes"
+    },
+    "ARDnotProvided": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "AuthorisedTransaction": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "CancellationNeverAccepted": {
+        "title": "rebuttalCancellationNotAccepted",
+        "help": "rebuttalStatingCancellationNotAccepted"
+    },
+    "CardholderIdentification": {
+        "title": "evidenceCardHolderParticipation",
+        "help": "docProvingCardHolderParticipated",
+        "helpitems": ["receiptOrOther", "customerWrittenConfirmation", "writtenCorrespondenceExchanged"]
+    },
+    "CardholderRenewedMembership": {
+        "title": "proofRenewedMembership",
+        "help": "proofShowingCardholderRenewedMembership"
+    },
+    "CardPresent": {
+        "title": "proofCardPresence",
+        "help": "proofCardAndCardholderSignature"
+    },
+    "ChargebackCodeNotApplicable": {
+        "title": "docChargebackCodeNotApplicable"
+    },
+    "ChipLiabilityShift": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "ChipTransactionReportedToSAFE": {
+        "title": "defenseMaterial",
+        "help": "docViaFraudReporter"
+    },
+    "CopyOfSalesDraft": {
+        "title": "CopyOfSalesDraftTitle",
+        "help": "CopyOfSalesDraftDetails"
+    },
+    "CompellingEvidence": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "CorrectTransactionCurrency": {
+        "title": "defenseMaterial",
+        "help": "docCorrectCurrency"
+    },
+    "CreditPreviouslyIssued": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "DateMerchandiseShipped": {
+        "title": "documentShipmentDate",
+        "help": "documentContainingImportantShipmentData"
+    },
+    "DefenseMaterial": {
+        "title": "defenseMaterial",
+        "help": "docRemediesChargeback"
+    },
+    "DisclosureAtPointOfInteraction": {
+        "title": "disclosureAtPointOfInteraction",
+        "help": "rebuttalGivenToCardholder"
+    },
+    "DuplicateChargeback": {
+        "title": "firstChargebackNumberAndDate",
+        "help": "numberAndDateOfOriginalChargeback"
+    },
+    "EvidenceOfCardholderParticipation": {
+        "title": "compellingEvidence",
+        "help": "evidenceProofingParticipationOfCardholder"
+    },
+    "FlightManifest": {
+        "title": "flightManifest",
+        "help": "flightManifestShowingCardholderName"
+    },
+    "FlightTicket": {
+        "title": "flightTicket",
+        "help": "flightTicketWithCardholderName"
+    },
+    "FlightTicketAtBillingAddress": {
+        "title": "deliveryOfFlightTicketAtAddress",
+        "help": "receiptOfFlightTicketAtBillingAddress"
+    },
+    "FlightTicketUsed": {
+        "title": "flightTicketUsed",
+        "help": "proofAirlineTicketsWereUsed"
+    },
+    "FligthTookPlace": {
+        "title": "flightTookPlace",
+        "help": "proofFlightTookPlace"
+    },
+    "FrequentFlyer": {
+        "title": "frequentFlyerInformation",
+        "help": "creditsOfMilesShowingConnectionToCardholder"
+    },
+    "GoodsNotReturned": {
+        "title": "merchantWrittenRebuttal",
+        "help": "statementMerchantDidNotReceiveGoods"
+    },
+    "GoodsRepairedOrReplaced": {
+        "title": "merchantWrittenRebuttal",
+        "help": "writtenRebutalGoodsRepairedOrReplaced"
+    },
+    "GoodsWereAsDescribed": {
+        "title": "merchantWrittenRebuttal",
+        "help": "proofGoodsWereDeliveredAsDescribed"
+    },
+    "IncreasedTransactionAmount": {
+        "title": "proofValidIncreaseOfAmount",
+        "help": "cardholderResponsibleForDisputedAmount"
+    },
+    "InvalidCancellationCode": {
+        "title": "explanation",
+        "help": "explanationWhyCancellationCodeInvalid"
+    },
+    "InvalidChargeback": {
+        "title": "proofOfInvalidChargeback",
+        "help": "chargebackRemediedOrInvalid"
+    },
+    "LiabilityShiftFullUCAF": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "LiabilityShiftMerchantUCAF": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "MerchandiseDescription": {
+        "title": "merchandiseDescription",
+        "help": "descriptionOfMerchandiseOrServices"
+    },
+    "MerchandiseNotCounterfeit": {
+        "title": "defenseMaterial",
+        "help": "docMerchandiseNotCounterfeit"
+    },
+    "MerchantProofOfRecurringTransaction": {
+        "title": "proofOfRecurringTransaction",
+        "help": "docAllOfFollowing",
+        "helpitems": ["evidenceTransactionWasRecurring", "moreThanOneTransactionProcessed", "previousTransactionsNotDisputed"]
+    },
+    "MPIdata": {
+        "title": "mpiData",
+        "help": "resultsOfMpiCalls"
+    },
+    "NotCancelled": {
+        "title": "proofOfNoCancellation",
+        "help": "proofRecurringContractNotCancelledAtTimeOfSettlement"
+    },
+    "NotChargebacked": {
+        "title": "proofOfNoChargebackReceived",
+        "help": "proofMerchantHadNotReceivedPreviousChargeback"
+    },
+    "NotChargebackedAuto": {
+        "title": "proofOfNoChargebackReceived",
+        "help": "proofMerchantHadNotReceivedPreviousChargebackAutoGenerated"
+    },
+    "NotNotified": {
+        "title": "noNotification",
+        "help": "proofMerchantNotNotifiedOfCancellation"
+    },
+    "OriginalAmount": {
+        "title": "originalAmount",
+        "help": "originalAmountIfDisputedRepresentsPartialShipment"
+    },
+    "PaperAirlineTicket": {
+        "title": "paperAirlineTicket",
+        "help": "docCardholderIssuedPaperAirlineTickets"
+    },
+    "PassengerIdentification": {
+        "title": "passengerId",
+        "help": "passengerIdLinkedToCardholder"
+    },
+    "PastChargebackTimeLimit": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "PaymentByOtherMeans": {
+        "title": "appropriateExplanation",
+        "help": "appropriateExplanationAndDocTwoSeparateTransactions"
+    },
+    "PINTransaction": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "PositiveAVS": {
+        "title": "avsDocumentation",
+        "help": "documentationOfPositiveAvsResponseXOrY"
+    },
+    "PresentmentWithinTimeLimit": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "PrintedSignedTerminalReceipt": {
+        "title": "signedTerminalReceipt",
+        "help": "printedSignedReceipt"
+    },
+    "ProofOfAbilityToProvideServices": {
+        "title": "proofOfDelayedDelivery",
+        "help": "ifDelayedProofShowingMerchantAbleToProvideServices"
+    },
+    "ProofOfAccountTakeover": {
+        "title": "proofOfAccountTakeover",
+        "help": "provingTransactionResultedFromAccountTakeover"
+    },
+    "ProofOfAttendedPOSTerminal": {
+        "title": "proofCardPresence",
+        "help": "docTransactionOccurredOnPos"
+    },
+    "ProofOfCardPresenceAndSignatureChipNoPIN": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "ProofOfCardPresenceAndSignatureWithTerminalReceipt": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "ProofOfCardPresenceSignatureOrChipPIN": {
+        "title": "signatureOrChipPinEvidence"
+    },
+    "ProofOfGoodsOrServicesProvided": {
+        "title": "proofProvidedMerchandise",
+        "help": "proofGoodsServicesWereProvided"
+    },
+    "ProofOfNoShow": {
+        "title": "proofOfNoShow",
+        "help": "merchantObtainedCardAtTimeReservationMade"
+    },
+    "ProofOfRecurringTransaction": {
+        "title": "proofOfRecurringTransaction",
+        "help": "docAllOfFollowing",
+        "helpitems": ["evidenceTransactionWasRecurring", "moreThanOneTransactionProcessed", "previousTransactionsNotDisputed"]
+    },
+    "ProofOfRetailSaleRatherThanCredit": {
+        "title": "proofOfRetailSale",
+        "help": "copyOfTid"
+    },
+    "ReasonForReturn": {
+        "title": "reasonForInvalidation",
+        "help": "reasonForInvalidationOfChargeback"
+    },
+    "RetrievalRequestFulfilled": {
+        "title": "retrievalRequestFulfilled",
+        "help": "autoGeneratedDocRetrievalRequestFulfilled"
+    },
+    "ReturnedMerchandiseNotReceived": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "SaleTermsNotMisrepresented": {
+        "title": "defenseMaterial",
+        "help": "docTermsOfSaleNotMisrepresented"
+    },
+    "ShippedToAVS": {
+        "title": "shipmentDocumentation",
+        "help": "merchandiseSentToAvsConfirmedBillingAddress"
+    },
+    "ShipToAddress": {
+        "title": "shipToAddress",
+        "help": "shipToAddressIfApplicable"
+    },
+    "SupplementalDocuments": {
+        "title": "SupplementalDocumentsTitle",
+        "help": "SupplementalDocumentsDetails"
+    },
+    "TEDocument": {
+        "title": "TEDocumentTitle",
+        "help": "TEDocumentDetails"
+    },
+    "TIDorInvoice": {
+        "title": "copyOfInvoice",
+        "help": "copyOfInvoiceOrOtherRelevantTransactionDetails"
+    },
+    "TransactionNotPOS": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "TwoDifferentTIDs": {
+        "title": "docTwoDifferentTransactions",
+        "help": "docsTwoTransactionsWithSameShopper"
+    },
+    "TwoPINTransactions": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "TwoPriorFraudChargebacks": {
+        "title": "memberMessageText",
+        "help": "memberMessageTextSentToSchemes"
+    },
+    "UnreasonableAmount": {
+        "title": "reasonableAmount",
+        "help": "cardholderAgreedToAmountRange"
+    },
+    "DuplicateProcessing": {
+        "title": "duplicateProcessing",
+        "help": "duplicateProcessingHelp"
+    },
+    "ChargeToWrongAccountNumber": {
+        "title": "chargeToWrongAccountNumber",
+        "help": "chargeToWrongAccountNumberHelp"
+    },
+    "SplitSales": {
+        "title": "SplitSales",
+        "help": "SplitSalesHelp"
+    },
+    "MissingSignature": {
+        "title": "missingSignature",
+        "help": "missingSignatureHelp"
+    },
+    "ProcessingError": {
+        "title": "processingError",
+        "help": "processingErrorHelp"
+    },
+    "ExpiredCard": {
+        "title": "expiredCard",
+        "help": "expiredCardHelp"
+    },
+    "LatePresentment": {
+        "title": "latePresentment",
+        "help": "latePresentmentgHelp"
+    },
+    "FalseTransaction": {
+        "title": "falseTransaction",
+        "help": "falseTransactionHelp"
+    },
+    "AuthorizationNotObtained": {
+        "title": "authorizationNotObtained",
+        "help": "authorizationNotObtainedHelp"
+    },
+    "TransactionNotRecognizedContactlessAndCardNotPresented": {
+        "title": "transactionNotRecognizedContactlessAndCardNotPresented",
+        "help": "transactionNotRecognizedContactlessAndCardNotPresentedHelp"
+    },
+    "TransactionNotRecognizedChipLiabilityShift": {
+        "title": "transactionNotRecognizedChipLiabilityShift",
+        "help": "transactionNotRecognizedChipLiabilityShiftHelp"
+    },
+    "DeffectiveMerchandise": {
+        "title": "deffectiveMerchandise",
+        "help": "deffectiveMerchandiseHelp"
+    },
+    "MerchandiseNotReceived": {
+        "title": "merchandiseNotReceived",
+        "help": "merchandiseNotReceivedHelp"
+    },
+    "ServiceNotRendered": {
+        "title": "serviceNotRendered",
+        "help": "serviceNotRenderedHelp"
+    },
+    "CardRecoveryBulletinOrExceptionFile": {
+        "title": "cardRecoveryBulletinOrExceptionFile",
+        "help": "cardRecoveryBulletinOrExceptionFileHelp"
+    },
+    "TransactionAfterReservationCancelled": {
+        "title": "transactionAfterReservationCancelled",
+        "help": "transactionAfterReservationCancelledHelp"
+    },
+    "DifferentSignature": {
+        "title": "differentSignature",
+        "help": "differentSignatureHelp"
+    },
+    "RetrievalRequestNotHonored": {
+        "title": "retrievalRequestNotHonored",
+        "help": "retrievalRequestNotHonoredHelp"
+    },
+    "CreditNotProcessed": {
+        "title": "creditNotProcessed",
+        "help": "creditNotProcessedHelp"
+    },
+    "PaidByOtherMeansThanJCBCard": {
+        "title": "paidByOtherMeansThanJCBCard",
+        "help": "paidByOtherMeansThanJCBCardHelp"
+    },
+    "NonMatchingAccountNumber": {
+        "title": "nonMatchingAccountNumber",
+        "help": "nonMatchingAccountNumberHelp"
+    },
+    "MerchantFraudPerformanceProgram": {
+        "title": "merchantFraudPerformanceProgram",
+        "help": "merchantFraudPerformanceProgramHelp"
+    },
+    "Other": {
+        "title": "other",
+        "help": "otherHelp"
+    },
+    "ProofOfFulfillment": {
+        "title": "proofOfFulfillment",
+        "help": "proofShowingTrackingInformation"
+    },
+    "ProofOfRefund": {
+        "title": "proofOfRefund",
+        "help": "uploadListOfRefundIds"
+    },
+    "MerchandiseNotAsDescribedReason": {
+        "title": "merchandiseNotAsDescribed",
+        "help": "documentCanBetUrlReturnPolicy"
+    },
+    "CancelledRecurringBillingReason": {
+        "title": "cancelledRecurringBilling",
+        "help": "documentCanBeSubscriptionAgreement"
+    },
+    "IncorrectAmountReason": {
+        "title": "incorrectAmount",
+        "help": "provideRefundId"
+    },
+    "ProofOfRefundForAmountDifference": {
+        "title": "incorrectAmount",
+        "help": "provideRefundId"
+    },
+    "UnauthorisedReason": {
+        "title": "unauthorisedReason",
+        "help": "documentCanBeProofOfDelivery"
+    },
+    "CreditNotProcessedReason": {
+        "title": "creditNotProcessedReason",
+        "help": "documentCanBeCreditReasonDue"
+    }
+}
