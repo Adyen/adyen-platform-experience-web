@@ -36,7 +36,7 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 
-type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
+type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended';
 
 const DisputeDataAlert = ({
     alertMode,
@@ -87,8 +87,10 @@ const DisputeDataAlert = ({
                 />
             );
         }
+        case 'autoDefended':
+            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.autoDefended')} />;
         case 'notDefended':
-            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
+            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
 
     return null;
@@ -214,7 +216,9 @@ export const DisputeData = ({
 
     let disputeAlertMode: DisputeDataAlertMode | undefined = undefined;
 
-    if ((actionNeeded && showContactSupport) || (showContactSupport && isFraudNotification)) {
+    if (dispute?.defense?.autodefended === true) {
+        disputeAlertMode = 'autoDefended';
+    } else if ((actionNeeded && showContactSupport) || (showContactSupport && isFraudNotification)) {
         disputeAlertMode = 'contactSupport';
     } else if (dispute.dispute.status === 'EXPIRED') {
         disputeAlertMode = 'notDefended';

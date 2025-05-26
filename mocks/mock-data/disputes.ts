@@ -60,6 +60,7 @@ const PRE_ARBITRATION_REASON =
     'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
+    autodefended: false,
     defendedOn: getDate(-1),
     defendedThroughComponent: true,
     reason: 'Defense reason',

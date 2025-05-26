@@ -147,6 +147,7 @@
     "disputes.actionNeeded": "Action needed",
     "disputes.adjustment": "Adjustment",
     "disputes.authorisationError": "Authorisation error",
+    "disputes.autoDefended": "This chargeback was defended automatically.",
     "disputes.chargebacks": "Chargebacks",
     "disputes.consumerDispute": "Consumer dispute",
     "disputes.contactSupportToDefendThisDispute": "Contact support to defend this dispute.",

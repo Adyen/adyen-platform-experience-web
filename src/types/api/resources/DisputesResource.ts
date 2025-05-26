@@ -94,9 +94,10 @@ export interface components {
         };
         Defense: {
             /** Format: date-time */
+            autodefended: boolean;
             defendedOn: string;
             defendedThroughComponent: boolean;
-            reason: string;
+            reason?: string;
             suppliedDocuments?: string[];
         };
         /** @enum {string} */

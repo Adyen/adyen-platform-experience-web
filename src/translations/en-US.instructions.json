@@ -101,6 +101,7 @@
     "disputes.actionNeeded": "Dispute that requires the user to perform an action",
     "disputes.adjustment": "Indicates an adjustment related to a dispute",
     "disputes.authorisationError": "Reason for dispute due to an authorization problem during payment.",
+    "disputes.autoDefended": "Informative message indicating the dispute was automatically defended.",
     "disputes.chargebacks": "Label referring to chargeback disputes.",
     "disputes.consumerDispute": "Reason indicating the consumer initiated the dispute.",
     "disputes.currency": "Label indicating the currency used in the disputed transaction.",
