@@ -1,16 +1,14 @@
-import { ErrorMessage, getCommonErrorMessage, UNDEFINED_ERROR } from './getCommonErrorCode';
-import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
-import CopyText from '../internal/CopyText/CopyText';
-import { TranslationKey } from '../../translations';
+import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
+import { TranslationKey } from '../../../translations';
+import { ErrorMessage, UNDEFINED_ERROR } from '../getCommonErrorCode';
+import CopyText from '../../internal/CopyText/CopyText';
 
-export const getErrorMessage = (
+export const getDisputesErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
     errorMessage: TranslationKey,
     onContactSupport?: () => void
 ): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
-    const commonError = getCommonErrorMessage(error, onContactSupport);
-    if (commonError) return commonError;
 
     switch (error.errorCode) {
         case undefined:
@@ -30,6 +28,12 @@ export const getErrorMessage = (
                 onContactSupport,
             };
         }
+        case '30_112':
+            return {
+                title: 'disputes.entityWasNotFound',
+                message: ['disputes.entityWasNotFoundDetail'],
+                onContactSupport,
+            };
         default:
             return UNDEFINED_ERROR;
     }

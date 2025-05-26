@@ -63,15 +63,18 @@
         }
     }
 
+    &__list-evidence-error-message {
+        align-items: center;
+        color: style.token(color-label-critical);
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
     &__label {
         color: style.token(color-label-secondary);
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
-    }
-
-    &__contact-support {
-        display: inline;
     }
 
     &__issuer-comments-alert {

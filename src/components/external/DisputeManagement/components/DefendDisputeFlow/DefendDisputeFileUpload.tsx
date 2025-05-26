@@ -21,7 +21,7 @@ import { getDefenseDocumentContent } from '../../utils';
 const documentRequirements: TranslationKey[] = [
     'dispute.defendDocumentMustBeInEnglish',
     'dispute.defendDocumentRecommendedSize',
-    'dispute.defendDocumentAcceptableFormats',
+    'dispute.defendDocumentAcceptableFormatAndSize',
 ];
 
 export const DefendDisputeFileUpload = () => {

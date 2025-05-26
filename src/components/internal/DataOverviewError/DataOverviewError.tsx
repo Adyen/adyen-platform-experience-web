@@ -19,7 +19,6 @@ const DataOverviewError = ({
         translationValues,
         onContactSupport: ContactSupport,
     } = getErrorMessage(error, errorMessage, onContactSupport);
-
     return (
         <ErrorMessageDisplay
             title={title}

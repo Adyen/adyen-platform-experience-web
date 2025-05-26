@@ -10,6 +10,7 @@ import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
+import { ButtonVariant } from '../../../../internal/Button/types';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
@@ -17,7 +18,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../context/dispute/context';
-import { DisputeDetailsCustomization } from '../../types';
+import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import { DisputeIssuerComments } from './DisputeIssuerComments';
@@ -27,6 +28,7 @@ import {
     DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_CONTACT_SUPPORT,
+    DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
 } from './constants';
@@ -34,14 +36,15 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
-import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
 
+import Button from '../../../../internal/Button';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
 type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
 const DisputeDataAlert = ({
     alertMode,
-    onContactSupport,
     dueDate,
     timeZone,
     type,
@@ -50,45 +53,27 @@ const DisputeDataAlert = ({
     dueDate: string | undefined;
     timeZone: string | undefined;
     type: IDisputeDetail['dispute']['type'];
-    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
-    const contactSupportLabel = i18n.get('contactSupport');
 
     switch (alertMode) {
-        case 'contactSupport':
+        case 'contactSupport': {
+            const translationKey =
+                type === 'REQUEST_FOR_INFORMATION'
+                    ? 'disputes.contactSupportToDefendThisRequestForInformation'
+                    : type === 'NOTIFICATION_OF_FRAUD'
+                    ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
+                    : 'disputes.contactSupportToDefendThisDispute';
+
             return (
                 <Alert
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
                         <div className={DISPUTE_DATA_ALERT}>
-                            <div>
-                                <Translation
-                                    translationKey={
-                                        type === 'REQUEST_FOR_INFORMATION'
-                                            ? 'disputes.contactSupportToDefendThisRequestForInformation'
-                                            : type === 'NOTIFICATION_OF_FRAUD'
-                                            ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
-                                            : 'disputes.contactSupportToDefendThisDispute'
-                                    }
-                                    fills={{
-                                        contactSupport: onContactSupport ? (
-                                            <Button
-                                                variant={ButtonVariant.TERTIARY}
-                                                classNameModifiers={[DISPUTE_DATA_CONTACT_SUPPORT]}
-                                                onClick={onContactSupport}
-                                            >
-                                                {contactSupportLabel}
-                                            </Button>
-                                        ) : (
-                                            contactSupportLabel
-                                        ),
-                                    }}
-                                />
-                            </div>
-                            {type !== 'NOTIFICATION_OF_FRAUD' && (
+                            {i18n.get(translationKey)}
+                            {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
                                 <div>
                                     <Translation
                                         translationKey={'disputes.theResponseDeadlineIs'}
@@ -106,7 +91,7 @@ const DisputeDataAlert = ({
                     }
                 />
             );
-
+        }
         case 'notDefended':
             return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
     }
@@ -118,10 +103,12 @@ export const DisputeData = ({
     disputeId,
     dataCustomization,
     onContactSupport,
+    onDetailsDismiss,
 }: {
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
+    onDetailsDismiss: DisputeManagementProps['onDetailsDismiss'];
 }) => {
     const { i18n } = useCoreContext();
     const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
@@ -133,7 +120,7 @@ export const DisputeData = ({
     const defendAuthorization = isFunction(getApplicableDefenseDocuments);
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
-    const { data, isFetching } = useFetch(
+    const { data, isFetching, error } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -207,14 +194,33 @@ export const DisputeData = ({
             ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
+                variant: ButtonVariant.SECONDARY,
             });
         }
+
+        if (showContactSupport && onContactSupport) {
+            ctaButtons.push({
+                title: i18n.get('contactSupport'),
+                event: onContactSupport,
+                variant: ButtonVariant.SECONDARY,
+                classNames: [DISPUTE_DATA_CONTACT_SUPPORT],
+            });
+        }
+
         return ctaButtons;
-    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick]);
+    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick, showContactSupport, onContactSupport]);
 
     const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
 
-    if (!dispute || isFetching) {
+    const renderBackButton = useCallback(() => {
+        return (
+            <Button variant={ButtonVariant.SECONDARY} onClick={onDetailsDismiss}>
+                {i18n.get('disputes.goBack')}
+            </Button>
+        );
+    }, [i18n, onDetailsDismiss]);
+
+    if ((!dispute && !error) || isFetching) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
     }
 
@@ -225,44 +231,60 @@ export const DisputeData = ({
 
     if ((actionNeeded && showContactSupport) || (showContactSupport && isFraudNotification)) {
         disputeAlertMode = 'contactSupport';
-    } else if (dispute.dispute.status === 'EXPIRED') {
+    } else if (dispute?.dispute.status === 'EXPIRED') {
         disputeAlertMode = 'notDefended';
-    } else if (dispute.dispute.status === 'LOST' && !(isFraudNotification || isDefended)) {
+    } else if (dispute?.dispute.status === 'LOST' && !(isFraudNotification || isDefended)) {
         disputeAlertMode = 'notDefended';
     }
 
+    const errorProps = getDisputesErrorMessage(error as AdyenPlatformExperienceError, 'disputes.weCouldNotLoadYourDispute', onContactSupport);
+
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
-            <div className={DISPUTE_STATUS_BOX}>
-                <StatusBox
-                    {...statusBoxOptions}
-                    tag={
-                        <>
-                            {disputeType && <Tag label={disputeType} />}
-                            {!isFraudNotification && <DisputeStatusTag dispute={dispute.dispute} />}
-                        </>
-                    }
-                />
-            </div>
-
-            {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
-
-            {disputeAlertMode && (
-                <DisputeDataAlert
-                    alertMode={disputeAlertMode}
-                    onContactSupport={onContactSupport}
-                    type={dispute.dispute.type}
-                    timeZone={dispute.payment.balanceAccount?.timeZone}
-                    dueDate={dispute.dispute.dueDate}
-                />
-            )}
-
-            <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
-
-            {actionButtons.length > 0 ? (
-                <div className={DISPUTE_DATA_ACTION_BAR}>
-                    <ButtonActions actions={actionButtons} />
+            {error ? (
+                <div className={DISPUTE_DATA_ERROR_CONTAINER}>
+                    <ErrorMessageDisplay
+                        renderSecondaryButton={onDetailsDismiss ? renderBackButton : undefined}
+                        withImage
+                        outlined={false}
+                        absolutePosition={false}
+                        withBackground={false}
+                        {...errorProps}
+                    />
                 </div>
+            ) : dispute ? (
+                <>
+                    <div className={DISPUTE_STATUS_BOX}>
+                        <StatusBox
+                            {...statusBoxOptions}
+                            tag={
+                                <>
+                                    {disputeType && <Tag label={disputeType} />}
+                                    {!isFraudNotification && <DisputeStatusTag dispute={dispute.dispute} />}
+                                </>
+                            }
+                        />
+                    </div>
+
+                    {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
+
+                    {disputeAlertMode && (
+                        <DisputeDataAlert
+                            alertMode={disputeAlertMode}
+                            type={dispute.dispute.type}
+                            timeZone={dispute.payment.balanceAccount?.timeZone}
+                            dueDate={dispute.dispute.dueDate}
+                        />
+                    )}
+
+                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+
+                    {actionButtons.length > 0 ? (
+                        <div className={DISPUTE_DATA_ACTION_BAR}>
+                            <ButtonActions actions={actionButtons} />
+                        </div>
+                    ) : null}
+                </>
             ) : null}
         </div>
     );

@@ -12,14 +12,21 @@ import Link from '../../../../internal/Link/Link';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { Tag } from '../../../../internal/Tag/Tag';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
 import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DisputeDetailsCustomization } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
-import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
+import {
+    DISPUTE_DATA_LABEL,
+    DISPUTE_DATA_LIST,
+    DISPUTE_DATA_LIST_EVIDENCE,
+    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
+    DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE,
+} from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import SVGIcon from '../../../../internal/Icon';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -179,6 +186,16 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                               disabled={false}
                                               requestParams={queryParam}
                                               iconButton={true}
+                                              errorMessage={() => {
+                                                  return (
+                                                      <div className={DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE}>
+                                                          <SVGIcon name="info-filled" />
+                                                          <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
+                                                              {i18n.get('disputes.failedRetry')}
+                                                          </Typography>
+                                                      </div>
+                                                  );
+                                              }}
                                               onDownloadRequested={() => console.warn('Download failed for', document)}
                                           />
                                       </div>
@@ -221,7 +238,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             <StructuredList
                 classNames={DISPUTE_DATA_LIST}
                 items={itemsWithExtraFields}
-                layout="5-7"
+                layout="4-8"
                 align="start"
                 renderLabel={label => <div className={DISPUTE_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, config) => {

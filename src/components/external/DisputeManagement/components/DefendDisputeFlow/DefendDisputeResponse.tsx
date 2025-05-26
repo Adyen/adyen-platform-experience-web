@@ -41,7 +41,12 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
             ) : (
                 <div className="adyen-pe-defend-dispute__error">
                     <Icon name="cross-circle-fill" className="adyen-pe-defend-dispute__error-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('refundActionErrorTitle')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE} medium>
+                        {i18n.get('disputes.defend.somethingWentWrong')}
+                    </Typography>
+                    <Typography variant={TypographyVariant.BODY}>
+                        {i18n.get('disputes.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport')}
+                    </Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToFileUploadView}>
                         {i18n.get('disputes.goBack')}
                     </Button>
