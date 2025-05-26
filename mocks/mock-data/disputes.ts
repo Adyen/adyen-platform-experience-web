@@ -774,6 +774,7 @@ export const getApplicableDisputeDefenseDocuments = (dispute: (typeof DISPUTES)[
                             { documentTypeCode: 'FlightTicketAtBillingAddress', requirementLevel: 'ONE_OR_MORE' } as const,
                             { documentTypeCode: 'FrequentFlyer', requirementLevel: 'ONE_OR_MORE' } as const,
                             { documentTypeCode: 'PassengerIdentification', requirementLevel: 'ONE_OR_MORE' } as const,
+                            { documentTypeCode: 'MerchantProofOfRecurringTransaction', requirementLevel: 'OPTIONAL' } as const,
                         ] satisfies IDisputeDefenseDocument[];
 
                     case 'ChipAndPinLiabilityShift':

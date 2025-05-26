@@ -17,8 +17,10 @@ interface DisputeFlowContextValue {
     setApplicableDocuments: (documents: IDisputeDefenseDocument[] | null) => void;
     clearFiles: () => void;
     clearStates: () => void;
-    defendDisputePayload: FormData;
+    defendDisputePayload: FormData | null;
     addFileToDefendPayload: (name: string, file: File) => void;
+    moveFieldInDefendPayload: (from: string, to: string) => void;
+    removeFieldFromDefendPayload: (field: string) => void;
     defendResponse: 'error' | 'success' | null;
     onDefendSubmit: (response: 'success' | 'error') => void;
 }
@@ -34,7 +36,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const [flowState, setFlowState] = useState<DisputeFlowState>('details');
     const [selectedDefenseReason, setSelectedDefenseReason] = useState<string | null>(null);
     const [applicableDocuments, setApplicableDocuments] = useState<IDisputeDefenseDocument[] | null>([]);
-    const [defendDisputePayload, setDefendDisputePayload] = useState<any | null>(null);
+    const [defendDisputePayload, setDefendDisputePayload] = useState<FormData | null>(null);
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 
     const clearFiles = useCallback(() => {
@@ -74,15 +76,64 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     }, [setDispute]);
 
     const addFileToDefendPayload = useCallback((name: string, file: File) => {
-        setDefendDisputePayload((previousFormData: FormData) => {
+        setDefendDisputePayload((previousFormData: FormData | null) => {
             const formData = new FormData();
-            for (const [field, value] of previousFormData.entries()) {
-                if (value instanceof File) {
-                    formData.set(field, value, value.name);
-                } else formData.set(field, value);
+            if (previousFormData) {
+                for (const [field, value] of previousFormData.entries()) {
+                    if (value instanceof File) {
+                        formData.set(field, value, value.name);
+                    } else formData.set(field, value);
+                }
             }
 
             formData.set(name, file, file.name);
+            return formData;
+        });
+    }, []);
+
+    const moveFieldInDefendPayload = useCallback((from: string, to: string) => {
+        setDefendDisputePayload((prev: FormData | null) => {
+            // Extract the payload we want to move (could be a File or string)
+            const valueToMove = prev?.get(from);
+            if (valueToMove == null) return prev;
+
+            const next = new FormData();
+            if (prev) {
+                for (const [key, val] of prev.entries()) {
+                    if (key === from) continue; // skip the old key
+                    if (val instanceof File) {
+                        next.set(key, val, val.name);
+                    } else {
+                        next.set(key, val as string);
+                    }
+                }
+            }
+
+            // Insert the value under its new key
+            if (valueToMove instanceof File) {
+                next.set(to, valueToMove, valueToMove.name);
+            } else {
+                next.set(to, valueToMove as string);
+            }
+            return next;
+        });
+    }, []);
+
+    const removeFieldFromDefendPayload = useCallback((name: string) => {
+        setDefendDisputePayload((previousFormData: FormData | null) => {
+            const formData = new FormData();
+            if (previousFormData) {
+                for (const [field, value] of previousFormData.entries()) {
+                    // Copy everything except the field we’re deleting
+                    if (field !== name) {
+                        if (value instanceof File) {
+                            formData.set(field, value, value.name);
+                        } else {
+                            formData.set(field, value as string);
+                        }
+                    }
+                }
+            }
             return formData;
         });
     }, []);
@@ -110,6 +161,8 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setSelectedDefenseReason,
                 defendDisputePayload,
                 onDefendSubmit,
+                moveFieldInDefendPayload,
+                removeFieldFromDefendPayload,
             }}
         >
             {children}
