@@ -46,7 +46,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.theDisputeHasBeenAccepted')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.accept.disputeAccepted')}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
@@ -54,10 +54,10 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             ) : (
                 <>
                     <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
-                        {i18n.get('disputes.acceptChargeback')}
+                        {i18n.get('disputes.accept.chargeback')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get('disputes.acceptDisputeDisclaimer')}
+                        {i18n.get('disputes.accept.disputeDisclaimer')}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
@@ -65,7 +65,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <label className="adyen-pe-accept-dispute__label" htmlFor={termsAgreementInputId}>
                             {termsAgreed ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                                {i18n.get('disputes.iAgree')}
+                                {i18n.get('disputes.accept.iAgree')}
                             </Typography>
                         </label>
                     </div>
@@ -74,7 +74,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <ButtonActions
                             actions={[
                                 {
-                                    title: i18n.get('disputes.acceptChargeback'),
+                                    title: i18n.get('disputes.accept.chargeback'),
                                     event: acceptDisputeCallback,
                                     variant: ButtonVariant.PRIMARY,
                                     state: acceptDisputeMutation.isLoading ? 'loading' : 'default',

@@ -1,0 +1,446 @@
+{
+    "ATMDispute": {
+        "title": "atmDispute",
+        "help": "invalidChargebackReasonCode"
+    },
+    "AccountTakeover": {
+        "title": "accountTakeover",
+        "help": "transactionFromAccountTakeover"
+    },
+    "AdditionalInformation": {
+        "title": "additionalInformation",
+        "help": "merchantCanProvideAdditionalInformation"
+    },
+    "AirlineCompellingEvidence": {
+        "title": "airlineCompellingEvidence",
+        "help": "evidenceCardholderAuthorizedTransaction"
+    },
+    "AirlineFlightProvided": {
+        "title": "airlineFlightProvided",
+        "help": "shopperUsedAirlineTicket"
+    },
+    "AirlineRFIresponse": {
+        "title": "responseToRfiAirlines",
+        "help": "provideTransactionalInfoTravelDetails"
+    },
+    "AuthorisedTransaction": {
+        "title": "transactionWasAuthorised",
+        "help": "authorisationReceivedForAmount"
+    },
+    "AutomaticRFIresponse": {
+        "title": "autoResponseToRfi",
+        "help": "autoResponseSentToIssuer"
+    },
+    "CVC2ValidationProgram": {
+        "title": "cvc2ValidationProgram",
+        "help": "transactionFallsCvc2ValidationProgram"
+    },
+    "CancellationOrReturns": {
+        "title": "cancellationOrReturns",
+        "help": "useThisDefenseReasonIfApplicable",
+        "helpitems": ["noCreditSlip", "returnNotAccepted", "merchandiseNotReturned"]
+    },
+    "CancellationTermsFailed": {
+        "title": "cancellationContractFailed",
+        "help": "cardholderDidNotMeetCancellationTerms"
+    },
+    "CarRentalRFIresponse": {
+        "title": "responseToRfiCarRental",
+        "help": "provideTransactionalInfoTravelDetails"
+    },
+    "CardNotOnExceptionFile": {
+        "title": "accountNumberNotListedInExceptions",
+        "help": "accountNumberNotListedInExceptionsFor60Days"
+    },
+    "CardNotPresentRFIresponse": {
+        "title": "reponseToRfi",
+        "help": "provideTransactionalInformation"
+    },
+    "CardPresentFraud": {
+        "title": "fraudEvidence"
+    },
+    "CardPresentNotApplicable": {
+        "title": "cbCodeNotApplicable",
+        "help": "firstChargebackCodeNotApplicable"
+    },
+    "CardPresentRFIresponse": {
+        "title": "reponseToRfiCardPresent",
+        "help": "provideTransactionalInformation"
+    },
+    "CardholderNotReplied": {
+        "title": "cardholderNotifiedButNoReply",
+        "help": "cardholderNotifiedBeforeRecurringTransaction"
+    },
+    "CardholderParticipated": {
+        "title": "cardholderParticipated",
+        "help": "evidenceThatCardholderParticipated"
+    },
+    "CardholderRenewedMembership": {
+        "title": "membershipRenewedAfterCancellation",
+        "help": "cardholderCancelledRecurringServiceButRenewedLater"
+    },
+    "ChipLiabilityShift": {
+        "title": "chipLiabilityShift",
+        "help": "transactionBetweenChipLiabilityShiftProgramCustomers"
+    },
+    "ChipTransactionReportedToSAFE": {
+        "title": "chipTransactionReportedSAFE",
+        "help": "intraregionalTransactionReportedSAFE"
+    },
+    "CieloRFIresponse": {
+        "title": "reponseToRfi",
+        "help": "provideTransactionalInformation"
+    },
+    "CompellingEvidence": {
+        "title": "compellingEvidence",
+        "help": "evidenceCardholderAuthorizedTransaction"
+    },
+    "CompellingEvidenceRecurringTransactions": {
+        "title": "compellingEvidenceRecurringTransactions",
+        "help": "evidenceServicesProvidedAndReceivedWrittenCorrespondence"
+    },
+    "CorrectTransactionAmount": {
+        "title": "correctTransactionAmount",
+        "help": "transactionInformationDocument"
+    },
+    "CorrectTransactionCurrency": {
+        "title": "correctTransactionCurrency",
+        "help": "chargebackInvalidCorrectAmountAndCurrencyProvided"
+    },
+    "CorrectTransactionDate": {
+        "title": "correctTransactionDateProvided",
+        "help": "acquirerProvidesCorrectDateWithinTimeLimit"
+    },
+    "CreditOrCancellationPolicyProperlyDisclosed": {
+        "title": "creditOrCancellationPolicyDisclosed",
+        "help": "creditOrCancellationPolicyDisclosedToCardholder"
+    },
+    "CreditPreviouslyIssued": {
+        "title": "creditPreviouslyIssued",
+        "help": "transactionAmountAlreadyRefunded"
+    },
+    "DeficiencyCorrected": {
+        "title": "deficiencyCorrected",
+        "help": "proofDeficiencyCorrected"
+    },
+    "DisputedSurcharge": {
+        "title": "disputedSurcharge",
+        "help": "surchargeCorrectlyProcessed"
+    },
+    "DisputedSurchargeIncorrectProratedCalculation": {
+        "title": "disputedSurchargeIncorrectCalculation",
+        "help": "surchargeIncorrectlyCalculatedByIssuer"
+    },
+    "DuplicateChargeback": {
+        "title": "duplicateChargeback",
+        "help": "issuerProcessedChargebackMoreThanOnce"
+    },
+    "EMVLiabilityShift": {
+        "title": "emvLiabilityShift",
+        "help": "emvDeviceNonEmvCard"
+    },
+    "EmergencyPaymentAuthorizationService": {
+        "title": "emergencyPaymentAuthorizationService",
+        "help": "transactioAuthorisedEmergencyPaymentAuthorizationService"
+    },
+    "FaceToFace": {
+        "title": "faceToFaceTransactionNoConflictingInformation",
+        "help": "transactionWasInFaceToFaceEnvironment"
+    },
+    "FaceToFaceConflictingMessages": {
+        "title": "faceToFaceTransactionWithConflictingInformation",
+        "help": "de22DontMatchInFaceToFaceTransaction"
+    },
+    "GoodsNotReturned": {
+        "title": "goodsNotReturned",
+        "help": "cardholderShouldHaveReturnedGoods"
+    },
+    "GoodsOrServicesProvided": {
+        "title": "goodsOrServicesProvided",
+        "help": "proofCardholderReceivedMerchandise",
+        "helpitems": ["signedImprintedSalesSlipInvoicePosReceipt", "parcelServiceReceipt", "waiverFormAbsolvingMerchantResponsibility"]
+    },
+    "GoodsRepairedOrReplaced": {
+        "title": "goodsRepairedOrReplaced",
+        "help": "goodsWereRepairedOrReplaced"
+    },
+    "GoodsWereAsDescribed": {
+        "title": "goodsWereAsDescribed",
+        "help": "evidenceGoodsNotDamaged"
+    },
+    "IdentifiedAddendum": {
+        "title": "identifiedAddendum",
+        "help": [
+            "cardholderResponsibleForAddendumTransaction",
+            "cardholderResponsibleForDisputedAmount",
+            "cardholderBilledForSeparateAdditionalAmount"
+        ]
+    },
+    "IllegibleDocumentationReceived": {
+        "title": "documentationReceivedWasIllegible",
+        "help": "firstChargebackInvalid"
+    },
+    "IncreasedTransactionAmount": {
+        "title": "increasedTransactionAmount",
+        "help": "documentationIncreasedDebitCardholderAccount"
+    },
+    "InvalidARD": {
+        "title": "invalidAcquirerReferenceData",
+        "help": "invalidReferenceDataDocumentationNotRequired"
+    },
+    "InvalidCancellationCode": {
+        "title": "invalidCancellationCode",
+        "help": "cancellationCodeWasInvalidAsShownByExplanationProvided"
+    },
+    "InvalidChargeback": {
+        "title": "invalidChargeback",
+        "help": ["firstChargebackDoesNotMeetPrerequisites", "thisReasonIsTechnical"]
+    },
+    "InvalidChargebackAllocation": {
+        "title": "invalidChargeback",
+        "help": ["firstChargebackDoesNotMeetPrerequisites", "thisReasonIsTechnical"]
+    },
+    "InvalidChargebackBundling": {
+        "title": "chargebackBundlingInvalid",
+        "help": "chargebackBundlingInvalid"
+    },
+    "InvalidDE72CB": {
+        "title": "invalidMessageText",
+        "help": "formatCbmmddyyArdXxxExpected"
+    },
+    "InvalidDE72MultipleTransactions": {
+        "title": "invalidMessageText",
+        "help": "formatMultipleTransactionsNnnExpected"
+    },
+    "InvalidDE72RPCS": {
+        "title": "invalidMessageText",
+        "help": "formatRpcsMmddyyExpected"
+    },
+
+    "InvalidReasonCodeForMCC": {
+        "title": "invalidChargebackBasedOnMcc",
+        "help": "merchantCantReceiveThisChargebackBasedOnTheirMcc"
+    },
+    "JCBRFIResponse": {
+        "title": "reponseToRfi",
+        "help": "provideTransactionalInformation"
+    },
+    "JustifiedDelayedPresentment": {
+        "title": "justifiedDelayedPresentment",
+        "help": "delayInSubmittingTransaction"
+    },
+    "LiabilityShiftFullAuthenticated": {
+        "title": "liabilityShiftFullAuthenticated",
+        "help": "transactionIssuerApproved3dSecureAuthenticated"
+    },
+    "LiabilityShiftFullUCAF": {
+        "title": "3dSecureFullyAuthenticatedTransaction",
+        "help": "transactionApproved3dSecureAuthenticated"
+    },
+    "LiabilityShiftMerchantUCAF": {
+        "title": "3dSecureLiabilityShiftNotFullyAuthenticated",
+        "help": "transactionNotFully3dSecureAuthenticated"
+    },
+    "MerchandiseNotCounterfeit": {
+        "title": "merchandiseWasNotCounterfeit"
+    },
+    "MerchandiseReceived": {
+        "title": "merchandiseWasReceivedByShopper",
+        "help": "proofCardholderReceivedMerchandise",
+        "helpitems": ["signedImprintedSalesSlipInvoicePosReceipt", "parcelServiceReceipt", "waiverFormAbsolvingMerchantResponsibility"]
+    },
+    "MissingInformation": {
+        "title": "provideMissingInformation",
+        "help": "merchantProvideMissingDocuments"
+    },
+    "NoARDprovidedInMessageText": {
+        "title": "invalidMessageText",
+        "help": "issuerDidNotIncludeTwoSetsOfArns"
+    },
+    "NoShowTransaction": {
+        "title": "noShowTransaction",
+        "help": "transactionWasResultOfGuaranteedReservation"
+    },
+    "NonReceiptOfRequiredDocuments": {
+        "title": "requiredDocumentationNotReceived",
+        "help": "issuerDidNotProvideRequiredDocumentation"
+    },
+    "NonReceiptOfRequiredDocumentsAutoDefense": {
+        "title": "requiredDocumentationNotReceived",
+        "help": "issuerDidNotProvideRequiredDocumentation"
+    },
+    "Not3DSecure": {
+        "title": "not3dSecureTransaction",
+        "help": "chargebackCodeNA3dSecureNotOffered"
+    },
+    "NotCancelled": {
+        "title": "serviceNotCancelled",
+        "help": "serviceNotCancelledEvidence"
+    },
+    "NotChargebacked": {
+        "title": "noPriorChargebackReceived",
+        "help": "claimNotJustifiedSinceTransactionNotChargebacked"
+    },
+    "NotChargebackedAuto": {
+        "title": "noPriorChargebackReceived",
+        "help": "transactionNotChargebackedAutoDefense"
+    },
+    "NotNotified": {
+        "title": "merchantNotNotifiedOfCancellation",
+        "help": "serviceCancelledButMerchantNotNotified"
+    },
+    "NotPaidByOtherMeans": {
+        "title": "additionalInformation",
+        "help": "docToProveNoPaymentByOtherMean"
+    },
+    "NotRecurring": {
+        "title": "transactionNotRecurring",
+        "help": "transactionNotRecurringTransactionInstallment"
+    },
+    "PINTransaction": {
+        "title": "pinTransaction",
+        "help": "pinUsedToVerifyCardholder"
+    },
+    "PastChargebackTimeLimit": {
+        "title": "pastChargebackTimeLimit",
+        "help": "chargebackReceivedAfterMastercardTimeLimit"
+    },
+    "PayPassTransaction": {
+        "title": "paypassTransaction",
+        "help": "paypassAmountBelowProtectionAmount"
+    },
+    "PaymentByOtherMeans": {
+        "title": "paymentByOtherMeans",
+        "help": "validityOfTransactionChargedExplanation"
+    },
+    "PresentmentWithinTimeLimit": {
+        "title": "transactionSettledWithinTimeLimit",
+        "help": "timeBetweenAuthorisationAndSettlementWithinTimeLimits"
+    },
+    "PreviousTransactionNotChargebacked": {
+        "title": "noPriorChargebackReceived",
+        "help": "previousChargebackCancellingRecurringContract"
+    },
+    "ProofOfCardPresenceAndSignatureChipNoPIN": {
+        "title": "chipTransaction",
+        "help": "cardPresentAndChipUsedNoPinProvided"
+    },
+    "ProofOfCardPresenceAndSignatureLossTheftOrDamage": {
+        "title": "transactionsInitiatedDueToLossTheftOrDamages",
+        "help": "receiptWithItemsBilledBecauseOfLossTheftDamages"
+    },
+    "ProofOfCardPresenceAndSignatureMasterCardCorporateFleetCard": {
+        "title": "proofOfCardPresenceMastercardCorporateFleet",
+        "help": "cardAndSignatureForCorporateFleetCardTransaction"
+    },
+    "ProofOfCardPresenceAndSignatureNotMasterCardWorldWideNetwork": {
+        "title": "proofOfCardPresenceAvailableNotAuthorisedMastercardNetwork",
+        "help": "cardWithSignatureNotProcessedMastercardNetwork"
+    },
+    "ProofOfCardPresenceAndSignatureWithTerminalReceipt": {
+        "title": "signedTerminalReceiptAvailable",
+        "help": "posTransactionAndSignedTerminalReceiptAvailable"
+    },
+    "ProofOfCardPresenceAndSignatureWithoutTerminalReceipt": {
+        "title": "cardPresenceProof",
+        "help": "posTransactionCardholderWasPresentProof"
+    },
+    "ProvideInformation": {
+        "title": "provideInformationForCollectionOrFraudCase"
+    },
+    "PurchaseProperlyPosted": {
+        "title": "purchaseProperlyPosted",
+        "help": "transactionWasProperlyIdentifiedAsInstallmentTransaction"
+    },
+    "QPSTransaction": {
+        "title": "qpsTransaction",
+        "help": "qpsTransactionWithAmountLessThanChargebackProtectionAmount"
+    },
+    "RecurringTransactionsCompellingEvidence": {
+        "title": "recurringTransactionCompellingEvidence",
+        "help": "autoGeneratedRecurringTransactionDetails"
+    },
+    "RecurringTransactionsCompellingMerchantEvidence": {
+        "title": "recurringTransactionCompellingMerchantEvidence",
+        "help": "merchantCanProvideAdditionalCompellingEvidence"
+    },
+    "RefundNotAgreed": {
+        "title": "notAgreeWithRefund",
+        "help": "shopperClaimsRefundWasPromisedButNotExecuted"
+    },
+    "RetrievalRequestFulfilled": {
+        "title": "retrievalRequestFulfilled",
+        "help": "documentsSentToFulfillRetrievalRequest"
+    },
+    "ReturnPeriodExpired": {
+        "title": "buyerExceededWindowToFileReturn",
+        "help": "uploadReturnPolicyDocument"
+    },
+    "SaleTermsNotMisrepresented": {
+        "title": "termsOfSaleWereNotMisrepresented"
+    },
+    "ScanningError": {
+        "title": "scanningError",
+        "help": "defenseReasonIfProblemsWithScans"
+    },
+    "ServicesProvided": {
+        "title": "goodsOrServicesProvided",
+        "help": "merchantProvidedServicesToCardholderProof"
+    },
+    "ServicesProvidedAfterCancellation": {
+        "title": "servicesProvidedAfterCancellation",
+        "help": "servicesProvidedAndUsedAfterCancellation"
+    },
+    "ShippedToAVS": {
+        "title": "addressVerificationService",
+        "help": "addressMerchandiseSentAvsConfirmed"
+    },
+    "ShippedToAVSAdditionalInformation": {
+        "title": "addressVerificationServiceAdditionalInformation",
+        "help": "addressMerchandiseSentAvsConfirmed"
+    },
+    "SupplyDefenseDocument": {
+        "title": "supplyDefenseMaterial",
+        "help": "fallbackDefenseReasonCode"
+    },
+    "SupplyDefenseMaterial": {
+        "title": "supplyDefenseMaterial",
+        "help": "fallbackDefenseReasonCode"
+    },
+    "TooManyFraudulentChargebacks": {
+        "title": "manyFraudulentChargebacks",
+        "help": "issuerHasInitiatedTooManyFraudulentDisputes"
+    },
+    "TransactionAuthorisedOnline": {
+        "title": "authorisedOnline",
+        "help": "transactionWasAuthorisedOnline"
+    },
+    "TransactionNotPOS": {
+        "title": "notPosTransaction",
+        "help": "transactionWasECommerceGivenChargebackReasonNotApplicable"
+    },
+    "TwoDifferentTIDs": {
+        "title": "twoDifferentTransactions",
+        "help": "twoSeparateTransactions"
+    },
+    "TwoDifferentTIDsPOS": {
+        "title": "twoDifferentTidsNonAtm",
+        "help": "twoDifferentTidsWithSameCardholderAccount"
+    },
+    "TwoPINTransactions": {
+        "title": "pinTransaction",
+        "help": "pinForOneOrBothTransactions"
+    },
+    "TwoPriorFraudChargebacks": {
+        "title": "twoPreviousFraudRelatedChargebacks",
+        "help": "prevChargedbackTwoTransactionsWithSameAccount"
+    },
+    "UnfoundedCardholderDispute": {
+        "title": "unfoundedCardholderDispute",
+        "help": "acquirerDefendChargebackIfIssuerRequested"
+    },
+    "UnreasonableAmount": {
+        "title": "unreasonableAmount",
+        "help": "cardholderAgreedToAmountAsReasonable"
+    }
+}
