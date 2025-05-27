@@ -97,7 +97,7 @@ export const disputesMocks = [
 
         const dispute = getDisputeForRequestPathParams(params);
         const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
-        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!) ?? [];
+        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!);
 
         await delay(400);
         return HttpResponse.json({ data: defenseDocuments });
@@ -128,7 +128,7 @@ export const disputesMocks = [
                 return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
             }
 
-            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim()) ?? [];
+            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim());
 
             // Some defense reasons require that at least one of certain types of documents be provided
             // Initially check to see if the current defense reason is one of such

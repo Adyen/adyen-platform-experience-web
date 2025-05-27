@@ -73,6 +73,7 @@
     "disputes.accept.disputeAccepted": "Message confirming to users that a dispute was successfully accepted.",
     "disputes.accept.disputeDisclaimer": "Disclaimer informing users that they agree to certain terms upon accepting a dispute.",
     "disputes.accept.iAgree": "Checkbox label used to explicitly confirm agreement to terms or conditions.",
+    "disputes.acceptedOn": "Label referring to the date a dispute got accepted.",
     "disputes.account": "Label for the account associated with the dispute.",
     "disputes.alert.notDefended": "Informative message indicating the dispute wasn't defended.",
     "disputes.alert.responseDeadline": "Informative message indicating the deadline for responding to the dispute.",

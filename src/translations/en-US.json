@@ -119,6 +119,7 @@
     "disputes.accept.disputeAccepted": "The dispute has been accepted",
     "disputes.accept.disputeDisclaimer": "By accepting, you agree that the disputed amount will not be returned to your account and the dispute will be marked as Lost.",
     "disputes.accept.iAgree": "I agree",
+    "disputes.acceptedOn": "Accepted on",
     "disputes.account": "Account",
     "disputes.alert.notDefended": "This chargeback wasn't defended and was lost by default.",
     "disputes.alert.responseDeadline": "The response deadline is %{date}",
