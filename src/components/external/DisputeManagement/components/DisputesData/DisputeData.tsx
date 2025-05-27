@@ -33,17 +33,16 @@ type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended';
 
 const DisputeDataAlert = ({
     alertMode,
-    dueDate,
+    dispute,
     timeZone,
-    type,
 }: {
     alertMode?: DisputeDataAlertMode;
-    dueDate: string | undefined;
+    dispute: IDisputeDetail['dispute'];
     timeZone: string | undefined;
-    type: IDisputeDetail['dispute']['type'];
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
+    const { dueDate, status, type } = dispute;
 
     switch (alertMode) {
         case 'contactSupport': {
@@ -82,8 +81,10 @@ const DisputeDataAlert = ({
         }
         case 'autoDefended':
             return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.autoDefended')} />;
-        case 'notDefended':
-            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.notDefended')} />;
+        case 'notDefended': {
+            const translationKey = status === 'EXPIRED' ? 'disputes.alert.notDefendedExpired' : 'disputes.alert.notDefendedLost';
+            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get(translationKey)} />;
+        }
     }
 
     return null;
@@ -233,12 +234,7 @@ export const DisputeData = ({
             {issuerComments.length > 0 && <DisputeIssuerComments issuerComments={issuerComments} />}
 
             {disputeAlertMode && (
-                <DisputeDataAlert
-                    alertMode={disputeAlertMode}
-                    type={dispute.dispute.type}
-                    timeZone={dispute.payment.balanceAccount?.timeZone}
-                    dueDate={dispute.dispute.dueDate}
-                />
+                <DisputeDataAlert alertMode={disputeAlertMode} dispute={dispute.dispute} timeZone={dispute.payment.balanceAccount?.timeZone} />
             )}
 
             <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
