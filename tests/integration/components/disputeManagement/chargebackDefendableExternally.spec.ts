@@ -10,6 +10,8 @@ test.describe('Chargeback - Defendable externally', () => {
 
     test('should render contact support alert when chargeback is not defendable through the component', async ({ page }) => {
         await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
+        await expect(page.locator('.adyen-pe-tag', { hasText: 'Undefended' })).toBeVisible();
+
         await expect(page.getByRole('alert')).toBeVisible();
 
         const icon = page.locator('.adyen-pe-alert__icon');

@@ -21,19 +21,55 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.defendableExternally,
+            ...DISPUTES_HANDLERS.chargebackDefendableExternally,
         },
     },
 };
 
-export const RFIDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
-    name: 'RFI - Defendable externally',
+export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Lost (Not defended)',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.rfiAcceptable,
+            ...DISPUTES_HANDLERS.chargebackLostNotDefended,
+        },
+    },
+};
+
+export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Auto defended',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.chargebackAutoDefended,
+        },
+    },
+};
+
+export const RFIUnresponded: ElementStory<typeof DisputeManagementElement> = {
+    name: 'RFI - Unresponded',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.rfiUnresponded,
+        },
+    },
+};
+
+export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
+    name: 'RFI - Expired',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.rfiExpired,
         },
     },
 };

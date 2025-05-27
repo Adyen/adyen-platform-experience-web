@@ -4,13 +4,16 @@ import { endpoints } from '../../endpoints/endpoints';
 import { DISPUTE_PAYMENT_SCHEMES } from '../../src/components/utils/disputes/constants';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 import {
+    CHARGEBACK_AUTO_DEFENDED,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
+    CHARGEBACK_LOST_NO_ACTION,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
+    RFI_EXPIRED,
     RFI_UNRESPONDED,
 } from '../mock-data/disputes';
 
@@ -196,17 +199,38 @@ export const disputesMocks = [
 const httpGetDetails = http.get<any, any, IDisputeDetail>;
 
 export const DISPUTES_HANDLERS = {
-    defendableExternally: {
+    chargebackDefendableExternally: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
-    rfiAcceptable: {
+    chargebackLostNotDefended: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_LOST_NO_ACTION);
+            }),
+        ],
+    },
+    chargebackAutoDefended: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
+            }),
+        ],
+    },
+    rfiUnresponded: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_UNRESPONDED);
+            }),
+        ],
+    },
+    rfiExpired: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_EXPIRED);
             }),
         ],
     },
