@@ -15,7 +15,7 @@ export const DefendDisputeFlow = ({ onDefendDispute }: { onDefendDispute?: () =>
         <div className="adyen-pe-defend-dispute__container">
             {flowState !== 'defenseSubmitResponseView' && (
                 <Typography variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('dispute.defendDisputeTitle')}
+                    {i18n.get('disputes.defend.chargeback')}
                 </Typography>
             )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}
