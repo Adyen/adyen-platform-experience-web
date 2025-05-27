@@ -12,6 +12,7 @@ import {
     WRITTEN_OFF_GRANT,
     GRANT_US_ACCOUNT,
     GRANT_GB_ACCOUNT,
+    CAD_CAPITAL_OFFER,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -114,6 +115,7 @@ const capitalFactory = mocksFactory<CapitalPaths>();
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
     default: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER }],
+    aprField: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: CAD_CAPITAL_OFFER }],
     errorDynamicOfferConfigNoConfig: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) },
     ],

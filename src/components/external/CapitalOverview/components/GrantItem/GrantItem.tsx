@@ -93,7 +93,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                             textToCopy={grant.id}
                             buttonLabel={i18n.get('capital.grantID')}
                             isHovered
-                            type={'Text'}
+                            type={'Text' as const}
                             data-testid="grant-id-copy-text"
                         />
                     </div>

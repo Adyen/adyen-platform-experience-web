@@ -5,7 +5,7 @@ import { fixedForwardRef } from '../../../utils/preact';
 /**
  * @deprecated This component is deprecated. Use <Icon name="chevron-down"/> instead.
  */
-const ChevronDown = fixedForwardRef(({ title, ...props }: Omit<SVGProps<SVGElement>, 'ref'>, ref: Ref<SVGSVGElement>) => (
+const ChevronDown = fixedForwardRef(({ title, ...props }: Omit<SVGProps<SVGSVGElement>, 'ref'>, ref: Ref<SVGSVGElement>) => (
     <svg ref={ref} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" {...props}>
         {title && <title>{title}</title>}
         <path

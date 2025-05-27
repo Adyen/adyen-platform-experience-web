@@ -20,7 +20,7 @@ test.describe('Grants', () => {
         await expect(page.getByText('Fully repaid')).toBeVisible();
         await expect(page.getByText('Revoked')).toBeVisible();
         await expect(page.getByText('Written off')).toBeVisible();
-        await expect(page.getByText('Failed')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Failed' })).toBeVisible();
     });
 
     test('should render in-progress grants when "In progress" tab is clicked', async ({ page }) => {

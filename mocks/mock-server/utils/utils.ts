@@ -71,6 +71,7 @@ export const getPaginationLinks = (cursor: number, limit: number, totalLength: n
         ...(prevCursor === undefined ? {} : { prev: { cursor: prevCursor.toString() } }),
     };
 };
+const CURRENCIES_WITH_APR = ['CAD'];
 
 export const calculateGrant = (amount: number | string, currency: string) => {
     const feesAmount = Math.round(Number(amount) * 0.11 * 100) / 100;
@@ -103,5 +104,6 @@ export const calculateGrant = (amount: number | string, currency: string) => {
         id: uuid(),
     } satisfies IGrantOfferResponseDTO;
 
+    if (CURRENCIES_WITH_APR.includes(currency)) return { ...response, aprBasisPoints: 2000 };
     return response;
 };

@@ -7,9 +7,6 @@ on:
         description: 'Dry-run the write steps (do not actually commit or publish to NPM)'
         type: boolean
         default: false
-
-  # we can't use the release:created trigger because it doesn't trigger on releases created by github-actions bot
-  # so instead, this has to be directly called by `tag-and-release.yml`
   workflow_call:
     inputs:
       called-from-other-workflow:
@@ -17,6 +14,10 @@ on:
         type: boolean
         required: false
         default: true
+      source_run_id:
+        description: 'Run ID that produced the build artifact'
+        required: true
+        type: string
 
 jobs:
   npm-publish:
@@ -39,19 +40,27 @@ jobs:
         run: |
           echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
 
-      - name: Download build artifacts (from previous workflow)
-        run: |
-          gh run download -n adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a temporary directory for artifacts
+        run: mkdir -p ${{ runner.temp }}/artifacts/
 
-      - name: Expand build artifacts archive to get `./dist`
-        run: |
-          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --strip-components=1 package
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}
+          run-id: ${{ inputs.source_run_id }}
+          path: ${{ runner.temp }}/artifact
+          merge-multiple: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check that `dist` directory is present and not empty
+      - name: Extract archive in $RUNNER_TEMP
+        working-directory: ${{ runner.temp }}/artifact
         run: |
-          [ -d ./dist ] && [ ! -z "$(ls -A ./dist)" ]
+          tar -xzf adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz \
+              --strip-components=1 package
+
+      - name: Copy dist/ to workspace
+        run: |
+          cp -R ${{ runner.temp }}/artifact/dist ./dist
 
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
