@@ -1,5 +1,13 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.5.0
+
+### New
+-   Business financing through capital components is now available to users in Canada.
+
+### Fixed
+-   We corrected several Finnish translations that were inaccurate.
+
 ## 1.4.2
 
 ### Fixed
