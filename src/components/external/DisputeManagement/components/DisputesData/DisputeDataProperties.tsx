@@ -28,6 +28,7 @@ type DisputeDataPropertiesProps = {
 };
 
 const disputeDataKeys = {
+    acceptedOn: 'disputes.acceptedOn',
     account: 'disputes.account',
     defendedOn: 'disputes.defendedOn',
     defenseReason: 'disputes.defenseReason',
@@ -71,7 +72,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
     return useMemo(() => {
         const actionNeeded = isDisputeActionNeeded(dispute.dispute);
 
-        const { pspReference: disputeReference, reason: disputeReason, createdAt, dueDate, status, type } = dispute.dispute;
+        const { pspReference: disputeReference, reason: disputeReason, acceptedDate, createdAt, dueDate, status, type } = dispute.dispute;
         const { pspReference: paymentReference, merchantReference, balanceAccount } = dispute.payment;
         const { reason: defenseReason, defendedOn, suppliedDocuments } = dispute.defense || {};
 
@@ -187,6 +188,15 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                           </>
                       ),
                       id: 'disputeEvidence',
+                  }
+                : SKIP_ITEM,
+
+            // accepted on
+            acceptedDate && status === 'ACCEPTED'
+                ? {
+                      key: disputeDataKeys.acceptedOn,
+                      value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      id: 'acceptedOn',
                   }
                 : SKIP_ITEM,
 

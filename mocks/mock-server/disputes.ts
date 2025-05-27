@@ -1,6 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
+import { DISPUTE_PAYMENT_SCHEMES } from '../../src/components/utils/disputes/constants';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup } from '../../src/types/api/models/disputes';
 import {
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
@@ -17,6 +18,11 @@ const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
 const downloadFileError = false;
 const defaultPaginationLimit = 10;
+
+const getRegexForPaymentSchemeCodesExcludingOthers = (schemeCodes: string[]) => {
+    const schemes = schemeCodes.filter(scheme => DISPUTE_PAYMENT_SCHEMES[scheme as keyof typeof DISPUTE_PAYMENT_SCHEMES] && scheme !== 'others');
+    return schemes.length ? new RegExp(schemes.join('|'), 'gi') : /^$/;
+};
 
 const getDisputeForRequestPathParams = (params: PathParams) => {
     const dispute = DISPUTES.find(dispute => dispute.disputePspReference === params.id);
@@ -44,12 +50,30 @@ export const disputesMocks = [
         let responseDelay = 200;
 
         if (createdSince || createdUntil) {
+            let paymentSchemesFilter: (paymentMethod: string) => boolean = () => true;
+
+            if (schemeCodes.length) {
+                const checkOtherSchemeCodes = schemeCodes.includes('others');
+
+                paymentSchemesFilter = paymentMethod => {
+                    const schemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(schemeCodes);
+                    let schemeCodeMatchFound = schemeCodesRegex.test(paymentMethod);
+
+                    if (!schemeCodeMatchFound && checkOtherSchemeCodes) {
+                        const allSchemeCodesRegex = getRegexForPaymentSchemeCodesExcludingOthers(Object.keys(DISPUTE_PAYMENT_SCHEMES));
+                        schemeCodeMatchFound ||= !allSchemeCodesRegex.test(paymentMethod);
+                    }
+
+                    return schemeCodeMatchFound;
+                };
+            }
+
             disputes = disputes.filter(
                 ({ createdAt, paymentMethod, reason }) =>
                     (!reasonCategories.length || reasonCategories.includes(reason.category)) &&
-                    (!schemeCodes.length || schemeCodes.includes(paymentMethod.type)) &&
                     (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(createdAt, createdUntil, 'le'))
+                    (!createdUntil || compareDates(createdAt, createdUntil, 'le')) &&
+                    paymentSchemesFilter(paymentMethod.type)
             );
             responseDelay = 400;
         }
@@ -73,7 +97,7 @@ export const disputesMocks = [
 
         const dispute = getDisputeForRequestPathParams(params);
         const defenseReason = new URL(request.url).searchParams.get('defenseReason')?.trim();
-        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!) ?? [];
+        const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason!);
 
         await delay(400);
         return HttpResponse.json({ data: defenseDocuments });
@@ -104,7 +128,7 @@ export const disputesMocks = [
                 return HttpResponse.json({ error: 'Missing defense reason' }, { status: 400 });
             }
 
-            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim()) ?? [];
+            const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim());
 
             // Some defense reasons require that at least one of certain types of documents be provided
             // Initially check to see if the current defense reason is one of such
