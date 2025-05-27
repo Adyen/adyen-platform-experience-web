@@ -25,7 +25,7 @@ export const DisputeDetails = ({
                 <>
                     {!hideTitle && (
                         <Typography variant={TypographyVariant.TITLE} medium>
-                            {i18n.get('dispute.management')}
+                            {i18n.get('disputes.disputeManagementTitle')}
                         </Typography>
                     )}
                     <DisputeData disputeId={id} dataCustomization={dataCustomization} onContactSupport={onContactSupport} />

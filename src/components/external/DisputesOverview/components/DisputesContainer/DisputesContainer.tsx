@@ -10,7 +10,7 @@ function DisputesOverviewContainer({ ...props }: ExternalUIComponentProps<Disput
         <DataOverviewContainer
             balanceAccountsError={error}
             className="adyen-pe-disputes-overview-container"
-            errorMessage={'disputes.weCouldNotLoadTheDisputesOverviewComponent'}
+            errorMessage={'disputes.error.couldNotLoadDisputesOverview'}
             isBalanceAccountIdWrong={isBalanceAccountIdWrong}
             onContactSupport={props.onContactSupport}
         >
