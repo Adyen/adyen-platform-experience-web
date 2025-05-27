@@ -70,11 +70,13 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
     }, [getExtraFields]);
 
     return useMemo(() => {
-        const actionNeeded = isDisputeActionNeeded(dispute.dispute);
-
         const { pspReference: disputeReference, reason: disputeReason, acceptedDate, createdAt, dueDate, status, type } = dispute.dispute;
         const { pspReference: paymentReference, merchantReference, balanceAccount } = dispute.payment;
         const { reason: defenseReason, defendedOn, suppliedDocuments } = dispute.defense || {};
+
+        const actionNeeded = isDisputeActionNeeded(dispute.dispute);
+        const isFraudNotification = type === 'NOTIFICATION_OF_FRAUD';
+        const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
 
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
@@ -87,7 +89,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             },
 
             // reason code
-            type !== 'NOTIFICATION_OF_FRAUD'
+            !isFraudNotification
                 ? {
                       key: disputeDataKeys.reasonCode,
                       value: disputeReason.code,
@@ -201,7 +203,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 : SKIP_ITEM,
 
             // expired on
-            dueDate && status === 'EXPIRED'
+            dueDate && isExpiredDispute
                 ? {
                       key: disputeDataKeys.expiredOn,
                       value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
