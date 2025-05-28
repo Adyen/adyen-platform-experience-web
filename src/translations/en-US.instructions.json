@@ -90,7 +90,6 @@
     "disputes.defend.submit": "Label text for button to submit dispute defense documents.",
     "disputes.defend.submitSuccessfulInformation": "Guidance text to communicate with user about their documents have been submitted and that it will take some time for the issuer to review them.",
     "disputes.defend.uploadDocumentsInformation": "Guidance text that will inform user they cannot change the defense documents after a submission.",
-    "disputes.defendChargeback": "Label for an action button that allows the user to initiate the process of defending a chargeback.",
     "disputes.defendedOn": "Label showing the date on which the dispute was defended.",
     "disputes.defenseReason": "Label indicating the reason provided when defending a dispute.",
     "disputes.disputedAmount": "Amount under dispute",

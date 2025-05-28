@@ -136,7 +136,6 @@
     "disputes.defend.submit": "Submit",
     "disputes.defend.submitSuccessfulInformation": "The dispute details and will be reviewed by Mastercard, which can take up to 60 days.",
     "disputes.defend.uploadDocumentsInformation": "Upload documents that support your dispute defense. Once submitted, no changes can be made.",
-    "disputes.defendChargeback": "Defend chargeback",
     "disputes.defendedOn": "Defended on",
     "disputes.defenseDocument.acquirerRepresentmentForm": "Acquirer Representment Form",
     "disputes.defenseDocument.acquirerRepresentmentFormAutomaticallyGenerated": "The Acquirer Representment Form is an automatically generated document that contains an overview of key dispute details.",
