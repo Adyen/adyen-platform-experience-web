@@ -553,7 +553,6 @@
     "disputes.noDisputesFound": "No disputes found",
     "disputes.noFraudAlertsFound": "No fraud alerts found",
     "disputes.notDefended": "This chargeback wasn't defended and was lost by default.",
-    "disputes.ongoingAndClosed": "Ongoing & closed",
     "disputes.openedOn": "Opened on",
     "disputes.paymentMethod": "Payment method",
     "disputes.paymentReference": "Payment reference",
