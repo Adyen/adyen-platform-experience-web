@@ -30,6 +30,16 @@ interface DisputeProviderProps {
     setDispute: (dispute: IDisputeDetail | undefined) => void;
 }
 
+const cloneFormData = (formData: FormData) => {
+    const formDataClone = new FormData();
+    for (const [field, value] of formData.entries()) {
+        if (value instanceof File) {
+            formDataClone.set(field, value, value.name);
+        } else formDataClone.set(field, value);
+    }
+    return formDataClone;
+};
+
 export const DisputeFlowContext = createContext<DisputeFlowContextValue | undefined>(undefined);
 
 export const DisputeContextProvider = memo(({ dispute, setDispute, children }: PropsWithChildren<DisputeProviderProps>) => {
@@ -40,14 +50,19 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 
     const clearFiles = useCallback(() => {
-        const formData = new FormData();
-        if (selectedDefenseReason) formData.set('defenseReason', selectedDefenseReason);
-        setDefendDisputePayload(formData);
-    }, [selectedDefenseReason]);
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData) {
+                const fileFields = [...previousFormData.keys()].filter(field => field !== 'defendReason');
 
-    useEffect(() => {
-        clearFiles();
-    }, [clearFiles]);
+                if (fileFields.length > 0) {
+                    const nextFormData = cloneFormData(previousFormData);
+                    fileFields.forEach(field => nextFormData.delete(field));
+                    return nextFormData;
+                }
+            }
+            return previousFormData;
+        });
+    }, []);
 
     const goBack = useCallback(() => {
         switch (flowState) {
@@ -75,66 +90,40 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDefendResponse(null);
     }, [setDispute]);
 
-    const addFileToDefendPayload = useCallback((name: string, file: File) => {
-        setDefendDisputePayload((previousFormData: FormData | null) => {
-            const formData = new FormData();
-            if (previousFormData) {
-                for (const [field, value] of previousFormData.entries()) {
-                    if (value instanceof File) {
-                        formData.set(field, value, value.name);
-                    } else formData.set(field, value);
-                }
-            }
-
-            formData.set(name, file, file.name);
-            return formData;
+    const addFileToDefendPayload = useCallback((field: string, file: File) => {
+        setDefendDisputePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set(field, file, file.name);
+            return nextFormData;
         });
     }, []);
 
-    const moveFieldInDefendPayload = useCallback((from: string, to: string) => {
-        setDefendDisputePayload((prev: FormData | null) => {
-            // Extract the payload we want to move (could be a File or string)
-            const valueToMove = prev?.get(from);
-            if (valueToMove == null) return prev;
+    const moveFieldInDefendPayload = useCallback((fromField: string, toField: string) => {
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData && previousFormData.has(fromField)) {
+                const fromFieldValue = previousFormData.get(fromField)!;
+                const nextFormData = cloneFormData(previousFormData);
 
-            const next = new FormData();
-            if (prev) {
-                for (const [key, val] of prev.entries()) {
-                    if (key === from) continue; // skip the old key
-                    if (val instanceof File) {
-                        next.set(key, val, val.name);
-                    } else {
-                        next.set(key, val as string);
-                    }
-                }
-            }
+                nextFormData.delete(fromField);
 
-            // Insert the value under its new key
-            if (valueToMove instanceof File) {
-                next.set(to, valueToMove, valueToMove.name);
-            } else {
-                next.set(to, valueToMove as string);
+                if (fromFieldValue instanceof File) {
+                    nextFormData.set(toField, fromFieldValue, fromFieldValue.name);
+                } else nextFormData.set(toField, fromFieldValue);
+
+                return nextFormData;
             }
-            return next;
+            return previousFormData;
         });
     }, []);
 
-    const removeFieldFromDefendPayload = useCallback((name: string) => {
-        setDefendDisputePayload((previousFormData: FormData | null) => {
-            const formData = new FormData();
-            if (previousFormData) {
-                for (const [field, value] of previousFormData.entries()) {
-                    // Copy everything except the field we’re deleting
-                    if (field !== name) {
-                        if (value instanceof File) {
-                            formData.set(field, value, value.name);
-                        } else {
-                            formData.set(field, value as string);
-                        }
-                    }
-                }
+    const removeFieldFromDefendPayload = useCallback((field: string) => {
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData && previousFormData.has(field)) {
+                const nextFormData = cloneFormData(previousFormData);
+                nextFormData.delete(field);
+                return nextFormData;
             }
-            return formData;
+            return previousFormData;
         });
     }, []);
 
@@ -142,6 +131,17 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDefendResponse(response);
         setFlowState('defenseSubmitResponseView');
     }, []);
+
+    useEffect(() => {
+        setDefendDisputePayload(() => {
+            if (selectedDefenseReason) {
+                const nextFormData = new FormData();
+                nextFormData.set('defenseReason', selectedDefenseReason);
+                return nextFormData;
+            }
+            return null;
+        });
+    }, [selectedDefenseReason]);
 
     return (
         <DisputeFlowContext.Provider
