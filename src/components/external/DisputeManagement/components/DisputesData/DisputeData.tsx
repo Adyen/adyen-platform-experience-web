@@ -233,7 +233,7 @@ export const DisputeData = ({
         disputeAlertMode = 'notDefended';
     }
 
-    const errorProps = getDisputesErrorMessage(error as AdyenPlatformExperienceError, 'disputes.weCouldNotLoadYourDispute', onContactSupport);
+    const errorProps = getDisputesErrorMessage(error as AdyenPlatformExperienceError, 'disputes.error.weCouldNotLoadYourDispute', onContactSupport);
 
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
