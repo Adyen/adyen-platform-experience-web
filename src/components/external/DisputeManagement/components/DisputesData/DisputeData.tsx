@@ -27,7 +27,6 @@ import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
-    DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
@@ -61,10 +60,10 @@ const DisputeDataAlert = ({
         case 'contactSupport': {
             const translationKey =
                 type === 'REQUEST_FOR_INFORMATION'
-                    ? 'disputes.contactSupportToDefendThisRequestForInformation'
+                    ? 'disputes.contactSupport.toDefendRequestForInformation'
                     : type === 'NOTIFICATION_OF_FRAUD'
-                    ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
-                    : 'disputes.contactSupportToDefendThisDispute';
+                    ? 'disputes.contactSupport.toResolveNotificationOfFraud'
+                    : 'disputes.contactSupport.toDefendDispute';
 
             return (
                 <Alert
@@ -76,7 +75,7 @@ const DisputeDataAlert = ({
                             {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
                                 <div>
                                     <Translation
-                                        translationKey={'disputes.theResponseDeadlineIs'}
+                                        translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
                                                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
@@ -93,7 +92,7 @@ const DisputeDataAlert = ({
             );
         }
         case 'notDefended':
-            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
+            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.notDefended')} />;
     }
 
     return null;
@@ -187,7 +186,7 @@ export const DisputeData = ({
         const ctaButtons = [];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('disputes.defendChargeback'),
+                title: i18n.get('disputes.defend.chargeback'),
                 event: onDefendClick,
             });
         if (isAcceptable) {
@@ -197,16 +196,13 @@ export const DisputeData = ({
                 variant: ButtonVariant.SECONDARY,
             });
         }
-
-        if (showContactSupport && onContactSupport) {
+        if (showContactSupport && isFunction(onContactSupport)) {
             ctaButtons.push({
                 title: i18n.get('contactSupport'),
                 event: onContactSupport,
                 variant: ButtonVariant.SECONDARY,
-                classNames: [DISPUTE_DATA_CONTACT_SUPPORT],
             });
         }
-
         return ctaButtons;
     }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick, showContactSupport, onContactSupport]);
 
