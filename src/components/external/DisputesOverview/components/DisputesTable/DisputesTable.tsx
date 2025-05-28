@@ -44,9 +44,9 @@ export const FIELD_KEYS = {
 } as const satisfies Record<string, TranslationKey>;
 
 export const EMPTY_TABLE_MESSAGE_KEYS = {
-    CHARGEBACKS: { title: 'disputes.noChargebacksFound', message: 'disputes.tryDifferentSearchOrCheckAgainLaterForNewChargebacks' },
-    FRAUD_ALERTS: { title: 'disputes.noFraudAlertsFound', message: 'disputes.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts' },
-    ONGOING_AND_CLOSED: { title: 'disputes.noDisputesFound', message: 'disputes.tryDifferentSearchOrCheckAgainLaterForNewDisputes' },
+    CHARGEBACKS: { title: 'disputes.empty.noChargebacksFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks' },
+    FRAUD_ALERTS: { title: 'disputes.empty.noFraudAlertsFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts' },
+    ONGOING_AND_CLOSED: { title: 'disputes.empty.noDisputesFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes' },
 } as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
 
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
