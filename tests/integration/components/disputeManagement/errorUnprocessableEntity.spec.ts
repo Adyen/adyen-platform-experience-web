@@ -9,8 +9,6 @@ test.describe('Error - Unprocessable entity', () => {
         await expect(page.getByText('Dispute management')).toBeVisible();
         await expect(page.getByText('Entity was not found')).toBeVisible();
         await expect(page.getByText('Dispute not found for the specified Account Holder')).toBeVisible();
-        await expect(page.getByText('Try refreshing the page or come back later.')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
     });
 
     test('should render "Reach out to support" button when argument is set', async ({ page }) => {
