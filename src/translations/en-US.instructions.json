@@ -110,7 +110,6 @@
     "disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport": "Error message informing the user that the system was unable to process their request related to a dispute, and suggests retrying or contacting support for assistance.",
     "disputes.evidence": "Label referring to evidence submitted for a dispute.",
     "disputes.expiredOn": "Label referring to the date a dispute got expired.",
-    "disputes.fraud": "Label used to categorize or identify a dispute as related to fraudulent activity.",
     "disputes.goBack": "Button label used for navigating to the previous step.",
     "disputes.issuerComment.showLess": "Used as label for button which truncates or hides parts of a large block of content.",
     "disputes.issuerComment.showMore": "Used as label for button which reveals truncated or hidden content.",
