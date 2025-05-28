@@ -161,6 +161,13 @@ export const DisputesOverview = ({
         [updateDetails]
     );
 
+    const sinceDate = useMemo(() => {
+        const date = new Date(nowTimestamp);
+        const oneYearUntilNow = date.setFullYear(date.getFullYear() - 1);
+        const earliestTimestamp = new Date(EARLIEST_DISPUTES_SINCE_DATE).getTime();
+        return new Date(Math.max(earliestTimestamp, oneYearUntilNow)).toString();
+    }, [nowTimestamp]);
+
     const debounceTimeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(
@@ -226,8 +233,8 @@ export const DisputesOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={EARLIEST_DISPUTES_SINCE_DATE}
-                    timezone={'UTC'}
+                    sinceDate={sinceDate}
+                    timezone={activeBalanceAccount?.timeZone}
                     updateFilters={updateFilters}
                 />
                 <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
