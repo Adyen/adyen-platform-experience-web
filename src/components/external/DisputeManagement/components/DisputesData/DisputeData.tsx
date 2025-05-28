@@ -81,7 +81,8 @@ const DisputeDataAlert = ({
                         <div className={DISPUTE_DATA_ALERT}>
                             {i18n.get(translationKey)}
                             {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
-                                <div>
+                                <>
+                                    {' '}
                                     <Translation
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
@@ -92,7 +93,7 @@ const DisputeDataAlert = ({
                                             ),
                                         }}
                                     />
-                                </div>
+                                </>
                             )}
                         </div>
                     }
