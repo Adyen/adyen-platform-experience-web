@@ -89,7 +89,7 @@ export const DefendDisputeReason = () => {
     const actionButtons = useMemo(() => {
         return [
             {
-                title: i18n.get('dispute.continue'),
+                title: i18n.get('disputes.defend.continue'),
                 disabled: isReasonSubmitted || isFetching,
                 event: onDefenseReasonSubmit,
             },
@@ -122,7 +122,7 @@ export const DefendDisputeReason = () => {
             </div>
             <Alert
                 type={AlertTypeOption.HIGHLIGHT}
-                description={i18n.get('dispute.defenseReasonChargebackFeeInformation')}
+                description={i18n.get('disputes.defend.chargebackFeeInformation')}
                 variant={AlertVariantOption.TIP}
             />
             <div className={'adyen-pe-defend-dispute__actions'}>
