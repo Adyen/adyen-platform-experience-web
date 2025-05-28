@@ -555,7 +555,6 @@
     "disputes.issuerComment.showMore": "Show more",
     "disputes.issuerComment.title": "The issuer came back with some feedback:",
     "disputes.merchantReference": "Merchant reference",
-    "disputes.notDefended": "This chargeback wasn't defended and was lost by default.",
     "disputes.openedOn": "Opened on",
     "disputes.paymentMethod": "Payment method",
     "disputes.paymentReference": "Payment reference",
