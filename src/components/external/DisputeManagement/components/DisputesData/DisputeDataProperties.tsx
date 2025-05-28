@@ -20,6 +20,7 @@ import { DisputeDetailsCustomization } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_DATA_LABEL, DISPUTE_DATA_LIST, DISPUTE_DATA_LIST_EVIDENCE, DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -82,7 +83,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reason
             {
                 key: disputeDataKeys.disputeReason,
-                value: disputeReason.title, // [NOTE]: Not translated at the moment (maybe in the future)
+                value: `${i18n.get(DISPUTE_REASON_CATEGORIES[disputeReason.category])} - ${disputeReason.title}`, // [NOTE]: Not translated at the moment (maybe in the future)
                 id: 'disputeReason',
             },
 

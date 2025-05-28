@@ -33,10 +33,14 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
                 <div className="adyen-pe-defend-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-defend-dispute__success-icon" />
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.defend.evidenceSubmitted')}</Typography>
-                    <Typography variant={TypographyVariant.BODY}>{i18n.get('disputes.defend.submitSuccessfulInformation')}</Typography>
-                    <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
-                        {i18n.get('disputes.showDisputeDetails')}
-                    </Button>
+                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-defend-dispute__success-description">
+                        {i18n.get('disputes.defend.submitSuccessfulInformation')}
+                    </Typography>
+                    <div className="adyen-pe-defend-dispute__success-buttons">
+                        <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
+                            {i18n.get('disputes.showDisputeDetails')}
+                        </Button>
+                    </div>
                 </div>
             ) : (
                 <div className="adyen-pe-defend-dispute__error">

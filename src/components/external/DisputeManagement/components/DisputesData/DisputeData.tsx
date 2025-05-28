@@ -23,7 +23,7 @@ import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
-import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_ALERT, DISPUTE_DATA_CLASS, DISPUTE_DATA_MOBILE_CLASS, DISPUTE_STATUS_BOX } from './constants';
+import { DISPUTE_DATA_ACTION_BAR, DISPUTE_DATA_CLASS, DISPUTE_DATA_MOBILE_CLASS, DISPUTE_STATUS_BOX } from './constants';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
@@ -59,23 +59,24 @@ const DisputeDataAlert = ({
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
-                        <div className={DISPUTE_DATA_ALERT}>
+                        <>
                             {i18n.get(translationKey)}
                             {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
-                                <div>
+                                <>
+                                    {' '}
                                     <Translation
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
-                                                    {dueDate ? dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE) : null}
+                                                <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
+                                                    {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
                                                 </Typography>
                                             ),
                                         }}
                                     />
-                                </div>
+                                </>
                             )}
-                        </div>
+                        </>
                     }
                 />
             );

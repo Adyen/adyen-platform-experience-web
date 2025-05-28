@@ -107,10 +107,10 @@ export const DefendDisputeReason = () => {
 
     return (
         <>
-            <Select items={defenseReasons} onChange={onChange} selected={selected} />
-            <Typography className="adyen-pe-defend-dispute-reason__description" variant={TypographyVariant.BODY}>
+            <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
                 {i18n.get('disputes.defend.selectDefenseReason')}
             </Typography>
+            <Select items={defenseReasons} onChange={onChange} selected={selected} />
             <Alert
                 type={AlertTypeOption.HIGHLIGHT}
                 description={i18n.get('disputes.defend.chargebackFeeInformation')}
