@@ -10,6 +10,7 @@ import './DisputeData.scss';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
+import { ButtonVariant } from '../../../../internal/Button/types';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
@@ -26,7 +27,6 @@ import {
     DISPUTE_DATA_ACTION_BAR,
     DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
-    DISPUTE_DATA_CONTACT_SUPPORT,
     DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
@@ -45,8 +45,8 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
+
 import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
@@ -54,7 +54,6 @@ type DisputeDataAlertMode = 'contactSupport' | 'notDefended';
 
 const DisputeDataAlert = ({
     alertMode,
-    onContactSupport,
     dueDate,
     timeZone,
     type,
@@ -63,48 +62,30 @@ const DisputeDataAlert = ({
     dueDate: string | undefined;
     timeZone: string | undefined;
     type: IDisputeDetail['dispute']['type'];
-    onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
-    const contactSupportLabel = i18n.get('contactSupport');
 
     switch (alertMode) {
-        case 'contactSupport':
+        case 'contactSupport': {
+            const translationKey =
+                type === 'REQUEST_FOR_INFORMATION'
+                    ? 'disputes.contactSupport.toDefendRequestForInformation'
+                    : type === 'NOTIFICATION_OF_FRAUD'
+                    ? 'disputes.contactSupport.toResolveNotificationOfFraud'
+                    : 'disputes.contactSupport.toDefendDispute';
+
             return (
                 <Alert
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
                         <div className={DISPUTE_DATA_ALERT}>
-                            <div>
-                                <Translation
-                                    translationKey={
-                                        type === 'REQUEST_FOR_INFORMATION'
-                                            ? 'disputes.contactSupportToDefendThisRequestForInformation'
-                                            : type === 'NOTIFICATION_OF_FRAUD'
-                                            ? 'disputes.contactSupportToResolveThisNotificationOfFraud'
-                                            : 'disputes.contactSupportToDefendThisDispute'
-                                    }
-                                    fills={{
-                                        contactSupport: onContactSupport ? (
-                                            <Button
-                                                variant={ButtonVariant.TERTIARY}
-                                                classNameModifiers={[DISPUTE_DATA_CONTACT_SUPPORT]}
-                                                onClick={onContactSupport}
-                                            >
-                                                {contactSupportLabel}
-                                            </Button>
-                                        ) : (
-                                            contactSupportLabel
-                                        ),
-                                    }}
-                                />
-                            </div>
-                            {type !== 'NOTIFICATION_OF_FRAUD' && (
+                            {i18n.get(translationKey)}
+                            {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
                                 <div>
                                     <Translation
-                                        translationKey={'disputes.theResponseDeadlineIs'}
+                                        translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
                                                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
@@ -119,9 +100,9 @@ const DisputeDataAlert = ({
                     }
                 />
             );
-
+        }
         case 'notDefended':
-            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.notDefended')} />;
+            return <Alert type={AlertTypeOption.SUCCESS} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.notDefended')} />;
     }
 
     return null;
@@ -215,17 +196,25 @@ export const DisputeData = ({
         const ctaButtons = [];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('disputes.defendChargeback'),
+                title: i18n.get('disputes.defend.chargeback'),
                 event: onDefendClick,
             });
         if (isAcceptable) {
             ctaButtons.push({
                 title: i18n.get('disputes.accept'),
                 event: onAcceptClick,
+                variant: ButtonVariant.SECONDARY,
+            });
+        }
+        if (showContactSupport && isFunction(onContactSupport)) {
+            ctaButtons.push({
+                title: i18n.get('contactSupport'),
+                event: onContactSupport,
+                variant: ButtonVariant.SECONDARY,
             });
         }
         return ctaButtons;
-    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick]);
+    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick, showContactSupport, onContactSupport]);
 
     const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
 
@@ -312,7 +301,6 @@ export const DisputeData = ({
                     {disputeAlertMode && (
                         <DisputeDataAlert
                             alertMode={disputeAlertMode}
-                            onContactSupport={onContactSupport}
                             type={dispute.dispute.type}
                             timeZone={dispute.payment.balanceAccount?.timeZone}
                             dueDate={dispute.dispute.dueDate}
