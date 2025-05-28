@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -126,11 +126,13 @@ export const DisputesOverview = ({
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
 
+    const cachedDisputeReasonsFilter = useRef<string | undefined>(undefined);
+
     const disputeReasonsFilter = useMultiSelectionFilter({
         mapFilterOptionName: useCallback((reason: DisputeReason) => i18n.get(DISPUTE_REASON_CATEGORIES[reason]), [i18n]),
         filterParam: DISPUTE_REASONS_FILTER_PARAM,
         filterValues: DISPUTE_REASONS_FILTER_VALUES,
-        defaultFilters,
+        defaultFilters: { ...defaultFilters, [DISPUTE_REASONS_FILTER_PARAM]: cachedDisputeReasonsFilter.current },
         updateFilters,
         filters,
     });
@@ -159,16 +161,24 @@ export const DisputesOverview = ({
         [updateDetails]
     );
 
-    const onStatusGroupChange = useMemo<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(() => {
-        let debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    const debounceTimeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-        return ({ id: statusGroup }) => {
-            debounceTimeoutId && clearTimeout(debounceTimeoutId);
+    const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(
+        ({ id: statusGroup }) => {
+            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
 
-            debounceTimeoutId = setTimeout(() => {
+            debounceTimeoutIdRef.current = setTimeout(() => {
                 requestAnimationFrame(() => setStatusGroupFetchPending(false));
-                updateFilters({ statusGroup } as any);
-                debounceTimeoutId = null;
+
+                const reasonsFilterParam = DISPUTE_REASONS_FILTER_PARAM as FilterParam;
+                const filterUpdates = { statusGroup, [reasonsFilterParam]: undefined } as any;
+
+                if (statusGroup !== 'FRAUD_ALERTS') {
+                    filterUpdates[reasonsFilterParam] = cachedDisputeReasonsFilter.current;
+                }
+
+                updateFilters(filterUpdates);
+                debounceTimeoutIdRef.current = null;
             }, 500);
 
             setStatusGroup(statusGroup);
@@ -177,8 +187,9 @@ export const DisputesOverview = ({
             // Resetting statusGroupActiveTab to undefined here to allow for subsequent
             // programmatic status group tab navigation (will not change the active tab).
             setStatusGroupActiveTab(undefined);
-        };
-    }, [updateFilters]);
+        },
+        [updateFilters]
+    );
 
     const updateDisputesListStatusGroup = useCallback((statusGroup?: IDisputeStatusGroup) => {
         // Setting statusGroupActiveTab to undefined here for unknown values passed to
@@ -189,6 +200,10 @@ export const DisputesOverview = ({
 
     useEffect(() => {
         refreshNowTimestamp();
+
+        if ((filters['statusGroup' as FilterParam]! as IDisputeStatusGroup) !== 'FRAUD_ALERTS') {
+            cachedDisputeReasonsFilter.current = filters[DISPUTE_REASONS_FILTER_PARAM as FilterParam];
+        }
     }, [filters, refreshNowTimestamp]);
 
     return (
@@ -216,7 +231,9 @@ export const DisputesOverview = ({
                     updateFilters={updateFilters}
                 />
                 <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
-                <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                {statusGroup !== 'FRAUD_ALERTS' && (
+                    <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                )}
             </FilterBar>
 
             <DisputeManagementModal
