@@ -30,8 +30,8 @@ export const getDisputesErrorMessage = (
         }
         case '30_112':
             return {
-                title: 'disputes.entityWasNotFound',
-                message: ['disputes.entityWasNotFoundDetail'],
+                title: 'disputes.error.entityWasNotFound',
+                message: ['disputes.error.entityWasNotFoundDetail'],
                 onContactSupport,
             };
         default:

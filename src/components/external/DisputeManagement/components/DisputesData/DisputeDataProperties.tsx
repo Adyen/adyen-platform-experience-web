@@ -192,7 +192,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                                       <div className={DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE}>
                                                           <SVGIcon name="info-filled" />
                                                           <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
-                                                              {i18n.get('disputes.failedRetry')}
+                                                              {i18n.get('disputes.error.failedRetry')}
                                                           </Typography>
                                                       </div>
                                                   );

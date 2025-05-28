@@ -45,7 +45,7 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
                         {i18n.get('disputes.defend.somethingWentWrong')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY}>
-                        {i18n.get('disputes.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport')}
+                        {i18n.get('disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport')}
                     </Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToFileUploadView}>
                         {i18n.get('disputes.goBack')}
