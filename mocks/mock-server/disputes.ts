@@ -7,6 +7,7 @@ import {
     CHARGEBACK_AUTO_DEFENDED,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
     CHARGEBACK_LOST_NO_ACTION,
+    CHARGEBACK_NOT_DEFENDABLE,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
@@ -217,6 +218,13 @@ export const DISPUTES_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
+            }),
+        ],
+    },
+    chargebackNotDefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_NOT_DEFENDABLE);
             }),
         ],
     },

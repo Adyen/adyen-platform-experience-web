@@ -74,9 +74,9 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
         const { pspReference: paymentReference, merchantReference, balanceAccount } = dispute.payment;
         const { reason: defenseReason, defendedOn, suppliedDocuments } = dispute.defense || {};
 
-        const actionNeeded = isDisputeActionNeeded(dispute.dispute);
         const isFraudNotification = type === 'NOTIFICATION_OF_FRAUD';
         const isExpiredDispute = status === 'EXPIRED' || (status === 'LOST' && !isFraudNotification && !defendedOn);
+        const isActionableDispute = isDisputeActionNeeded(dispute.dispute) && dispute.dispute.defensibility !== 'NOT_ACTIONABLE';
 
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
@@ -105,7 +105,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             },
 
             // respond by
-            dueDate && actionNeeded
+            dueDate && isActionableDispute
                 ? {
                       key: disputeDataKeys.respondBy,
                       value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),

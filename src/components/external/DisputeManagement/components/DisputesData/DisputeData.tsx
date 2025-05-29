@@ -29,7 +29,7 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 
-type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended';
+type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 
 const DisputeDataAlert = ({
     alertMode,
@@ -42,10 +42,10 @@ const DisputeDataAlert = ({
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timeZone);
-    const { dueDate, status, type } = dispute;
 
     switch (alertMode) {
         case 'contactSupport': {
+            const { dueDate, type } = dispute;
             const translationKey =
                 type === 'REQUEST_FOR_INFORMATION'
                     ? 'disputes.contactSupport.toDefendRequestForInformation'
@@ -82,9 +82,11 @@ const DisputeDataAlert = ({
         case 'autoDefended':
             return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.autoDefended')} />;
         case 'notDefended': {
-            const translationKey = status === 'EXPIRED' ? 'disputes.alert.notDefendedExpired' : 'disputes.alert.notDefendedLost';
+            const translationKey = dispute.status === 'EXPIRED' ? 'disputes.alert.notDefendedExpired' : 'disputes.alert.notDefendedLost';
             return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get(translationKey)} />;
         }
+        case 'notDefendable':
+            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.notDefendable')} />;
     }
 
     return null;
@@ -209,6 +211,8 @@ export const DisputeData = ({
 
     if (dispute?.defense?.autodefended === true) {
         disputeAlertMode = 'autoDefended';
+    } else if (actionNeeded && defensibility === 'NOT_ACTIONABLE') {
+        disputeAlertMode = 'notDefendable';
     } else if ((actionNeeded && showContactSupport) || (showContactSupport && isFraudNotification)) {
         disputeAlertMode = 'contactSupport';
     } else if (dispute.dispute.status === 'EXPIRED') {

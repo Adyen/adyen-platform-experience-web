@@ -50,6 +50,18 @@ export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElemen
     },
 };
 
+export const ChargebackNotDefendable: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Not defendable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_HANDLERS.chargebackNotDefendable,
+        },
+    },
+};
+
 export const RFIUnresponded: ElementStory<typeof DisputeManagementElement> = {
     name: 'RFI - Unresponded',
     args: {

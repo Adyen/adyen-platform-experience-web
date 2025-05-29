@@ -251,6 +251,15 @@ export const CHARGEBACK_DEFENDABLE: IDisputeDetail = {
     },
 };
 
+export const CHARGEBACK_NOT_DEFENDABLE: IDisputeDetail = {
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        defensibility: 'NOT_ACTIONABLE',
+        status: 'UNDEFENDED',
+    },
+    payment: DEFAULT_DETAIL_PAYMENT,
+};
+
 export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {

@@ -76,6 +76,7 @@
     "disputes.acceptedOn": "Label referring to the date a dispute got accepted.",
     "disputes.account": "Label for the account associated with the dispute.",
     "disputes.alert.autoDefended": "Informative message indicating the dispute was automatically defended.",
+    "disputes.alert.notDefendable": "Informative message indicating that no action can be taken on the dispute and the user will have to reach out to support to find out more.",
     "disputes.alert.notDefendedExpired": "Informative message indicating the request for information was not responded to until it got expired and was lost as a result.",
     "disputes.alert.notDefendedLost": "Informative message indicating the chargeback was not defended before the deadline and was lost as a result.",
     "disputes.alert.responseDeadline": "Informative message indicating the deadline for responding to the dispute.",
