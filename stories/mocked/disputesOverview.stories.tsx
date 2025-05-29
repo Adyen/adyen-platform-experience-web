@@ -13,6 +13,18 @@ export const Default: ElementStory<typeof DisputesOverview> = {
     },
 };
 
+export const EmptyList: ElementStory<typeof DisputesOverview> = {
+    name: 'Empty list',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTES_LIST_HANDLERS.emptyList,
+        },
+    },
+};
+
 export const InternalServerError: ElementStory<typeof DisputesOverview> = {
     name: 'Error - Internal server error',
     args: {
