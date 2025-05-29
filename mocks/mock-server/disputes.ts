@@ -49,7 +49,7 @@ export const disputesMocks = [
         const limit = +(searchParams.get('limit') ?? defaultPaginationLimit);
         const cursor = +(searchParams.get('cursor') ?? 0);
 
-        let disputes: IDisputeListItem[] = balanceAccount === MAIN_BALANCE_ACCOUNT.id ? getDisputesByStatusGroup(statusGroup) : [];
+        let disputes: IDisputeListItem[] = [MAIN_BALANCE_ACCOUNT.id, null].includes(balanceAccount) ? getDisputesByStatusGroup(statusGroup) : [];
         let responseDelay = 200;
 
         if (createdSince || createdUntil) {

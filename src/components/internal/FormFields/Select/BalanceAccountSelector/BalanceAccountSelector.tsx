@@ -1,4 +1,4 @@
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import Select from '../../Select';
@@ -28,7 +28,9 @@ const BalanceAccountSelector = memo(
                 <>
                     <div className={data.contentClassName}>
                         {data.item.name && <span className={BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.name}</span>}
-                        <span className={data.item.name ? BA_SELECTOR_ACCOUNT_ID_CLASS : BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.id}</span>
+                        {data.item.id !== ALL_BALANCE_ACCOUNTS_SELECTION_ID && (
+                            <span className={data.item.name ? BA_SELECTOR_ACCOUNT_ID_CLASS : BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.id}</span>
+                        )}
                     </div>
                     {renderDefaultSingleSelectionCheckedness(data)}
                 </>
