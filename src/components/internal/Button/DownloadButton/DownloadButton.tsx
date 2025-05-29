@@ -119,6 +119,7 @@ function DownloadButton({
                 )}
                 {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
             </div>
+            {/* [TODO]: Remove errorMessage prop and rely on errorDisplay for rendering error  */}
             {error && errorMessage && errorMessage(error)}
         </>
     );
