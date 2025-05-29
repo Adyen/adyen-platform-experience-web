@@ -31,9 +31,8 @@ const SelectAndUploadOptionalDoc = ({
     onRemoveOption?: (index: number) => void;
 }) => {
     const { i18n } = useCoreContext();
-    const { addFileToDefendPayload, moveFieldInDefendPayload } = useDisputeFlow();
+    const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
     const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
-    const { removeFieldFromDefendPayload } = useDisputeFlow();
     const updateDocumentSelection = useCallback(
         (documentSelection: string) => {
             selection && moveFieldInDefendPayload(selection, documentSelection);

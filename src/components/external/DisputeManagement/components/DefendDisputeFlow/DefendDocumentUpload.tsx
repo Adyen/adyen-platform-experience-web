@@ -9,17 +9,15 @@ import { useDisputeFlow } from '../../context/dispute/context';
 export const DefendDocumentUpload = ({
     document,
     ref,
-    addFileToDefendPayload,
     isRequired,
 }: {
     document: string;
     ref: MutableRef<HTMLInputElement | null>;
-    addFileToDefendPayload: (name: string, file: File) => void;
     isRequired: boolean;
 }) => {
     const { i18n } = useCoreContext();
     const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};
-    const { removeFieldFromDefendPayload } = useDisputeFlow();
+    const { removeFieldFromDefendPayload, addFileToDefendPayload } = useDisputeFlow();
     return (
         <div className="adyen-pe-defend-dispute-document-upload">
             <div>

@@ -26,16 +26,7 @@ const documentRequirements: TranslationKey[] = [
 
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
-    const {
-        clearFiles,
-        dispute,
-        applicableDocuments,
-        goBack,
-        addFileToDefendPayload,
-        defendDisputePayload,
-        onDefendSubmit,
-        removeFieldFromDefendPayload,
-    } = useDisputeFlow();
+    const { clearFiles, dispute, applicableDocuments, goBack, defendDisputePayload, onDefendSubmit, removeFieldFromDefendPayload } = useDisputeFlow();
     const disputePspReference = dispute?.dispute.pspReference;
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
@@ -193,19 +184,13 @@ export const DefendDisputeFileUpload = () => {
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
                     {requiredDocuments.length || oneOrMoreDocuments.length ? (
                         <div className="adyen-pe-defend-dispute-document-upload-box">
-                            <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
-                                {requiredDocuments?.map(document => {
-                                    return (
-                                        <DefendDocumentUpload
-                                            key={document}
-                                            document={document}
-                                            ref={ref}
-                                            addFileToDefendPayload={addFileToDefendPayload}
-                                            isRequired
-                                        />
-                                    );
-                                })}
-                            </div>
+                            {requiredDocuments.length ? (
+                                <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
+                                    {requiredDocuments?.map(document => {
+                                        return <DefendDocumentUpload key={document} document={document} ref={ref} isRequired />;
+                                    })}
+                                </div>
+                            ) : null}
 
                             {oneOrMoreDocuments.length ? (
                                 <SelectAndUploadOptionalDoc
@@ -231,7 +216,7 @@ export const DefendDisputeFileUpload = () => {
                                           items={availableOptionalDocuments}
                                           ref={ref}
                                           title={i18n.get('disputes.uploadDocuments.optionalDocument')}
-                                          required={false}
+                                          required
                                       />
                                   </div>
                               );
