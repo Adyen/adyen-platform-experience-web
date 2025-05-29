@@ -3,7 +3,8 @@ import { getDefenseDocumentContent } from '../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { MutableRef } from 'preact/hooks';
+import { MutableRef, useMemo } from 'preact/hooks';
+import { useDisputeFlow } from '../../context/dispute/context';
 
 export const DefendDocumentUpload = ({
     document,
@@ -17,7 +18,8 @@ export const DefendDocumentUpload = ({
     isRequired: boolean;
 }) => {
     const { i18n } = useCoreContext();
-    const { title, primaryDescriptionItems } = getDefenseDocumentContent(i18n, document) || {};
+    const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};
+    const { removeFieldFromDefendPayload } = useDisputeFlow();
     return (
         <div className="adyen-pe-defend-dispute-document-upload">
             <div>
@@ -25,7 +27,7 @@ export const DefendDocumentUpload = ({
                     strongest
                     className="adyen-pe-defend-dispute-document-upload__title"
                     variant={TypographyVariant.BODY}
-                    el={TypographyElement.SPAN}
+                    el={TypographyElement.DIV}
                 >
                     {title || document}
                 </Typography>
@@ -47,8 +49,8 @@ export const DefendDocumentUpload = ({
                 ref={ref}
                 key={document}
                 required={isRequired}
-                onChange={file => {
-                    if (file[0]) addFileToDefendPayload(document, file[0]);
+                onChange={files => {
+                    files[0] ? addFileToDefendPayload(document, files[0]) : removeFieldFromDefendPayload(document);
                 }}
             />
         </div>

@@ -6,7 +6,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectItem } from '../../../../internal/FormFields/Select/types';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseDocumentContent } from '../../utils';
-import { MutableRef } from 'preact/hooks';
+import { MutableRef, useCallback, useEffect } from 'preact/hooks';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
@@ -32,7 +32,22 @@ const SelectAndUploadOptionalDoc = ({
 }) => {
     const { i18n } = useCoreContext();
     const { addFileToDefendPayload, moveFieldInDefendPayload } = useDisputeFlow();
-    const getDocInfo = (document: string) => getDefenseDocumentContent(i18n, document);
+    const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
+    const { removeFieldFromDefendPayload } = useDisputeFlow();
+    const updateDocumentSelection = useCallback(
+        (documentSelection: string) => {
+            selection && moveFieldInDefendPayload(selection, documentSelection);
+            setSelection(documentSelection, index);
+        },
+        [index, moveFieldInDefendPayload, selection, setSelection]
+    );
+
+    useEffect(() => {
+        const activeSelectItems = items.filter(({ disabled }) => disabled !== true);
+        if (activeSelectItems.length === 1 && !selection) {
+            updateDocumentSelection(activeSelectItems[0]!.id);
+        }
+    }, [items, selection, updateDocumentSelection]);
 
     return (
         <div className="">
@@ -42,7 +57,7 @@ const SelectAndUploadOptionalDoc = ({
                         strongest
                         className="adyen-pe-defend-dispute-document-upload-box__extra-documents-selector-title"
                         variant={TypographyVariant.BODY}
-                        el={TypographyElement.SPAN}
+                        el={TypographyElement.DIV}
                     >
                         {title}
                     </Typography>
@@ -60,8 +75,8 @@ const SelectAndUploadOptionalDoc = ({
                 <div>
                     <Select
                         onChange={val => {
-                            selection && moveFieldInDefendPayload(selection, val.target.value);
-                            val.target.value && setSelection(val.target.value, index);
+                            const documentSelection = val.target.value;
+                            updateDocumentSelection(documentSelection);
                         }}
                         filterable={false}
                         selected={selection}
@@ -88,8 +103,10 @@ const SelectAndUploadOptionalDoc = ({
                     ref={ref}
                     disabled={!selection}
                     required={required}
-                    onChange={file => {
-                        if (file[0] && selection) addFileToDefendPayload(selection, file[0]);
+                    onChange={files => {
+                        if (selection) {
+                            files[0] ? addFileToDefendPayload(selection, files[0]) : removeFieldFromDefendPayload(selection);
+                        }
                     }}
                 />
             </div>

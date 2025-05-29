@@ -101,6 +101,11 @@ export const DefendDisputeReason = () => {
         ];
     }, [isFetching, isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
 
+    const [showAlert, setShowAlert] = useState(true);
+    const closeAlert = useCallback(() => {
+        setShowAlert(false);
+    }, []);
+
     if (!defenseReasons || !selected) {
         return null;
     }
@@ -120,11 +125,13 @@ export const DefendDisputeReason = () => {
                     </Typography>
                 ))}
             </div>
-            <Alert
-                type={AlertTypeOption.HIGHLIGHT}
-                description={i18n.get('disputes.defend.chargebackFeeInformation')}
-                variant={AlertVariantOption.TIP}
-            />
+            {showAlert && (
+                <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
+                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                        {i18n.get('disputes.defend.chargebackFeeInformation')}
+                    </Typography>
+                </Alert>
+            )}
             <div className={'adyen-pe-defend-dispute__actions'}>
                 <ButtonActions actions={actionButtons} />
             </div>

@@ -140,7 +140,7 @@ export const DefendDisputeFileUpload = () => {
         const additionalOptionalDocs = oneOrMoreDocuments.filter(doc => doc.id !== oneOrMoreSelectedDocument);
 
         return [...additionalOptionalDocs, ...optionalDocuments].map(doc => {
-            return { ...doc, disabled: optionalSelectedDocuments.includes(doc.id) ?? false };
+            return { ...doc, disabled: optionalSelectedDocuments.includes(doc.id) };
         });
     }, [oneOrMoreDocuments, oneOrMoreSelectedDocument, optionalDocuments, optionalSelectedDocuments]);
 
@@ -161,6 +161,12 @@ export const DefendDisputeFileUpload = () => {
         },
         [removeFieldFromDefendPayload]
     );
+
+    const canAddOptionalDocument = useMemo(() => {
+        const optionalDocumentsCount = optionalDocuments.length + Math.max(0, oneOrMoreDocuments.length - 1);
+        return Boolean(optionalDocumentsCount && optionalDocumentsCount !== optionalSelectedDocuments.length);
+    }, [oneOrMoreDocuments, optionalDocuments, optionalSelectedDocuments]);
+
     return (
         <>
             <>
@@ -185,32 +191,34 @@ export const DefendDisputeFileUpload = () => {
                     </ul>
                 </Card>
                 <div className={'adyen-pe-defend-dispute-file-uploader__container'}>
-                    <div className="adyen-pe-defend-dispute-document-upload-box">
-                        <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
-                            {requiredDocuments?.map(document => {
-                                return (
-                                    <DefendDocumentUpload
-                                        key={document}
-                                        document={document}
-                                        ref={ref}
-                                        addFileToDefendPayload={addFileToDefendPayload}
-                                        isRequired
-                                    />
-                                );
-                            })}
-                        </div>
+                    {requiredDocuments.length || oneOrMoreDocuments.length ? (
+                        <div className="adyen-pe-defend-dispute-document-upload-box">
+                            <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
+                                {requiredDocuments?.map(document => {
+                                    return (
+                                        <DefendDocumentUpload
+                                            key={document}
+                                            document={document}
+                                            ref={ref}
+                                            addFileToDefendPayload={addFileToDefendPayload}
+                                            isRequired
+                                        />
+                                    );
+                                })}
+                            </div>
 
-                        {oneOrMoreDocuments.length ? (
-                            <SelectAndUploadOptionalDoc
-                                selection={oneOrMoreSelectedDocument}
-                                setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
-                                items={oneOrMoreDocuments}
-                                ref={ref}
-                                title={i18n.get('disputes.extraRequiredDocuments')}
-                                required
-                            />
-                        ) : null}
-                    </div>
+                            {oneOrMoreDocuments.length ? (
+                                <SelectAndUploadOptionalDoc
+                                    selection={oneOrMoreSelectedDocument}
+                                    setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
+                                    items={oneOrMoreDocuments}
+                                    ref={ref}
+                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocuments')}
+                                    required
+                                />
+                            ) : null}
+                        </div>
+                    ) : null}
                     {optionalSelectedDocuments.length
                         ? optionalSelectedDocuments.map((doc, index) => {
                               return (
@@ -222,16 +230,22 @@ export const DefendDisputeFileUpload = () => {
                                           index={index}
                                           items={availableOptionalDocuments}
                                           ref={ref}
-                                          title={i18n.get('disputes.optionalDocument')}
+                                          title={i18n.get('disputes.uploadDocuments.optionalDocument')}
                                           required={false}
                                       />
                                   </div>
                               );
                           })
                         : null}
-                    <Button onClick={addEmptyOptionalDocument} variant={ButtonVariant.SECONDARY} fullWidth align="center">
+                    <Button
+                        align="center"
+                        disabled={!canAddOptionalDocument}
+                        onClick={addEmptyOptionalDocument}
+                        variant={ButtonVariant.SECONDARY}
+                        fullWidth
+                    >
                         <Icon name="plus" />
-                        {i18n.get('disputes.addOptionalDocument')}
+                        {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
                     </Button>
                 </div>
                 <div className={'adyen-pe-defend-file-uploader__actions'}>
