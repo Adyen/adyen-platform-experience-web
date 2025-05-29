@@ -83,7 +83,7 @@ const SelectAndUploadOptionalDoc = ({
                         multiSelect={false}
                         items={items}
                         showOverlay={false}
-                        placeholder={i18n.get('disputes.selectDocumentType')}
+                        placeholder={i18n.get('disputes.uploadDocuments.selectDocumentType')}
                     />
                     {selection &&
                         getDocInfo(selection)?.primaryDescriptionItems?.map(desc => {
