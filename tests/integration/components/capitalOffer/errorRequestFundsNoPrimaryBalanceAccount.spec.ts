@@ -14,7 +14,7 @@ test.describe('Error - Request funds - No primary balance account', () => {
         await expect(page.getByTestId('primary-account-warning-icon')).toBeVisible();
         await expect(page.getByText('There is no primary account configured')).toBeVisible();
         await expect(page.getByText("We couldn't continue with the offer. Contact support for help.")).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Contact support' })).toBeHidden();
     });
 });
 
@@ -23,6 +23,6 @@ test.describe('onContactSupport argument', () => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByRole('button', { name: 'Request funds' }).click();
-        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Contact support' })).toBeVisible();
     });
 });

@@ -30,6 +30,16 @@ import {
     DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
     DISPUTE_STATUS_BOX,
+    DISPUTE_DATA_STATUS_BOX_SKELETON,
+    DISPUTE_DATA_SKELETON_CONTAINER,
+    DISPUTE_DATA_STATUS_BOX_STATUS,
+    DISPUTE_DATA_STATUS_BOX_AMOUNT,
+    DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD,
+    DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER,
+    DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER,
+    DISPUTE_DATA_PROPERTIES_SKELETON,
+    DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER,
+    DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT,
 } from './constants';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -217,7 +227,31 @@ export const DisputeData = ({
     }, [i18n, onDetailsDismiss]);
 
     if ((!dispute && !error) || isFetching) {
-        return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
+        const skeletonRows = Array.from({ length: 5 });
+
+        return (
+            <div className={DISPUTE_DATA_SKELETON_CONTAINER}>
+                <div className={DISPUTE_DATA_STATUS_BOX_SKELETON}>
+                    <div className={DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER}>
+                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
+                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
+                    </div>
+                    <span className={DISPUTE_DATA_STATUS_BOX_AMOUNT}></span>
+                    <div className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER}>
+                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                    </div>
+                </div>
+                <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
+                    {skeletonRows.map((_, index) => (
+                        <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
+                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     const isFraudNotification = dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';

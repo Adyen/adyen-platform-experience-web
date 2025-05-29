@@ -43,6 +43,12 @@ export const FIELD_KEYS = {
     totalPaymentAmount: 'disputes.totalPaymentAmount',
 } as const satisfies Record<string, TranslationKey>;
 
+export const EMPTY_TABLE_MESSAGE_KEYS = {
+    CHARGEBACKS: { title: 'disputes.empty.noChargebacksFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks' },
+    FRAUD_ALERTS: { title: 'disputes.empty.noFraudAlertsFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts' },
+    ONGOING_AND_CLOSED: { title: 'disputes.empty.noDisputesFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes' },
+} as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
+
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
 
 const classes = {
@@ -121,8 +127,8 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const removeAlert = useCallback(() => setAlert(null), []);
 
     const EMPTY_TABLE_MESSAGE = {
-        title: 'noReportsFound',
-        message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
+        title: EMPTY_TABLE_MESSAGE_KEYS[statusGroup].title,
+        message: [EMPTY_TABLE_MESSAGE_KEYS[statusGroup].message],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
