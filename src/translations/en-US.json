@@ -560,7 +560,6 @@
     "disputes.reasonCategory.requestForInformation": "Request for information",
     "disputes.reasonCode": "Reason code",
     "disputes.respondBy": "Respond by",
-    "disputes.respondToday": "Respond today (%{date})",
     "disputes.showDisputeDetails": "Show dispute details",
     "disputes.status": "Status",
     "disputes.status.accepted": "Accepted",
