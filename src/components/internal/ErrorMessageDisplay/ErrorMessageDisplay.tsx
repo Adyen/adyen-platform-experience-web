@@ -27,6 +27,7 @@ type ErrorMessageDisplayProps = {
     absolutePosition?: boolean;
     outlined?: boolean;
     renderSecondaryButton?: () => JSXInternal.Element;
+    withBackground?: boolean;
 };
 
 export const ErrorMessageDisplay = ({
@@ -42,6 +43,7 @@ export const ErrorMessageDisplay = ({
     absolutePosition = true,
     outlined = true,
     renderSecondaryButton,
+    withBackground,
 }: ErrorMessageDisplayProps) => {
     const { i18n, updateCore } = useCoreContext();
     const renderMessage = useCallback(
@@ -72,7 +74,7 @@ export const ErrorMessageDisplay = ({
             className={cx(['adyen-pe-error-message-display'], {
                 'adyen-pe-error-message-display--absolute-position': absolutePosition,
                 'adyen-pe-error-message-display--outlined': outlined,
-                'adyen-pe-error-message-display--with-background': !outlined,
+                'adyen-pe-error-message-display--with-background': withBackground !== false && !outlined,
                 'adyen-pe-error-message-display--centered': centered,
             })}
         >
@@ -91,7 +93,7 @@ export const ErrorMessageDisplay = ({
             {(onContactSupport || refreshComponent || renderSecondaryButton) && (
                 <div className={'adyen-pe-error-message-display__button'}>
                     {renderSecondaryButton && renderSecondaryButton()}
-                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('contactSupport')}</Button>}
+                    {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
                     {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{i18n.get('refresh')}</Button>}
                 </div>
             )}

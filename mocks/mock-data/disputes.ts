@@ -585,7 +585,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '13.2', title: 'Cancelled Recurring' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '13.1', title: 'Merchandise/Services Not Received' },
         amount: { currency: 'EUR', value: 499700 },
     },
     {

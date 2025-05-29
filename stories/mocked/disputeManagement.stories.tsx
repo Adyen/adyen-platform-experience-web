@@ -3,7 +3,7 @@ import DisputeManagementElement from '../../src/components/external/DisputeManag
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DISPUTES_HANDLERS } from '../../mocks/mock-server/disputes';
+import { DISPUTE_DETAILS_HANDLERS } from '../../mocks/mock-server/disputes';
 
 const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
 
@@ -21,7 +21,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.chargebackDefendableExternally,
+            ...DISPUTE_DETAILS_HANDLERS.chargebackDefendableExternally,
         },
     },
 };
@@ -33,7 +33,7 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementEle
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.chargebackLostNotDefended,
+            ...DISPUTE_DETAILS_HANDLERS.chargebackLostNotDefended,
         },
     },
 };
@@ -45,7 +45,7 @@ export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElemen
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.chargebackAutoDefended,
+            ...DISPUTE_DETAILS_HANDLERS.chargebackAutoDefended,
         },
     },
 };
@@ -57,7 +57,7 @@ export const ChargebackNotDefendable: ElementStory<typeof DisputeManagementEleme
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.chargebackNotDefendable,
+            ...DISPUTE_DETAILS_HANDLERS.chargebackNotDefendable,
         },
     },
 };
@@ -69,7 +69,7 @@ export const RFIUnresponded: ElementStory<typeof DisputeManagementElement> = {
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.rfiUnresponded,
+            ...DISPUTE_DETAILS_HANDLERS.rfiUnresponded,
         },
     },
 };
@@ -81,7 +81,7 @@ export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.rfiExpired,
+            ...DISPUTE_DETAILS_HANDLERS.rfiExpired,
         },
     },
 };
@@ -93,7 +93,69 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> 
     },
     parameters: {
         msw: {
-            ...DISPUTES_HANDLERS.notificationOfFraud,
+            ...DISPUTE_DETAILS_HANDLERS.notificationOfFraud,
+        },
+    },
+};
+
+export const ServerError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Server error',
+    args: {
+        mockedApi: true,
+        onContactSupport: undefined,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.internalServerError,
+        },
+    },
+};
+
+export const NetworkError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Network error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.networkError,
+        },
+    },
+};
+
+export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Unprocessable entity',
+    args: {
+        mockedApi: true,
+        onContactSupport: undefined,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.unprocessableEntityError,
+        },
+    },
+};
+
+export const DownloadEvidenceError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Download evidence',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.downloadServerError,
+        },
+    },
+};
+
+export const DefenseServerError: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Error - Defense server error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.defendServerError,
         },
     },
 };
