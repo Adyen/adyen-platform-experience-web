@@ -21,6 +21,7 @@ interface DownloadButtonProps {
     onDownloadRequested?: () => void;
     setError?: (error?: AdyenPlatformExperienceError) => any;
     errorDisplay?: VNode<any>;
+    errorMessage?: (error: any) => VNode<any>;
 }
 
 function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
@@ -49,6 +50,7 @@ function DownloadButton({
     errorDisplay,
     onDownloadRequested,
     iconButton = false,
+    errorMessage,
 }: DownloadButtonProps) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
@@ -90,32 +92,36 @@ function DownloadButton({
     }, [buttonIcon, i18n, isFetching, iconButton]);
 
     return (
-        <div
-            className={classNames('adyen-pe-download', {
-                'adyen-pe-download-icon-button-container': iconButton,
-            })}
-        >
-            {isSmContainer ? (
-                <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
-                    {isFetching ? <Spinner size={'small'} /> : <Download />}
-                </Button>
-            ) : (
-                <Button
-                    className={classNames(
-                        'adyen-pe-download__button',
-                        { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
-                        className
-                    )}
-                    disabled={disabled || isFetching}
-                    variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
-                    onClick={onClick}
-                    {...(!iconButton && { iconLeft: buttonIcon })}
-                >
-                    {buttonLabel}
-                </Button>
-            )}
-            {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
-        </div>
+        <>
+            <div
+                className={classNames('adyen-pe-download', {
+                    'adyen-pe-download-icon-button-container': iconButton,
+                })}
+            >
+                {isSmContainer ? (
+                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
+                        {isFetching ? <Spinner size={'small'} /> : <Download />}
+                    </Button>
+                ) : (
+                    <Button
+                        className={classNames(
+                            'adyen-pe-download__button',
+                            { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
+                            className
+                        )}
+                        disabled={disabled || isFetching}
+                        variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
+                        onClick={onClick}
+                        {...(!iconButton && { iconLeft: buttonIcon })}
+                    >
+                        {buttonLabel}
+                    </Button>
+                )}
+                {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
+            </div>
+            {/* [TODO]: Remove errorMessage prop and rely on errorDisplay for rendering error  */}
+            {error && errorMessage && errorMessage(error)}
+        </>
     );
 }
 

@@ -19,7 +19,7 @@
 
     &__error-icon {
         color: style.token(color-background-critical-strong);
-        font-size: style.token(spacer-100);
+        font-size: style.token(spacer-110);
 
         svg {
             display: block;
@@ -41,6 +41,7 @@
         flex-direction: column;
         gap: style.token(spacer-070);
         justify-content: center;
+        max-width: 436px;
     }
 
     &__success {
