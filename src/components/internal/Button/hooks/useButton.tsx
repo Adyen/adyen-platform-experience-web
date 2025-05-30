@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { JSXInternal } from 'preact/src/jsx';
 import cx from 'classnames';
 import {
+    BUTTON_LABEL_CENTERED_CLASSNAME,
     BUTTON_CONDENSED_CLASSNAME,
     BUTTON_FULL_WIDTH_CLASSNAME,
     BUTTON_ICON_LEFT_CLASSNAME,
@@ -66,13 +67,19 @@ const useButton = (
                 <>
                     {state === 'loading' && <Spinner size={'x-small'} />}
                     {iconLeft && <span className={BUTTON_ICON_LEFT_CLASSNAME}>{iconLeft}</span>}
-                    <Typography className={BUTTON_LABEL_CLASSNAME} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                    <Typography
+                        className={cx(BUTTON_LABEL_CLASSNAME, {
+                            [BUTTON_LABEL_CENTERED_CLASSNAME]: props.align === 'center',
+                        })}
+                        el={TypographyElement.SPAN}
+                        variant={TypographyVariant.BODY}
+                    >
                         {children}
                     </Typography>
                     {iconRight && <span className={BUTTON_ICON_RIGHT_CLASSNAME}>{iconRight}</span>}
                 </>
             ),
-        [children, iconButton, iconLeft, iconRight, state]
+        [children, iconButton, iconLeft, iconRight, props.align, state]
     );
 
     return { classes, click, allChildren, allProps };

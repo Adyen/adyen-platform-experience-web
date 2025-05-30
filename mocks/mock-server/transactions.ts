@@ -7,14 +7,7 @@ import {
     ITransactionWithDetails,
     ITransactionRefundStatus,
 } from '../../src';
-import {
-    COMPLETED_REFUND_STATUSES,
-    DEFAULT_REFUND_STATUSES,
-    DEFAULT_TRANSACTION,
-    FAILED_REFUND_STATUSES,
-    IN_PROGRESS_REFUND_STATUSES,
-    TRANSACTIONS,
-} from '../mock-data';
+import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, FAILED_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
 import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';

@@ -111,7 +111,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                             id: 'inactive',
                         },
                     ]}
-                    defaultItem={'active'}
+                    activeItem={'active'}
                 />
             )}
         </div>
