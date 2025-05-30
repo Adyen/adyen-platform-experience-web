@@ -122,11 +122,10 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     }
 
                     // Determine the current max file size for the file type
-                    const currentMaxFileSize = typeof maxFileSize === 'function' ? maxFileSize(file.type) || DEFAULT_MAX_FILE_SIZE : maxFileSize;
+                    const currentMaxFileSize = isFunction(maxFileSize) ? maxFileSize(file.type) ?? DEFAULT_MAX_FILE_SIZE : maxFileSize;
 
                     if (file.size > currentMaxFileSize) {
-                        const type = file.type.replace('image/', '').replace('application/', '');
-                        setLargeFileErrorContext({ type: type, limit: getHumanReadableFileSize(currentMaxFileSize) });
+                        setLargeFileErrorContext({ type: file.type, limit: getHumanReadableFileSize(currentMaxFileSize) });
                         throw validationErrors.VERY_LARGE_FILE;
                     }
                     return true;
