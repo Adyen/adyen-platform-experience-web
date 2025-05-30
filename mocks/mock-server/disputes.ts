@@ -3,19 +3,23 @@ import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { DISPUTE_PAYMENT_SCHEMES } from '../../src/components/utils/disputes/constants';
 import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResponse } from '../../src/types/api/models/disputes';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
+import { ErrorTypes } from '../../src/core/Http/utils';
 import {
+    CHARGEBACK_AUTO_DEFENDED,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
+    CHARGEBACK_LOST,
+    CHARGEBACK_LOST_NO_ACTION,
+    CHARGEBACK_NOT_DEFENDABLE,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
-    RFI_UNRESPONDED,
     NOTIFICATION_OF_FRAUD,
-    CHARGEBACK_LOST,
+    RFI_EXPIRED,
+    RFI_UNRESPONDED,
 } from '../mock-data/disputes';
-import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
-import { ErrorTypes } from '../../src/core/Http/utils';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;
@@ -289,17 +293,31 @@ const DISPUTE_DETAILS_ERRORS = {
 };
 
 export const DISPUTE_DETAILS_HANDLERS = {
-    defendableExternally: {
+    chargebackAutoDefended: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
+            }),
+        ],
+    },
+    chargebackDefendableExternally: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
-    rfiAcceptable: {
+    chargebackLostNotDefended: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
-                return HttpResponse.json(RFI_UNRESPONDED);
+                return HttpResponse.json(CHARGEBACK_LOST_NO_ACTION);
+            }),
+        ],
+    },
+    chargebackNotDefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_NOT_DEFENDABLE);
             }),
         ],
     },
@@ -307,6 +325,20 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(NOTIFICATION_OF_FRAUD);
+            }),
+        ],
+    },
+    rfiExpired: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_EXPIRED);
+            }),
+        ],
+    },
+    rfiUnresponded: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_UNRESPONDED);
             }),
         ],
     },
