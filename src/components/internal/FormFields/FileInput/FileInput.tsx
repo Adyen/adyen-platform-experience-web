@@ -8,30 +8,35 @@ import { BASE_CLASS } from './constants';
 import { FileInputProps } from './types';
 import './FileInput.scss';
 
-export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, ...restProps }, ref) => {
+export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, onDelete, ...restProps }, ref) => {
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = useRef(files);
     const uploadedFile = files[0];
 
     const mapErrorWithFallback = useMemo(() => (isFunction(mapError) ? mapError : defaultMapError), [mapError]);
 
-    const deleteFile = useCallback((fileToDelete: File) => {
-        setFiles(currentFiles => {
-            const fileIndex = currentFiles.findIndex(file => file === fileToDelete);
+    const deleteFile = useCallback(
+        (fileToDelete: File) => {
+            setFiles(currentFiles => {
+                const fileIndex = currentFiles.findIndex(file => file === fileToDelete);
 
-            if (fileIndex < 0) {
-                // Negative fileIndex means the file isn't in the array
-                // Nothing to delete, return currentFiles (state did not change)
-                return currentFiles;
-            }
+                if (fileIndex < 0) {
+                    // Negative fileIndex means the file isn't in the array
+                    // Nothing to delete, return currentFiles (state did not change)
+                    return currentFiles;
+                }
 
-            // Modify and return a clone (instead of the original currentFiles array),
-            // so that state is considered to have changed
-            const [...currentFilesCopy] = currentFiles;
-            currentFilesCopy.splice(fileIndex, 1);
-            return currentFilesCopy;
-        });
-    }, []);
+                // Modify and return a clone (instead of the original currentFiles array),
+                // so that state is considered to have changed
+                const [...currentFilesCopy] = currentFiles;
+                currentFilesCopy.splice(fileIndex, 1);
+                return currentFilesCopy;
+            });
+
+            onDelete?.();
+        },
+        [onDelete]
+    );
 
     const uploadFiles = useCallback((files: File[]) => {
         setFiles(currentFiles => {

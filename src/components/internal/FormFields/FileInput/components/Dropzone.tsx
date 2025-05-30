@@ -5,7 +5,7 @@ import Typography from '../../../Typography/Typography';
 import useTrackedRef from '../../../../../hooks/useTrackedRef';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE, validationErrors } from '../constants';
-import { getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
+import { getHumanReadableFileSize, getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { TranslationKey } from '../../../../../translations';
 import { DropzoneProps, ValidationError } from '../types';
@@ -41,6 +41,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
 
     const { i18n } = useCoreContext();
     const [inputError, setInputError] = useState<ValidationError | ''>('');
+    const [largeFileErrorContext, setLargeFileErrorContext] = useState<{ type: string; limit: string } | undefined>();
     const [dragOver, setDragOver] = useState(false);
 
     const isInvalid = !!inputError;
@@ -68,6 +69,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
     };
 
     const handleFileChange = (event: Event) => {
+        largeFileErrorContext && setLargeFileErrorContext(undefined);
         updateFiles(event.target as HTMLInputElement);
     };
 
@@ -85,22 +87,25 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         }
     };
 
-    const updateInputValidationError = useCallback((error: string) => {
-        const inputElement = inputRef.current;
+    const updateInputValidationError = useCallback(
+        (error: string) => {
+            const inputElement = inputRef.current;
 
-        if (inputElement) {
-            const currentRequired = inputElement.required;
+            if (inputElement) {
+                const currentRequired = inputElement.required;
 
-            // Temporarily mark input as optional before accessing validation message,
-            // to evade the default "required" constraint validation message.
-            inputElement.required = false;
-            inputElement.setCustomValidity(error);
-            setInputError((inputElement.validationMessage as ValidationError) ?? '');
+                // Temporarily mark input as optional before accessing validation message,
+                // to evade the default "required" constraint validation message.
+                inputElement.required = false;
+                inputElement.setCustomValidity(error);
+                setInputError((inputElement.validationMessage as ValidationError) ?? '');
 
-            // Restore the required state of the input
-            inputElement.required = currentRequired;
-        }
-    }, []);
+                // Restore the required state of the input
+                inputElement.required = currentRequired;
+            }
+        },
+        [inputRef]
+    );
 
     const updateFiles = useCallback(
         <T extends UploadedFileSource>(source?: T | null): void => {
@@ -115,7 +120,13 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     if (!allowedFileTypes.includes(file.type)) {
                         throw validationErrors.DISALLOWED_FILE_TYPE;
                     }
-                    if (file.size > maxFileSize) {
+
+                    // Determine the current max file size for the file type
+                    const currentMaxFileSize = typeof maxFileSize === 'function' ? maxFileSize(file.type) || DEFAULT_MAX_FILE_SIZE : maxFileSize;
+
+                    if (file.size > currentMaxFileSize) {
+                        const type = file.type.replace('image/', '').replace('application/', '');
+                        setLargeFileErrorContext({ type: type, limit: getHumanReadableFileSize(currentMaxFileSize) });
                         throw validationErrors.VERY_LARGE_FILE;
                     }
                     return true;
@@ -186,7 +197,12 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 <div className={classes.error}>
                     <Icon name="cross-circle-fill" className={classes.errorIcon} />
                     <Typography className={classes.errorText} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {i18n.get(isFunction(mapError) ? mapError(inputError) : (inputError as TranslationKey))}
+                        {i18n.get(isFunction(mapError) ? mapError(inputError) : (inputError as TranslationKey), {
+                            values: {
+                                size: largeFileErrorContext?.limit,
+                                type: largeFileErrorContext?.type,
+                            },
+                        })}
                     </Typography>
                 </div>
             )}
