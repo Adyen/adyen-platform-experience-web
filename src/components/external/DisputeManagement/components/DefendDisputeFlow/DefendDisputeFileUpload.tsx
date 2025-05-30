@@ -112,15 +112,14 @@ export const DefendDisputeFileUpload = () => {
 
     const areRequiredDocsUploaded = useMemo(() => {
         if (!defendDisputePayload) return false;
-        const uploaded = new Map(defendDisputePayload.entries());
 
-        const areAllRequiredPresent = requiredDocuments.every(d => uploaded.has(d) && !!uploaded.get(d));
-        if (oneOrMoreDocuments.length === 0) {
-            return areAllRequiredPresent;
-        }
+        const allRequiredDocumentsPresent = requiredDocuments.every(d => defendDisputePayload.get(d) instanceof File);
 
-        const isAtLeastOneOptionalPresent = oneOrMoreDocuments.some(d => uploaded.has(d.id) && !!uploaded.get(d.id));
-        return areAllRequiredPresent && isAtLeastOneOptionalPresent;
+        if (oneOrMoreDocuments.length === 0) return allRequiredDocumentsPresent;
+
+        const atLeastOneOptionalDocumentPresent = oneOrMoreDocuments.some(d => defendDisputePayload.get(d.id) instanceof File);
+
+        return allRequiredDocumentsPresent && atLeastOneOptionalDocumentPresent;
     }, [defendDisputePayload, oneOrMoreDocuments, requiredDocuments]);
 
     const actionButtons = useMemo(() => {
