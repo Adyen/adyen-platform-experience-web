@@ -10,6 +10,8 @@ import { MutableRef, useCallback, useEffect } from 'preact/hooks';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
+import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
+import { MapErrorCallback } from './types';
 
 const SelectAndUploadOptionalDoc = ({
     items,
@@ -20,6 +22,7 @@ const SelectAndUploadOptionalDoc = ({
     title,
     index,
     onRemoveOption,
+    mapError,
 }: {
     items: SelectItem[];
     selection: string | undefined;
@@ -29,6 +32,7 @@ const SelectAndUploadOptionalDoc = ({
     title: string;
     index?: number;
     onRemoveOption?: (index: number) => void;
+    mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
     const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
@@ -99,6 +103,14 @@ const SelectAndUploadOptionalDoc = ({
                         })}
                 </div>
                 <FileInput
+                    maxFileSize={type => {
+                        return DOCUMENT_MAX_SIZE[type as keyof typeof DOCUMENT_MAX_SIZE];
+                    }}
+                    allowedFileTypes={ALLOWED_FILE_TYPES}
+                    mapError={mapError}
+                    onDelete={() => {
+                        selection && removeFieldFromDefendPayload(selection);
+                    }}
                     ref={ref}
                     disabled={!selection}
                     required={required}
