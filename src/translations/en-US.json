@@ -547,7 +547,6 @@
     "disputes.error.entityWasNotFound": "Entity was not found",
     "disputes.error.entityWasNotFoundDetail": "Dispute not found for the specified Account Holder",
     "disputes.error.failedRetry": "Failed, retry",
-    "disputes.error.weCouldNotLoadTheDisputesOverviewComponent": "We could not load the disputes overview component",
     "disputes.error.weCouldNotLoadYourDispute": "We could not load your dispute.",
     "disputes.error.weCouldNotLoadYourDisputes": "We could not load your disputes.",
     "disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport": "We couldn't process this dispute. Please try again, or contact support if you continue to have problems.",
