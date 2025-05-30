@@ -1,3 +1,4 @@
+@use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style';
 
 .adyen-pe-dispute-data {
@@ -63,6 +64,13 @@
         }
     }
 
+    &__list-evidence-error-message {
+        align-items: center;
+        color: style.token(color-label-critical);
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
     &__label {
         color: style.token(color-label-secondary);
         font-size: style.token(text-body-font-size);
@@ -105,6 +113,93 @@
         #{$adyen-pe-comments-expanded} & {
             mask: none;
         }
+    }
+
+    &__skeleton-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-090);
+    }
+
+    &__status-box-skeleton {
+        border: 1px solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-l);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        height: 118px;
+        padding: style.token(spacer-060);
+        width: 338px;
+    }
+
+    &__status-box-status-container {
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
+    &__status-box-status {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-s);
+        height: 22px;
+        width: 84px;
+    }
+
+    &__status-box-amount {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-s);
+        height: 33px;
+        width: 221px;
+    }
+
+    &__status-box-payment-method-container {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+
+    &__status-box-payment-method {
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__status-box-payment-method:nth-of-type(1) {
+        border-radius: style.token(border-radius-xs);
+        height: 24px;
+        width: 36px;
+    }
+
+    &__status-box-payment-method:nth-of-type(2) {
+        border-radius: style.token(border-radius-l);
+        height: 16px;
+        width: 221px;
+    }
+
+    &__properties-skeleton-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__properties-skeleton {
+        display: flex;
+        gap: style.token(spacer-090);
+    }
+
+    &__properties-skeleton-element {
+        @include skeleton.adyen-pe-skeleton-animation();
+
+        border-radius: style.token(border-radius-l);
+    }
+
+    &__properties-skeleton :nth-child(1) {
+        height: 15px;
+        width: 141px;
+    }
+
+    &__properties-skeleton :nth-child(2) {
+        height: 15px;
+        width: 221px;
     }
 }
 

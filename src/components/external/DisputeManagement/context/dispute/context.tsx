@@ -17,8 +17,10 @@ interface DisputeFlowContextValue {
     setApplicableDocuments: (documents: IDisputeDefenseDocument[] | null) => void;
     clearFiles: () => void;
     clearStates: () => void;
-    defendDisputePayload: FormData;
+    defendDisputePayload: FormData | null;
     addFileToDefendPayload: (name: string, file: File) => void;
+    moveFieldInDefendPayload: (from: string, to: string) => void;
+    removeFieldFromDefendPayload: (field: string) => void;
     defendResponse: 'error' | 'success' | null;
     onDefendSubmit: (response: 'success' | 'error') => void;
 }
@@ -28,24 +30,39 @@ interface DisputeProviderProps {
     setDispute: (dispute: IDisputeDetail | undefined) => void;
 }
 
+const cloneFormData = (formData: FormData) => {
+    const formDataClone = new FormData();
+    for (const [field, value] of formData.entries()) {
+        if (value instanceof File) {
+            formDataClone.set(field, value, value.name);
+        } else formDataClone.set(field, value);
+    }
+    return formDataClone;
+};
+
 export const DisputeFlowContext = createContext<DisputeFlowContextValue | undefined>(undefined);
 
 export const DisputeContextProvider = memo(({ dispute, setDispute, children }: PropsWithChildren<DisputeProviderProps>) => {
     const [flowState, setFlowState] = useState<DisputeFlowState>('details');
     const [selectedDefenseReason, setSelectedDefenseReason] = useState<string | null>(null);
     const [applicableDocuments, setApplicableDocuments] = useState<IDisputeDefenseDocument[] | null>([]);
-    const [defendDisputePayload, setDefendDisputePayload] = useState<any | null>(null);
+    const [defendDisputePayload, setDefendDisputePayload] = useState<FormData | null>(null);
     const [defendResponse, setDefendResponse] = useState<'error' | 'success' | null>(null);
 
     const clearFiles = useCallback(() => {
-        const formData = new FormData();
-        if (selectedDefenseReason) formData.set('defenseReason', selectedDefenseReason);
-        setDefendDisputePayload(formData);
-    }, [selectedDefenseReason]);
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData) {
+                const fileFields = [...previousFormData.keys()].filter(field => field !== 'defenseReason');
 
-    useEffect(() => {
-        clearFiles();
-    }, [clearFiles]);
+                if (fileFields.length > 0) {
+                    const nextFormData = cloneFormData(previousFormData);
+                    fileFields.forEach(field => nextFormData.delete(field));
+                    return nextFormData;
+                }
+            }
+            return previousFormData;
+        });
+    }, []);
 
     const goBack = useCallback(() => {
         switch (flowState) {
@@ -73,17 +90,40 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDefendResponse(null);
     }, [setDispute]);
 
-    const addFileToDefendPayload = useCallback((name: string, file: File) => {
-        setDefendDisputePayload((previousFormData: FormData) => {
-            const formData = new FormData();
-            for (const [field, value] of previousFormData.entries()) {
-                if (value instanceof File) {
-                    formData.set(field, value, value.name);
-                } else formData.set(field, value);
-            }
+    const addFileToDefendPayload = useCallback((field: string, file: File) => {
+        setDefendDisputePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set(field, file, file.name);
+            return nextFormData;
+        });
+    }, []);
 
-            formData.set(name, file, file.name);
-            return formData;
+    const moveFieldInDefendPayload = useCallback((fromField: string, toField: string) => {
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData && previousFormData.has(fromField)) {
+                const fromFieldValue = previousFormData.get(fromField)!;
+                const nextFormData = cloneFormData(previousFormData);
+
+                nextFormData.delete(fromField);
+
+                if (fromFieldValue instanceof File) {
+                    nextFormData.set(toField, fromFieldValue, fromFieldValue.name);
+                } else nextFormData.set(toField, fromFieldValue);
+
+                return nextFormData;
+            }
+            return previousFormData;
+        });
+    }, []);
+
+    const removeFieldFromDefendPayload = useCallback((field: string) => {
+        setDefendDisputePayload(previousFormData => {
+            if (previousFormData && previousFormData.has(field)) {
+                const nextFormData = cloneFormData(previousFormData);
+                nextFormData.delete(field);
+                return nextFormData;
+            }
+            return previousFormData;
         });
     }, []);
 
@@ -91,6 +131,17 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         setDefendResponse(response);
         setFlowState('defenseSubmitResponseView');
     }, []);
+
+    useEffect(() => {
+        setDefendDisputePayload(() => {
+            if (selectedDefenseReason) {
+                const nextFormData = new FormData();
+                nextFormData.set('defenseReason', selectedDefenseReason);
+                return nextFormData;
+            }
+            return null;
+        });
+    }, [selectedDefenseReason]);
 
     return (
         <DisputeFlowContext.Provider
@@ -110,6 +161,8 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 setSelectedDefenseReason,
                 defendDisputePayload,
                 onDefendSubmit,
+                moveFieldInDefendPayload,
+                removeFieldFromDefendPayload,
             }}
         >
             {children}

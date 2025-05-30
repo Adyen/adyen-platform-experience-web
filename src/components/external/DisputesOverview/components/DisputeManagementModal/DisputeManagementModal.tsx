@@ -79,6 +79,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                             onAcceptDispute={onAcceptDisputeCallback}
                             onDefendDispute={onDefendDisputeCallback}
                             onContactSupport={onContactSupport}
+                            onDetailsDismiss={resetDetails}
                             hideTitle
                         />
                     </div>
