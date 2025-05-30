@@ -17,29 +17,15 @@ import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
-import { ValidationError } from '../../../../internal/FormFields/FileInput/types';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
+import { getHumanReadableFileSize } from '../../../../../utils';
+import { MapErrorCallback } from './types';
 
 const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.mustBeInEnglish',
     'disputes.documentRequirements.recommendedSize',
     'disputes.documentRequirements.acceptableFormatAndSize',
 ];
-
-const mapError: (error: ValidationError) => TranslationKey = error => {
-    switch (error) {
-        case validationErrors.DISALLOWED_FILE_TYPE:
-            return 'inputError.disallowedFileType';
-        case validationErrors.FILE_REQUIRED:
-            return 'disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue';
-        case validationErrors.TOO_MANY_FILES:
-            return 'inputError.tooManyFiles';
-        case validationErrors.VERY_LARGE_FILE:
-            return 'disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain';
-        default:
-            return 'disputes.inputError.somethingWentWrongPleaseCheckYourDocuments';
-    }
-};
 
 export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
@@ -48,6 +34,29 @@ export const DefendDisputeFileUpload = () => {
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
     const [isFetching, setIsFetching] = useState(false);
+
+    const mapError: MapErrorCallback = useCallback(
+        (error, file) => {
+            switch (error) {
+                case validationErrors.DISALLOWED_FILE_TYPE:
+                    return i18n.get('inputError.disallowedFileType');
+                case validationErrors.FILE_REQUIRED:
+                    return i18n.get('disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue');
+                case validationErrors.TOO_MANY_FILES:
+                    return i18n.get('inputError.tooManyFiles');
+                case validationErrors.VERY_LARGE_FILE:
+                    return i18n.get('disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain', {
+                        values: {
+                            size: file && file.size ? getHumanReadableFileSize(file.size) : undefined,
+                            type: file?.type?.replace('application/', '').replace('image/', ''),
+                        },
+                    });
+                default:
+                    return i18n.get('disputes.inputError.somethingWentWrongPleaseCheckYourDocuments');
+            }
+        },
+        [i18n]
+    );
 
     const defendDisputeMutation = useMutation({
         queryFn: defendDispute,

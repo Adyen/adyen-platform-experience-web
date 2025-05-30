@@ -5,7 +5,7 @@ import Typography from '../../../Typography/Typography';
 import useTrackedRef from '../../../../../hooks/useTrackedRef';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { BASE_CLASS, DEFAULT_FILE_TYPES, DEFAULT_MAX_FILE_SIZE, validationErrors } from '../constants';
-import { getHumanReadableFileSize, getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
+import { getUploadedFilesFromSource, isFunction, uniqueId, UploadedFileSource } from '../../../../../utils';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { TranslationKey } from '../../../../../translations';
 import { DropzoneProps, ValidationError } from '../types';
@@ -41,7 +41,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
 
     const { i18n } = useCoreContext();
     const [inputError, setInputError] = useState<ValidationError | ''>('');
-    const [largeFileErrorContext, setLargeFileErrorContext] = useState<{ type: string; limit: string } | undefined>();
+    const [largeFileErrorContext, setLargeFileErrorContext] = useState<{ type: string; limit: number } | undefined>();
     const [dragOver, setDragOver] = useState(false);
 
     const isInvalid = !!inputError;
@@ -125,7 +125,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     const currentMaxFileSize = isFunction(maxFileSize) ? maxFileSize(file.type) ?? DEFAULT_MAX_FILE_SIZE : maxFileSize;
 
                     if (file.size > currentMaxFileSize) {
-                        setLargeFileErrorContext({ type: file.type, limit: getHumanReadableFileSize(currentMaxFileSize) });
+                        setLargeFileErrorContext({ type: file.type, limit: currentMaxFileSize });
                         throw validationErrors.VERY_LARGE_FILE;
                     }
                     return true;
@@ -196,12 +196,12 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 <div className={classes.error}>
                     <Icon name="cross-circle-fill" className={classes.errorIcon} />
                     <Typography className={classes.errorText} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {i18n.get(isFunction(mapError) ? mapError(inputError) : (inputError as TranslationKey), {
-                            values: {
-                                size: largeFileErrorContext?.limit,
-                                type: largeFileErrorContext?.type,
-                            },
-                        })}
+                        {isFunction(mapError)
+                            ? mapError(
+                                  inputError,
+                                  largeFileErrorContext ? { size: largeFileErrorContext.limit, type: largeFileErrorContext.type } : undefined
+                              )
+                            : i18n.get(inputError as TranslationKey)}
                     </Typography>
                 </div>
             )}

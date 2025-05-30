@@ -10,7 +10,7 @@ export interface BaseFileInputProps {
     required?: boolean;
     maxFileSize?: number | ((type: string) => number | undefined);
     allowedFileTypes?: readonly string[];
-    mapError?: (error: ValidationError) => TranslationKey;
+    mapError?: (error: ValidationError, fileInfo?: { size: number; type: string }) => string;
 }
 
 export interface DropzoneProps extends PropsWithChildren<BaseFileInputProps> {

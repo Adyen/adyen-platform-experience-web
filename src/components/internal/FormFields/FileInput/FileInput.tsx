@@ -1,17 +1,34 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { fixedForwardRef } from '../../../../utils/preact';
-import defaultMapError from './helpers/defaultMapError';
 import UploadedFile from './components/UploadedFile';
 import Dropzone from './components/Dropzone';
 import { isFunction } from '../../../../utils';
-import { BASE_CLASS } from './constants';
-import { FileInputProps } from './types';
+import { BASE_CLASS, validationErrors } from './constants';
+import { FileInputProps, ValidationError } from './types';
 import './FileInput.scss';
+import useCoreContext from '../../../../core/Context/useCoreContext';
 
 export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, onDelete, ...restProps }, ref) => {
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = useRef(files);
     const uploadedFile = files[0];
+    const { i18n } = useCoreContext();
+
+    const defaultMapError = useCallback(
+        (error: ValidationError): string => {
+            switch (error) {
+                case validationErrors.DISALLOWED_FILE_TYPE:
+                    return i18n.get('inputError.disallowedFileType');
+                case validationErrors.FILE_REQUIRED:
+                    return i18n.get('inputError.fileRequired');
+                case validationErrors.TOO_MANY_FILES:
+                    return i18n.get('inputError.tooManyFiles');
+                case validationErrors.VERY_LARGE_FILE:
+                    return i18n.get('inputError.veryLargeFile');
+            }
+        },
+        [i18n]
+    );
 
     const mapErrorWithFallback = useMemo(() => (isFunction(mapError) ? mapError : defaultMapError), [mapError]);
 

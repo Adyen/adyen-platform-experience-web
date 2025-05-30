@@ -5,9 +5,8 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 import Typography from '../../../../internal/Typography/Typography';
 import { MutableRef, useMemo } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
-import { ValidationError } from '../../../../internal/FormFields/FileInput/types';
-import { TranslationKey } from '../../../../../translations';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
+import { MapErrorCallback } from './types';
 
 export const DefendDocumentUpload = ({
     document,
@@ -18,7 +17,7 @@ export const DefendDocumentUpload = ({
     document: string;
     ref: MutableRef<HTMLInputElement | null>;
     isRequired: boolean;
-    mapError: (error: ValidationError) => TranslationKey;
+    mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
     const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};

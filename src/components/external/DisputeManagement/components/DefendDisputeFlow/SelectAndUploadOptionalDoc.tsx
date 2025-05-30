@@ -10,9 +10,8 @@ import { MutableRef, useCallback, useEffect } from 'preact/hooks';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
-import { TranslationKey } from '../../../../../translations';
-import { ValidationError } from '../../../../internal/FormFields/FileInput/types';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
+import { MapErrorCallback } from './types';
 
 const SelectAndUploadOptionalDoc = ({
     items,
@@ -33,7 +32,7 @@ const SelectAndUploadOptionalDoc = ({
     title: string;
     index?: number;
     onRemoveOption?: (index: number) => void;
-    mapError: (error: ValidationError) => TranslationKey;
+    mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
     const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
