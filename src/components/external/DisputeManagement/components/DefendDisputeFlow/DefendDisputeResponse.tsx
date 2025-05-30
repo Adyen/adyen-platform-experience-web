@@ -11,7 +11,7 @@ import { useDisputeFlow } from '../../context/dispute/context';
 
 export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
     const { i18n } = useCoreContext();
-    const { clearStates, setFlowState, defendResponse } = useDisputeFlow();
+    const { clearFiles, clearStates, setFlowState, defendResponse } = useDisputeFlow();
 
     useEffect(() => {
         if (defendResponse === 'success') onDefendDispute?.();
@@ -23,8 +23,9 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
     }, [clearStates, setFlowState]);
 
     const goBackToFileUploadView = useCallback(() => {
+        clearFiles();
         setFlowState('uploadDefenseFilesView');
-    }, [setFlowState]);
+    }, [clearFiles, setFlowState]);
 
     //TODO: For this view create an internal component
     return (

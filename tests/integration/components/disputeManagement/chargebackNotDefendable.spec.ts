@@ -1,14 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--chargeback-defendable-externally';
+const STORY_ID = 'mocked-dispute-management--chargeback-not-defendable';
 
-test.describe('Chargeback - Defendable externally', () => {
+test.describe('Chargeback - Not defendable', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
     });
 
-    test('should render contact support alert when chargeback is not defendable through the component', async ({ page }) => {
+    test('should render chargeback not-defendable alert message if not actionable, but needs action', async ({ page }) => {
         await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
         await expect(page.locator('.adyen-pe-tag', { hasText: 'Undefended' })).toBeVisible();
 
@@ -18,7 +18,6 @@ test.describe('Chargeback - Defendable externally', () => {
         await icon.waitFor({ state: 'visible' });
         await expect(icon).toBeVisible();
 
-        await expect(page.getByText('Contact support to defend this dispute.')).toBeVisible();
-        await expect(page.getByText('The response deadline is')).toBeVisible();
+        await expect(page.getByText('This chargeback can’t be defended. Contact support for details.')).toBeVisible();
     });
 });

@@ -10,6 +10,6 @@ export interface SegmentedControlItem<ItemId extends string> {
 
 export interface SegmentedControlProps<ItemId extends string> {
     onChange?: <ActiveItem extends SegmentedControlItem<ItemId>>(activeItem: ActiveItem) => void;
-    defaultItem?: ItemId;
     items: readonly SegmentedControlItem<ItemId>[];
+    activeItem?: ItemId;
 }

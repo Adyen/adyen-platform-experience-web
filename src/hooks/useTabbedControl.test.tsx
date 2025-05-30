@@ -37,11 +37,11 @@ describe('useTabbedControl', () => {
         expect(result.activeIndex).toBe(0);
 
         for (let i = 0; i < OPTIONS.length; i++) {
-            result = getHookResult({ options: OPTIONS, defaultOption: OPTIONS[i]!.id });
+            result = getHookResult({ options: OPTIONS, activeOption: OPTIONS[i]!.id });
             expect(result.activeIndex).toBe(i);
         }
 
-        result = getHookResult({ options: [], defaultOption: 'unknown_option' });
+        result = getHookResult({ options: [], activeOption: 'unknown_option' });
         expect(result.activeIndex).toBe(0);
     });
 
@@ -125,7 +125,7 @@ describe('useTabbedControl', () => {
         const lastOption = OPTIONS[OPTIONS.length - 1];
         const onChange = vi.fn();
 
-        render(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange} />);
+        render(<TestComponent options={OPTIONS} activeOption={lastOption?.id} onChange={onChange} />);
 
         const optionButtons = screen.getAllByRole('button');
 
@@ -142,7 +142,7 @@ describe('useTabbedControl', () => {
 
         let clickOptionIndex = 1;
 
-        const { rerender } = render(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange} />);
+        const { rerender } = render(<TestComponent options={OPTIONS} activeOption={lastOption?.id} onChange={onChange} />);
 
         expect(onChange).not.toHaveBeenCalled();
 
@@ -155,7 +155,7 @@ describe('useTabbedControl', () => {
 
         clickOptionIndex = 0;
 
-        rerender(<TestComponent options={OPTIONS} defaultOption={lastOption?.id} onChange={onChange2} />);
+        rerender(<TestComponent options={OPTIONS} activeOption={lastOption?.id} onChange={onChange2} />);
 
         expect(onChange2).not.toHaveBeenCalled();
 

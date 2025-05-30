@@ -52,7 +52,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const clearFiles = useCallback(() => {
         setDefendDisputePayload(previousFormData => {
             if (previousFormData) {
-                const fileFields = [...previousFormData.keys()].filter(field => field !== 'defendReason');
+                const fileFields = [...previousFormData.keys()].filter(field => field !== 'defenseReason');
 
                 if (fileFields.length > 0) {
                     const nextFormData = cloneFormData(previousFormData);
