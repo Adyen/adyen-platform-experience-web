@@ -555,6 +555,7 @@
     "disputes.expiredOn": "Expired on",
     "disputes.goBack": "Go back",
     "disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain": "File is over %{size} limit for %{type}. Choose a smaller file and try again.",
+    "disputes.inputError.somethingWentWrongPleaseCheckYourDocuments": "Something went wrong, please check that your documents are meeting requirements.",
     "disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue": "Upload at least one supporting document to continue",
     "disputes.issuerComment.showLess": "Show less",
     "disputes.issuerComment.showMore": "Show more",

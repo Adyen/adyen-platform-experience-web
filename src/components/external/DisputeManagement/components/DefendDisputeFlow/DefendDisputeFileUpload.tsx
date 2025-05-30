@@ -36,6 +36,8 @@ const mapError: (error: ValidationError) => TranslationKey = error => {
             return 'inputError.tooManyFiles';
         case validationErrors.VERY_LARGE_FILE:
             return 'disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain';
+        default:
+            return 'disputes.inputError.somethingWentWrongPleaseCheckYourDocuments';
     }
 };
 
