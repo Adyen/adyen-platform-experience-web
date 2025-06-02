@@ -17,6 +17,9 @@ import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
+import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
+import { getHumanReadableFileSize } from '../../../../../utils';
+import { MapErrorCallback } from './types';
 
 const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.mustBeInEnglish',
@@ -31,6 +34,29 @@ export const DefendDisputeFileUpload = () => {
     const { defendDispute } = useConfigContext().endpoints;
     const ref = useRef<HTMLInputElement | null>(null);
     const [isFetching, setIsFetching] = useState(false);
+
+    const mapError: MapErrorCallback = useCallback(
+        (error, file) => {
+            switch (error) {
+                case validationErrors.DISALLOWED_FILE_TYPE:
+                    return i18n.get('inputError.disallowedFileType');
+                case validationErrors.FILE_REQUIRED:
+                    return i18n.get('disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue');
+                case validationErrors.TOO_MANY_FILES:
+                    return i18n.get('inputError.tooManyFiles');
+                case validationErrors.VERY_LARGE_FILE:
+                    return i18n.get('disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain', {
+                        values: {
+                            size: file && file.size ? getHumanReadableFileSize(file.size) : undefined,
+                            type: file?.type?.replace('application/', '').replace('image/', ''),
+                        },
+                    });
+                default:
+                    return i18n.get('disputes.inputError.somethingWentWrongPleaseCheckYourDocuments');
+            }
+        },
+        [i18n]
+    );
 
     const defendDisputeMutation = useMutation({
         queryFn: defendDispute,
@@ -57,21 +83,6 @@ export const DefendDisputeFileUpload = () => {
             );
         }
     }, [disputePspReference, defendDisputeMutation, defendDisputePayload]);
-
-    const actionButtons = useMemo(() => {
-        return [
-            {
-                title: i18n.get('disputes.defend.submit'),
-                disabled: isFetching,
-                event: defendDisputeCallback,
-            },
-            {
-                title: i18n.get('disputes.goBack'),
-                disabled: isFetching,
-                event: goBack,
-            },
-        ];
-    }, [goBack, defendDisputeCallback, i18n, isFetching]);
 
     const [oneOrMoreSelectedDocument, setOneOrMoreSelectedDocument] = useState<string | undefined>(undefined);
     const [optionalSelectedDocuments, setOptionalSelectedDocuments] = useState<(string | undefined)[]>([]);
@@ -107,6 +118,33 @@ export const DefendDisputeFileUpload = () => {
 
         return docs;
     }, [applicableDocuments, i18n]);
+
+    const areRequiredDocsUploaded = useMemo(() => {
+        if (!defendDisputePayload) return false;
+
+        const allRequiredDocumentsPresent = requiredDocuments.every(d => defendDisputePayload.get(d) instanceof File);
+
+        if (oneOrMoreDocuments.length === 0) return allRequiredDocumentsPresent;
+
+        const atLeastOneOptionalDocumentPresent = oneOrMoreDocuments.some(d => defendDisputePayload.get(d.id) instanceof File);
+
+        return allRequiredDocumentsPresent && atLeastOneOptionalDocumentPresent;
+    }, [defendDisputePayload, oneOrMoreDocuments, requiredDocuments]);
+
+    const actionButtons = useMemo(() => {
+        return [
+            {
+                title: i18n.get('disputes.defend.submit'),
+                disabled: isFetching || !areRequiredDocsUploaded,
+                event: defendDisputeCallback,
+            },
+            {
+                title: i18n.get('disputes.goBack'),
+                disabled: isFetching,
+                event: goBack,
+            },
+        ];
+    }, [i18n, isFetching, areRequiredDocsUploaded, defendDisputeCallback, goBack]);
 
     const addOptionalDocument = useCallback((documentType?: string, index?: number) => {
         if (documentType === undefined) {
@@ -187,13 +225,14 @@ export const DefendDisputeFileUpload = () => {
                             {requiredDocuments.length ? (
                                 <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
                                     {requiredDocuments?.map(document => {
-                                        return <DefendDocumentUpload key={document} document={document} ref={ref} isRequired />;
+                                        return <DefendDocumentUpload mapError={mapError} key={document} document={document} ref={ref} isRequired />;
                                     })}
                                 </div>
                             ) : null}
 
                             {oneOrMoreDocuments.length ? (
                                 <SelectAndUploadOptionalDoc
+                                    mapError={mapError}
                                     selection={oneOrMoreSelectedDocument}
                                     setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
                                     items={oneOrMoreDocuments}
@@ -209,6 +248,7 @@ export const DefendDisputeFileUpload = () => {
                               return (
                                   <div key={`optional-doc-${index}`} className="adyen-pe-defend-dispute-document-upload-box">
                                       <SelectAndUploadOptionalDoc
+                                          mapError={mapError}
                                           onRemoveOption={removeSelectedOptionalDocument}
                                           selection={doc}
                                           setSelection={addOptionalDocument}

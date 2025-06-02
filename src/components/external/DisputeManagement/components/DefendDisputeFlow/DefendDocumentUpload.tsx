@@ -5,15 +5,19 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 import Typography from '../../../../internal/Typography/Typography';
 import { MutableRef, useMemo } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
+import { MapErrorCallback } from './types';
 
 export const DefendDocumentUpload = ({
     document,
     ref,
     isRequired,
+    mapError,
 }: {
     document: string;
     ref: MutableRef<HTMLInputElement | null>;
     isRequired: boolean;
+    mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
     const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};
@@ -44,6 +48,14 @@ export const DefendDocumentUpload = ({
                     : null}
             </div>
             <FileInput
+                allowedFileTypes={ALLOWED_FILE_TYPES}
+                maxFileSize={type => {
+                    return DOCUMENT_MAX_SIZE[type as keyof typeof DOCUMENT_MAX_SIZE];
+                }}
+                mapError={mapError}
+                onDelete={() => {
+                    document && removeFieldFromDefendPayload(document);
+                }}
                 ref={ref}
                 key={document}
                 required={isRequired}

@@ -138,19 +138,21 @@
     }
 
     &__status-box-status {
-        @include skeleton.adyen-pe-skeleton-animation();
-
         border-radius: style.token(border-radius-s);
         height: 22px;
         width: 84px;
+
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__status-box-amount {
-        @include skeleton.adyen-pe-skeleton-animation();
-
         border-radius: style.token(border-radius-s);
         height: 33px;
         width: 221px;
+
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__status-box-payment-method-container {
@@ -187,9 +189,10 @@
     }
 
     &__properties-skeleton-element {
-        @include skeleton.adyen-pe-skeleton-animation();
-
         border-radius: style.token(border-radius-l);
+
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__properties-skeleton :nth-child(1) {
