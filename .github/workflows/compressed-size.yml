@@ -9,6 +9,9 @@ on:
 
 jobs:
   is-pr-approved:
+    permissions:
+      contents: read
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +30,9 @@ jobs:
   build:
     needs: is-pr-approved
     if: needs.is-pr-approved.outputs.approved == 'true'
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

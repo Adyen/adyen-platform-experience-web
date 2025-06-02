@@ -2,7 +2,7 @@ import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPaymentRatePercentage } from '../utils/utils';
+import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import StructuredList from '../../../../internal/StructuredList';
@@ -105,7 +105,7 @@ export const CapitalOfferSummary = ({
             },
             {
                 key: 'capital.dailyRepaymentRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPaymentRatePercentage(grantOffer.repaymentRate) } }),
+                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
             },
             {
                 key: 'capital.expectedRepaymentPeriod',
@@ -114,7 +114,7 @@ export const CapitalOfferSummary = ({
             { key: 'account', value: i18n.get('capital.primaryAccount') },
         ];
 
-        if (maximumRepaymentPeriod)
+        if (maximumRepaymentPeriod) {
             summaryItems.splice(4, 0, {
                 key: 'capital.maximumRepaymentPeriod',
                 value:
@@ -122,6 +122,15 @@ export const CapitalOfferSummary = ({
                         ? i18n.get('capital.oneMonth')
                         : i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriod } }),
             });
+        }
+
+        if (grantOffer.aprBasisPoints) {
+            summaryItems.splice(1, 0, {
+                key: 'capital.annualPercentageRate',
+                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.aprBasisPoints) } }),
+            });
+        }
+
         return summaryItems;
     }, [grantOffer, i18n, maximumRepaymentPeriod]);
 
@@ -167,6 +176,23 @@ export const CapitalOfferSummary = ({
                             </Tooltip>
                         );
                     }
+
+                    if (key === 'capital.annualPercentageRate') {
+                        return (
+                            <Tooltip isContainerHovered content={i18n.get('capital.annualPercentageRateIsTheCostOfBorrowingForALoan')}>
+                                <span>
+                                    <Typography
+                                        className={'adyen-pe-capital-offer-summary__list-label'}
+                                        el={TypographyElement.SPAN}
+                                        variant={TypographyVariant.CAPTION}
+                                    >
+                                        {val}
+                                    </Typography>
+                                </span>
+                            </Tooltip>
+                        );
+                    }
+
                     return (
                         <Typography
                             className={'adyen-pe-capital-offer-summary__list-label'}

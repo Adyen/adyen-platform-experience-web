@@ -5,17 +5,17 @@ on:
   workflow_dispatch:
 
   pull_request:
-    types:
-      - closed
-    branches:
-      - 'changeset-release/**'
-      - 'releases/**'
-      - 'main'
+    types: [closed]
+    branches: ['main', 'releases/**', 'changeset-release/**']
 
 jobs:
   create-github-release:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
+    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
@@ -37,6 +37,9 @@ jobs:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
 
       - name: Push tags and create a release
         id: changesets
@@ -51,13 +54,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const tag = `v${{ env.NEW_VERSION }}`;
+            const fs = require('fs');
+            const tag = `v${process.env.NEW_VERSION}`;
             const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag: tag
             });
-            core.setOutput('upload_url', release.upload_url);
+            // Write the output to the file defined by GITHUB_OUTPUT (new method)
+            const outputFile = process.env.GITHUB_OUTPUT;
+            fs.appendFileSync(outputFile, `upload_url=${release.upload_url}\n`);
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -70,6 +76,11 @@ jobs:
           asset_content_type: application/gzip
 
   trigger-npm-publish:
+    permissions:
+      contents: write
+      actions: write
     needs: create-github-release
     uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
     secrets: inherit
+    with:
+      source_run_id: ${{ github.run_id }}

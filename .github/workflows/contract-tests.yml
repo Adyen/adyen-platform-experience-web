@@ -7,6 +7,9 @@ on:
 
 jobs:
   contract-tests:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -37,6 +40,8 @@ jobs:
     needs: contract-tests
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      contents: read
     steps:
       - name: Notify Mattermost
         env:
