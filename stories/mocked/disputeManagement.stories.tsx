@@ -26,6 +26,18 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
 };
 
+export const ChargebackAcceptable: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Acceptable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackAcceptable,
+        },
+    },
+};
+
 export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementElement> = {
     name: 'Chargeback - Lost (Not defended)',
     args: {
