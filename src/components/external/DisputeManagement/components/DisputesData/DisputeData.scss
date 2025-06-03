@@ -1,8 +1,18 @@
+@use 'sass:math';
 @use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style';
 
+$adyen-pe-one-eighth: math.div(1, 8);
+
+@function skeleton-percentage-width($element-width-px, $container-width-px) {
+    $adyen-pe-clamped-width: math.clamp(0, $element-width-px, $container-width-px);
+    $adyen-pe-percentage-width: math.div($adyen-pe-clamped-width, $container-width-px) * 100%;
+    @return math.round(math.div($adyen-pe-percentage-width, $adyen-pe-one-eighth)) * $adyen-pe-one-eighth;
+}
+
 .adyen-pe-dispute-data {
     $adyen-pe-self: &;
+    $adyen-pe-self-mobile: #{$adyen-pe-self}--mobile;
     $adyen-pe-comments: #{$adyen-pe-self}__issuer-comments;
     $adyen-pe-comments-expanded: #{$adyen-pe-comments}--expanded;
     $adyen-pe-comments-truncated: #{$adyen-pe-comments}--truncated;
@@ -15,6 +25,10 @@
     &--mobile {
         .adyen-pe-structured-list__item {
             flex-direction: column;
+        }
+
+        .adyen-pe-status-box {
+            min-width: 100%;
         }
     }
 
@@ -44,12 +58,29 @@
     }
 
     &__list {
-        .adyen-pe-structured-list {
-            &__label,
-            &__content {
-                padding-bottom: style.token(spacer-030);
-                padding-top: style.token(spacer-030);
+        .adyen-pe-structured-list__label,
+        .adyen-pe-structured-list__content {
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
+
+            #{$adyen-pe-self-mobile} & {
+                padding-bottom: 0;
+                padding-top: 0;
             }
+        }
+
+        .adyen-pe-structured-list__label {
+            #{$adyen-pe-self-mobile} & {
+                margin-bottom: style.token(spacer-010);
+            }
+        }
+
+        #{$adyen-pe-self-mobile} & {
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-080);
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
         }
 
         &--evidence {
@@ -130,6 +161,10 @@
         height: 118px;
         padding: style.token(spacer-060);
         width: 338px;
+
+        #{$adyen-pe-self-mobile} & {
+            width: 100%;
+        }
     }
 
     &__status-box-status-container {
@@ -142,6 +177,10 @@
         height: 22px;
         width: 84px;
 
+        #{$adyen-pe-self-mobile} & {
+            width: skeleton-percentage-width(84, 338);
+        }
+
         /* stylelint-disable-next-line order/order */
         @include skeleton.adyen-pe-skeleton-animation();
     }
@@ -150,6 +189,10 @@
         border-radius: style.token(border-radius-s);
         height: 33px;
         width: 221px;
+
+        #{$adyen-pe-self-mobile} & {
+            width: skeleton-percentage-width(221, 338);
+        }
 
         /* stylelint-disable-next-line order/order */
         @include skeleton.adyen-pe-skeleton-animation();
@@ -169,12 +212,20 @@
         border-radius: style.token(border-radius-xs);
         height: 24px;
         width: 36px;
+
+        #{$adyen-pe-self-mobile} & {
+            width: skeleton-percentage-width(36, 338);
+        }
     }
 
     &__status-box-payment-method:nth-of-type(2) {
         border-radius: style.token(border-radius-l);
         height: 16px;
         width: 221px;
+
+        #{$adyen-pe-self-mobile} & {
+            width: skeleton-percentage-width(221, 338);
+        }
     }
 
     &__properties-skeleton-container {
@@ -186,6 +237,11 @@
     &__properties-skeleton {
         display: flex;
         gap: style.token(spacer-090);
+
+        #{$adyen-pe-self-mobile} & {
+            flex-direction: column;
+            gap: style.token(spacer-040);
+        }
     }
 
     &__properties-skeleton-element {
@@ -198,11 +254,20 @@
     &__properties-skeleton :nth-child(1) {
         height: 15px;
         width: 141px;
+
+        #{$adyen-pe-self-mobile} & {
+            margin-top: style.token(spacer-040);
+            width: skeleton-percentage-width(141, 338);
+        }
     }
 
     &__properties-skeleton :nth-child(2) {
         height: 15px;
         width: 221px;
+
+        #{$adyen-pe-self-mobile} & {
+            width: skeleton-percentage-width(221, 338);
+        }
     }
 }
 

@@ -234,25 +234,27 @@ export const DisputeData = ({
         const skeletonRows = Array.from({ length: 5 });
 
         return (
-            <div className={DISPUTE_DATA_SKELETON_CONTAINER}>
-                <div className={DISPUTE_DATA_STATUS_BOX_SKELETON}>
-                    <div className={DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER}>
-                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
-                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
-                    </div>
-                    <span className={DISPUTE_DATA_STATUS_BOX_AMOUNT}></span>
-                    <div className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER}>
-                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
-                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
-                    </div>
-                </div>
-                <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
-                    {skeletonRows.map((_, index) => (
-                        <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
-                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
-                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+            <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
+                <div className={DISPUTE_DATA_SKELETON_CONTAINER}>
+                    <div className={DISPUTE_DATA_STATUS_BOX_SKELETON}>
+                        <div className={DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER}>
+                            <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
+                            <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
                         </div>
-                    ))}
+                        <span className={DISPUTE_DATA_STATUS_BOX_AMOUNT}></span>
+                        <div className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER}>
+                            <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                            <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                        </div>
+                    </div>
+                    <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
+                        {skeletonRows.map((_, index) => (
+                            <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
+                                <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                                <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
