@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -11,7 +12,7 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
-import { BASE_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
+import { BASE_CLASS, BASE_XS_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
@@ -65,12 +66,13 @@ const DisputesOverviewTabsDropdown = ({
         currentTab && onChange(currentTab);
     }, [onChange, statusGroup]);
 
+    useEffect(() => setStatusGroup(activeTab), [activeTab]);
+
     return (
         <Select
             items={selectItems}
             selected={statusGroup}
             onChange={({ target }) => setStatusGroup(target.value)}
-            withoutCollapseIndicator={true}
             showOverlay={true}
             multiSelect={false}
             filterable={false}
@@ -255,13 +257,13 @@ export const DisputesOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <div className={BASE_CLASS}>
+        <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
             {isMobileContainer ? (
-                <DisputesOverviewTabsDropdown activeTab={statusGroup} onChange={onStatusGroupChange} />
+                <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
             ) : (
                 <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
             )}

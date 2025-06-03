@@ -1,6 +1,16 @@
 @use '../../../../../style';
 
 .adyen-pe-disputes-overview {
+    &--xs {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+
+        .adyen-pe-header {
+            align-items: center;
+        }
+    }
+
     .adyen-pe-tabpanels {
         display: none;
     }
