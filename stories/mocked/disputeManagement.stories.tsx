@@ -60,6 +60,17 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementEle
         },
     },
 };
+export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Lost (with issuer feedback)',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackLostWithFeedback,
+        },
+    },
+};
 
 export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElement> = {
     name: 'Chargeback - Auto defended',
