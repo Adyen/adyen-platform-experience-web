@@ -270,9 +270,3 @@ $adyen-pe-one-eighth: math.div(1, 8);
         }
     }
 }
-
-.adyen-pe-dispute-data-alert {
-    display: flex;
-    flex-direction: column;
-    gap: style.token(spacer-030);
-}
