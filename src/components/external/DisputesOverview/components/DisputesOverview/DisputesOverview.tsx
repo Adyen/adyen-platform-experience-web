@@ -27,6 +27,7 @@ import './DisputesOverview.scss';
 const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
 const DISPUTE_REASONS_FILTER_PARAM = 'reasonCategories';
+const LAST_REFRESH_TIMESTAMP_PARAM = '_t';
 
 type DisputeScheme = keyof typeof DISPUTE_PAYMENT_SCHEMES;
 type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
@@ -40,6 +41,11 @@ const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([s
     label: labelTranslationKey,
     content: null,
 })) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
+
+interface DisputesPageRequestParams extends Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> {
+    [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
+    statusGroup: IDisputeStatusGroup;
+}
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -81,10 +87,7 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (
-            pageRequestParams: Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> & { statusGroup: IDisputeStatusGroup },
-            signal?: AbortSignal
-        ) => {
+        async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: DisputesPageRequestParams, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
@@ -113,6 +116,7 @@ export const DisputesOverview = ({
     const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
         [DISPUTE_REASONS_FILTER_PARAM]: undefined,
         [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
+        [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
         statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
     });
 
@@ -200,12 +204,16 @@ export const DisputesOverview = ({
         [updateFilters]
     );
 
-    const updateDisputesListStatusGroup = useCallback((statusGroup?: IDisputeStatusGroup) => {
-        // Setting statusGroupActiveTab to undefined here for unknown values passed to
-        // the callback ensures that the current active tab remains unchanged, while
-        // still allowing for subsequent programmatic status group tab navigation.
-        setStatusGroupActiveTab(DISPUTE_STATUS_GROUPS_VALUES.includes(statusGroup!) ? statusGroup : undefined);
-    }, []);
+    const refreshDisputesList = useCallback(
+        (gotoStatusGroup?: IDisputeStatusGroup) => {
+            gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup
+                ? setStatusGroupActiveTab(gotoStatusGroup)
+                : // Refresh the current disputes list status group,
+                  // by updating the last refresh timestamp filter parameter
+                  updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+        },
+        [statusGroup, updateFilters]
+    );
 
     useEffect(() => {
         refreshNowTimestamp();
@@ -251,7 +259,7 @@ export const DisputesOverview = ({
                 resetDetails={resetDetails}
                 onAcceptDispute={onAcceptDispute}
                 onContactSupport={onContactSupport}
-                updateDisputesListStatusGroup={updateDisputesListStatusGroup}
+                refreshDisputesList={refreshDisputesList}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}

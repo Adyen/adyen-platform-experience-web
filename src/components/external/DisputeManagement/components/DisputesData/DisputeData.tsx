@@ -24,7 +24,6 @@ import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
-    DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
@@ -78,23 +77,24 @@ const DisputeDataAlert = ({
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
-                        <div className={DISPUTE_DATA_ALERT}>
+                        <>
                             {i18n.get(translationKey)}
                             {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
-                                <div>
+                                <>
+                                    {' '}
                                     <Translation
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
-                                                    {dueDate ? dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE) : null}
+                                                <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
+                                                    {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
                                                 </Typography>
                                             ),
                                         }}
                                     />
-                                </div>
+                                </>
                             )}
-                        </div>
+                        </>
                     }
                 />
             );
