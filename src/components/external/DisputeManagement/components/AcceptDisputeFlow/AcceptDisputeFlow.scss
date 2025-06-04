@@ -53,4 +53,8 @@
         height: 218px;
         justify-content: center;
     }
+
+    &__title {
+        font-size: style.token(text-title-font-size);
+    }
 }

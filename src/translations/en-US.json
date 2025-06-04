@@ -534,7 +534,7 @@
     "disputes.disputeReason": "Reason",
     "disputes.disputeReference": "Dispute reference",
     "disputes.documentRequirements": "Document requirements",
-    "disputes.documentRequirements.acceptableFormatAndSize": "Max 2MB for PDF or 10MB for JPEG, TIFF",
+    "disputes.documentRequirements.acceptableFormatAndSize": "Max 2MB for PDF or 10MB for JPEG, JPG, TIFF",
     "disputes.documentRequirements.mustBeInEnglish": "Must be in English",
     "disputes.documentRequirements.recommendedSize": "Recommended A4 or US letter size",
     "disputes.empty.noChargebacksFound": "No chargebacks found",
