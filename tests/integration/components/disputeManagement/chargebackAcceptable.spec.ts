@@ -38,7 +38,7 @@ test.describe('Chargeback - Acceptable', () => {
         await page.getByText('I agree').click();
         await page.getByRole('button', { name: 'Accept chargeback' }).click();
 
-        await expect(page.getByText('The dispute has been accepted')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Show dispute details' })).toBeVisible();
+        await expect(page.getByText('Chargeback has been accepted')).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Show details' })).toBeVisible();
     });
 });
