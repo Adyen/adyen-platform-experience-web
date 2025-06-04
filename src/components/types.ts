@@ -107,7 +107,6 @@ interface _DataOverviewComponentProps {
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
-    onAcceptDispute?: () => void;
     onContactSupport?: () => void;
 }
 

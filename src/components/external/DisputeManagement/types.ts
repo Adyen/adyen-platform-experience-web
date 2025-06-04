@@ -13,9 +13,8 @@ export type DisputeDetailsCustomization = DetailsDataCustomizationObject<Dispute
 
 export type DisputeManagementProps = {
     id: string;
-    onAcceptDispute?: () => void;
-    onDefendDispute?: () => void;
     onContactSupport?: () => void;
-    // TODO - define a better name for this prop
-    onDetailsDismiss?: () => void;
+    onDisputeAccept?: (dispute: IDisputeDetail) => void;
+    onDisputeDefend?: (dispute: IDisputeDetail) => void;
+    onDismiss?: () => void;
 } & DetailsWithExtraData<DisputeDetailsCustomization>;

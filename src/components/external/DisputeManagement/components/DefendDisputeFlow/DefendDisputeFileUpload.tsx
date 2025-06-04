@@ -18,7 +18,8 @@ import Icon from '../../../../internal/Icon';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
-import { getHumanReadableFileSize } from '../../../../../utils';
+import { getHumanReadableFileSize, isFunction } from '../../../../../utils';
+import { DisputeManagementProps } from '../../types';
 import { MapErrorCallback } from './types';
 
 const documentRequirements: TranslationKey[] = [
@@ -27,7 +28,7 @@ const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.acceptableFormatAndSize',
 ];
 
-export const DefendDisputeFileUpload = () => {
+export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
     const { i18n } = useCoreContext();
     const { clearFiles, dispute, applicableDocuments, goBack, defendDisputePayload, onDefendSubmit, removeFieldFromDefendPayload } = useDisputeFlow();
     const disputePspReference = dispute?.dispute.pspReference;
@@ -64,12 +65,13 @@ export const DefendDisputeFileUpload = () => {
             onSuccess: useCallback(() => {
                 setIsFetching(false);
                 clearFiles();
-                onDefendSubmit('success');
-            }, [setIsFetching, clearFiles, onDefendSubmit]),
+                isFunction(onDisputeDefend) ? onDisputeDefend(dispute!) : onDefendSubmit('success');
+            }, [clearFiles, onDefendSubmit, onDisputeDefend]),
             onError: useCallback(() => {
                 setIsFetching(false);
+                clearFiles();
                 onDefendSubmit('error');
-            }, [setIsFetching, onDefendSubmit]),
+            }, [onDefendSubmit]),
         },
     });
 

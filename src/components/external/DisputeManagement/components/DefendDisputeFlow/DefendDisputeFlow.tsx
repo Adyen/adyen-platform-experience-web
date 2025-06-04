@@ -6,8 +6,9 @@ import { DefendDisputeFileUpload } from './DefendDisputeFileUpload';
 import { DefendDisputeReason } from './DefendDisputeReason';
 import './DefendDisputeFlow.scss';
 import { DefendDisputeResponse } from './DefendDisputeResponse';
+import { DisputeManagementProps } from '../../types';
 
-export const DefendDisputeFlow = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
+export const DefendDisputeFlow = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
     const { i18n } = useCoreContext();
     const { applicableDocuments, flowState } = useDisputeFlow();
 
@@ -19,8 +20,8 @@ export const DefendDisputeFlow = ({ onDefendDispute }: { onDefendDispute?: () =>
                 </Typography>
             )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}
-            {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload />}
-            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse onDefendDispute={onDefendDispute} />}
+            {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload onDisputeDefend={onDisputeDefend} />}
+            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse />}
         </div>
     );
 };

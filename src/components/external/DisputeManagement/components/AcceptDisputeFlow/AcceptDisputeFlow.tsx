@@ -5,14 +5,15 @@ import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActio
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { useCallback, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { useDisputeFlow } from '../../context/dispute/context';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { EMPTY_OBJECT, uniqueId } from '../../../../../utils';
+import { EMPTY_OBJECT, isFunction, uniqueId } from '../../../../../utils';
+import { DisputeManagementProps } from '../../types';
 import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
-import { useDisputeFlow } from '../../context/dispute/context';
 
-export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () => void }) => {
+export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementProps, 'onDisputeAccept'>) => {
     const { i18n } = useCoreContext();
     const { acceptDispute } = useConfigContext().endpoints;
     const { dispute, setFlowState, clearStates, goBack } = useDisputeFlow();
@@ -31,9 +32,8 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
         options: {
             onSuccess: useCallback(() => {
                 clearStates();
-                setDisputeAccepted(true);
-                onAcceptDispute?.();
-            }, [clearStates, onAcceptDispute]),
+                isFunction(onDisputeAccept) ? onDisputeAccept(dispute!) : setDisputeAccepted(true);
+            }, [clearStates, onDisputeAccept]),
         },
     });
 
