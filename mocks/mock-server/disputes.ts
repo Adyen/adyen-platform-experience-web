@@ -8,6 +8,7 @@ import { ErrorTypes } from '../../src/core/Http/utils';
 import {
     CHARGEBACK_ACCEPTABLE,
     CHARGEBACK_AUTO_DEFENDED,
+    CHARGEBACK_DEFENDABLE,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
     CHARGEBACK_LOST,
     CHARGEBACK_LOST_NO_ACTION,
@@ -347,6 +348,13 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_ACCEPTABLE);
+            }),
+        ],
+    },
+    chargebackDefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_DEFENDABLE);
             }),
         ],
     },
