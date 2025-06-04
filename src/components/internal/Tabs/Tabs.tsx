@@ -5,8 +5,8 @@ import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './Tabs.scss';
 
-function Tabs<TabId extends string>({ defaultActiveTab, tabs, onChange }: TabComponentProps<TabId>) {
-    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: tabs, defaultOption: defaultActiveTab });
+function Tabs<TabId extends string>({ activeTab, tabs, onChange }: TabComponentProps<TabId>) {
+    const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: tabs, activeOption: activeTab });
     const { i18n } = useCoreContext();
     return (
         <section aria-label={i18n.get('tabs')}>

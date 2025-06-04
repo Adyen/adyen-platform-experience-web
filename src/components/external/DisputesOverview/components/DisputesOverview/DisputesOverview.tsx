@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction, listFrom } from '../../../../../utils';
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
@@ -27,18 +27,25 @@ import './DisputesOverview.scss';
 const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
 const DISPUTE_REASONS_FILTER_PARAM = 'reasonCategories';
+const LAST_REFRESH_TIMESTAMP_PARAM = '_t';
 
 type DisputeScheme = keyof typeof DISPUTE_PAYMENT_SCHEMES;
 type DisputeReason = keyof typeof DISPUTE_REASON_CATEGORIES;
 
 const DISPUTE_SCHEMES_FILTER_VALUES = Object.keys(DISPUTE_PAYMENT_SCHEMES) as DisputeScheme[];
 const DISPUTE_REASONS_FILTER_VALUES = Object.keys(DISPUTE_REASON_CATEGORIES) as DisputeReason[];
+const DISPUTE_STATUS_GROUPS_VALUES = Object.keys(DISPUTE_STATUS_GROUPS) as IDisputeStatusGroup[];
 
 const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
     id: statusGroup as IDisputeStatusGroup,
     label: labelTranslationKey,
     content: null,
 })) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
+
+interface DisputesPageRequestParams extends Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> {
+    [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
+    statusGroup: IDisputeStatusGroup;
+}
 
 export const DisputesOverview = ({
     onFiltersChanged,
@@ -57,11 +64,17 @@ export const DisputesOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
+
+    // The statusGroupActiveTab state externally updates the active status group tab,
+    // which is useful for programmatic status group tab navigation. Its value can be
+    // set to undefined, in which case it has no effect on the status group tab state
+    // (will not cause the active status group tab to change).
+    const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
 
     const disputeDetails = useMemo(
         () => ({
@@ -74,22 +87,21 @@ export const DisputesOverview = ({
     const modalOptions = useMemo(() => ({ dispute: disputeDetails }), [disputeDetails]);
 
     const getDisputes = useCallback(
-        async (
-            pageRequestParams: Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> & { statusGroup: IDisputeStatusGroup },
-            signal?: AbortSignal
-        ) => {
+        async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: DisputesPageRequestParams, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
 
             return getDisputesCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    ...(activeBalanceAccount?.id !== ALL_BALANCE_ACCOUNTS_SELECTION_ID && {
+                        balanceAccountId: activeBalanceAccount?.id ?? '',
+                    }),
                     reasonCategories: listFrom(pageRequestParams[DISPUTE_REASONS_FILTER_PARAM]),
                     schemeCodes: listFrom(pageRequestParams[DISPUTE_SCHEMES_FILTER_PARAM]),
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
-                    balanceAccountId: activeBalanceAccount?.id ?? '',
                 },
             });
         },
@@ -104,6 +116,7 @@ export const DisputesOverview = ({
     const defaultFilters = Object.assign(defaultParams.current.defaultFilterParams, {
         [DISPUTE_REASONS_FILTER_PARAM]: undefined,
         [DISPUTE_SCHEMES_FILTER_PARAM]: undefined,
+        [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
         statusGroup: DEFAULT_DISPUTE_STATUS_GROUP,
     });
 
@@ -119,11 +132,13 @@ export const DisputesOverview = ({
             enabled: !!activeBalanceAccount?.id && !!getDisputesCall,
         });
 
+    const cachedDisputeReasonsFilter = useRef<string | undefined>(undefined);
+
     const disputeReasonsFilter = useMultiSelectionFilter({
         mapFilterOptionName: useCallback((reason: DisputeReason) => i18n.get(DISPUTE_REASON_CATEGORIES[reason]), [i18n]),
         filterParam: DISPUTE_REASONS_FILTER_PARAM,
         filterValues: DISPUTE_REASONS_FILTER_VALUES,
-        defaultFilters,
+        defaultFilters: { ...defaultFilters, [DISPUTE_REASONS_FILTER_PARAM]: cachedDisputeReasonsFilter.current },
         updateFilters,
         filters,
     });
@@ -152,25 +167,60 @@ export const DisputesOverview = ({
         [updateDetails]
     );
 
-    const onStatusGroupChange = useMemo<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(() => {
-        let debounceTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    const sinceDate = useMemo(() => {
+        const date = new Date(nowTimestamp);
+        const oneYearUntilNow = date.setFullYear(date.getFullYear() - 1);
+        const earliestTimestamp = new Date(EARLIEST_DISPUTES_SINCE_DATE).getTime();
+        return new Date(Math.max(earliestTimestamp, oneYearUntilNow)).toString();
+    }, [nowTimestamp]);
 
-        return ({ id: statusGroup }) => {
-            debounceTimeoutId && clearTimeout(debounceTimeoutId);
+    const debounceTimeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-            debounceTimeoutId = setTimeout(() => {
+    const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(
+        ({ id: statusGroup }) => {
+            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+
+            debounceTimeoutIdRef.current = setTimeout(() => {
                 requestAnimationFrame(() => setStatusGroupFetchPending(false));
-                updateFilters({ statusGroup } as any);
-                debounceTimeoutId = null;
+
+                const reasonsFilterParam = DISPUTE_REASONS_FILTER_PARAM as FilterParam;
+                const filterUpdates = { statusGroup, [reasonsFilterParam]: undefined } as any;
+
+                if (statusGroup !== 'FRAUD_ALERTS') {
+                    filterUpdates[reasonsFilterParam] = cachedDisputeReasonsFilter.current;
+                }
+
+                updateFilters(filterUpdates);
+                debounceTimeoutIdRef.current = null;
             }, 500);
 
             setStatusGroup(statusGroup);
             setStatusGroupFetchPending(true);
-        };
-    }, [updateFilters]);
+
+            // Resetting statusGroupActiveTab to undefined here to allow for subsequent
+            // programmatic status group tab navigation (will not change the active tab).
+            setStatusGroupActiveTab(undefined);
+        },
+        [updateFilters]
+    );
+
+    const refreshDisputesList = useCallback(
+        (gotoStatusGroup?: IDisputeStatusGroup) => {
+            gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup
+                ? setStatusGroupActiveTab(gotoStatusGroup)
+                : // Refresh the current disputes list status group,
+                  // by updating the last refresh timestamp filter parameter
+                  updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+        },
+        [statusGroup, updateFilters]
+    );
 
     useEffect(() => {
         refreshNowTimestamp();
+
+        if ((filters['statusGroup' as FilterParam]! as IDisputeStatusGroup) !== 'FRAUD_ALERTS') {
+            cachedDisputeReasonsFilter.current = filters[DISPUTE_REASONS_FILTER_PARAM as FilterParam];
+        }
     }, [filters, refreshNowTimestamp]);
 
     return (
@@ -179,7 +229,7 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} defaultActiveTab={DEFAULT_DISPUTE_STATUS_GROUP} onChange={onStatusGroupChange} />
+            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector
@@ -193,12 +243,14 @@ export const DisputesOverview = ({
                     filters={filters}
                     nowTimestamp={nowTimestamp}
                     refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={EARLIEST_DISPUTES_SINCE_DATE}
-                    timezone={'UTC'}
+                    sinceDate={sinceDate}
+                    timezone={activeBalanceAccount?.timeZone}
                     updateFilters={updateFilters}
                 />
                 <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
-                <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                {statusGroup !== 'FRAUD_ALERTS' && (
+                    <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                )}
             </FilterBar>
 
             <DisputeManagementModal
@@ -207,6 +259,7 @@ export const DisputesOverview = ({
                 resetDetails={resetDetails}
                 onAcceptDispute={onAcceptDispute}
                 onContactSupport={onContactSupport}
+                refreshDisputesList={refreshDisputesList}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}

@@ -16,4 +16,6 @@ export type DisputeManagementProps = {
     onAcceptDispute?: () => void;
     onDefendDispute?: () => void;
     onContactSupport?: () => void;
+    // TODO - define a better name for this prop
+    onDetailsDismiss?: () => void;
 } & DetailsWithExtraData<DisputeDetailsCustomization>;

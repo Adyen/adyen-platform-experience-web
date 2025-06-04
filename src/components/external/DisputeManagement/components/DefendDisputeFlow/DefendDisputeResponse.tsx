@@ -11,7 +11,7 @@ import { useDisputeFlow } from '../../context/dispute/context';
 
 export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
     const { i18n } = useCoreContext();
-    const { clearStates, setFlowState, defendResponse } = useDisputeFlow();
+    const { clearFiles, clearStates, setFlowState, defendResponse } = useDisputeFlow();
 
     useEffect(() => {
         if (defendResponse === 'success') onDefendDispute?.();
@@ -23,8 +23,9 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
     }, [clearStates, setFlowState]);
 
     const goBackToFileUploadView = useCallback(() => {
+        clearFiles();
         setFlowState('uploadDefenseFilesView');
-    }, [setFlowState]);
+    }, [clearFiles, setFlowState]);
 
     //TODO: For this view create an internal component
     return (
@@ -45,7 +46,12 @@ export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: (
             ) : (
                 <div className="adyen-pe-defend-dispute__error">
                     <Icon name="cross-circle-fill" className="adyen-pe-defend-dispute__error-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('refundActionErrorTitle')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE} medium>
+                        {i18n.get('disputes.defend.somethingWentWrong')}
+                    </Typography>
+                    <Typography variant={TypographyVariant.BODY}>
+                        {i18n.get('disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport')}
+                    </Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToFileUploadView}>
                         {i18n.get('disputes.goBack')}
                     </Button>

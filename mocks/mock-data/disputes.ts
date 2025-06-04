@@ -125,9 +125,10 @@ const getDate = (daysOffset = 0, originDate = new Date()) => {
 };
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
+    autodefended: false,
     defendedOn: getDate(-1),
     defendedThroughComponent: true,
-    reason: 'Defense reason',
+    reason: 'ServicesProvided',
     suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
 };
 
@@ -211,6 +212,20 @@ export const CHARGEBACK_ACCEPTED: IDisputeDetail = {
     },
 };
 
+export const CHARGEBACK_AUTO_DEFENDED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        status: 'LOST',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+    defense: {
+        autodefended: true,
+        defendedThroughComponent: false,
+        defendedOn: DEFAULT_DETAIL_DEFENSE.defendedOn,
+    },
+};
+
 export const CHARGEBACK_DEFENDABLE: IDisputeDetail = {
     payment: {
         ...DEFAULT_DETAIL_PAYMENT,
@@ -234,6 +249,15 @@ export const CHARGEBACK_DEFENDABLE: IDisputeDetail = {
             }),
         ],
     },
+};
+
+export const CHARGEBACK_NOT_DEFENDABLE: IDisputeDetail = {
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        defensibility: 'NOT_ACTIONABLE',
+        status: 'UNDEFENDED',
+    },
+    payment: DEFAULT_DETAIL_PAYMENT,
 };
 
 export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
@@ -561,7 +585,7 @@ const ALL_DISPUTES = [
         status: 'LOST',
         createdAt: getDate(-8),
         paymentMethod: { type: 'visa', lastFourDigits: '0027', description: 'Visa' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '13.2', title: 'Cancelled Recurring' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '13.1', title: 'Merchandise/Services Not Received' },
         amount: { currency: 'EUR', value: 499700 },
     },
     {
@@ -748,6 +772,7 @@ export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
     }
 };
 
+const AUTO_DEFENDABLE_CHARGEBACK_REASONS: IDisputeReasonCategory[] = ['ADJUSTMENT', 'AUTHORISATION_ERROR'];
 const ACCEPTABLE_CHARGEBACK_REASONS: IDisputeReasonCategory[] = ['CONSUMER_DISPUTE', 'FRAUD', 'PROCESSING_ERROR'];
 const ACCEPTED_OR_EXPIRED_STATUSES: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 const ACTION_NEEDED_STATUSES: IDisputeStatus[] = ['UNDEFENDED', 'UNRESPONDED'];
@@ -776,6 +801,7 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
     const actionNeeded = ACTION_NEEDED_STATUSES.includes(disputeStatus);
     const isAcceptableChargeback = ACCEPTABLE_CHARGEBACK_REASONS.includes(disputeCategory);
     const isAcceptedOrExpired = ACCEPTED_OR_EXPIRED_STATUSES.includes(disputeStatus);
+    const isAutoDefendableChargeback = AUTO_DEFENDABLE_CHARGEBACK_REASONS.includes(disputeCategory);
     const isDefendableThroughComponent = Object.hasOwn(DEFENDABLE_CHARGEBACK_REASONS, dispute.reason.code);
 
     const isChargeback = disputeType === 'CHARGEBACK';
@@ -798,10 +824,13 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
 
     if (hasDefenseEvidence) {
         additionalDisputeDetails.defense = {
-            reason: 'ServicesProvided',
-            suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
+            autodefended: isAutoDefendableChargeback,
             defendedOn: disputeModificationDate,
-            defendedThroughComponent: isDefendableThroughComponent,
+            defendedThroughComponent: !isAutoDefendableChargeback && isDefendableThroughComponent,
+            ...(!isAutoDefendableChargeback && {
+                reason: 'ServicesProvided',
+                suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
+            }),
         };
     }
 
