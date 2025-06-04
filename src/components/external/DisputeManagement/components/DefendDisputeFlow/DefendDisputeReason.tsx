@@ -113,6 +113,9 @@ export const DefendDisputeReason = () => {
     return (
         <>
             <div className="adyen-pe-defend-dispute-reason__selector">
+                <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
+                    {i18n.get('disputes.defend.selectDefenseReason')}
+                </Typography>
                 <Select items={defenseReasons} onChange={onChange} selected={selected} />
                 {getDefenseReasonContent(i18n, selected)?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
