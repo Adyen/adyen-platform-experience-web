@@ -12,7 +12,7 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
-import { BASE_CLASS, BASE_XS_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
+import { BASE_CLASS, BASE_XS_CLASS, EARLIEST_DISPUTES_SINCE_DATE, TABS_CONTAINER_CLASS } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
@@ -270,11 +270,13 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            {isMobileContainer ? (
-                <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
-            ) : (
-                <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
-            )}
+            <div className={TABS_CONTAINER_CLASS}>
+                {isMobileContainer ? (
+                    <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                ) : (
+                    <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                )}
+            </div>
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector

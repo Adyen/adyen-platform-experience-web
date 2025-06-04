@@ -5,7 +5,7 @@
 
 .adyen-pe-data-grid {
     --adyen-pe-data-grid-cols: #{auto-fit};
-    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, 1fr))};
+    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, auto))};
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
 

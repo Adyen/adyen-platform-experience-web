@@ -22,11 +22,13 @@ import { BASE_CLASS } from './constants';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import { Translation } from '../../../../internal/Translation';
 import './DisputesTable.scss';
 
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
@@ -52,6 +54,9 @@ export const EMPTY_TABLE_MESSAGE_KEYS = {
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
 
 const classes = {
+    cellContent: `${BASE_CLASS}__cell-content`,
+    cellContentVStack: `${BASE_CLASS}__cell-content--vstack`,
+    cellTextGrey: `${BASE_CLASS}__cell-text--grey`,
     statusContent: `${BASE_CLASS}__status-content`,
     statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
 };
@@ -88,6 +93,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const columns = useTableColumns({
         fields: FIELDS,
@@ -98,29 +104,36 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 status: {
                     visible: statusGroup === 'ONGOING_AND_CLOSED',
                 },
-                disputedAmount: {
-                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
-                    position: 'right',
-                },
-                disputeReason: {
-                    visible: statusGroup === 'CHARGEBACKS' || statusGroup === 'ONGOING_AND_CLOSED',
+                reason: {
+                    visible: statusGroup === 'FRAUD_ALERTS' && !isMobileContainer,
+                    flex: 2,
                 },
                 respondBy: {
                     visible: statusGroup === 'CHARGEBACKS',
                 },
-                reason: {
-                    visible: statusGroup === 'FRAUD_ALERTS',
-                    flex: 2,
-                },
                 currency: {
+                    visible: !isMobileContainer,
                     flex: 0.5,
+                },
+                disputedAmount: {
+                    visible: statusGroup !== 'FRAUD_ALERTS',
+                    position: 'right',
+                },
+                createdAt: {
+                    visible: !isMobileContainer || statusGroup === 'FRAUD_ALERTS',
+                },
+                paymentMethod: {
+                    visible: !isMobileContainer,
+                },
+                disputeReason: {
+                    visible: statusGroup !== 'FRAUD_ALERTS' && !isMobileContainer,
                 },
                 totalPaymentAmount: {
                     visible: statusGroup === 'FRAUD_ALERTS',
                     position: 'right',
                 },
             }),
-            [statusGroup]
+            [isMobileContainer, statusGroup]
         ),
     });
 
@@ -145,6 +158,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
         <div className={BASE_CLASS}>
             {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-disputes-table-alert'} {...alert} />}
             <DataGrid
+                autoFitColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
                 error={error}
                 columns={columns}
@@ -155,22 +169,43 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     status: ({ item }) => {
-                        return <DisputeStatusTag dispute={item} />;
+                        return (
+                            <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
+                                <DisputeStatusTag dispute={item} />
+                                {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
+                            </div>
+                        );
                     },
                     reason: ({ item }) => {
                         return item.reason.title;
                     },
                     respondBy: ({ item }) => {
-                        if (!item.dueDate) return null;
                         const isUrgent = isDisputeActionNeededUrgently(item);
-                        return (
-                            <Typography
-                                variant={TypographyVariant.BODY}
-                                className={cx(classes.statusContent, { [classes.statusContentUrgent]: isUrgent })}
-                            >
-                                {dateFormat(item.dueDate, DATE_FORMAT_DISPUTES)}
+                        const renderDueDate = () => (
+                            <>
+                                {dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES)}
                                 {isUrgent && <Icon name={'warning-filled'} />}
-                            </Typography>
+                            </>
+                        );
+                        return (
+                            <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
+                                {item.dueDate ? (
+                                    <Typography
+                                        variant={TypographyVariant.BODY}
+                                        className={cx(classes.statusContent, {
+                                            [classes.cellTextGrey]: isMobileContainer && !isUrgent,
+                                            [classes.statusContentUrgent]: isUrgent,
+                                        })}
+                                    >
+                                        {isMobileContainer ? (
+                                            <Translation translationKey="disputes.gridCell.dueDate" fills={{ dueDate: renderDueDate }} />
+                                        ) : (
+                                            renderDueDate()
+                                        )}
+                                    </Typography>
+                                ) : null}
+                                {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
+                            </div>
                         );
                     },
                     currency: ({ item }) => {
@@ -185,8 +220,20 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             )
                         );
                     },
-                    createdAt: ({ value }) => {
-                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_DISPUTES)}</Typography>;
+                    createdAt: ({ item }) => {
+                        return (
+                            <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
+                                <Typography
+                                    variant={TypographyVariant.BODY}
+                                    className={cx(classes.statusContent, {
+                                        [classes.cellTextGrey]: isMobileContainer,
+                                    })}
+                                >
+                                    {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
+                                </Typography>
+                                {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
+                            </div>
+                        );
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
                     disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,

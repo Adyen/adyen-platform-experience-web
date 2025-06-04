@@ -9,9 +9,16 @@
         .adyen-pe-header {
             align-items: center;
         }
+
+        .adyen-pe-data-grid__cell {
+            padding-bottom: style.token(spacer-060);
+            padding-top: style.token(spacer-060);
+        }
     }
 
-    .adyen-pe-tabpanels {
-        display: none;
+    &__tabs-container {
+        .adyen-pe-tabpanels {
+            display: none;
+        }
     }
 }

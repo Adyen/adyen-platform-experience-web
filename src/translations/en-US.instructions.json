@@ -120,6 +120,7 @@
     "disputes.evidence": "Label referring to evidence submitted for a dispute.",
     "disputes.expiredOn": "Label referring to the date a dispute got expired.",
     "disputes.goBack": "Button label used for navigating to the previous step.",
+    "disputes.gridCell.dueDate": "Displayed to inform the user about the due date (deadline date) for a dispute.",
     "disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain": "Input validation error message shown during file upload when a selected file exceeds the maximum size (indicated by %{size}) for its specific file type (indicated by %{type}). It instructs the user to select a smaller file.",
     "disputes.inputError.somethingWentWrongPleaseCheckYourDocuments": "Generic error message displayed during the document upload process when an unspecified issue occurs. It prompts the user to verify that the documents they are attempting to upload comply with all stated requirements.",
     "disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue": "Input validation error message that appears if a user attempts to proceed with an action (e.g., submitting a dispute defense) without first uploading at least one required supporting document.",
