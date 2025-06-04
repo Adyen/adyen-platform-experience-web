@@ -1,3 +1,4 @@
+@use '../../../../mixins';
 @use '../../../../../style';
 
 .adyen-pe-disputes-overview {
@@ -14,6 +15,9 @@
             padding-bottom: style.token(spacer-060);
             padding-top: style.token(spacer-060);
         }
+
+        // stylelint-disable order/order
+        @include mixins.adyen-pe-error-message-display-mobile-fix;
     }
 
     &__tabs-container {
