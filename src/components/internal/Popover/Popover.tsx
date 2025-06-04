@@ -41,7 +41,7 @@ const findFirstFocusableElement = (root: Element) => {
 };
 
 const getGapByVariant = (variant: PopoverContainerVariant): [number, number, number, number] => {
-    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [15, 15, 15, 15];
+    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [8, 8, 8, 8];
 };
 
 function Popover({
@@ -66,6 +66,7 @@ function Popover({
     classNameModifiers,
     showOverlay = false,
     fitPosition,
+    fixedPositioning = false,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
@@ -96,7 +97,17 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay, fitPosition),
+        usePopoverPositioner(
+            getGapByVariant(variant),
+            targetElement,
+            variant,
+            position,
+            arrowRef,
+            setToTargetWidth,
+            showOverlay,
+            fitPosition,
+            fixedPositioning
+        ),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER

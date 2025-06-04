@@ -118,7 +118,7 @@ export const DefendDisputeReason = () => {
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
                     {i18n.get('disputes.defend.selectDefenseReason')}
                 </Typography>
-                <Select items={defenseReasons} onChange={onChange} selected={selected} />
+                <Select items={defenseReasons} onChange={onChange} selected={selected} fixedPositioning={true}/>
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
                         el={TypographyElement.PARAGRAPH}

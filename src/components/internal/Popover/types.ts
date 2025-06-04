@@ -30,6 +30,7 @@ interface PopoverCoreProps {
     classNameModifiers?: string[];
     showOverlay?: boolean;
     fitPosition?: boolean;
+    fixedPositioning?: boolean;
 }
 
 type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;

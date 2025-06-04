@@ -14,6 +14,7 @@ const calculateOffset = ({
     position,
     variant,
     fullWidth,
+    fixedPositioning,
 }: {
     popover: Element;
     offset: [number, number, number, number];
@@ -21,6 +22,7 @@ const calculateOffset = ({
     position: PopoverContainerPosition;
     variant: PopoverContainerVariant;
     fullWidth: boolean;
+    fixedPositioning?: boolean;
 }) => {
     const currentTarget = targetElement?.current as HTMLElement;
 
@@ -78,7 +80,8 @@ const calculateOffset = ({
         }
     }, 'translate3d(');
 
-    return `position:absolute;inset:0 auto auto 0;margin: 0;transform: ${res};visibility:hidden`;
+    const popoverPositionStyle = fixedPositioning ? 'fixed' : 'absolute';
+    return `position:${popoverPositionStyle};inset:0 auto auto 0;margin: 0;transform: ${res};visibility:hidden;`;
 };
 const usePopoverPositioner = (
     offset: [number, number, number, number],
@@ -89,6 +92,7 @@ const usePopoverPositioner = (
     setToTargetWidth?: boolean,
     showOverlay?: boolean,
     fitPosition?: boolean,
+    fixedPositioning?: boolean,
     ref?: Nullable<Reflexable<Element>>
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
@@ -164,6 +168,7 @@ const usePopoverPositioner = (
                         position: currentPosition,
                         variant,
                         fullWidth: showOverlay ?? false,
+                        fixedPositioning: fixedPositioning ?? false,
                     });
                     const style = showPopover ? popoverStyle + ';visibility:visible' : popoverStyle;
 
@@ -192,6 +197,7 @@ const usePopoverPositioner = (
                 arrowRef,
                 showOverlay,
                 fitPosition,
+                fixedPositioning,
             ]
         ),
         ref
