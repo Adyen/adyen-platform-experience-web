@@ -75,6 +75,10 @@
     &__reason-description {
         color: style.token(color-label-secondary);
     }
+
+    &__title {
+        font-size: style.token(text-title-font-size);
+    }
 }
 
 .adyen-pe-defend-dispute-reason {

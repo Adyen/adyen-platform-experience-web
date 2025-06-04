@@ -53,4 +53,8 @@
         justify-content: center;
         text-align: center;
     }
+
+    &__title {
+        font-size: style.token(text-title-font-size);
+    }
 }
