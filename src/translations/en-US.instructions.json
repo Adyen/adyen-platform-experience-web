@@ -89,6 +89,7 @@
     "disputes.defend.chargeback": "Label text for action button that initiates the process for defending a chargeback dispute.",
     "disputes.defend.chargebackFeeInformation": "The information to tell user that they will pay a fee for every chargeback.",
     "disputes.defend.continue": "Label text for button that continues the ongoing process for defending the dispute.",
+    "disputes.defend.defended": "Label text for button that confirms that the action to submit defense documents for a dispute was successful.",
     "disputes.defend.evidenceSubmitted": "Title text for view that shows information on successful submission of dispute defense documents.",
     "disputes.defend.selectDefenseReason": "Description text for a select dropdown menu containing applicable dispute defense reasons as options.",
     "disputes.defend.somethingWentWrong": "Generic error message displayed to the user when an unexpected issue occurs during the process of defending a dispute.",

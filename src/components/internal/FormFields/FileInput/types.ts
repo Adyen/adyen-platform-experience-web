@@ -1,5 +1,4 @@
 import { PropsWithChildren } from 'preact/compat';
-import { TranslationKey } from '../../../../translations';
 import { ValueOfRecord } from '../../../../utils/types';
 import { validationErrors } from './constants';
 
@@ -24,6 +23,7 @@ export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
 
 export interface UploadedFileProps {
     deleteFile: () => void;
+    disabled?: boolean;
     file: File;
 }
 

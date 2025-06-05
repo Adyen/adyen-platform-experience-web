@@ -135,6 +135,7 @@
     "disputes.defend.chargeback": "Defend chargeback",
     "disputes.defend.chargebackFeeInformation": "A fee is charged for every defended chargeback. We recommend responding only when you have clear and convincing evidence.",
     "disputes.defend.continue": "Continue",
+    "disputes.defend.defended": "Defended",
     "disputes.defend.evidenceSubmitted": "Evidence has been submitted",
     "disputes.defend.selectDefenseReason": "Select the reason you’re defending this chargeback.",
     "disputes.defend.somethingWentWrong": "Something went wrong",

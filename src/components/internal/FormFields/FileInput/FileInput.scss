@@ -60,6 +60,10 @@
         margin: calc(var(--file-button-padding) * -1);
         margin-left: 0;
         padding: var(--file-button-padding);
+
+        &:disabled svg {
+            color: inherit;
+        }
     }
 
     &__dropzone {

@@ -85,9 +85,9 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
     const clearStates = useCallback(() => {
         setSelectedDefenseReason(null);
         setApplicableDocuments(null);
-        setDispute(undefined);
         setDefendDisputePayload(null);
         setDefendResponse(null);
+        setDispute(undefined);
     }, [setDispute]);
 
     const addFileToDefendPayload = useCallback((field: string, file: File) => {
@@ -129,7 +129,6 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
 
     const onDefendSubmit = useCallback((response: 'success' | 'error') => {
         setDefendResponse(response);
-        setFlowState('defenseSubmitResponseView');
     }, []);
 
     useEffect(() => {
