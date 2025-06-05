@@ -29,31 +29,31 @@
         display: flex;
         gap: style.token(spacer-070);
 
-        & > .adyen-pe-icon {
+        > .adyen-pe-icon {
             display: flex;
         }
 
         input:disabled ~ & {
             cursor: not-allowed;
 
-            & > .adyen-pe-icon {
+            > .adyen-pe-icon {
                 color: style.token(color-background-disabled);
                 position: relative;
+            }
 
-                &::before {
-                    background: style.token(color-label-disabled);
-                    border: style.token(color-outline-disabled) solid style.token(border-width-m);
-                    border-radius: style.token(border-radius-xs);
-                    content: '';
-                    inset: 0;
-                    position: absolute;
-                    z-index: -1;
-                }
+            > .adyen-pe-icon::before {
+                background: style.token(color-label-disabled);
+                border: style.token(color-outline-disabled) solid style.token(border-width-m);
+                border-radius: style.token(border-radius-xs);
+                content: '';
+                inset: 0;
+                position: absolute;
+                z-index: -1;
             }
         }
 
         input:focus-visible ~ & {
-            & > .adyen-pe-icon {
+            > .adyen-pe-icon {
                 outline: -webkit-focus-ring-color auto 1px;
             }
         }
