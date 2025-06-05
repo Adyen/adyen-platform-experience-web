@@ -105,7 +105,6 @@
     "disputes.documentRequirements.mustBeInEnglish": "Guidance text to inform user dispute defense documents should be in English",
     "disputes.documentRequirements.recommendedSize": "Guidance text to inform user dispute defense documents should be A4 or US letter size",
     "disputes.empty.noChargebacksFound": "Message shown when no chargebacks match the current filters",
-    "disputes.empty.noDisputesFound": "Message shown when no disputes match the current filters",
     "disputes.empty.noFraudAlertsFound": "Message shown when no fraud alerts match the current filters",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks": "Suggestion telling the user to adjust filters or check again later for new chargebacks",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes": "Suggestion telling the user to adjust filters or check again later for new disputes",

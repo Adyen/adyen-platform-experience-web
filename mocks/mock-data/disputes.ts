@@ -270,6 +270,23 @@ export const CHARGEBACK_DEFENDABLE_EXTERNALLY: IDisputeDetail = {
     },
 };
 
+export const CHARGEBACK_DEFENDED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        dueDate: getDate(20),
+        status: 'PENDING',
+        defensibility: 'NOT_ACTIONABLE',
+    },
+    defense: {
+        autodefended: false,
+        defendedOn: '2025-06-05T12:54:39.000+00:00',
+        defendedThroughComponent: true,
+        reason: 'AdditionalInformation',
+        suppliedDocuments: ['DefenseMaterial'],
+    },
+};
+
 export const CHARGEBACK_ACCEPTABLE: IDisputeDetail = {
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
@@ -332,6 +349,19 @@ export const RFI_EXPIRED: IDisputeDetail = {
         status: 'EXPIRED',
         type: 'REQUEST_FOR_INFORMATION',
         defensibility: 'NOT_ACTIONABLE',
+    },
+};
+
+export const RFI_ACCEPTED: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        allowedDefenseReasons: [],
+        status: 'EXPIRED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'NOT_ACTIONABLE',
+        acceptedDate: '2025-06-05T12:46:54.000+00:00',
+        dueDate: undefined,
     },
 };
 

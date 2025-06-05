@@ -38,6 +38,18 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementEle
     },
 };
 
+export const ChargebackDefended: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Defended',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackDefended,
+        },
+    },
+};
+
 export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElement> = {
     name: 'Chargeback - Auto defended',
     args: {
@@ -82,6 +94,18 @@ export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
     parameters: {
         msw: {
             ...DISPUTE_DETAILS_HANDLERS.rfiExpired,
+        },
+    },
+};
+
+export const RFIAccepted: ElementStory<typeof DisputeManagementElement> = {
+    name: 'RFI - Accepted',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.rfiAccepted,
         },
     },
 };
