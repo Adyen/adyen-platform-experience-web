@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
 import Modal from '../../../../internal/Modal';
-import { DisputeDetailsCustomization, DisputeManagementProps } from '../../../DisputeManagement';
+import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
+import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';
 import './DisputeManagementModal.scss';
@@ -29,20 +30,6 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     const [disputeManagementSuccessful, setDisputeManagementSuccessful] = useState(false);
     const isModalOpen = !!selectedDetail;
 
-    useEffect(() => {
-        if (isModalOpen) {
-            popoverUtil.closeAll();
-        }
-    }, [isModalOpen]);
-
-    const onAcceptDisputeCallback = useCallback<NonNullable<DisputeManagementProps['onDisputeAccept']>>(() => {
-        setDisputeManagementSuccessful(true);
-    }, []);
-
-    const onDefendDisputeCallback = useCallback<NonNullable<DisputeManagementProps['onDisputeDefend']>>(() => {
-        setDisputeManagementSuccessful(true);
-    }, []);
-
     const onCloseCallback = useCallback(() => {
         if (disputeManagementSuccessful) {
             setDisputeManagementSuccessful(false);
@@ -50,6 +37,15 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
         }
         resetDetails();
     }, [disputeManagementSuccessful, refreshDisputesList, resetDetails]);
+
+    const onDisputeManagementSuccessful = useCallback(() => {
+        setDisputeManagementSuccessful(true);
+        return DISPUTE_INTERNAL_SYMBOL;
+    }, []);
+
+    useEffect(() => {
+        if (isModalOpen) popoverUtil.closeAll();
+    }, [isModalOpen]);
 
     return (
         <div>
@@ -67,8 +63,8 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                         <DisputeDetailsContainer
                             id={selectedDetail.selection.data}
                             dataCustomization={dataCustomization}
-                            onDisputeAccept={onAcceptDisputeCallback}
-                            onDisputeDefend={onDefendDisputeCallback}
+                            onDisputeAccept={onDisputeManagementSuccessful}
+                            onDisputeDefend={onDisputeManagementSuccessful}
                             onContactSupport={onContactSupport}
                             onDismiss={resetDetails}
                             hideTitle

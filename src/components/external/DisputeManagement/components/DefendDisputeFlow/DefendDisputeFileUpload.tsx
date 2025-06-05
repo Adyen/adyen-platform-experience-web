@@ -8,7 +8,6 @@ import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActio
 import Card from '../../../../internal/Card/Card';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DefendDocumentUpload } from './DefendDocumentUpload';
 import { SelectItem } from '../../../../internal/FormFields/Select/types';
@@ -17,10 +16,12 @@ import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
+import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
 import { getHumanReadableFileSize, isFunction } from '../../../../../utils';
 import { DisputeManagementProps } from '../../types';
 import { MapErrorCallback } from './types';
+import './DefendDisputeFlow.scss';
 
 const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.mustBeInEnglish',
@@ -65,8 +66,13 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
             onSuccess: useCallback(() => {
                 setIsFetching(false);
                 clearFiles();
-                isFunction(onDisputeDefend) ? onDisputeDefend(dispute!) : onDefendSubmit('success');
-            }, [clearFiles, onDefendSubmit, onDisputeDefend]),
+
+                if (isFunction(onDisputeDefend)) {
+                    const returnValue: unknown = onDisputeDefend({ id: disputePspReference! });
+                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
+                }
+                onDefendSubmit('success');
+            }, [clearFiles, disputePspReference, onDefendSubmit, onDisputeDefend]),
             onError: useCallback(() => {
                 setIsFetching(false);
                 clearFiles();

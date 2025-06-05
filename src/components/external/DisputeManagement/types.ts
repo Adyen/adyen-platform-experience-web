@@ -11,10 +11,14 @@ export type DisputeDetailsFields = (typeof _fields)[number];
 
 export type DisputeDetailsCustomization = DetailsDataCustomizationObject<DisputeDetailsFields, IDisputeDetail, CustomDataRetrieved>;
 
+export type DisputeCallbackData = {
+    id: IDisputeDetail['dispute']['pspReference'];
+};
+
 export type DisputeManagementProps = {
     id: string;
     onContactSupport?: () => void;
-    onDisputeAccept?: (dispute: IDisputeDetail) => void;
-    onDisputeDefend?: (dispute: IDisputeDetail) => void;
+    onDisputeAccept?: <T extends DisputeCallbackData>(dispute: T) => void;
+    onDisputeDefend?: <T extends DisputeCallbackData>(dispute: T) => void;
     onDismiss?: () => void;
 } & DetailsWithExtraData<DisputeDetailsCustomization>;
