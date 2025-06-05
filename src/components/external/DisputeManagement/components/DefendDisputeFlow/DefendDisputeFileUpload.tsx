@@ -68,7 +68,7 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
                     return i18n.get('disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain', {
                         values: {
                             size: file?.size === undefined ? undefined : getHumanReadableFileSize(file.size),
-                            type: file?.type?.replace(/^([^/]+\/)*?/gi, ''),
+                            type: file?.type?.replace(/^([^/]+\/)*/gi, '')?.toUpperCase(),
                         },
                     });
                 default:

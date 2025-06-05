@@ -1,3 +1,4 @@
+import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { fixedForwardRef } from '../../../../utils/preact';
 import UploadedFile from './components/UploadedFile';
@@ -6,7 +7,6 @@ import { isFunction } from '../../../../utils';
 import { BASE_CLASS, validationErrors } from './constants';
 import { FileInputProps, ValidationError } from './types';
 import './FileInput.scss';
-import useCoreContext from '../../../../core/Context/useCoreContext';
 
 export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, onDelete, ...restProps }, ref) => {
     const [files, setFiles] = useState<File[]>([]);
