@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -11,9 +12,10 @@ import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../..
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
-import { BASE_CLASS, EARLIEST_DISPUTES_SINCE_DATE } from './constants';
+import { BASE_CLASS, BASE_XS_CLASS, EARLIEST_DISPUTES_SINCE_DATE, TABS_CONTAINER_CLASS } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
@@ -21,6 +23,7 @@ import { DisputesTable } from '../DisputesTable/DisputesTable';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
 import { TabComponentProps } from '../../../../internal/Tabs/types';
+import Select from '../../../../internal/FormFields/Select';
 import Tabs from '../../../../internal/Tabs/Tabs';
 import './DisputesOverview.scss';
 
@@ -41,6 +44,42 @@ const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([s
     label: labelTranslationKey,
     content: null,
 })) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
+
+const DisputesOverviewTabsDropdown = ({
+    activeTab,
+    onChange,
+}: {
+    activeTab: IDisputeStatusGroup;
+    onChange: NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>;
+}) => {
+    const { i18n } = useCoreContext();
+    const [statusGroup, setStatusGroup] = useState(activeTab);
+
+    const selectItems = useMemo(() => {
+        return Object.entries(DISPUTE_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
+            id: statusGroup as IDisputeStatusGroup,
+            name: i18n.get(labelTranslationKey),
+        }));
+    }, [i18n]);
+
+    useEffect(() => {
+        const currentTab = DISPUTE_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
+        currentTab && onChange(currentTab);
+    }, [onChange, statusGroup]);
+
+    useEffect(() => setStatusGroup(activeTab), [activeTab]);
+
+    return (
+        <Select
+            items={selectItems}
+            selected={statusGroup}
+            onChange={({ target }) => setStatusGroup(target.value)}
+            showOverlay={true}
+            multiSelect={false}
+            filterable={false}
+        />
+    );
+};
 
 interface DisputesPageRequestParams extends Record<FilterParam | 'cursor' | 'reasonCategories' | 'schemeCodes', string> {
     [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
@@ -215,6 +254,8 @@ export const DisputesOverview = ({
         [statusGroup, updateFilters]
     );
 
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
     useEffect(() => {
         refreshNowTimestamp();
 
@@ -224,12 +265,18 @@ export const DisputesOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <div className={BASE_CLASS}>
+        <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+            <div className={TABS_CONTAINER_CLASS}>
+                {isMobileContainer ? (
+                    <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                ) : (
+                    <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                )}
+            </div>
 
             <FilterBar {...filterBarState}>
                 <BalanceAccountSelector

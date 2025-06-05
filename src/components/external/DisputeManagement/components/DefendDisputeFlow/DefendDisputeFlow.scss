@@ -20,6 +20,7 @@
     &__error-icon {
         color: style.token(color-background-critical-strong);
         font-size: style.token(spacer-110);
+        padding: style.token(spacer-040);
 
         svg {
             display: block;
@@ -54,7 +55,8 @@
 
     &__success-icon {
         color: style.token(color-background-success-strong);
-        font-size: style.token(spacer-100);
+        font-size: style.token(spacer-110);
+        padding: style.token(spacer-040);
 
         svg {
             display: block;
@@ -111,6 +113,7 @@
         justify-content: space-between;
 
         svg {
+            display: block;
             font-size: style.token(text-title-font-size);
         }
     }

@@ -10,12 +10,11 @@
 
     &__success-icon {
         color: style.token(color-background-success-strong);
-        height: style.token(spacer-100);
-        width: style.token(spacer-100);
+        font-size: style.token(spacer-110);
+        padding: style.token(spacer-040);
 
         svg {
-            height: inherit;
-            width: inherit;
+            display: block;
         }
     }
 
@@ -52,6 +51,7 @@
         gap: style.token(spacer-070);
         height: 218px;
         justify-content: center;
+        text-align: center;
     }
 
     &__title {
