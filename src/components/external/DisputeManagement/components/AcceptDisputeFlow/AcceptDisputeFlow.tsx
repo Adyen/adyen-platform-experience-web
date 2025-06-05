@@ -54,7 +54,9 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             ) : (
                 <>
                     <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
-                        {i18n.get('disputes.accept.chargeback')}
+                        {dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
+                            ? i18n.get('disputes.accept.requestForInformation')
+                            : i18n.get('disputes.accept.chargeback')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
                         {i18n.get('disputes.accept.disputeDisclaimer')}
@@ -74,7 +76,10 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <ButtonActions
                             actions={[
                                 {
-                                    title: i18n.get('disputes.accept.chargeback'),
+                                    title:
+                                        dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
+                                            ? i18n.get('disputes.accept')
+                                            : i18n.get('disputes.accept.chargeback'),
                                     event: acceptDisputeCallback,
                                     variant: ButtonVariant.PRIMARY,
                                     state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
