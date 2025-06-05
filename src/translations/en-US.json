@@ -116,6 +116,7 @@
     "description": "Description",
     "dismiss": "Dismiss",
     "disputes.accept": "Accept",
+    "disputes.accept.accepted": "Accepted",
     "disputes.accept.chargeback": "Accept chargeback",
     "disputes.accept.disputeAccepted": "Chargeback has been accepted",
     "disputes.accept.disputeDisclaimer": "By accepting, you agree that the disputed amount will not be returned to your account and the dispute will be marked as Lost.",
