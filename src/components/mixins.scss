@@ -1,0 +1,22 @@
+@use '../style';
+
+@mixin adyen-pe-error-message-display-mobile-fix {
+    .adyen-pe-data-grid__table-wrapper {
+        position: relative;
+    }
+
+    .adyen-pe-error-message-display {
+        display: grid;
+        grid-template-columns: 90%; // 5% gutter (padding) on both sides
+        inset: calc(#{style.token(spacer-020)} * -1);
+        min-width: auto;
+        padding: 0;
+        place-content: center;
+        transform: none;
+
+        img {
+            object-fit: contain;
+            width: 100%;
+        }
+    }
+}
