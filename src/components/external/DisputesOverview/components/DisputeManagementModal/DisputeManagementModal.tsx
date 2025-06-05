@@ -10,7 +10,7 @@ import { DisputeDetailsContainer } from '../../../DisputeManagement/components/D
 import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {
-    updateDisputesListStatusGroup: (statusGroup?: IDisputeStatusGroup) => void;
+    refreshDisputesList: (statusGroup?: IDisputeStatusGroup) => void;
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
     dataCustomization?: { details: DisputeDetailsCustomization };
@@ -27,10 +27,10 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     onAcceptDispute,
     onDefendDispute,
     onContactSupport,
-    updateDisputesListStatusGroup,
+    refreshDisputesList,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
-    const [disputesListStatusGroup, setDisputesListStatusGroup] = useState<IDisputeStatusGroup | undefined>(undefined);
+    const [disputeManagementSuccessful, setDisputeManagementSuccessful] = useState(false);
     const isModalOpen = !!selectedDetail;
 
     useEffect(() => {
@@ -40,25 +40,22 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     }, [isModalOpen]);
 
     const onAcceptDisputeCallback = useCallback(() => {
-        // [TODO]: Uncomment the following line on confirmation that accepted disputes get hoisted to top of the list
-        // setDisputesListStatusGroup('ONGOING_AND_CLOSED');
+        setDisputeManagementSuccessful(true);
         onAcceptDispute?.();
     }, [onAcceptDispute]);
 
     const onDefendDisputeCallback = useCallback(() => {
-        // [TODO]: Uncomment the following line on confirmation that defended disputes get hoisted to top of the list
-        // setDisputesListStatusGroup('ONGOING_AND_CLOSED');
+        setDisputeManagementSuccessful(true);
         onDefendDispute?.();
     }, [onDefendDispute]);
 
     const onCloseCallback = useCallback(() => {
-        updateDisputesListStatusGroup(disputesListStatusGroup);
-        // After updating the disputes list status group, ensure to reset `disputesListStatusGroup`
-        // state value to undefined, to prevent unintended tab navigation from future calls to this
-        // onCloseCallback.
-        setDisputesListStatusGroup(undefined);
+        if (disputeManagementSuccessful) {
+            setDisputeManagementSuccessful(false);
+            refreshDisputesList('CHARGEBACKS');
+        }
         resetDetails();
-    }, [disputesListStatusGroup, updateDisputesListStatusGroup, resetDetails]);
+    }, [disputeManagementSuccessful, refreshDisputesList, resetDetails]);
 
     return (
         <div>

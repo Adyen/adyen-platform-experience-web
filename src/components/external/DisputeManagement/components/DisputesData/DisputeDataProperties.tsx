@@ -27,6 +27,7 @@ import {
 } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
+import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -91,7 +92,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reason
             {
                 key: disputeDataKeys.disputeReason,
-                value: disputeReason.title, // [NOTE]: Not translated at the moment (maybe in the future)
+                value: `${i18n.get(DISPUTE_REASON_CATEGORIES[disputeReason.category])} - ${disputeReason.title}`, // [NOTE]: Not translated at the moment (maybe in the future)
                 id: 'disputeReason',
             },
 

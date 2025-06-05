@@ -24,7 +24,6 @@ import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
     DISPUTE_DATA_ACTION_BAR,
-    DISPUTE_DATA_ALERT,
     DISPUTE_DATA_CLASS,
     DISPUTE_DATA_ERROR_CONTAINER,
     DISPUTE_DATA_MOBILE_CLASS,
@@ -78,7 +77,7 @@ const DisputeDataAlert = ({
                     type={AlertTypeOption.WARNING}
                     variant={AlertVariantOption.TIP}
                     description={
-                        <div className={DISPUTE_DATA_ALERT}>
+                        <>
                             {i18n.get(translationKey)}
                             {type !== 'NOTIFICATION_OF_FRAUD' && !!dueDate && (
                                 <>
@@ -87,15 +86,15 @@ const DisputeDataAlert = ({
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
-                                                    {dueDate ? dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE) : null}
+                                                <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
+                                                    {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
                                                 </Typography>
                                             ),
                                         }}
                                     />
                                 </>
                             )}
-                        </div>
+                        </>
                     }
                 />
             );
@@ -235,25 +234,27 @@ export const DisputeData = ({
         const skeletonRows = Array.from({ length: 5 });
 
         return (
-            <div className={DISPUTE_DATA_SKELETON_CONTAINER}>
-                <div className={DISPUTE_DATA_STATUS_BOX_SKELETON}>
-                    <div className={DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER}>
-                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
-                        <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
-                    </div>
-                    <span className={DISPUTE_DATA_STATUS_BOX_AMOUNT}></span>
-                    <div className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER}>
-                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
-                        <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
-                    </div>
-                </div>
-                <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
-                    {skeletonRows.map((_, index) => (
-                        <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
-                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
-                            <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+            <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>
+                <div className={DISPUTE_DATA_SKELETON_CONTAINER}>
+                    <div className={DISPUTE_DATA_STATUS_BOX_SKELETON}>
+                        <div className={DISPUTE_DATA_STATUS_BOX_STATUS_CONTAINER}>
+                            <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
+                            <span className={DISPUTE_DATA_STATUS_BOX_STATUS}></span>
                         </div>
-                    ))}
+                        <span className={DISPUTE_DATA_STATUS_BOX_AMOUNT}></span>
+                        <div className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD_CONTAINER}>
+                            <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                            <span className={DISPUTE_DATA_STATUS_BOX_PAYMENT_METHOD}></span>
+                        </div>
+                    </div>
+                    <div className={DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER}>
+                        {skeletonRows.map((_, index) => (
+                            <div className={DISPUTE_DATA_PROPERTIES_SKELETON} key={`skeleton-${index}`}>
+                                <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                                <span className={DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );

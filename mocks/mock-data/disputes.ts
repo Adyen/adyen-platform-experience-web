@@ -354,7 +354,7 @@ const CHARGEBACKS = [
         dueDate: new Date(new Date().setHours(23)).toISOString(),
         createdAt: getDate(-10),
         paymentMethod: { type: 'mc', lastFourDigits: '0001', description: 'Mastercard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective/Not as described' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective / Not as described' },
         amount: { currency: 'EUR', value: 211100 },
     },
     {
@@ -544,7 +544,7 @@ const ALL_DISPUTES = [
         status: 'PENDING',
         createdAt: getDate(-5),
         paymentMethod: { type: 'mc', lastFourDigits: '0021', description: 'Mastercard' },
-        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective/Not as described' },
+        reason: { category: 'CONSUMER_DISPUTE', code: '4853', title: 'Cardholder dispute - Defective / Not as described' },
         amount: { currency: 'EUR', value: 433100 },
     },
     {

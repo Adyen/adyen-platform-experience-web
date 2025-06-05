@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const STORY_ID = 'mocked-dispute-management--defense-server-error';
 
@@ -8,7 +10,19 @@ test.describe('Error - Defense server error', () => {
         await goToStory(page, { id: STORY_ID });
         await page.getByRole('button', { name: 'Defend chargeback' }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
-        // TODO - Handle the submit button correctly once we have FE validation
+
+        await page.getByRole('button', { name: 'Select document type' }).click();
+        await page.getByRole('option', { name: 'Flight Ticket Used' }).click();
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const fixture = path.resolve(__dirname, '../../../fixtures/files/test-file.pdf');
+
+        const fileInput = page.locator('input[type="file"]');
+
+        await fileInput.setInputFiles(fixture);
+
         await page.getByRole('button', { name: 'Submit' }).click();
 
         await expect(page.getByText('Something went wrong')).toBeVisible();
