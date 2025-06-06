@@ -110,7 +110,6 @@
     "disputes.empty.noChargebacksFound": "Message shown when no chargebacks match the current filters",
     "disputes.empty.noFraudAlertsFound": "Message shown when no fraud alerts match the current filters",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks": "Suggestion telling the user to adjust filters or check again later for new chargebacks",
-    "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes": "Suggestion telling the user to adjust filters or check again later for new disputes",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts": "Suggestion telling the user to adjust filters or check again later for new fraud alerts",
     "disputes.error.couldNotLoadDisputesOverview": "Will be displayed if the disputes overview widget cannot be rendered because the user's authorization could not be determined at a given moment.",
     "disputes.error.entityWasNotFound": "Generic error message indicating that the requested dispute could not be found in the system.",

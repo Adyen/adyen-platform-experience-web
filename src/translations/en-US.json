@@ -543,7 +543,6 @@
     "disputes.empty.noChargebacksFound": "No chargebacks found",
     "disputes.empty.noFraudAlertsFound": "No fraud alerts found",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks": "Try different filters or check again later for new chargebacks.",
-    "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes": "Try different filters or check again later for new disputes.",
     "disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts": "Try different filters or check again later for new fraud alerts.",
     "disputes.error.couldNotLoadDisputesOverview": "We could not load the disputes overview component",
     "disputes.error.entityWasNotFound": "Entity was not found",
