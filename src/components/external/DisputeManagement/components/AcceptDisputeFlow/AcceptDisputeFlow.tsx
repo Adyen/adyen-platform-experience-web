@@ -27,8 +27,19 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
     const toggleTermsAgreement = useCallback(() => setTermsAgreed(prev => !prev), []);
     const termsAgreementInputId = useRef(uniqueId()).current;
 
-    const [acceptedLabel, setAcceptedLabel] = useState<TranslationKey | undefined>();
-    const isRfi = dispute?.dispute.type === 'REQUEST_FOR_INFORMATION';
+    const disputeType = dispute?.dispute.type;
+    const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
+
+    const isRFI = useRef(isRequestForInformation);
+    const acceptedLabel = useRef<TranslationKey>('disputes.accept.disputeAccepted');
+    const acceptDisclaimer = useRef<TranslationKey>('disputes.accept.disputeDisclaimer');
+    const acceptTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+
+    if ((isRFI.current ||= isRequestForInformation)) {
+        acceptedLabel.current = 'disputes.accept.requestForInformationAccepted';
+        acceptDisclaimer.current = 'disputes.accept.requestForInformationDisclaimer';
+        acceptTitle.current = 'disputes.accept.requestForInformation';
+    }
 
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
@@ -36,9 +47,8 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             onSuccess: useCallback(() => {
                 clearStates();
                 setDisputeAccepted(true);
-                setAcceptedLabel(isRfi ? 'disputes.accept.requestForInformationAccepted' : 'disputes.accept.disputeAccepted');
                 onAcceptDispute?.();
-            }, [clearStates, isRfi, onAcceptDispute]),
+            }, [clearStates, onAcceptDispute]),
         },
     });
 
@@ -51,7 +61,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
-                    {acceptedLabel && <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel)}</Typography>}
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
@@ -59,12 +69,10 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             ) : (
                 <>
                     <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
-                        {dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
-                            ? i18n.get('disputes.accept.requestForInformation')
-                            : i18n.get('disputes.accept.chargeback')}
+                        {i18n.get(acceptTitle.current)}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get(isRfi ? 'disputes.accept.requestForInformationDisclaimer' : 'disputes.accept.disputeDisclaimer')}
+                        {i18n.get(acceptDisclaimer.current)}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
@@ -81,7 +89,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <ButtonActions
                             actions={[
                                 {
-                                    title: isRfi ? i18n.get('disputes.accept') : i18n.get('disputes.accept.chargeback'),
+                                    title: isRFI.current ? i18n.get('disputes.accept') : i18n.get('disputes.accept.chargeback'),
                                     event: acceptDisputeCallback,
                                     variant: ButtonVariant.PRIMARY,
                                     state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
