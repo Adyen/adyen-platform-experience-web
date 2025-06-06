@@ -11,11 +11,11 @@ import DisputeData from '../DisputesData/DisputeData';
 export const DisputeDetails = ({
     id,
     hideTitle,
-    onDefendDispute,
-    onAcceptDispute,
     dataCustomization,
-    onDetailsDismiss,
     onContactSupport,
+    onDisputeAccept,
+    onDisputeDefend,
+    onDismiss,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
     const { flowState } = useDisputeFlow();
     const { i18n } = useCoreContext();
@@ -29,20 +29,15 @@ export const DisputeDetails = ({
                             {i18n.get('disputes.disputeManagementTitle')}
                         </Typography>
                     )}
-                    <DisputeData
-                        disputeId={id}
-                        dataCustomization={dataCustomization}
-                        onContactSupport={onContactSupport}
-                        onDetailsDismiss={onDetailsDismiss}
-                    />
+                    <DisputeData disputeId={id} dataCustomization={dataCustomization} onContactSupport={onContactSupport} onDismiss={onDismiss} />
                 </>
             );
         case 'accept':
-            return <AcceptDisputeFlow onAcceptDispute={onAcceptDispute} />;
+            return <AcceptDisputeFlow onDisputeAccept={onDisputeAccept} />;
         case 'defendReasonSelectionView':
         case 'defenseSubmitResponseView':
         case 'uploadDefenseFilesView':
-            return <DefendDisputeFlow onDefendDispute={onDefendDispute} />;
+            return <DefendDisputeFlow onDisputeDefend={onDisputeDefend} />;
         default:
             return null;
     }

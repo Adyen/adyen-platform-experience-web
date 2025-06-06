@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_DISPUTE_DETAILS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail, IDisputeStatus } from '../../../../../types/api/models/disputes';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import Icon from '../../../../internal/DataGrid/components/Icon';
@@ -51,6 +51,8 @@ const disputeDataKeys = {
     reasonCode: 'disputes.reasonCode',
     respondBy: 'disputes.respondBy',
 } satisfies Record<string, TranslationKey>;
+
+const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
@@ -212,7 +214,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 : SKIP_ITEM,
 
             // accepted on
-            acceptedDate && ['ACCEPTED', 'EXPIRED'].includes(status)
+            acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
                 ? {
                       key: disputeDataKeys.acceptedOn,
                       value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),

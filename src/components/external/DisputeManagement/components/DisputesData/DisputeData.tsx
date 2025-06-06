@@ -116,12 +116,12 @@ export const DisputeData = ({
     disputeId,
     dataCustomization,
     onContactSupport,
-    onDetailsDismiss,
+    onDismiss,
 }: {
     disputeId: string;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     onContactSupport?: () => void;
-    onDetailsDismiss: DisputeManagementProps['onDetailsDismiss'];
+    onDismiss: DisputeManagementProps['onDismiss'];
 }) => {
     const { i18n } = useCoreContext();
     const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
@@ -224,11 +224,11 @@ export const DisputeData = ({
 
     const renderBackButton = useCallback(() => {
         return (
-            <Button variant={ButtonVariant.SECONDARY} onClick={onDetailsDismiss}>
+            <Button variant={ButtonVariant.SECONDARY} onClick={onDismiss}>
                 {i18n.get('disputes.goBack')}
             </Button>
         );
-    }, [i18n, onDetailsDismiss]);
+    }, [i18n, onDismiss]);
 
     if ((!dispute && !error) || isFetching) {
         const skeletonRows = Array.from({ length: 5 });
@@ -284,7 +284,7 @@ export const DisputeData = ({
             {error ? (
                 <div className={DISPUTE_DATA_ERROR_CONTAINER}>
                     <ErrorMessageDisplay
-                        renderSecondaryButton={onDetailsDismiss ? renderBackButton : undefined}
+                        renderSecondaryButton={onDismiss ? renderBackButton : undefined}
                         withImage
                         outlined={false}
                         absolutePosition={false}

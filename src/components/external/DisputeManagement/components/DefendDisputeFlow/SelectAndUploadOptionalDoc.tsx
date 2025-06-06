@@ -6,7 +6,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectItem } from '../../../../internal/FormFields/Select/types';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseDocumentContent } from '../../utils';
-import { MutableRef, useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useEffect } from 'preact/hooks';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
@@ -17,7 +17,7 @@ const SelectAndUploadOptionalDoc = ({
     items,
     selection,
     setSelection,
-    ref,
+    disabled,
     required,
     title,
     index,
@@ -27,7 +27,7 @@ const SelectAndUploadOptionalDoc = ({
     items: SelectItem[];
     selection: string | undefined;
     setSelection: (val: string, index?: number) => void;
-    ref: MutableRef<HTMLInputElement | null>;
+    disabled?: boolean;
     required: boolean;
     title: string;
     index?: number;
@@ -37,6 +37,7 @@ const SelectAndUploadOptionalDoc = ({
     const { i18n } = useCoreContext();
     const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
     const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
+
     const updateDocumentSelection = useCallback(
         (documentSelection: string) => {
             selection && moveFieldInDefendPayload(selection, documentSelection);
@@ -66,7 +67,8 @@ const SelectAndUploadOptionalDoc = ({
                     </Typography>
                     {onRemoveOption && (
                         <Button
-                            onClick={() => index !== undefined && onRemoveOption(index)}
+                            disabled={disabled}
+                            onClick={() => index !== undefined && !disabled && onRemoveOption(index)}
                             variant={ButtonVariant.TERTIARY}
                             fullWidth={false}
                             align="center"
@@ -83,6 +85,7 @@ const SelectAndUploadOptionalDoc = ({
                         }}
                         filterable={false}
                         selected={selection}
+                        readonly={disabled}
                         multiSelect={false}
                         items={items}
                         showOverlay={false}
@@ -111,8 +114,7 @@ const SelectAndUploadOptionalDoc = ({
                     onDelete={() => {
                         selection && removeFieldFromDefendPayload(selection);
                     }}
-                    ref={ref}
-                    disabled={!selection}
+                    disabled={disabled || !selection}
                     required={required}
                     onChange={files => {
                         if (selection) {

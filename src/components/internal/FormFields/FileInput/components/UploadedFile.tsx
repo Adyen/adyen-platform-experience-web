@@ -19,7 +19,7 @@ const classes = {
     fileSize: `${BASE_CLASS}__file-size`,
 };
 
-export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
+export function UploadedFile({ file, deleteFile, disabled }: UploadedFileProps) {
     const fileSize = useMemo(() => getHumanReadableFileSize(file.size), [file.size]);
     return (
         <div className={classes.fileBase}>
@@ -34,7 +34,7 @@ export function UploadedFile({ file, deleteFile }: UploadedFileProps) {
                     {fileSize}
                 </Typography>
             </div>
-            <Button className={classes.fileButton} variant={ButtonVariant.TERTIARY} onClick={deleteFile}>
+            <Button className={classes.fileButton} disabled={disabled} variant={ButtonVariant.TERTIARY} onClick={deleteFile}>
                 <Icon name="trash-can" />
                 {/* The content of this span is used as accessible name for the delete (icon) button. */}
                 {/* However, it is visually hidden (not visible), but available to assistive technology. */}
