@@ -6,6 +6,8 @@ import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResp
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 import {
+    ACCEPTED_DISPUTES,
+    ALL_DISPUTES,
     CHARGEBACK_ACCEPTABLE,
     CHARGEBACK_AUTO_DEFENDED,
     CHARGEBACK_DEFENDABLE,
@@ -15,9 +17,12 @@ import {
     CHARGEBACK_LOST_NO_ACTION,
     CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK,
     CHARGEBACK_NOT_DEFENDABLE,
+    CHARGEBACKS,
+    DEFENDED_DISPUTES,
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
+    getDate,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
@@ -41,6 +46,31 @@ const getDisputeForRequestPathParams = (params: PathParams) => {
     const dispute = DISPUTES.find(dispute => dispute.disputePspReference === params.id);
     if (!dispute) throw HttpResponse.json({ error: 'Cannot find dispute' }, { status: 404 });
     return dispute;
+};
+
+const manageChargebackListItem = (dispute: IDisputeListItem, callback: (dispute: IDisputeListItem) => void) => {
+    const chargebackIndex = CHARGEBACKS.findIndex(d => d === dispute);
+
+    if (chargebackIndex >= 0) {
+        const disputes = DISPUTES as any[];
+        const allDisputes = ALL_DISPUTES as any[];
+        const firstAllDispute = ALL_DISPUTES[0];
+
+        CHARGEBACKS.splice(chargebackIndex, 1);
+        allDisputes.unshift(dispute);
+
+        disputes.splice(
+            disputes.findIndex(d => d === dispute),
+            1
+        );
+        disputes.splice(
+            disputes.findIndex(d => d === firstAllDispute),
+            0,
+            dispute
+        );
+
+        callback(dispute);
+    }
 };
 
 export const disputesMocks = [
@@ -119,7 +149,12 @@ export const disputesMocks = [
     http.post(mockEndpoints.accept, async ({ params }) => {
         if (networkError) return HttpResponse.error();
 
-        getDisputeForRequestPathParams(params);
+        manageChargebackListItem(getDisputeForRequestPathParams(params), dispute => {
+            dispute.status = dispute.status === 'UNRESPONDED' ? 'EXPIRED' : 'ACCEPTED';
+            ACCEPTED_DISPUTES.set(dispute, { acceptedOn: getDate(0) });
+            delete dispute.dueDate;
+        });
+
         await delay(1000);
         return new HttpResponse(null, { status: 204 });
     }),
@@ -142,6 +177,7 @@ export const disputesMocks = [
             }
 
             const defenseDocuments = getApplicableDisputeDefenseDocuments(dispute, defenseReason.trim());
+            const suppliedDocuments: string[] = [];
 
             // Some defense reasons require that at least one of certain types of documents be provided
             // Initially check to see if the current defense reason is one of such
@@ -153,6 +189,7 @@ export const disputesMocks = [
 
                 if (file instanceof File) {
                     // A file was uploaded for the corresponding form data field
+                    suppliedDocuments.push(applicableDocument.documentTypeCode);
 
                     if (applicableDocument.requirementLevel === 'ONE_OR_MORE') {
                         // Since a file has been uploaded for at least one of some expected types of documents,
@@ -174,6 +211,15 @@ export const disputesMocks = [
             if (missingOneOrMoreDocuments) {
                 return HttpResponse.json({ error: 'Missing one or more expected documents' }, { status: 400 });
             }
+
+            manageChargebackListItem(dispute, dispute => {
+                dispute.status = dispute.status === 'UNRESPONDED' ? 'RESPONDED' : 'PENDING';
+                DEFENDED_DISPUTES.set(dispute, {
+                    suppliedDocuments,
+                    defendedOn: getDate(0),
+                    reason: defenseReason.trim(),
+                });
+            });
 
             await delay(1000);
             return new HttpResponse(null, { status: 204 });
