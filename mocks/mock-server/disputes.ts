@@ -21,6 +21,7 @@ import {
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
+    RFI_ACCEPTABLE,
     RFI_ACCEPTED,
     RFI_EXPIRED,
     RFI_UNRESPONDED,
@@ -344,6 +345,13 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_EXPIRED);
+            }),
+        ],
+    },
+    rfiAcceptable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_ACCEPTABLE);
             }),
         ],
     },

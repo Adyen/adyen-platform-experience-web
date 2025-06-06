@@ -371,6 +371,16 @@ export const RFI_EXPIRED: IDisputeDetail = {
     },
 };
 
+export const RFI_ACCEPTABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        status: 'UNRESPONDED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'ACCEPTABLE',
+    },
+};
+
 export const RFI_ACCEPTED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {

@@ -132,6 +132,18 @@ export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
+export const RFIAcceptable: ElementStory<typeof DisputeManagementElement> = {
+    name: 'RFI - Acceptable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.rfiAcceptable,
+        },
+    },
+};
+
 export const RFIAccepted: ElementStory<typeof DisputeManagementElement> = {
     name: 'RFI - Accepted',
     args: {

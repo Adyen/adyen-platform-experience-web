@@ -11,6 +11,7 @@ import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { TranslationKey } from '../../../../../translations';
 
 export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () => void }) => {
     const { i18n } = useCoreContext();
@@ -26,12 +27,19 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
     const toggleTermsAgreement = useCallback(() => setTermsAgreed(prev => !prev), []);
     const termsAgreementInputId = useRef(uniqueId()).current;
 
+    const [acceptedLabel, setAcceptedLabel] = useState<TranslationKey | undefined>();
+
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
         options: {
             onSuccess: useCallback(() => {
                 clearStates();
                 setDisputeAccepted(true);
+                setAcceptedLabel(
+                    dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
+                        ? 'disputes.accept.requestForInformationAccepted'
+                        : 'disputes.accept.disputeAccepted'
+                );
                 onAcceptDispute?.();
             }, [clearStates, onAcceptDispute]),
         },
@@ -46,7 +54,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.accept.disputeAccepted')}</Typography>
+                    {acceptedLabel && <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel)}</Typography>}
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
@@ -59,7 +67,11 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                             : i18n.get('disputes.accept.chargeback')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get('disputes.accept.disputeDisclaimer')}
+                        {i18n.get(
+                            dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
+                                ? 'disputes.accept.requestForInformationDisclaimer'
+                                : 'disputes.accept.disputeDisclaimer'
+                        )}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
