@@ -19,7 +19,7 @@ test.describe('Error - Request funds - No primary balance account', () => {
 });
 
 test.describe('onContactSupport argument', () => {
-    test('should render "Contact support" button when argument is set', async ({ page }) => {
+    test('should render ""Reach out to support" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByRole('button', { name: 'Request funds' }).click();

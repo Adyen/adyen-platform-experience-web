@@ -20,6 +20,7 @@ export interface DataGridProps<
     ClickedField extends keyof Item[number],
     CustomCells extends CustomCell<Item, Columns, Columns[number]>
 > {
+    autoFitColumns?: boolean;
     children?: ComponentChildren;
     columns: Columns;
     condensed: boolean;

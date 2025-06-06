@@ -1,0 +1,60 @@
+@use '../../../../../style';
+
+.adyen-pe-accept-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &__success-icon {
+        color: style.token(color-background-success-strong);
+        font-size: style.token(spacer-110);
+        padding: style.token(spacer-040);
+
+        svg {
+            display: block;
+        }
+    }
+
+    &__input {
+        display: flex;
+        gap: style.token(spacer-070);
+
+        .adyen-pe-icon {
+            display: flex;
+        }
+
+        // stylelint-disable selector-max-compound-selectors
+        input:focus-visible ~ label > .adyen-pe-icon {
+            outline: -webkit-focus-ring-color auto 1px;
+        }
+
+        input,
+        .adyen-pe-icon,
+        label {
+            cursor: pointer;
+        }
+    }
+
+    &__label {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-070);
+    }
+
+    &__success {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        height: 218px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    &__title {
+        font-size: style.token(text-title-font-size);
+    }
+}

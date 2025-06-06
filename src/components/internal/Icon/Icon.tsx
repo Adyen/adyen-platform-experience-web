@@ -20,6 +20,7 @@ const icons = {
     filter: () => import('../../../images/icons/filter.svg?component'),
     'info-filled': () => import('../../../images/icons/info-filled.svg?component'),
     'minus-circle-outline': () => import('../../../images/icons/minus-circle-outline.svg?component'),
+    plus: () => import('../../../images/icons/plus.svg?component'),
     'plus-circle-outline': () => import('../../../images/icons/plus-circle-outline.svg?component'),
     square: () => import('../../../images/icons/square.svg?component'),
     'trash-can': () => import('../../../images/icons/trash-can.svg?component'),

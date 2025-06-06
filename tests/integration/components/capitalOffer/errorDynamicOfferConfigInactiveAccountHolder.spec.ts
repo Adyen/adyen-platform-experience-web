@@ -15,13 +15,13 @@ test.describe('Error - Dynamic offer config - Inactive account holder', () => {
         await expect(
             page.getByText("We couldn't load financial offers.Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92")
         ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Contact support' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });
 });
 
 test.describe('onContactSupport argument', () => {
-    test('should render "Contact support" button when argument is set', async ({ page }) => {
+    test('should render ""Reach out to support"" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Contact support' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 });

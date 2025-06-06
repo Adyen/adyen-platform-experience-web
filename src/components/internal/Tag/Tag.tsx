@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import { TagProps, TagVariant } from './types';
 import './Tag.scss';
-import { memo } from 'preact/compat';
-export const Tag = memo(({ variant = TagVariant.DEFAULT, label }: TagProps) => {
+import { memo, PropsWithChildren } from 'preact/compat';
+export const Tag = memo(({ variant = TagVariant.DEFAULT, label, children }: PropsWithChildren<TagProps>) => {
     return (
         <div
             className={cx('adyen-pe-tag', {
@@ -18,7 +18,7 @@ export const Tag = memo(({ variant = TagVariant.DEFAULT, label }: TagProps) => {
                 'adyen-pe-tag--blue': variant === TagVariant.BLUE,
             })}
         >
-            {label}
+            {children || label}
         </div>
     );
 });

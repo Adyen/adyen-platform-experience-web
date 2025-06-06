@@ -12,6 +12,7 @@ export type BaseButtonProps = {
     condensed?: boolean;
     state?: 'loading' | 'default';
     disabled?: h.JSX.Signalish<boolean | undefined>;
+    align?: 'center' | 'left' | 'right';
 };
 
 export interface AnchorButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement>, BaseButtonProps {}
