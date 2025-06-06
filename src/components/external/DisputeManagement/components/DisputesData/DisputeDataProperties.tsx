@@ -28,6 +28,7 @@ import {
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
+import { getDefenseDocumentContent, getDefenseReasonContent } from '../../utils';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -155,7 +156,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defenseReason
                 ? {
                       key: disputeDataKeys.defenseReason,
-                      value: defenseReason, // [TODO]: The defense reason should be translated (??)
+                      value: getDefenseReasonContent(i18n, defenseReason)?.title ?? defenseReason,
                       id: 'defenseReason',
                   }
                 : SKIP_ITEM,
@@ -182,8 +183,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
-                                          {/* [NOTE]: Document label not translated at the moment (maybe in the future) */}
-                                          <Tag label={document} />
+                                          <Tag label={getDefenseDocumentContent(i18n, document)?.title ?? document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
                                               endpointName={'downloadDefenseDocument'}
@@ -212,7 +212,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 : SKIP_ITEM,
 
             // accepted on
-            acceptedDate && status === 'ACCEPTED'
+            acceptedDate && ['ACCEPTED', 'EXPIRED'].includes(status)
                 ? {
                       key: disputeDataKeys.acceptedOn,
                       value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),

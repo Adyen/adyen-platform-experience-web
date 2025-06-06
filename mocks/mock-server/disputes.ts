@@ -10,6 +10,7 @@ import {
     CHARGEBACK_AUTO_DEFENDED,
     CHARGEBACK_DEFENDABLE,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
+    CHARGEBACK_DEFENDED,
     CHARGEBACK_LOST,
     CHARGEBACK_LOST_NO_ACTION,
     CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK,
@@ -20,6 +21,8 @@ import {
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
+    RFI_ACCEPTABLE,
+    RFI_ACCEPTED,
     RFI_EXPIRED,
     RFI_UNRESPONDED,
 } from '../mock-data/disputes';
@@ -310,6 +313,13 @@ export const DISPUTE_DETAILS_HANDLERS = {
             }),
         ],
     },
+    chargebackDefended: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_DEFENDED);
+            }),
+        ],
+    },
     chargebackLostNotDefended: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
@@ -335,6 +345,20 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_EXPIRED);
+            }),
+        ],
+    },
+    rfiAcceptable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_ACCEPTABLE);
+            }),
+        ],
+    },
+    rfiAccepted: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_ACCEPTED);
             }),
         ],
     },

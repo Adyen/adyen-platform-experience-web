@@ -11,6 +11,7 @@ import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { TranslationKey } from '../../../../../translations';
 
 export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () => void }) => {
     const { i18n } = useCoreContext();
@@ -25,6 +26,20 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
     const goBackToDetails = useCallback(() => setFlowState('details'), [setFlowState]);
     const toggleTermsAgreement = useCallback(() => setTermsAgreed(prev => !prev), []);
     const termsAgreementInputId = useRef(uniqueId()).current;
+
+    const disputeType = dispute?.dispute.type;
+    const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
+
+    const isRFI = useRef(isRequestForInformation);
+    const acceptedLabel = useRef<TranslationKey>('disputes.accept.disputeAccepted');
+    const acceptDisclaimer = useRef<TranslationKey>('disputes.accept.disputeDisclaimer');
+    const acceptTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+
+    if ((isRFI.current ||= isRequestForInformation)) {
+        acceptedLabel.current = 'disputes.accept.requestForInformationAccepted';
+        acceptDisclaimer.current = 'disputes.accept.requestForInformationDisclaimer';
+        acceptTitle.current = 'disputes.accept.requestForInformation';
+    }
 
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
@@ -46,7 +61,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.accept.disputeAccepted')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
@@ -54,10 +69,10 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             ) : (
                 <>
                     <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
-                        {i18n.get('disputes.accept.chargeback')}
+                        {i18n.get(acceptTitle.current)}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get('disputes.accept.disputeDisclaimer')}
+                        {i18n.get(acceptDisclaimer.current)}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
@@ -74,7 +89,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <ButtonActions
                             actions={[
                                 {
-                                    title: i18n.get('disputes.accept.chargeback'),
+                                    title: isRFI.current ? i18n.get('disputes.accept') : i18n.get('disputes.accept.chargeback'),
                                     event: acceptDisputeCallback,
                                     variant: ButtonVariant.PRIMARY,
                                     state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
