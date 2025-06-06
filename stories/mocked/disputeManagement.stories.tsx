@@ -14,6 +14,29 @@ export const Default: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
+export const ChargebackAcceptable: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Acceptable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackAcceptable,
+        },
+    },
+};
+export const ChargebackDefendable: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Defendable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackDefendable,
+        },
+    },
+};
+
 export const ChargebackDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
     name: 'Chargeback - Defendable externally',
     args: {
@@ -34,6 +57,17 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementEle
     parameters: {
         msw: {
             ...DISPUTE_DETAILS_HANDLERS.chargebackLostNotDefended,
+        },
+    },
+};
+export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Chargeback - Lost (with issuer feedback)',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.chargebackLostWithFeedback,
         },
     },
 };
