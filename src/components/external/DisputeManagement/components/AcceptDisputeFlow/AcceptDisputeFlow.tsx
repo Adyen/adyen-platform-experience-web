@@ -10,6 +10,7 @@ import { useDisputeFlow } from '../../context/dispute/context';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { EMPTY_OBJECT, isFunction, uniqueId } from '../../../../../utils';
+import { TranslationKey } from '../../../../../translations';
 import { DisputeManagementProps } from '../../types';
 import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
@@ -21,6 +22,21 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
     const { dispute, clearStates, goBack } = useDisputeFlow();
 
     const disputePspReference = dispute?.dispute.pspReference;
+    const disputeType = dispute?.dispute.type;
+    const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
+
+    const acceptedLabel = useRef<TranslationKey>('disputes.accept.disputeAccepted');
+    const acceptDisclaimer = useRef<TranslationKey>('disputes.accept.disputeDisclaimer');
+    const acceptTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+    const acceptButtonTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+    const isRFI = useRef(isRequestForInformation);
+
+    if ((isRFI.current ||= isRequestForInformation)) {
+        acceptedLabel.current = 'disputes.accept.requestForInformationAccepted';
+        acceptDisclaimer.current = 'disputes.accept.requestForInformationDisclaimer';
+        acceptTitle.current = 'disputes.accept.requestForInformation';
+        acceptButtonTitle.current = 'disputes.accept';
+    }
 
     const [termsAgreed, setTermsAgreed] = useState(false);
     const [disputeAccepted, setDisputeAccepted] = useState(false);
@@ -60,7 +76,7 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
     const actionButtons = useMemo<ButtonActionsList>(() => {
         return [
             {
-                title: i18n.get('disputes.accept.chargeback'),
+                title: i18n.get(acceptButtonTitle.current),
                 disabled: !canAcceptDispute,
                 state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
                 variant: ButtonVariant.PRIMARY,
@@ -92,7 +108,7 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
             {showAcceptedConfirmation ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.accept.disputeAccepted')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBack}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
@@ -100,10 +116,10 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
             ) : (
                 <>
                     <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
-                        {i18n.get('disputes.accept.chargeback')}
+                        {i18n.get(acceptTitle.current)}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get('disputes.accept.disputeDisclaimer')}
+                        {i18n.get(acceptDisclaimer.current)}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input

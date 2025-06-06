@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_DISPUTE_DETAILS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TranslationKey } from '../../../../../translations';
-import { IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { IDisputeDetail, IDisputeStatus } from '../../../../../types/api/models/disputes';
 import DownloadButton from '../../../../internal/Button/DownloadButton/DownloadButton';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import Icon from '../../../../internal/DataGrid/components/Icon';
@@ -28,6 +28,7 @@ import {
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
+import { getDefenseDocumentContent, getDefenseReasonContent } from '../../utils';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
@@ -50,6 +51,8 @@ const disputeDataKeys = {
     reasonCode: 'disputes.reasonCode',
     respondBy: 'disputes.respondBy',
 } satisfies Record<string, TranslationKey>;
+
+const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
 const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
@@ -155,7 +158,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defenseReason
                 ? {
                       key: disputeDataKeys.defenseReason,
-                      value: defenseReason, // [TODO]: The defense reason should be translated (??)
+                      value: getDefenseReasonContent(i18n, defenseReason)?.title ?? defenseReason,
                       id: 'defenseReason',
                   }
                 : SKIP_ITEM,
@@ -182,8 +185,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
-                                          {/* [NOTE]: Document label not translated at the moment (maybe in the future) */}
-                                          <Tag label={document} />
+                                          <Tag label={getDefenseDocumentContent(i18n, document)?.title ?? document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
                                               endpointName={'downloadDefenseDocument'}
@@ -212,7 +214,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 : SKIP_ITEM,
 
             // accepted on
-            acceptedDate && status === 'ACCEPTED'
+            acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
                 ? {
                       key: disputeDataKeys.acceptedOn,
                       value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),
