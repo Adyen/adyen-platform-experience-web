@@ -28,6 +28,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
     const termsAgreementInputId = useRef(uniqueId()).current;
 
     const [acceptedLabel, setAcceptedLabel] = useState<TranslationKey | undefined>();
+    const isRfi = dispute?.dispute.type === 'REQUEST_FOR_INFORMATION';
 
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
@@ -35,13 +36,9 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             onSuccess: useCallback(() => {
                 clearStates();
                 setDisputeAccepted(true);
-                setAcceptedLabel(
-                    dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
-                        ? 'disputes.accept.requestForInformationAccepted'
-                        : 'disputes.accept.disputeAccepted'
-                );
+                setAcceptedLabel(isRfi ? 'disputes.accept.requestForInformationAccepted' : 'disputes.accept.disputeAccepted');
                 onAcceptDispute?.();
-            }, [clearStates, onAcceptDispute]),
+            }, [clearStates, isRfi, onAcceptDispute]),
         },
     });
 
@@ -67,11 +64,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                             : i18n.get('disputes.accept.chargeback')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>
-                        {i18n.get(
-                            dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
-                                ? 'disputes.accept.requestForInformationDisclaimer'
-                                : 'disputes.accept.disputeDisclaimer'
-                        )}
+                        {i18n.get(isRfi ? 'disputes.accept.requestForInformationDisclaimer' : 'disputes.accept.disputeDisclaimer')}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
                         <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
@@ -88,10 +81,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         <ButtonActions
                             actions={[
                                 {
-                                    title:
-                                        dispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
-                                            ? i18n.get('disputes.accept')
-                                            : i18n.get('disputes.accept.chargeback'),
+                                    title: isRfi ? i18n.get('disputes.accept') : i18n.get('disputes.accept.chargeback'),
                                     event: acceptDisputeCallback,
                                     variant: ButtonVariant.PRIMARY,
                                     state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
