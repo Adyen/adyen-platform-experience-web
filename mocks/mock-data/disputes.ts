@@ -1,3 +1,4 @@
+import { BALANCE_ACCOUNTS } from './balanceAccounts';
 import {
     IDispute,
     IDisputeDefenseDocument,
@@ -8,7 +9,6 @@ import {
     IDisputeStatusGroup,
     IDisputeType,
 } from '../../src/types/api/models/disputes';
-import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 export const MAIN_BALANCE_ACCOUNT = BALANCE_ACCOUNTS.find(({ id }) => id === 'BA32272223222B5CTDQPM6W2H')!;
 
@@ -110,6 +110,13 @@ const DEFENDABLE_CHARGEBACK_REASONS: Record<string, Record<string, readonly IDis
     },
 };
 
+export const ACCEPTED_DISPUTES = new WeakMap<IDisputeListItem, { acceptedOn: string }>();
+
+export const DEFENDED_DISPUTES = new WeakMap<
+    IDisputeListItem,
+    Pick<NonNullable<IDisputeDetail['defense']>, 'defendedOn' | 'reason' | 'suppliedDocuments'>
+>();
+
 // Issuer feedback
 const LIABILITY_NOT_ACCEPTED_FULLY = 'Lorem ipsum this is a very long long text so we cut it here.';
 const NOTE =
@@ -125,7 +132,7 @@ export const getApplicableDisputeDefenseDocuments = <T extends Pick<IDispute, 'r
     return DEFENDABLE_CHARGEBACK_REASONS[dispute.reason.code]?.[defenseReason] || ([] as const);
 };
 
-const getDate = (daysOffset = 0, originDate = new Date()) => {
+export const getDate = (daysOffset = 0, originDate = new Date()) => {
     const date = new Date(originDate);
     date.setDate(date.getDate() + daysOffset);
     return date.toISOString();
@@ -406,7 +413,7 @@ export const NOTIFICATION_OF_FRAUD: IDisputeDetail = {
     },
 };
 
-const CHARGEBACKS = [
+export const CHARGEBACKS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
         status: 'UNDEFENDED',
@@ -552,7 +559,7 @@ const CHARGEBACKS = [
     },
 ] satisfies Readonly<IDisputeListItem[]>;
 
-const ALL_DISPUTES = [
+export const ALL_DISPUTES = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000016',
         status: 'PENDING',
@@ -682,7 +689,7 @@ const ALL_DISPUTES = [
     },
 ] satisfies Readonly<IDisputeListItem[]>;
 
-const FRAUD_ALERTS = [
+export const FRAUD_ALERTS = [
     {
         disputePspReference: 'a1b2c3d4-e5f6-4789-abcd-000000000041',
         status: 'LOST',
@@ -837,6 +844,41 @@ const ACCEPTED_OR_EXPIRED_STATUSES: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 const ACTION_NEEDED_STATUSES: IDisputeStatus[] = ['UNDEFENDED', 'UNRESPONDED'];
 const RFI_ONLY_STATUSES: IDisputeStatus[] = ['EXPIRED', 'RESPONDED', 'UNRESPONDED'];
 
+const getDisputeDefense = <T extends Pick<IDisputeListItem, 'reason' | 'disputePspReference'>>(dispute: T) => {
+    let reason: string = 'ServicesProvided';
+    let suppliedDocuments: string[] = ['GoodsOrServicesProvided', 'WrittenRebuttal'];
+
+    const allowedReasons = getAllowedDisputeDefenseReasons(dispute);
+    const allowedReasonsCount = allowedReasons.length;
+
+    if (allowedReasonsCount) {
+        let includedOneOrMoreDocument = false;
+        const idBucket = parseInt(dispute.disputePspReference.match(/\d(?=\D*$)/g)?.[0] ?? '0') % allowedReasonsCount;
+        const optionalDocuments: string[] = [];
+
+        reason = allowedReasons[idBucket]!;
+        suppliedDocuments.length = 0;
+
+        for (const document of getApplicableDisputeDefenseDocuments(dispute, reason)) {
+            if (document.requirementLevel === 'OPTIONAL') {
+                optionalDocuments.push(document.documentTypeCode);
+                continue;
+            }
+            if (document.requirementLevel === 'ONE_OR_MORE') {
+                if (includedOneOrMoreDocument) continue;
+                includedOneOrMoreDocument = true;
+            }
+            suppliedDocuments.push(document.documentTypeCode);
+        }
+
+        if (suppliedDocuments.length === 0 && optionalDocuments.length > 0) {
+            suppliedDocuments.push(optionalDocuments[0]!);
+        }
+    }
+
+    return { reason, suppliedDocuments };
+};
+
 export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute: T) => {
     const { disputePspReference, ...disputeProps } = dispute;
     const disputeCategory = dispute.reason.category;
@@ -875,14 +917,13 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
     const additionalDisputeDetails = {} as Omit<IDisputeDetail, 'dispute'> & { dispute: IDisputeDetail['dispute'] };
 
     if (hasDefenseEvidence) {
+        const disputeDefenseData = DEFENDED_DISPUTES.get(dispute);
+
         additionalDisputeDetails.defense = {
             autodefended: isAutoDefendableChargeback,
             defendedOn: disputeModificationDate,
-            defendedThroughComponent: !isAutoDefendableChargeback && isDefendableThroughComponent,
-            ...(!isAutoDefendableChargeback && {
-                reason: 'ServicesProvided',
-                suppliedDocuments: ['GoodsOrServicesProvided', 'WrittenRebuttal'],
-            }),
+            defendedThroughComponent: !isAutoDefendableChargeback && !!disputeDefenseData,
+            ...(!isAutoDefendableChargeback && (disputeDefenseData ?? getDisputeDefense(dispute))),
         };
     }
 
@@ -892,7 +933,9 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
         allowedDefenseReasons: [...getAllowedDisputeDefenseReasons(dispute)],
         pspReference: disputePspReference,
         type: disputeType,
-        ...(disputeStatus === 'ACCEPTED' && { acceptedDate: disputeModificationDate }),
+        ...(disputeStatus === 'ACCEPTED' && {
+            acceptedDate: ACCEPTED_DISPUTES.get(dispute)?.acceptedOn ?? disputeModificationDate,
+        }),
         ...(hasIssuerFeedback && {
             issuerExtraData: {
                 ...(isChargeback && {
