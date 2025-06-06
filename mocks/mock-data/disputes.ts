@@ -110,6 +110,13 @@ const DEFENDABLE_CHARGEBACK_REASONS: Record<string, Record<string, readonly IDis
     },
 };
 
+// Issuer feedback
+const LIABILITY_NOT_ACCEPTED_FULLY = 'Lorem ipsum this is a very long long text so we cut it here.';
+const NOTE =
+    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
+const PRE_ARB_REASON =
+    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
+
 export const getAllowedDisputeDefenseReasons = <T extends Pick<IDispute, 'reason'>>(dispute: T) => {
     return Object.keys(DEFENDABLE_CHARGEBACK_REASONS[dispute.reason.code] || {}) as readonly string[];
 };
@@ -319,7 +326,19 @@ export const CHARGEBACK_DEFENDED_EXTERNALLY: IDisputeDetail = {
     },
 };
 
-// REQUEST FOR INFORMATION
+export const CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        status: 'LOST',
+        defensibility: 'NOT_ACTIONABLE',
+        issuerExtraData: {
+            chargeback: { LIABILITY_NOT_ACCEPTED_FULLY, NOTE },
+            preArbitration: { PRE_ARB_REASON },
+        },
+    },
+    defense: DEFAULT_DETAIL_DEFENSE,
+};
 
 export const RFI_UNRESPONDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
@@ -807,13 +826,6 @@ const ACCEPTABLE_CHARGEBACK_REASONS: IDisputeReasonCategory[] = ['CONSUMER_DISPU
 const ACCEPTED_OR_EXPIRED_STATUSES: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 const ACTION_NEEDED_STATUSES: IDisputeStatus[] = ['UNDEFENDED', 'UNRESPONDED'];
 const RFI_ONLY_STATUSES: IDisputeStatus[] = ['EXPIRED', 'RESPONDED', 'UNRESPONDED'];
-
-// Issuer feedback
-const LIABILITY_NOT_ACCEPTED_FULLY = 'Lorem ipsum this is a very long long text so we cut it here.';
-const NOTE =
-    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
-const PRE_ARB_REASON =
-    'The documents submitted did not meet the requirements, unfortunately the dispute has been lost. Lorem ipsum this is a very long long text so we cut it here.';
 
 export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute: T) => {
     const { disputePspReference, ...disputeProps } = dispute;

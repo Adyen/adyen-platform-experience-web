@@ -6,11 +6,14 @@ import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResp
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 import {
+    CHARGEBACK_ACCEPTABLE,
     CHARGEBACK_AUTO_DEFENDED,
+    CHARGEBACK_DEFENDABLE,
     CHARGEBACK_DEFENDABLE_EXTERNALLY,
     CHARGEBACK_DEFENDED,
     CHARGEBACK_LOST,
     CHARGEBACK_LOST_NO_ACTION,
+    CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK,
     CHARGEBACK_NOT_DEFENDABLE,
     DISPUTES,
     getAdditionalDisputeDetails,
@@ -355,6 +358,27 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_UNRESPONDED);
+            }),
+        ],
+    },
+    chargebackAcceptable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_ACCEPTABLE);
+            }),
+        ],
+    },
+    chargebackDefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_DEFENDABLE);
+            }),
+        ],
+    },
+    chargebackLostWithFeedback: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK);
             }),
         ],
     },
