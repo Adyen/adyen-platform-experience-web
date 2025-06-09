@@ -17,7 +17,9 @@ test.describe('Request for information - Acceptable', () => {
         await page.getByRole('button', { name: 'Accept' }).click();
 
         await expect(page.getByText('Accept request for information')).toBeVisible();
-        await expect(page.getByText('By accepting, you agree that the request for information might become a dispute charge.')).toBeVisible();
+        await expect(
+            page.getByText('Once this request for information is accepted, it will be marked as expired and may lead to a chargeback in the future.')
+        ).toBeVisible();
         await page.getByText('I agree').click();
 
         await page.getByRole('button', { name: 'Accept' }).click();
