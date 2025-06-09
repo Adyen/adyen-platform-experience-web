@@ -1,4 +1,3 @@
-import { useEffect } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Button from '../../../../internal/Button/Button';
@@ -6,16 +5,12 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
+import './DefendDisputeFlow.scss';
 
-export const DefendDisputeResponse = ({ onDefendDispute }: { onDefendDispute?: () => void }) => {
+export const DefendDisputeResponse = () => {
     const { i18n } = useCoreContext();
     const { clearFiles, clearStates, setFlowState, defendResponse } = useDisputeFlow();
-
-    useEffect(() => {
-        if (defendResponse === 'success') onDefendDispute?.();
-    }, [defendResponse, onDefendDispute]);
 
     const goBackToDetails = useCallback(() => {
         clearStates();

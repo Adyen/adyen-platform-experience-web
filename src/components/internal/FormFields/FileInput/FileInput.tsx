@@ -1,3 +1,4 @@
+import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { fixedForwardRef } from '../../../../utils/preact';
 import UploadedFile from './components/UploadedFile';
@@ -6,13 +7,13 @@ import { isFunction } from '../../../../utils';
 import { BASE_CLASS, validationErrors } from './constants';
 import { FileInputProps, ValidationError } from './types';
 import './FileInput.scss';
-import useCoreContext from '../../../../core/Context/useCoreContext';
 
 export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ onChange, mapError, onDelete, ...restProps }, ref) => {
     const [files, setFiles] = useState<File[]>([]);
     const uploadedFiles = useRef(files);
     const uploadedFile = files[0];
     const { i18n } = useCoreContext();
+    const { disabled } = restProps;
 
     const defaultMapError = useCallback(
         (error: ValidationError): string => {
@@ -34,6 +35,7 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
 
     const deleteFile = useCallback(
         (fileToDelete: File) => {
+            if (disabled) return;
             setFiles(currentFiles => {
                 const fileIndex = currentFiles.findIndex(file => file === fileToDelete);
 
@@ -52,20 +54,24 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
 
             onDelete?.();
         },
-        [onDelete]
+        [disabled, onDelete]
     );
 
-    const uploadFiles = useCallback((files: File[]) => {
-        setFiles(currentFiles => {
-            if (currentFiles.length === 0 && files.length === 0) {
-                // No uploaded files currently, and no files will be uploaded,
-                // Nothing to upload, return currentFiles (state did not change)
-                return currentFiles;
-            } else {
-                return files;
-            }
-        });
-    }, []);
+    const uploadFiles = useCallback(
+        (files: File[]) => {
+            if (disabled) return;
+            setFiles(currentFiles => {
+                if (currentFiles.length === 0 && files.length === 0) {
+                    // No uploaded files currently, and no files will be uploaded,
+                    // Nothing to upload, return currentFiles (state did not change)
+                    return currentFiles;
+                } else {
+                    return files;
+                }
+            });
+        },
+        [disabled]
+    );
 
     useEffect(() => {
         // Skip calling onChange callback if the uploaded files haven't changed
@@ -84,7 +90,7 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
             {
                 // prettier-ignore
                 uploadedFile
-                    ? <UploadedFile file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
+                    ? <UploadedFile disabled={disabled} file={uploadedFile} deleteFile={() => deleteFile(uploadedFile)} />
                     : <Dropzone {...restProps} ref={ref} mapError={mapErrorWithFallback} uploadFiles={uploadFiles} />
             }
         </div>
