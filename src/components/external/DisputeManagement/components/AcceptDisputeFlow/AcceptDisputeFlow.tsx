@@ -2,44 +2,47 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
+import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import { useCallback, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { useDisputeFlow } from '../../context/dispute/context';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { EMPTY_OBJECT, uniqueId } from '../../../../../utils';
+import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
+import { EMPTY_OBJECT, isFunction, uniqueId } from '../../../../../utils';
+import { TranslationKey } from '../../../../../translations';
+import { DisputeManagementProps } from '../../types';
 import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
 import './AcceptDisputeFlow.scss';
-import { useDisputeFlow } from '../../context/dispute/context';
-import { TranslationKey } from '../../../../../translations';
 
-export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () => void }) => {
+export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementProps, 'onDisputeAccept'>) => {
     const { i18n } = useCoreContext();
     const { acceptDispute } = useConfigContext().endpoints;
-    const { dispute, setFlowState, clearStates, goBack } = useDisputeFlow();
+    const { dispute, clearStates, goBack } = useDisputeFlow();
 
-    const disputeId = dispute?.dispute.pspReference;
-
-    const [disputeAccepted, setDisputeAccepted] = useState(false);
-    const [termsAgreed, setTermsAgreed] = useState(false);
-
-    const goBackToDetails = useCallback(() => setFlowState('details'), [setFlowState]);
-    const toggleTermsAgreement = useCallback(() => setTermsAgreed(prev => !prev), []);
-    const termsAgreementInputId = useRef(uniqueId()).current;
-
+    const disputePspReference = dispute?.dispute.pspReference;
     const disputeType = dispute?.dispute.type;
     const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
 
-    const isRFI = useRef(isRequestForInformation);
     const acceptedLabel = useRef<TranslationKey>('disputes.accept.disputeAccepted');
     const acceptDisclaimer = useRef<TranslationKey>('disputes.accept.disputeDisclaimer');
     const acceptTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+    const acceptButtonTitle = useRef<TranslationKey>('disputes.accept.chargeback');
+    const isRFI = useRef(isRequestForInformation);
 
     if ((isRFI.current ||= isRequestForInformation)) {
         acceptedLabel.current = 'disputes.accept.requestForInformationAccepted';
         acceptDisclaimer.current = 'disputes.accept.requestForInformationDisclaimer';
         acceptTitle.current = 'disputes.accept.requestForInformation';
+        acceptButtonTitle.current = 'disputes.accept';
     }
+
+    const [termsAgreed, setTermsAgreed] = useState(false);
+    const [disputeAccepted, setDisputeAccepted] = useState(false);
+    const [showAcceptedConfirmation, setShowAcceptedConfirmation] = useState(false);
+
+    const termsAgreementInputId = useRef(uniqueId()).current;
 
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
@@ -47,22 +50,66 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
             onSuccess: useCallback(() => {
                 clearStates();
                 setDisputeAccepted(true);
-                onAcceptDispute?.();
-            }, [clearStates, onAcceptDispute]),
+
+                if (isFunction(onDisputeAccept)) {
+                    const returnValue: unknown = onDisputeAccept({ id: disputePspReference! });
+                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
+                }
+                setShowAcceptedConfirmation(true);
+            }, [clearStates, disputePspReference, onDisputeAccept]),
         },
     });
 
+    const interactionsDisabled = acceptDisputeMutation.isLoading || disputeAccepted;
+    const canAcceptDispute = termsAgreed && !interactionsDisabled;
+
     const acceptDisputeCallback = useCallback(() => {
-        void acceptDisputeMutation.mutate(EMPTY_OBJECT, { path: { disputePspReference: disputeId! } });
-    }, [disputeId, acceptDisputeMutation]);
+        if (!canAcceptDispute) return;
+        void acceptDisputeMutation.mutate(EMPTY_OBJECT, { path: { disputePspReference: disputePspReference! } });
+    }, [canAcceptDispute, disputePspReference, acceptDisputeMutation]);
+
+    const toggleTermsAgreement = useCallback(() => {
+        if (interactionsDisabled) return;
+        setTermsAgreed(prev => !prev);
+    }, [interactionsDisabled]);
+
+    const actionButtons = useMemo<ButtonActionsList>(() => {
+        return [
+            {
+                title: i18n.get(acceptButtonTitle.current),
+                disabled: !canAcceptDispute,
+                state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
+                variant: ButtonVariant.PRIMARY,
+                event: acceptDisputeCallback,
+                classNames: disputeAccepted ? ['adyen-pe-accept-dispute__accepted-btn'] : undefined,
+                renderTitle: title => {
+                    if (disputeAccepted) {
+                        return (
+                            <>
+                                <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__accepted-icon" />
+                                {i18n.get('disputes.accept.accepted')}
+                            </>
+                        );
+                    }
+                    return title;
+                },
+            },
+            {
+                title: i18n.get('disputes.goBack'),
+                disabled: acceptDisputeMutation.isLoading,
+                variant: ButtonVariant.SECONDARY,
+                event: goBack,
+            },
+        ];
+    }, [i18n, acceptDisputeCallback, acceptDisputeMutation.isLoading, canAcceptDispute, goBack, disputeAccepted]);
 
     return (
         <div className="adyen-pe-accept-dispute__container">
-            {disputeAccepted ? (
+            {showAcceptedConfirmation ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>
-                    <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
+                    <Button variant={ButtonVariant.SECONDARY} onClick={goBack}>
                         {i18n.get('disputes.showDisputeDetails')}
                     </Button>
                 </div>
@@ -75,7 +122,13 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                         {i18n.get(acceptDisclaimer.current)}
                     </Typography>
                     <div className="adyen-pe-accept-dispute__input">
-                        <input type="checkbox" className="adyen-pe-visually-hidden" id={termsAgreementInputId} onInput={toggleTermsAgreement} />
+                        <input
+                            type="checkbox"
+                            disabled={interactionsDisabled}
+                            className="adyen-pe-visually-hidden"
+                            id={termsAgreementInputId}
+                            onInput={toggleTermsAgreement}
+                        />
 
                         <label className="adyen-pe-accept-dispute__label" htmlFor={termsAgreementInputId}>
                             {termsAgreed ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
@@ -86,23 +139,7 @@ export const AcceptDisputeFlow = ({ onAcceptDispute }: { onAcceptDispute?: () =>
                     </div>
 
                     <div className="adyen-pe-accept-dispute__actions">
-                        <ButtonActions
-                            actions={[
-                                {
-                                    title: isRFI.current ? i18n.get('disputes.accept') : i18n.get('disputes.accept.chargeback'),
-                                    event: acceptDisputeCallback,
-                                    variant: ButtonVariant.PRIMARY,
-                                    state: acceptDisputeMutation.isLoading ? 'loading' : 'default',
-                                    disabled: !termsAgreed,
-                                },
-                                {
-                                    title: i18n.get('disputes.goBack'),
-                                    event: goBack,
-                                    variant: ButtonVariant.SECONDARY,
-                                    disabled: acceptDisputeMutation.isLoading,
-                                },
-                            ]}
-                        />
+                        <ButtonActions actions={actionButtons} />
                     </div>
                 </>
             )}

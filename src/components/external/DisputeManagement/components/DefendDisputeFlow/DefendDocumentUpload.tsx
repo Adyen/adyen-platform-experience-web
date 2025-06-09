@@ -3,20 +3,20 @@ import { getDefenseDocumentContent } from '../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { MutableRef, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
 import { MapErrorCallback } from './types';
 
 export const DefendDocumentUpload = ({
     document,
-    ref,
-    isRequired,
+    disabled,
+    required,
     mapError,
 }: {
     document: string;
-    ref: MutableRef<HTMLInputElement | null>;
-    isRequired: boolean;
+    disabled?: boolean;
+    required: boolean;
     mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
@@ -56,9 +56,9 @@ export const DefendDocumentUpload = ({
                 onDelete={() => {
                     document && removeFieldFromDefendPayload(document);
                 }}
-                ref={ref}
                 key={document}
-                required={isRequired}
+                disabled={disabled}
+                required={required}
                 onChange={files => {
                     files[0] ? addFileToDefendPayload(document, files[0]) : removeFieldFromDefendPayload(document);
                 }}

@@ -79,6 +79,21 @@
     &__title {
         font-size: style.token(text-title-font-size);
     }
+
+    &__defended-btn {
+        &.adyen-pe-button {
+            background: style.token(color-background-success-strong);
+            color: style.token(color-label-inverse-primary);
+        }
+    }
+
+    &__defended-icon {
+        font-size: 16px;
+
+        svg {
+            display: block;
+        }
+    }
 }
 
 .adyen-pe-defend-dispute-reason {

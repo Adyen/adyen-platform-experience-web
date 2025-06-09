@@ -1,4 +1,3 @@
-import { useRef } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -8,18 +7,21 @@ import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActio
 import Card from '../../../../internal/Card/Card';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import './DefendDisputeFlow.scss';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DefendDocumentUpload } from './DefendDocumentUpload';
 import { SelectItem } from '../../../../internal/FormFields/Select/types';
 import SelectAndUploadOptionalDoc from './SelectAndUploadOptionalDoc';
 import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
+import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
+import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
-import { getHumanReadableFileSize } from '../../../../../utils';
+import { getHumanReadableFileSize, isFunction } from '../../../../../utils';
+import { DisputeManagementProps } from '../../types';
 import { MapErrorCallback } from './types';
+import './DefendDisputeFlow.scss';
 
 const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.mustBeInEnglish',
@@ -27,13 +29,31 @@ const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.acceptableFormatAndSize',
 ];
 
-export const DefendDisputeFileUpload = () => {
+export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
     const { i18n } = useCoreContext();
-    const { clearFiles, dispute, applicableDocuments, goBack, defendDisputePayload, onDefendSubmit, removeFieldFromDefendPayload } = useDisputeFlow();
-    const disputePspReference = dispute?.dispute.pspReference;
     const { defendDispute } = useConfigContext().endpoints;
-    const ref = useRef<HTMLInputElement | null>(null);
-    const [isFetching, setIsFetching] = useState(false);
+    const {
+        clearFiles,
+        clearStates,
+        dispute,
+        applicableDocuments,
+        goBack,
+        defendDisputePayload,
+        defendResponse,
+        onDefendSubmit,
+        removeFieldFromDefendPayload,
+        setFlowState,
+    } = useDisputeFlow();
+
+    const disputePspReference = dispute?.dispute.pspReference;
+
+    const [oneOrMoreSelectedDocument, setOneOrMoreSelectedDocument] = useState<string | undefined>(undefined);
+    const [optionalSelectedDocuments, setOptionalSelectedDocuments] = useState<(string | undefined)[]>([]);
+
+    const goBackToDetails = useCallback(() => {
+        clearStates();
+        setFlowState('details');
+    }, [clearStates, setFlowState]);
 
     const mapError: MapErrorCallback = useCallback(
         (error, file) => {
@@ -47,8 +67,8 @@ export const DefendDisputeFileUpload = () => {
                 case validationErrors.VERY_LARGE_FILE:
                     return i18n.get('disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain', {
                         values: {
-                            size: file && file.size ? getHumanReadableFileSize(file.size) : undefined,
-                            type: file?.type?.replace('application/', '').replace('image/', ''),
+                            size: file?.size === undefined ? undefined : getHumanReadableFileSize(file.size),
+                            type: file?.type?.replace(/^([^/]+\/)*/gi, '')?.toUpperCase(),
                         },
                     });
                 default:
@@ -57,35 +77,6 @@ export const DefendDisputeFileUpload = () => {
         },
         [i18n]
     );
-
-    const defendDisputeMutation = useMutation({
-        queryFn: defendDispute,
-        options: {
-            onSuccess: useCallback(() => {
-                setIsFetching(false);
-                clearFiles();
-                onDefendSubmit('success');
-            }, [setIsFetching, clearFiles, onDefendSubmit]),
-            onError: useCallback(() => {
-                setIsFetching(false);
-                onDefendSubmit('error');
-            }, [setIsFetching, onDefendSubmit]),
-        },
-    });
-
-    const defendDisputeCallback = useCallback(() => {
-        //TODO: add error case
-        setIsFetching(true);
-        if (defendDisputePayload) {
-            void defendDisputeMutation.mutate(
-                { contentType: 'multipart/form-data', body: defendDisputePayload },
-                { path: { disputePspReference: disputePspReference! } }
-            );
-        }
-    }, [disputePspReference, defendDisputeMutation, defendDisputePayload]);
-
-    const [oneOrMoreSelectedDocument, setOneOrMoreSelectedDocument] = useState<string | undefined>(undefined);
-    const [optionalSelectedDocuments, setOptionalSelectedDocuments] = useState<(string | undefined)[]>([]);
 
     const { requiredDocuments, optionalDocuments, oneOrMoreDocuments } = useMemo(() => {
         const docs: { requiredDocuments: string[]; optionalDocuments: SelectItem<string>[]; oneOrMoreDocuments: SelectItem<string>[] } = {
@@ -119,32 +110,80 @@ export const DefendDisputeFileUpload = () => {
         return docs;
     }, [applicableDocuments, i18n]);
 
-    const areRequiredDocsUploaded = useMemo(() => {
+    const requiredDocumentsUploaded = useMemo(() => {
         if (!defendDisputePayload) return false;
 
-        const allRequiredDocumentsPresent = requiredDocuments.every(d => defendDisputePayload.get(d) instanceof File);
+        let requiredDocumentsPresent = requiredDocuments.every(d => defendDisputePayload.get(d) instanceof File);
 
-        if (oneOrMoreDocuments.length === 0) return allRequiredDocumentsPresent;
-
-        const atLeastOneOptionalDocumentPresent = oneOrMoreDocuments.some(d => defendDisputePayload.get(d.id) instanceof File);
-
-        return allRequiredDocumentsPresent && atLeastOneOptionalDocumentPresent;
+        if (oneOrMoreDocuments.length > 0) {
+            requiredDocumentsPresent &&= oneOrMoreDocuments.some(d => defendDisputePayload.get(d.id) instanceof File);
+        }
+        return requiredDocumentsPresent;
     }, [defendDisputePayload, oneOrMoreDocuments, requiredDocuments]);
 
-    const actionButtons = useMemo(() => {
+    const defendDisputeMutation = useMutation({
+        queryFn: defendDispute,
+        options: {
+            onSuccess: useCallback(() => {
+                clearFiles();
+                onDefendSubmit('success');
+
+                if (isFunction(onDisputeDefend)) {
+                    const returnValue: unknown = onDisputeDefend({ id: disputePspReference! });
+                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
+                }
+                setFlowState('defenseSubmitResponseView');
+            }, [clearFiles, disputePspReference, onDisputeDefend, onDefendSubmit]),
+            onError: useCallback(() => {
+                clearFiles();
+                onDefendSubmit('error');
+                setFlowState('defenseSubmitResponseView');
+            }, [clearFiles, onDefendSubmit]),
+        },
+    });
+
+    const disputeDefended = defendResponse === 'success';
+    const interactionsDisabled = defendDisputeMutation.isLoading || disputeDefended;
+    const canSubmitDocuments = defendDisputePayload && requiredDocumentsUploaded && !interactionsDisabled;
+
+    const defendDisputeCallback = useCallback(() => {
+        if (canSubmitDocuments) {
+            void defendDisputeMutation.mutate(
+                { contentType: 'multipart/form-data', body: defendDisputePayload },
+                { path: { disputePspReference: disputePspReference! } }
+            );
+        }
+    }, [canSubmitDocuments, disputePspReference, defendDisputeMutation, defendDisputePayload]);
+
+    const actionButtons = useMemo<ButtonActionsList>(() => {
         return [
             {
                 title: i18n.get('disputes.defend.submit'),
-                disabled: isFetching || !areRequiredDocsUploaded,
+                disabled: !canSubmitDocuments,
+                state: defendDisputeMutation.isLoading ? 'loading' : 'default',
+                variant: ButtonVariant.PRIMARY,
                 event: defendDisputeCallback,
+                classNames: disputeDefended ? ['adyen-pe-defend-dispute__defended-btn'] : undefined,
+                renderTitle: title => {
+                    if (disputeDefended) {
+                        return (
+                            <>
+                                <Icon name="checkmark-circle-fill" className="adyen-pe-defend-dispute__defended-icon" />
+                                {i18n.get('disputes.defend.defended')}
+                            </>
+                        );
+                    }
+                    return title;
+                },
             },
             {
                 title: i18n.get('disputes.goBack'),
-                disabled: isFetching,
-                event: goBack,
+                disabled: defendDisputeMutation.isLoading,
+                variant: ButtonVariant.SECONDARY,
+                event: disputeDefended ? goBackToDetails : goBack,
             },
         ];
-    }, [i18n, isFetching, areRequiredDocsUploaded, defendDisputeCallback, goBack]);
+    }, [i18n, defendDisputeCallback, defendDisputeMutation.isLoading, disputeDefended, goBack]);
 
     const addOptionalDocument = useCallback((documentType?: string, index?: number) => {
         if (documentType === undefined) {
@@ -161,9 +200,15 @@ export const DefendDisputeFileUpload = () => {
         }
     }, []);
 
+    const canAddOptionalDocument = useMemo(() => {
+        if (interactionsDisabled) return false;
+        const optionalDocumentsCount = optionalDocuments.length + Math.max(0, oneOrMoreDocuments.length - 1);
+        return Boolean(optionalDocumentsCount && optionalDocumentsCount !== optionalSelectedDocuments.length);
+    }, [interactionsDisabled, oneOrMoreDocuments, optionalDocuments, optionalSelectedDocuments]);
+
     const addEmptyOptionalDocument = useCallback(() => {
-        addOptionalDocument();
-    }, [addOptionalDocument]);
+        if (canAddOptionalDocument) addOptionalDocument();
+    }, [canAddOptionalDocument, addOptionalDocument]);
 
     const availableOptionalDocuments = useMemo(() => {
         const additionalOptionalDocs = oneOrMoreDocuments.filter(doc => doc.id !== oneOrMoreSelectedDocument);
@@ -190,11 +235,6 @@ export const DefendDisputeFileUpload = () => {
         },
         [removeFieldFromDefendPayload]
     );
-
-    const canAddOptionalDocument = useMemo(() => {
-        const optionalDocumentsCount = optionalDocuments.length + Math.max(0, oneOrMoreDocuments.length - 1);
-        return Boolean(optionalDocumentsCount && optionalDocumentsCount !== optionalSelectedDocuments.length);
-    }, [oneOrMoreDocuments, optionalDocuments, optionalSelectedDocuments]);
 
     return (
         <>
@@ -225,7 +265,15 @@ export const DefendDisputeFileUpload = () => {
                             {requiredDocuments.length ? (
                                 <div className="adyen-pe-defend-dispute-document-upload-box__required-documents">
                                     {requiredDocuments?.map(document => {
-                                        return <DefendDocumentUpload mapError={mapError} key={document} document={document} ref={ref} isRequired />;
+                                        return (
+                                            <DefendDocumentUpload
+                                                mapError={mapError}
+                                                disabled={interactionsDisabled}
+                                                key={document}
+                                                document={document}
+                                                required
+                                            />
+                                        );
                                     })}
                                 </div>
                             ) : null}
@@ -233,10 +281,10 @@ export const DefendDisputeFileUpload = () => {
                             {oneOrMoreDocuments.length ? (
                                 <SelectAndUploadOptionalDoc
                                     mapError={mapError}
+                                    disabled={interactionsDisabled}
                                     selection={oneOrMoreSelectedDocument}
                                     setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
                                     items={oneOrMoreDocuments}
-                                    ref={ref}
                                     title={i18n.get('disputes.uploadDocuments.extraRequiredDocuments')}
                                     required
                                 />
@@ -249,12 +297,12 @@ export const DefendDisputeFileUpload = () => {
                                   <div key={`optional-doc-${index}`} className="adyen-pe-defend-dispute-document-upload-box">
                                       <SelectAndUploadOptionalDoc
                                           mapError={mapError}
+                                          disabled={interactionsDisabled}
                                           onRemoveOption={removeSelectedOptionalDocument}
                                           selection={doc}
                                           setSelection={addOptionalDocument}
                                           index={index}
                                           items={availableOptionalDocuments}
-                                          ref={ref}
                                           title={i18n.get('disputes.uploadDocuments.optionalDocument')}
                                           required
                                       />
