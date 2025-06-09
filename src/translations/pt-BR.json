@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Sua conta está inativa",
     "capital.actionNeeded": "Ação necessária",
     "capital.annualPercentageRate": "Taxa de porcentagem anual",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "A taxa percentual anual é o custo de empréstimo de um financiamento sob um contrato de crédito, expressa como uma taxa anual sobre o principal",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "A Taxa Percentual Anual (APR) é o custo de empréstimo desse financiamento conforme os Termos de Uso do Adyen Capital, expressa como uma taxa anual.",
     "capital.bankAccountDetails": "Dados da conta bancária",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "número da conta",

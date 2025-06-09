@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Ihr Konto ist inaktiv",
     "capital.actionNeeded": "Maßnahmen erforderlich",
     "capital.annualPercentageRate": "Effektiver Jahreszins",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Der effektive Jahreszins entspricht den Kosten für die Aufnahme eines Kredits im Rahmen eines Kreditvertrags, ausgedrückt als jährlicher Zinssatz auf den Kapitalbetrag",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Der effektive Jahreszins (Annual Percentage Rate, APR) ist der als Jahreszins ausgedrückte Zinssatz für die Aufnahme dieses Kredits gemäß den Nutzungsbedingungen von Adyen Capital.",
     "capital.bankAccountDetails": "Angaben zum Bankkonto",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Kontonummer",

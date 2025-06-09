@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Il tuo conto è inattivo",
     "capital.actionNeeded": "Azione necessaria",
     "capital.annualPercentageRate": "Tasso Annuo Effettivo Globale",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Il tasso annuo effettivo globale (TAEG) indica il costo di un finanziamento nell'ambito di un contratto di credito espresso in percentuale annua sul credito concesso",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Il Tasso Annuo Effettivo Globale (TAEG) è il costo del prestito ai sensi delle Condizioni per l'utente di Adyen Capital, espresso come tasso annuale.",
     "capital.bankAccountDetails": "Dati del conto bancario",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Numero di conto",
