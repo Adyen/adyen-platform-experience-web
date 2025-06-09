@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Kontoen din er inaktiv",
     "capital.actionNeeded": "Handling kreves",
     "capital.annualPercentageRate": "Effektiv rente (APR)",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Effektiv rente er kostnaden ved å låne under en kredittavtale, uttrykt som en årlig rente på hovedstolen",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Effektiv rente (APR) er kostnaden av dette lånet i henhold til Adyen Capitals brukervilkår, uttrykt som en årlig rente.",
     "capital.bankAccountDetails": "Bankkontoinformasjon",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Kontonummer",
