@@ -5,7 +5,6 @@ import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
-import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';
 import './DisputeManagementModal.scss';
@@ -40,7 +39,6 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
 
     const onDisputeManagementSuccessful = useCallback(() => {
         setDisputeManagementSuccessful(true);
-        return DISPUTE_INTERNAL_SYMBOL;
     }, []);
 
     useEffect(() => {

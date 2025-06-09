@@ -2,7 +2,6 @@ import { TranslationKey } from '../../../translations';
 import { IDispute, IDisputeStatus, IDisputeStatusGroup, IDisputeType } from '../../../types/api/models/disputes';
 
 export const DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS = 10;
-export const DISPUTE_INTERNAL_SYMBOL = Symbol('disputes_internal_use_only');
 
 export const DISPUTE_PAYMENT_SCHEMES = {
     mc: 'Mastercard',

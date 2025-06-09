@@ -16,10 +16,8 @@ import Icon from '../../../../internal/Icon';
 import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
-import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
-import { getHumanReadableFileSize, isFunction } from '../../../../../utils';
-import { DisputeManagementProps } from '../../types';
+import { getHumanReadableFileSize } from '../../../../../utils';
 import { MapErrorCallback } from './types';
 import './DefendDisputeFlow.scss';
 
@@ -29,7 +27,7 @@ const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.acceptableFormatAndSize',
 ];
 
-export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
+export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
     const { defendDispute } = useConfigContext().endpoints;
     const {
@@ -127,18 +125,13 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
             onSuccess: useCallback(() => {
                 clearFiles();
                 onDefendSubmit('success');
-
-                if (isFunction(onDisputeDefend)) {
-                    const returnValue: unknown = onDisputeDefend({ id: disputePspReference! });
-                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
-                }
                 setFlowState('defenseSubmitResponseView');
-            }, [clearFiles, disputePspReference, onDisputeDefend, onDefendSubmit]),
+            }, [clearFiles, onDefendSubmit, setFlowState]),
             onError: useCallback(() => {
                 clearFiles();
                 onDefendSubmit('error');
                 setFlowState('defenseSubmitResponseView');
-            }, [clearFiles, onDefendSubmit]),
+            }, [clearFiles, onDefendSubmit, setFlowState]),
         },
     });
 
