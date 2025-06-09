@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Din konto er inaktiv",
     "capital.actionNeeded": "Handling er påkrævet",
     "capital.annualPercentageRate": "Årlige omkostninger i procent (ÅOP)",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "ÅOP er de samlede omkostninger ved at optage et lån som led i en kreditordning, udtrykt som en årlig procentsats af hovedstolen",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "De årlige omkostninger i procent (ÅOP) er den samlede pris for dette lån i henhold til Adyen Capitals brugervilkår, udtrykt som en årlig procentsats.",
     "capital.bankAccountDetails": "Bankkontooplysninger",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Kontonummer",

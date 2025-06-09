@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Tilisi ei ole aktiivinen",
     "capital.actionNeeded": "Edellyttää toimia",
     "capital.annualPercentageRate": "Todellinen vuosikorko",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Todellinen vuosikorko tarkoittaa luottosopimukseen perustuvan lainan kustannuksia ilmaistuna vuotuisena korkona pääomalle.",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Todellinen vuosikorko (APR) on tämän lainan lainanottokustannus Adyen Capitalin käyttöehtojen mukaisesti. Se ilmaistaan vuosikorkona.",
     "capital.bankAccountDetails": "Pankkitilin tiedot",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Tilinumero",

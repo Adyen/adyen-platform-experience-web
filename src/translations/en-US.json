@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Your account is inactive",
     "capital.actionNeeded": "Action needed",
     "capital.annualPercentageRate": "Annual percentage rate",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Annual Percentage Rate is the cost of borrowing for a loan under a credit agreement expressed as an annual rate on the principal",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "The Annual Percentage Rate (APR) is the cost of borrowing of this loan under Adyen Capital User Terms, expressed as an annual rate.",
     "capital.bankAccountDetails": "Bank account details",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Account number",

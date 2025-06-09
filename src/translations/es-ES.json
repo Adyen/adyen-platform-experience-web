@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Tu cuenta está inactiva",
     "capital.actionNeeded": "Acción necesaria",
     "capital.annualPercentageRate": "Tasa de porcentaje anual",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "La Tasa Anual Equivalente (TAE) es el coste de un préstamo conforme a un contrato de crédito expresado como un tipo anual sobre el principal",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "La Tasa de porcentaje anual (APR) es el coste de este préstamo conforme a los Términos del usuario de Adyen Capital, expresado como tasa anual.",
     "capital.bankAccountDetails": "Detalles de la cuenta bancaria",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Número de cuenta",

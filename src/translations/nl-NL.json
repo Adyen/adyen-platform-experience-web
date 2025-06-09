@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Je account is inactief",
     "capital.actionNeeded": "Actie nodig",
     "capital.annualPercentageRate": "Jaarlijks kostenpercentage",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Het jaarlijks kostenpercentage bestaat uit de kosten van een lening in het kader van een kredietovereenkomst, uitgedrukt als een jaarlijks percentage van de hoofdsom",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Het jaarlijks kostenpercentage (APR) bestaat uit de kosten voor een lening conform de gebruiksvoorwaarden van Adyen Capital, uitgedrukt als een jaarlijks percentage.",
     "capital.bankAccountDetails": "Bankrekeninggegevens",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Rekeningnummer",
