@@ -84,6 +84,7 @@ const SelectAndUploadOptionalDoc = ({
                             updateDocumentSelection(documentSelection);
                         }}
                         filterable={false}
+                        fixedPositioning={true}
                         selected={selection}
                         readonly={disabled}
                         multiSelect={false}

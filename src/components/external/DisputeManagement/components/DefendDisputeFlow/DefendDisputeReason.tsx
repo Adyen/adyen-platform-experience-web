@@ -29,6 +29,7 @@ export const DefendDisputeReason = () => {
             Object.freeze(
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
+                    disabled: allowedDefenseReasons.length === 1,
                     name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
                 }))
             ) ?? [],
@@ -118,7 +119,13 @@ export const DefendDisputeReason = () => {
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
                     {i18n.get('disputes.defend.selectDefenseReason')}
                 </Typography>
-                <Select items={defenseReasons} onChange={onChange} selected={selected} fixedPositioning={true}/>
+                <Select
+                    items={defenseReasons}
+                    onChange={onChange}
+                    selected={selected}
+                    popoverClassNameModifiers={['adyen-pe-defend-dispute-reason__dropdown-list']}
+                    fixedPositioning={true}
+                />
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
                         el={TypographyElement.PARAGRAPH}

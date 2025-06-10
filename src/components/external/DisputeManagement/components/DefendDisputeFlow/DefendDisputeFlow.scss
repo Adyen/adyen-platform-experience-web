@@ -108,6 +108,11 @@
         font-size: style.token(text-caption-font-size);
     }
 
+    &__dropdown-list {
+        max-height: 270px;
+        overflow: scroll;
+    }
+
     &__secondary-description-items-container {
         margin: 0;
         padding: 0 style.token(spacer-080);

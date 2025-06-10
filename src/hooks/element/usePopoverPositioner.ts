@@ -42,7 +42,8 @@ const calculateOffset = ({
                 : variant === PopoverContainerVariant.TOOLTIP
                 ? toCenterX + window.scrollX
                 : targetPosition?.left + window.scrollX;
-            dimensionY = targetPosition?.top + targetPosition?.height + window.scrollY + offset[1];
+            dimensionY = targetPosition?.top + targetPosition?.height + offset[1];
+            if (!fixedPositioning) dimensionY += window.scrollY;
             break;
         case PopoverContainerPosition.BOTTOM_LEFT:
             dimensionX = targetPosition?.right + window.scrollX - popover.clientWidth;
@@ -161,6 +162,7 @@ const usePopoverPositioner = (
                         observer.observe(current);
                     }
                     if (!(current instanceof Element)) return;
+
                     const popoverStyle = calculateOffset({
                         popover: current,
                         offset,
