@@ -243,6 +243,7 @@ export const DefendDisputeFileUpload = () => {
                     }
                     filled
                     expandable
+                    compact
                 >
                     <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (

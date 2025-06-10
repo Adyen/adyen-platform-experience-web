@@ -8,6 +8,7 @@ import {
     CARD_BASE_CLASS,
     CARD_BODY,
     CARD_BODY_WITH_TITLE,
+    CARD_COMPACT,
     CARD_EXPANDABLE_CLASS,
     CARD_FILLED,
     CARD_FOOTER,
@@ -39,6 +40,7 @@ const Card = ({
     noPadding,
     classNameModifiers,
     testId,
+    compact,
 }: PropsWithChildren<CardProps>) => {
     const Tag = el || 'header';
     const [showContent, setShowContent] = useState(false);
@@ -84,6 +86,7 @@ const Card = ({
                 [CARD_NO_OUTLINE]: noOutline,
                 [CARD_NO_PADDING]: noPadding,
                 [CARD_EXPANDABLE_CLASS]: expandable,
+                [CARD_COMPACT]: compact,
             })}
             {...cardContainerAttributes}
         >

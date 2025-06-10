@@ -120,7 +120,7 @@
 .adyen-pe-defend-dispute-document-upload-box {
     border: 1px solid style.token(color-outline-primary);
     border-radius: style.token(border-radius-l);
-    padding: style.token(spacer-060) style.token(spacer-070);
+    padding: style.token(spacer-080);
 
     &__delete-button-container {
         align-items: center;
@@ -141,7 +141,6 @@
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-060);
-        padding: style.token(spacer-080) 0;
     }
 
     &__extra-documents-selector-title {
@@ -149,13 +148,18 @@
         font-weight: 700;
         line-height: style.token(text-caption-line-height);
     }
+
+    &__required-documents {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-110);
+    }
 }
 
 .adyen-pe-defend-dispute-document-upload {
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-060);
-    padding: style.token(spacer-070) 0;
 
     &__title {
         font-size: style.token(text-title-font-size);
