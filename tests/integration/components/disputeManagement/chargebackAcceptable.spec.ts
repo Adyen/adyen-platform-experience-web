@@ -30,11 +30,7 @@ test.describe('Chargeback - Acceptable', () => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
 
         await page.getByRole('button', { name: 'Accept' }).click();
-        await expect(
-            page.getByText(
-                'By accepting, you agree that the disputed amount will not be returned to your account and the dispute will be marked as Lost.'
-            )
-        ).toBeVisible();
+        await expect(page.getByText('By accepting, you agree that the disputed amount will not be returned to your account.')).toBeVisible();
         await page.getByText('I agree').click();
         await page.getByRole('button', { name: 'Accept chargeback' }).click();
 

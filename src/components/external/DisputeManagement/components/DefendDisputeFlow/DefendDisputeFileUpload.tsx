@@ -16,10 +16,8 @@ import Icon from '../../../../internal/Icon';
 import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { getDefenseDocumentContent } from '../../utils';
-import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { validationErrors } from '../../../../internal/FormFields/FileInput/constants';
-import { getHumanReadableFileSize, isFunction } from '../../../../../utils';
-import { DisputeManagementProps } from '../../types';
+import { getHumanReadableFileSize } from '../../../../../utils';
 import { MapErrorCallback } from './types';
 import './DefendDisputeFlow.scss';
 
@@ -29,7 +27,7 @@ const documentRequirements: TranslationKey[] = [
     'disputes.documentRequirements.acceptableFormatAndSize',
 ];
 
-export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
+export const DefendDisputeFileUpload = () => {
     const { i18n } = useCoreContext();
     const { defendDispute } = useConfigContext().endpoints;
     const {
@@ -127,18 +125,13 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
             onSuccess: useCallback(() => {
                 clearFiles();
                 onDefendSubmit('success');
-
-                if (isFunction(onDisputeDefend)) {
-                    const returnValue: unknown = onDisputeDefend({ id: disputePspReference! });
-                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
-                }
                 setFlowState('defenseSubmitResponseView');
-            }, [clearFiles, disputePspReference, onDisputeDefend, onDefendSubmit]),
+            }, [clearFiles, onDefendSubmit, setFlowState]),
             onError: useCallback(() => {
                 clearFiles();
                 onDefendSubmit('error');
                 setFlowState('defenseSubmitResponseView');
-            }, [clearFiles, onDefendSubmit]),
+            }, [clearFiles, onDefendSubmit, setFlowState]),
         },
     });
 
@@ -250,6 +243,7 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
                     }
                     filled
                     expandable
+                    compact
                 >
                     <ul className={'adyen-pe-defend-dispute-document-requirements--list'}>
                         {documentRequirements.map((item, index) => (
@@ -285,7 +279,7 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
                                     selection={oneOrMoreSelectedDocument}
                                     setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
                                     items={oneOrMoreDocuments}
-                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocuments')}
+                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocument')}
                                     required
                                 />
                             ) : null}
@@ -310,16 +304,12 @@ export const DefendDisputeFileUpload = ({ onDisputeDefend }: Pick<DisputeManagem
                               );
                           })
                         : null}
-                    <Button
-                        align="center"
-                        disabled={!canAddOptionalDocument}
-                        onClick={addEmptyOptionalDocument}
-                        variant={ButtonVariant.SECONDARY}
-                        fullWidth
-                    >
-                        <Icon name="plus" />
-                        {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
-                    </Button>
+                    {canAddOptionalDocument && (
+                        <Button align="center" onClick={addEmptyOptionalDocument} variant={ButtonVariant.SECONDARY} fullWidth>
+                            <Icon name="plus" />
+                            {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
+                        </Button>
+                    )}
                 </div>
                 <div className={'adyen-pe-defend-file-uploader__actions'}>
                     <ButtonActions actions={actionButtons} />

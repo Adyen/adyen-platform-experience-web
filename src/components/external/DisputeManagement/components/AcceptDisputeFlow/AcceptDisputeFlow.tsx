@@ -4,11 +4,10 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useDisputeFlow } from '../../context/dispute/context';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { DISPUTE_INTERNAL_SYMBOL } from '../../../../utils/disputes/constants';
 import { EMPTY_OBJECT, isFunction, uniqueId } from '../../../../../utils';
 import { TranslationKey } from '../../../../../translations';
 import { DisputeManagementProps } from '../../types';
@@ -21,8 +20,10 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
     const { acceptDispute } = useConfigContext().endpoints;
     const { dispute, clearStates, goBack } = useDisputeFlow();
 
-    const disputePspReference = dispute?.dispute.pspReference;
-    const disputeType = dispute?.dispute.type;
+    const cachedDispute = useRef(dispute).current ?? dispute;
+
+    const disputePspReference = cachedDispute?.dispute.pspReference;
+    const disputeType = cachedDispute?.dispute.type;
     const isRequestForInformation = disputeType === 'REQUEST_FOR_INFORMATION';
 
     const acceptedLabel = useRef<TranslationKey>('disputes.accept.disputeAccepted');
@@ -40,9 +41,6 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
 
     const [termsAgreed, setTermsAgreed] = useState(false);
     const [disputeAccepted, setDisputeAccepted] = useState(false);
-    const [showAcceptedConfirmation, setShowAcceptedConfirmation] = useState(false);
-
-    const termsAgreementInputId = useRef(uniqueId()).current;
 
     const acceptDisputeMutation = useMutation({
         queryFn: acceptDispute,
@@ -50,13 +48,7 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
             onSuccess: useCallback(() => {
                 clearStates();
                 setDisputeAccepted(true);
-
-                if (isFunction(onDisputeAccept)) {
-                    const returnValue: unknown = onDisputeAccept({ id: disputePspReference! });
-                    if (returnValue !== DISPUTE_INTERNAL_SYMBOL) return;
-                }
-                setShowAcceptedConfirmation(true);
-            }, [clearStates, disputePspReference, onDisputeAccept]),
+            }, [clearStates]),
         },
     });
 
@@ -103,9 +95,21 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
         ];
     }, [i18n, acceptDisputeCallback, acceptDisputeMutation.isLoading, canAcceptDispute, goBack, disputeAccepted]);
 
+    const acceptCallbackHasBeenCalled = useRef(false);
+    const termsAgreementInputId = useRef(uniqueId()).current;
+
+    useEffect(() => {
+        if (acceptCallbackHasBeenCalled.current) return;
+
+        if (disputeAccepted && disputePspReference && isFunction(onDisputeAccept)) {
+            acceptCallbackHasBeenCalled.current = true;
+            onDisputeAccept({ id: disputePspReference });
+        }
+    }, [disputeAccepted, disputePspReference, onDisputeAccept]);
+
     return (
         <div className="adyen-pe-accept-dispute__container">
-            {showAcceptedConfirmation ? (
+            {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>

@@ -1,9 +1,9 @@
 @use '../style';
 
 @mixin adyen-pe-error-message-display-mobile-fix {
-    .adyen-pe-data-grid__table-wrapper {
-        position: relative;
-    }
+    // Ensure to add style declaration for the closest positioned ancestor of the error-message-display
+    // wrapper element, by setting its CSS position to "absolute" | "fixed" | "relative" | "sticky".
+    @content;
 
     .adyen-pe-error-message-display {
         display: grid;

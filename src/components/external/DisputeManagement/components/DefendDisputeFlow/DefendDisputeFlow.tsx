@@ -4,9 +4,9 @@ import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DefendDisputeFileUpload } from './DefendDisputeFileUpload';
 import { DefendDisputeReason } from './DefendDisputeReason';
-import './DefendDisputeFlow.scss';
 import { DefendDisputeResponse } from './DefendDisputeResponse';
 import { DisputeManagementProps } from '../../types';
+import './DefendDisputeFlow.scss';
 
 export const DefendDisputeFlow = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
     const { i18n } = useCoreContext();
@@ -20,8 +20,8 @@ export const DefendDisputeFlow = ({ onDisputeDefend }: Pick<DisputeManagementPro
                 </Typography>
             )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}
-            {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload onDisputeDefend={onDisputeDefend} />}
-            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse />}
+            {flowState === 'uploadDefenseFilesView' && !!applicableDocuments?.length && <DefendDisputeFileUpload />}
+            {flowState === 'defenseSubmitResponseView' && <DefendDisputeResponse onDisputeDefend={onDisputeDefend} />}
         </div>
     );
 };

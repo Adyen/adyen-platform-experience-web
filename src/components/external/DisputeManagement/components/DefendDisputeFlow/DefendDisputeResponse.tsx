@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/hooks';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -6,11 +6,13 @@ import Icon from '../../../../internal/Icon';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { isFunction } from '../../../../../utils';
+import { DisputeManagementProps } from '../../types';
 import './DefendDisputeFlow.scss';
 
-export const DefendDisputeResponse = () => {
+export const DefendDisputeResponse = ({ onDisputeDefend }: Pick<DisputeManagementProps, 'onDisputeDefend'>) => {
     const { i18n } = useCoreContext();
-    const { clearFiles, clearStates, setFlowState, defendResponse } = useDisputeFlow();
+    const { clearFiles, clearStates, dispute, setFlowState, defendResponse } = useDisputeFlow();
 
     const goBackToDetails = useCallback(() => {
         clearStates();
@@ -21,6 +23,21 @@ export const DefendDisputeResponse = () => {
         clearFiles();
         setFlowState('uploadDefenseFilesView');
     }, [clearFiles, setFlowState]);
+
+    const defendCallbackHasBeenCalled = useRef(false);
+
+    useEffect(() => {
+        if (defendCallbackHasBeenCalled.current) return;
+
+        if (defendResponse === 'success' && isFunction(onDisputeDefend)) {
+            const disputePspReference = dispute?.dispute.pspReference;
+
+            if (disputePspReference) {
+                defendCallbackHasBeenCalled.current = true;
+                onDisputeDefend({ id: disputePspReference });
+            }
+        }
+    }, [defendResponse, dispute, onDisputeDefend]);
 
     //TODO: For this view create an internal component
     return (

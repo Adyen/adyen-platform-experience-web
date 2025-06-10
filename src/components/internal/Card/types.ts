@@ -15,4 +15,5 @@ export interface CardProps {
     classNameModifiers?: string[];
     testId?: string;
     expandable?: boolean;
+    compact?: boolean;
 }

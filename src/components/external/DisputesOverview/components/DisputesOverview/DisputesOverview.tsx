@@ -269,36 +269,37 @@ export const DisputesOverview = ({
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
-            <div className={TABS_CONTAINER_CLASS}>
-                {isMobileContainer ? (
-                    <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
-                ) : (
-                    <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
-                )}
+            <div>
+                <div className={TABS_CONTAINER_CLASS}>
+                    {isMobileContainer ? (
+                        <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                    ) : (
+                        <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                    )}
+                </div>
+
+                <FilterBar {...filterBarState}>
+                    <BalanceAccountSelector
+                        activeBalanceAccount={activeBalanceAccount}
+                        balanceAccountSelectionOptions={balanceAccountSelectionOptions}
+                        onBalanceAccountSelection={onBalanceAccountSelection}
+                    />
+                    <DateFilter
+                        canResetFilters={canResetFilters}
+                        defaultParams={defaultParams}
+                        filters={filters}
+                        nowTimestamp={nowTimestamp}
+                        refreshNowTimestamp={refreshNowTimestamp}
+                        sinceDate={sinceDate}
+                        timezone={activeBalanceAccount?.timeZone}
+                        updateFilters={updateFilters}
+                    />
+                    <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
+                    {statusGroup !== 'FRAUD_ALERTS' && (
+                        <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                    )}
+                </FilterBar>
             </div>
-
-            <FilterBar {...filterBarState}>
-                <BalanceAccountSelector
-                    activeBalanceAccount={activeBalanceAccount}
-                    balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
-                />
-                <DateFilter
-                    canResetFilters={canResetFilters}
-                    defaultParams={defaultParams}
-                    filters={filters}
-                    nowTimestamp={nowTimestamp}
-                    refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={sinceDate}
-                    timezone={activeBalanceAccount?.timeZone}
-                    updateFilters={updateFilters}
-                />
-                <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
-                {statusGroup !== 'FRAUD_ALERTS' && (
-                    <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
-                )}
-            </FilterBar>
-
             <DisputeManagementModal
                 dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}

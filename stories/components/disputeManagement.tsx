@@ -7,7 +7,7 @@ export const DisputeManagementMeta: Meta<ElementProps<typeof DisputeManagementEl
     argTypes: {
         id: { type: 'string' },
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onDetailsDismiss: enabledDisabledCallbackRadioControls('onDetailsDismiss'),
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         hideTitle: { type: 'boolean' },
     },
     args: {

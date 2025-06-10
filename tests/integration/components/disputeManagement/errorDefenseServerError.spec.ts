@@ -14,13 +14,11 @@ test.describe('Error - Defense server error', () => {
         await page.getByRole('button', { name: 'Select document type' }).click();
         await page.getByRole('option', { name: 'Flight Ticket Used' }).click();
 
+        // Upload document
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-
         const fixture = path.resolve(__dirname, '../../../fixtures/files/test-file.pdf');
-
         const fileInput = page.locator('input[type="file"]');
-
         await fileInput.setInputFiles(fixture);
 
         await page.getByRole('button', { name: 'Submit' }).click();
