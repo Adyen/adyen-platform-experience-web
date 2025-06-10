@@ -20,7 +20,7 @@
     "capital.accountIsInactive": "Ditt konto är inaktivt",
     "capital.actionNeeded": "Åtgärd krävs",
     "capital.annualPercentageRate": "Årlig ränta",
-    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Den årliga räntan är kostnaden för att låna enligt ett kreditavtal, uttryckt som en årlig procentsats av lånebeloppet",
+    "capital.annualPercentageRateIsTheCostOfBorrowingForALoan": "Den årliga procentuella räntan (APR) är kostnaden för detta lån enligt användarvillkoren för Adyen Capital, uttryckt som en årlig ränta.",
     "capital.bankAccountDetails": "Uppgifter om bankkonto",
     "capital.bankAccountIban": "IBAN",
     "capital.bankAccountNumber": "Kontonummer",
