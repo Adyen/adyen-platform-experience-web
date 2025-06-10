@@ -7,6 +7,12 @@
         flex-direction: column;
         gap: style.token(spacer-080);
 
+        @include mixins.adyen-pe-error-message-display-mobile-fix {
+            .adyen-pe-data-grid__table-wrapper {
+                position: relative;
+            }
+        }
+
         .adyen-pe-header {
             align-items: center;
         }
@@ -15,9 +21,6 @@
             padding-bottom: style.token(spacer-060);
             padding-top: style.token(spacer-060);
         }
-
-        // stylelint-disable order/order
-        @include mixins.adyen-pe-error-message-display-mobile-fix;
     }
 
     &__tabs-container {
