@@ -12,7 +12,10 @@ type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 export type _HasParameter<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
 export type _RequiresParameter<T> = _HasParameter<'parameters', T>;
 
-export type _HasRequestBody<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
+type WithNeverBody = {
+    requestBody?: never;
+};
+export type _HasRequestBody<Parameter extends keyof any, T> = Parameter extends keyof T ? (T extends WithNeverBody ? false : true) : false;
 export type _RequiresRequestBody<T> = _HasRequestBody<'requestBody', T>;
 
 type ContentTypes<Operation> = Operation extends { requestBody?: { content: infer Content } } ? keyof Content : never;
