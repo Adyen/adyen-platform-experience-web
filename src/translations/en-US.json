@@ -598,7 +598,7 @@
     "disputes.type.notificationOfFraud": "Notification of fraud",
     "disputes.type.requestForInformation": "Request for information",
     "disputes.uploadDocuments.addOptionalDocument": "Add optional document",
-    "disputes.uploadDocuments.extraRequiredDocuments": "Extra required document",
+    "disputes.uploadDocuments.extraRequiredDocument": "Required document",
     "disputes.uploadDocuments.optionalDocument": "Optional document",
     "disputes.uploadDocuments.selectDocumentType": "Select document type",
     "disputes.uploadDocuments.selectOneOfTheRequiredOptions": "Select one of the required options",

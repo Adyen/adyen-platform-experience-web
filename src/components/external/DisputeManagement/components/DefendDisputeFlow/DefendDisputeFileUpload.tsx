@@ -278,7 +278,7 @@ export const DefendDisputeFileUpload = () => {
                                     selection={oneOrMoreSelectedDocument}
                                     setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
                                     items={oneOrMoreDocuments}
-                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocuments')}
+                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocument')}
                                     required
                                 />
                             ) : null}
@@ -303,16 +303,12 @@ export const DefendDisputeFileUpload = () => {
                               );
                           })
                         : null}
-                    <Button
-                        align="center"
-                        disabled={!canAddOptionalDocument}
-                        onClick={addEmptyOptionalDocument}
-                        variant={ButtonVariant.SECONDARY}
-                        fullWidth
-                    >
-                        <Icon name="plus" />
-                        {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
-                    </Button>
+                    {canAddOptionalDocument && (
+                        <Button align="center" onClick={addEmptyOptionalDocument} variant={ButtonVariant.SECONDARY} fullWidth>
+                            <Icon name="plus" />
+                            {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
+                        </Button>
+                    )}
                 </div>
                 <div className={'adyen-pe-defend-file-uploader__actions'}>
                     <ButtonActions actions={actionButtons} />
