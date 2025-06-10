@@ -41,6 +41,6 @@ export const debounce = <T extends (...args: any[]) => any>(func: T, delay: numb
     return debounced;
 };
 
-export const getPaymentRatePercentage = (rate: number) => {
+export const getPercentage = (rate: number) => {
     return rate / 100;
 };
