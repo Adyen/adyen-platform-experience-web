@@ -4,49 +4,244 @@
  */
 
 export interface paths {
-    '/v1/disputes': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getDisputeList'];
-    };
-    '/v1/disputes/{disputePspReference}': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getDisputeDetail'];
-    };
     '/v1/disputes/{disputePspReference}/accept': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /** @description Add @Operation annotation to provide a description */
         post: operations['acceptDispute'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v1/disputes/{disputePspReference}/defend': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /** @description Add @Operation annotation to provide a description */
-        get: operations['defendDispute'];
-    };
-    '/v1/disputes/{disputePspReference}/documents': {
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['getApplicableDefenseDocuments'];
+        post: operations['defendDispute'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v1/disputes/{disputePspReference}/documents/download': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /** @description Add @Operation annotation to provide a description */
         get: operations['downloadDefenseDocument'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v1/disputes/{disputePspReference}/documents/required': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getApplicableDefenseDocuments'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v1/disputes/{disputePspReference}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getDisputeDetail'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v1/disputes': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getDisputeList'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
-        ApplicableDefenseDocumentRequirementLevel: 'OPTIONAL' | 'ONE_OR_MORE' | 'REQUIRED';
-        AcceptDisputeResponse: {
+        HandleDisputeResponse: {
             disputePspReference: string;
             status: string;
         };
-        DefendDisputeResponse: {
-            disputePspReference: string;
-            status: string;
+        BodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
         };
-        BalanceAccount: {
-            timeZone: string;
-            description: string;
+        ContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
         };
+        FormDataBodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            formDataContentDisposition?: components['schemas']['FormDataContentDisposition'];
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            name?: string;
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+            simple?: boolean;
+            value?: string;
+        };
+        FormDataContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            name?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
+        };
+        FormDataMultiPart: {
+            bodyParts?: components['schemas']['BodyPart'][];
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            fields?: {
+                [key: string]: components['schemas']['FormDataBodyPart'][];
+            };
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        MediaType: {
+            parameters?: {
+                [key: string]: string;
+            };
+            subtype?: string;
+            type?: string;
+            wildcardSubtype?: boolean;
+            wildcardType?: boolean;
+        };
+        MessageBodyWorkers: Record<string, never>;
+        MultiPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        ParameterizedHeader: {
+            parameters?: {
+                [key: string]: string;
+            };
+            value?: string;
+        };
+        Providers: Record<string, never>;
         StreamingOutput: Record<string, never>;
         /** @description Standardized error response following RFC-7807 format */
         DefaultErrorResponseEntity: {
@@ -80,9 +275,13 @@ export interface components {
         };
         ApplicableDefenseDocument: {
             documentTypeCode: string;
-            requirementLevel: components['schemas']['ApplicableDefenseDocumentRequirementLevel'];
+            requirementLevel?: components['schemas']['DocumentRequirementLevel'];
         };
-        ApplicableDefenseDocumentData: {data: components['schemas']['ApplicableDefenseDocument'][]};
+        ApplicableDefenseDocumentsResponse: {
+            data: components['schemas']['ApplicableDefenseDocument'][];
+        };
+        /** @enum {string} */
+        DocumentRequirementLevel: 'ONE_OR_MORE' | 'REQUIRED' | 'OPTIONAL';
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -93,15 +292,15 @@ export interface components {
             value: number;
         };
         Defense: {
-            /** Format: date-time */
             autodefended: boolean;
+            /** Format: date-time */
             defendedOn: string;
             defendedThroughComponent: boolean;
             reason?: string;
             suppliedDocuments?: string[];
         };
         /** @enum {string} */
-        Defensibility: 'DEFENDABLE' | 'DEFENDABLE_EXTERNALLY' | 'ACCEPTABLE' | 'NOT_ACTIONABLE';
+        Defensibility: 'DEFENDABLE' | 'ACCEPTABLE' | 'DEFENDABLE_EXTERNALLY' | 'NOT_ACTIONABLE';
         Dispute: {
             /** Format: date-time */
             acceptedDate?: string;
@@ -112,21 +311,16 @@ export interface components {
             defensibility: components['schemas']['Defensibility'];
             /** Format: date-time */
             dueDate?: string;
-            issuerExtraData?: {
-                chargeback?: {
-                    [key: string]: string;
-                };
-                extraData?: {
-                    [key: string]: string;
-                };
-                preArbitration?: {
-                    [key: string]: string;
-                };
-            };
+            issuerExtraData?: components['schemas']['IssuerExtraData'];
             pspReference: string;
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
             type: components['schemas']['DisputeType'];
+        };
+        DisputeBalanceAccount: {
+            /** @description Balance account description, or, if description is empty – balance account code */
+            description: string;
+            timeZone: string;
         };
         /** @enum {string} */
         DisputeCategory:
@@ -137,7 +331,7 @@ export interface components {
             | 'AUTHORISATION_ERROR'
             | 'ADJUSTMENT'
             | 'OTHER';
-        DisputeDetailResponseDTO: {
+        DisputeDetailResponse: {
             defense?: components['schemas']['Defense'];
             dispute: components['schemas']['Dispute'];
             payment: components['schemas']['Payment'];
@@ -148,14 +342,28 @@ export interface components {
             title: string;
         };
         /** @enum {string} */
-        DisputeStatus: 'UNRESPONDED' | 'RESPONDED' | 'EXPIRED' | 'LOST' | 'WON' | 'PENDING' | 'UNDEFENDED' | 'ACCEPTED';
+        DisputeStatus: 'UNDEFENDED' | 'UNRESPONDED' | 'RESPONDED' | 'WON' | 'LOST' | 'ACCEPTED' | 'PENDING' | 'EXPIRED';
         /** @enum {string} */
         DisputeType: 'CHARGEBACK' | 'REQUEST_FOR_INFORMATION' | 'NOTIFICATION_OF_FRAUD';
+        IssuerExtraData: {
+            /** @description Issuer comments for the chargeback phase */
+            chargeback?: {
+                [key: string]: string;
+            };
+            /** @description Extra data regarding the dispute */
+            extraData?: {
+                [key: string]: string;
+            };
+            /** @description Issuer comments for the pre-arbitration phase */
+            preArbitration?: {
+                [key: string]: string;
+            };
+        };
         Payment: {
-            balanceAccount: components['schemas']['BalanceAccount'];
+            balanceAccount: components['schemas']['DisputeBalanceAccount'];
             isRefunded: boolean;
             merchantReference?: string;
-            paymentMethod: components['schemas']['PaymentMethod'];
+            paymentMethod?: components['schemas']['PaymentMethod'];
             pspReference: string;
         };
         PaymentMethod: {
@@ -165,16 +373,6 @@ export interface components {
             lastFourDigits?: string;
             /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
             type: string;
-        };
-        Link: {
-            /** @description Cursor for a different page */
-            cursor: string;
-        };
-        Links: {
-            /** @description Link to a different page */
-            next: components['schemas']['Link'];
-            /** @description Link to a different page */
-            prev: components['schemas']['Link'];
         };
         DisputeListItem: {
             amount: components['schemas']['Amount'];
@@ -187,13 +385,24 @@ export interface components {
             reason: components['schemas']['DisputeReason'];
             status: components['schemas']['DisputeStatus'];
         };
-        DisputeListResponseDTO: {
-            _links: components['schemas']['Links'];
-            data: components['schemas']['DisputeListItem'][];
+        DisputeListResponse: {
+            _links?: components['schemas']['Links'];
+            data?: components['schemas']['DisputeListItem'][];
+        };
+        Link: {
+            /** @description Cursor for a different page */
+            cursor: string;
+        };
+        Links: {
+            /** @description Link to a different page */
+            next: components['schemas']['Link'];
+            /** @description Link to a different page */
+            prev: components['schemas']['Link'];
         };
         /** @enum {string} */
         StatusGroup: 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
-        DownloadDisputeFileResponseDTO: Uint8Array;
+        /** @enum {string} */
+        SchemeCodes: 'visa' | 'mc' | 'sepadirectdebit' | 'pulse' | 'discover' | 'ach' | 'amex' | 'elo' | 'jcb' | 'others';
     };
     responses: never;
     parameters: never;
@@ -201,133 +410,171 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export interface operations {
-    /** @description Add @Operation annotation to provide a description */
     acceptDispute: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 disputePspReference: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['AcceptDisputeResponse'];
+                    'application/json': components['schemas']['HandleDisputeResponse'];
                 };
             };
         };
     };
     defendDispute: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 disputePspReference: string;
             };
+            cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                'multipart/form-data': FormData;
+                'multipart/form-data': components['schemas']['FormDataMultiPart'];
             };
         };
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['DefendDisputeResponse'];
+                    'application/json': components['schemas']['HandleDisputeResponse'];
                 };
             };
         };
     };
-    /** @description Add @Operation annotation to provide a description */
     downloadDefenseDocument: {
         parameters: {
             query: {
                 documentType: string;
             };
+            header?: never;
             path: {
                 disputePspReference: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     '*/*': components['schemas']['StreamingOutput'];
                 };
             };
             /** @description Client Error */
             '4XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['DefaultErrorResponseEntity'];
                 };
             };
             /** @description Server Error */
             '5XX': {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['DefaultErrorResponseEntity'];
                 };
             };
         };
     };
-    /** @description Add @Operation annotation to provide a description */
     getApplicableDefenseDocuments: {
         parameters: {
             query: {
                 defenseReason: string;
             };
+            header?: never;
             path: {
                 disputePspReference: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['ApplicableDefenseDocumentData'];
+                    'application/json': components['schemas']['ApplicableDefenseDocumentsResponse'];
                 };
             };
         };
     };
-    /** @description Add @Operation annotation to provide a description */
     getDisputeDetail: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 disputePspReference: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['DisputeDetailResponseDTO'];
+                    'application/json': components['schemas']['DisputeDetailResponse'];
                 };
             };
         };
     };
-    /** @description Add @Operation annotation to provide a description */
     getDisputeList: {
         parameters: {
             query: {
                 statusGroup: components['schemas']['StatusGroup'];
                 balanceAccountId?: string;
                 reasonCategories?: components['schemas']['DisputeCategory'][];
-                schemeCodes?: string[];
+                schemeCodes?: components['schemas']['SchemeCodes'][];
                 createdSince?: string;
                 createdUntil?: string;
                 limit?: number;
                 cursor?: string;
             };
+            header?: {
+                'SDK-Version'?: string;
+            };
+            path?: never;
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['DisputeListResponseDTO'];
+                    'application/json': components['schemas']['DisputeListResponse'];
                 };
             };
         };

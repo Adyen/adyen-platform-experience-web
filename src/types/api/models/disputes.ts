@@ -2,8 +2,8 @@ import { Schema } from '../utils';
 import { components } from '../resources/DisputesResource';
 
 export type IDispute = Schema<components, 'Dispute'>;
-export type IDisputeDetail = Schema<components, 'DisputeDetailResponseDTO'>;
-export type IDisputeListResponse = Schema<components, 'DisputeListResponseDTO'>;
+export type IDisputeDetail = Schema<components, 'DisputeDetailResponse'>;
+export type IDisputeListResponse = Schema<components, 'DisputeListResponse'>;
 export type IDisputeListItem = Schema<components, 'DisputeListItem'>;
 export type IDisputeReasonCategory = Schema<components, 'DisputeCategory'>;
 export type IDisputeStatusGroup = Schema<components, 'StatusGroup'>;
