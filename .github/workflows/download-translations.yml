@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: smartling-translations # provides Smartling credentials
     permissions:
+      actions: write
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout Repo
