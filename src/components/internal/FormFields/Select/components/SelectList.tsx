@@ -1,5 +1,5 @@
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import Popover from '../../../Popover/Popover';
+import PopoverContainer from '../../../Popover/PopoverContainer';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { boolOrFalse, isFunction } from '../../../../../utils';
@@ -43,7 +43,7 @@ const SelectList = fixedForwardRef(
         const multipleSelection = useMemo(() => boolOrFalse(multiSelect), [multiSelect]);
 
         return showList ? (
-            <Popover
+            <PopoverContainer
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
                 disableFocusTrap={true}
@@ -59,7 +59,7 @@ const SelectList = fixedForwardRef(
                 position={PopoverContainerPosition.BOTTOM}
                 showOverlay={showOverlay && isSmContainer}
                 fitPosition={fitPosition}
-                fixedPositioning={fixedPositioning ?? false}
+                fixedPositioning={fixedPositioning}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
@@ -80,7 +80,7 @@ const SelectList = fixedForwardRef(
                         <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
                     )}
                 </ul>
-            </Popover>
+            </PopoverContainer>
         ) : null;
     }
 );

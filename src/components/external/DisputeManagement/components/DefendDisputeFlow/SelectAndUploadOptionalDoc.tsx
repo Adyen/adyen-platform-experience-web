@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Select from '../../../../internal/FormFields/Select';
@@ -37,6 +39,7 @@ const SelectAndUploadOptionalDoc = ({
     const { i18n } = useCoreContext();
     const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
     const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const updateDocumentSelection = useCallback(
         (documentSelection: string) => {
@@ -89,6 +92,11 @@ const SelectAndUploadOptionalDoc = ({
                         readonly={disabled}
                         multiSelect={false}
                         items={items}
+                        popoverClassNameModifiers={[
+                            classNames('adyen-pe-defend-dispute-document-upload-box__dropdown-list', {
+                                ['adyen-pe-defend-dispute-document-upload-box__dropdown-list--mobile']: isMobileContainer,
+                            }),
+                        ]}
                         showOverlay={false}
                         placeholder={i18n.get('disputes.uploadDocuments.selectDocumentType')}
                     />

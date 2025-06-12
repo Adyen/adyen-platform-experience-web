@@ -111,6 +111,14 @@
     &__dropdown-list {
         max-height: 270px;
         overflow: scroll;
+
+        &--mobile {
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 80%;
+            z-index: 30;
+        }
     }
 
     &__secondary-description-items-container {
@@ -144,6 +152,19 @@
         svg {
             display: block;
             font-size: style.token(text-title-font-size);
+        }
+    }
+
+    &__dropdown-list {
+        max-height: 270px;
+        overflow: scroll;
+
+        &--mobile {
+            left: 0;
+            position: fixed;
+            top: 0;
+            width: 80%;
+            z-index: 30;
         }
     }
 

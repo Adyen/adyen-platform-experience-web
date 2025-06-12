@@ -1,8 +1,10 @@
+import classNames from 'classnames';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
@@ -22,6 +24,7 @@ export const DefendDisputeReason = () => {
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
     const disputePspReference = dispute?.dispute?.pspReference;
     const [isReasonSubmitted, setIsReasonSubmitted] = useState<boolean>(false);
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     //TODO: Add the translations for defend reason
     const defenseReasons: Readonly<{ id: string; name: string }[] | null> = useMemo(
@@ -123,7 +126,11 @@ export const DefendDisputeReason = () => {
                     items={defenseReasons}
                     onChange={onChange}
                     selected={selected}
-                    popoverClassNameModifiers={['adyen-pe-defend-dispute-reason__dropdown-list']}
+                    popoverClassNameModifiers={[
+                        classNames('adyen-pe-defend-dispute-reason__dropdown-list', {
+                            ['adyen-pe-defend-dispute-reason__dropdown-list--mobile']: isMobileContainer,
+                        }),
+                    ]}
                     fixedPositioning={true}
                 />
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (

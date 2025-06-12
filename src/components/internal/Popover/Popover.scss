@@ -12,7 +12,7 @@
         box-shadow: 0 6px 12px rgba(0, 17, 44, 0.08), 0 2px 4px rgba(0, 17, 44, 0.04), 0 0 0 1px rgba(0, 17, 44, 0.06);
         min-width: 200px;
         overflow: hidden;
-        z-index: 10;
+        z-index: 100;
 
         &__overlay {
             background: rgba(0, 17, 44, 0.5);
@@ -21,6 +21,7 @@
             position: fixed;
             top: 0;
             width: 100%;
+            z-index: 30;
         }
 
         &--fit-content {

@@ -67,6 +67,7 @@ function Popover({
     showOverlay = false,
     fitPosition,
     fixedPositioning = false,
+    additionalStyle,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
@@ -106,12 +107,14 @@ function Popover({
             setToTargetWidth,
             showOverlay,
             fitPosition,
-            fixedPositioning
+            fixedPositioning,
+            additionalStyle
         ),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
     );
+
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
     const popoverElement = useReflex<Element & { [CONTROL_ELEMENT_PROPERTY]?: (typeof targetElement)['current'] }>(
