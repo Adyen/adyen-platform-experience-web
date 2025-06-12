@@ -9,8 +9,8 @@ function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
     const scrollElement = (targetElement.current as HTMLElement)?.offsetParent as HTMLElement;
     const [popoverStyle, setPopoverStyle] = useState<{ minY?: number; maxY?: number } | undefined>();
     const [isScrollable] = useState(scrollElement?.scrollHeight > scrollElement?.offsetHeight);
-    const [toggle, setToggle] = useState<boolean>(false);
-    const debounceTimeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [, setToggle] = useState<boolean>(false);
+    const rafIdRef = useRef<ReturnType<typeof requestAnimationFrame> | null>(null);
     const skipHScrollListener = !scrollElement || !isScrollable || !props.fixedPositioning;
 
     useEffect(() => {
@@ -27,20 +27,20 @@ function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
         };
 
         const delayedCallback = () => {
-            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+            rafIdRef.current && cancelAnimationFrame(rafIdRef.current);
 
-            debounceTimeoutIdRef.current = setTimeout(() => {
-                requestAnimationFrame(() => scrollCallback());
-
-                debounceTimeoutIdRef.current = null;
-            }, 100);
+            rafIdRef.current = requestAnimationFrame(() => {
+                rafIdRef.current = null;
+                scrollCallback();
+            });
         };
 
-        scrollElement.addEventListener('scroll', delayedCallback);
+        scrollElement.addEventListener('scroll', delayedCallback, { passive: true });
 
         return () => {
             scrollElement.removeEventListener('scroll', delayedCallback);
-            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+            rafIdRef.current && cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
         };
     }, []);
 
@@ -48,6 +48,10 @@ function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
         return <Popover {...props}>{props.children}</Popover>;
     }
 
+    /*
+     * TODO: - Consider using same position from parent element
+     *       - Consider adding position prop to components using Popover
+     */
     return (
         <Popover {...props} position={PopoverContainerPosition.BOTTOM} additionalStyle={popoverStyle}>
             {props.children}
