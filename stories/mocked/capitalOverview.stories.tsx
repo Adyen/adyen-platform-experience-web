@@ -107,6 +107,16 @@ export const GrantActions: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const GrantAnacredit: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Missing Action Anacredit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.anacredit,
+    },
+};
+
 export const GrantActive: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Active',
     args: {

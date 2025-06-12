@@ -22,13 +22,21 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, cla
     const [shouldRedirectToToS, setShouldRedirectToToS] = useState(false);
 
     const fetchCallback = useCallback(async () => {
-        if (action.type === 'signToS') {
-            return signToSActionDetails?.(EMPTY_OBJECT, {
-                query: {
-                    redirectUrl: getTopWindowHref(),
-                    locale: i18n.locale,
-                },
-            });
+        switch (action.type) {
+            case 'signToS':
+                return signToSActionDetails?.(EMPTY_OBJECT, {
+                    query: {
+                        redirectUrl: getTopWindowHref(),
+                        locale: i18n.locale,
+                    },
+                });
+            case 'AnaCredit':
+                return signToSActionDetails?.(EMPTY_OBJECT, {
+                    query: {
+                        redirectUrl: getTopWindowHref(),
+                        locale: i18n.locale,
+                    },
+                });
         }
     }, [action, i18n.locale, signToSActionDetails]);
 

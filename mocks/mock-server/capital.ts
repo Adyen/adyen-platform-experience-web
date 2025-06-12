@@ -18,7 +18,9 @@ import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
-import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
+import { paths as CapitalGrantOfferPaths } from '../../src/types/api/resources/CapitalGrantOffersResource';
+import { paths as CapitalGrantsPaths } from '../../src/types/api/resources/CapitalGrantsResource';
+import { paths as CapitalMissingActionsPaths } from '../../src/types/api/resources/CapitalMissingActionsResource';
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
@@ -110,7 +112,7 @@ const commonHandlers = {
     ],
 };
 
-const capitalFactory = mocksFactory<CapitalPaths>();
+const capitalFactory = mocksFactory<CapitalGrantOfferPaths & CapitalGrantsPaths & CapitalMissingActionsPaths>();
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
@@ -187,6 +189,11 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
     grantActions: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
+    ],
+    anacredit: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
         { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },

@@ -9,10 +9,21 @@ export type _Params<T extends Record<string, any>> = T['parameters'];
 type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
 type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 
+type IsEmptyParameters<T> = T extends {
+    query?: never;
+    header?: never;
+    path?: never;
+    cookie?: never;
+}
+    ? true
+    : false;
 export type _HasParameter<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
 export type _RequiresParameter<T> = _HasParameter<'parameters', T>;
 
-export type _HasRequestBody<Parameter extends keyof any, T> = Parameter extends keyof T ? true : false;
+type WithNeverBody = {
+    requestBody?: never;
+};
+export type _HasRequestBody<Parameter extends keyof any, T> = Parameter extends keyof T ? (T extends WithNeverBody ? false : true) : false;
 export type _RequiresRequestBody<T> = _HasRequestBody<'requestBody', T>;
 
 type ContentTypes<Operation> = Operation extends { requestBody?: { content: infer Content } } ? keyof Content : never;
@@ -26,7 +37,9 @@ type RequestBodyTypes<Path extends keyof EndpointsOperations> = RequestBodyConte
     : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
 
 type ParametersIfRequired<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
-    ? [_Params<EndpointsOperations[Endpoint]>]
+    ? IsEmptyParameters<EndpointsOperations[Endpoint]['parameters']> extends true
+        ? []
+        : [_Params<EndpointsOperations[Endpoint]>]
     : [];
 
 type RequestBodyIfRequired<Endpoint extends EndpointName> = _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true
