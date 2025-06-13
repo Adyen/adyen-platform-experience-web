@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
@@ -47,9 +47,13 @@ import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
+import { CustomButtonObject } from '../../../../types';
 
 type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 
+const _isButtonType = (item: any): item is CustomButtonObject => {
+    return !!item && typeof item === 'object' && item.type === 'button';
+};
 const DisputeDataAlert = ({
     alertMode,
     dispute,
@@ -196,6 +200,23 @@ export const DisputeData = ({
         setFlowState('defendReasonSelectionView');
     }, [setFlowState]);
 
+    const [extraButtons, setExtraButtons] = useState<Record<string, any>>();
+
+    const getCustomButtons = useCallback(async () => {
+        const customData = data && (await dataCustomization?.details?.onDataRetrieve?.(data));
+        if (customData) {
+            return setExtraButtons(
+                Object.values(customData).filter(config => {
+                    return _isButtonType(config);
+                })
+            );
+        }
+    }, [data, dataCustomization?.details]);
+
+    useEffect(() => {
+        void getCustomButtons();
+    }, [getCustomButtons]);
+
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
         if (isDefendable)
@@ -217,8 +238,18 @@ export const DisputeData = ({
                 variant: ButtonVariant.SECONDARY,
             });
         }
+
+        if (extraButtons && extraButtons.length) {
+            extraButtons.forEach((config: any) => {
+                ctaButtons.push({
+                    title: config?.value,
+                    event: config?.config?.action,
+                    variant: ButtonVariant.SECONDARY,
+                });
+            });
+        }
         return ctaButtons;
-    }, [i18n, isAcceptable, isDefendable, onDefendClick, onAcceptClick, showContactSupport, onContactSupport]);
+    }, [isDefendable, i18n, onDefendClick, isAcceptable, showContactSupport, onContactSupport, extraButtons, onAcceptClick]);
 
     const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
 
