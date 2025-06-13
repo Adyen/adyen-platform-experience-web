@@ -135,7 +135,6 @@ export const DefendDisputeReason = () => {
                             <li className="adyen-pe-defend-dispute-reason__secondary-description-item" key={`description-item-${i}`}>
                                 <Typography
                                     el={TypographyElement.PARAGRAPH}
-                                    key={`description-${i}`}
                                     className="adyen-pe-defend-dispute-reason__description"
                                     variant={TypographyVariant.BODY}
                                 >
