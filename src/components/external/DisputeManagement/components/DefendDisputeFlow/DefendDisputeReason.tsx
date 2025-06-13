@@ -106,6 +106,8 @@ export const DefendDisputeReason = () => {
         setShowAlert(false);
     }, []);
 
+    const defenseReasonContent = useMemo(() => (selected ? getDefenseReasonContent(i18n, selected) : undefined), [i18n, selected]);
+
     if (!defenseReasons || !selected) {
         return null;
     }
@@ -117,7 +119,7 @@ export const DefendDisputeReason = () => {
                     {i18n.get('disputes.defend.selectDefenseReason')}
                 </Typography>
                 <Select items={defenseReasons} onChange={onChange} selected={selected} />
-                {getDefenseReasonContent(i18n, selected)?.primaryDescriptionItems?.map((description, i) => (
+                {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
                         el={TypographyElement.PARAGRAPH}
                         key={`description-${i}`}
@@ -127,6 +129,21 @@ export const DefendDisputeReason = () => {
                         {description}
                     </Typography>
                 ))}
+                {defenseReasonContent?.secondaryDescriptionItems?.length && (
+                    <ul className="adyen-pe-defend-dispute-reason__secondary-description-items-container">
+                        {defenseReasonContent.secondaryDescriptionItems.map((description, i) => (
+                            <li className="adyen-pe-defend-dispute-reason__secondary-description-item" key={`description-item-${i}`}>
+                                <Typography
+                                    el={TypographyElement.PARAGRAPH}
+                                    className="adyen-pe-defend-dispute-reason__description"
+                                    variant={TypographyVariant.BODY}
+                                >
+                                    {description}
+                                </Typography>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
             {showAlert && (
                 <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
