@@ -30,7 +30,7 @@ const SelectList = fixedForwardRef(
             popoverClassNameModifiers,
             showOverlay,
             fitPosition,
-            fixedPositioning,
+            fixedPopoverPositioning,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -59,7 +59,7 @@ const SelectList = fixedForwardRef(
                 position={PopoverContainerPosition.BOTTOM}
                 showOverlay={showOverlay && isSmContainer}
                 fitPosition={fitPosition}
-                fixedPositioning={fixedPositioning}
+                fixedPositioning={fixedPopoverPositioning}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (

@@ -33,7 +33,7 @@ const Select = <T extends SelectItem>({
     withoutCollapseIndicator = false,
     showOverlay = false,
     fitPosition,
-    fixedPositioning,
+    fixedPopoverPositioning,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -354,7 +354,7 @@ const Select = <T extends SelectItem>({
                 showOverlay={showOverlay}
                 textFilter={textFilter}
                 fitPosition={fitPosition}
-                fixedPositioning={fixedPositioning}
+                fixedPopoverPositioning={fixedPopoverPositioning}
             />
         </div>
     );

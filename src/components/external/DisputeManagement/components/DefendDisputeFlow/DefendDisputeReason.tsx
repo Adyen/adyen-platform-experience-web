@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
@@ -15,6 +15,15 @@ import { TypographyElement, TypographyVariant } from '../../../../internal/Typog
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseReasonContent } from '../../utils';
+
+const BASE_CLASS = 'adyen-pe-defend-dispute-reason';
+
+const classes = {
+    selector: BASE_CLASS + '__selector',
+    description: BASE_CLASS + '__description',
+    dropdownList: BASE_CLASS + '__dropdown-list',
+    dropdownListMobile: BASE_CLASS + '__dropdown-list--mobile',
+};
 
 export const DefendDisputeReason = () => {
     const { i18n } = useCoreContext();
@@ -118,7 +127,7 @@ export const DefendDisputeReason = () => {
 
     return (
         <>
-            <div className="adyen-pe-defend-dispute-reason__selector">
+            <div className={classes.selector}>
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
                     {i18n.get('disputes.defend.selectDefenseReason')}
                 </Typography>
@@ -126,18 +135,14 @@ export const DefendDisputeReason = () => {
                     items={defenseReasons}
                     onChange={onChange}
                     selected={selected}
-                    popoverClassNameModifiers={[
-                        classNames('adyen-pe-defend-dispute-reason__dropdown-list', {
-                            ['adyen-pe-defend-dispute-reason__dropdown-list--mobile']: isMobileContainer,
-                        }),
-                    ]}
-                    fixedPositioning={true}
+                    popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
+                    fixedPopoverPositioning
                 />
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
                         el={TypographyElement.PARAGRAPH}
                         key={`description-${i}`}
-                        className="adyen-pe-defend-dispute-reason__description"
+                        className={classes.description}
                         variant={TypographyVariant.BODY}
                     >
                         {description}
