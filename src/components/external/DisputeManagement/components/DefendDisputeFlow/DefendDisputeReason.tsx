@@ -106,11 +106,12 @@ export const DefendDisputeReason = () => {
         setShowAlert(false);
     }, []);
 
+    const defenseReasonContent = useMemo(() => (selected ? getDefenseReasonContent(i18n, selected) : undefined), [i18n, selected]);
+
     if (!defenseReasons || !selected) {
         return null;
     }
 
-    const defenseReasonContent = getDefenseReasonContent(i18n, selected);
     return (
         <>
             <div className="adyen-pe-defend-dispute-reason__selector">
