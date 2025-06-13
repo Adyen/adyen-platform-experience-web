@@ -11,12 +11,6 @@
     position: relative;
     top: var(--offset-position);
 
-    .adyen-pe-button--secondary {
-        display: flex;
-        gap: style.token(spacer-040);
-        text-decoration: none;
-    }
-
     .adyen-pe-download__button--loading {
         &:disabled {
             background-color: style.token(color-background-tertiary);
@@ -27,5 +21,51 @@
             border-color: currentColor;
             border-top-color: transparent;
         }
+    }
+
+    &-icon-button-container {
+        display: inline-flex;
+        height: style.token(spacer-080);
+        justify-content: center;
+        width: style.token(spacer-080);
+
+        .adyen-pe-button--secondary:disabled,
+        .adyen-pe-button--secondary:disabled:not(:focus) {
+            box-shadow: unset;
+        }
+
+        .adyen-pe-download__button--loading {
+            &:disabled {
+                background-color: transparent;
+            }
+        }
+    }
+
+    &__button--icon {
+        background-color: unset;
+        box-shadow: unset;
+        margin-top: 0;
+        top: 0;
+
+        &:hover {
+            background-color: unset;
+            box-shadow: unset !important;
+        }
+
+        &:hover:not(:focus) {
+            box-shadow: unset;
+        }
+
+        &:active {
+            background-color: transparent;
+            box-shadow: unset;
+            color: transparent;
+        }
+    }
+
+    .adyen-pe-button--secondary {
+        display: flex;
+        gap: style.token(spacer-040);
+        text-decoration: none;
     }
 }

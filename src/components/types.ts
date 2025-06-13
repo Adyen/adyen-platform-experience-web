@@ -7,6 +7,8 @@ import { ReportsTableFields } from './external/ReportsOverview/components/Report
 import { StringWithAutocompleteOptions } from '../utils/types';
 import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsFields } from './external';
+import { IDisputeListItem } from '../types/api/models/disputes';
+import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -105,6 +107,7 @@ interface _DataOverviewComponentProps {
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
+    onContactSupport?: () => void;
 }
 
 export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
@@ -185,6 +188,11 @@ export interface PayoutsOverviewComponentProps
         _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
 
+export interface DisputeOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
@@ -203,4 +211,6 @@ export type ExternalComponentType =
     | 'payoutDetails'
     | 'reports'
     | 'capitalOverview'
-    | 'capitalOffer';
+    | 'capitalOffer'
+    | 'disputes'
+    | 'disputesManagement';

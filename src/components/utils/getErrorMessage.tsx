@@ -11,6 +11,7 @@ export const getErrorMessage = (
     if (!error) return UNDEFINED_ERROR;
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;
+
     switch (error.errorCode) {
         case undefined:
             return {

@@ -14,4 +14,6 @@ export interface CardProps {
     buttonAriaLabel?: string;
     classNameModifiers?: string[];
     testId?: string;
+    expandable?: boolean;
+    compact?: boolean;
 }
