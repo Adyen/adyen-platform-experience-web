@@ -107,6 +107,15 @@
         color: style.token(color-label-secondary);
         font-size: style.token(text-caption-font-size);
     }
+
+    &__secondary-description-items-container {
+        margin: 0;
+        padding: 0 style.token(spacer-080);
+    }
+
+    &__secondary-description-item::marker {
+        color: style.token(color-label-secondary);
+    }
 }
 
 .adyen-pe-defend-dispute-file-uploader {
