@@ -200,7 +200,7 @@ export const DisputeData = ({
         setFlowState('defendReasonSelectionView');
     }, [setFlowState]);
 
-    const [extraButtons, setExtraButtons] = useState<Record<string, any>>();
+    const [extraButtons, setExtraButtons] = useState<CustomButtonObject[]>([]);
 
     const getCustomButtons = useCallback(async () => {
         const customData = data && (await dataCustomization?.details?.onDataRetrieve?.(data));
@@ -208,7 +208,7 @@ export const DisputeData = ({
             return setExtraButtons(
                 Object.values(customData).filter(config => {
                     return _isButtonType(config);
-                })
+                }) as CustomButtonObject[]
             );
         }
     }, [data, dataCustomization?.details]);
@@ -240,7 +240,7 @@ export const DisputeData = ({
         }
 
         if (extraButtons && extraButtons.length) {
-            extraButtons.forEach((config: any) => {
+            extraButtons.forEach((config: CustomButtonObject) => {
                 ctaButtons.push({
                     title: config?.value,
                     event: config?.config?.action,
