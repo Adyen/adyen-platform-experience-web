@@ -1,8 +1,10 @@
+import cx from 'classnames';
 import { useEffect } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useFetch } from '../../../../../hooks/useFetch';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDisputeDefenseDocument } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import Alert from '../../../../internal/Alert/Alert';
@@ -14,6 +16,15 @@ import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseReasonContent } from '../../utils';
 
+const BASE_CLASS = 'adyen-pe-defend-dispute-reason';
+
+const classes = {
+    selector: BASE_CLASS + '__selector',
+    description: BASE_CLASS + '__description',
+    dropdownList: BASE_CLASS + '__dropdown-list',
+    dropdownListMobile: BASE_CLASS + '__dropdown-list--mobile',
+};
+
 export const DefendDisputeReason = () => {
     const { i18n } = useCoreContext();
     const { applicableDocuments, dispute, goBack, setFlowState, setSelectedDefenseReason, selectedDefenseReason, setApplicableDocuments } =
@@ -22,6 +33,7 @@ export const DefendDisputeReason = () => {
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
     const disputePspReference = dispute?.dispute?.pspReference;
     const [isReasonSubmitted, setIsReasonSubmitted] = useState<boolean>(false);
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     //TODO: Add the translations for defend reason
     const defenseReasons: Readonly<{ id: string; name: string }[] | null> = useMemo(
@@ -29,6 +41,7 @@ export const DefendDisputeReason = () => {
             Object.freeze(
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
+                    disabled: allowedDefenseReasons.length === 1,
                     name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
                 }))
             ) ?? [],
@@ -114,16 +127,22 @@ export const DefendDisputeReason = () => {
 
     return (
         <>
-            <div className="adyen-pe-defend-dispute-reason__selector">
+            <div className={classes.selector}>
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
                     {i18n.get('disputes.defend.selectDefenseReason')}
                 </Typography>
-                <Select items={defenseReasons} onChange={onChange} selected={selected} />
+                <Select
+                    items={defenseReasons}
+                    onChange={onChange}
+                    selected={selected}
+                    popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
+                    fixedPopoverPositioning
+                />
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography
                         el={TypographyElement.PARAGRAPH}
                         key={`description-${i}`}
-                        className="adyen-pe-defend-dispute-reason__description"
+                        className={classes.description}
                         variant={TypographyVariant.BODY}
                     >
                         {description}
