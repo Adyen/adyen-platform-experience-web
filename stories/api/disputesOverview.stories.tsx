@@ -1,12 +1,12 @@
-import { PayoutsOverview } from '../../src';
+import { DisputesOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { PayoutsOverviewMeta } from '../components/payoutsOverview';
+import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { Meta } from '@storybook/preact';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'API-connected/Payouts Overview' };
+const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'API-connected/Disputes Overview' };
 
-export const Default: ElementStory<typeof PayoutsOverview, SessionControls> = {
+export const Default: ElementStory<typeof DisputesOverview, SessionControls> = {
     name: 'Default',
     argTypes: {
         session: { control: 'object' },
