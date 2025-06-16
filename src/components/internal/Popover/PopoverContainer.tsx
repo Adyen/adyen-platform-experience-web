@@ -1,37 +1,43 @@
-import { PropsWithChildren, useEffect, useRef } from 'preact/compat';
-import { useState } from 'preact/hooks';
-import './Popover.scss';
-import Popover from './Popover';
+import { PropsWithChildren } from 'preact/compat';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { PopoverContainerPosition, PopoverProps } from './types';
+import Popover from './Popover';
+import './Popover.scss';
 
 function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
-    const targetElement = props.targetElement;
-    const scrollElement = (targetElement.current as HTMLElement)?.offsetParent as HTMLElement;
+    const [_, setLastScrollCallbackTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
     const [popoverStyle, setPopoverStyle] = useState<{ minY?: number; maxY?: number } | undefined>();
-    const [isScrollable] = useState(scrollElement?.scrollHeight > scrollElement?.offsetHeight);
-    const [, setToggle] = useState<boolean>(false);
-    const rafIdRef = useRef<ReturnType<typeof requestAnimationFrame> | null>(null);
-    const skipHScrollListener = !scrollElement || !isScrollable || !props.fixedPositioning;
+
+    const shouldTrackVerticalScrolling = useCallback(
+        (element: Element | null): element is HTMLElement =>
+            element && props.fixedPositioning ? element.scrollHeight > (element as HTMLElement).offsetHeight : false,
+        [props.fixedPositioning]
+    );
+
+    const scrollElement = (props.targetElement.current as HTMLElement)?.offsetParent as HTMLElement | null;
 
     useEffect(() => {
-        if (skipHScrollListener) return;
+        if (!shouldTrackVerticalScrolling(scrollElement)) return;
 
-        const scrollElementPosition = scrollElement?.getBoundingClientRect();
+        const { height: scrollElementHeight, y: scrollElementY } = scrollElement.getBoundingClientRect();
 
-        if (scrollElementPosition.y) {
-            setPopoverStyle({ minY: scrollElementPosition.y, maxY: scrollElementPosition?.height + scrollElementPosition?.y });
+        if (scrollElementY) {
+            setPopoverStyle({
+                minY: scrollElementY,
+                maxY: scrollElementY + scrollElementHeight,
+            });
         }
 
-        const scrollCallback = () => {
-            setToggle((prev: boolean) => !prev);
-        };
+        let rafId: ReturnType<typeof requestAnimationFrame> | null = null;
 
         const delayedCallback = () => {
-            rafIdRef.current && cancelAnimationFrame(rafIdRef.current);
-
-            rafIdRef.current = requestAnimationFrame(() => {
-                rafIdRef.current = null;
-                scrollCallback();
+            rafId && cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                // The last scroll callback timestamp is only updated here to
+                // trigger a re-render of the component, allowing for layout
+                // and style updates to be applied to the popover.
+                setLastScrollCallbackTimestamp(performance.now());
             });
         };
 
@@ -39,23 +45,18 @@ function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
 
         return () => {
             scrollElement.removeEventListener('scroll', delayedCallback);
-            rafIdRef.current && cancelAnimationFrame(rafIdRef.current);
-            rafIdRef.current = null;
+            rafId && cancelAnimationFrame(rafId);
+            rafId = null;
         };
-    }, []);
+    }, [scrollElement, shouldTrackVerticalScrolling]);
 
-    if (!props.fixedPositioning) {
-        return <Popover {...props}>{props.children}</Popover>;
-    }
-
-    /*
-     * TODO: - Consider using same position from parent element
-     *       - Consider adding position prop to components using Popover
-     */
-    return (
-        <Popover {...props} position={PopoverContainerPosition.BOTTOM} additionalStyle={popoverStyle}>
-            {props.children}
-        </Popover>
+    return props.fixedPositioning ? (
+        // TODO: - Consider using same position from parent element
+        //       - Consider adding position prop to components using Popover
+        <Popover {...props} position={PopoverContainerPosition.BOTTOM} additionalStyle={popoverStyle} />
+    ) : (
+        <Popover {...props} />
     );
 }
+
 export default PopoverContainer;
