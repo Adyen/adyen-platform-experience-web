@@ -90,7 +90,7 @@ const DisputeDataAlert = ({
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
+                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
                                                     {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
                                                 </Typography>
                                             ),
