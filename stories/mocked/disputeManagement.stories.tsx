@@ -243,8 +243,8 @@ export const DefenseServerError: ElementStory<typeof DisputeManagementElement> =
     },
 };
 
-export const CustomData: ElementStory<typeof DisputeManagementElement> = {
-    name: 'Custom Data',
+export const DataCustomization: ElementStory<typeof DisputeManagementElement> = {
+    name: 'Data Customization',
     args: {
         coreOptions: {
             translations: {
