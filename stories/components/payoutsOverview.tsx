@@ -14,7 +14,6 @@ export const PayoutsMeta: Meta<ElementProps<typeof PayoutsOverview>> = {
     },
     args: {
         preferredLimit: 10,
-        allowLimitSelection: true,
         hideTitle: false,
         onContactSupport: () => {},
         component: PayoutsOverview,
