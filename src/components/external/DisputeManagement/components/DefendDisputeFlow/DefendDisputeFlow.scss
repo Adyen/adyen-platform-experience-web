@@ -3,7 +3,7 @@
 @mixin adyen-pe-dropdown-overrides {
     &__dropdown-list {
         max-height: 270px;
-        overflow: hidden scroll;
+        overflow: hidden auto;
 
         &--mobile {
             left: 0;

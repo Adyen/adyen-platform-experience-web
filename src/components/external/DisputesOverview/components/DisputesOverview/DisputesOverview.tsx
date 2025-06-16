@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { h } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -105,6 +106,8 @@ export const DisputesOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [mobileStyleOverrides, setMobileStyleOverrides] = useState<h.JSX.CSSProperties | undefined>();
     const [statusGroup, setStatusGroup] = useState<IDisputeStatusGroup>(DEFAULT_DISPUTE_STATUS_GROUP);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
 
@@ -256,6 +259,10 @@ export const DisputesOverview = ({
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     useEffect(() => {
+        setMobileStyleOverrides(isMobileContainer && modalVisible ? { maxHeight: 0, overflowY: 'hidden' } : undefined);
+    }, [isMobileContainer, modalVisible]);
+
+    useEffect(() => {
         refreshNowTimestamp();
 
         if ((filters['statusGroup' as FilterParam]! as IDisputeStatusGroup) !== 'FRAUD_ALERTS') {
@@ -264,7 +271,7 @@ export const DisputesOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
+        <div style={mobileStyleOverrides} className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="disputes.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
@@ -306,6 +313,7 @@ export const DisputesOverview = ({
                 resetDetails={resetDetails}
                 onContactSupport={onContactSupport}
                 refreshDisputesList={refreshDisputesList}
+                setModalVisible={setModalVisible}
             >
                 <DisputesTable
                     activeBalanceAccount={activeBalanceAccount}
