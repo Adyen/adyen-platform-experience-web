@@ -144,11 +144,12 @@
 }
 
 .adyen-pe-defend-dispute-document-upload-box {
-    @include adyen-pe-dropdown-overrides;
-
     border: 1px solid style.token(color-outline-primary);
     border-radius: style.token(border-radius-l);
     padding: style.token(spacer-080);
+
+    // stylelint-disable order/order
+    @include adyen-pe-dropdown-overrides;
 
     &__delete-button-container {
         align-items: center;
