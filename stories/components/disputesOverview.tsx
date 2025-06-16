@@ -12,7 +12,6 @@ export const DisputesOverviewMeta: Meta<ElementProps<typeof DisputesOverview>> =
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
-        allowLimitSelection: true,
         component: DisputesOverview,
     },
     parameters: {
