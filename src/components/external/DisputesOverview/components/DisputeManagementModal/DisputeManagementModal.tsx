@@ -10,6 +10,7 @@ import { DisputeDetailsContainer } from '../../../DisputeManagement/components/D
 import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {
+    setModalVisible: (modalVisible: boolean) => void;
     refreshDisputesList: (statusGroup?: IDisputeStatusGroup) => void;
     selectedDetail: ReturnType<typeof useModalDetails>['selectedDetail'];
     resetDetails: ReturnType<typeof useModalDetails>['resetDetails'];
@@ -24,6 +25,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
     dataCustomization,
     onContactSupport,
     refreshDisputesList,
+    setModalVisible,
 }: PropsWithChildren<DisputeManagementModalProps>) => {
     const { i18n } = useCoreContext();
     const [disputeManagementSuccessful, setDisputeManagementSuccessful] = useState(false);
@@ -34,23 +36,27 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
             setDisputeManagementSuccessful(false);
             refreshDisputesList('CHARGEBACKS');
         }
+        setModalVisible(false);
         resetDetails();
-    }, [disputeManagementSuccessful, refreshDisputesList, resetDetails]);
+    }, [disputeManagementSuccessful, refreshDisputesList, resetDetails, setModalVisible]);
 
     const onDisputeManagementSuccessful = useCallback(() => {
         setDisputeManagementSuccessful(true);
     }, []);
 
     useEffect(() => {
-        if (isModalOpen) popoverUtil.closeAll();
-    }, [isModalOpen]);
+        if (isModalOpen) {
+            setModalVisible(true);
+            popoverUtil.closeAll();
+        }
+    }, [isModalOpen, setModalVisible]);
 
     return (
         <div>
             {children}
             {selectedDetail && (
                 <Modal
-                    isOpen={!!selectedDetail}
+                    isOpen={isModalOpen}
                     aria-label={i18n.get('disputes.disputeManagementTitle')}
                     onClose={onCloseCallback}
                     isDismissible={true}
