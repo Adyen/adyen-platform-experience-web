@@ -21,12 +21,10 @@ function PopoverContainer(props: PropsWithChildren<Omit<PopoverProps, 'ref'>>) {
 
         const { height: scrollElementHeight, y: scrollElementY } = scrollElement.getBoundingClientRect();
 
-        if (scrollElementY) {
-            setPopoverStyle({
-                minY: scrollElementY,
-                maxY: scrollElementY + scrollElementHeight,
-            });
-        }
+        setPopoverStyle({
+            minY: scrollElementY,
+            maxY: scrollElementY + scrollElementHeight,
+        });
 
         let rafId: ReturnType<typeof requestAnimationFrame> | null = null;
 
