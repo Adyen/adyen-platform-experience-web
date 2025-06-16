@@ -7,6 +7,10 @@ const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeMa
 
 export const Default: ElementStory<typeof DisputeManagementElement> = {
     name: 'Default',
+    args: {
+        id: 'EVJN42CKX223223N5LV3B7V5VK2LT8EUR',
+        mockedApi: false,
+    },
 };
 
 export default meta;

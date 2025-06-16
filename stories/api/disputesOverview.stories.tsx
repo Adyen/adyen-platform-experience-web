@@ -7,6 +7,9 @@ const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewM
 
 export const Default: ElementStory<typeof DisputesOverview> = {
     name: 'Default',
+    args: {
+        mockedApi: false,
+    },
 };
 
 export default meta;
