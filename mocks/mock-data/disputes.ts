@@ -230,7 +230,7 @@ export const CHARGEBACK_AUTO_DEFENDED: IDisputeDetail = {
     ...DEFAULT_DISPUTE_DETAIL,
     dispute: {
         ...DEFAULT_DETAIL_DISPUTE,
-        status: 'LOST',
+        status: 'WON',
         defensibility: 'NOT_ACTIONABLE',
     },
     defense: {
@@ -845,8 +845,8 @@ const ACTION_NEEDED_STATUSES: IDisputeStatus[] = ['UNDEFENDED', 'UNRESPONDED'];
 const RFI_ONLY_STATUSES: IDisputeStatus[] = ['EXPIRED', 'RESPONDED', 'UNRESPONDED'];
 
 const getDisputeDefense = <T extends Pick<IDisputeListItem, 'reason' | 'disputePspReference'>>(dispute: T) => {
-    let reason: string = 'ServicesProvided';
-    let suppliedDocuments: string[] = ['GoodsOrServicesProvided', 'WrittenRebuttal'];
+    let reason = 'ServicesProvided';
+    const suppliedDocuments: string[] = ['GoodsOrServicesProvided', 'WrittenRebuttal'];
 
     const allowedReasons = getAllowedDisputeDefenseReasons(dispute);
     const allowedReasonsCount = allowedReasons.length;
