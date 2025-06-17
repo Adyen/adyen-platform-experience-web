@@ -8,7 +8,7 @@
 
 ### Fixed
 
--   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the allowLimitSelection property wasn't explicitly set. Now, the selector is visible as expected.
+-   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the `allowLimitSelection` property wasn't explicitly set. Now, the selector is visible as expected.
 
 ## 1.5.1
 
