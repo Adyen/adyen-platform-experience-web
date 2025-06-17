@@ -14,7 +14,6 @@ export const TransactionsMeta: Meta<ElementProps<typeof TransactionsOverview>> =
     },
     args: {
         preferredLimit: 10,
-        allowLimitSelection: true,
         hideTitle: false,
         onContactSupport: () => {},
         component: TransactionsOverview,

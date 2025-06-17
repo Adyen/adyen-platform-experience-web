@@ -14,7 +14,6 @@ export const ReportsMeta: Meta<ElementProps<typeof ReportsOverview>> = {
     },
     args: {
         preferredLimit: 10,
-        allowLimitSelection: true,
         hideTitle: false,
         onContactSupport: () => {},
         component: ReportsOverview,
