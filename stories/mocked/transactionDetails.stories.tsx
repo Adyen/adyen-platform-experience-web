@@ -14,8 +14,8 @@ export const Default: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const CustomData: ElementStory<typeof TransactionDetails> = {
-    name: 'Custom Data',
+export const DataCustomization: ElementStory<typeof TransactionDetails> = {
+    name: 'Data Customization',
     args: {
         coreOptions: {
             translations: {

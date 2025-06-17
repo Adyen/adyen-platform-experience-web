@@ -9,12 +9,16 @@ export const useMultiSelectionFilter = <FilterParam extends string = string, Fil
     filters,
     defaultFilters,
     updateFilters,
+    mapFilterOptionName,
 }: UseMultiSelectionFilterConfig<FilterParam, FilterValue>) => {
     const selection = useMemo(() => {
         return listFrom<FilterValue>(filters?.[filterParam] ?? defaultFilters?.[filterParam] ?? '');
     }, [defaultFilters, filters, filterParam]);
 
-    const selectionOptions = useMemo(() => filterValues && selectionOptionsFor(filterValues), [filterValues]);
+    const selectionOptions = useMemo(
+        () => filterValues && selectionOptionsFor(filterValues, mapFilterOptionName),
+        [filterValues, mapFilterOptionName]
+    );
 
     const updateSelection = useCallback(
         ({ target }: any) => {

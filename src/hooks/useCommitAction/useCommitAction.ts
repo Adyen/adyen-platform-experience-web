@@ -8,7 +8,6 @@ import { boolOrFalse, EMPTY_OBJECT } from '../../utils';
 const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle }: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
     const { i18n } = useCoreContext();
     const [commitAction, setCommitAction] = useState(CommitAction.NONE);
-    const [committing, setCommitting] = useState(commitAction !== CommitAction.NONE);
 
     const applyAction = useCallback(() => setCommitAction(CommitAction.APPLY), [setCommitAction]);
     const resetAction = useCallback(() => setCommitAction(CommitAction.CLEAR), [setCommitAction]);
@@ -37,16 +36,16 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
     );
 
     const commitActionButtons = useMemo(() => [applyButtonAction, resetButtonAction] as const, [applyButtonAction, resetButtonAction]);
+    const committing = useMemo(() => commitAction !== CommitAction.NONE, [commitAction]);
 
     useEffect(() => {
-        setCommitting(commitAction !== CommitAction.NONE);
         switch (commitAction) {
             case CommitAction.APPLY:
             case CommitAction.CLEAR:
                 resetCommitAction();
                 break;
         }
-    }, [commitAction, setCommitting, resetCommitAction]);
+    }, [commitAction, resetCommitAction]);
 
     return { commitAction, commitActionButtons, committing, resetCommitAction } as const;
 };

@@ -83,14 +83,6 @@
         object-position: center;
     }
 
-    &__status-box {
-        border: style.token(border-width-s) solid style.token(color-outline-primary);
-        border-radius: style.token(border-radius-l);
-        gap: style.token(spacer-030);
-        padding: style.token(spacer-060);
-        width: max-content;
-    }
-
     &__tags {
         display: flex;
         gap: style.token(spacer-020);
