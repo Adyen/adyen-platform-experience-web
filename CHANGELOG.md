@@ -2,11 +2,11 @@
 
 ## 1.6.0
 
-### Minor Changes
+### New
 
 -   ec93b6c: You can now integrate our new [dispute components](https://docs.adyen.com/platforms/build-user-dashboards/?component=Dispute&integration=components). These components include all the necessary features to help your users manage disputes more efficiently, allowing them to review disputes, accept chargebacks, or defend them by submitting defense documents.
 
-### Patch Changes
+### Fixed
 
 -   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the allowLimitSelection property wasn't explicitly set. Now, the selector is visible as expected.
 
