@@ -8,7 +8,7 @@
 
 ### Patch Changes
 
--   ec9bfc9: Fixed visibility of page limit selector when `allowLimitSelection` in Payouts, Reports, and Transactions Overview components is not set
+-   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the allowLimitSelection property wasn't explicitly set. Now, the selector is visible as expected.
 
 ## 1.5.1
 
