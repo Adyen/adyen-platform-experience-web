@@ -25,7 +25,7 @@ import mergeRecords from '../../../../utils/customData/mergeRecords';
 export const PayoutsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onRecordSelection,
     showDetails,
