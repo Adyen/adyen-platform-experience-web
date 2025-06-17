@@ -19,7 +19,7 @@ function ModalContent({ type, data, dataCustomization, ...restData }: SelectedDe
             default:
                 return { data, type } as DetailsComponentProps;
         }
-    }, [data, type]);
+    }, [data, restData, type]);
 
     return (
         <>

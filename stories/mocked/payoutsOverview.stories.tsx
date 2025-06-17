@@ -1,6 +1,6 @@
 import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
-import { PayoutsMeta } from '../components/payoutsOverview';
+import { PayoutsOverviewMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
 import { getCustomPayoutsData } from './utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
@@ -8,7 +8,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts Overview' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview> = {
     name: 'Default',
