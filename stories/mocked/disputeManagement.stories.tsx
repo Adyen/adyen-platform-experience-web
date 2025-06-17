@@ -1,20 +1,20 @@
 import { Meta } from '@storybook/preact';
-import DisputeManagementElement from '../../src/components/external/DisputeManagement/DisputeManagementElement';
+import { DisputeManagement } from '../../src';
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 import { ElementProps, ElementStory } from '../utils/types';
 import { DISPUTE_DETAILS_HANDLERS } from '../../mocks/mock-server/disputes';
 
-const meta: Meta<ElementProps<typeof DisputeManagementElement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
+const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'Mocked/Dispute Management' };
 
-export const Default: ElementStory<typeof DisputeManagementElement> = {
+export const Default: ElementStory<typeof DisputeManagement> = {
     name: 'Default',
     args: {
         mockedApi: true,
     },
 };
 
-export const ChargebackAcceptable: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackAcceptable: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Acceptable',
     args: {
         mockedApi: true,
@@ -25,7 +25,7 @@ export const ChargebackAcceptable: ElementStory<typeof DisputeManagementElement>
         },
     },
 };
-export const ChargebackDefendable: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackDefendable: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Defendable',
     args: {
         mockedApi: true,
@@ -37,7 +37,7 @@ export const ChargebackDefendable: ElementStory<typeof DisputeManagementElement>
     },
 };
 
-export const ChargebackDefendableExternally: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackDefendableExternally: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Defendable externally',
     args: {
         mockedApi: true,
@@ -49,7 +49,7 @@ export const ChargebackDefendableExternally: ElementStory<typeof DisputeManageme
     },
 };
 
-export const ChargebackLost: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackLost: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Lost',
     args: {
         mockedApi: true,
@@ -61,7 +61,7 @@ export const ChargebackLost: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Lost (with issuer feedback)',
     args: {
         mockedApi: true,
@@ -73,7 +73,7 @@ export const ChargebackLostWithIssuerFeedback: ElementStory<typeof DisputeManage
     },
 };
 
-export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Lost (not defended)',
     args: {
         mockedApi: true,
@@ -85,7 +85,7 @@ export const ChargebackLostNotDefended: ElementStory<typeof DisputeManagementEle
     },
 };
 
-export const ChargebackDefended: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackDefended: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Defended',
     args: {
         mockedApi: true,
@@ -97,7 +97,7 @@ export const ChargebackDefended: ElementStory<typeof DisputeManagementElement> =
     },
 };
 
-export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackAutoDefended: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Auto defended',
     args: {
         mockedApi: true,
@@ -109,7 +109,7 @@ export const ChargebackAutoDefended: ElementStory<typeof DisputeManagementElemen
     },
 };
 
-export const ChargebackNotDefendable: ElementStory<typeof DisputeManagementElement> = {
+export const ChargebackNotDefendable: ElementStory<typeof DisputeManagement> = {
     name: 'Chargeback - Not defendable',
     args: {
         mockedApi: true,
@@ -121,7 +121,7 @@ export const ChargebackNotDefendable: ElementStory<typeof DisputeManagementEleme
     },
 };
 
-export const RFIUnresponded: ElementStory<typeof DisputeManagementElement> = {
+export const RFIUnresponded: ElementStory<typeof DisputeManagement> = {
     name: 'RFI - Unresponded',
     args: {
         mockedApi: true,
@@ -133,7 +133,7 @@ export const RFIUnresponded: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
+export const RFIExpired: ElementStory<typeof DisputeManagement> = {
     name: 'RFI - Expired',
     args: {
         mockedApi: true,
@@ -145,7 +145,7 @@ export const RFIExpired: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const RFIAcceptable: ElementStory<typeof DisputeManagementElement> = {
+export const RFIAcceptable: ElementStory<typeof DisputeManagement> = {
     name: 'RFI - Acceptable',
     args: {
         mockedApi: true,
@@ -157,7 +157,7 @@ export const RFIAcceptable: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const RFIAccepted: ElementStory<typeof DisputeManagementElement> = {
+export const RFIAccepted: ElementStory<typeof DisputeManagement> = {
     name: 'RFI - Accepted',
     args: {
         mockedApi: true,
@@ -169,7 +169,7 @@ export const RFIAccepted: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> = {
+export const NotificationOfFraud: ElementStory<typeof DisputeManagement> = {
     name: 'Notification of fraud',
     args: {
         mockedApi: true,
@@ -181,7 +181,7 @@ export const NotificationOfFraud: ElementStory<typeof DisputeManagementElement> 
     },
 };
 
-export const ServerError: ElementStory<typeof DisputeManagementElement> = {
+export const ServerError: ElementStory<typeof DisputeManagement> = {
     name: 'Error - Server error',
     args: {
         mockedApi: true,
@@ -194,7 +194,7 @@ export const ServerError: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const NetworkError: ElementStory<typeof DisputeManagementElement> = {
+export const NetworkError: ElementStory<typeof DisputeManagement> = {
     name: 'Error - Network error',
     args: {
         mockedApi: true,
@@ -206,7 +206,7 @@ export const NetworkError: ElementStory<typeof DisputeManagementElement> = {
     },
 };
 
-export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElement> = {
+export const UnprocessableEntityError: ElementStory<typeof DisputeManagement> = {
     name: 'Error - Unprocessable entity',
     args: {
         mockedApi: true,
@@ -219,7 +219,7 @@ export const UnprocessableEntityError: ElementStory<typeof DisputeManagementElem
     },
 };
 
-export const DownloadEvidenceError: ElementStory<typeof DisputeManagementElement> = {
+export const DownloadEvidenceError: ElementStory<typeof DisputeManagement> = {
     name: 'Error - Download evidence',
     args: {
         mockedApi: true,
@@ -231,7 +231,7 @@ export const DownloadEvidenceError: ElementStory<typeof DisputeManagementElement
     },
 };
 
-export const DefenseServerError: ElementStory<typeof DisputeManagementElement> = {
+export const DefenseServerError: ElementStory<typeof DisputeManagement> = {
     name: 'Error - Defense server error',
     args: {
         mockedApi: true,
@@ -243,7 +243,7 @@ export const DefenseServerError: ElementStory<typeof DisputeManagementElement> =
     },
 };
 
-export const DataCustomization: ElementStory<typeof DisputeManagementElement> = {
+export const DataCustomization: ElementStory<typeof DisputeManagement> = {
     name: 'Data Customization',
     args: {
         coreOptions: {

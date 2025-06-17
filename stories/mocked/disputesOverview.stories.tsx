@@ -1,9 +1,8 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DisputesOverview } from '../../src';
+import { DisputesOverview, DisputeManagement } from '../../src';
 import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
-import DisputeManagementElement from '../../src/components/external/DisputeManagement/DisputeManagementElement';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes Overview' };
@@ -51,7 +50,7 @@ export const NetworkError: ElementStory<typeof DisputesOverview> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof DisputeManagementElement> = {
+export const DataCustomization: ElementStory<typeof DisputeManagement> = {
     name: 'Data Customization',
     args: {
         coreOptions: {
