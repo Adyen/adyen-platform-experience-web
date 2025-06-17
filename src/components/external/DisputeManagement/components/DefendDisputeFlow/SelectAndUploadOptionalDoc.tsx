@@ -101,7 +101,7 @@ const SelectAndUploadOptionalDoc = ({
                     fixedPopoverPositioning
                 />
                 {selection &&
-                    getDocInfo(selection)?.primaryDescriptionItems?.map(desc => {
+                    getDocInfo(selection).primaryDescriptionItems?.map(desc => {
                         return (
                             <Typography
                                 key={desc}

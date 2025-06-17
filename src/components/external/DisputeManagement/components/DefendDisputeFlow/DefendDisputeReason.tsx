@@ -42,7 +42,7 @@ export const DefendDisputeReason = () => {
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
                     disabled: allowedDefenseReasons.length === 1,
-                    name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
+                    name: getDefenseReasonContent(i18n, reason).title,
                 }))
             ) ?? [],
         [i18n, allowedDefenseReasons]

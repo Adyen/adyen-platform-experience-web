@@ -6,8 +6,9 @@ const localization = new Localization();
 
 describe('getDefenseDocumentContent', () => {
     test("should return undefined if the defense document key doesn't exist", () => {
-        const result = getDefenseDocumentContent(localization.i18n, 'KeyThatDoesNotExist');
-        expect(result).toBeUndefined();
+        const key = 'KeyThatDoesNotExist';
+        const result = getDefenseDocumentContent(localization.i18n, key);
+        expect(result).toEqual<Content>({ title: key });
     });
 
     test('should return the right content for defense document with "title" field', () => {
@@ -41,8 +42,9 @@ describe('getDefenseDocumentContent', () => {
 
 describe('getDefenseReasonContent', () => {
     test("should return undefined if the defense reason key doesn't exist", () => {
-        const result = getDefenseReasonContent(localization.i18n, 'KeyThatDoesNotExist');
-        expect(result).toBeUndefined();
+        const key = 'KeyThatDoesNotExist';
+        const result = getDefenseReasonContent(localization.i18n, key);
+        expect(result).toEqual<Content>({ title: key });
     });
 
     test('should return the right content for defense reason with "title" field', () => {
