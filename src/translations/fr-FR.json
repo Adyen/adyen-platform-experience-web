@@ -260,7 +260,7 @@
     "disputes.defenseDocument.numberAndDateOfOriginalChargeback": "Numéro de référence et date du premier chargeback.",
     "disputes.defenseDocument.originalAmount": "Montant initial",
     "disputes.defenseDocument.originalAmountIfDisputedRepresentsPartialShipment": "Le montant de la transaction initiale si la transaction contestée concerne un envoi partiel",
-    "disputes.defenseDocument.other": "Autre",
+    "disputes.defenseDocument.other": "Autres",
     "disputes.defenseDocument.otherHelp": "Autre (aide)",
     "disputes.defenseDocument.paidByOtherMeansThanJCBCard": "Payé avec un autre moyen de paiement qu'une carte JCB",
     "disputes.defenseDocument.paidByOtherMeansThanJCBCardHelp": "Payé avec un autre moyen de paiement qu'une carte JCB (aide)",
