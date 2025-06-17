@@ -90,7 +90,7 @@ interface DisputesPageRequestParams extends Record<FilterParam | 'cursor' | 'rea
 export const DisputesOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     isLoadingBalanceAccount,
     onContactSupport,

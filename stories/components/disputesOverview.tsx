@@ -12,10 +12,6 @@ export const DisputesOverviewMeta: Meta<ElementProps<typeof DisputesOverview>> =
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
-        preferredLimit: 10,
-        allowLimitSelection: true,
-        hideTitle: false,
-        onContactSupport: () => {},
         component: DisputesOverview,
     },
     parameters: {

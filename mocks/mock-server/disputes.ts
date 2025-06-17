@@ -429,6 +429,13 @@ export const DISPUTE_DETAILS_HANDLERS = {
             }),
         ],
     },
+    chargebackLost: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(CHARGEBACK_LOST);
+            }),
+        ],
+    },
     chargebackLostWithFeedback: {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {

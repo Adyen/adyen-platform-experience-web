@@ -2,7 +2,7 @@ import { _UIComponentProps, DisputeOverviewComponentProps, ExternalComponentType
 import Disputes from './components/DisputesContainer/DisputesContainer';
 import UIElement from '../UIElement/UIElement';
 
-export class DisputesElement extends UIElement<DisputeOverviewComponentProps> {
+export class DisputesOverviewElement extends UIElement<DisputeOverviewComponentProps> {
     public static type: ExternalComponentType = 'disputes';
 
     constructor(props: _UIComponentProps<DisputeOverviewComponentProps>) {
@@ -21,4 +21,4 @@ export class DisputesElement extends UIElement<DisputeOverviewComponentProps> {
     };
 }
 
-export default DisputesElement;
+export default DisputesOverviewElement;
