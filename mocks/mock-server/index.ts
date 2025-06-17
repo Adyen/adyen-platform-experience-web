@@ -7,6 +7,7 @@ import { reportsMock } from './reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
 import { capitalMock } from './capital';
+import { disputesMocks } from './disputes';
 
-export const mocks = [balanceAccountMock, payoutsMocks, transactionsMocks, sessionsMock, setupMock, reportsMock, capitalMock];
+export const mocks = [balanceAccountMock, payoutsMocks, transactionsMocks, sessionsMock, setupMock, reportsMock, capitalMock, disputesMocks];
 export const mockWorker = setupWorker(...getMockHandlers(mocks));

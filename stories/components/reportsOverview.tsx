@@ -3,7 +3,7 @@ import { ElementProps } from '../utils/types';
 import { ReportsOverview } from '../../src';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
-export const ReportsMeta: Meta<ElementProps<typeof ReportsOverview>> = {
+export const ReportsOverviewMeta: Meta<ElementProps<typeof ReportsOverview>> = {
     title: 'screens/Reports',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
@@ -13,9 +13,7 @@ export const ReportsMeta: Meta<ElementProps<typeof ReportsOverview>> = {
         allowLimitSelection: { type: 'boolean' },
     },
     args: {
-        preferredLimit: 10,
-        hideTitle: false,
-        onContactSupport: () => {},
+        allowLimitSelection: true,
         component: ReportsOverview,
     },
     parameters: {
