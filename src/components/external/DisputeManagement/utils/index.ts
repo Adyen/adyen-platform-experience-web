@@ -24,20 +24,17 @@ const getContent = (
     config: Record<string, TranslationConfigItem>,
     configItemKey: string,
     translationPrefix: string
-): Content | undefined => {
+): Content => {
     const configItem = config[configItemKey];
-    if (!configItem) return undefined;
 
-    const title = getTranslationIfExists(i18n, translationPrefix, configItem.title);
-
-    const descriptionKeys = configItem.help ? (Array.isArray(configItem.help) ? configItem.help : [configItem.help]) : undefined;
+    const title = (configItem && getTranslationIfExists(i18n, translationPrefix, configItem.title)) || configItemKey;
+    const descriptionKeys = configItem?.help ? (Array.isArray(configItem.help) ? configItem.help : [configItem.help]) : undefined;
     const primaryDescriptionItems: string[] | undefined = descriptionKeys
         ?.map(key => getTranslationIfExists(i18n, translationPrefix, key))
         .filter((k): k is string => k !== undefined);
-
     const secondaryDescriptionItems: string[] = [];
 
-    if (configItem.helpitems) {
+    if (configItem?.helpitems) {
         configItem.helpitems.forEach(item => {
             const translation = getTranslationIfExists(i18n, translationPrefix, item);
             if (translation) secondaryDescriptionItems.push(translation);
@@ -45,7 +42,7 @@ const getContent = (
     }
 
     return {
-        title: title || '',
+        title: title,
         ...(primaryDescriptionItems?.length ? { primaryDescriptionItems } : {}),
         ...(secondaryDescriptionItems?.length ? { secondaryDescriptionItems } : {}),
     };
