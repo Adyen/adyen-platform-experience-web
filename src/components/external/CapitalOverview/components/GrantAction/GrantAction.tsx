@@ -2,7 +2,7 @@ import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
+import { DATE_FORMAT_CAPITAL_OVERVIEW, DATE_FORMAT_MISSING_ACTION } from '../../../../../constants';
 import { GRANT_ACTION_CLASS_NAMES } from './constants';
 import { GrantActionProps } from './types';
 import './GrantAction.scss';
@@ -52,6 +52,31 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, cla
         }
     }, [data, shouldRedirectToToS]);
 
+    const alertInfo = useMemo(() => {
+        switch (action.type) {
+            case 'signToS':
+                return {
+                    title: `${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
+                        offerExpiresAt
+                            ? ` ${i18n.get('capital.thisOfferExpiresOn', {
+                                  values: {
+                                      date: dateFormat(offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
+                                  },
+                              })}`
+                            : ''
+                    }`,
+                    buttonLabel: i18n.get('capital.goToTermsAndConditions'),
+                };
+            case 'AnaCredit':
+                return {
+                    title: i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseUseTheLinkBelow', {
+                        values: offerExpiresAt ? { date: dateFormat(offerExpiresAt, DATE_FORMAT_MISSING_ACTION) } : undefined,
+                    }),
+                    buttonLabel: i18n.get('capital.submitInformation'),
+                };
+        }
+    }, [action.type, dateFormat, i18n, offerExpiresAt]);
+
     return error ? (
         <Alert
             className={className}
@@ -67,15 +92,7 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, cla
         <Alert
             className={className}
             type={AlertTypeOption.WARNING}
-            title={`${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
-                offerExpiresAt
-                    ? ` ${i18n.get('capital.thisOfferExpiresOn', {
-                          values: {
-                              date: dateFormat(offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW),
-                          },
-                      })}`
-                    : ''
-            }`}
+            title={alertInfo.title}
             description={
                 <Button
                     className={GRANT_ACTION_CLASS_NAMES.button}
@@ -83,7 +100,7 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, cla
                     disabled={isFetching}
                     state={isFetching ? 'loading' : undefined}
                 >
-                    {i18n.get('capital.goToTermsAndConditions')}
+                    {alertInfo.buttonLabel}
                 </Button>
             }
         />

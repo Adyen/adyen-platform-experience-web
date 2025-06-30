@@ -13,6 +13,7 @@ import {
     GRANT_US_ACCOUNT,
     GRANT_GB_ACCOUNT,
     CAD_CAPITAL_OFFER,
+    PENDING_GRANT_WITH_ANACREDIT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -195,7 +196,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     ],
     anacredit: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
         { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
     ],
     grantActive: [
