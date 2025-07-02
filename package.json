@@ -54,18 +54,18 @@
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "prepare": "node prepare.cjs && bash ./scripts/process-package-lock.sh",
-    "postbuild": "rm dist/mockServiceWorker.js && rimraf dist/mockFiles",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "npm run storybook",
     "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
     "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
+    "storybook:static": "vite-node --mode development ./.storybook/buildStorybook.ts && vite serve storybook-static --config vite.config.ts",
     "test": "vitest --config vite.config.ts",
     "test:contract": "playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
-    "test:e2e": "playwright test --project local-chrome-e2e",
-    "test:integration": "playwright test --project local-chrome",
-    "test:integration:debug": "cross-env PWDEBUG=console playwright test --debug --project local-chrome",
+    "test:e2e": "cross-env TEST_ENV=1 playwright test --project local-chrome-e2e",
+    "test:integration": "cross-env TEST_ENV=1 playwright test --project local-chrome",
+    "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 playwright test --debug --project local-chrome",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "tsc --preserveWatchOutput",
     "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
@@ -140,7 +140,7 @@
   },
   "msw": {
     "workerDirectory": [
-      "public"
+      "static"
     ]
   }
 }

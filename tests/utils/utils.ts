@@ -1,10 +1,19 @@
-import { pages } from '../../playground/pages';
 import keys from '../../src/translations/en-US.json' assert { type: 'json' };
 import { Page } from '@playwright/test';
 import dotenv from 'dotenv';
+
 dotenv.config({ path: './envs/.env' });
 
+const pages = [
+    { id: 'transactionsOverview', name: 'Transactions Overview' },
+    { id: 'transaction', name: 'Transaction Details' },
+    { id: 'payouts', name: 'Payouts Overview' },
+    { id: 'payout', name: 'Payout Details' },
+    { id: 'reports', name: 'Reports Overview' },
+] as const;
+
 type PageId = (typeof pages)[number]['id'];
+
 export const getPagePath = (id: PageId) => pages.find(page => page.id === id)?.id ?? '';
 
 export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';

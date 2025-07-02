@@ -1,28 +1,6 @@
 import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
-import { mockWorker } from '../index';
-import uuid from '../../../src/utils/random/uuid';
 import { IGrantOfferResponseDTO } from '../../../src';
-
-const IS_TEST = Boolean(process.env.E2E_TEST === 'true') || process.env.VITE_MODE === 'demo';
-const MOCK_MODES = ['mocked', 'demo'];
-
-export async function enableServerInMockedMode(enabled?: boolean) {
-    const env = (import.meta as any).env;
-    if (enabled || MOCK_MODES.includes(env.VITE_MODE || env.MODE)) {
-        await mockWorker.start({
-            onUnhandledRequest: ({ url }, print) => {
-                const { pathname } = new URL(url);
-                if (pathname.includes('images/logos/') || pathname.includes('node_modules') || pathname.includes('.svg')) return;
-
-                print.warning();
-            },
-        });
-    }
-}
-
-export function stopMockedServer() {
-    mockWorker.stop();
-}
+import uuid from '../../../src/utils/random/uuid';
 
 export const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
     const date1 = new Date(dateString1);
@@ -50,7 +28,7 @@ export function computeHash(...strings: string[]) {
 
 export async function delay(duration?: DelayMode | number): Promise<void> {
     // Ensure there is no response delay in tests.
-    return IS_TEST ? mswDelay(0) : mswDelay(duration);
+    return Number(process.env.TEST_ENV) === 1 ? mswDelay(0) : mswDelay(duration);
 }
 
 export function getMockHandlers(mocks: HttpHandler[][]): HttpHandler[] {

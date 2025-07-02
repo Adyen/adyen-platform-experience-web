@@ -2,7 +2,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
-import { checker } from 'vite-plugin-checker';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getEnvironment } from './envs/getEnvs';
@@ -81,6 +80,11 @@ export default defineConfig(({ mode }) => {
         json: {
             stringify: true,
         },
+        preview: {
+            host: playground.host,
+            port: playground.port,
+            proxy: undefined,
+        },
         server: {
             host: playground.host,
             port: playground.port,
@@ -115,12 +119,6 @@ export default defineConfig(({ mode }) => {
                 include: '**/*.svg?component',
             }),
             preact(),
-            isDevMode &&
-                checker({
-                    stylelint: {
-                        lintCommand: 'stylelint ./src/**/*.scss',
-                    },
-                }),
             isAnalyseMode &&
                 visualizer({
                     title: 'Adyen Platform bundle visualizer',
