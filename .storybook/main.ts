@@ -6,22 +6,22 @@ import { realApiProxies } from '../endpoints/realApiProxies';
 
 const config: StorybookConfig = {
     stories: ['../stories/**/*.stories.*'],
-    staticDirs: ['static'],
+    staticDirs: ['../static'],
     addons: ['@storybook/addon-essentials'],
     framework: {
         name: '@storybook/preact-vite',
         options: {},
     },
     async viteFinal(config) {
-        const { apiConfigs } = getEnvironment(process.env.VITE_MODE ?? 'development');
+        const mode = process.env.VITE_MODE ?? 'development';
+        const { apiConfigs } = getEnvironment(mode);
 
         return mergeConfig(config, {
             server: {
-                proxy: realApiProxies(apiConfigs, process.env.VITE_MODE),
+                proxy: realApiProxies(apiConfigs, mode),
             },
             plugins: [
-                process.env.VITE_MODE &&
-                    ['mocked', 'development'].includes(process.env.VITE_MODE) &&
+                mode === 'development' &&
                     checker({
                         stylelint: {
                             lintCommand: 'stylelint src/**/*.scss',
