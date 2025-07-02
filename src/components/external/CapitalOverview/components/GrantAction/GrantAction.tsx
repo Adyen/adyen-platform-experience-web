@@ -18,7 +18,7 @@ import { getTopWindowHref, setTopWindowHref } from './utils';
 export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, className, offerExpiresAt }) => {
     const { i18n, updateCore } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
-    const { signToSActionDetails } = useConfigContext().endpoints;
+    const { signToSActionDetails, anaCreditActionDetails } = useConfigContext().endpoints;
     const [shouldRedirectToToS, setShouldRedirectToToS] = useState(false);
 
     const fetchCallback = useCallback(async () => {
@@ -31,14 +31,14 @@ export const GrantAction: FunctionalComponent<GrantActionProps> = ({ action, cla
                     },
                 });
             case 'AnaCredit':
-                return signToSActionDetails?.(EMPTY_OBJECT, {
+                return anaCreditActionDetails?.(EMPTY_OBJECT, {
                     query: {
                         redirectUrl: getTopWindowHref(),
                         locale: i18n.locale,
                     },
                 });
         }
-    }, [action, i18n.locale, signToSActionDetails]);
+    }, [action.type, anaCreditActionDetails, i18n.locale, signToSActionDetails]);
 
     const { data, isFetching, error } = useFetch({
         fetchOptions: useMemo(() => ({ enabled: !!signToSActionDetails && shouldRedirectToToS }), [signToSActionDetails, shouldRedirectToToS]),

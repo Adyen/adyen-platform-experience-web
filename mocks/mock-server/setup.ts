@@ -73,6 +73,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/signToS',
         },
+        anaCreditActionDetails: {
+            method: 'GET',
+            url: 'capital/grants/missingActions/anaCredit',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

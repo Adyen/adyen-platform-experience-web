@@ -138,7 +138,7 @@ export const PENDING_GRANT_WITH_ANACREDIT: IGrant = {
     ...PENDING_GRANT,
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
-    missingActions: [{ type: 'AnaCredit' }],
+    missingActions: [{ type: 'signToS' }, { type: 'AnaCredit' }],
 };
 
 export const REPAID_GRANT: IGrant = {
@@ -225,4 +225,8 @@ export const SIGNED_OFFER = {
 
 export const SIGN_TOS_ACTION_DETAILS = {
     url: 'https://www.adyen.com/',
+};
+
+export const ANACREDIT_ACTION_DETAILS = {
+    url: 'https://www.adyen.com/capital',
 };
