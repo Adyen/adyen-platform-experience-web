@@ -33,6 +33,7 @@ const TEST: TransactionsVariables = {
         category: 'Payment',
         status: 'Booked',
         paymentMethod: {
+            description: 'Visa',
             type: 'visa',
             lastFourDigits: '1111',
         },
@@ -62,6 +63,7 @@ const TEST: TransactionsVariables = {
         category: 'Refund',
         status: 'Booked',
         paymentMethod: {
+            description: 'Visa',
             type: 'visa',
             lastFourDigits: '1111',
         },
@@ -95,7 +97,7 @@ const LIVE: TransactionsVariables = {
         },
         paymentMethod: {
             type: 'balanceplatform',
-            lastFourDigits: 'BalancePlatform transactions',
+            description: 'BalancePlatform transactions',
         },
         createdAt: '2025-01-02T10:29:33.000+00:00',
         category: 'Payment',
@@ -131,7 +133,7 @@ const LIVE: TransactionsVariables = {
         },
         paymentMethod: {
             type: 'balanceplatform',
-            lastFourDigits: 'BalancePlatform transactions',
+            description: 'BalancePlatform transactions',
         },
         createdAt: '2025-01-02T10:56:21.000+00:00',
         category: 'Refund',

@@ -1,10 +1,10 @@
 import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { TransactionsMeta } from '../components/transactionsOverview';
+import { TransactionsOverviewMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsMeta, title: 'API-connected/Transactions Overview' };
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'API-connected/Transactions Overview' };
 
 export const Default: ElementStory<typeof TransactionsOverview, SessionControls> = {
     name: 'Default',

@@ -13,7 +13,7 @@ if [ "$current_branch" != "main" ]; then
   exit 1
 fi
 
-npm run version
+npm run changeset -- version
 
 new_version=$(jq -r '.version' package.json)
 

@@ -15,6 +15,7 @@ import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../intern
 import { ButtonVariant } from '../../../../internal/Button/types';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import Icon from '../../../../internal/Icon';
+import useStatusBoxData from '../../../../internal/StatusBox/useStatusBox';
 import { TypographyModifier, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { TransactionDetailsProvider } from '../../context/details';
@@ -25,6 +26,7 @@ import useTransactionRefundMetadata from '../../hooks/useTransactionRefundMetada
 import type { TransactionDataProps } from '../../types';
 import {
     TX_DATA_ACTION_BAR,
+    TX_DATA_AMOUNT,
     TX_DATA_CLASS,
     TX_REFUND_RESPONSE,
     TX_REFUND_RESPONSE_ERROR_ICON,
@@ -35,11 +37,13 @@ import {
 } from '../constants';
 import TransactionDataProperties from '../details/TransactionDataProperties';
 import TransactionDetailsDataContainer from '../details/TransactionDetailsDataContainer';
-import TransactionStatusBox from '../details/TransactionStatusBox';
+import StatusBox from '../../../../internal/StatusBox/StatusBox';
 import { TransactionRefundFullAmountInput, TransactionRefundPartialAmountInput } from '../refund/TransactionRefundAmount';
 import TransactionRefundNotice from '../refund/TransactionRefundNotice';
 import TransactionRefundReason from '../refund/TransactionRefundReason';
 import './TransactionData.scss';
+import { getAmountStyleForTransaction } from '../utils';
+import TransactionStatusTag from './TransactionStatusTag';
 
 export interface TransactionDataContentProps {
     transaction: NonNullable<TransactionDataProps['transaction']>;
@@ -145,8 +149,8 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                   .map(action => ({
                       title: action.value,
                       variant: ButtonVariant.SECONDARY,
-                      event: action.config.action,
-                      classNames: action.classNames,
+                      event: action.config?.action,
+                      classNames: action.config?.className ? [action.config.className] : [],
                   }))
             : [];
 
@@ -163,6 +167,16 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
         refreshTransaction();
         setLocked(true);
     }, [setLocked, refreshTransaction]);
+
+    const statusBoxProps = {
+        timezone: transaction.balanceAccount?.timeZone,
+        createdAt: transaction.createdAt,
+        amountData: transaction.amount,
+        paymentMethodData: transaction.paymentMethod,
+        bankAccount: transaction.bankAccount,
+    } as const;
+
+    const statusBoxOptions = useStatusBoxData(statusBoxProps);
 
     const renderMessages = useCallback(() => {
         return refundStatuses?.length || refundLocked || locked ? (
@@ -227,7 +241,11 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         dataCustomization={dataCustomization}
                     >
                         <TransactionDetailsDataContainer className={TX_STATUS_BOX}>
-                            <TransactionStatusBox transaction={transaction} refundedState={refundedState} />
+                            <StatusBox
+                                {...statusBoxOptions}
+                                tag={<TransactionStatusTag transaction={transaction} refundedState={refundedState} />}
+                                classNames={{ amount: `${TX_DATA_AMOUNT}--${getAmountStyleForTransaction(transaction)}` }}
+                            />
                         </TransactionDetailsDataContainer>
 
                         <TransactionDataProperties />

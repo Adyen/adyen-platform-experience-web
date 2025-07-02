@@ -1,5 +1,59 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.6.0
+
+### New
+
+-   ec93b6c: You can now integrate our new [dispute components](https://docs.adyen.com/platforms/build-user-dashboards/?component=Dispute&integration=components). These components include all the necessary features to help your users manage disputes more efficiently, allowing them to review disputes, accept chargebacks, or defend them by submitting defense documents.
+
+### Fixed
+
+-   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the `allowLimitSelection` property wasn't explicitly set. Now, the selector is visible as expected.
+
+## 1.5.1
+
+### Patch Changes
+
+-   e88a51e: We corrected the text for the APR field's tooltip.
+
+## 1.5.0
+
+### New
+
+-   Business financing through capital components is now available to users in Canada.
+
+### Fixed
+
+-   We corrected several Finnish translations that were inaccurate.
+
+## 1.4.2
+
+### Fixed
+
+-   We fixed an issue in the Capital Overview component area where the expandable card displayed content from both the expanded and collapsed states at the same time.
+
+## 1.4.1
+
+### Fixed
+
+-   Replaced unsupported regex lookbehind patterns causing app to crash for older browsers.
+
+## 1.4.0
+
+### New
+
+-   In the Capital Overview component, you can now view bank account details needed to send [unscheduled repayments](https://docs.adyen.com/platforms/capital/capital-components/#capital-overview-component), such as early repayments or to catch up if behind schedule.
+-   You can now add custom data in your [transaction](https://docs.adyen.com/platforms/build-user-dashboards/transaction-components/), [payout](https://docs.adyen.com/platforms/build-user-dashboards/payout-components/), and [report](https://docs.adyen.com/platforms/build-user-dashboards/reports-component/) components, such as your own fields, icons, links, and buttons. Additionally, you have control over the field settings, including their names and visibility.
+
+### Improved
+
+-   In the Capital Offer component, the Request Funds button is now disabled after a successful funds request.
+-   We improved responsiveness of the components by swapping all media queries with container queries.
+
+### Fixed
+
+-   We fixed the issue where the balance account selector in the Payouts, Reports, and Transactions Overview components failed to load if no balance account descriptions were provided.
+
 ## 1.3.1
 
 ### Patch Changes

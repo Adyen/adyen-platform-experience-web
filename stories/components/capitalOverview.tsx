@@ -15,9 +15,7 @@ export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverview>> = {
         skipPreQualifiedIntro: { type: 'boolean' },
     },
     args: {
-        hideTitle: false,
         component: CapitalOverview,
-        skipPreQualifiedIntro: false,
     },
     parameters: {
         controls: {

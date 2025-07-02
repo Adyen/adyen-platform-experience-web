@@ -8,10 +8,6 @@ export const envDir = dirname(filename);
 
 const parseEnv = (env: Record<string, string | undefined>) => ({
     apiConfigs: {
-        platformComponentsApi: {
-            url: env.PLATFORM_API_URL,
-            apiKey: env.API_KEY ?? '',
-        },
         sessionApi: {
             url: env.SESSION_API_URL ?? '',
             apiKey: env.API_KEY,
@@ -27,9 +23,6 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
         clientKey: env.API_KEY ?? '',
         playgroundUrl: env.PLAYGROUND_URL ?? '',
         loadingContext: env.LOADING_CONTEXT,
-    },
-    mockServer: {
-        port: parseInt(env.MOCK_SERVER_PORT ?? ''),
     },
 });
 

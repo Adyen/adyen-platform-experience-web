@@ -22,7 +22,7 @@ import mergeRecords from '../../../../utils/customData/mergeRecords';
 export const ReportsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     isLoadingBalanceAccount,
     onContactSupport,

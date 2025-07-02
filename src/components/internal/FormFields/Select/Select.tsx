@@ -33,6 +33,7 @@ const Select = <T extends SelectItem>({
     withoutCollapseIndicator = false,
     showOverlay = false,
     fitPosition,
+    fixedPopoverPositioning,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -41,13 +42,14 @@ const Select = <T extends SelectItem>({
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
     const selectListId = useRef(`select-${uuid()}`);
-    const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
 
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
     const pendingClickOutsideTriggeredHideList = useRef(true);
     const clearSelectionInProgress = useRef(false);
     const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
+
+    const appliedFilterNumber = useMemo(() => selection.length, [selection]);
 
     const dismissPopover = useCallback(() => {
         setTextFilter('');
@@ -154,11 +156,8 @@ const Select = <T extends SelectItem>({
     }, [closeList, commitSelection, multiSelect, selection]);
 
     useEffect(() => {
-        if (committing) {
-            setAppliedFilterNumber(selection.length);
-            closeList();
-        }
-    }, [committing, closeList, setAppliedFilterNumber, selection.length]);
+        if (committing) closeList();
+    }, [committing, closeList]);
 
     /**
      * Handle keyDown events on the selectList button
@@ -355,6 +354,7 @@ const Select = <T extends SelectItem>({
                 showOverlay={showOverlay}
                 textFilter={textFilter}
                 fitPosition={fitPosition}
+                fixedPopoverPositioning={fixedPopoverPositioning}
             />
         </div>
     );

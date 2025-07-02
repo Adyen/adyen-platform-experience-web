@@ -24,6 +24,8 @@ const getSubtitleByCountry = (countryCode?: string) => {
             return 'capital.legalSubtitleGB';
         case SupportedLocation.US:
             return 'capital.legalSubtitleUS';
+        case SupportedLocation.CA:
+            return 'capital.legalSubtitleCA';
         default:
             return null;
     }

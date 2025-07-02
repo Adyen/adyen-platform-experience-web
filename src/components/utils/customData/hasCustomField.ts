@@ -11,7 +11,7 @@ export const hasCustomField = <Field extends string, PreferredFields extends _Fi
         for (const field of preferredFields) {
             try {
                 // Normalize the field to determine its name (without any leading or trailing whitespaces)
-                const fieldName = (typeof field === 'object' ? field?.key : field)?.trim();
+                const fieldName = typeof field === 'object' ? field?.key?.trim() : false;
 
                 if (
                     // `fieldName` is expected to be a string (except in a case of misconfiguration)

@@ -9,10 +9,10 @@ type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item'
     iconClassName?: HTMLAttributes<any>['className'];
 };
 
-export interface SelectItem {
+export interface SelectItem<T extends string = string> {
     disabled?: boolean;
     icon?: string;
-    id: string;
+    id: T;
     name: string;
     selectedOptionName?: string;
 }
@@ -38,6 +38,7 @@ export interface SelectProps<T extends SelectItem> {
     showOverlay?: boolean;
     popoverClassNameModifiers?: string[];
     fitPosition?: boolean;
+    fixedPopoverPositioning?: boolean;
 }
 
 export interface SelectButtonProps<T extends SelectItem> {
@@ -78,6 +79,7 @@ export interface SelectListProps<T extends SelectItem> {
     popoverClassNameModifiers?: string[];
     showOverlay?: boolean;
     fitPosition?: boolean;
+    fixedPopoverPositioning?: boolean;
 }
 
 export interface SelectItemProps<T extends SelectItem> {

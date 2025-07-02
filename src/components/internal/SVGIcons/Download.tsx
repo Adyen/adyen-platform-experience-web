@@ -3,7 +3,7 @@ import { SVGProps } from 'preact/compat';
 /**
  * @deprecated This component is deprecated. Use <Icon name="download"/> instead.
  */
-const Download = ({ ...props }: Omit<SVGProps<SVGElement>, 'ref'>) => (
+const Download = ({ ...props }: Omit<SVGProps<SVGSVGElement>, 'ref'>) => (
     <svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
         <path
             d="M8.25 0.25V8.18957L10.5001 5.93945L11.5608 7.00011L7.50011 11.0608L3.43945 7.00011L4.50011 5.93945L6.75 8.18934V0.25H8.25Z"

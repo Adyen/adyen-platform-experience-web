@@ -12,6 +12,18 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+export const CAD_CAPITAL_OFFER = {
+    minAmount: {
+        value: 100000,
+        currency: 'CAD',
+    },
+    maxAmount: {
+        value: 2500000,
+        currency: 'CAD',
+    },
+    step: 10000,
+} satisfies IDynamicOffersConfig;
+
 export const GRANT_US_ACCOUNT = {
     region: 'US',
     accountNumber: '123456789012',
@@ -70,7 +82,7 @@ export const DEFAULT_GRANT: IGrant = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     termEndsAt: '2025-02-15',
@@ -162,7 +174,7 @@ export const GRANT_OFFER = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
 };
 
@@ -199,7 +211,7 @@ export const SIGNED_OFFER = {
         currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     status: 'Pending',

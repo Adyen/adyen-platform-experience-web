@@ -1,7 +1,7 @@
 import type { StrictUnion } from '../../../utils/types';
 import { IBalanceAccountBase, ILineItem, ITransactionWithDetails } from '../../../types';
 import { TX_DETAILS_RESERVED_FIELDS_SET } from './components/constants';
-import { CustomDataRetrieved, DataCustomizationObject } from '../../types';
+import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
 
 export interface DetailsWithoutIdProps {
     data: TransactionDetailData;
@@ -11,13 +11,12 @@ export interface DetailsWithIdProps {
     id: string;
 }
 
-export type TransactionDetailsCustomization = DataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved>;
+export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved>;
 
-export interface DetailsWithExtraData<T extends DataCustomizationObject<any, any, any>> {
+export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<any, any, any>> {
     dataCustomization?: {
         details?: T;
     };
-    extraDetails?: Record<string, any>;
 }
 
 export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps>;
@@ -32,7 +31,7 @@ export interface TransactionDataProps {
     error?: boolean;
     isFetching?: boolean;
     transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
-    dataCustomization?: { details?: DataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
+    dataCustomization?: { details?: DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
     // TODO - Unify this parameter with dataCustomization
     extraFields: Record<string, any> | undefined;
 }

@@ -31,7 +31,7 @@ import './TransactionsOverview.scss';
 export const TransactionsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onRecordSelection,
     showDetails,

@@ -20,7 +20,7 @@ const getIntersectionObserver = (() => {
         } as WithIntersectionObserver['remove']),
     }) as WithIntersectionObserver;
 
-    const findObserver = (callbackFn: ObserverCallback) => {
+    const findObserver = (callbackFn: ObserverCallback, root?: Element) => {
         let observerInstance = observerCallbackMap.get(callbackFn);
 
         if (isUndefined(observerInstance)) {
@@ -30,7 +30,7 @@ const getIntersectionObserver = (() => {
                         if (callbackFn) callbackFn(entry);
                     });
                 },
-                { root: null, rootMargin: '', threshold: [1] }
+                { root: root ?? null, rootMargin: '', threshold: [1] }
             );
 
             observerInstance = structFrom(withIntersectionObserver, {

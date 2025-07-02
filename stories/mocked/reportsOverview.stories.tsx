@@ -1,13 +1,13 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
 import { ReportsOverview } from '../../src';
-import { ReportsMeta } from '../components/reportsOverview';
+import { ReportsOverviewMeta } from '../components/reportsOverview';
 import { getCustomReportsData } from './utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { REPORTS } from '../../mocks/mock-data';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsMeta, title: 'Mocked/Reports Overview' };
+const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports Overview' };
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [

@@ -1,5 +1,6 @@
 import { IPayout, IReport, ITransaction } from '../../../src';
 import { CUSTOM_URL_EXAMPLE } from '../../utils/constants';
+import { IDispute } from '../../../src/types/api/models/disputes';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -101,8 +102,30 @@ export const getCustomReportsData = async (data: IReport[]) => {
     });
 };
 
+export const getCustomDisputesData = async (data: IDispute[]) => {
+    return data.map(dispute => {
+        return {
+            ...dispute,
+            _summary: {
+                type: 'link',
+                value: 'Summary',
+                config: {
+                    href: CUSTOM_URL_EXAMPLE,
+                },
+            },
+            _sendEmail: {
+                type: 'button',
+                value: 'Send email',
+                config: {
+                    action: () => console.log('Action'),
+                },
+            },
+        } as const;
+    });
+};
+
 export const getCustomPayoutsData = async (data: IPayout[]) => {
-    return data.map((payouts, index) => {
+    return data.map(payouts => {
         return {
             ...payouts,
             _summary: {
@@ -124,6 +147,7 @@ export const getCustomPayoutsData = async (data: IPayout[]) => {
                 value: '',
                 config: {
                     src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
+                    alt: '',
                 },
             },
         } as const;

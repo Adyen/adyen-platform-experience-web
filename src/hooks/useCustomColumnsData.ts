@@ -10,7 +10,7 @@ export const useCustomColumnsData = <T>({
 }: {
     records: T[];
     hasCustomColumn?: boolean;
-    onDataRetrieve: OnDataRetrievedCallback<T[]> | undefined;
+    onDataRetrieve?: OnDataRetrievedCallback<T[]> | undefined;
     mergeCustomData: (args: { retrievedData: Awaited<ReturnType<OnDataRetrievedCallback<T[]>>>; records: T[] }) => (T & Record<string, any>)[];
 }) => {
     const [customRecords, setCustomRecords] = useState<T[] | (T & Record<string, any>)[]>(records);
@@ -20,7 +20,10 @@ export const useCustomColumnsData = <T>({
         try {
             if (hasCustomColumn && isFunction(onDataRetrieve)) {
                 const retrievedData = await onDataRetrieve(records);
-                setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
+                if (!Array.isArray(retrievedData)) throw new Error('Retrieved data should be an array');
+                else setCustomRecords(mergeCustomData({ records, retrievedData: retrievedData?.filter(Boolean) || [] }));
+            } else {
+                setCustomRecords(records);
             }
         } catch (error) {
             setCustomRecords(records);

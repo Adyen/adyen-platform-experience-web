@@ -8,7 +8,7 @@ import { GrantDetailsProps } from './types';
 import './GrantDetails.scss';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
-import { getPaymentRatePercentage } from '../../../CapitalOffer/components/utils/utils';
+import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
@@ -28,7 +28,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             {
                 key: 'capital.dailyRepaymentRate',
                 value: `${i18n.get('capital.xPercent', {
-                    values: { percentage: getPaymentRatePercentage(grant.repaymentRate) },
+                    values: { percentage: getPercentage(grant.repaymentRate) },
                 })}`,
             },
             {

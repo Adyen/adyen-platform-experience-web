@@ -6,15 +6,20 @@ on:
       - main
       - develop
       - group/*
+      - bot/translations
     types: [opened, synchronize, reopened]
     paths-ignore:
       - README.md
       - LICENSE
       - .gitignore
+
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write
 
     steps:
       - name: Checkout the repo

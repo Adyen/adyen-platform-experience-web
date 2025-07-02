@@ -16,8 +16,6 @@ export const PayoutDetailsMeta: Meta<ElementProps<typeof PayoutDetails>> = {
         },
     },
     args: {
-        hideTitle: false,
-        onContactSupport: () => {},
         component: PayoutDetails,
     },
     parameters: {

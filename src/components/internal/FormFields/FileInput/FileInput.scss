@@ -1,0 +1,199 @@
+@use '../../../../style';
+
+.adyen-pe-file-input {
+    --dropzone-border-style: dashed;
+    --dropzone-border-color: #{style.token(color-outline-tertiary)};
+    --dropzone-border-radius: #{style.token(border-radius-m)};
+    --dropzone-border-width: #{style.token(border-width-s)};
+    --dropzone-padding-x: #{style.token(spacer-060)};
+    --dropzone-padding-y: #{style.token(spacer-020)};
+
+    $adyen-pe-self: &;
+    $adyen-pe-dropzone: #{$adyen-pe-self}__dropzone;
+    $adyen-pe-dropzone-disabled: #{$adyen-pe-dropzone}--disabled;
+    $adyen-pe-dropzone-dragover: #{$adyen-pe-dropzone}--dragover;
+    $adyen-pe-dropzone-error: #{$adyen-pe-dropzone}--error;
+
+    svg {
+        color: style.token(color-label-primary);
+        display: block;
+        font-size: 16px;
+    }
+
+    &__file {
+        align-items: center;
+        background: style.token(color-background-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-040) style.token(spacer-060);
+    }
+
+    &__file-details {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        font-variant-numeric: style.token(text-font-variant-numeric);
+        gap: style.token(spacer-040);
+        overflow: hidden;
+    }
+
+    &__file-icon,
+    &__file-size,
+    &__file-button {
+        flex: none;
+    }
+
+    &__file-icon svg {
+        color: style.token(color-label-success);
+    }
+
+    &__file-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__file-button {
+        --file-button-padding: #{style.token(spacer-020)};
+        border-radius: 100%;
+        margin: calc(var(--file-button-padding) * -1);
+        margin-left: 0;
+        padding: var(--file-button-padding);
+
+        &:disabled svg {
+            color: inherit;
+        }
+    }
+
+    &__dropzone {
+        background: style.token(color-background-primary);
+        border-radius: var(--dropzone-border-radius);
+        padding: var(--dropzone-padding-y) var(--dropzone-padding-x);
+        position: relative;
+
+        &:hover {
+            background: style.token(color-background-primary-hover);
+        }
+
+        &::before {
+            border: var(--dropzone-border-width) var(--dropzone-border-style) var(--dropzone-border-color);
+            border-radius: inherit;
+            content: '';
+            inset: calc(var(--dropzone-border-width) * -1);
+            position: absolute;
+        }
+
+        &#{$adyen-pe-dropzone-disabled} {
+            --dropzone-border-color: #{style.token(color-outline-disabled)};
+            background: style.token(color-background-disabled);
+        }
+
+        &--dragover:not(#{$adyen-pe-dropzone-disabled}) {
+            --dropzone-border-style: solid;
+            --dropzone-border-color: #{style.token(color-outline-success)};
+            --dropzone-border-width: #{style.token(border-width-attention)};
+            background: style.token(color-background-success-weak);
+        }
+
+        &--error:not(#{$adyen-pe-dropzone-disabled}) {
+            --dropzone-border-style: solid;
+            --dropzone-border-color: #{style.token(color-outline-critical)};
+            --dropzone-border-width: #{style.token(border-width-attention)};
+            background: style.token(color-background-critical-weak);
+        }
+    }
+
+    &__label {
+        --label-box-offset-x: calc(var(--dropzone-padding-x) + var(--dropzone-border-width));
+        --label-box-offset-y: calc(var(--dropzone-padding-y) + var(--dropzone-border-width));
+
+        border-radius: var(--dropzone-border-radius);
+        cursor: not-allowed;
+        display: flex;
+        margin: calc(var(--label-box-offset-y) * -1) calc(var(--label-box-offset-x) * -1);
+        outline: none;
+        padding: var(--label-box-offset-y) var(--label-box-offset-x);
+        position: relative;
+
+        // stylelint-disable selector-no-qualifying-type
+        input[type='file']:focus-visible ~ & {
+            box-shadow: 0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+                0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
+        }
+
+        #{$adyen-pe-dropzone}:not(#{$adyen-pe-dropzone-disabled}) & {
+            cursor: pointer;
+        }
+    }
+
+    &__label-default-content {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-060);
+        width: 100%;
+    }
+
+    &__label-icon {
+        background: style.token(color-background-tertiary);
+        border-radius: 100%;
+        margin: style.token(spacer-020) 0;
+        padding: style.token(spacer-030);
+
+        #{$adyen-pe-dropzone-dragover} & {
+            background: style.token(color-background-success-strong);
+
+            svg {
+                color: style.token(color-label-on-color);
+            }
+        }
+
+        #{$adyen-pe-dropzone-error} & {
+            background: style.token(color-background-critical-strong);
+
+            svg {
+                color: style.token(color-label-on-color);
+            }
+        }
+
+        #{$adyen-pe-dropzone-disabled} & {
+            background: style.token(color-background-disabled);
+
+            svg {
+                color: style.token(color-label-disabled);
+            }
+        }
+    }
+
+    &__label-text {
+        flex: 1;
+        text-decoration: underline;
+        user-select: none;
+
+        #{$adyen-pe-dropzone-disabled} & {
+            color: style.token(color-label-disabled);
+            text-decoration: none;
+        }
+
+        #{$adyen-pe-dropzone}:not(#{$adyen-pe-dropzone-disabled}) & {
+            margin-top: calc((1em - #{style.token(text-body-line-height)}) / 2);
+        }
+    }
+
+    &__error {
+        align-items: flex-start;
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
+    &__error-icon {
+        bottom: calc((1em - #{style.token(text-body-line-height)}) / 2);
+        position: relative;
+    }
+
+    &__error-text,
+    &__error-icon svg {
+        color: style.token(color-label-critical);
+    }
+}

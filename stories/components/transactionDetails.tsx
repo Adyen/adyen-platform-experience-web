@@ -15,8 +15,6 @@ export const TransactionDetailsMeta: Meta<ElementProps<typeof TransactionDetails
         },
     },
     args: {
-        hideTitle: false,
-        onContactSupport: () => {},
         component: TransactionDetails,
     },
     parameters: {

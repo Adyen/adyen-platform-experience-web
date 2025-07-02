@@ -1,6 +1,6 @@
 import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
-import { PayoutsMeta } from '../components/payoutsOverview';
+import { PayoutsOverviewMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
 import { getCustomPayoutsData } from './utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
@@ -8,7 +8,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsMeta, title: 'Mocked/Payouts Overview' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview> = {
     name: 'Default',
@@ -21,7 +21,7 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
         http.get(endpoints('mock').payouts, () => {
             return HttpResponse.json({
-                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout, createdAt: new Date().toISOString() }],
+                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
                 _links: {},
             });
         }),
@@ -58,7 +58,7 @@ export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
                 },
             },
             details: {
-                fields: [{ key: '_summary' }, { key: '_country', flex: 0.5 }, { key: '_sendEmail', align: 'right' }],
+                fields: [{ key: '_summary' }, { key: '_country' }, { key: '_sendEmail' }],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
                         setTimeout(() => {

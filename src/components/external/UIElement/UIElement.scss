@@ -5,12 +5,12 @@
 .adyen-pe-component {
     --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
-    background: style.token(color-background-primary);
     container-type: inline-size;
     width: 100%;
 }
 
 .adyen-pe-component__container {
+    background: style.token(color-background-primary);
     padding: var(--adyen-pe-content-padding);
 
     @media (min-width: #{$adyen-pe-breakpoint-sm}) {
