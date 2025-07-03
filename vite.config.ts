@@ -73,9 +73,9 @@ export default defineConfig(({ mode }) => {
             'process.env.VITE_PLAYGROUND_URL': JSON.stringify(
                 process.env.DEPLOY_PRIME_URL?.replace('main--', '') || playground.playgroundUrl || null
             ),
-            'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),
+            'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         },
         json: {
             stringify: true,

@@ -10,8 +10,6 @@ const getMySessionToken = async session => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             allowOrigin: loadingContext?.endsWith('/') ? loadingContext.slice(0, -1) : loadingContext,
-            reference: 'platform-operations',
-            product: 'platform',
             policy: {
                 resources: [
                     {
@@ -29,6 +27,7 @@ const getMySessionToken = async session => {
                     ...(session?.roles?.length ? session.roles : []),
                 ],
             },
+            product: 'platform',
         }),
     });
 
