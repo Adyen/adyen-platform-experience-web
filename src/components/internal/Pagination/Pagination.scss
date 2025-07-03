@@ -15,6 +15,16 @@
         display: flex;
         gap: style.token(spacer-070);
         margin-left: auto;
+
+        .adyen-pe-button--icon {
+            font-size: 16px;
+        }
+
+        .adyen-pe-button--icon:focus-visible {
+            height: fit-content;
+            margin: 1px;
+            width: calc(#{style.token(spacer-110)} - 2px);
+        }
     }
 
     &__limit-selector {

@@ -48,7 +48,6 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
 
             <div className="adyen-pe-pagination__controls">
                 <Button
-                    aria-label={i18n.get('pagination.previousPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
@@ -56,15 +55,16 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                     onClick={prev}
                 >
                     <Icon name="chevron-left" />
+                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.previousPage')}</span>
                 </Button>
                 <Button
-                    aria-label={i18n.get('pagination.nextPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
+                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.nextPage')}</span>
                     <Icon name="chevron-right" />
                 </Button>
             </div>
