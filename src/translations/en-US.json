@@ -652,7 +652,7 @@
     "paginatedNavigation": "Paginated navigation",
     "pagination.nextPage": "Next page",
     "pagination.previousPage": "Previous page",
-    "pagination.showing": "Showing",
+    "pagination.showing": "Showing %{limit}",
     "partial": "Partial",
     "paymentId": "Payment ID",
     "paymentMethod": "Payment method",

@@ -7,6 +7,7 @@ import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_ARRAY, isNullish } from '../../../utils';
 import { SelectItem } from '../FormFields/Select/types';
 import { ButtonVariant } from '../Button/types';
+import { Translation } from '../Translation';
 import { PaginationProps } from './types';
 import './Pagination.scss';
 
@@ -30,19 +31,25 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
                 {_limitOptions && onLimitSelection && (
-                    <>
-                        <span>{i18n.get('pagination.showing')}</span>
-                        <div className="adyen-pe-pagination__limit-selector">
-                            <Select
-                                setToTargetWidth={true}
-                                filterable={false}
-                                multiSelect={false}
-                                items={_limitOptions}
-                                onChange={_onLimitChanged}
-                                selected={`${limit ?? ''}`}
-                            />
-                        </div>
-                    </>
+                    <div className="adyen-pe-pagination__limit" role="presentation">
+                        <Translation
+                            translationKey="pagination.showing"
+                            fills={{
+                                limit: (
+                                    <div className="adyen-pe-pagination__limit-selector">
+                                        <Select
+                                            setToTargetWidth={true}
+                                            filterable={false}
+                                            multiSelect={false}
+                                            items={_limitOptions}
+                                            onChange={_onLimitChanged}
+                                            selected={`${limit ?? ''}`}
+                                        />
+                                    </div>
+                                ),
+                            }}
+                        />
+                    </div>
                 )}
             </div>
 
