@@ -13,7 +13,7 @@ import { useMemo, useRef, useState } from 'preact/hooks';
 import { boolOrFalse, uniqueId } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTransactionRefundContext from '../../context/refund';
-import CloseCircle from '../../../../internal/SVGIcons/CloseCircle';
+import Icon from '../../../../internal/Icon';
 import InputBase from '../../../../internal/FormFields/InputBase';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -82,7 +82,7 @@ const _BaseRefundAmountInput = ({
                 </label>
                 {errorMessage && (
                     <div className="adyen-pe-input__refund-invalid-value" id={`${inputIdentifier.current}${ARIA_ERROR_SUFFIX}`}>
-                        <CloseCircle />
+                        <Icon name="cross-circle-fill" />
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                             {error}
                         </Typography>
