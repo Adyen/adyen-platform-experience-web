@@ -653,6 +653,7 @@
     "pagination.nextPage": "Next page",
     "pagination.previousPage": "Previous page",
     "pagination.showing": "Showing %{limit}",
+    "pagination.showing.notice": "Showing %{limit} records per page",
     "partial": "Partial",
     "paymentId": "Payment ID",
     "paymentMethod": "Payment method",

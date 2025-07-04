@@ -31,25 +31,31 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
         <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
                 {_limitOptions && onLimitSelection && (
-                    <div className="adyen-pe-pagination__limit" role="presentation">
-                        <Translation
-                            translationKey="pagination.showing"
-                            fills={{
-                                limit: (
-                                    <div className="adyen-pe-pagination__limit-selector">
-                                        <Select
-                                            setToTargetWidth={true}
-                                            filterable={false}
-                                            multiSelect={false}
-                                            items={_limitOptions}
-                                            onChange={_onLimitChanged}
-                                            selected={`${limit ?? ''}`}
-                                        />
-                                    </div>
-                                ),
-                            }}
-                        />
-                    </div>
+                    <>
+                        <div className="adyen-pe-pagination__limit" role="presentation">
+                            <Translation
+                                translationKey="pagination.showing"
+                                fills={{
+                                    limit: (
+                                        <div className="adyen-pe-pagination__limit-selector">
+                                            <Select
+                                                setToTargetWidth={true}
+                                                filterable={false}
+                                                multiSelect={false}
+                                                items={_limitOptions}
+                                                onChange={_onLimitChanged}
+                                                selected={`${limit ?? ''}`}
+                                            />
+                                        </div>
+                                    ),
+                                }}
+                            />
+                        </div>
+
+                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live={limit ? 'polite' : 'off'}>
+                            {limit && i18n.get('pagination.showing.notice', { values: { limit } })}
+                        </div>
+                    </>
                 )}
             </div>
 
