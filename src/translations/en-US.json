@@ -649,7 +649,6 @@
     "noReportsFound": "No reports found",
     "noTransactionsFound": "No transactions found",
     "other": "Other",
-    "paginatedNavigation": "Paginated navigation",
     "pagination.nextPage": "Next page",
     "pagination.previousPage": "Previous page",
     "pagination.showing": "Showing %{limit}",
