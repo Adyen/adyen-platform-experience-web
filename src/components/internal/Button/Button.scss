@@ -32,6 +32,7 @@
     &__label {
         align-items: center;
         display: inline-flex;
+        font-weight: inherit;
         gap: style.token(spacer-040);
         line-height: style.token(text-body-line-height);
         vertical-align: middle;
@@ -61,12 +62,14 @@
 
         &:disabled {
             background-color: style.token(color-background-disabled);
-            color: style.token(color-label-disabled);
+            color: style.token(color-label-secondary);
+            font-weight: 500;
         }
 
         &.--loading {
             background: style.token(color-background-disabled);
-            color: style.token(color-label-disabled);
+            color: style.token(color-label-secondary);
+            font-weight: 500;
         }
     }
 
