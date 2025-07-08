@@ -15,24 +15,9 @@ const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
 };
 
-function isTouchDevice() {
-    const hasTouchStart = 'ontouchstart' in window;
-
-    // Check for maximum touch points (standard and IE)
-    const hasTouchPoints =
-        (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
-        ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
-
-    const hasCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-
-    return hasTouchStart || hasTouchPoints || hasCoarsePointer;
-}
-
 export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
     const { isVisible, listeners } = useTooltipListeners();
-
-    if (isTouchDevice()) return <>{children}</>;
 
     return (
         <>
@@ -54,6 +39,7 @@ export const Tooltip = ({ content, children, triggerRef, showTooltip, position, 
 
             {(isVisible || showTooltip) && (
                 <Popover
+                    fitPosition
                     variant={PopoverContainerVariant.TOOLTIP}
                     targetElement={(triggerRef ?? controllerRef) as MutableRef<Element | null>}
                     position={position}

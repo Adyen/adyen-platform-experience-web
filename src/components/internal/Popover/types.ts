@@ -40,11 +40,13 @@ export type PopoverProps = PopoverCoreProps & UncontrolledProps;
 
 export enum PopoverContainerPosition {
     TOP = 'top',
-    TOP_LEFT = 'top-left',
     RIGHT = 'right',
     BOTTOM = 'bottom',
-    BOTTOM_LEFT = 'bottom-left',
     LEFT = 'left',
+    TOP_RIGHT = 'top-right',
+    TOP_LEFT = 'top-left',
+    BOTTOM_RIGHT = 'bottom-right',
+    BOTTOM_LEFT = 'bottom-left',
 }
 
 export enum PopoverContainerSize {
