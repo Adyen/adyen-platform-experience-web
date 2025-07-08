@@ -15,6 +15,8 @@ const FULL_WIDTH_TOOLTIP_POSITIONS = [
 ];
 
 const POPOVER_DIAGONAL_HORIZONTAL_OFFSET = 5;
+const ARROW_OFFSET = 4;
+const SCREEN_EDGE_MARGIN = 10;
 
 const calculateOffset = ({
     position,
@@ -326,8 +328,8 @@ const usePopoverPositioner = (
 
                             const positionY =
                                 currentPosition === PopoverContainerPosition.BOTTOM_RIGHT || currentPosition === PopoverContainerPosition.BOTTOM_LEFT
-                                    ? popoverContentHeight + 4
-                                    : 4;
+                                    ? popoverContentHeight + ARROW_OFFSET
+                                    : ARROW_OFFSET;
 
                             arrowRef.current?.setAttribute(
                                 'style',
@@ -344,7 +346,7 @@ const usePopoverPositioner = (
                         FULL_WIDTH_TOOLTIP_POSITIONS.includes(currentPosition)
                     ) {
                         const screenWidth = document.documentElement.clientWidth;
-                        contentRef.current?.setAttribute('style', `max-width: ${screenWidth - 10}px`);
+                        contentRef.current?.setAttribute('style', `max-width: ${screenWidth - SCREEN_EDGE_MARGIN}px`);
                     }
                 }
             },
