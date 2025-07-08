@@ -11,7 +11,6 @@ import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
-import { PopoverContainerPosition } from '../../../../internal/Popover/types';
 
 export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -78,7 +77,6 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                                 content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
                                     values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                                 })}
-                                position={PopoverContainerPosition.RIGHT}
                             >
                                 <span>
                                     <Typography
@@ -96,27 +94,11 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                             </Typography>
                         )
                     }
-                    renderValue={(val, key) =>
-                        key === 'capital.repaymentThreshold' ? (
-                            <Tooltip
-                                isContainerHovered
-                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
-                                    values: { days: CAPITAL_REPAYMENT_FREQUENCY },
-                                })}
-                                position={PopoverContainerPosition.RIGHT}
-                            >
-                                <span>
-                                    <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
-                                        {val}
-                                    </Typography>
-                                </span>
-                            </Tooltip>
-                        ) : (
-                            <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
-                                {val}
-                            </Typography>
-                        )
-                    }
+                    renderValue={val => (
+                        <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
+                            {val}
+                        </Typography>
+                    )}
                     items={structuredListItems}
                 />
             </div>

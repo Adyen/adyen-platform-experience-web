@@ -43,10 +43,10 @@ export enum PopoverContainerPosition {
     RIGHT = 'right',
     BOTTOM = 'bottom',
     LEFT = 'left',
-    TOP_RIGHT = 'top-right',
     TOP_LEFT = 'top-left',
-    BOTTOM_RIGHT = 'bottom-right',
+    TOP_RIGHT = 'top-right',
     BOTTOM_LEFT = 'bottom-left',
+    BOTTOM_RIGHT = 'bottom-right',
 }
 
 export enum PopoverContainerSize {

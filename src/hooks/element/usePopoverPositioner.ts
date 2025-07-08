@@ -14,6 +14,8 @@ const FULL_WIDTH_TOOLTIP_POSITIONS = [
     PopoverContainerPosition.TOP_LEFT,
 ];
 
+const POPOVER_DIAGONAL_HORIZONTAL_OFFSET = 5;
+
 const calculateOffset = ({
     position,
     variant,
@@ -113,7 +115,7 @@ const calculateOffset = ({
             }
             break;
         case PopoverContainerPosition.TOP_LEFT:
-            translateX = 5;
+            translateX = POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
             if (!fixedPositioning) {
@@ -122,7 +124,7 @@ const calculateOffset = ({
             }
             break;
         case PopoverContainerPosition.TOP_RIGHT:
-            translateX = -5;
+            translateX = -POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
             if (!fixedPositioning) {
@@ -200,11 +202,11 @@ const usePopoverPositioner = (
     const [currentPosition, setCurrentPosition] = useState(position || PopoverContainerPosition.TOP);
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
 
-    const screenWidth = document.documentElement.clientWidth;
-    const targetPosition = targetElement.current?.getBoundingClientRect();
-
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
+            const screenWidth = document.documentElement.clientWidth;
+            const targetPosition = targetElement.current?.getBoundingClientRect();
+
             if (entry.intersectionRatio === 1) return setShowPopover(true);
 
             if (!initialPosition && entry.intersectionRatio !== 1) {
@@ -236,7 +238,7 @@ const usePopoverPositioner = (
                         setCurrentPosition(fitPosition ? PopoverContainerPosition.TOP_LEFT : PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.BOTTOM_RIGHT:
-                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM_LEFT, entry.intersectionRatio]]);
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM_RIGHT, entry.intersectionRatio]]);
                         setCurrentPosition(fitPosition ? PopoverContainerPosition.TOP_RIGHT : PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.TOP_LEFT:
@@ -258,7 +260,7 @@ const usePopoverPositioner = (
                 }
             }
         },
-        [initialPosition, checkedPositions, fitPosition, currentPosition, targetPosition?.x, screenWidth]
+        [targetElement, initialPosition, checkedPositions, fitPosition, currentPosition]
     );
 
     const observerCallbackRef = useRef(observerCallback);
@@ -341,6 +343,7 @@ const usePopoverPositioner = (
                         isRefObject(contentRef) &&
                         FULL_WIDTH_TOOLTIP_POSITIONS.includes(currentPosition)
                     ) {
+                        const screenWidth = document.documentElement.clientWidth;
                         contentRef.current?.setAttribute('style', `max-width: ${screenWidth - 10}px`);
                     }
                 }
@@ -361,7 +364,6 @@ const usePopoverPositioner = (
                 initialPosition,
                 arrowRef,
                 contentRef,
-                screenWidth,
             ]
         ),
         ref
