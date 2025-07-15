@@ -98,7 +98,6 @@ const LIVE: TransactionsVariables = {
         paymentMethod: {
             type: 'balanceplatform',
             description: 'BalancePlatform transactions',
-            lastFourDigits: 'BalancePlatform transactions',
         },
         createdAt: '2025-01-02T10:29:33.000+00:00',
         category: 'Payment',
@@ -135,7 +134,6 @@ const LIVE: TransactionsVariables = {
         paymentMethod: {
             type: 'balanceplatform',
             description: 'BalancePlatform transactions',
-            lastFourDigits: 'BalancePlatform transactions',
         },
         createdAt: '2025-01-02T10:56:21.000+00:00',
         category: 'Refund',
