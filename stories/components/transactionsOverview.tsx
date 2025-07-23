@@ -3,7 +3,7 @@ import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 import { TransactionsOverview } from '../../src';
 import { ElementProps } from '../utils/types';
 
-export const TransactionsMeta: Meta<ElementProps<typeof TransactionsOverview>> = {
+export const TransactionsOverviewMeta: Meta<ElementProps<typeof TransactionsOverview>> = {
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
@@ -14,10 +14,7 @@ export const TransactionsMeta: Meta<ElementProps<typeof TransactionsOverview>> =
         balanceAccountId: { type: 'string' },
     },
     args: {
-        preferredLimit: 10,
         allowLimitSelection: true,
-        hideTitle: false,
-        onContactSupport: () => {},
         component: TransactionsOverview,
     },
     parameters: {

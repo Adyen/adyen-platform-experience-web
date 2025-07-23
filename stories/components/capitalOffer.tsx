@@ -16,9 +16,8 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
         onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
     },
     args: {
-        hideTitle: false,
-        onFundsRequest: action('onRequestFunds'),
         component: CapitalOffer,
+        onFundsRequest: action('onRequestFunds'),
     },
     parameters: {
         controls: {

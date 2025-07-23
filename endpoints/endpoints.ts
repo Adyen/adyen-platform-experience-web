@@ -25,5 +25,13 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
             anacredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
         },
+        disputes: {
+            list: `${baseUrl}/disputes`,
+            details: `${baseUrl}/disputes/${matchVariable}`,
+            accept: `${baseUrl}/disputes/${matchVariable}/accept`,
+            defend: `${baseUrl}/disputes/${matchVariable}/defend`,
+            documents: `${baseUrl}/disputes/${matchVariable}/documents`,
+            download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
+        },
     } as const;
 };

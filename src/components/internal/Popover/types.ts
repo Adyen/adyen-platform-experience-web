@@ -8,7 +8,7 @@ export enum PopoverContainerVariant {
     POPOVER = 'popover',
 }
 
-interface PopoverCoreProps {
+export interface PopoverCoreProps {
     actions?: ButtonActionsList;
     actionsLayout?: ButtonActionsLayout;
     variant?: PopoverContainerVariant;
@@ -30,6 +30,8 @@ interface PopoverCoreProps {
     classNameModifiers?: string[];
     showOverlay?: boolean;
     fitPosition?: boolean;
+    fixedPositioning?: boolean;
+    additionalStyle?: { minY?: number; maxY?: number };
 }
 
 type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;
@@ -38,11 +40,13 @@ export type PopoverProps = PopoverCoreProps & UncontrolledProps;
 
 export enum PopoverContainerPosition {
     TOP = 'top',
-    TOP_LEFT = 'top-left',
     RIGHT = 'right',
     BOTTOM = 'bottom',
-    BOTTOM_LEFT = 'bottom-left',
     LEFT = 'left',
+    TOP_LEFT = 'top-left',
+    TOP_RIGHT = 'top-right',
+    BOTTOM_LEFT = 'bottom-left',
+    BOTTOM_RIGHT = 'bottom-right',
 }
 
 export enum PopoverContainerSize {

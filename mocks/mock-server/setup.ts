@@ -73,6 +73,30 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/signToS',
         },
+        getDisputeList: {
+            method: 'GET',
+            url: 'disputes',
+        },
+        getDisputeDetail: {
+            method: 'GET',
+            url: 'disputes/{disputePspReference}',
+        },
+        getApplicableDefenseDocuments: {
+            method: 'GET',
+            url: 'disputes/{disputePspReference}/documents',
+        },
+        acceptDispute: {
+            method: 'POST',
+            url: 'disputes/{disputePspReference}/accept',
+        },
+        defendDispute: {
+            method: 'POST',
+            url: 'disputes/{disputePspReference}/defend',
+        },
+        downloadDefenseDocument: {
+            method: 'GET',
+            url: 'disputes/{disputePspReference}/documents/download',
+        },
         anaCreditActionDetails: {
             method: 'GET',
             url: 'capital/grants/missingActions/anaCredit',

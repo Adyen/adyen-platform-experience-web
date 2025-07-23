@@ -49,7 +49,7 @@ function DataGridTable<
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
     CustomCells extends CustomCell<Items, Columns, Columns[number]>
->({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
+>({ autoFitColumns, errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = useMemo(() => toChildArray(props.children), [props.children]);
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
@@ -70,7 +70,14 @@ function DataGridTable<
                 'adyen-pe-data-grid--loading': props.loading,
                 'adyen-pe-data-grid--empty': emptyBody || props.error,
             })}
-            style={`--adyen-pe-data-grid-cols: ${visibleCols.length}; --adyen-pe-data-grid-cells: ${cellWidths};`}
+            style={
+                autoFitColumns
+                    ? undefined
+                    : {
+                          '--adyen-pe-data-grid-cols': visibleCols.length,
+                          '--adyen-pe-data-grid-cells': cellWidths,
+                      }
+            }
         >
             <>
                 <div className="adyen-pe-data-grid__table-wrapper">

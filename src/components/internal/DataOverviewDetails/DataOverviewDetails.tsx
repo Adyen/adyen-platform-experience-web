@@ -23,6 +23,7 @@ import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
     payout: 'getPayout',
+    dispute: 'getDisputeDetail',
 } as const;
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
@@ -39,15 +40,17 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             () => ({
                 fetchOptions: { enabled: !!dataId && !!getDetail },
                 queryFn: async () => {
-                    const queryParam =
-                        props.type === 'transaction'
-                            ? {
-                                  path: { transactionId: dataId },
-                              }
-                            : {
-                                  query: { balanceAccountId: dataId, createdAt: props.date },
-                              };
-
+                    let queryParam = null;
+                    switch (props.type) {
+                        case 'transaction':
+                            queryParam = { path: { transactionId: dataId } };
+                            break;
+                        case 'payout':
+                            queryParam = { query: { balanceAccountId: dataId, createdAt: props.date } };
+                            break;
+                        default:
+                            break;
+                    }
                     return getDetail!(EMPTY_OBJECT, { ...queryParam });
                 },
             }),
