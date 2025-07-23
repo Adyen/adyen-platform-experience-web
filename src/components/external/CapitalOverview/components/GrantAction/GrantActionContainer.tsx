@@ -15,7 +15,7 @@ import { ButtonVariant } from '../../../../internal/Button/types';
 import { IGrant } from '../../../../../types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 
-type ActionType = 'signToS' | 'AnaCredit';
+type ActionType = NonNullable<IGrant['missingActions']>[number]['type'];
 
 export const GrantActionContainer: FunctionalComponent<{ missingActions: IGrant['missingActions']; offerExpiresAt?: string; className?: string }> = ({
     missingActions = [],
@@ -56,6 +56,9 @@ export const GrantActionContainer: FunctionalComponent<{ missingActions: IGrant[
     const onRedirect = useCallback((data: { url: string } | undefined) => {
         if (data?.url) {
             setTopWindowHref(data.url);
+        } else {
+            // If the request was successful but no URL was returned, reset loading state.
+            setLoadingAction(null);
         }
     }, []);
 

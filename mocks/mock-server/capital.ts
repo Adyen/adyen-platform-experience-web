@@ -202,7 +202,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
             },
         },
         {
-            endpoint: mockEndpoints.anacredit,
+            endpoint: mockEndpoints.anaCredit,
             handler: async () => {
                 await delay(500);
                 return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });
@@ -213,7 +213,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
         {
-            endpoint: mockEndpoints.anacredit,
+            endpoint: mockEndpoints.anaCredit,
             handler: async () => {
                 await delay(500);
                 return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });

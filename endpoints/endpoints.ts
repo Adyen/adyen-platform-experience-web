@@ -23,7 +23,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             grants: `${baseUrl}/capital/grants`,
             requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
-            anacredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
+            anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
         },
         disputes: {
             list: `${baseUrl}/disputes`,
