@@ -4,4 +4,16 @@
     &__button {
         margin-top: style.token(spacer-030);
     }
+
+    &__button-label {
+        font-weight: style.token(text-body-stronger-font-weight);
+    }
+
+    &__actions-container {
+        display: flex;
+        flex-direction: column;
+        font-weight: style.token(text-body-stronger-font-weight);
+        gap: style.token(spacer-020);
+        padding-left: style.token(spacer-070);
+    }
 }

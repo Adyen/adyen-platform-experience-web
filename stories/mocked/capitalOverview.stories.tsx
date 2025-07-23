@@ -97,23 +97,33 @@ export const GrantPending: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantActions: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Actions',
+export const GrantMissingActionSignTOS: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Missing Action Sign TOS',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActions,
+        msw: CapitalOverviewMockedResponses.signTOS,
     },
 };
 
-export const GrantAnacredit: ElementStory<typeof CapitalOverview> = {
+export const GrantMissingActionAnacredit: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Missing Action Anacredit',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: CapitalOverviewMockedResponses.anacredit,
+    },
+};
+
+export const GrantMultipleActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple missing actions',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantActions,
     },
 };
 

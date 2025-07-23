@@ -15,6 +15,7 @@ import {
     CAD_CAPITAL_OFFER,
     PENDING_GRANT_WITH_ANACREDIT,
     ANACREDIT_ACTION_DETAILS,
+    PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -192,14 +193,43 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     ],
     grantActions: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
-        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
+        {
+            endpoint: mockEndpoints.signToS,
+            handler: async () => {
+                await delay(500);
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS, { status: 200 });
+            },
+        },
+        {
+            endpoint: mockEndpoints.anacredit,
+            handler: async () => {
+                await delay(500);
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });
+            },
+        },
     ],
     anacredit: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
-        { endpoint: mockEndpoints.signToS, response: SIGN_TOS_ACTION_DETAILS },
-        { endpoint: mockEndpoints.anacredit, response: ANACREDIT_ACTION_DETAILS },
+        {
+            endpoint: mockEndpoints.anacredit,
+            handler: async () => {
+                await delay(500);
+                return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });
+            },
+        },
+    ],
+    signTOS: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        {
+            endpoint: mockEndpoints.signToS,
+            handler: async () => {
+                await delay(500);
+                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS, { status: 200 });
+            },
+        },
     ],
     grantActive: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },

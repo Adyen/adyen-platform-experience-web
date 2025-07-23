@@ -134,11 +134,19 @@ export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
     offerExpiresAt: '2025-02-15',
     missingActions: [{ type: 'signToS' }],
 };
+
+export const PENDING_GRANT_WITH_MULTIPLE_ACTIONS: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'AnaCredit' }, { type: 'signToS' }],
+};
+
 export const PENDING_GRANT_WITH_ANACREDIT: IGrant = {
     ...PENDING_GRANT,
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
-    missingActions: [{ type: 'signToS' }, { type: 'AnaCredit' }],
+    missingActions: [{ type: 'AnaCredit' }],
 };
 
 export const REPAID_GRANT: IGrant = {
