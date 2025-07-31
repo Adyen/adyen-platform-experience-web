@@ -20,7 +20,7 @@ import Button from '../../../../internal/Button';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
-import { GrantActions } from '../GrantAction/GrantActions';
+import { GrantActions } from '../GrantActions/GrantActions';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();

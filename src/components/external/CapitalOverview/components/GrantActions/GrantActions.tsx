@@ -4,7 +4,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_CAPITAL_OVERVIEW, DATE_FORMAT_MISSING_ACTION } from '../../../../../constants';
 import { GRANT_ACTION_CLASS_NAMES } from './constants';
-import './GrantAction.scss';
+import './GrantActions.scss';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Button from '../../../../internal/Button';
