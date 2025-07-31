@@ -17,7 +17,7 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 
 type ActionType = NonNullable<IGrant['missingActions']>[number]['type'];
 
-export const GrantActionContainer: FunctionalComponent<{ missingActions: IGrant['missingActions']; offerExpiresAt?: string; className?: string }> = ({
+export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missingActions']; offerExpiresAt?: string; className?: string }> = ({
     missingActions = [],
     offerExpiresAt,
     className,
@@ -38,12 +38,11 @@ export const GrantActionContainer: FunctionalComponent<{ missingActions: IGrant[
                 },
                 AnaCredit: {
                     getTitle: (formattedDate: string | undefined) =>
-                        i18n.get(
-                            formattedDate
-                                ? 'capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy'
-                                : 'capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction',
-                            { values: formattedDate ? { date: formattedDate } : undefined }
-                        ),
+                        formattedDate
+                            ? i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy', {
+                                  values: { date: formattedDate },
+                              })
+                            : i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction'),
                     buttonLabelKey: 'capital.submitInformation',
                 },
             } as const),
@@ -64,7 +63,20 @@ export const GrantActionContainer: FunctionalComponent<{ missingActions: IGrant[
 
     const actionMutation = useMutation({
         queryFn: (actionType: ActionType) => {
-            const endpoint = actionType === 'signToS' ? endpoints.signToSActionDetails : endpoints.anaCreditActionDetails;
+            let endpointByAction = null;
+
+            switch (actionType) {
+                case 'signToS':
+                    endpointByAction = endpoints.signToSActionDetails;
+                    break;
+                case 'AnaCredit':
+                    endpointByAction = endpoints.anaCreditActionDetails;
+                    break;
+                default:
+                    break;
+            }
+
+            const endpoint = endpointByAction;
 
             const callbackQuery = {
                 query: { redirectUrl: getTopWindowHref(), locale: i18n.locale },

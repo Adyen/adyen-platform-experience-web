@@ -20,7 +20,7 @@ import Button from '../../../../internal/Button';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
-import { GrantActionContainer } from '../GrantAction/GrantActionContainer';
+import { GrantActions } from '../GrantAction/GrantActions';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
@@ -101,7 +101,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 {grantConfig.hasAlerts ? (
                     <>
                         {grant.missingActions && grant.missingActions.length ? (
-                            <GrantActionContainer
+                            <GrantActions
                                 missingActions={grant.missingActions}
                                 className={GRANT_ITEM_CLASS_NAMES.alert}
                                 offerExpiresAt={grant.offerExpiresAt}

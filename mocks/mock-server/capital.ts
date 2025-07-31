@@ -1,7 +1,7 @@
 import {
     DYNAMIC_CAPITAL_OFFER,
     GRANTS,
-    PENDING_GRANT_WITH_ACTIONS,
+    PENDING_GRANT_WITH_SIGN_TOS,
     REPAID_GRANT,
     SIGNED_OFFER,
     SIGN_TOS_ACTION_DETAILS,
@@ -222,7 +222,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     ],
     signTOS: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
         {
             endpoint: mockEndpoints.signToS,
             handler: async () => {
@@ -279,7 +279,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     ],
     errorMissingActionsGeneric: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ACTIONS] } },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
         {
             endpoint: mockEndpoints.signToS,
             handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),

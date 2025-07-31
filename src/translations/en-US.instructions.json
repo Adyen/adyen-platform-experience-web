@@ -56,6 +56,7 @@
     "capital.sendRepayment": "Label for a button that allows the user initiate procedures for repayment",
     "capital.sendRepaymentNotice": "Will be displayed as text to inform the user about how long it could take for their repayment to be received",
     "capital.sendRepaymentSubtitle": "Will be displayed as user guidance text alongside bank account information to enable the user proceed with repayment",
+    "capital.submitInformation": "Label for a link that redirects the user to submit extra information",
     "capital.termEnds": "Label for the end date of a term",
     "capital.thisOfferExpiresOn": "Description indicating when an offer expires",
     "capital.totalFees": "Label for the total fees of a grant",
