@@ -25,6 +25,7 @@ const BASE_DATE_TIME_FORMAT: Intl.DateTimeFormatOptions = {
 const BASE_DATE_TIME_MOBILE_FORMAT: Intl.DateTimeFormatOptions = { ...BASE_DATE_TIME_FORMAT, year: undefined };
 
 export const DATE_FORMAT_CAPITAL_OVERVIEW: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: 'short' };
+export const DATE_FORMAT_MISSING_ACTION: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: 'long' };
 
 export const DATE_FORMAT_PAYOUTS: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
 export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;

@@ -97,6 +97,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'disputes/{disputePspReference}/documents/download',
         },
+        anaCreditActionDetails: {
+            method: 'GET',
+            url: 'capital/grants/missingActions/anaCredit',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 
