@@ -27,6 +27,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 environment: 'test',
                 availableTranslations: [all_locales],
                 locale: locale || 'en-US',
+
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },

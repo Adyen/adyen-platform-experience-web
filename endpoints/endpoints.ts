@@ -22,6 +22,7 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             grants: `${baseUrl}/capital/grants`,
             requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
+            anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
         },
         disputes: {
             list: `${baseUrl}/disputes`,
