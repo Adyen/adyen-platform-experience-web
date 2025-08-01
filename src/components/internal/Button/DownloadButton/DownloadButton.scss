@@ -12,7 +12,7 @@
     top: var(--offset-position);
 
     .adyen-pe-icon {
-        font-size: 16px;
+        font-size: style.$adyen-pe-svg-icon-size-base;
 
         svg {
             display: block;
