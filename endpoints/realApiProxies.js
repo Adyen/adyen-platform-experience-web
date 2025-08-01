@@ -27,8 +27,8 @@ const makeSessionProxyOptions = ({ url, apiKey }, mode) => {
 };
 
 export const realApiProxies = (configs, mode) => {
-    const { sessionApi } = configs;
+    const { session } = configs;
     return {
-        ['/api/authe/api/v1/sessions']: makeSessionProxyOptions(sessionApi, mode),
+        ['/api/authe/api/v1/sessions']: makeSessionProxyOptions(session, mode),
     };
 };

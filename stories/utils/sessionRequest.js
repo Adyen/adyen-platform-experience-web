@@ -1,15 +1,16 @@
 const getMySessionToken = async session => {
     // Here the merchant will call its own backend and their backend will call our backend
     // at the end this method should return a data formed as { id: string, token:string }
-    const loadingContext = process.env.VITE_PLAYGROUND_URL;
-    const normalizedLoadingContext = loadingContext?.endsWith('/') ? loadingContext : `${loadingContext ?? ''}/`;
-    const url = new URL(`${normalizedLoadingContext}api/authe/api/v1/sessions`);
+    const url = process.env.VITE_APP_URL;
+    const allowOrigin = url?.endsWith('/') ? url.slice(0, -1) : url;
+    const normalizedUrl = url?.endsWith('/') ? url : `${url ?? ''}/`;
+    const sessionUrl = new URL(`${normalizedUrl}api/authe/api/v1/sessions`);
 
-    const response = await fetch(url, {
+    const response = await fetch(sessionUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            allowOrigin: loadingContext?.endsWith('/') ? loadingContext.slice(0, -1) : loadingContext,
+            allowOrigin,
             policy: {
                 resources: [
                     {

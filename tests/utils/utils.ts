@@ -69,7 +69,6 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
 };
 
 export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
-    const baseURL = `http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html`;
     const { args, ...restOfParams } = params;
     const queryParams = new URLSearchParams({
         ...restOfParams,
@@ -81,7 +80,7 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
               }
             : {}),
     });
-    await page.goto(`${baseURL}?${queryParams.toString()}`);
+    await page.goto(`/iframe.html?${queryParams.toString()}`);
 };
 
 export const setTime = async (page: Page) => {
