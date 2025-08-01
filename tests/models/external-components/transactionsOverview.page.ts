@@ -1,11 +1,10 @@
 import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
 import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../basePage';
-import { applyDateFilter, getPagePath, getTranslatedKey } from '../../utils/utils';
+import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
 
-export class TransactionsOverviewPage extends BasePage {
+export class TransactionsOverviewPage {
     private readonly _applyDateFilter;
     public dataGrid: DataGridPage;
     public dataGridBody: Locator;
@@ -15,17 +14,16 @@ export class TransactionsOverviewPage extends BasePage {
     public firstRow: Locator;
 
     constructor(page: Page, rootElementSelector = '.adyen-pe-transactions-overview-container') {
-        super(page, rootElementSelector, getPagePath('transactionsOverview'));
-        this.dataGrid = new DataGridPage(this.rootElement);
+        this.dataGrid = new DataGridPage(page, rootElementSelector);
         this.dataGridBody = this.dataGrid.gridBody;
         this.firstRow = this.dataGrid.getRow();
 
-        const filterBar = new FilterBarPage(this.rootElement);
+        const filterBar = new FilterBarPage(page, rootElementSelector);
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
         this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
 
-        this._applyDateFilter = applyDateFilter(this.page, {
+        this._applyDateFilter = applyDateFilter(page, {
             earliestDate: now => {
                 const earliest = new Date(now);
                 earliest.setMonth(earliest.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
