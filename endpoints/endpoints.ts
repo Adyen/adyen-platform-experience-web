@@ -1,7 +1,6 @@
-export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
+export const endpoints = (mode: 'netlify' | 'mock') => {
+    const baseUrl = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
     const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
-    const prefix = mode === 'viteDev' ? '^' : 'https://platform-components-external-test.adyen.com/platform-components-external/api';
-    const baseUrl = prefix + '/v([0-9]+)';
 
     return {
         balanceAccounts: `${baseUrl}/balanceAccounts`,
@@ -23,6 +22,7 @@ export const endpoints = (mode: 'netlify' | 'viteDev' | 'mock') => {
             grants: `${baseUrl}/capital/grants`,
             requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
+            anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
         },
         disputes: {
             list: `${baseUrl}/disputes`,

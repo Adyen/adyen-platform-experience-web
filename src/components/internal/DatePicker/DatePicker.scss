@@ -33,7 +33,7 @@
         > .adyen-pe-button--prev,
         > .adyen-pe-button--next {
             display: inline-flex;
-            font-size: 16px;
+            font-size: style.$adyen-pe-svg-icon-size-base;
         }
 
         > .adyen-pe-button--prev {

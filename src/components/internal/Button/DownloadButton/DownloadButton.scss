@@ -12,7 +12,7 @@
     top: var(--offset-position);
 
     .adyen-pe-icon {
-        font-size: 16px;
+        font-size: style.$adyen-pe-svg-icon-size-base;
 
         svg {
             display: block;
@@ -35,22 +35,12 @@
         &--icon {
             background-color: unset;
             box-shadow: unset;
-            margin-top: 0;
-            top: 0;
+            margin: calc(#{style.token(spacer-020)} * -1);
+            padding: style.token(spacer-020);
 
-            &:hover {
-                background-color: unset;
-                box-shadow: unset !important;
-            }
-
-            &:hover:not(:focus) {
-                box-shadow: unset;
-            }
-
-            &:active {
+            &:active:not(:hover) {
                 background-color: transparent;
-                box-shadow: unset;
-                color: transparent;
+                color: unset;
             }
         }
     }

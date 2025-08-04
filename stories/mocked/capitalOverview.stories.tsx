@@ -1,10 +1,10 @@
+import getMySessionToken from '../utils/sessionRequest';
 import { ElementProps, ElementStory, SetupControls } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { AdyenPlatformExperience, CapitalOverview, ILegalEntity } from '../../src';
 import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';
 import { CapitalOverviewMockedResponses } from '../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
-import getMySessionToken from '../../playground/utils/sessionRequest';
 
 const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = { ...CapitalOverviewWithSetupMeta, title: 'Mocked/Capital Overview' };
 
@@ -97,8 +97,28 @@ export const GrantPending: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantActions: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Actions',
+export const GrantMissingActionSignTOS: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Missing Action Sign TOS',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.signTOS,
+    },
+};
+
+export const GrantMissingActionAnacredit: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Missing Action Anacredit',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.anacredit,
+    },
+};
+
+export const GrantMultipleActions: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple missing actions',
     args: {
         mockedApi: true,
     },
