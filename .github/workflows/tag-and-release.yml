@@ -45,7 +45,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run create-tag
+          publish: npm run changeset -- tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

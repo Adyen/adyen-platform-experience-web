@@ -8,5 +8,5 @@ const STORYBOOK_DIR = __dirname;
 buildStaticStandalone({
     configDir: STORYBOOK_DIR,
     packageJson: packageJson as PackageJson,
-    outputDir: resolve(STORYBOOK_DIR, '..', 'storybook-static'),
+    outputDir: resolve(STORYBOOK_DIR, '../storybook-static'),
 }).catch(console.error);
