@@ -6,7 +6,7 @@ import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformE
 import { EndpointName } from '../../../../types/api/endpoints';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import Spinner from '../../Spinner';
-import Download from '../../SVGIcons/Download';
+import Icon from '../../Icon';
 import Button from '../Button';
 import { ButtonVariant } from '../types';
 import useDownload from './useDownload';
@@ -81,7 +81,7 @@ function DownloadButton({
         onDownloadRequested?.();
     };
 
-    const buttonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Download />), [isFetching]);
+    const buttonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Icon name="download" />), [isFetching]);
 
     const buttonLabel = useMemo(() => {
         if (iconButton) {
@@ -100,7 +100,7 @@ function DownloadButton({
             >
                 {isSmContainer ? (
                     <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
-                        {isFetching ? <Spinner size={'small'} /> : <Download />}
+                        {buttonIcon}
                     </Button>
                 ) : (
                     <Button
