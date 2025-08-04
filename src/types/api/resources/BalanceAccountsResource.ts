@@ -4,49 +4,67 @@
  */
 
 export interface paths {
-    '/v1/balanceAccounts': {
+    "/v1/balanceAccounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get all balance accounts of an account holder
          * @description Provides list of balance accounts to select
          */
-        get: operations['getBalanceAccounts'];
+        get: operations["getBalanceAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    '/v1/balanceAccounts/{balanceAccountId}/balances': {
+    "/v1/balanceAccounts/{balanceAccountId}/balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get all balances of a balance account
          * @description Provides balances of a balance account in different currencies
          */
-        get: operations['getBalances'];
+        get: operations["getBalances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
-        /** @description List of balance accounts */
         BalanceAccountBase: {
-            /**
-             * @description The default three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes) of the balance account.
-             * The default value is **EUR**.
-             * > After a balance account is created, you cannot change its default currency.
-             */
+            /** @description The default three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes) of the balance account.
+             *     The default value is **EUR**.
+             *     > After a balance account is created, you cannot change its default currency. */
             defaultCurrencyCode: string;
             /** @description A human-readable description of the balance account, maximum 300 characters. You can use this parameter to distinguish between multiple balance accounts under an account holder. */
             description?: string;
             /** @description The unique identifier of the balance account. */
             id: string;
-            /**
-             * @description The time zone of the balance account. For example, **Europe/Amsterdam**.
-             * Defaults to the time zone of the account holder if no time zone is set. For possible values, see the [list of time zone codes](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-             */
+            /** @description The time zone of the balance account. For example, **Europe/Amsterdam**.
+             *     Defaults to the time zone of the account holder if no time zone is set. For possible values, see the [list of time zone codes](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). */
             timeZone: string;
         };
         BalanceAccountsResponse: {
             /** @description List of balance accounts */
-            data: components['schemas']['BalanceAccountBase'][];
+            data: components["schemas"]["BalanceAccountBase"][];
         };
-        /** @description Collection of balances per balance account */
         Balance: {
             /** @description ISO currency code */
             currency: string;
@@ -58,7 +76,7 @@ export interface components {
         };
         BalancesResponse: {
             /** @description Collection of balances per balance account */
-            data: components['schemas']['Balance'][];
+            data: components["schemas"]["Balance"][];
         };
     };
     responses: never;
@@ -67,41 +85,46 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export interface operations {
-    /**
-     * Get all balance accounts of an account holder
-     * @description Provides list of balance accounts to select
-     */
     getBalanceAccounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['BalanceAccountsResponse'];
+                    "application/json": components["schemas"]["BalanceAccountsResponse"];
                 };
             };
         };
     };
-    /**
-     * Get all balances of a balance account
-     * @description Provides balances of a balance account in different currencies
-     */
     getBalances: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 balanceAccountId: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['BalancesResponse'];
+                    "application/json": components["schemas"]["BalancesResponse"];
                 };
             };
         };

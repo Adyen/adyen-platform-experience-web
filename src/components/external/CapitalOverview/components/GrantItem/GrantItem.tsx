@@ -13,7 +13,6 @@ import { getGrantConfig } from './utils';
 import { GrantItemProps } from './types';
 import './GrantItem.scss';
 import { GrantDetails } from '../GrantDetails/GrantDetails';
-import { GrantAction } from '../GrantAction/GrantAction';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import Alert from '../../../../internal/Alert/Alert';
@@ -21,6 +20,7 @@ import Button from '../../../../internal/Button';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
+import { GrantActions } from '../GrantActions/GrantActions';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
@@ -101,14 +101,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 {grantConfig.hasAlerts ? (
                     <>
                         {grant.missingActions && grant.missingActions.length ? (
-                            grant.missingActions.map(action => (
-                                <GrantAction
-                                    key={action.type}
-                                    action={action}
-                                    className={GRANT_ITEM_CLASS_NAMES.alert}
-                                    offerExpiresAt={grant.offerExpiresAt}
-                                />
-                            ))
+                            <GrantActions
+                                missingActions={grant.missingActions}
+                                className={GRANT_ITEM_CLASS_NAMES.alert}
+                                offerExpiresAt={grant.offerExpiresAt}
+                            />
                         ) : (
                             <Alert
                                 className={GRANT_ITEM_CLASS_NAMES.alert}

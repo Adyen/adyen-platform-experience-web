@@ -3,73 +3,84 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
-  "/v1/setup": {
-    /**
-     * Get allowed endpoints
-     * @description Provides the allowed endpoints for a given session
-     */
-    post: operations["setup"];
-  };
-}
-
-export type webhooks = Record<string, never>;
-
-export interface components {
-  schemas: {
-    /** @enum {string} */
-    EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "initiateRefund";
-    LegalEntitySetupResponseDTO: {
-      countryCode: string;
-      regions: components["schemas"]["RegionDTO"][];
-    };
-    RegionDTO: {
-      type: components["schemas"]["RegionType"];
-      value?: string;
-    };
-    /** @enum {string} */
-    RegionType: "capital";
-    SetupEndpointResponse: {
-      method?: string;
-      url?: string;
-    };
-    SetupResponse: {
-      /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
-      endpointTypesExposure?: components["schemas"]["EndpointName"];
-      /** @description Allowed endpoints for a given session */
-      endpoints: {
-        [key: string]: components["schemas"]["SetupEndpointResponse"];
-      };
-      /** @description Legal entity information. Only for components that require it. */
-      legalEntity?: components["schemas"]["LegalEntitySetupResponseDTO"];
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
-}
-
-export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
-export interface operations {
-
-  /**
-   * Get allowed endpoints
-   * @description Provides the allowed endpoints for a given session
-   */
-  setup: {
-    responses: {
-      /** @description OK - the request has succeeded. */
-      200: {
-        content: {
-          "application/json": components["schemas"]["SetupResponse"];
+    "/v1/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
+        get?: never;
+        put?: never;
+        /**
+         * Get allowed endpoints
+         * @description Provides the allowed endpoints for a given session
+         */
+        post: operations["setup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-  };
+}
+export type webhooks = Record<string, never>;
+export interface components {
+    schemas: {
+        /** @enum {string} */
+        EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "anaCreditActionDetails" | "initiateRefund" | "getDisputeList" | "getDisputeDetail" | "getApplicableDefenseDocuments" | "acceptDispute" | "defendDispute" | "downloadDefenseDocument";
+        LegalEntitySetupResponseDTO: {
+            countryCode: string;
+            regions: components["schemas"]["RegionDTO"][];
+        };
+        RegionDTO: {
+            type: components["schemas"]["RegionType"];
+            value?: string;
+        };
+        /** @enum {string} */
+        RegionType: "capital";
+        SetupEndpointResponse: {
+            method?: string;
+            url?: string;
+        };
+        SetupResponse: {
+            /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
+            endpointTypesExposure?: components["schemas"]["EndpointName"];
+            /** @description Allowed endpoints for a given session */
+            endpoints: {
+                [key: string]: components["schemas"]["SetupEndpointResponse"];
+            };
+            /** @description Legal entity information. Only for components that require it. */
+            legalEntity?: components["schemas"]["LegalEntitySetupResponseDTO"];
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
+}
+export type $defs = Record<string, never>;
+export interface operations {
+    setup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetupResponse"];
+                };
+            };
+        };
+    };
 }

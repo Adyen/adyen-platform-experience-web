@@ -1,18 +1,42 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.6.1
+
+### Patch Changes
+
+-   871f663: We implemented accessibility enhancements for the tooltip component.
+
+## 1.6.0
+
+### New
+
+-   ec93b6c: You can now integrate our new [dispute components](https://docs.adyen.com/platforms/build-user-dashboards/?component=Dispute&integration=components). These components include all the necessary features to help your users manage disputes more efficiently, allowing them to review disputes, accept chargebacks, or defend them by submitting defense documents.
+
+### Fixed
+
+-   ec9bfc9: We resolved an issue in the Payouts, Reports, and Transactions Overview components area where the `allowLimitSelection` property wasn't explicitly set. Now, the selector is visible as expected.
+
+## 1.5.1
+
+### Patch Changes
+
+-   e88a51e: We corrected the text for the APR field's tooltip.
+
 ## 1.5.0
 
 ### New
+
 -   Business financing through capital components is now available to users in Canada.
 
 ### Fixed
+
 -   We corrected several Finnish translations that were inaccurate.
 
 ## 1.4.2
 
 ### Fixed
 
--   We fixed an issue in the Capital Overview component area where the expandable card displayed content from both the expanded and collapsed states at the same time. 
+-   We fixed an issue in the Capital Overview component area where the expandable card displayed content from both the expanded and collapsed states at the same time.
 
 ## 1.4.1
 

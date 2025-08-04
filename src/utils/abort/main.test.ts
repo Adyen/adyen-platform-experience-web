@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { abortedSignal, abortSignalForAny, abortSignalWithTimeout, isAbortSignal } from './main';
+import { describe, expect, test } from 'vitest';
+import { abortedSignal, abortSignalForAny, isAbortSignal } from './main';
 
 describe('abortedSignal', () => {
     test('should return already aborted signal', () => {
@@ -63,63 +63,13 @@ describe('abortSignalForAny', () => {
     });
 });
 
-describe('abortSignalWithTimeout', () => {
-    beforeEach(() => {
-        vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'setTimeout'] });
-        vi.runOnlyPendingTimers();
-    });
-
-    afterEach(() => {
-        vi.useRealTimers();
-    });
-
-    test('should return abort signal with timeout (1)', () => {
-        const signal = abortSignalWithTimeout(0);
-
-        // signal not yet aborted (until next tick)
-        expect(signal.aborted).toBe(false);
-
-        vi.advanceTimersToNextTimer();
-        vi.runOnlyPendingTimers();
-
-        // signal is aborted
-        expect(signal.aborted).toBe(true);
-    });
-
-    test('should return abort signal with timeout (2)', () => {
-        let elapsedTime = 0;
-        const timeouts = [100, 500, 2000];
-        const signals = timeouts.map(ms => abortSignalWithTimeout(ms));
-
-        // signals not yet aborted
-        signals.forEach(signal => expect(signal.aborted).toBe(false));
-
-        [
-            100, // elapsed time => ~100ms
-            350, // elapsed time => ~450ms
-            1000, // elapsed time => ~1450ms
-            750, // elapsed time => ~2200ms
-        ].forEach(timeAdvance => {
-            vi.advanceTimersByTime(timeAdvance);
-            vi.advanceTimersToNextTimer();
-
-            elapsedTime += timeAdvance;
-
-            signals.forEach((signal, index) => {
-                expect(signal.aborted).toBe(elapsedTime >= timeouts[index]!);
-            });
-        });
-    });
-});
-
 describe('isAbortSignal', () => {
     test('should return true for only for instances of `AbortSignal`', () => {
         const signal_1 = new AbortController().signal;
         const signal_2 = abortedSignal('aborted');
-        const signal_3 = abortSignalWithTimeout(0);
-        const signal_4 = abortSignalForAny([signal_1, signal_2, signal_3]);
+        const signal_3 = abortSignalForAny([signal_1, signal_2]);
 
-        [signal_1, signal_2, signal_3, signal_4].forEach(signal => expect(isAbortSignal(signal)).toBe(true));
+        [signal_1, signal_2, signal_3].forEach(signal => expect(isAbortSignal(signal)).toBe(true));
 
         expect(isAbortSignal()).toBe(false);
         expect(isAbortSignal({ aborted: true })).toBe(false);

@@ -41,7 +41,7 @@ const findFirstFocusableElement = (root: Element) => {
 };
 
 const getGapByVariant = (variant: PopoverContainerVariant): [number, number, number, number] => {
-    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [15, 15, 15, 15];
+    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [8, 8, 8, 8];
 };
 
 function Popover({
@@ -66,10 +66,13 @@ function Popover({
     classNameModifiers,
     showOverlay = false,
     fitPosition,
+    fixedPositioning = false,
+    additionalStyle,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
+    const contentRef = useUniqueIdentifier() as Ref<HTMLDivElement> | undefined;
     const popoverOpen = useRef<boolean>();
 
     const onCloseFocusTrap = useCallback(
@@ -96,11 +99,25 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay, fitPosition),
+        usePopoverPositioner(
+            getGapByVariant(variant),
+            targetElement,
+            variant,
+            position,
+            arrowRef,
+            setToTargetWidth,
+            showOverlay,
+            fitPosition,
+            fixedPositioning,
+            additionalStyle,
+            undefined,
+            contentRef
+        ),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
     );
+
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
     const popoverElement = useReflex<Element & { [CONTROL_ELEMENT_PROPERTY]?: (typeof targetElement)['current'] }>(
@@ -143,7 +160,7 @@ function Popover({
 
     useEffect(() => {
         if (popoverElement.current) popoverElement.current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-    }, [targetElement]);
+    }, [popoverElement, targetElement]);
 
     useEffect(() => {
         document.removeEventListener('keydown', cachedOnKeyDown.current);
@@ -185,6 +202,7 @@ function Popover({
                                         [`${POPOVER_CONTENT_CLASSNAME}--with-padding`]: withContentPadding,
                                         [`${POPOVER_CONTENT_CLASSNAME}--overlay`]: showOverlay,
                                     })}
+                                    ref={contentRef}
                                 >
                                     {children}
                                 </div>

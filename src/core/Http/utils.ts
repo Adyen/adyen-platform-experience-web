@@ -5,6 +5,9 @@ import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError
 const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
 
 export const enum ErrorTypes {
+    /** HTTP error. */
+    HTTP_ERROR = 'HTTP_ERROR',
+
     /** Network error. */
     NETWORK_ERROR = 'NETWORK_ERROR',
 
@@ -26,7 +29,7 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
         case 401:
             return ErrorTypes.EXPIRED_TOKEN;
         default:
-            return ErrorTypes.NETWORK_ERROR;
+            return ErrorTypes.HTTP_ERROR;
     }
 };
 
@@ -38,9 +41,21 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
+export const getRequestBodyForContentType = (body: any, contentType: string) => {
+    switch (contentType) {
+        case 'application/json':
+            return JSON.stringify(body);
+        case 'multipart/form-data':
+            return body instanceof FormData ? body : new FormData();
+        default:
+            return String(body);
+    }
+};
+
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
     const SDKVersion = process.env.VITE_VERSION;
+    const contentType = options.contentType?.toLowerCase() ?? 'application/json';
 
     return {
         method,
@@ -49,14 +64,18 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': options.contentType ?? 'application/json',
             ...headers,
+
+            // Skip Content-Type header for multipart/form-data requests
+            // The browser will automatically set the content-type for such requests
+            ...(contentType && contentType !== 'multipart/form-data' && { 'Content-Type': contentType }),
+
             ...(SDKVersion && { 'SDK-Version': SDKVersion }),
         },
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(method === 'POST' && options.body && { body: JSON.stringify(options.body) }),
+        ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType) }),
     };
 };
 

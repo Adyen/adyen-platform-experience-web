@@ -25,6 +25,7 @@ const BASE_DATE_TIME_FORMAT: Intl.DateTimeFormatOptions = {
 const BASE_DATE_TIME_MOBILE_FORMAT: Intl.DateTimeFormatOptions = { ...BASE_DATE_TIME_FORMAT, year: undefined };
 
 export const DATE_FORMAT_CAPITAL_OVERVIEW: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: 'short' };
+export const DATE_FORMAT_MISSING_ACTION: Intl.DateTimeFormatOptions = { ...BASE_DATE_FORMAT, month: 'long' };
 
 export const DATE_FORMAT_PAYOUTS: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
 export const DATE_FORMAT_PAYOUTS_MOBILE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_MOBILE_FORMAT;
@@ -39,5 +40,22 @@ export const DATE_FORMAT_TRANSACTION_DETAILS: Intl.DateTimeFormatOptions = {
     ...BASE_DATE_FORMAT,
     ...BASE_TIME_FORMAT,
     weekday: LONG,
+    timeZoneName: SHORT_OFFSET,
+};
+
+export const DATE_FORMAT_DISPUTES: Intl.DateTimeFormatOptions = BASE_DATE_FORMAT;
+
+export const DATE_FORMAT_DISPUTE_DETAILS: Intl.DateTimeFormatOptions = {
+    ...BASE_DATE_TIME_FORMAT,
+    hour12: true,
+    timeZoneName: SHORT_OFFSET,
+};
+
+export const DATE_FORMAT_RESPONSE_DEADLINE: Intl.DateTimeFormatOptions = {
+    month: SHORT,
+    weekday: LONG,
+    hour: DIGITS_2,
+    minute: NUMERIC,
+    year: undefined,
     timeZoneName: SHORT_OFFSET,
 };
