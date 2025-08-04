@@ -619,7 +619,6 @@
     "file": "Fil",
     "filter.date.since": "Sedan %{date}",
     "filter.date.until": "Till %{date}",
-    "filterBar": "Filterfält",
     "filterPlaceholder.category": "Typ",
     "filterPlaceholder.currency": "Valuta",
     "filterPlaceholder.status": "Status",
