@@ -42,7 +42,7 @@ import AdyenPlatformExperience from '@adyen/adyen-platform-experience-web';
 To run the development environment:
 
 1. Clone [this repository](https://github.com/Adyen/adyen-platform-experience-web).
-2. Create a `.env` file on your project's root folder following the example in [`env.default`](envs/env.default) and fill in the environment variables.
+2. In the `envs` folder, create a `.env` file following the example in [`env.default`](envs/env.default) and fill in the environment variables.
 3. Install the dependencies by running:
 
 ```sh
