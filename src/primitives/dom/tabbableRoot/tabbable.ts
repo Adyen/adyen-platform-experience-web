@@ -40,14 +40,28 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
 };
 
 const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
+    let shouldRefreshTabbables = false;
+
     for (const record of records) {
-        if (record.type !== 'attributes') {
-            if (some(record.addedNodes, (node: Node) => node instanceof Element && isTabbable(node as Element))) return true;
-            if (some(record.removedNodes, (node: Node) => tabbables.includes(node as Element))) return true;
-        } else if (isTabbable(record.target as Element)) return true;
-        else if (tabbables.includes(record.target as Element)) return true;
+        if (record.type === 'attributes') {
+            shouldRefreshTabbables ||= isTabbable(record.target as Element) || tabbables.includes(record.target as Element);
+        } else {
+            shouldRefreshTabbables ||= some(record.addedNodes, (node: Node) => {
+                return node instanceof Element && (isTabbable(node as Element) || some(node.querySelectorAll(SELECTORS), isTabbable));
+            });
+
+            shouldRefreshTabbables ||= some(record.removedNodes, (node: Node) => {
+                return (
+                    node instanceof Element &&
+                    (tabbables.includes(node as Element) || some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node as Element)))
+                );
+            });
+        }
+
+        if (shouldRefreshTabbables) break;
     }
-    return false;
+
+    return shouldRefreshTabbables;
 };
 
 export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {
