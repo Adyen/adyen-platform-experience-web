@@ -7,7 +7,6 @@ import { popoverUtil } from '../../../../internal/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';
-import './DisputeManagementModal.scss';
 
 export interface DisputeManagementModalProps {
     setModalVisible: (modalVisible: boolean) => void;
@@ -63,17 +62,15 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail.modalSize || 'large'}
                 >
-                    <div className="adyen-pe-dispute-management-modal-content">
-                        <DisputeDetailsContainer
-                            id={selectedDetail.selection.data}
-                            dataCustomization={dataCustomization}
-                            onDisputeAccept={onDisputeManagementSuccessful}
-                            onDisputeDefend={onDisputeManagementSuccessful}
-                            onContactSupport={onContactSupport}
-                            onDismiss={resetDetails}
-                            hideTitle
-                        />
-                    </div>
+                    <DisputeDetailsContainer
+                        id={selectedDetail.selection.data}
+                        dataCustomization={dataCustomization}
+                        onDisputeAccept={onDisputeManagementSuccessful}
+                        onDisputeDefend={onDisputeManagementSuccessful}
+                        onContactSupport={onContactSupport}
+                        onDismiss={resetDetails}
+                        hideTitle
+                    />
                 </Modal>
             )}
         </div>
