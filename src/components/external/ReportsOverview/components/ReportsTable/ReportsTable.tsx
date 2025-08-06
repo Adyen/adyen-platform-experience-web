@@ -152,6 +152,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                                 onDownloadRequested={freeze}
                                 setError={onDownloadErrorAlert}
                                 errorDisplay={errorIcon}
+                                aria-label={i18n.get('report.downloadReport')}
                             />
                         );
                     },
