@@ -30,7 +30,7 @@ export default function Modal({
     const { i18n } = useCoreContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const focusCaptureElement = useRef<HTMLDivElement | null>(null);
-    const focusRestoreElement = useRef(document.activeElement);
+    const focusRestoreElement = useRef<Element | null>(null);
 
     const handleDismiss = useCallback(() => {
         if (isOpen && isDismissible) {
@@ -43,6 +43,7 @@ export default function Modal({
 
     useEffect(() => {
         if (isOpen && modalRootElement.current) {
+            focusRestoreElement.current = document.activeElement;
             let tabbableHandle = tabbable();
 
             // Temporarily focus on the capture element, so that
