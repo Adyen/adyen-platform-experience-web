@@ -1,12 +1,14 @@
 import BaseFilter from '../BaseFilter';
-import { FilterProps } from '../BaseFilter/types';
-import { RangeFilterProps } from './types';
+import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
+import { RangeFilterBody, RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { EMPTY_OBJECT, isUndefined } from '../../../../../utils';
 import { PopoverContainerSize } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
+
+const renderAmountFilter = (props: FilterEditModalRenderProps<RangeFilterBody>) => <RangeSelection {...props} />;
 
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
     const { i18n } = useCoreContext();
@@ -74,7 +76,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             containerSize={PopoverContainerSize.MEDIUM}
             selectedCurrencies={selectedCurrencies}
             availableCurrencies={availableCurrencies}
-            render={RangeSelection}
+            render={renderAmountFilter}
         />
     );
 };

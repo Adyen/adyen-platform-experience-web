@@ -5,14 +5,14 @@ export default async (request: Request, context: any) => {
     // @ts-ignore
     const { SESSION_API_URL, SESSION_ACCOUNT_HOLDER, SESSION_PERMISSIONS, VITE_API_KEY } = Netlify.env.toObject();
 
-    const sessionApi = {
-        url: SESSION_API_URL ?? '',
-        apiKey: VITE_API_KEY,
+    const session = {
         accountHolder: SESSION_ACCOUNT_HOLDER,
+        apiKey: VITE_API_KEY,
         permissions: SESSION_PERMISSIONS,
+        url: SESSION_API_URL ?? '',
     };
 
-    const apis = realApiProxies({ sessionApi }, 'netlify');
+    const apis = realApiProxies({ session }, 'netlify');
     const url = new URL(request.url);
 
     // Find the matching API proxy configuration based on the pathname.

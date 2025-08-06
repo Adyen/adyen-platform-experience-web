@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.6.1
+
+### Patch Changes
+
+-   871f663: We implemented accessibility enhancements for the tooltip component.
+
 ## 1.6.0
 
 ### New

@@ -1,9 +1,10 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { getEnvironment } from './envs/getEnvs';
 
-const { playground } = getEnvironment('development');
+// Always run tests in 'development' mode
+const { app } = getEnvironment('development');
 
-const baseUrl = `http://${playground.host}:${playground.port}`;
+const baseUrl = `http://${app.host}:${app.port}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -76,7 +77,7 @@ const config: PlaywrightTestConfig = {
         command: 'npm run storybook:static',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
-        port: process.env.CI ? playground.port : undefined,
+        port: process.env.CI ? app.port : undefined,
     },
 };
 

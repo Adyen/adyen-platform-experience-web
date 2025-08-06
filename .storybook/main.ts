@@ -14,11 +14,11 @@ const config: StorybookConfig = {
     },
     async viteFinal(config) {
         const mode = process.env.VITE_MODE ?? 'development';
-        const { apiConfigs } = getEnvironment(mode);
+        const { api } = getEnvironment(mode);
 
         return mergeConfig(config, {
             server: {
-                proxy: realApiProxies(apiConfigs, mode),
+                proxy: realApiProxies(api, mode),
             },
             plugins: [
                 mode === 'development' &&

@@ -32,6 +32,7 @@
     &__label {
         align-items: center;
         display: inline-flex;
+        font-weight: inherit;
         gap: style.token(spacer-040);
         line-height: style.token(text-body-line-height);
         vertical-align: middle;

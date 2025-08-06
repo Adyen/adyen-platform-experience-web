@@ -4,18 +4,6 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const pages = [
-    { id: 'transactionsOverview', name: 'Transactions Overview' },
-    { id: 'transaction', name: 'Transaction Details' },
-    { id: 'payouts', name: 'Payouts Overview' },
-    { id: 'payout', name: 'Payout Details' },
-    { id: 'reports', name: 'Reports Overview' },
-] as const;
-
-type PageId = (typeof pages)[number]['id'];
-
-export const getPagePath = (id: PageId) => pages.find(page => page.id === id)?.id ?? '';
-
 export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';
 
 const MONTHS_WITH_30_DAYS = [3, 5, 8, 10] as const;
@@ -81,7 +69,6 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
 };
 
 export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
-    const baseURL = `http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html`;
     const { args, ...restOfParams } = params;
     const queryParams = new URLSearchParams({
         ...restOfParams,
@@ -93,7 +80,7 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
               }
             : {}),
     });
-    await page.goto(`${baseURL}?${queryParams.toString()}`);
+    await page.goto(`/iframe.html?${queryParams.toString()}`);
 };
 
 export const setTime = async (page: Page) => {

@@ -17,6 +17,7 @@ const SelectList = fixedForwardRef(
             active,
             commitActions,
             items,
+            disableFocusTrap,
             multiSelect,
             onKeyDown,
             onSelect,
@@ -46,7 +47,7 @@ const SelectList = fixedForwardRef(
             <PopoverContainer
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
-                disableFocusTrap={true}
+                disableFocusTrap={disableFocusTrap}
                 divider={true}
                 dismiss={dismissPopover}
                 dismissible={false}

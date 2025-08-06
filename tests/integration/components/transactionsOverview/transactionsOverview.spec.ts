@@ -1,8 +1,8 @@
 import { test as base, expect } from '@playwright/test';
+import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
 import { TransactionsOverviewPage } from '../../../models/external-components/transactionsOverview.page';
 import { getTranslatedKey, goToStory } from '../../../utils/utils';
 import dotenv from 'dotenv';
-import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
 
 dotenv.config({ path: './envs/.env' });
 
@@ -24,7 +24,7 @@ test('cells should show correct value and open correct modal ', async ({ transac
     await transactionsOverview.getCell('amount').waitFor();
     await transactionsOverview.firstRow.click();
 
-    const referenceID = transactionsOverview.page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
+    const referenceID = page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
     await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
 });
 
@@ -90,7 +90,7 @@ test.describe('Transaction details modal with partial refunds', () => {
         await transactionsOverview.firstRow.click();
     });
 
-    test('should show refund details', async ({ transactionsOverviewPage, page }) => {
+    test('should show refund details', async ({ page }) => {
         await expect(page.getByText(getTranslatedKey('refunded.partial'))).toBeVisible();
         await expect(page.getByText('You already refunded €5.00')).toBeVisible();
         await expect(page.getByText('The partial refund of €15.00 and €5.00 is being processed.')).toBeVisible();
@@ -101,8 +101,8 @@ test.describe('Transaction details modal with partial refunds', () => {
         ).toBeVisible();
     });
 
-    test('should render refund button', async ({ transactionsOverviewPage }) => {
-        const refundButton = transactionsOverviewPage.page.getByLabel(getTranslatedKey('refundAction'));
+    test('should render refund button', async ({ page }) => {
+        const refundButton = page.getByLabel(getTranslatedKey('refundAction'));
         await expect(refundButton).toHaveText('Refund payment');
     });
 });
@@ -114,15 +114,15 @@ test.describe('Refund action modal', () => {
         await transactionsOverview.applyDateFilter('2024-01-01');
         await transactionsOverview.getCell('amount').waitFor();
         await transactionsOverview.firstRow.click();
-        const refundButton = transactionsOverview.page.getByLabel(getTranslatedKey('refundAction'));
+        const refundButton = page.getByLabel(getTranslatedKey('refundAction'));
         await refundButton.click();
     });
 
-    test('should show correct initial value', async ({ transactionsOverviewPage }) => {
-        const refundReasonDropdown = transactionsOverviewPage.page.getByTitle(getTranslatedKey('refundReason.requested_by_customer'));
+    test('should show correct initial value', async ({ page }) => {
+        const refundReasonDropdown = page.getByTitle(getTranslatedKey('refundReason.requested_by_customer'));
         await expect(refundReasonDropdown).toBeVisible();
         await refundReasonDropdown.click();
-        const refundReasonDropdownOptions = await transactionsOverviewPage.page.getByRole('option').allInnerTexts();
+        const refundReasonDropdownOptions = await page.getByRole('option').allInnerTexts();
         expect(refundReasonDropdownOptions).toStrictEqual([
             getTranslatedKey('refundReason.requested_by_customer'),
             getTranslatedKey('refundReason.issue_with_item_sold'),
@@ -130,15 +130,15 @@ test.describe('Refund action modal', () => {
             getTranslatedKey('refundReason.duplicate'),
             getTranslatedKey('refundReason.other'),
         ]);
-        const refundActionButton = transactionsOverviewPage.page.getByLabel('Refund €10.00');
+        const refundActionButton = page.getByLabel('Refund €10.00');
         await expect(refundActionButton).toHaveText('Refund €10.00');
-        const refundInput = transactionsOverviewPage.page.locator('input');
+        const refundInput = page.locator('input');
         await expect(refundInput).toHaveValue('10.00');
     });
 
-    test('should show an error if the refund amount is incorrect', async ({ transactionsOverviewPage, page }) => {
-        const refundActionButton = transactionsOverviewPage.page.getByLabel('Refund €10.00');
-        const refundInput = transactionsOverviewPage.page.locator('input');
+    test('should show an error if the refund amount is incorrect', async ({ page }) => {
+        const refundActionButton = page.getByLabel('Refund €10.00');
+        const refundInput = page.locator('input');
         await refundInput.fill('11');
         await expect(page.getByText('You cannot exceed the available amount of €10.00')).toBeVisible();
         await refundInput.fill('');
@@ -146,15 +146,15 @@ test.describe('Refund action modal', () => {
         expect(refundActionButton.isDisabled()).toBeTruthy();
     });
 
-    test('should successfully complete refund action and go back to details modal', async ({ transactionsOverviewPage, page }) => {
-        const refundActionButton = transactionsOverviewPage.page.getByLabel('Refund €10.00');
+    test('should successfully complete refund action and go back to details modal', async ({ page }) => {
+        const refundActionButton = page.getByLabel('Refund €10.00');
         await refundActionButton.click();
         await expect(page.getByText(getTranslatedKey('refundActionSuccessTitle'))).toBeVisible();
         await expect(page.getByText(getTranslatedKey('refundActionSuccessSubtitle'))).toBeVisible();
 
-        const goBackButton = transactionsOverviewPage.page.getByRole('button', { name: getTranslatedKey('goBack') });
+        const goBackButton = page.getByRole('button', { name: getTranslatedKey('goBack') });
         await goBackButton.click();
-        const referenceID = transactionsOverviewPage.page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
+        const referenceID = page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
         await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
     });
 });

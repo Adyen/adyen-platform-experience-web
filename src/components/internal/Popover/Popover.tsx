@@ -72,6 +72,7 @@ function Popover({
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
+    const contentRef = useUniqueIdentifier() as Ref<HTMLDivElement> | undefined;
     const popoverOpen = useRef<boolean>();
 
     const onCloseFocusTrap = useCallback(
@@ -108,7 +109,9 @@ function Popover({
             showOverlay,
             fitPosition,
             fixedPositioning,
-            additionalStyle
+            additionalStyle,
+            undefined,
+            contentRef
         ),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
@@ -157,7 +160,7 @@ function Popover({
 
     useEffect(() => {
         if (popoverElement.current) popoverElement.current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-    }, [targetElement]);
+    }, [popoverElement, targetElement]);
 
     useEffect(() => {
         document.removeEventListener('keydown', cachedOnKeyDown.current);
@@ -199,6 +202,7 @@ function Popover({
                                         [`${POPOVER_CONTENT_CLASSNAME}--with-padding`]: withContentPadding,
                                         [`${POPOVER_CONTENT_CLASSNAME}--overlay`]: showOverlay,
                                     })}
+                                    ref={contentRef}
                                 >
                                     {children}
                                 </div>

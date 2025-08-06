@@ -1,4 +1,4 @@
-import { IDynamicOffersConfig, IGrant } from '../../src';
+import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, IUSCapitalFundsCollection } from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -29,7 +29,7 @@ export const GRANT_US_ACCOUNT = {
     accountNumber: '123456789012',
     routingNumber: '012345678',
     order: ['accountNumber', 'routingNumber', 'region'],
-} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
+} satisfies NonNullable<IUSCapitalFundsCollection>;
 
 export const GRANT_GB_ACCOUNT = {
     region: 'GB',
@@ -37,7 +37,7 @@ export const GRANT_GB_ACCOUNT = {
     iban: 'GB01ADYB01234567890123',
     sortCode: '012345678',
     order: ['iban', 'accountNumber', 'sortCode', 'region'],
-} satisfies NonNullable<IGrant['unscheduledRepaymentAccounts']>[number];
+} satisfies NonNullable<IGBCapitalFundsCollection>;
 
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
@@ -128,11 +128,25 @@ export const PENDING_GRANT: IGrant = {
     status: 'Pending',
 };
 
-export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
+export const PENDING_GRANT_WITH_SIGN_TOS: IGrant = {
     ...PENDING_GRANT,
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
     missingActions: [{ type: 'signToS' }],
+};
+
+export const PENDING_GRANT_WITH_MULTIPLE_ACTIONS: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'AnaCredit' }, { type: 'signToS' }],
+};
+
+export const PENDING_GRANT_WITH_ANACREDIT: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'AnaCredit' }],
 };
 
 export const REPAID_GRANT: IGrant = {
@@ -219,4 +233,8 @@ export const SIGNED_OFFER = {
 
 export const SIGN_TOS_ACTION_DETAILS = {
     url: 'https://www.adyen.com/',
+};
+
+export const ANACREDIT_ACTION_DETAILS = {
+    url: 'https://www.adyen.com/capital',
 };

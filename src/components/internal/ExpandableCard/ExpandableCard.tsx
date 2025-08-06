@@ -5,8 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import BaseButton from '../BaseButton';
-import ChevronUp from '../SVGIcons/ChevronUp';
-import ChevronDown from '../SVGIcons/ChevronDown';
+import Icon from '../Icon';
 import './ExpandableCard.scss';
 import {
     BASE_CLASS,
@@ -113,7 +112,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
-                            <ChevronDown role="presentation" />
+                            <Icon name="chevron-down" />
                         </div>
                     </BaseButton>
                     <BaseButton
@@ -139,7 +138,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                             <div>{children}</div>
                         </div>
                         <div className={CHEVRON_CLASS}>
-                            <ChevronUp role="presentation" />
+                            <Icon name="chevron-up" />
                         </div>
                     </BaseButton>
                 </>

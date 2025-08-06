@@ -1,9 +1,6 @@
-import cx from 'classnames';
 import classnames from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useRef, useState } from 'preact/hooks';
-import ChevronDown from '../SVGIcons/ChevronDown';
-import ChevronUp from '../SVGIcons/ChevronUp';
 import {
     ACCORDION_BASE_CLASS,
     ACCORDION_CONTENT_CLASS,
@@ -12,6 +9,7 @@ import {
     ACCORDION_HEADER_CONTROLLER_CLASS,
 } from './constants';
 import { AccordionProps } from './types';
+import Icon from '../Icon';
 import './Accordion.scss';
 
 function Accordion({ children, classNames, header, headerInformation }: PropsWithChildren<AccordionProps>) {
@@ -34,7 +32,7 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
                 >
                     <div className={ACCORDION_HEADER_CONTROLLER_CLASS}>
                         {header}
-                        {isExpanded ? <ChevronUp height={8} width={15} /> : <ChevronDown height={8} width={15} />}
+                        {isExpanded ? <Icon name="chevron-up" /> : <Icon name="chevron-down" />}
                     </div>
                 </button>
                 {headerInformation && <div>{headerInformation}</div>}

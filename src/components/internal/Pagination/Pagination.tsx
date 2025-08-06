@@ -1,15 +1,14 @@
-import { ButtonVariant } from '../Button/types';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { EMPTY_ARRAY, isNullish } from '../../../utils';
-import classnames from 'classnames';
-import { useCallback, useMemo } from 'preact/hooks';
+import Icon from '../Icon';
 import Button from '../Button';
-import './Pagination.scss';
-import { PaginationProps } from './types';
 import Select from '../FormFields/Select';
+import classnames from 'classnames';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import { useCallback, useMemo } from 'preact/hooks';
+import { EMPTY_ARRAY, isNullish } from '../../../utils';
 import { SelectItem } from '../FormFields/Select/types';
-import ChevronLeft from '../SVGIcons/ChevronLeft';
-import ChevronRight from '../SVGIcons/ChevronRight';
+import { ButtonVariant } from '../Button/types';
+import { PaginationProps } from './types';
+import './Pagination.scss';
 
 export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
@@ -49,24 +48,24 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
 
             <div className="adyen-pe-pagination__controls">
                 <Button
-                    aria-label={i18n.get('pagination.previousPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
-                    <ChevronLeft disabled={!hasPrev} />
+                    <Icon name="chevron-left" />
+                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.previousPage')}</span>
                 </Button>
                 <Button
-                    aria-label={i18n.get('pagination.nextPage')}
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    <ChevronRight disabled={!hasNext} />
+                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.nextPage')}</span>
+                    <Icon name="chevron-right" />
                 </Button>
             </div>
         </div>

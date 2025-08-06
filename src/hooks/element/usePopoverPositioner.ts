@@ -7,6 +7,17 @@ import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
 
+const FULL_WIDTH_TOOLTIP_POSITIONS = [
+    PopoverContainerPosition.BOTTOM_RIGHT,
+    PopoverContainerPosition.BOTTOM_LEFT,
+    PopoverContainerPosition.TOP_RIGHT,
+    PopoverContainerPosition.TOP_LEFT,
+];
+
+const POPOVER_DIAGONAL_HORIZONTAL_OFFSET = 5;
+const ARROW_OFFSET = 4;
+const SCREEN_EDGE_MARGIN = 10;
+
 const calculateOffset = ({
     position,
     variant,
@@ -60,15 +71,6 @@ const calculateOffset = ({
                 translateY += scrollY;
             }
             break;
-        case PopoverContainerPosition.BOTTOM_LEFT:
-            translateX = targetPosition.x + targetPosition.width - popoverWidth;
-            translateY = targetPosition.y + targetPosition.height + offset[1];
-
-            if (!fixedPositioning) {
-                translateX += scrollX;
-                translateY += scrollY;
-            }
-            break;
         case PopoverContainerPosition.TOP:
             translateX = isTooltip ? toCenterX : targetPosition.x;
             translateY = targetPosition.y - (popoverHeight + offset[0]);
@@ -94,6 +96,42 @@ const calculateOffset = ({
             if (!fixedPositioning) {
                 translateX += scrollX;
                 translateY += scrollY;
+            }
+            break;
+        case PopoverContainerPosition.BOTTOM_LEFT:
+            translateX = 5;
+            translateY = targetPosition.y + targetPosition.height + offset[1];
+
+            if (!fixedPositioning) {
+                translateX += scrollX;
+                translateY += scrollY;
+            }
+            break;
+        case PopoverContainerPosition.BOTTOM_RIGHT:
+            translateX = -5;
+            translateY = targetPosition.y + targetPosition.height + offset[1];
+
+            if (!fixedPositioning) {
+                translateX += scrollX;
+                translateY += scrollY;
+            }
+            break;
+        case PopoverContainerPosition.TOP_LEFT:
+            translateX = POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
+            translateY = targetPosition.y - popoverHeight;
+
+            if (!fixedPositioning) {
+                translateX += scrollX;
+                translateY += scrollY - popoverContent.clientHeight + popoverHeight;
+            }
+            break;
+        case PopoverContainerPosition.TOP_RIGHT:
+            translateX = -POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
+            translateY = targetPosition.y - popoverHeight;
+
+            if (!fixedPositioning) {
+                translateX += scrollX;
+                translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
             break;
     }
@@ -134,12 +172,15 @@ const calculateOffset = ({
         }
     }
 
+    const isAlignedToRight = position === PopoverContainerPosition.TOP_RIGHT || position === PopoverContainerPosition.BOTTOM_RIGHT;
+
     return {
-        inset: '0 auto auto 0',
+        inset: isAlignedToRight ? '0 0 auto auto' : '0 auto auto 0',
         margin: '0',
         position: fixedPositioning ? 'fixed' : 'absolute',
         transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
         visibility: 'hidden',
+        right: isAlignedToRight ? 0 : 'auto',
         ...offsetStyle,
     };
 };
@@ -155,7 +196,8 @@ const usePopoverPositioner = (
     fitPosition?: boolean,
     fixedPositioning?: boolean,
     additionalStyle?: { minY?: number; maxY?: number },
-    ref?: Nullable<Reflexable<Element>>
+    ref?: Nullable<Reflexable<Element>>,
+    contentRef?: Ref<HTMLDivElement> | undefined
 ) => {
     const [initialPosition, setInitialPosition] = useState(true);
     const [showPopover, setShowPopover] = useState(fitPosition ? !fitPosition : !!position);
@@ -164,10 +206,13 @@ const usePopoverPositioner = (
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
+            const screenWidth = document.documentElement.clientWidth;
+            const targetPosition = targetElement.current?.getBoundingClientRect();
+
             if (entry.intersectionRatio === 1) return setShowPopover(true);
 
             if (!initialPosition && entry.intersectionRatio !== 1) {
-                if (checkedPositions && checkedPositions.length === (fitPosition ? 5 : 4)) {
+                if (checkedPositions && checkedPositions.length === (fitPosition ? 8 : 4)) {
                     const bestPos = checkedPositions.reduce((res, pos) => (pos[1] > res[1] ? pos : res), checkedPositions[0]!);
                     setCurrentPosition(bestPos[0]);
                     return setShowPopover(true);
@@ -182,11 +227,29 @@ const usePopoverPositioner = (
                         break;
                     case PopoverContainerPosition.BOTTOM:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
-                        setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_LEFT : PopoverContainerPosition.RIGHT);
+                        setCurrentPosition(
+                            fitPosition
+                                ? (targetPosition?.x || 0) > screenWidth / 2
+                                    ? PopoverContainerPosition.BOTTOM_RIGHT
+                                    : PopoverContainerPosition.BOTTOM_LEFT
+                                : PopoverContainerPosition.RIGHT
+                        );
                         break;
                     case PopoverContainerPosition.BOTTOM_LEFT:
-                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM, entry.intersectionRatio]]);
-                        setCurrentPosition(PopoverContainerPosition.RIGHT);
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM_LEFT, entry.intersectionRatio]]);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.TOP_LEFT : PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.BOTTOM_RIGHT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.BOTTOM_RIGHT, entry.intersectionRatio]]);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.TOP_RIGHT : PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.TOP_LEFT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.TOP_LEFT, entry.intersectionRatio]]);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_LEFT : PopoverContainerPosition.RIGHT);
+                        break;
+                    case PopoverContainerPosition.TOP_RIGHT:
+                        setCheckedPosition(value => [...value, [PopoverContainerPosition.TOP_RIGHT, entry.intersectionRatio]]);
+                        setCurrentPosition(fitPosition ? PopoverContainerPosition.BOTTOM_RIGHT : PopoverContainerPosition.RIGHT);
                         break;
                     case PopoverContainerPosition.RIGHT:
                         setCheckedPosition(value => [...value, [PopoverContainerPosition.RIGHT, entry.intersectionRatio]]);
@@ -199,7 +262,7 @@ const usePopoverPositioner = (
                 }
             }
         },
-        [initialPosition, checkedPositions, currentPosition, fitPosition]
+        [targetElement, initialPosition, checkedPositions, fitPosition, currentPosition]
     );
 
     const observerCallbackRef = useRef(observerCallback);
@@ -256,24 +319,53 @@ const usePopoverPositioner = (
 
                     if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef && isRefObject(arrowRef)) {
                         arrowRef.current?.setAttribute('data-popover-placement', currentPosition);
+                        if (FULL_WIDTH_TOOLTIP_POSITIONS.includes(currentPosition)) {
+                            const targetPosition = targetElement.current.getBoundingClientRect();
+                            const popoverContent = current.firstChild as HTMLElement;
+                            const popoverContentWidth = popoverContent.offsetWidth;
+                            const positionX = targetPosition.x + (targetPosition.width - popoverContentWidth) / 2;
+                            const popoverContentHeight = popoverContent.offsetHeight;
+
+                            const positionY =
+                                currentPosition === PopoverContainerPosition.BOTTOM_RIGHT || currentPosition === PopoverContainerPosition.BOTTOM_LEFT
+                                    ? popoverContentHeight + ARROW_OFFSET
+                                    : ARROW_OFFSET;
+
+                            arrowRef.current?.setAttribute(
+                                'style',
+                                `transform: translate3d(${positionX}px, -${positionY}px, 0) rotate(45deg); inset: 0 0 auto auto`
+                            );
+                        }
+                    }
+
+                    if (
+                        variant &&
+                        variant === PopoverContainerVariant.TOOLTIP &&
+                        contentRef &&
+                        isRefObject(contentRef) &&
+                        FULL_WIDTH_TOOLTIP_POSITIONS.includes(currentPosition)
+                    ) {
+                        const screenWidth = document.documentElement.clientWidth;
+                        contentRef.current?.setAttribute('style', `max-width: ${screenWidth - SCREEN_EDGE_MARGIN}px`);
                     }
                 }
             },
             [
-                offset,
-                targetElement,
-                currentPosition,
                 position,
-                variant,
-                observerCallback,
-                showPopover,
-                initialPosition,
-                setToTargetWidth,
-                arrowRef,
-                showOverlay,
                 fitPosition,
-                fixedPositioning,
+                targetElement,
+                observerCallback,
+                variant,
+                offset,
                 additionalStyle,
+                fixedPositioning,
+                showOverlay,
+                currentPosition,
+                showPopover,
+                setToTargetWidth,
+                initialPosition,
+                arrowRef,
+                contentRef,
             ]
         ),
         ref
