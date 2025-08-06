@@ -44,18 +44,39 @@ const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
 
     for (const record of records) {
         if (record.type === 'attributes') {
-            shouldRefreshTabbables ||= isTabbable(record.target as Element) || tabbables.includes(record.target as Element);
+            shouldRefreshTabbables ||=
+                record.target instanceof Element &&
+                // Target is a tabbable element (possibly due to attribute changes)
+                // For example, disabled set to false, tabindex set to a number, etc.
+                (isTabbable(record.target) ||
+                    // Target is already contained in the list of tabbables
+                    // Attribute changes could make it no longer tabbable (e.g. disabled set to true)
+                    tabbables.includes(record.target));
         } else {
-            shouldRefreshTabbables ||= some(record.addedNodes, (node: Node) => {
-                return node instanceof Element && (isTabbable(node as Element) || some(node.querySelectorAll(SELECTORS), isTabbable));
-            });
-
-            shouldRefreshTabbables ||= some(record.removedNodes, (node: Node) => {
-                return (
-                    node instanceof Element &&
-                    (tabbables.includes(node as Element) || some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node as Element)))
+            shouldRefreshTabbables ||=
+                // At least one tabbable node was added to the DOM tree of the root element
+                some(
+                    record.addedNodes,
+                    (node: Node) =>
+                        node instanceof Element &&
+                        // Added node is a tabbable element
+                        (isTabbable(node) ||
+                            // At least one descendant of added node is a tabbable element
+                            some(node.querySelectorAll(SELECTORS), isTabbable))
                 );
-            });
+
+            shouldRefreshTabbables ||=
+                // At least one tabbable node was removed from the DOM tree of the root element
+                // That is, removed from the list of tabbables for the root element
+                some(
+                    record.removedNodes,
+                    (node: Node) =>
+                        node instanceof Element &&
+                        // Removed node is a tabbable element
+                        (tabbables.includes(node) ||
+                            // At least one descendant of removed node is a tabbable element
+                            some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node)))
+                );
         }
 
         if (shouldRefreshTabbables) break;
