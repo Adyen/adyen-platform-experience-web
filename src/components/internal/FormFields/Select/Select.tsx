@@ -334,7 +334,7 @@ const Select = <T extends SelectItem>({
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
                 withoutCollapseIndicator={withoutCollapseIndicator}
-                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
+                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : undefined}
             />
             <SelectList
                 popoverClassNameModifiers={popoverClassNameModifiers}

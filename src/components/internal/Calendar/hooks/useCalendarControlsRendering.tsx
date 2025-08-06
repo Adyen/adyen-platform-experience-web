@@ -1,12 +1,11 @@
 import { ButtonVariant } from '../../Button/types';
 import { useCallback } from 'preact/hooks';
 import { isFunction } from '../../../../utils';
-import ChevronDown from '../../SVGIcons/ChevronDown';
-import ChevronUp from '../../SVGIcons/ChevronUp';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useDetachedRender from '../../../../hooks/element/useDetachedRender';
 import Button from '../../Button';
+import Icon from '../../Icon';
 
 const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => {
     const { i18n } = useCoreContext();
@@ -19,17 +18,17 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 let directionModifier: string;
                 let labelModifier: 'next' | 'previous';
-                let Chevron: typeof ChevronDown | typeof ChevronUp;
+                let iconName: 'chevron-left' | 'chevron-right';
 
                 switch (control) {
                     case 'PREV':
                         directionModifier = 'prev';
                         labelModifier = 'previous';
-                        Chevron = ChevronUp;
+                        iconName = 'chevron-left';
                         break;
                     case 'NEXT':
                         directionModifier = labelModifier = 'next';
-                        Chevron = ChevronDown;
+                        iconName = 'chevron-right';
                         break;
                     default:
                         return null;
@@ -47,7 +46,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
                         key={control}
                         onClick={handle}
                     >
-                        <Chevron role="presentation" />
+                        <Icon name={iconName} />
                     </Button>
                 ) : null;
             }) as CalendarControlRenderer,
