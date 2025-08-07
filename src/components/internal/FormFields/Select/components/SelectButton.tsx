@@ -48,6 +48,8 @@ const SelectButtonElement = <T extends SelectItem>({
             disabled={disabled}
             variant={ButtonVariant.SECONDARY}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
+            aria-label={props['aria-label']}
+            aria-labelledby={props['aria-labelledby']}
         />
     );
 };
@@ -76,19 +78,20 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             filterable={filterable}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
-            role={filterable ? 'button' : undefined}
+            role={!filterable || showList ? 'button' : undefined}
             tabIndex={0}
             title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
-            type={!filterable ? 'button' : undefined}
-            aria-label={props['aria-label']}
-            aria-labelledby={props['aria-labelledby']}
+            type={filterable ? undefined : 'button'}
             aria-describedby={props.ariaDescribedBy}
             id={props.id ?? ''}
+            {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
         >
             {showList && filterable ? (
                 <input
                     aria-autocomplete="list"
+                    aria-label={props['aria-label']}
+                    aria-labelledby={props['aria-labelledby']}
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}
