@@ -8,21 +8,9 @@ import { action } from '@storybook/addon-actions';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
-    argTypes: {
-        hideTitle: { type: 'boolean' },
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
-        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
-        onOfferSelect: enabledDisabledCallbackRadioControls('onOfferSelect'),
-    },
     args: {
         component: CapitalOffer,
         onFundsRequest: action('onRequestFunds'),
-    },
-    parameters: {
-        controls: {
-            sort: 'alpha',
-        },
     },
 };
 

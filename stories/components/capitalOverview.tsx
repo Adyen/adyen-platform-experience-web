@@ -6,21 +6,8 @@ import { CapitalOverview } from '../../src';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
 
 export const CapitalOverviewMeta: Meta<ElementProps<typeof CapitalOverview>> = {
-    argTypes: {
-        hideTitle: { type: 'boolean' },
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        onFundsRequest: enabledDisabledCallbackRadioControls('onFundsRequest'),
-        onOfferDismiss: enabledDisabledCallbackRadioControls('onOfferDismiss'),
-        onOfferOptionsRequest: enabledDisabledCallbackRadioControls('onOfferOptionsRequest'),
-        skipPreQualifiedIntro: { type: 'boolean' },
-    },
     args: {
         component: CapitalOverview,
-    },
-    parameters: {
-        controls: {
-            sort: 'alpha',
-        },
     },
 };
 

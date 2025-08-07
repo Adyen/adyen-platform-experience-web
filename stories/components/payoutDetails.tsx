@@ -4,24 +4,8 @@ import { PayoutDetails } from '../../src';
 import { ElementProps } from '../utils/types';
 
 export const PayoutDetailsMeta: Meta<ElementProps<typeof PayoutDetails>> = {
-    argTypes: {
-        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        hideTitle: { type: 'boolean' },
-        date: { type: 'string' },
-        id: { type: 'string' },
-        balanceAccountId: {
-            table: {
-                disable: true,
-            },
-        },
-    },
     args: {
         component: PayoutDetails,
-    },
-    parameters: {
-        controls: {
-            sort: 'alpha',
-        },
     },
     decorators: [Story => <div style={{ margin: 'auto', maxWidth: 500, width: '100%' }}>{Story()}</div>],
 };
