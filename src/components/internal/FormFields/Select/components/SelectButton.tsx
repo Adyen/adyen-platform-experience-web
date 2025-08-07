@@ -81,6 +81,8 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
             type={!filterable ? 'button' : undefined}
+            aria-label={props['aria-label']}
+            aria-labelledby={props['aria-labelledby']}
             aria-describedby={props.ariaDescribedBy}
             id={props.id ?? ''}
         >
