@@ -24,7 +24,7 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
-        locale: { control: 'select', options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'] },
+        locale: { control: 'select', options: ['de-DE', 'en-US', 'es-ES', 'fi-FI', 'it-IT'] },
         skipDecorators: {
             table: {
                 disable: true,
