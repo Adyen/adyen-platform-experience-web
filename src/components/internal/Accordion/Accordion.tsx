@@ -17,14 +17,17 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
     const [isExpanded, setIsExpanded] = useState(false);
     const accordionContentRef = useRef<HTMLDivElement>(null);
     const toggle = useCallback(() => setIsExpanded(isExpanded => !isExpanded), []);
+
     const uniqueId = useUniqueId();
+    const contentElementId = `accordion-content-${uniqueId}`;
+    const controllerElementId = `accordion-controller-${uniqueId}`;
 
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
             <div className={ACCORDION_HEADER_CLASS}>
                 <button
-                    id={`accordion-controller-${uniqueId}`}
-                    aria-controls={`accordion-content-${uniqueId}`}
+                    id={controllerElementId}
+                    aria-controls={contentElementId}
                     className={ACCORDION_HEADER_CONTAINER_CLASS}
                     onClick={toggle}
                     aria-expanded={isExpanded}
@@ -39,8 +42,8 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
             {
                 <div
                     role="region"
-                    id={`accordion-content-${uniqueId}`}
-                    aria-labelledby={`accordion-controller-${uniqueId}`}
+                    id={contentElementId}
+                    aria-labelledby={controllerElementId}
                     style={{ maxHeight: isExpanded ? accordionContentRef?.current?.offsetHeight : 0 }}
                     className={ACCORDION_CONTENT_CLASS}
                 >
