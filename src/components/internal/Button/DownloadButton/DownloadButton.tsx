@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import { VNode } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
@@ -51,7 +52,8 @@ function DownloadButton({
     onDownloadRequested,
     iconButton = false,
     errorMessage,
-}: DownloadButtonProps) {
+    ...ariaAttributeProps
+}: DownloadButtonProps & Pick<AriaAttributes, 'aria-describedby' | 'aria-label' | 'aria-labelledby'>) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -99,7 +101,7 @@ function DownloadButton({
                 })}
             >
                 {isSmContainer ? (
-                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
+                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...ariaAttributeProps}>
                         {buttonIcon}
                     </Button>
                 ) : (
@@ -113,6 +115,7 @@ function DownloadButton({
                         variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
                         onClick={onClick}
                         {...(!iconButton && { iconLeft: buttonIcon })}
+                        {...ariaAttributeProps}
                     >
                         {buttonLabel}
                     </Button>

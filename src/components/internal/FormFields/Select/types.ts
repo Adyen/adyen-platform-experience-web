@@ -1,5 +1,5 @@
 import { Ref, VNode } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
+import { AriaAttributes, HTMLAttributes } from 'preact/compat';
 import { CommitActionProperties } from '../../../../hooks/useCommitAction';
 
 type _Selected<T> = T | readonly T[];
@@ -17,7 +17,7 @@ export interface SelectItem<T extends string = string> {
     selectedOptionName?: string;
 }
 
-export interface SelectProps<T extends SelectItem> {
+export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     className?: string;
     classNameModifiers?: string[];
     filterable?: boolean;
@@ -42,7 +42,7 @@ export interface SelectProps<T extends SelectItem> {
     fixedPopoverPositioning?: boolean;
 }
 
-export interface SelectButtonProps<T extends SelectItem> {
+export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     active: readonly T[];
     ariaDescribedBy?: string;
     className?: string;

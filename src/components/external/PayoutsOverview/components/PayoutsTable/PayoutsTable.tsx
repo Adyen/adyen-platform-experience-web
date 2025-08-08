@@ -13,7 +13,7 @@ import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '../../../../../
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { getLabel } from '../../../../utils/getLabel';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
@@ -109,13 +109,23 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        if (!isSmAndUpContainer) return dateFormat(value, DATE_FORMAT_PAYOUTS_MOBILE);
-                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_PAYOUTS)}</Typography>;
+                        if (!isSmAndUpContainer) {
+                            return <time dateTime={value}>{dateFormat(value, DATE_FORMAT_PAYOUTS_MOBILE)}</time>;
+                        }
+                        return (
+                            value && (
+                                <time dateTime={value}>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(value, DATE_FORMAT_PAYOUTS)}
+                                    </Typography>
+                                </time>
+                            )
+                        );
                     },
                     fundsCapturedAmount: ({ value }) => {
                         return (
                             value && (
-                                <Typography variant={TypographyVariant.BODY}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                     {i18n.amount(value.value, value.currency, { hideCurrency: true })}
                                 </Typography>
                             )
@@ -124,7 +134,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     adjustmentAmount: ({ value }) => {
                         return (
                             value && (
-                                <Typography variant={TypographyVariant.BODY}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                     {i18n.amount(value.value, value.currency, { hideCurrency: true })}
                                 </Typography>
                             )
@@ -133,7 +143,11 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     payoutAmount: ({ value }) => {
                         return (
                             value && (
-                                <Typography variant={TypographyVariant.BODY} className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpContainer })}>
+                                <Typography
+                                    el={TypographyElement.SPAN}
+                                    variant={TypographyVariant.BODY}
+                                    className={cx({ [`${NET_PAYOUT_CLASS}--strong`]: !isSmAndUpContainer })}
+                                >
                                     {i18n.amount(value.value, value.currency, { hideCurrency: isSmAndUpContainer })}
                                 </Typography>
                             )
