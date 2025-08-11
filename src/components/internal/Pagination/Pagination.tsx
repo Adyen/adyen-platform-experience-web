@@ -1,14 +1,24 @@
 import Icon from '../Icon';
 import Button from '../Button';
 import Select from '../FormFields/Select';
-import classnames from 'classnames';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_ARRAY, isNullish } from '../../../utils';
 import { SelectItem } from '../FormFields/Select/types';
 import { ButtonVariant } from '../Button/types';
+import { Translation } from '../Translation';
 import { PaginationProps } from './types';
 import './Pagination.scss';
+
+const BASE_CLASS = 'adyen-pe-pagination';
+
+const classes = {
+    base: BASE_CLASS,
+    context: BASE_CLASS + '__context',
+    controls: BASE_CLASS + '__controls',
+    limit: BASE_CLASS + '__limit',
+    limitSelector: BASE_CLASS + '__limit-selector',
+};
 
 export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
     const { i18n } = useCoreContext();
@@ -27,26 +37,38 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
     );
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
-            <div className="adyen-pe-pagination__context">
+        <div className={classes.base}>
+            <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
                     <>
-                        <span>{i18n.get('pagination.showing')}</span>
-                        <div className="adyen-pe-pagination__limit-selector">
-                            <Select
-                                setToTargetWidth={true}
-                                filterable={false}
-                                multiSelect={false}
-                                items={_limitOptions}
-                                onChange={_onLimitChanged}
-                                selected={`${limit ?? ''}`}
+                        <div className={classes.limit} role="presentation">
+                            <Translation
+                                translationKey="pagination.showing"
+                                fills={{
+                                    limit: (
+                                        <div className={classes.limitSelector}>
+                                            <Select
+                                                setToTargetWidth={true}
+                                                filterable={false}
+                                                multiSelect={false}
+                                                items={_limitOptions}
+                                                onChange={_onLimitChanged}
+                                                selected={`${limit ?? ''}`}
+                                            />
+                                        </div>
+                                    ),
+                                }}
                             />
+                        </div>
+
+                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live={limit ? 'polite' : 'off'}>
+                            {limit && i18n.get('pagination.showing.notice', { values: { limit } })}
                         </div>
                     </>
                 )}
             </div>
 
-            <div className="adyen-pe-pagination__controls">
+            <div className={classes.controls}>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
