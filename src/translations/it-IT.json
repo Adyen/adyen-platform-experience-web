@@ -619,7 +619,6 @@
     "file": "File",
     "filter.date.since": "Dal %{date}",
     "filter.date.until": "Fino a %{date}",
-    "filterBar": "Barra dei filtri",
     "filterPlaceholder.category": "Tipo",
     "filterPlaceholder.currency": "Valuta",
     "filterPlaceholder.status": "Stato",
