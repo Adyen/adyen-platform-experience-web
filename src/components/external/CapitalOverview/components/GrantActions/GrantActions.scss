@@ -17,4 +17,10 @@
         gap: style.token(spacer-020);
         padding-left: style.token(spacer-070);
     }
+
+    &__actions-information {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
 }
