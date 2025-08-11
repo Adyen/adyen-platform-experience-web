@@ -16,7 +16,7 @@ import { DATE_FORMAT_DISPUTES } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { BASE_CLASS } from './constants';
 import { CustomColumn } from '../../../../types';
@@ -183,7 +183,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         const isUrgent = isDisputeActionNeededUrgently(item);
                         const renderDueDate = () => (
                             <>
-                                {dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES)}
+                                <time dateTime={item.dueDate!}>{dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES)}</time>
                                 {isUrgent && <Icon name={'warning-filled'} />}
                             </>
                         );
@@ -191,6 +191,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
                                 {item.dueDate ? (
                                     <Typography
+                                        el={TypographyElement.SPAN}
                                         variant={TypographyVariant.BODY}
                                         className={cx(classes.statusContent, {
                                             [classes.cellTextGrey]: isMobileContainer && !isUrgent,
@@ -214,7 +215,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     disputedAmount: ({ item }) => {
                         return (
                             item.amount && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
@@ -223,14 +224,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     createdAt: ({ item }) => {
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
-                                <Typography
-                                    variant={TypographyVariant.BODY}
+                                <time
+                                    dateTime={item.createdAt}
                                     className={cx(classes.statusContent, {
                                         [classes.cellTextGrey]: isMobileContainer,
                                     })}
                                 >
-                                    {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
-                                </Typography>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
+                                    </Typography>
+                                </time>
                                 {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
                             </div>
                         );
@@ -240,7 +243,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )

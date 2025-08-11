@@ -45,9 +45,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                                 <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
                                     {i18n.get('capital.termEnds')}
                                 </Typography>
-                                <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
-                                    {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
-                                </Typography>
+                                <time dateTime={grantConfig.repaymentPeriodEndDate.toISOString()}>
+                                    <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
+                                        {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
+                                    </Typography>
+                                </time>
                             </>
                         ) : grantConfig.statusKey ? (
                             grantConfig.statusTooltipKey ? (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '../components/types';
-import { uniqueId as _uniqueId } from '../utils';
+import useUniqueId from './useUniqueId';
 
 export type TabbedControlOptions<OptionId extends string> = readonly { id: OptionId; disabled?: boolean }[];
 
@@ -64,7 +64,7 @@ export const useTabbedControl = <OptionId extends string, Options extends Tabbed
     const activeOption: Options[number] = options[activeIndex]!;
     const activeOptionRef = useRef(activeOption);
     const optionElementsRef = useRef<(HTMLButtonElement | null)[]>([]);
-    const uniqueId = useRef(_uniqueId().replace(/.*?(?=\d+$)/, '')).current;
+    const uniqueId = useUniqueId();
 
     const refs = useMemo(() => {
         const refs = [] as ((el: HTMLButtonElement | null) => any)[];

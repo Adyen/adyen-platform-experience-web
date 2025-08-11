@@ -37,13 +37,6 @@
     overflow: hidden;
     position: relative;
 
-    &--active,
-    &:active {
-        &[role='button'] {
-            min-width: 100px;
-        }
-    }
-
     &.adyen-pe-button--secondary {
         background: style.token(color-background-primary);
         border: style.token(border-width-s) solid style.token(color-outline-secondary);
