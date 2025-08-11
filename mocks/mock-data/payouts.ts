@@ -299,6 +299,20 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                     },
                     category: 'fee',
                 },
+                {
+                    amount: {
+                        value: 100,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'IQD',
+                    },
+                    category: 'transfer',
+                },
             ],
         },
     },
@@ -340,6 +354,20 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         currency: 'EUR',
                     },
                     category: 'fee',
+                },
+                {
+                    amount: {
+                        value: 100,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'IQD',
+                    },
+                    category: 'transfer',
                 },
             ],
         },
@@ -383,6 +411,20 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                     },
                     category: 'fee',
                 },
+                {
+                    amount: {
+                        value: 100,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'IQD',
+                    },
+                    category: 'transfer',
+                },
             ],
         },
     },
@@ -394,7 +436,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 currency: 'EUR',
             },
             adjustmentAmount: {
-                value: -5000,
+                value: 5000,
                 currency: 'EUR',
             },
             payoutAmount: {
@@ -424,6 +466,20 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         currency: 'EUR',
                     },
                     category: 'fee',
+                },
+                {
+                    amount: {
+                        value: 100,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'IQD',
+                    },
+                    category: 'transfer',
                 },
             ],
         },
@@ -466,6 +522,20 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         currency: 'EUR',
                     },
                     category: 'fee',
+                },
+                {
+                    amount: {
+                        value: 100,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'IQD',
+                    },
+                    category: 'transfer',
                 },
             ],
         },
