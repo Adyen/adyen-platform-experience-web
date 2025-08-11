@@ -18,6 +18,7 @@ const isString = (content: string | VNode<any>) => {
 export const Tooltip = ({ content, children, triggerRef, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
     const controllerRef = useUniqueIdentifier();
     const { isVisible, listeners } = useTooltipListeners();
+    console.log('');
 
     return (
         <>
