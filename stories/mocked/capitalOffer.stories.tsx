@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/preact';
+import { EMPTY_SETUP_LEGAL_ENTITY_OBJECT } from '../utils/constants';
 import { ElementProps, ElementStory, SetupControls } from '../utils/types';
-import { capitalOfferWithSetupMeta } from '../components/capitalOffer';
+import { capitalOfferMeta, capitalOfferWithSetupMeta } from '../components/capitalOffer';
 import { CapitalOffer, CapitalOverview, ILegalEntity } from '../../src';
 import { CapitalOfferMockedResponses } from '../../mocks/mock-server/capital';
 
