@@ -1,11 +1,8 @@
-import { pages } from '../../playground/pages';
 import keys from '../../src/translations/en-US.json' assert { type: 'json' };
 import { Page } from '@playwright/test';
 import dotenv from 'dotenv';
-dotenv.config({ path: './envs/.env' });
 
-type PageId = (typeof pages)[number]['id'];
-export const getPagePath = (id: PageId) => pages.find(page => page.id === id)?.id ?? '';
+dotenv.config({ path: './envs/.env' });
 
 export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';
 
@@ -72,7 +69,6 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
 };
 
 export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
-    const baseURL = `http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html`;
     const { args, ...restOfParams } = params;
     const queryParams = new URLSearchParams({
         ...restOfParams,
@@ -84,7 +80,7 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
               }
             : {}),
     });
-    await page.goto(`${baseURL}?${queryParams.toString()}`);
+    await page.goto(`/iframe.html?${queryParams.toString()}`);
 };
 
 export const setTime = async (page: Page) => {

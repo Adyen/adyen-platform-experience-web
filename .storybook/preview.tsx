@@ -1,10 +1,8 @@
 import { Preview } from '@storybook/preact';
-import '../playground/assets/style/style.scss';
-import '../src/components/shared.scss';
+import { Container } from '../stories/utils/Container';
 import { getMockHandlers } from '../mocks/mock-server/utils/utils';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
-import { Container } from '../stories/utils/Container';
 
 initialize({}, [...getMockHandlers(mocks)]);
 

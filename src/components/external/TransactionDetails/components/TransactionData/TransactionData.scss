@@ -21,7 +21,7 @@
         }
 
         .adyen-pe-icon {
-            font-size: 16px;
+            font-size: style.$adyen-pe-svg-icon-size-base;
         }
     }
 
@@ -180,6 +180,14 @@
             display: flex;
             gap: style.token(spacer-040);
             margin-top: style.token(spacer-040);
+        }
+
+        .adyen-pe-icon {
+            font-size: style.$adyen-pe-svg-icon-size-base;
+
+            svg {
+                display: block;
+            }
         }
     }
 

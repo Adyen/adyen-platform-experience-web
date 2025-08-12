@@ -4,10 +4,10 @@
     --adyen-pe-separation-margin: #{style.token(spacer-060)};
     display: inline-flex;
     flex: none;
+    font-size: style.$adyen-pe-svg-icon-size-base;
 
     svg {
-        height: 100%;
-        width: auto;
+        display: block;
     }
 }
 

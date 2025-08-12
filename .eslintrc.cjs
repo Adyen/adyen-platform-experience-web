@@ -57,7 +57,6 @@ module.exports = {
             {
                 devDependencies: [
                     'stories/**/*',
-                    'playground/**/*',
                     'playwright/test',
                     'playwright.config.ts',
                     'config/vite.config.ts',
