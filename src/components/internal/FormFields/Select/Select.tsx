@@ -18,6 +18,7 @@ const Select = <T extends SelectItem>({
     popoverClassNameModifiers,
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
+    disableFocusTrap = false,
     multiSelect = false,
     readonly = false,
     onChange = noop,
@@ -59,19 +60,6 @@ const Select = <T extends SelectItem>({
             pendingClickOutsideTriggeredHideList.current = true;
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
-
-    //TODO: Clarify and delete this
-    // const selectContainerRef = useClickOutside(
-    //     useRef<HTMLDivElement>(null),
-    //     useCallback(() => {
-    //         setTextFilter('');
-    //         setShowList(false);
-    //         if (showList) {
-    //             resetSelection(cachedSelectedItems.current);
-    //             pendingClickOutsideTriggeredHideList.current = true;
-    //         }
-    //     }, [resetSelection, showList, setShowList, setTextFilter])
-    // );
 
     const dropdownClassName = useMemo(
         () =>
@@ -212,6 +200,7 @@ const Select = <T extends SelectItem>({
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
+                                item.tabIndex = 0;
                                 item.focus();
                                 break focus;
                             }
@@ -220,7 +209,10 @@ const Select = <T extends SelectItem>({
                         item = item.nextElementSibling as HTMLLIElement;
                     }
 
-                    if (firstAvailableItem) firstAvailableItem.focus();
+                    if (firstAvailableItem) {
+                        firstAvailableItem.tabIndex = 0;
+                        firstAvailableItem.focus();
+                    }
                 }
             });
         }
@@ -238,6 +230,7 @@ const Select = <T extends SelectItem>({
             switch (evt.code) {
                 case InteractionKeyCode.ESCAPE:
                     evt.preventDefault();
+                    evt.stopPropagation();
                     // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
                     closeList();
                     break;
@@ -250,6 +243,8 @@ const Select = <T extends SelectItem>({
                     let item = target.nextElementSibling as HTMLLIElement;
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                            target.tabIndex = -1;
+                            item.tabIndex = 0;
                             item.focus();
                             break;
                         }
@@ -263,6 +258,8 @@ const Select = <T extends SelectItem>({
                         let item = target.previousElementSibling as HTMLLIElement;
                         while (item) {
                             if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                                target.tabIndex = -1;
+                                item.tabIndex = 0;
                                 item.focus();
                                 break focus;
                             }
@@ -274,9 +271,6 @@ const Select = <T extends SelectItem>({
                     }
                     break;
                 }
-                case InteractionKeyCode.TAB:
-                    closeList();
-                    break;
                 default:
             }
         },
@@ -344,6 +338,7 @@ const Select = <T extends SelectItem>({
                 commitActions={commitActionButtons}
                 items={items}
                 multiSelect={multiSelect}
+                disableFocusTrap={disableFocusTrap}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
                 selectListId={selectListId.current}

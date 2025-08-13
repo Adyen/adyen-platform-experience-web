@@ -25,6 +25,7 @@ export interface SelectProps<T extends SelectItem> {
     isInvalid?: boolean;
     isValid?: boolean;
     items: readonly T[];
+    disableFocusTrap?: boolean;
     multiSelect?: boolean;
     name?: string;
     onChange: (...args: any[]) => any;
@@ -67,6 +68,7 @@ export interface SelectListProps<T extends SelectItem> {
     commitActions: CommitActionProperties['commitActionButtons'];
     items: readonly T[];
     multiSelect?: boolean;
+    disableFocusTrap: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
     renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
