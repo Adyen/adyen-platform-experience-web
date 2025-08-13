@@ -127,7 +127,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reference
             {
                 key: disputeDataKeys.disputeReference,
-                value: <CopyText type={'Default' as const} textToCopy={disputeReference} showCopyTextTooltip={false} />,
+                value: (
+                    <CopyText
+                        buttonLabelKey="disputes.copy.disputeReference"
+                        type={'Default' as const}
+                        textToCopy={disputeReference}
+                        showCopyTextTooltip={false}
+                    />
+                ),
                 id: 'disputeId',
             },
 
@@ -141,7 +148,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // psp reference
             {
                 key: disputeDataKeys.paymentReference,
-                value: <CopyText type={'Default' as const} textToCopy={paymentReference} showCopyTextTooltip={false} />,
+                value: (
+                    <CopyText
+                        buttonLabelKey="disputes.copy.paymentReference"
+                        type={'Default' as const}
+                        textToCopy={paymentReference}
+                        showCopyTextTooltip={false}
+                    />
+                ),
                 id: 'paymentPspReference',
             },
 
@@ -149,7 +163,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             merchantReference
                 ? {
                       key: disputeDataKeys.merchantReference,
-                      value: <CopyText type={'Default' as const} textToCopy={merchantReference} showCopyTextTooltip={false} />,
+                      value: (
+                          <CopyText
+                              buttonLabelKey="disputes.copy.merchantReference"
+                              type={'Default' as const}
+                              textToCopy={merchantReference}
+                              showCopyTextTooltip={false}
+                          />
+                      ),
                       id: 'paymentMerchantReference',
                   }
                 : SKIP_ITEM,

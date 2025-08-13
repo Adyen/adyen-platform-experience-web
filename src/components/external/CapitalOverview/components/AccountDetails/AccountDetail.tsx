@@ -11,6 +11,7 @@ export type AccountDetailProps = {
     className?: _ClassNameProp;
     content: string;
     contentClassName?: _ClassNameProp;
+    copyButtonLabel?: TranslationKey;
     textToCopy?: string;
     label: TranslationKey;
     labelClassName?: _ClassNameProp;
@@ -20,6 +21,7 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
     className,
     content,
     contentClassName,
+    copyButtonLabel,
     textToCopy,
     label,
     labelClassName,
@@ -34,7 +36,13 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
             </dt>
             <dd className={contentClassName}>
                 {textToCopy ? (
-                    <CopyText visibleText={content} textToCopy={textToCopy} showCopyTextTooltip={false} type={'Text' as const} />
+                    <CopyText
+                        buttonLabelKey={copyButtonLabel}
+                        visibleText={content}
+                        textToCopy={textToCopy}
+                        showCopyTextTooltip={false}
+                        type={'Text' as const}
+                    />
                 ) : (
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                         {content}
