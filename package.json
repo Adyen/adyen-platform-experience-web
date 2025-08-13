@@ -79,6 +79,7 @@
     "preact": "^10.13.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.9.0",
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "^2.28.1",
     "@changesets/get-github-info": "^0.6.0",
