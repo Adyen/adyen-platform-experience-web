@@ -34,7 +34,7 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
             </dt>
             <dd className={contentClassName}>
                 {textToCopy ? (
-                    <CopyText buttonLabel={content} textToCopy={textToCopy} showCopyTextTooltip={false} type={'Text' as const} />
+                    <CopyText visibleText={content} textToCopy={textToCopy} showCopyTextTooltip={false} type={'Text' as const} />
                 ) : (
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                         {content}
