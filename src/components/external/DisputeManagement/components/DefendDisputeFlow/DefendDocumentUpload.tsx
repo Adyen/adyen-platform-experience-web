@@ -20,7 +20,7 @@ export const DefendDocumentUpload = ({
     mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
-    const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};
+    const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]);
     const { removeFieldFromDefendPayload, addFileToDefendPayload } = useDisputeFlow();
     return (
         <div className="adyen-pe-defend-dispute-document-upload">
@@ -31,7 +31,7 @@ export const DefendDocumentUpload = ({
                     variant={TypographyVariant.BODY}
                     el={TypographyElement.DIV}
                 >
-                    {title || document}
+                    {title}
                 </Typography>
                 {primaryDescriptionItems && primaryDescriptionItems.length > 0
                     ? primaryDescriptionItems.map((desc, i) => {

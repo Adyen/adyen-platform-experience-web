@@ -158,7 +158,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defenseReason
                 ? {
                       key: disputeDataKeys.defenseReason,
-                      value: getDefenseReasonContent(i18n, defenseReason)?.title ?? defenseReason,
+                      value: getDefenseReasonContent(i18n, defenseReason).title,
                       id: 'defenseReason',
                   }
                 : SKIP_ITEM,
@@ -185,7 +185,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
-                                          <Tag label={getDefenseDocumentContent(i18n, document)?.title ?? document} />
+                                          <Tag label={getDefenseDocumentContent(i18n, document).title} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
                                               endpointName={'downloadDefenseDocument'}
