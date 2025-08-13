@@ -3,7 +3,7 @@ import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
 import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDetailsProps, BankAccountField } from './types';
-import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
+import { getAccountFieldCopyButtonLabelKey, getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
 import './AccountDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-account-details';
@@ -33,6 +33,7 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
                             contentClassName={CLASS_NAMES.detailContent}
                             labelClassName={CLASS_NAMES.detailLabel}
                             label={getAccountFieldTranslationKey(field)}
+                            copyButtonLabel={getAccountFieldCopyButtonLabelKey(field)}
                             content={getAccountFieldFormattedValue(field, fieldValue)!}
                             textToCopy={getAccountFieldTextToCopy(field, fieldValue)}
                         />

@@ -37,6 +37,20 @@ export const getAccountFieldFormattedValue = (field: string, value?: string) => 
     }
 };
 
+export const getAccountFieldCopyButtonLabelKey = (field: string): TranslationKey | undefined => {
+    switch (field) {
+        // Explicit list of copyable account fields
+        case 'iban':
+            return 'capital.sendRepayment.copyIban';
+        case 'accountNumber':
+            return 'capital.sendRepayment.copyAccountNumber';
+        case 'routingNumber':
+            return 'capital.sendRepayment.copyRoutingNumber';
+        case 'sortCode':
+            return 'capital.sendRepayment.copySortCode';
+    }
+};
+
 export const getAccountFieldTranslationKey = (field: string): TranslationKey => {
     switch (field) {
         case 'region':

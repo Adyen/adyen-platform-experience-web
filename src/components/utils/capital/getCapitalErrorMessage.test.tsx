@@ -1,8 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
-import { COMMON_CAPITAL_ERROR_MESSAGE, getCapitalErrorMessage } from './getCapitalErrorMessage'; // Update the path accordingly
+import { COMMON_CAPITAL_ERROR_MESSAGE, getCapitalErrorMessage } from './getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../../core/Http/utils';
-import CopyText from '../../internal/CopyText/CopyText';
 
 const UNDEFINED_ERROR = {
     title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
