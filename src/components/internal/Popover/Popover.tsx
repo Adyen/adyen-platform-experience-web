@@ -68,6 +68,7 @@ function Popover({
     fitPosition,
     fixedPositioning = false,
     additionalStyle,
+    setPopoverElement,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
@@ -178,12 +179,14 @@ function Popover({
                 <>
                     {showOverlay && <div className="adyen-pe-popover__overlay"></div>}
                     <div
-                        id="popover"
-                        ref={popoverElementWithId}
                         {...uncontrolledProps}
+                        ref={elem => {
+                            popoverElementWithId(elem);
+                            setPopoverElement?.(elem);
+                        }}
                         className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
-                        style={{ visibility: 'hidden' }}
                         role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
+                        style={{ visibility: 'hidden' }}
                     >
                         {(title || isDismissible) && (
                             <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>

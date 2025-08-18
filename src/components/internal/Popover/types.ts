@@ -31,6 +31,7 @@ export interface PopoverCoreProps {
     showOverlay?: boolean;
     fitPosition?: boolean;
     fixedPositioning?: boolean;
+    setPopoverElement?: (element: HTMLDivElement | null) => void;
     additionalStyle?: { minY?: number; maxY?: number };
 }
 
