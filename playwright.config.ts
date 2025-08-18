@@ -54,6 +54,14 @@ const config: PlaywrightTestConfig = {
             },
         },
         {
+            name: 'accessibility',
+            retries: 0,
+            testMatch: /(example)\.visual\.spec\.(tsx)$/, // allow-list more tests as migration is done
+            use: {
+                viewport: { width: 1280, height: 720 },
+            },
+        },
+        {
             name: 'local-chrome-e2e',
             testDir: 'tests/e2e',
             use: {
