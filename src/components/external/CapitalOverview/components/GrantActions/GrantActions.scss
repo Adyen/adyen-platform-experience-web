@@ -12,8 +12,15 @@
     &__actions-container {
         display: flex;
         flex-direction: column;
+        font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-stronger-font-weight);
         gap: style.token(spacer-020);
         padding-left: style.token(spacer-070);
+    }
+
+    &__actions-information {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
     }
 }
