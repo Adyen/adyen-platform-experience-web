@@ -23,11 +23,11 @@ echo "Build complete"
 
 echo "Verifying required paths exist..."
 if [ ! -d "$ASSETS_DIR" ]; then
-  echo "Error: Assets directory not found at '$PROJECT_ROOT/$ASSETS_DIR'. Aborting"
+  echo "Error: Assets directory not found at '$PROJECT_ROOT/$ASSETS_DIR'. Aborting" >&2
   exit 1
 fi
 if [ ! -f "$UMD_FILE" ]; then
-  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting"
+  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
   exit 1
 fi
 echo "All paths verified"
