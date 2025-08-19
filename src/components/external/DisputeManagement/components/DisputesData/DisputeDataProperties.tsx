@@ -111,7 +111,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // created at
             {
                 key: disputeDataKeys.openedOn,
-                value: dateFormat(createdAt, DATE_FORMAT_DISPUTE_DETAILS),
+                value: <time dateTime={createdAt}>{dateFormat(createdAt, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                 id: 'openedOn',
             },
 
@@ -119,7 +119,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && isActionableDispute
                 ? {
                       key: disputeDataKeys.respondBy,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={dueDate}>{dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'respondBy',
                   }
                 : SKIP_ITEM,
@@ -188,7 +188,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defendedOn
                 ? {
                       key: disputeDataKeys.defendedOn,
-                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={defendedOn}>{dateFormat(defendedOn, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'defendedOn',
                   }
                 : SKIP_ITEM,
@@ -224,6 +224,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                                   );
                                               }}
                                               onDownloadRequested={() => console.warn('Download failed for', document)}
+                                              aria-label={i18n.get('disputes.downloadEvidence')}
                                           />
                                       </div>
                                   );
@@ -238,7 +239,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
                 ? {
                       key: disputeDataKeys.acceptedOn,
-                      value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={acceptedDate}>{dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'acceptedOn',
                   }
                 : SKIP_ITEM,
@@ -247,7 +248,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && isExpiredDispute
                 ? {
                       key: disputeDataKeys.expiredOn,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={dueDate}>{dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'expiredOn',
                   }
                 : SKIP_ITEM,
