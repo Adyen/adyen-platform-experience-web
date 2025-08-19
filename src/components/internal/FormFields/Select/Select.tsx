@@ -35,6 +35,7 @@ const Select = <T extends SelectItem>({
     showOverlay = false,
     fitPosition,
     fixedPopoverPositioning,
+    ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -329,6 +330,7 @@ const Select = <T extends SelectItem>({
                 toggleList={toggleList}
                 withoutCollapseIndicator={withoutCollapseIndicator}
                 ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : undefined}
+                {...ariaAttributeProps}
             />
             <SelectList
                 popoverClassNameModifiers={popoverClassNameModifiers}
