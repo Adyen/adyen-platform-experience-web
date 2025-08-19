@@ -5,7 +5,7 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
-import noResults from '../../../images/no-results.svg';
+import noResults from '../../../assets/images/no-results.svg';
 import Button from '../Button';
 import cx from 'classnames';
 

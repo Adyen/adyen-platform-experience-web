@@ -7,7 +7,7 @@ import { DataGridColumn, DataGridProps } from './types';
 import SkeletonBody from './components/SkeletonBody';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
-import emptyTableIcon from '../../../images/no-data-female.svg';
+import emptyTableIcon from '../../../assets/images/no-data-female.svg';
 import { DataGridProvider } from './utils/DataGridProvider';
 import { useDataGridContext } from './hooks/useDataGridContext';
 import { TableHeaderCell } from './components/TableHeaderCell';

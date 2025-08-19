@@ -1,5 +1,5 @@
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
-import EN_US from './en-US.json';
+import EN_US from '../assets/translations/en-US.json';
 const _en_US = { ...EN_US };
 
 type _SupportedLocale = KeyOfRecord<typeof all_locales>;
@@ -26,16 +26,16 @@ export type TranslationOptions = {
 const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
     translationsPromise.then(({ default: translations }) => translations);
 
-export const da_DK = { da_DK: () => _getTranslations(import('./da-DK.json')) };
-export const de_DE = { de_DE: () => _getTranslations(import('./de-DE.json')) };
-export const es_ES = { es_ES: () => _getTranslations(import('./es-ES.json')) };
-export const fi_FI = { fi_FI: () => _getTranslations(import('./fi-FI.json')) };
-export const fr_FR = { fr_FR: () => _getTranslations(import('./fr-FR.json')) };
-export const it_IT = { it_IT: () => _getTranslations(import('./it-IT.json')) };
-export const nl_NL = { nl_NL: () => _getTranslations(import('./nl-NL.json')) };
-export const no_NO = { no_NO: () => _getTranslations(import('./no-NO.json')) };
-export const pt_BR = { pt_BR: () => _getTranslations(import('./pt-BR.json')) };
-export const sv_SE = { sv_SE: () => _getTranslations(import('./sv-SE.json')) };
+export const da_DK = { da_DK: () => _getTranslations(import('../assets/translations/da-DK.json')) };
+export const de_DE = { de_DE: () => _getTranslations(import('../assets/translations/de-DE.json')) };
+export const es_ES = { es_ES: () => _getTranslations(import('../assets/translations/es-ES.json')) };
+export const fi_FI = { fi_FI: () => _getTranslations(import('../assets/translations/fi-FI.json')) };
+export const fr_FR = { fr_FR: () => _getTranslations(import('../assets/translations/fr-FR.json')) };
+export const it_IT = { it_IT: () => _getTranslations(import('../assets/translations/it-IT.json')) };
+export const nl_NL = { nl_NL: () => _getTranslations(import('../assets/translations/nl-NL.json')) };
+export const no_NO = { no_NO: () => _getTranslations(import('../assets/translations/no-NO.json')) };
+export const pt_BR = { pt_BR: () => _getTranslations(import('../assets/translations/pt-BR.json')) };
+export const sv_SE = { sv_SE: () => _getTranslations(import('../assets/translations/sv-SE.json')) };
 
 export const en_US = { en_US: _en_US as Translations };
 
