@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
 
     return {
         build: {
-            minify: isUmdBuild ? false : true,
+            minify: true,
             lib: {
                 name: 'AdyenPlatformExperienceWeb',
                 entry: resolve(__dirname, './src/index.ts'),
