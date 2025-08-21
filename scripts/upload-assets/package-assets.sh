@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+trap 'rm -rf -- "$STAGING_DIR"' EXIT
 
 # Determine the absolute path of the directory containing this script
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -15,7 +16,7 @@ ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./src/assets"
 UMD_FILE="./dist/umd/index.js"
-STAGING_DIR=$(mktemp -d) # A temporary directory for preparing the archive
+STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
 npm run "$BUILD_SCRIPT"
@@ -34,9 +35,6 @@ echo "All paths verified"
 
 echo "Preparing staging directory for archive"
 
-rm -rf "$STAGING_DIR"
-mkdir -p "$STAGING_DIR"
-
 echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
 cp "$UMD_FILE" "$STAGING_DIR/index.js"
@@ -46,7 +44,6 @@ echo "Creating archive: $ARCHIVE_NAME"
 tar -czvf "$ARCHIVE_NAME" -C "$STAGING_DIR" .
 
 echo "Cleaning up staging directory..."
-rm -rf "$STAGING_DIR"
 
 echo "✅ Archive created successfully!"
 echo "    -> $PROJECT_ROOT/$ARCHIVE_NAME"
