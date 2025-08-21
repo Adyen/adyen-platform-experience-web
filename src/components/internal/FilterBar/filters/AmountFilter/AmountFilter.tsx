@@ -24,11 +24,11 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             const currencyCode = selectedCurrencies?.[0] || availableCurrencies?.[0];
             const options =
                 showSymbol && currencyCode
-                    ? {
+                    ? ({
                           style: 'currency',
                           currency: currencyCode,
                           currencyDisplay: 'symbol',
-                      }
+                      } as const)
                     : undefined;
             return amount.toLocaleString(i18n.locale, options);
         },
