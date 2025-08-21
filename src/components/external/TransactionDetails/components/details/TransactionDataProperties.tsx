@@ -59,7 +59,12 @@ const TransactionDataProperties = () => {
             {
                 key: 'referenceID' as const,
                 value: (
-                    <CopyText buttonLabelKey="transactions.copy.referenceId" type={'Default' as const} textToCopy={id} showCopyTextTooltip={false} />
+                    <CopyText
+                        copyButtonAriaLabelKey="transactions.copy.referenceId"
+                        type={'Default' as const}
+                        textToCopy={id}
+                        showCopyTextTooltip={false}
+                    />
                 ),
                 id: 'id',
             },

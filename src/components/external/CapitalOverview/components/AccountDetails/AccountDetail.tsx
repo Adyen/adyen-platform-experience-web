@@ -37,7 +37,7 @@ export const AccountDetail: FunctionalComponent<AccountDetailProps> = ({
             <dd className={contentClassName}>
                 {textToCopy ? (
                     <CopyText
-                        buttonLabelKey={copyButtonLabel}
+                        copyButtonAriaLabelKey={copyButtonLabel}
                         visibleText={content}
                         textToCopy={textToCopy}
                         showCopyTextTooltip={false}

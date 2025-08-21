@@ -10,7 +10,7 @@ import { Tooltip } from '../Tooltip/Tooltip';
 import './CopyText.scss';
 
 type CopyTextProps = {
-    buttonLabelKey?: TranslationKey;
+    copyButtonAriaLabelKey?: TranslationKey;
     isHovered?: boolean;
     showCopyTextTooltip?: boolean;
     type?: 'Link' | 'Text' | 'Default';
@@ -31,11 +31,19 @@ const classes = {
     text: BASE_CLASSNAME + '__text',
 };
 
-const CopyText = ({ buttonLabelKey, isHovered, textToCopy, visibleText, showCopyTextTooltip = true, type = 'Link', ...restProps }: CopyTextProps) => {
+const CopyText = ({
+    copyButtonAriaLabelKey,
+    isHovered,
+    textToCopy,
+    visibleText,
+    showCopyTextTooltip = true,
+    type = 'Link',
+    ...restProps
+}: CopyTextProps) => {
     const { i18n } = useCoreContext();
     const [isCopied, setIsCopied] = useState(false);
     const resetIsCopied = useCallback(() => setIsCopied(false), []);
-    const copyButtonLabel = useMemo(() => i18n.get(buttonLabelKey ?? 'copy'), [i18n, buttonLabelKey]);
+    const copyButtonLabel = useMemo(() => i18n.get(copyButtonAriaLabelKey ?? 'copy'), [i18n, copyButtonAriaLabelKey]);
 
     const onClick = useCallback(async () => {
         if (textToCopy) {

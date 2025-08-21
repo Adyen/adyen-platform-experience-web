@@ -129,7 +129,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 key: disputeDataKeys.disputeReference,
                 value: (
                     <CopyText
-                        buttonLabelKey="disputes.copy.disputeReference"
+                        copyButtonAriaLabelKey="disputes.copy.disputeReference"
                         type={'Default' as const}
                         textToCopy={disputeReference}
                         showCopyTextTooltip={false}
@@ -150,7 +150,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 key: disputeDataKeys.paymentReference,
                 value: (
                     <CopyText
-                        buttonLabelKey="disputes.copy.paymentReference"
+                        copyButtonAriaLabelKey="disputes.copy.paymentReference"
                         type={'Default' as const}
                         textToCopy={paymentReference}
                         showCopyTextTooltip={false}
@@ -165,7 +165,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                       key: disputeDataKeys.merchantReference,
                       value: (
                           <CopyText
-                              buttonLabelKey="disputes.copy.merchantReference"
+                              copyButtonAriaLabelKey="disputes.copy.merchantReference"
                               type={'Default' as const}
                               textToCopy={merchantReference}
                               showCopyTextTooltip={false}
