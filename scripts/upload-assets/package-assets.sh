@@ -15,7 +15,7 @@ ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./src/assets"
 UMD_FILE="./dist/umd/index.js"
-STAGING_DIR="./archive_staging" # A temporary directory for preparing the archive
+STAGING_DIR=$(mktemp -d) # A temporary directory for preparing the archive
 
 echo "Running the build process from directory: $(pwd)"
 npm run "$BUILD_SCRIPT"
