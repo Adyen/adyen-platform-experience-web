@@ -18,18 +18,26 @@ export default defineConfig(({ mode }) => {
 
     const { api, app } = getEnvironment(mode);
 
+    const assetsDir = resolve(__dirname, 'src/assets');
+    const translationsDir = resolve(assetsDir, 'translations');
+    const enUsFile = resolve(translationsDir, 'en-US.json');
+    const translationsIndexFile = resolve(translationsDir, 'index.ts');
+
     const shouldExcludeAsset = (id: string) => {
         if (externalDependencies.includes(id)) {
             return true;
         }
-        // Allow these specific files
-        if (id.includes('src/assets/translations/en-US.json') || id.includes('src/assets/translations/index.ts')) {
+
+        // Allow specific files from assets to be bundled.
+        if (id === enUsFile || id === translationsIndexFile) {
             return false;
         }
-        // Exclude everything else in src/assets
-        if (id.includes('src/assets/')) {
+
+        // Exclude all other files from the assets directory.
+        if (id.startsWith(assetsDir)) {
             return true;
         }
+
         return false;
     };
 
