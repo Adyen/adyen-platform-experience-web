@@ -20,12 +20,34 @@ const classes = {
     limitSelector: BASE_CLASS + '__limit-selector',
 };
 
-export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
+export default function Pagination({
+    next,
+    hasNext,
+    hasPrev,
+    prev,
+    pageSize,
+    limit,
+    limitOptions,
+    onLimitSelection,
+    limitSelectorAriaLabelKey,
+    pageLimitStatusKey,
+    pageSizeStatusKey,
+}: PaginationProps) {
     const { i18n } = useCoreContext();
 
     const _limitOptions = useMemo(
-        () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` } as SelectItem))),
-        [limitOptions]
+        () =>
+            limitOptions &&
+            Object.freeze(
+                limitOptions.map(
+                    option =>
+                        ({
+                            name: option.toLocaleString(i18n.locale, { style: 'decimal' }),
+                            id: String(option),
+                        }) as SelectItem
+                )
+            ),
+        [i18n, limitOptions]
     );
 
     const _onLimitChanged = useCallback(
@@ -43,9 +65,9 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                     <>
                         <div className={classes.limit} role="presentation">
                             <Translation
-                                translationKey="pagination.showing"
+                                translationKey="pagination.showing.pageLimit"
                                 fills={{
-                                    limit: (
+                                    pageLimit: (
                                         <div className={classes.limitSelector}>
                                             <Select
                                                 setToTargetWidth={true}
@@ -54,6 +76,7 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                                                 items={_limitOptions}
                                                 onChange={_onLimitChanged}
                                                 selected={`${limit ?? ''}`}
+                                                aria-label={i18n.get(limitSelectorAriaLabelKey ?? 'pagination.selector.label')}
                                             />
                                         </div>
                                     ),
@@ -61,8 +84,10 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                             />
                         </div>
 
-                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live={limit ? 'polite' : 'off'}>
-                            {limit && i18n.get('pagination.showing.notice', { values: { limit } })}
+                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live="polite">
+                            {pageSize !== undefined
+                                ? i18n.get(pageSizeStatusKey ?? 'pagination.showing.pageSizeStatus', { values: { pageSize } })
+                                : limit && i18n.get(pageLimitStatusKey ?? 'pagination.showing.pageLimitStatus', { values: { pageLimit: limit } })}
                         </div>
                     </>
                 )}
