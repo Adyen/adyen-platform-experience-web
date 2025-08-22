@@ -29,6 +29,7 @@ export default function Pagination({
     limit,
     limitOptions,
     onLimitSelection,
+    ariaLabelKey,
     limitSelectorAriaLabelKey,
     pageLimitStatusKey,
     pageSizeStatusKey,
@@ -59,7 +60,7 @@ export default function Pagination({
     );
 
     return (
-        <div className={classes.base}>
+        <div role="region" aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
             <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
                     <>

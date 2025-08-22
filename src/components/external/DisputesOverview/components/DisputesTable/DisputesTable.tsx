@@ -280,6 +280,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     <DataGrid.Footer>
                         <Pagination
                             {...paginationProps}
+                            ariaLabelKey="disputes.pagination"
                             limitSelectorAriaLabelKey={limitSelectorAriaLabelKey}
                             pageLimitStatusKey={pageLimitStatusKey}
                             pageSizeStatusKey={pageSizeStatusKey}
