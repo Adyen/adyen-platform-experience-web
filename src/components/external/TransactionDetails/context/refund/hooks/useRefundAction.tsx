@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'preact/hooks';
+import useAnalyticsContext from '../../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import AuthSession from '../../../../../../core/ConfigContext/session/AuthSession';
 import { ActiveView } from '../../types';
@@ -22,6 +23,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
     transactionId,
 }: T) => {
     const { i18n } = useCoreContext();
+    const userEvents = useAnalyticsContext();
 
     const refundAmountLabel = useMemo(() => {
         const formattedAmount = i18n.amount(amount.value, amount.currency);
@@ -66,12 +68,17 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                 refundParams
             )
                 .then(() => {
+                    userEvents.addEvent('Completed refund', {
+                        refundReason: refundReason,
+                        category: 'Transaction component',
+                        subCategory: 'Transaction details',
+                    });
                     setActiveView(ActiveView.REFUND_SUCCESS);
                 })
                 .catch(() => {
                     setActiveView(ActiveView.REFUND_ERROR);
                 }),
-        [refundTransaction, refundParams, refundPayload, setActiveView]
+        [refundTransaction, refundParams, refundPayload, refundReason, setActiveView, userEvents]
     );
 
     const refundActionLabel = useMemo(() => {

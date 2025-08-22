@@ -1,3 +1,4 @@
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
@@ -46,6 +47,7 @@ export const TransactionsOverview = ({
     const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
+    const userEvents = useAnalyticsContext();
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -95,10 +97,21 @@ export const TransactionsOverview = ({
         setAvailableCurrencies(currencies);
         setIsAvailableCurrenciesFetching(isFetching);
     }, []);
+
     const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
         {
             filters,
-            updateFilters,
+            updateFilters: e => {
+                if (e.categories && e.categories !== filters[FilterParam.CATEGORIES]) {
+                    userEvents.addEvent('Modified filter', {
+                        actionType: 'update',
+                        label: 'Category filter',
+                        category: 'Transaction component',
+                        subCategory: 'Filter',
+                    });
+                }
+                updateFilters(e);
+            },
         },
         availableCurrencies
     );
@@ -189,7 +202,16 @@ export const TransactionsOverview = ({
                     refreshNowTimestamp={refreshNowTimestamp}
                     sinceDate={sinceDate}
                     timezone={activeBalanceAccount?.timeZone}
-                    updateFilters={updateFilters}
+                    updateFilters={e => {
+                        if (e.createdSince !== filters[FilterParam.CREATED_SINCE] || e.createdUntil !== filters[FilterParam.CREATED_UNTIL])
+                            userEvents.addEvent('Modified filter', {
+                                actionType: 'update',
+                                label: 'Date filter',
+                                category: 'Transaction component',
+                                subCategory: 'Filter',
+                            });
+                        updateFilters(e);
+                    }}
                 />
                 {/* Remove status filter temporarily */}
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
@@ -201,7 +223,17 @@ export const TransactionsOverview = ({
                     label={i18n.get('amount')}
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
-                    updateFilters={updateFilters}
+                    updateFilters={e => {
+                        if (e.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e.minAmount !== filters[FilterParam.MIN_AMOUNT]) {
+                            userEvents.addEvent('Modified filter', {
+                                actionType: 'update',
+                                label: 'Amount filter',
+                                category: 'Transaction component',
+                                subCategory: 'Filter',
+                            });
+                        }
+                        updateFilters(e);
+                    }}
                     onChange={updateFilters}
                 />
                 <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />

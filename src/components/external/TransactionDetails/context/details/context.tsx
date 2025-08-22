@@ -1,6 +1,7 @@
 import { memo } from 'preact/compat';
 import { createContext } from 'preact';
 import { useCallback, useContext, useEffect, useMemo } from 'preact/hooks';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Icon from '../../../../internal/Icon';
@@ -40,6 +41,7 @@ export const TransactionDetailsProvider = memo(
     }: TransactionDetailsProviderProps) => {
         const { i18n } = useCoreContext();
         const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
+        const userEvents = useAnalyticsContext();
 
         const primaryActionLabel = useMemo(() => ({ title: i18n.get('refundAction') }), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
@@ -58,11 +60,21 @@ export const TransactionDetailsProvider = memo(
         const secondaryAction = useCallback(() => {
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
+                    userEvents.addEvent('Clicked button', {
+                        label: 'Return to refund',
+                        category: 'Transaction component',
+                        subCategory: 'Transaction details',
+                    });
                     return void backward();
                 case TransactionNavigationAction.FORWARD:
+                    userEvents.addEvent('Clicked button', {
+                        label: 'Go to payment',
+                        category: 'Transaction component',
+                        subCategory: 'Transaction details',
+                    });
                     return void forward();
             }
-        }, [_secondaryAction, backward, forward]);
+        }, [_secondaryAction, backward, forward, userEvents]);
 
         const secondaryActionLabel = useMemo(() => {
             switch (_secondaryAction) {

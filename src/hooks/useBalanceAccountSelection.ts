@@ -1,3 +1,4 @@
+import useAnalyticsContext from '../core/Context/analytics/useAnalyticsContext';
 import { capitalize, uniqueId } from '../utils';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
@@ -8,8 +9,10 @@ export const ALL_BALANCE_ACCOUNTS_SELECTION_ID = uniqueId();
 
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], allowAllSelection = false) => {
     const { i18n } = useCoreContext();
+    const [isFilterChanged, setIsFilterChanged] = useState<boolean>(false);
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
+    const userEvents = useAnalyticsContext();
 
     const allBalanceAccounts = useMemo(
         () =>
@@ -49,9 +52,21 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
         ({ target }: any) => {
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
-            if (index! >= 0) setSelectedBalanceAccountIndex(index!);
+            if (index! >= 0) {
+                setSelectedBalanceAccountIndex(index!);
+                if (isFilterChanged) {
+                    userEvents.addEvent('Modified filter', {
+                        actionType: 'update',
+                        label: 'Balance account filter',
+                        category: 'Transaction component',
+                        subCategory: 'Filter',
+                        value: balanceAccountId,
+                    });
+                }
+                setIsFilterChanged(true);
+            }
         },
-        [allBalanceAccounts]
+        [allBalanceAccounts, userEvents, isFilterChanged]
     );
 
     return { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection, resetBalanceAccountSelection } as const;

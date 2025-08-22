@@ -6,6 +6,7 @@ import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UI
 import './UIElement.scss';
 import cx from 'classnames';
 import { createRef, RefObject } from 'preact';
+import { AnalyticsProvider } from '../../../core/Context/analytics/AnalyticsProvider';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -94,11 +95,13 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     externalErrorHandler={externalErrorHandler}
                     componentRef={this.compRef}
                 >
-                    {this.componentToRender && (
-                        <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
-                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
-                        </div>
-                    )}
+                    <AnalyticsProvider componentName={this.displayName}>
+                        {this.componentToRender && (
+                            <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                                <div className="adyen-pe-component__container">{this.componentToRender()}</div>
+                            </div>
+                        )}
+                    </AnalyticsProvider>
                 </CoreProvider>
             </ConfigProvider>
         );

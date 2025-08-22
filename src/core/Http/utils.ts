@@ -47,6 +47,8 @@ export const getRequestBodyForContentType = (body: any, contentType: string) => 
             return JSON.stringify(body);
         case 'multipart/form-data':
             return body instanceof FormData ? body : new FormData();
+        case 'application/x-www-form-urlencoded':
+            return body;
         default:
             return String(body);
     }

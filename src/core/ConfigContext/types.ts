@@ -80,4 +80,5 @@ export interface SetupContextObject {
         [K in EndpointName]?: EndpointHttpCallable<K>;
     };
     readonly extraConfig: DeepReadonly<Omit<SetupResponse, 'endpoints'>>;
+    readonly getAnalytics: () => Promise<any>;
 }
