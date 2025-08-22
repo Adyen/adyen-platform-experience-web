@@ -285,7 +285,7 @@ export const DisputesOverview = ({
                     )}
                 </div>
 
-                <FilterBar {...filterBarState}>
+                <FilterBar {...filterBarState} ariaLabelKey="disputes.filters">
                     <BalanceAccountSelector
                         activeBalanceAccount={activeBalanceAccount}
                         balanceAccountSelectionOptions={balanceAccountSelectionOptions}
