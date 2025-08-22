@@ -95,6 +95,30 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
+    let limitSelectorAriaLabelKey: TranslationKey | undefined = undefined;
+    let pageLimitStatusKey: TranslationKey | undefined = undefined;
+    let pageSizeStatusKey: TranslationKey | undefined = undefined;
+
+    if (showPagination) {
+        switch (statusGroup) {
+            case 'CHARGEBACKS':
+                limitSelectorAriaLabelKey = 'disputes.pagination.chargebacks.limitSelectorLabel';
+                pageLimitStatusKey = 'disputes.pagination.chargebacks.pageLimitStatus';
+                pageSizeStatusKey = 'disputes.pagination.chargebacks.pageSizeStatus';
+                break;
+            case 'FRAUD_ALERTS':
+                limitSelectorAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelectorLabel';
+                pageLimitStatusKey = 'disputes.pagination.fraudAlerts.pageLimitStatus';
+                pageSizeStatusKey = 'disputes.pagination.fraudAlerts.pageSizeStatus';
+                break;
+            case 'ONGOING_AND_CLOSED':
+                limitSelectorAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelectorLabel';
+                pageLimitStatusKey = 'disputes.pagination.ongoingAndClosed.pageLimitStatus';
+                pageSizeStatusKey = 'disputes.pagination.ongoingAndClosed.pageSizeStatus';
+                break;
+        }
+    }
+
     const columns = useTableColumns({
         fields: FIELDS,
         fieldsKeys: FIELD_KEYS,
@@ -145,8 +169,9 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
-        () => () =>
-            <DataOverviewError error={error} errorMessage={'disputes.error.weCouldNotLoadYourDisputes'} onContactSupport={onContactSupport} />,
+        () => () => (
+            <DataOverviewError error={error} errorMessage={'disputes.error.weCouldNotLoadYourDisputes'} onContactSupport={onContactSupport} />
+        ),
         [error, onContactSupport]
     );
 
@@ -253,7 +278,12 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            limitSelectorAriaLabelKey={limitSelectorAriaLabelKey}
+                            pageLimitStatusKey={pageLimitStatusKey}
+                            pageSizeStatusKey={pageSizeStatusKey}
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

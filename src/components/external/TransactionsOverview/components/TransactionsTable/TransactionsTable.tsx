@@ -150,7 +150,12 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            limitSelectorAriaLabelKey="transactions.pagination.limitSelectorLabel"
+                            pageLimitStatusKey="transactions.pagination.pageLimitStatus"
+                            pageSizeStatusKey="transactions.pagination.pageSizeStatus"
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>
