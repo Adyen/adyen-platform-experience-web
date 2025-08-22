@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../translations';
@@ -9,7 +10,7 @@ import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../../constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue, StructuredListProps } from '../../../internal/StructuredList/types';
-import { TypographyVariant } from '../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
@@ -29,8 +30,8 @@ import {
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
-    PD_TITLE_CONTAINER_CLASS,
     PD_TITLE_CLASS_WITH_EXTRA_DETAILS,
+    PD_TITLE_CONTAINER_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
 import { Tag } from '../../../internal/Tag/Tag';
@@ -38,7 +39,6 @@ import { TagVariant } from '../../../internal/Tag/types';
 import Link from '../../../internal/Link/Link';
 import Icon from '../../../internal/DataGrid/components/Icon';
 import { isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
-import cx from 'classnames';
 import { ButtonVariant } from '../../../internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
@@ -86,16 +86,19 @@ export const PayoutData = ({
     }, [i18n, payoutData]);
 
     const fundsCaptured = useMemo(() => {
-        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
-            if (breakdown?.amount?.value === 0) return items;
-            if (breakdown?.amount?.value && breakdown.category) {
-                items.push({
-                    key: breakdown.category as TranslationKey,
-                    value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
-                });
-            }
-            return items;
-        }, [] as { key: TranslationKey; value: ListValue }[]);
+        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce(
+            (items, breakdown) => {
+                if (breakdown?.amount?.value === 0) return items;
+                if (breakdown?.amount?.value && breakdown.category) {
+                    items.push({
+                        key: breakdown.category as TranslationKey,
+                        value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
+                    });
+                }
+                return items;
+            },
+            [] as { key: TranslationKey; value: ListValue }[]
+        );
         data?.sort((a, b) => {
             if (a.key === 'capture') return -1;
             if (b.key === 'capture') return 1;
@@ -103,11 +106,6 @@ export const PayoutData = ({
         });
         return data;
     }, [payoutData, i18n]);
-
-    const creationDate = useMemo(
-        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUT_DETAILS) : ''),
-        [payout, dateFormat]
-    );
 
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
@@ -156,7 +154,13 @@ export const PayoutData = ({
                                 hideCurrency: true,
                             })} ${payout.payoutAmount.currency}`}
                         </Typography>
-                        <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
+                        {payout?.createdAt && (
+                            <time dateTime={payout.createdAt}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {dateFormat(payout.createdAt, DATE_FORMAT_PAYOUT_DETAILS)}
+                                </Typography>
+                            </time>
+                        )}
                         <div className={PD_SECTION_CLASS}>
                             {balanceAccountDescription && (
                                 <Typography variant={TypographyVariant.CAPTION} stronger wide>

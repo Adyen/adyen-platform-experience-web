@@ -73,8 +73,8 @@ const DisputeDataAlert = ({
                 type === 'REQUEST_FOR_INFORMATION'
                     ? 'disputes.contactSupport.toDefendRequestForInformation'
                     : type === 'NOTIFICATION_OF_FRAUD'
-                    ? 'disputes.contactSupport.toResolveNotificationOfFraud'
-                    : 'disputes.contactSupport.toDefendDispute';
+                      ? 'disputes.contactSupport.toResolveNotificationOfFraud'
+                      : 'disputes.contactSupport.toDefendDispute';
 
             return (
                 <Alert
@@ -90,9 +90,11 @@ const DisputeDataAlert = ({
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
-                                                    {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
-                                                </Typography>
+                                                <time dateTime={dueDate}>
+                                                    <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
+                                                        {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
+                                                    </Typography>
+                                                </time>
                                             ),
                                         }}
                                     />

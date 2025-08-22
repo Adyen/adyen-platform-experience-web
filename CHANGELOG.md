@@ -1,5 +1,21 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.7.1
+
+### Patch Changes
+
+-   70f7b00: In the Capital Overview component, we have added translations for the new step to submit extra details for grants exceeding €25,000. These are now available in 10 languages
+
+## 1.7.0
+
+### Minor Changes
+
+-   11b962b: In the Capital Overview components, we have updated the grant limit and streamlined the application process for a smoother experience. The grant limit was increased from €25,000 to €50,000. For grants exceeding €25,000, a new required step was added to the application flow, making it easier to submit necessary details.
+
+### Patch Changes
+
+-   66dde05: We fixed an issue with the balance account selector where balance account description and ID were both rendered on the same line for sufficiently wide dropdown menu container.
+
 ## 1.6.1
 
 ### Patch Changes

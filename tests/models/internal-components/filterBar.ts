@@ -1,4 +1,5 @@
-import { Locator, Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { getTranslatedKey } from '../../utils/utils';
 
 class FilterBarPage {
     public rootElement: Locator;

@@ -25,7 +25,9 @@ export const getErrorMessage = (
                 title: 'somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [secondaryErrorMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };
