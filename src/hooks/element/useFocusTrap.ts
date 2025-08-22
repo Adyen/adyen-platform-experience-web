@@ -6,7 +6,7 @@ import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
 
-const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (interactionKeyPressed: boolean) => any) => {
+const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
     const focusElement = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
@@ -86,20 +86,20 @@ const useFocusTrap = (rootElementRef: Nullable<Reflexable<Element>>, onEscape: (
         };
     }, []);
 
-    return useReflex<Element>(
+    return useReflex<T>(
         useCallback((current, previous) => {
             if (previous instanceof Element) {
-                (previous as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
-                (previous as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
-                (previous as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
-                (current as HTMLElement).removeEventListener('click', onClickCapture, true);
+                (previous as unknown as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
+                (previous as unknown as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
+                (previous as unknown as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
+                (current as unknown as HTMLElement).removeEventListener('click', onClickCapture, true);
             }
 
             if (current instanceof Element) {
-                (current as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
-                (current as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
-                (current as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
-                (current as HTMLElement).addEventListener('click', onClickCapture, true);
+                (current as unknown as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
+                (current as unknown as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
+                (current as unknown as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
+                (current as unknown as HTMLElement).addEventListener('click', onClickCapture, true);
                 escapedFocus.current = false;
                 tabbableRoot.root = current;
             } else tabbableRoot.root = null;

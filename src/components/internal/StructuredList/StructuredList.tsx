@@ -1,7 +1,5 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../translations';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import {
@@ -33,13 +31,14 @@ export default function StructuredList({
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
     }, [layout]);
+
     const formattedItems = useStructuredListItems(items);
-    const { i18n } = useCoreContext();
 
     return (
-        <dl aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })}>
+        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })}>
             {formattedItems.map((item, index) => (
                 <div
+                    data-testid={item.label}
                     key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
@@ -47,13 +46,9 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
-                        {renderLabel ? (
-                            renderLabel(item.label, items[index]!.key)
-                        ) : (
-                            <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
-                        )}
+                        {renderLabel ? renderLabel(item.label, item.key) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
                     </dt>
-                    <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
+                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
                         {renderValue ? (
                             renderValue(item.value, item.key, item.type, item.config)
                         ) : (

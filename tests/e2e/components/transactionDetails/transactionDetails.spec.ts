@@ -15,7 +15,7 @@ const test = base.extend<{
 
 test('should show correct balance account ID', async ({ transactionDetailsPage, page }) => {
     await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
-    await expect(transactionDetailsPage.transactionValue).toHaveText('EVJN42CKX223223N5LV3B7V5VK2LT8EUR');
+    await expect(transactionDetailsPage.referenceId).toHaveText('EVJN42CKX223223N5LV3B7V5VK2LT8EUR');
     const copyIcon = page.getByTestId('copy-icon');
     await expect(copyIcon).toBeVisible();
 });
@@ -36,7 +36,7 @@ test('should go to payment details after button click', async ({ transactionDeta
     await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
     const goToPayment = page.getByLabel('Go to payment');
     await goToPayment.click();
-    await expect(transactionDetailsPage.transactionValue).toHaveText('EVJN4296S223223N5LQZCW83BL63NREUR');
+    await expect(transactionDetailsPage.referenceId).toHaveText('EVJN4296S223223N5LQZCW83BL63NREUR');
     await expect(page.getByText('The full amount has been refunded back to the customer')).toBeVisible();
     const refundType = page.getByText(getTranslatedKey('refunded.full'));
     await expect(refundType).toHaveText('Fully refunded');
@@ -51,5 +51,5 @@ test('should return to refund details after button click', async ({ transactionD
     const returnToRefund = page.getByLabel('Return to refund');
     await expect(returnToRefund).toHaveText(getTranslatedKey('refund.returnToRefund'));
     await returnToRefund.click();
-    await expect(transactionDetailsPage.transactionValue).toHaveText('EVJN42CKX223223N5LV3B7V5VK2LT8EUR');
+    await expect(transactionDetailsPage.referenceId).toHaveText('EVJN42CKX223223N5LV3B7V5VK2LT8EUR');
 });
