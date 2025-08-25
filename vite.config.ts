@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
     const isDevMode = mode === 'development';
     const isUmdBuild = mode === 'umd';
+    const isTestEnv = process.env.TEST_ENV === '1';
 
     const { api, app } = getEnvironment(mode);
 
@@ -92,6 +93,7 @@ export default defineConfig(({ mode }) => {
             'process.env.VITE_APP_PORT': JSON.stringify(app.port || null),
             'process.env.VITE_APP_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || app.url || null),
             'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevMode ? app.loadingContext || null : null),
+            'process.env.VITE_LOCAL_ASSETS': JSON.stringify(process.env.USE_CDN == 'true' ? null : isDevMode || isTestEnv),
             'process.env.VITE_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
@@ -102,6 +104,7 @@ export default defineConfig(({ mode }) => {
             'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode ? api.session.maxAgeMs || null : undefined),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(api.session.permissions || null),
             'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
+            'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         },
         json: {
             stringify: true,

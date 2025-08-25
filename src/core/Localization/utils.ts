@@ -1,7 +1,8 @@
 import { JSX } from 'preact';
-import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE } from './constants/localization';
+import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '../../utils';
-import type { CustomTranslations, Locale, TranslationOptions, Translations, TranslationSource } from '../../translations';
+import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../../translations';
+import { SupportedLocales } from './types';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
 const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;
@@ -61,7 +62,6 @@ export function formatLocale(locale: string): Locale | null {
  */
 export function parseLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     const trimmedLocale = locale.trim();
-
     if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
 
     const formattedLocale = formatLocale(trimmedLocale);
@@ -81,6 +81,7 @@ export function formatCustomTranslations(customTranslations: CustomTranslations 
 
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
         const formattedLocale = formatLocale(locale) || parseLocale(locale, supportedLocales);
+
         if (formattedLocale && customTranslations[locale]) {
             translations[formattedLocale] = customTranslations[locale]!;
         }
@@ -144,16 +145,17 @@ export const getTranslation = (translations: Record<string, string>, key: string
  */
 export const loadTranslations = async (
     locale: string,
-    translations: { [locale: Locale]: TranslationSource } = EMPTY_OBJECT,
+    fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
     customTranslations: CustomTranslations = EMPTY_OBJECT
 ): Promise<Translations> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
-    const localeToLoad = parseLocale(locale, Object.keys(translations) as Locale[]) || FALLBACK_LOCALE;
-    const loadedLocale = translations[localeToLoad as keyof typeof translations];
+    const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
+
+    const loadedLocale = fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales);
 
     return {
         ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
-        ...((await (isFunction(loadedLocale) ? loadedLocale() : loadedLocale)) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
+        ...((await loadedLocale) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
         ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };
 };
@@ -174,4 +176,33 @@ export const interpolateElement = (translation: string, renderFunctions: Array<(
         const indexInFunctionArray = Math.floor(index / 2);
         return index % 2 === 0 ? term : renderFunctions[indexInFunctionArray]?.(term);
     });
+};
+
+const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
+    translationsPromise.then(({ default: translations }) => translations);
+
+export const da_DK = { 'da-DK': _getTranslations(import('../../assets/translations/da-DK.json')) };
+export const de_DE = { 'de-DE': _getTranslations(import('../../assets/translations/de-DE.json')) };
+export const es_ES = { 'es-ES': _getTranslations(import('../../assets/translations/es-ES.json')) };
+export const fi_FI = { 'fi-FI': _getTranslations(import('../../assets/translations/fi-FI.json')) };
+export const fr_FR = { 'fr-FR': _getTranslations(import('../../assets/translations/fr-FR.json')) };
+export const it_IT = { 'it-IT': _getTranslations(import('../../assets/translations/it-IT.json')) };
+export const nl_NL = { 'nl-NL': _getTranslations(import('../../assets/translations/nl-NL.json')) };
+export const no_NO = { 'no-NO': _getTranslations(import('../../assets/translations/no-NO.json')) };
+export const pt_BR = { 'pt-BR': _getTranslations(import('../../assets/translations/pt-BR.json')) };
+export const sv_SE = { 'sv-SE': _getTranslations(import('../../assets/translations/sv-SE.json')) };
+export const en_US = { 'en-US': _getTranslations(import('../../assets/translations/en-US.json')) };
+
+export const translations_dev_assets: Record<string, Promise<any>> = {
+    ...da_DK,
+    ...de_DE,
+    ...en_US,
+    ...es_ES,
+    ...fi_FI,
+    ...fr_FR,
+    ...it_IT,
+    ...nl_NL,
+    ...no_NO,
+    ...pt_BR,
+    ...sv_SE,
 };

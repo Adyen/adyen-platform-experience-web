@@ -10,6 +10,7 @@ type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceReco
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
 
 interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = {}> {
+    // TODO - Remove this prop on v2
     availableTranslations?: AvailableTranslations;
 
     /**

@@ -1,6 +1,7 @@
 import Localization from '../Localization';
 import { onErrorHandler } from '../types';
 import { RefObject } from 'preact';
+import { Resources } from '../Resources/Resources';
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;
@@ -14,4 +15,5 @@ export interface CoreProviderProps {
     updateCore?: () => void;
     externalErrorHandler?: onErrorHandler | null;
     componentRef: RefObject<HTMLDivElement>;
+    resources: Resources;
 }
