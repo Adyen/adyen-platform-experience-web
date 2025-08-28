@@ -3,7 +3,7 @@ name: Upload assets to release tag
 on:
   workflow_dispatch:
     inputs:
-      tag_name:
+      environment_choice:
         description: 'Environment to modify assets'
         required: true
         type: choice
@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          # If 'live' is chosen, check out 'main'. Otherwise, check out 'develop'.
+          ref: ${{ github.event.inputs.environment_choice == 'live' && 'main' || 'develop' }}
 
       - name: Build and package assets
         run: |
