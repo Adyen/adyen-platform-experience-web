@@ -3,10 +3,10 @@ import { useConfigContext } from '../../core/ConfigContext';
 import useMutation from '../useMutation/useMutation';
 
 export const usePushAnalyticEvent = () => {
-    const { sendMixpanelEvent } = useConfigContext().endpoints;
+    const { sendUxdsEvent } = useConfigContext().endpoints;
 
     const { mutate: sendAnalytics } = useMutation({
-        queryFn: sendMixpanelEvent,
+        queryFn: sendUxdsEvent,
     });
 
     const track = useCallback(

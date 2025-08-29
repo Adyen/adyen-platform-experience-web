@@ -1,5 +1,8 @@
-import { FilterParam } from '../../../types';
+import { useCallback } from 'preact/hooks';
+import { FilterType } from '../../../../core/Analytics/analytics/user-events';
+import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
 import { ITransaction } from '../../../../types';
+import { FilterParam } from '../../../types';
 import {
     DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS as defaultFilters,
     TRANSACTION_CATEGORIES,

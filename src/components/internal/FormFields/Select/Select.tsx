@@ -34,6 +34,7 @@ const Select = <T extends SelectItem>({
     showOverlay = false,
     fitPosition,
     fixedPopoverPositioning,
+    onResetAction,
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -57,8 +58,9 @@ const Select = <T extends SelectItem>({
         if (showList) {
             resetSelection(cachedSelectedItems.current);
             pendingClickOutsideTriggeredHideList.current = true;
+            onResetAction && onResetAction();
         }
-    }, [resetSelection, setShowList, setTextFilter, showList]);
+    }, [resetSelection, setShowList, setTextFilter, showList, onResetAction]);
 
     //TODO: Clarify and delete this
     // const selectContainerRef = useClickOutside(

@@ -1,4 +1,6 @@
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
+import { userEvents } from '../../../../../core/Analytics/analytics/user-events';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
@@ -17,6 +19,16 @@ import cx from 'classnames';
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
     const { transaction, extraFields, dataCustomization } = useTransactionDetailsContext();
+    const userEvents = useAnalyticsContext();
+
+    const onCopyReferenceId = useCallback(() => {
+        userEvents.addEvent('Clicked button', {
+            label: 'Copy button',
+            value: 'referenceID',
+            category: 'Transaction component',
+            subCategory: 'Transaction details',
+        });
+    }, [userEvents]);
 
     return useMemo(() => {
         const { balanceAccount, category, id, paymentPspReference, refundMetadata } = transaction;
@@ -56,7 +68,11 @@ const TransactionDataProperties = () => {
                 : SKIP_ITEM,
 
             // reference id
-            { key: 'referenceID' as const, value: <CopyText type={'Default' as const} textToCopy={id} showCopyTextTooltip={false} />, id: 'id' },
+            {
+                key: 'referenceID' as const,
+                value: <CopyText type={'Default' as const} textToCopy={id} showCopyTextTooltip={false} onCopyText={onCopyReferenceId} />,
+                id: 'id',
+            },
 
             isRefundTransaction && refundMetadata?.refundPspReference
                 ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference, id: 'refundPspReference' }
@@ -114,7 +130,7 @@ const TransactionDataProperties = () => {
                 }}
             />
         );
-    }, [dataCustomization?.details?.fields, extraFields, i18n, transaction]);
+    }, [dataCustomization?.details?.fields, extraFields, i18n, transaction, onCopyReferenceId]);
 };
 
 export default TransactionDataProperties;

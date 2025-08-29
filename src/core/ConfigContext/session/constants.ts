@@ -1,7 +1,6 @@
 import { boolOrFalse } from '../../../utils';
 
 export const SETUP_ENDPOINT_PATH = '/setup';
-export const ANALYTICS_ENDPOINT_PATH = 'uxdsclient/{apipath}';
 export const AUTO_REFRESH = boolOrFalse(process.env.SESSION_AUTO_REFRESH);
 
 export const MAX_AGE_MS = (() => {

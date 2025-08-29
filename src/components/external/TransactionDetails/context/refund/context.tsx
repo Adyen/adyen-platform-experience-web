@@ -55,6 +55,7 @@ export const TransactionRefundProvider = memo(
         const { primaryAction, secondaryAction } = useRefundContextActions({
             interactionsDisabled,
             refreshTransaction,
+            availableAmount,
             refundAmount,
             refundInProgress,
             refundReason,

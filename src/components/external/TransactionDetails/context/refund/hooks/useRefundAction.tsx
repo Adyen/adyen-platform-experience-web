@@ -8,6 +8,7 @@ import type { ITransaction, ITransactionRefundPayload } from '../../../../../../
 
 type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTransaction' | 'transactionId'> &
     Pick<ITransactionRefundContext, 'refundReason'> & {
+        availableAmount: number;
         refundAmount: ITransaction['amount'];
         refundInProgress: boolean;
         refundTransaction: AuthSession['context']['endpoints']['initiateRefund'];
@@ -15,6 +16,7 @@ type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTr
     };
 
 export const useRefundAction = <T extends _BaseUseRefundActionProps>({
+    availableAmount,
     refundAmount: amount,
     refundReason,
     refundInProgress,
@@ -57,6 +59,8 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
         [amount, refundReason]
     );
 
+    const isFullAmount = useMemo(() => availableAmount === amount.value, [availableAmount, amount]);
+
     const refundAction = useCallback(
         // [TODO]: Fix broken/missing type inference for useMutation mutate()
         () =>
@@ -70,6 +74,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                 .then(() => {
                     userEvents.addEvent('Completed refund', {
                         refundReason: refundReason,
+                        isFullRefund: isFullAmount,
                         category: 'Transaction component',
                         subCategory: 'Transaction details',
                     });
@@ -78,7 +83,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                 .catch(() => {
                     setActiveView(ActiveView.REFUND_ERROR);
                 }),
-        [refundTransaction, refundParams, refundPayload, refundReason, setActiveView, userEvents]
+        [isFullAmount, refundTransaction, refundParams, refundPayload, refundReason, setActiveView, userEvents]
     );
 
     const refundActionLabel = useMemo(() => {

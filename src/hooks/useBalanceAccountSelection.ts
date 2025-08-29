@@ -1,6 +1,6 @@
 import useAnalyticsContext from '../core/Context/analytics/useAnalyticsContext';
 import { capitalize, uniqueId } from '../utils';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
 import type { SelectItem } from '../components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '../types';
@@ -9,7 +9,7 @@ export const ALL_BALANCE_ACCOUNTS_SELECTION_ID = uniqueId();
 
 const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], allowAllSelection = false) => {
     const { i18n } = useCoreContext();
-    const [isFilterChanged, setIsFilterChanged] = useState<boolean>(false);
+    const isDefaultValueSelected = useRef<boolean>(false);
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
     const userEvents = useAnalyticsContext();
@@ -53,20 +53,19 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
             if (index! >= 0) {
-                setSelectedBalanceAccountIndex(index!);
-                if (isFilterChanged) {
-                    userEvents.addEvent('Modified filter', {
+                if (isDefaultValueSelected.current && index !== selectedBalanceAccountIndex) {
+                    userEvents.addModifyFilterEvent({
                         actionType: 'update',
                         label: 'Balance account filter',
                         category: 'Transaction component',
-                        subCategory: 'Filter',
                         value: balanceAccountId,
                     });
                 }
-                setIsFilterChanged(true);
+                isDefaultValueSelected.current = true;
+                setSelectedBalanceAccountIndex(index!);
             }
         },
-        [allBalanceAccounts, userEvents, isFilterChanged]
+        [allBalanceAccounts, userEvents, isDefaultValueSelected, selectedBalanceAccountIndex]
     );
 
     return { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection, resetBalanceAccountSelection } as const;

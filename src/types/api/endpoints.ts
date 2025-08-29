@@ -7,7 +7,7 @@ import { operations as CapitalGrantOfferOps } from './resources/CapitalGrantOffe
 import { operations as CapitalGrantsOps } from './resources/CapitalGrantsResource';
 import { operations as CapitalMissingActionsOps } from './resources/CapitalMissingActionsResource';
 import { components as SetupResource } from './resources/SetupResource';
-import { operations as AnalyticsOps } from './resources/AnalyticsResource';
+import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 
 export type EndpointsOperations = AnalyticsOps &
     BalanceAccountOps &
@@ -23,7 +23,7 @@ export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['sch
 
 type CSVEndpoints = 'downloadReport';
 
-type EncodedDataEndpoints = 'sendMixpanelEvent';
+type EncodedDataEndpoints = 'sendUxdsEvent';
 
 type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument' | EncodedDataEndpoints>;
 

@@ -14,7 +14,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["sendMixpanelEvent"];
+        post: operations["sendUxdsEvent"];
         delete?: never;
         options?: never;
         head?: never;
@@ -33,7 +33,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    sendMixpanelEvent: {
+    sendUxdsEvent: {
         parameters: {
             query?: never;
             header?: never;

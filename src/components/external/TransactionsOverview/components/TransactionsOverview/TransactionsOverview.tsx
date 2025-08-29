@@ -1,3 +1,4 @@
+import { FilterType } from '../../../../../core/Analytics/analytics/user-events';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
@@ -13,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { hasOwnProperty, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
@@ -81,6 +82,7 @@ export const TransactionsOverview = ({
     //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
         useCursorPaginatedRecords<ITransaction, 'data', string, FilterParam>({
+            componentName: 'transactions',
             fetchRecords: getTransactions,
             dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
@@ -102,12 +104,20 @@ export const TransactionsOverview = ({
         {
             filters,
             updateFilters: e => {
-                if (e.categories && e.categories !== filters[FilterParam.CATEGORIES]) {
-                    userEvents.addEvent('Modified filter', {
+                if (hasOwnProperty(e, 'categories') && e.categories !== filters[FilterParam.CATEGORIES]) {
+                    userEvents.addModifyFilterEvent({
                         actionType: 'update',
                         label: 'Category filter',
+                        value: e[FilterParam.CATEGORIES],
                         category: 'Transaction component',
-                        subCategory: 'Filter',
+                    });
+                }
+                if (hasOwnProperty(e, 'currencies') && e.currencies !== filters[FilterParam.CURRENCIES]) {
+                    userEvents.addModifyFilterEvent({
+                        actionType: 'update',
+                        label: 'Currency filter',
+                        value: e[FilterParam.CURRENCIES],
+                        category: 'Transaction component',
                     });
                 }
                 updateFilters(e);
@@ -177,6 +187,18 @@ export const TransactionsOverview = ({
         [activeBalanceAccount, updateDetails]
     );
 
+    const onResetAction = useCallback(
+        (type: FilterType) => {
+            debugger;
+            userEvents.addModifyFilterEvent({
+                actionType: 'reset',
+                label: type,
+                category: 'Transaction component',
+            });
+        },
+        [userEvents]
+    );
+
     const sinceDate = useMemo(() => {
         const date = new Date(nowTimestamp);
         date.setMonth(date.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
@@ -203,19 +225,25 @@ export const TransactionsOverview = ({
                     sinceDate={sinceDate}
                     timezone={activeBalanceAccount?.timeZone}
                     updateFilters={e => {
-                        if (e.createdSince !== filters[FilterParam.CREATED_SINCE] || e.createdUntil !== filters[FilterParam.CREATED_UNTIL])
-                            userEvents.addEvent('Modified filter', {
+                        if (e?.createdSince !== filters[FilterParam.CREATED_SINCE] || e?.createdUntil !== filters[FilterParam.CREATED_UNTIL]) {
+                            userEvents.addModifyFilterEvent({
                                 actionType: 'update',
                                 label: 'Date filter',
                                 category: 'Transaction component',
-                                subCategory: 'Filter',
+                                value: `${e[FilterParam.CREATED_SINCE]},${e[FilterParam.CREATED_UNTIL]}`,
                             });
+                        }
                         updateFilters(e);
                     }}
+                    onResetAction={onResetAction.bind(null, 'Date filter')}
                 />
                 {/* Remove status filter temporarily */}
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
+                <MultiSelectionFilter
+                    {...categoriesFilter}
+                    onResetAction={onResetAction.bind(null, 'Category filter')}
+                    placeholder={i18n.get('filterPlaceholder.category')}
+                />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
@@ -224,19 +252,25 @@ export const TransactionsOverview = ({
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
                     updateFilters={e => {
-                        if (e.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e.minAmount !== filters[FilterParam.MIN_AMOUNT]) {
-                            userEvents.addEvent('Modified filter', {
+                        const hasValue = e?.maxAmount || e?.minAmount;
+                        if (hasValue && (e?.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e?.minAmount !== filters[FilterParam.MIN_AMOUNT])) {
+                            userEvents.addModifyFilterEvent({
                                 actionType: 'update',
                                 label: 'Amount filter',
                                 category: 'Transaction component',
-                                subCategory: 'Filter',
+                                value: `${e[FilterParam.MIN_AMOUNT]},${e[FilterParam.MAX_AMOUNT]}`,
                             });
                         }
                         updateFilters(e);
                     }}
                     onChange={updateFilters}
+                    onResetAction={onResetAction.bind(null, 'Amount filter')}
                 />
-                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
+                <MultiSelectionFilter
+                    {...currenciesFilter}
+                    onResetAction={onResetAction.bind(null, 'Currency filter')}
+                    placeholder={i18n.get('filterPlaceholder.currency')}
+                />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>

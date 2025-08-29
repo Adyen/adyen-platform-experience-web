@@ -1,5 +1,5 @@
 import Core from '../../core';
-import { ANALYTICS_ENDPOINT_PATH, SETUP_ENDPOINT_PATH } from './constants';
+import { SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
@@ -73,10 +73,6 @@ export class SetupContext {
     }
 
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
-        endpoints.sendMixpanelEvent = {
-            method: 'POST',
-            url: ANALYTICS_ENDPOINT_PATH,
-        };
         const availableEndpoints: Set<EndpointName> = new Set(Object.keys(endpoints) as (keyof typeof endpoints)[]);
         const sessionAwareEndpoints: SetupContextObject['endpoints'] = struct();
 

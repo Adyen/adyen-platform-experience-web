@@ -1,7 +1,5 @@
 export type MixpanelProperty = string | number | boolean | any[] | null | undefined;
 
-type OptionalProperty<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
 /**
  * Level of the funnel that is relevant for this event
  */
@@ -10,31 +8,7 @@ type ActionLevel = 'journey' | 'task' | 'page' | 'field';
 /**
  * The type of action associated with the event
  */
-// export type ActionType =
-//   | 'start'
-//   | 'submit'
-//   | 'save'
-//   | 'add'
-//   | 'edit'
-//   | 'remove'
-//   | 'open'
-//   | 'close'
-//   | 'next'
-//   | 'back'
-//   | 'skip'
-//   | 'download'
-//   | 'upload'
-//   | 'sign'
-//   | 'navigate'
-//   | 'blur'
-//   | 'input'
-//   | 'focus'
-//   | 'change'
-//   | 'select'
-//   | 'alert'
-//   | 'cancel';
-
-export type ActionType = 'add' | 'remove' | 'update';
+export type ActionType = 'add' | 'reset' | 'update';
 
 /**
  * The base event properties that are sent with every event
@@ -62,12 +36,20 @@ export interface AdditionalEventProperties {
     returnValue?: string | string[];
     additionalData?: string | string[];
     label?: string;
+    category: string;
+    subCategory: string;
     [key: string]: MixpanelProperty;
 
     // Mixpanel experiment properties
     'Experiment name'?: string;
     'Variant name'?: string;
 }
+
+/**
+ * Name of the tracked event
+ * Can be either a custom name or one of the pre-defined values
+ */
+export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filter' | 'Category filter' | 'Currency filter' | 'Status filter';
 
 /**
  * Name of the tracked event
@@ -142,42 +124,10 @@ export class UserEvents {
     /**
      * Adds an event with context specific to
      */
-    public addJourneyEvent(eventName: EventName, properties: OptionalProperty<AdditionalEventProperties, 'actionLevel'>) {
-        this.addEvent(eventName, {
-            actionLevel: 'journey',
+    public addModifyFilterEvent(properties: Omit<AdditionalEventProperties, 'subCategory' | 'label'> & { label?: FilterType }) {
+        this.addEvent('Modified filter', {
             ...properties,
-        } as AdditionalEventProperties);
-    }
-
-    /**
-     * Adds an event with context specific to task-related events
-     */
-    public addTaskEvent(eventName: EventName, properties: OptionalProperty<AdditionalEventProperties, 'actionLevel'>) {
-        this.addEvent(eventName, {
-            actionLevel: 'task',
-            ...properties,
-        } as AdditionalEventProperties);
-    }
-
-    /**
-     * Adds an event with context specific to page-related events
-     */
-    public addPageEvent(eventName: EventName, properties: OptionalProperty<AdditionalEventProperties, 'actionLevel'>) {
-        this.addEvent(eventName, {
-            actionLevel: 'page',
-            page: this.sharedEventProperties.page,
-            ...properties,
-        } as AdditionalEventProperties);
-    }
-
-    /**
-     * Adds an event with context specific to field-related events
-     */
-    public addFieldEvent(eventName: EventName, properties: OptionalProperty<AdditionalEventProperties, 'actionLevel'> & { field: string }) {
-        this.addEvent(eventName, {
-            actionLevel: 'field',
-            page: this.sharedEventProperties.page,
-            ...properties,
+            subCategory: 'Filter',
         } as AdditionalEventProperties);
     }
 

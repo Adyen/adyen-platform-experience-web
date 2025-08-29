@@ -16,6 +16,7 @@ export interface BaseFilterProps {
     containerSize?: PopoverContainerSize;
     availableCurrencies?: readonly string[];
     selectedCurrencies?: string[];
+    onResetAction?: () => void;
 }
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {

@@ -46,10 +46,13 @@ export const TransactionDetailsProvider = memo(
         const primaryActionLabel = useMemo(() => ({ title: i18n.get('refundAction') }), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
 
-        const primaryAction = useCallback(
-            () => void (!primaryActionDisabled && setActiveView(ActiveView.REFUND)),
-            [primaryActionDisabled, setActiveView]
-        );
+        const primaryAction = useCallback(() => {
+            void (!primaryActionDisabled && setActiveView(ActiveView.REFUND));
+            userEvents.addEvent('Initiated refund', {
+                category: 'Transaction component',
+                subCategory: 'Transaction details',
+            });
+        }, [primaryActionDisabled, setActiveView, userEvents]);
 
         const _secondaryAction = useMemo<TransactionNavigationAction | undefined>(() => {
             if (currentTransaction !== transaction.id) return;
