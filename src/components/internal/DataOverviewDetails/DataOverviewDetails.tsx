@@ -1,7 +1,6 @@
 import './DataOverviewDetails.scss';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../core/ConfigContext';
-import useAnalyticsContext from '../../../core/Context/analytics/useAnalyticsContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
