@@ -45,9 +45,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                                 <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
                                     {i18n.get('capital.termEnds')}
                                 </Typography>
-                                <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
-                                    {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
-                                </Typography>
+                                <time dateTime={grantConfig.repaymentPeriodEndDate.toISOString()}>
+                                    <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
+                                        {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
+                                    </Typography>
+                                </time>
                             </>
                         ) : grantConfig.statusKey ? (
                             grantConfig.statusTooltipKey ? (
@@ -91,7 +93,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                     <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
                         <CopyText
                             textToCopy={grant.id}
-                            buttonLabel={i18n.get('capital.grantID')}
+                            visibleText={i18n.get('capital.grantID')}
+                            copyButtonAriaLabelKey="capital.grantItem.copyGrantID"
                             isHovered
                             type={'Text' as const}
                             data-testid="grant-id-copy-text"

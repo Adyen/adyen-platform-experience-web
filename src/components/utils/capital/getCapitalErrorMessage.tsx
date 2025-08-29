@@ -30,7 +30,9 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
                 translationValues: {
-                    [errorCodeMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [errorCodeMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="capital.errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };
@@ -40,7 +42,9 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 title: 'capital.accountIsInactive',
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
                 translationValues: {
-                    [errorCodeMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [errorCodeMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="capital.errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };
@@ -50,7 +54,9 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 title: COMMON_CAPITAL_ERROR_MESSAGE.somethingWentWrong,
                 message: ['capital.weCouldNotContinueWithTheOffer', errorCodeMessage],
                 translationValues: {
-                    [errorCodeMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [errorCodeMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="capital.errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };
