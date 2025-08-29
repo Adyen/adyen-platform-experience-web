@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'preact/hooks';
-
 import { usePushAnalyticEvent } from './usePushAnalyticEvent';
 import type { AnalyticsEventPayload, EventQueueItem, MixpanelProperty, UserEvents } from '../../core/Analytics/analytics/user-events';
 
