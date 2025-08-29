@@ -90,6 +90,7 @@ export class UserEvents {
         this.baseTrackingPayload = {
             category: 'pie',
             subCategory: 'pie component',
+            userAgent: navigator.userAgent,
         };
         this.sharedEventProperties = {};
     }
