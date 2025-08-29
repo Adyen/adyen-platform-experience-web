@@ -1,4 +1,3 @@
-import { ExternalComponentType } from '../../../types';
 import {
     ForPaginationType,
     PaginatedResponseData,
@@ -49,7 +48,6 @@ export type RequestPageCallback<Pagination extends PaginationType> = (
 
 export type PaginatedRecordsInitOptions<T, DataField extends string, FilterValue, FilterParam extends string> = {
     dataField: PaginatedResponseDataField<DataField>;
-    componentName?: ExternalComponentType;
     fetchRecords: (params?: any, signal?: AbortSignal) => Promise<PaginatedResponseData<T, DataField>>;
     filterParams?: ReactiveStateRecord<FilterValue, FilterParam>;
     initialFiltersSameAsDefault?: boolean;

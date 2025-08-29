@@ -1,6 +1,3 @@
-import { useCallback } from 'preact/hooks';
-import { FilterType } from '../../../../core/Analytics/analytics/user-events';
-import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
 import { ITransaction } from '../../../../types';
 import { FilterParam } from '../../../types';
 import {

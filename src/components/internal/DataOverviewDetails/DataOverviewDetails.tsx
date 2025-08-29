@@ -4,7 +4,7 @@ import { useConfigContext } from '../../../core/ConfigContext';
 import useAnalyticsContext from '../../../core/Context/analytics/useAnalyticsContext';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
-import { IBalanceAccountBase, IPayoutDetails, ITransaction } from '../../../types';
+import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
 import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
 import TransactionData from '../../external/TransactionDetails/components/TransactionData';
@@ -35,7 +35,6 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const getDetail = useConfigContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
     const { hideTitle, title } = useDataOverviewDetailsTitle(props);
-    const userEvents = useAnalyticsContext();
 
     const { data, error, isFetching } = useFetch(
         useMemo(
@@ -55,21 +54,8 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                     }
                     return getDetail!(EMPTY_OBJECT, { ...queryParam });
                 },
-                options: {
-                    onSuccess: (data: ITransaction) => {
-                        if (props.type === 'transaction') {
-                            if (data) {
-                                userEvents.addEvent('Viewed transaction details', {
-                                    transactionType: data.category,
-                                    category: 'Transaction component',
-                                    subCategory: 'Transaction details',
-                                });
-                            }
-                        }
-                    },
-                },
             }),
-            [dataId, getDetail, props, userEvents]
+            [dataId, getDetail, props]
         )
     );
 

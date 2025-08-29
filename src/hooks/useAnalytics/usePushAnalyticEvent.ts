@@ -11,7 +11,7 @@ export const usePushAnalyticEvent = () => {
     });
 
     const track = useCallback(
-        (options: any) =>
+        (options: URLSearchParams) =>
             sendAnalytics?.(
                 {
                     body: options.toString(),

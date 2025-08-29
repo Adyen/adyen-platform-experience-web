@@ -82,7 +82,6 @@ export const TransactionsOverview = ({
     //TODO - Infer the return type of getTransactions instead of having to specify it
     const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
         useCursorPaginatedRecords<ITransaction, 'data', string, FilterParam>({
-            componentName: 'transactions',
             fetchRecords: getTransactions,
             dataField: 'data',
             filterParams: defaultParams.current.defaultFilterParams,
@@ -174,7 +173,14 @@ export const TransactionsOverview = ({
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        ({ id }: ITransaction) => {
+        ({ id, category }: ITransaction) => {
+            if (category) {
+                userEvents.addEvent('Viewed transaction details', {
+                    transactionType: category,
+                    category: 'Transaction component',
+                    subCategory: 'Transaction details',
+                });
+            }
             updateDetails({
                 selection: {
                     type: 'transaction',
@@ -184,7 +190,7 @@ export const TransactionsOverview = ({
                 modalSize: 'small',
             }).callback({ id });
         },
-        [activeBalanceAccount, updateDetails]
+        [activeBalanceAccount, updateDetails, userEvents]
     );
 
     const onResetAction = useCallback(
