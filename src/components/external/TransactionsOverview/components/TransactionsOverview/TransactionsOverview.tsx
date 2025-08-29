@@ -189,7 +189,6 @@ export const TransactionsOverview = ({
 
     const onResetAction = useCallback(
         (type: FilterType) => {
-            debugger;
             userEvents.addModifyFilterEvent({
                 actionType: 'reset',
                 label: type,
@@ -198,6 +197,11 @@ export const TransactionsOverview = ({
         },
         [userEvents]
     );
+
+    const onResetAmountFilter = useMemo(() => onResetAction.bind(null, 'Amount filter'), [onResetAction]);
+    const onResetDateFilter = useMemo(() => onResetAction.bind(null, 'Date filter'), [onResetAction]);
+    const onResetCurrencyFilter = useMemo(() => onResetAction.bind(null, 'Currency filter'), [onResetAction]);
+    const onResetCategoryFilter = useMemo(() => onResetAction.bind(null, 'Category filter'), [onResetAction]);
 
     const sinceDate = useMemo(() => {
         const date = new Date(nowTimestamp);
@@ -235,13 +239,13 @@ export const TransactionsOverview = ({
                         }
                         updateFilters(e);
                     }}
-                    onResetAction={onResetAction.bind(null, 'Date filter')}
+                    onResetAction={onResetDateFilter}
                 />
                 {/* Remove status filter temporarily */}
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
                 <MultiSelectionFilter
                     {...categoriesFilter}
-                    onResetAction={onResetAction.bind(null, 'Category filter')}
+                    onResetAction={onResetCategoryFilter}
                     placeholder={i18n.get('filterPlaceholder.category')}
                 />
                 <AmountFilter
@@ -264,11 +268,11 @@ export const TransactionsOverview = ({
                         updateFilters(e);
                     }}
                     onChange={updateFilters}
-                    onResetAction={onResetAction.bind(null, 'Amount filter')}
+                    onResetAction={onResetAmountFilter}
                 />
                 <MultiSelectionFilter
                     {...currenciesFilter}
-                    onResetAction={onResetAction.bind(null, 'Currency filter')}
+                    onResetAction={onResetCurrencyFilter}
                     placeholder={i18n.get('filterPlaceholder.currency')}
                 />
             </FilterBar>
