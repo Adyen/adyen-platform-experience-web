@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import unqualifiedImage from '../../../../images/generic-use-first-touch.svg';
+import unqualifiedImage from '../../../../assets/images/generic-use-first-touch.svg';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';

@@ -1,5 +1,5 @@
 // eslint-disable import/no-extraneous-dependencies
-import { defineConfig } from 'vite';
+import { defineConfig, PluginOption } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -14,8 +14,32 @@ export default defineConfig(({ mode }) => {
     const externalDependencies = Object.keys(packageJson.dependencies);
     const isAnalyseMode = mode === 'analyse';
     const isDevMode = mode === 'development';
+    const isUmdBuild = mode === 'umd';
 
     const { api, app } = getEnvironment(mode);
+
+    const assetsDir = resolve(__dirname, 'src/assets');
+    const translationsDir = resolve(assetsDir, 'translations');
+    const enUsFile = resolve(translationsDir, 'en-US.json');
+    const translationsIndexFile = resolve(translationsDir, 'index.ts');
+
+    const shouldExcludeAsset = (id: string) => {
+        if (externalDependencies.includes(id)) {
+            return true;
+        }
+
+        // Allow specific files from assets to be bundled.
+        if (id === enUsFile || id === translationsIndexFile) {
+            return false;
+        }
+
+        // Exclude all other files from the assets directory.
+        if (id.startsWith(assetsDir)) {
+            return true;
+        }
+
+        return false;
+    };
 
     return {
         build: {
@@ -30,20 +54,31 @@ export default defineConfig(({ mode }) => {
                 },
             },
             rollupOptions: {
-                external: externalDependencies,
+                external: shouldExcludeAsset,
                 output: [
                     {
                         format: 'es',
-                        preserveModules: true,
+                        preserveModules: isUmdBuild ? false : true,
                         preserveModulesRoot: 'src',
                         sourcemap: false,
                         indent: false,
                     },
-                    { format: 'cjs', sourcemap: true, indent: false },
+                    isUmdBuild
+                        ? {
+                              name: 'AdyenPlatformExperienceWeb',
+                              format: 'umd',
+                              sourcemap: true,
+                              indent: false,
+                              globals: {
+                                  classnames: 'cx',
+                                  'core-js': 'core',
+                              },
+                          }
+                        : { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
             outDir: resolve(__dirname, './dist'),
-            emptyOutDir: true,
+            emptyOutDir: isUmdBuild ? false : true,
         },
         css: {
             preprocessorOptions: {
