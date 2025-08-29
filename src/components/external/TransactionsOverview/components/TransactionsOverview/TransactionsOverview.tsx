@@ -49,7 +49,7 @@ export const TransactionsOverview = ({
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
     const userEvents = useAnalyticsContext();
-    console.log('test');
+
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
