@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and package assets
         run: |
-          chmod +x ./scripts/upload-assets/package-assets.sh
+          ./scripts/upload-assets/package-assets.sh
 
       - name: Map environment to tag name
         id: map_tag
