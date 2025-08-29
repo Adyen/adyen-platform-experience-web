@@ -23,9 +23,7 @@ export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['sch
 
 type CSVEndpoints = 'downloadReport';
 
-type EncodedDataEndpoints = 'sendUxdsEvent';
-
-type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument' | EncodedDataEndpoints>;
+type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument'>;
 
 export type EndpointJSONData<T extends JSONEndpoints> = EndpointsOperations[T]['responses'][200]['content']['application/json'];
 

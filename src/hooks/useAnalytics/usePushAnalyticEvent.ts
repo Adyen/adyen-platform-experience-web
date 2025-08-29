@@ -1,6 +1,7 @@
 import { useCallback } from 'preact/hooks';
 import { useConfigContext } from '../../core/ConfigContext';
 import useMutation from '../useMutation/useMutation';
+import { EmbeddedEventItem } from './useAnalytics';
 
 export const usePushAnalyticEvent = () => {
     const { sendUxdsEvent } = useConfigContext().endpoints;
@@ -23,11 +24,14 @@ export const usePushAnalyticEvent = () => {
         [sendAnalytics]
     );
 
-    return (options: any) => {
-        const formattedOptions = JSON.stringify(options);
-        const encodedData = window.btoa(formattedOptions);
-        const data = new URLSearchParams();
-        data.append('data', encodedData);
-        track(data);
-    };
+    return useCallback(
+        (options: EmbeddedEventItem) => {
+            const formattedOptions = JSON.stringify(options);
+            const encodedData = window.btoa(formattedOptions);
+            const data = new URLSearchParams();
+            data.set('data', encodedData);
+            track(data);
+        },
+        [track]
+    );
 };

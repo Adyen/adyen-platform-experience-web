@@ -7,7 +7,7 @@ type UseAnalyticsProps = {
     userEvents: UserEvents;
 };
 
-type EmbeddedEventItem = {
+export type EmbeddedEventItem = {
     event: string;
     properties: AnalyticsEventPayload | Record<string, MixpanelProperty>;
 };
