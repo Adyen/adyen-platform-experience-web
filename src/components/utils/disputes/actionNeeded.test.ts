@@ -11,7 +11,7 @@ import {
 
 const ACTIONABLE_DISPUTE_STATUSES = ['UNDEFENDED', 'UNRESPONDED'] as const;
 const NON_ACTIONABLE_DISPUTE_STATUSES = ['ACCEPTED', 'EXPIRED', 'LOST', 'PENDING', 'RESPONDED', 'WON'] as const;
-const DEFAULT_DISPUTE_DATA: WithDisputeStatus = { status: 'PENDING' };
+const DEFAULT_DISPUTE_DATA: WithDisputeStatus = { status: 'PENDING', defensibility: 'DEFENDABLE' };
 
 const hoursFromNow = (hours = 0) => {
     const now = new Date();

@@ -1,10 +1,11 @@
 import { DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS } from './constants';
-import { IDisputeStatus } from '../../../types/api/models/disputes';
+import { IDisputeDefensibility, IDisputeStatus } from '../../../types/api/models/disputes';
 import { parseDate } from '../../../utils';
 
 export interface WithDisputeStatus {
     dueDate?: string;
     status: IDisputeStatus;
+    defensibility?: IDisputeDefensibility;
 }
 
 export const enum DisputeActionNeededLevel {
@@ -18,6 +19,8 @@ export const getDisputeActionNeededLevel = <T extends WithDisputeStatus>(dispute
     switch (disputeData.status) {
         case 'UNDEFENDED':
         case 'UNRESPONDED': {
+            if (disputeData.defensibility === 'NOT_ACTIONABLE') return DisputeActionNeededLevel.NEVER;
+
             const deadlineTimestamp = parseDate(disputeData.dueDate);
 
             if (deadlineTimestamp != undefined) {
