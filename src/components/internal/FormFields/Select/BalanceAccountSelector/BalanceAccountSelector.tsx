@@ -1,6 +1,6 @@
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import Select from '../../Select';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
@@ -20,8 +20,11 @@ const BalanceAccountSelector = memo(
         balanceAccountSelectionOptions,
         onBalanceAccountSelection,
     }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
-        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const { i18n } = useCoreContext();
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+        const balanceAccountLabel = useMemo(() => i18n.get('balanceAccount'), [i18n]);
+
+        const canRenderSelector = balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1;
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (
@@ -38,20 +41,33 @@ const BalanceAccountSelector = memo(
             []
         );
 
-        return balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1 ? (
-            <Select
-                popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
-                onChange={onBalanceAccountSelection}
-                filterable={false}
-                multiSelect={false}
-                placeholder={activeBalanceAccount?.id || i18n.get('balanceAccount')}
-                selected={activeBalanceAccount?.id}
-                withoutCollapseIndicator={true}
-                items={balanceAccountSelectionOptions}
-                renderListItem={renderListItem}
-                showOverlay={isSmContainer}
-            />
-        ) : null;
+        return (
+            <>
+                {canRenderSelector && (
+                    <Select
+                        popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
+                        onChange={onBalanceAccountSelection}
+                        filterable={false}
+                        multiSelect={false}
+                        placeholder={activeBalanceAccount?.id || balanceAccountLabel}
+                        selected={activeBalanceAccount?.id}
+                        withoutCollapseIndicator={true}
+                        items={balanceAccountSelectionOptions}
+                        renderListItem={renderListItem}
+                        showOverlay={isSmContainer}
+                        aria-label={balanceAccountLabel}
+                    />
+                )}
+
+                <div aria-label={balanceAccountLabel} className="adyen-pe-visually-hidden" role="status">
+                    {activeBalanceAccount?.id &&
+                        i18n.get(
+                            activeBalanceAccount.id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? 'filter.accountStatus.all' : 'filter.accountStatus.id',
+                            { values: { account: activeBalanceAccount.description || activeBalanceAccount.id } }
+                        )}
+                </div>
+            </>
+        );
     }
 );
 

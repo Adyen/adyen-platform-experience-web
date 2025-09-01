@@ -77,6 +77,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             selectedCurrencies={selectedCurrencies}
             availableCurrencies={availableCurrencies}
             render={renderAmountFilter}
+            aria-label={props.label}
         />
     );
 };

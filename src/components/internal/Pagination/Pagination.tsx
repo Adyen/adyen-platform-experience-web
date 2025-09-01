@@ -14,7 +14,7 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
     const { i18n } = useCoreContext();
 
     const _limitOptions = useMemo(
-        () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` } as SelectItem))),
+        () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` }) as SelectItem)),
         [limitOptions]
     );
 
@@ -27,7 +27,7 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
     );
 
     return (
-        <div aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
+        <section aria-label={i18n.get('paginatedNavigation')} className={`adyen-pe-pagination ${classnames({})}`}>
             <div className="adyen-pe-pagination__context">
                 {_limitOptions && onLimitSelection && (
                     <>
@@ -68,6 +68,6 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                     <Icon name="chevron-right" />
                 </Button>
             </div>
-        </div>
+        </section>
     );
 }

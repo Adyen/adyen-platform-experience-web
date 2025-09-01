@@ -177,6 +177,7 @@
     "disputes.status.won": "Status label text indicating that the dispute was won.",
     "disputes.statusGroup.chargebacks": "Label text referring to chargeback disputes.",
     "disputes.statusGroup.fraudAlerts": "Label text used to categorize fraud alerts.",
+    "disputes.statusGroup.label": "Label text referring to a region of interactive controls for navigating through several dispute status groups.",
     "disputes.statusGroup.ongoingAndClosed": "Label text used to categorize disputes that are still ongoing or already closed.",
     "disputes.title": "Will be displayed as title text (heading) for the disputes overview widget.",
     "disputes.totalPaymentAmount": "Label showing the full amount of the original payment related to the dispute.",
