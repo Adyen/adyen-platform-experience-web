@@ -24,6 +24,7 @@ const BalanceAccountSelector = memo(
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const balanceAccountLabel = useMemo(() => i18n.get('balanceAccount'), [i18n]);
 
+        const allSelected = activeBalanceAccount?.id === ALL_BALANCE_ACCOUNTS_SELECTION_ID;
         const canRenderSelector = balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1;
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
@@ -61,10 +62,9 @@ const BalanceAccountSelector = memo(
 
                 <div aria-label={balanceAccountLabel} className="adyen-pe-visually-hidden" role="status">
                     {activeBalanceAccount?.id &&
-                        i18n.get(
-                            activeBalanceAccount.id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? 'filter.accountStatus.all' : 'filter.accountStatus.id',
-                            { values: { account: activeBalanceAccount.description || activeBalanceAccount.id } }
-                        )}
+                        i18n.get(allSelected ? 'filter.accountStatus.all' : 'filter.accountStatus.id', {
+                            values: { account: activeBalanceAccount.description || activeBalanceAccount.id },
+                        })}
                 </div>
             </>
         );

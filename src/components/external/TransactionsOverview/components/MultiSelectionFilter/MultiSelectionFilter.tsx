@@ -29,6 +29,7 @@ const MultiSelectionFilter = memo(
         const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
         const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
+        const allSelected = selection.length === 0 || selection.length === selectionOptions?.length;
         const canRenderSelector = selectionOptions && selectionOptions.length > 1;
         const listFormatter = useMemo(() => new Intl.ListFormat(i18n.locale, { type: 'conjunction' }), [i18n.locale]);
 
@@ -50,10 +51,9 @@ const MultiSelectionFilter = memo(
                 )}
 
                 <div aria-label={placeholder} className="adyen-pe-visually-hidden" role="status">
-                    {i18n.get(
-                        selection.length === 0 || selection.length === selectionOptions?.length ? allSelectionStatusKey : partialSelectionStatusKey,
-                        { values: { count: selection.length, list: listFormatter.format(selection) } }
-                    )}
+                    {i18n.get(allSelected ? allSelectionStatusKey : partialSelectionStatusKey, {
+                        values: { count: selection.length, list: listFormatter.format(selection) },
+                    })}
                 </div>
             </>
         );
