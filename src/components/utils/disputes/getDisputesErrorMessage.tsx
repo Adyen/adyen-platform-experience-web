@@ -23,7 +23,9 @@ export const getDisputesErrorMessage = (
                 title: 'somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [secondaryErrorMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="disputes.errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };

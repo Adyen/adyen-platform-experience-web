@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-capital-overview--prequalified';

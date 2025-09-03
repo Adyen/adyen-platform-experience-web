@@ -24,7 +24,10 @@ test('cells should show correct value and open correct modal ', async ({ transac
     await transactionsOverview.getCell('amount').waitFor();
     await transactionsOverview.firstRow.click();
 
-    const referenceID = page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
+    const referenceID = page
+        .getByRole('dialog')
+        .getByTestId(`${getTranslatedKey('referenceID')}`)
+        .locator('dd');
     await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
 });
 
@@ -154,7 +157,10 @@ test.describe('Refund action modal', () => {
 
         const goBackButton = page.getByRole('button', { name: getTranslatedKey('goBack') });
         await goBackButton.click();
-        const referenceID = page.getByRole('dialog').getByLabel(`${getTranslatedKey('referenceID')}`);
+        const referenceID = page
+            .getByRole('dialog')
+            .getByTestId(`${getTranslatedKey('referenceID')}`)
+            .locator('dd');
         await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
     });
 });

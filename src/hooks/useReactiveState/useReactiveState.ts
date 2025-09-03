@@ -47,7 +47,7 @@ const useReactiveState = <Value, Param extends string>(
             const updateFlag = 1 << index % 32;
 
             stateUpdate[key] = updateValue;
-            stateUpdateFlags[flagIndex] |= updateFlag;
+            stateUpdateFlags[flagIndex] = (stateUpdateFlags[flagIndex] ?? 0) | updateFlag;
             $changedParams.current[updateValue === defaultValue ? 'delete' : 'add'](key);
         });
 

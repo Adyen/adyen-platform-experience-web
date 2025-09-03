@@ -14,7 +14,7 @@ test.describe('Grant: Missing Action Sign TOS', () => {
         await expect(page.getByText('Action needed')).toBeVisible();
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
-        await expect(page.getByText('Sign the Terms & Conditions to receive your funds. This offer expires on Feb 15, 2025.')).toBeVisible();
+        await expect(page.getByText('Sign the Terms & Conditions to receive your funds. This offer expires on February 15, 2025.')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go to Terms & Conditions' })).toBeVisible();
         await expect(page.getByRole('progressbar')).toBeHidden();
         await expect(page.getByTestId('expand-button')).toBeHidden();

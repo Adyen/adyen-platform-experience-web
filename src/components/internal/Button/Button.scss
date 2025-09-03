@@ -109,7 +109,6 @@
         text-decoration: underline;
 
         &:hover {
-            background-color: style.token(color-background-primary);
             color: style.token(color-label-primary-hover);
             text-decoration: none;
         }

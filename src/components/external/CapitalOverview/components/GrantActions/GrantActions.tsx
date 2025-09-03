@@ -2,7 +2,7 @@ import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { DATE_FORMAT_CAPITAL_OVERVIEW, DATE_FORMAT_MISSING_ACTION } from '../../../../../constants';
+import { DATE_FORMAT_MISSING_ACTION } from '../../../../../constants';
 import { GRANT_ACTION_CLASS_NAMES } from './constants';
 import './GrantActions.scss';
 import Alert from '../../../../internal/Alert/Alert';
@@ -14,6 +14,8 @@ import { getTopWindowHref, setTopWindowHref } from './utils';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { IGrant } from '../../../../../types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 
 type ActionType = NonNullable<IGrant['missingActions']>[number]['type'];
 
@@ -45,7 +47,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                             : i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction'),
                     buttonLabelKey: 'capital.submitInformation',
                 },
-            } as const),
+            }) as const,
         [i18n]
     );
 
@@ -93,12 +95,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
         },
     });
 
-    const formattedExpiryDateForSignToS = useMemo(
-        () => (offerExpiresAt ? dateFormat(offerExpiresAt, DATE_FORMAT_CAPITAL_OVERVIEW) : undefined),
-        [dateFormat, offerExpiresAt]
-    );
-
-    const formattedExpiryDateForAnaCredit = useMemo(
+    const formattedExpiryDate = useMemo(
         () => (offerExpiresAt ? dateFormat(offerExpiresAt, DATE_FORMAT_MISSING_ACTION) : undefined),
         [dateFormat, offerExpiresAt]
     );
@@ -129,32 +126,39 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                 type={AlertTypeOption.WARNING}
                 title={i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions')}
                 description={
-                    <ol className={GRANT_ACTION_CLASS_NAMES.actionsContainer}>
-                        {missingActions.map(action => {
-                            const config = ACTION_CONFIG[action.type];
+                    <div className={GRANT_ACTION_CLASS_NAMES.actionsInformation}>
+                        <ol className={GRANT_ACTION_CLASS_NAMES.actionsContainer}>
+                            {missingActions.map(action => {
+                                const config = ACTION_CONFIG[action.type];
 
-                            const isLoading = loadingAction === action.type;
+                                const isLoading = loadingAction === action.type;
 
-                            return (
-                                <li key={action.type}>
-                                    <Button
-                                        className={GRANT_ACTION_CLASS_NAMES.button}
-                                        // Set the loading action before mutating
-                                        onClick={() => {
-                                            setLoadingAction(action.type);
-                                            void actionMutation.mutate(action.type);
-                                        }}
-                                        // Disable all if any is loading
-                                        disabled={isLoading || actionMutation.isLoading}
-                                        state={isLoading ? 'loading' : undefined}
-                                        variant={ButtonVariant.TERTIARY}
-                                    >
-                                        <span className={GRANT_ACTION_CLASS_NAMES.buttonLabel}>{i18n.get(config.buttonLabelKey)}</span>
-                                    </Button>
-                                </li>
-                            );
-                        })}
-                    </ol>
+                                return (
+                                    <li key={action.type}>
+                                        <Button
+                                            className={GRANT_ACTION_CLASS_NAMES.button}
+                                            // Set the loading action before mutating
+                                            onClick={() => {
+                                                setLoadingAction(action.type);
+                                                void actionMutation.mutate(action.type);
+                                            }}
+                                            // Disable all if any is loading
+                                            disabled={isLoading || actionMutation.isLoading}
+                                            state={isLoading ? 'loading' : undefined}
+                                            variant={ButtonVariant.TERTIARY}
+                                        >
+                                            <span className={GRANT_ACTION_CLASS_NAMES.buttonLabel}>{i18n.get(config.buttonLabelKey)}</span>
+                                        </Button>
+                                    </li>
+                                );
+                            })}
+                        </ol>
+                        {formattedExpiryDate ? (
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
+                                {i18n.get('capital.thisOfferExpiresOn', { values: { date: formattedExpiryDate } })}
+                            </Typography>
+                        ) : null}
+                    </div>
                 }
             />
         );
@@ -162,13 +166,12 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
 
     const singleAction = missingActions[0]!;
     const config = ACTION_CONFIG[singleAction.type];
-    const formattedDate = singleAction.type === 'signToS' ? formattedExpiryDateForSignToS : formattedExpiryDateForAnaCredit;
 
     return (
         <Alert
             className={className}
             type={AlertTypeOption.WARNING}
-            title={config.getTitle(formattedDate)}
+            title={config.getTitle(formattedExpiryDate)}
             description={
                 <Button
                     className={GRANT_ACTION_CLASS_NAMES.button}

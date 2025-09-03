@@ -1,5 +1,5 @@
 import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
-import { Locator, Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
