@@ -160,9 +160,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                         <Pagination
                             {...paginationProps}
                             ariaLabelKey="payouts.pagination"
-                            limitSelectorAriaLabelKey="payouts.pagination.limitSelectorLabel"
-                            pageLimitStatusKey="payouts.pagination.pageLimitStatus"
-                            pageSizeStatusKey="payouts.pagination.pageSizeStatus"
+                            limitSelectorAriaLabelKey="payouts.pagination.limitSelector.label"
                         />
                     </DataGrid.Footer>
                 )}

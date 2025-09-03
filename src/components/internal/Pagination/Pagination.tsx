@@ -25,14 +25,11 @@ export default function Pagination({
     hasNext,
     hasPrev,
     prev,
-    pageSize,
     limit,
     limitOptions,
     onLimitSelection,
     ariaLabelKey,
     limitSelectorAriaLabelKey,
-    pageLimitStatusKey,
-    pageSizeStatusKey,
 }: PaginationProps) {
     const { i18n } = useCoreContext();
 
@@ -60,37 +57,29 @@ export default function Pagination({
     );
 
     return (
-        <div role="region" aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
+        <section aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
             <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
-                    <>
-                        <div className={classes.limit} role="presentation">
-                            <Translation
-                                translationKey="pagination.showing.pageLimit"
-                                fills={{
-                                    pageLimit: (
-                                        <div className={classes.limitSelector}>
-                                            <Select
-                                                setToTargetWidth={true}
-                                                filterable={false}
-                                                multiSelect={false}
-                                                items={_limitOptions}
-                                                onChange={_onLimitChanged}
-                                                selected={`${limit ?? ''}`}
-                                                aria-label={i18n.get(limitSelectorAriaLabelKey ?? 'pagination.selector.label')}
-                                            />
-                                        </div>
-                                    ),
-                                }}
-                            />
-                        </div>
-
-                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live="polite">
-                            {pageSize !== undefined
-                                ? i18n.get(pageSizeStatusKey ?? 'pagination.showing.pageSizeStatus', { values: { pageSize } })
-                                : limit && i18n.get(pageLimitStatusKey ?? 'pagination.showing.pageLimitStatus', { values: { pageLimit: limit } })}
-                        </div>
-                    </>
+                    <div className={classes.limit} role="presentation">
+                        <Translation
+                            translationKey="pagination.showing"
+                            fills={{
+                                pageLimit: (
+                                    <div className={classes.limitSelector}>
+                                        <Select
+                                            setToTargetWidth={true}
+                                            filterable={false}
+                                            multiSelect={false}
+                                            items={_limitOptions}
+                                            onChange={_onLimitChanged}
+                                            selected={`${limit ?? ''}`}
+                                            aria-label={i18n.get(limitSelectorAriaLabelKey ?? 'pagination.limitSelector.label')}
+                                        />
+                                    </div>
+                                ),
+                            }}
+                        />
+                    </div>
                 )}
             </div>
 
@@ -99,23 +88,23 @@ export default function Pagination({
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
+                    aria-label={i18n.get('pagination.previousPage')}
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
                     <Icon name="chevron-left" />
-                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.previousPage')}</span>
                 </Button>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}
+                    aria-label={i18n.get('pagination.nextPage')}
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.nextPage')}</span>
                     <Icon name="chevron-right" />
                 </Button>
             </div>
-        </div>
+        </section>
     );
 }

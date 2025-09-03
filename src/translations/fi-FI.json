@@ -653,6 +653,7 @@
     "noReportsFound": "Raportteja ei löytynyt",
     "noTransactionsFound": "Maksutapahtumia ei löytynyt",
     "other": "Muu",
+    "paginatedNavigation": "Sivutettu siirtyminen",
     "pagination.nextPage": "Seuraava sivu",
     "pagination.previousPage": "Edellinen sivu",
     "pagination.showing": "Näytetään",

@@ -96,25 +96,17 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     let limitSelectorAriaLabelKey: TranslationKey | undefined = undefined;
-    let pageLimitStatusKey: TranslationKey | undefined = undefined;
-    let pageSizeStatusKey: TranslationKey | undefined = undefined;
 
     if (showPagination) {
         switch (statusGroup) {
             case 'CHARGEBACKS':
-                limitSelectorAriaLabelKey = 'disputes.pagination.chargebacks.limitSelectorLabel';
-                pageLimitStatusKey = 'disputes.pagination.chargebacks.pageLimitStatus';
-                pageSizeStatusKey = 'disputes.pagination.chargebacks.pageSizeStatus';
+                limitSelectorAriaLabelKey = 'disputes.pagination.chargebacks.limitSelector.label';
                 break;
             case 'FRAUD_ALERTS':
-                limitSelectorAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelectorLabel';
-                pageLimitStatusKey = 'disputes.pagination.fraudAlerts.pageLimitStatus';
-                pageSizeStatusKey = 'disputes.pagination.fraudAlerts.pageSizeStatus';
+                limitSelectorAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelector.label';
                 break;
             case 'ONGOING_AND_CLOSED':
-                limitSelectorAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelectorLabel';
-                pageLimitStatusKey = 'disputes.pagination.ongoingAndClosed.pageLimitStatus';
-                pageSizeStatusKey = 'disputes.pagination.ongoingAndClosed.pageSizeStatus';
+                limitSelectorAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelector.label';
                 break;
         }
     }
@@ -278,13 +270,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination
-                            {...paginationProps}
-                            ariaLabelKey="disputes.pagination"
-                            limitSelectorAriaLabelKey={limitSelectorAriaLabelKey}
-                            pageLimitStatusKey={pageLimitStatusKey}
-                            pageSizeStatusKey={pageSizeStatusKey}
-                        />
+                        <Pagination {...paginationProps} ariaLabelKey="disputes.pagination" limitSelectorAriaLabelKey={limitSelectorAriaLabelKey} />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

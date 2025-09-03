@@ -86,6 +86,4 @@ export interface UsePagination extends Required<WithPaginationLimit>, WithPagina
 export type PaginationProps = WithPaginationLimitSelection<Omit<UsePagination, 'goto' | 'resetPagination'> & Partial<Pick<UsePagination, 'goto'>>> & {
     ariaLabelKey?: TranslationKey;
     limitSelectorAriaLabelKey?: TranslationKey;
-    pageLimitStatusKey?: TranslationKey;
-    pageSizeStatusKey?: TranslationKey;
 };
