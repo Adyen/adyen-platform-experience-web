@@ -30,7 +30,7 @@ import './Popover.scss';
 
 const findFirstFocusableElement = (root: Element) => {
     let focusable: HTMLElement | undefined;
-    const elements = root.querySelector(`.${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
+    const elements = root.querySelector(`:scope .${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
     if (elements) {
         Array.prototype.some.call(elements, elem => {
             if (isFocusable(elem)) return (focusable = elem);
