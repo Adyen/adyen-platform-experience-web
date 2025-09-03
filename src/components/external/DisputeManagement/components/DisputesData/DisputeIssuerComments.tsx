@@ -35,7 +35,7 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
     useLayoutEffect(() => {
         if (commentsGroupRef.current) {
             const commentsGroup = commentsGroupRef.current;
-            const firstComment = commentsGroup.querySelector(`.${DISPUTE_DATA_ISSUER_COMMENT}`);
+            const firstComment = commentsGroup.querySelector(`:scope .${DISPUTE_DATA_ISSUER_COMMENT}`);
             const lineHeight = firstComment ? parseInt(getComputedStyle(firstComment).getPropertyValue('line-height')) : 0;
 
             const minimumHeight = Math.min(firstComment?.clientHeight || Infinity, lineHeight * 3); // first 3 lines

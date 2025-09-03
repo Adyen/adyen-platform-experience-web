@@ -1,6 +1,6 @@
 @use '../../../style';
 
-.adyen-pe__tooltip-target {
+.adyen-pe-tooltip-target {
     &--hovered {
         text-decoration: underline;
         text-decoration-color: style.token(color-outline-tertiary);

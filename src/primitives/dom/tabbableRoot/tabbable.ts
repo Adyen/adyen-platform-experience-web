@@ -7,7 +7,7 @@ export interface TabbableRoot {
     tabbables: Element[];
 }
 
-export const SELECTORS = `
+export const SELECTORS = `:scope ${`
     a[href],
     audio[controls],
     video[controls],
@@ -17,7 +17,7 @@ export const SELECTORS = `
     textarea,
     [contenteditable],
     [tabindex]
-`.replace(/\s+/, '');
+`.replace(/\s+/, '')}`;
 
 const ATTRIBUTES = ['contenteditable', 'controls', 'disabled', 'hidden', 'href', 'inert', 'tabindex'];
 const CHECKED_RADIOS = new Map<HTMLFormElement, Map<string, HTMLInputElement | null>>();
@@ -32,7 +32,7 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
     let checkedRadio = checkedRadiosForForm?.get(name);
 
     if (isUndefined(checkedRadio) && form) {
-        checkedRadio = (form.querySelector(`input[type=radio][name='${name}']:checked`) as HTMLInputElement) || null;
+        checkedRadio = (form.querySelector(`:scope input[type=radio][name='${name}']:checked`) as HTMLInputElement) || null;
         CHECKED_RADIOS.set(form, (checkedRadiosForForm || new Map<string, HTMLInputElement | null>()).set(name, checkedRadio));
     }
 
