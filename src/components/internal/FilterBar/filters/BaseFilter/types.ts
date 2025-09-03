@@ -21,7 +21,6 @@ export interface BaseFilterProps {
 
 interface FilterCustomRenderProps<T extends BaseFilterProps> {
     render?: (props: FilterEditModalRenderProps<T>) => JSX.Element;
-    statusText?: string;
 }
 
 export type FilterProps<T extends BaseFilterProps> = T & FilterCustomRenderProps<T> & Pick<AriaAttributes, 'aria-label'>;

@@ -157,22 +157,6 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
         return selectedPresetOption ?? props.label;
     }, [customSelection, dateTimeFormatter, fromValue, toValue, selectedPresetOption, props.label]);
 
-    const statusText = useMemo(() => {
-        const selectedPresetOptionStatusText =
-            selectedPresetOption && selectedPresetOption !== customSelection
-                ? i18n.get('filters.date.period.status', { values: { timePeriod: selectedPresetOption } })
-                : undefined;
-
-        if (selectedPresetOptionStatusText) return selectedPresetOptionStatusText;
-
-        const fromDate = from && fullDateFormat(from);
-        const toDate = to && fullDateFormat(to);
-
-        if (from && to) return i18n.get('filters.date.between.status', { values: { fromDate, toDate } });
-        if (from) return i18n.get('filters.date.since.status', { values: { date: fromDate } });
-        if (to) return i18n.get('filters.date.until.status', { values: { date: toDate } });
-    }, [i18n, fullDateFormat, from, to, customSelection, selectedPresetOption]);
-
     return (
         <BaseFilter<T>
             {...(props as FilterProps<T>)}
@@ -181,7 +165,6 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             type={'date'}
             label={label}
             onChange={onChange}
-            statusText={statusText}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
             value={computeDateFilterValue(i18n, fullDateFormat, from, to)}

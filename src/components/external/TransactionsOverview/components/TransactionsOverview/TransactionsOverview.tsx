@@ -193,12 +193,7 @@ export const TransactionsOverview = ({
                 />
                 {/* Remove status filter temporarily */}
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter
-                    {...categoriesFilter}
-                    allSelectionStatusKey="transactions.filters.category.status.all"
-                    someSelectionStatusKey="transactions.filters.category.status.some"
-                    placeholder={i18n.get('filterPlaceholder.category')}
-                />
+                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
@@ -209,12 +204,7 @@ export const TransactionsOverview = ({
                     updateFilters={updateFilters}
                     onChange={updateFilters}
                 />
-                <MultiSelectionFilter
-                    {...currenciesFilter}
-                    allSelectionStatusKey="transactions.filters.currency.status.all"
-                    someSelectionStatusKey="transactions.filters.currency.status.some"
-                    placeholder={i18n.get('filterPlaceholder.currency')}
-                />
+                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>

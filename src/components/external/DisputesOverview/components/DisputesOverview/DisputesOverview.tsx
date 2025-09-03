@@ -315,19 +315,9 @@ export const DisputesOverview = ({
                         timezone={activeBalanceAccount?.timeZone}
                         updateFilters={updateFilters}
                     />
-                    <MultiSelectionFilter
-                        {...disputeSchemesFilter}
-                        allSelectionStatusKey="disputes.filters.paymentMethod.status.all"
-                        someSelectionStatusKey="disputes.filters.paymentMethod.status.some"
-                        placeholder={i18n.get('disputes.paymentMethod')}
-                    />
+                    <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
                     {statusGroup !== 'FRAUD_ALERTS' && (
-                        <MultiSelectionFilter
-                            {...disputeReasonsFilter}
-                            allSelectionStatusKey="disputes.filters.disputeReason.status.all"
-                            someSelectionStatusKey="disputes.filters.disputeReason.status.some"
-                            placeholder={i18n.get('disputes.disputeReason')}
-                        />
+                        <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
                     )}
                 </FilterBar>
             </div>

@@ -24,9 +24,6 @@ const BalanceAccountSelector = memo(
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const balanceAccountLabel = useMemo(() => i18n.get('balanceAccount'), [i18n]);
 
-        const allSelected = activeBalanceAccount?.id === ALL_BALANCE_ACCOUNTS_SELECTION_ID;
-        const canRenderSelector = balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1;
-
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (
                 <>
@@ -42,31 +39,24 @@ const BalanceAccountSelector = memo(
             []
         );
 
-        return (
-            <>
-                {canRenderSelector && (
-                    <Select
-                        popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
-                        onChange={onBalanceAccountSelection}
-                        filterable={false}
-                        multiSelect={false}
-                        placeholder={activeBalanceAccount?.id || balanceAccountLabel}
-                        selected={activeBalanceAccount?.id}
-                        withoutCollapseIndicator={true}
-                        items={balanceAccountSelectionOptions}
-                        renderListItem={renderListItem}
-                        showOverlay={isSmContainer}
-                        aria-label={balanceAccountLabel}
-                    />
-                )}
+        const canRenderSelector = balanceAccountSelectionOptions && balanceAccountSelectionOptions.length > 1;
 
-                <div aria-label={balanceAccountLabel} className="adyen-pe-visually-hidden" role="status">
-                    {activeBalanceAccount?.id &&
-                        i18n.get(allSelected ? 'filters.account.all.status' : 'filters.account.one.status', {
-                            values: { account: activeBalanceAccount.description || activeBalanceAccount.id },
-                        })}
-                </div>
-            </>
+        return (
+            canRenderSelector && (
+                <Select
+                    popoverClassNameModifiers={[BA_SELECTOR_CLASS]}
+                    onChange={onBalanceAccountSelection}
+                    filterable={false}
+                    multiSelect={false}
+                    placeholder={activeBalanceAccount?.id || balanceAccountLabel}
+                    selected={activeBalanceAccount?.id}
+                    withoutCollapseIndicator={true}
+                    items={balanceAccountSelectionOptions}
+                    renderListItem={renderListItem}
+                    showOverlay={isSmContainer}
+                    aria-label={balanceAccountLabel}
+                />
+            )
         );
     }
 );

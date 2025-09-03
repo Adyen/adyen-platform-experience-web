@@ -5,7 +5,6 @@ import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popo
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import Typography from '../../../Typography/Typography';
 import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAction';
-import useUniqueId from '../../../../../hooks/useUniqueId';
 import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
@@ -51,7 +50,7 @@ const renderFallback = (() => {
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
 })();
 
-const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, statusText, ['aria-label']: ariaLabel, ...props }: FilterProps<T>) => {
+const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['aria-label']: ariaLabel, ...props }: FilterProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
@@ -109,8 +108,6 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, statu
         committing && closeEditDialog();
         updateHasEmptyValue(hasEmptyValue);
     }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
-
-    const filterButtonId = `elem-${useUniqueId()}`;
     const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
     const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
@@ -119,48 +116,41 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, statu
             <div className={`adyen-pe-filter adyen-pe-filter--${props.type}`}>
                 {useMemo(
                     () => (
-                        <>
-                            <FilterButton
-                                classNameModifiers={[
-                                    ...(props.appliedFilterAmount ? ['with-counter'] : []),
-                                    ...(props.classNameModifiers ?? []),
-                                    ...(editMode ? ['active'] : []),
-                                    ...(hasEmptyValue ? [] : ['has-selection']),
-                                ]}
-                                aria-label={ariaLabel}
-                                id={filterButtonId}
-                                onClick={editMode ? closeEditDialog : openEditDialog}
-                                ref={targetElement}
-                                tabIndex={0}
-                            >
-                                <div className="adyen-pe-filter-button__default-container">
-                                    <Typography
-                                        el={TypographyElement.SPAN}
-                                        variant={TypographyVariant.BODY}
-                                        stronger={true}
-                                        className="adyen-pe-filter-button__label"
-                                    >
-                                        {props.label}
-                                    </Typography>
-                                    {!!props.appliedFilterAmount && (
-                                        <div className="adyen-pe-filter-button__counter-wrapper">
-                                            <Typography
-                                                el={TypographyElement.SPAN}
-                                                variant={TypographyVariant.BODY}
-                                                stronger={true}
-                                                className="adyen-pe-filter-button__counter"
-                                            >
-                                                {props.appliedFilterAmount}
-                                            </Typography>
-                                        </div>
-                                    )}
-                                </div>
-                            </FilterButton>
-
-                            <div aria-labelledBy={filterButtonId} className="adyen-pe-visually-hidden" role="status">
-                                {statusText}
+                        <FilterButton
+                            classNameModifiers={[
+                                ...(props.appliedFilterAmount ? ['with-counter'] : []),
+                                ...(props.classNameModifiers ?? []),
+                                ...(editMode ? ['active'] : []),
+                                ...(hasEmptyValue ? [] : ['has-selection']),
+                            ]}
+                            aria-label={ariaLabel}
+                            onClick={editMode ? closeEditDialog : openEditDialog}
+                            ref={targetElement}
+                            tabIndex={0}
+                        >
+                            <div className="adyen-pe-filter-button__default-container">
+                                <Typography
+                                    el={TypographyElement.SPAN}
+                                    variant={TypographyVariant.BODY}
+                                    stronger={true}
+                                    className="adyen-pe-filter-button__label"
+                                >
+                                    {props.label}
+                                </Typography>
+                                {!!props.appliedFilterAmount && (
+                                    <div className="adyen-pe-filter-button__counter-wrapper">
+                                        <Typography
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.BODY}
+                                            stronger={true}
+                                            className="adyen-pe-filter-button__counter"
+                                        >
+                                            {props.appliedFilterAmount}
+                                        </Typography>
+                                    </div>
+                                )}
                             </div>
-                        </>
+                        </FilterButton>
                     ),
                     [
                         props.appliedFilterAmount,
@@ -181,7 +171,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, statu
                     variant={PopoverContainerVariant.POPOVER}
                     modifiers={['filter']}
                     open={editMode}
-                    aria-label={props.label}
+                    aria-label={`${props.label}`}
                     dismiss={closeEditDialog}
                     dismissible={false}
                     withContentPadding={props.withContentPadding ?? true}

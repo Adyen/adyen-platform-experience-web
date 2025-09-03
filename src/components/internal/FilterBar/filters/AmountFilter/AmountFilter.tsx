@@ -40,9 +40,6 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
     const [formattedValue, setFormattedValue] = useState<string | undefined>();
     const [value, setValue] = useState<{ minAmount: number | undefined; maxAmount: number | undefined }>();
 
-    const defaultStatusText = useMemo(() => i18n.get('filters.amount.all.status'), [i18n]);
-    const [statusText, setStatusText] = useState(defaultStatusText);
-
     const formatAmount = useMemo(() => {
         const currency = selectedCurrencies?.[0] || availableCurrencies?.[0];
         const showCurrencySymbol = availableCurrencies?.length === 1 || selectedCurrencies?.length === 1;
@@ -61,17 +58,14 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             maxAmount = isUndefined(maxAmount) ? maxAmount : Number(maxAmount);
             setValue({ minAmount, maxAmount });
 
-            if (isUndefined(minAmount) && isUndefined(maxAmount)) {
-                setFormattedValue(undefined);
-                setStatusText(defaultStatusText);
-            }
+            if (isUndefined(minAmount) && isUndefined(maxAmount)) setFormattedValue(undefined);
 
             updateFilters({
                 minAmount: isUndefined(minAmount) ? minAmount : String(Math.round(minAmount * AMOUNT_MULTIPLIER)),
                 maxAmount: isUndefined(maxAmount) ? maxAmount : String(Math.round(maxAmount * AMOUNT_MULTIPLIER)),
             });
         },
-        [updateFilters, defaultStatusText]
+        [updateFilters]
     );
 
     useEffect(() => {
@@ -81,29 +75,24 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         const formattedMinAmount = isUndefined(minAmount) ? minAmount : formatAmount(minAmount);
 
         let formattedValue: string | undefined = undefined;
-        let statusText = defaultStatusText;
 
         switch (amountFormat) {
             case AmountFormat.BETWEEN:
                 formattedValue = i18n.get('filters.amount.between', {
                     values: { minAmount: formattedMinAmount, maxAmount: formattedMaxAmount },
                 });
-                statusText = i18n.get('filters.amount.between.status', { values: { minAmount, maxAmount } });
                 break;
 
             case AmountFormat.EXACT:
                 formattedValue = i18n.get('filters.amount.only', { values: { amount: formattedMaxAmount } });
-                statusText = i18n.get('filters.amount.only.status', { values: { amount: maxAmount } });
                 break;
 
             case AmountFormat.MAX:
                 formattedValue = i18n.get('filters.amount.max', { values: { amount: formattedMaxAmount } });
-                statusText = i18n.get('filters.amount.max.status', { values: { amount: maxAmount } });
                 break;
 
             case AmountFormat.MIN:
                 formattedValue = i18n.get('filters.amount.min', { values: { amount: formattedMinAmount } });
-                statusText = i18n.get('filters.amount.min.status', { values: { amount: minAmount } });
                 break;
 
             case AmountFormat.ALL:
@@ -112,13 +101,11 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         }
 
         setFormattedValue(formattedValue);
-        setStatusText(statusText);
-    }, [i18n, value, defaultStatusText]);
+    }, [i18n, value]);
 
     return (
         <BaseFilter<RangeFilterProps>
             {...props}
-            statusText={statusText}
             updateFilters={updateFilters}
             minAmount={props.minAmount}
             maxAmount={props.maxAmount}
