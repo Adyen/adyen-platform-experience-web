@@ -623,6 +623,7 @@
     "file": "Fichier",
     "filter.date.since": "Depuis le %{date}",
     "filter.date.until": "Jusqu'au %{date}",
+    "filterBar": "Barre de filtre",
     "filterPlaceholder.category": "Type",
     "filterPlaceholder.currency": "Devise",
     "filterPlaceholder.status": "Statut",

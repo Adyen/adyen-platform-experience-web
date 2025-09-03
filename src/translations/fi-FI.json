@@ -623,6 +623,7 @@
     "file": "Tiedosto",
     "filter.date.since": "%{date} alkaen",
     "filter.date.until": "%{date} saakka",
+    "filterBar": "Suodatinpalkki",
     "filterPlaceholder.category": "Tyyppi",
     "filterPlaceholder.currency": "Valuutta",
     "filterPlaceholder.status": "Tila",

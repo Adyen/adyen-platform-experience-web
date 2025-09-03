@@ -623,6 +623,7 @@
     "file": "Bestand",
     "filter.date.since": "Sinds %{date}",
     "filter.date.until": "Tot %{date}",
+    "filterBar": "Filterbalk",
     "filterPlaceholder.category": "Soort",
     "filterPlaceholder.currency": "Valuta",
     "filterPlaceholder.status": "Status",

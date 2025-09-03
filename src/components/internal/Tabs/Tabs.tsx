@@ -1,15 +1,21 @@
 import { TabComponentProps } from './types';
+import { AriaAttributes } from 'preact/compat';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './Tabs.scss';
 
-function Tabs<TabId extends string>({ activeTab, tabs, onChange }: TabComponentProps<TabId>) {
+function Tabs<TabId extends string>({
+    ['aria-label']: ariaLabel,
+    activeTab,
+    tabs,
+    onChange,
+}: TabComponentProps<TabId> & Pick<AriaAttributes, 'aria-label'>) {
     const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: tabs, activeOption: activeTab });
     const { i18n } = useCoreContext();
     return (
-        <section aria-label={i18n.get('tabs')}>
+        <section aria-label={ariaLabel ?? i18n.get('tabs')}>
             <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal">
                 {tabs.map((tab, index) => {
                     const isActive = activeIndex === index;

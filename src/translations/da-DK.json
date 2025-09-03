@@ -623,6 +623,7 @@
     "file": "Fil",
     "filter.date.since": "Siden %{date}",
     "filter.date.until": "Indtil %{date}",
+    "filterBar": "Filterbjælke",
     "filterPlaceholder.category": "Type",
     "filterPlaceholder.currency": "Valuta",
     "filterPlaceholder.status": "Status",

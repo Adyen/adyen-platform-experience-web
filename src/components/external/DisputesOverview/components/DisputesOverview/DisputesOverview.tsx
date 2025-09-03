@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { h } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -47,12 +48,13 @@ const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([s
 })) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
 
 const DisputesOverviewTabsDropdown = ({
+    ['aria-label']: ariaLabel,
     activeTab,
     onChange,
 }: {
     activeTab: IDisputeStatusGroup;
     onChange: NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>;
-}) => {
+} & Pick<AriaAttributes, 'aria-label'>) => {
     const { i18n } = useCoreContext();
     const [statusGroup, setStatusGroup] = useState(activeTab);
 
@@ -72,6 +74,7 @@ const DisputesOverviewTabsDropdown = ({
 
     return (
         <Select
+            aria-label={ariaLabel}
             items={selectItems}
             selected={statusGroup}
             onChange={({ target }) => setStatusGroup(target.value)}
@@ -116,6 +119,8 @@ export const DisputesOverview = ({
     // set to undefined, in which case it has no effect on the status group tab state
     // (will not cause the active status group tab to change).
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
+
+    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.filters.statusGroup.label'), [i18n]);
 
     const disputeDetails = useMemo(
         () => ({
@@ -279,13 +284,22 @@ export const DisputesOverview = ({
             <div>
                 <div className={TABS_CONTAINER_CLASS}>
                     {isMobileContainer ? (
-                        <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                        <DisputesOverviewTabsDropdown
+                            aria-label={statusGroupAriaLabel}
+                            activeTab={statusGroupActiveTab ?? statusGroup}
+                            onChange={onStatusGroupChange}
+                        />
                     ) : (
-                        <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                        <Tabs
+                            aria-label={statusGroupAriaLabel}
+                            tabs={DISPUTE_STATUS_GROUPS_TABS}
+                            activeTab={statusGroupActiveTab}
+                            onChange={onStatusGroupChange}
+                        />
                     )}
                 </div>
 
-                <FilterBar {...filterBarState}>
+                <FilterBar {...filterBarState} ariaLabelKey="disputes.filters">
                     <BalanceAccountSelector
                         activeBalanceAccount={activeBalanceAccount}
                         balanceAccountSelectionOptions={balanceAccountSelectionOptions}
