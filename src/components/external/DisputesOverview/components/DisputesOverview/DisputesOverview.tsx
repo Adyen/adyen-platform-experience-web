@@ -120,7 +120,7 @@ export const DisputesOverview = ({
     // (will not cause the active status group tab to change).
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
 
-    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.statusGroup.label'), [i18n]);
+    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.filters.statusGroup.label'), [i18n]);
 
     const disputeDetails = useMemo(
         () => ({
@@ -317,15 +317,15 @@ export const DisputesOverview = ({
                     />
                     <MultiSelectionFilter
                         {...disputeSchemesFilter}
-                        allSelectionStatusKey="disputes.filterStatus.paymentMethodAll"
-                        partialSelectionStatusKey="disputes.filterStatus.paymentMethodPartial"
+                        allSelectionStatusKey="disputes.filters.paymentMethod.status.all"
+                        someSelectionStatusKey="disputes.filters.paymentMethod.status.some"
                         placeholder={i18n.get('disputes.paymentMethod')}
                     />
                     {statusGroup !== 'FRAUD_ALERTS' && (
                         <MultiSelectionFilter
                             {...disputeReasonsFilter}
-                            allSelectionStatusKey="disputes.filterStatus.disputeReasonAll"
-                            partialSelectionStatusKey="disputes.filterStatus.disputeReasonPartial"
+                            allSelectionStatusKey="disputes.filters.disputeReason.status.all"
+                            someSelectionStatusKey="disputes.filters.disputeReason.status.some"
                             placeholder={i18n.get('disputes.disputeReason')}
                         />
                     )}

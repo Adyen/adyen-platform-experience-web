@@ -623,6 +623,7 @@
     "file": "Datei",
     "filter.date.since": "Seit %{date}",
     "filter.date.until": "Bis %{date}",
+    "filterBar": "Filterleiste",
     "filterPlaceholder.category": "Typ",
     "filterPlaceholder.currency": "Währung",
     "filterPlaceholder.status": "Status",

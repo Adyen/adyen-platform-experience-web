@@ -12,13 +12,13 @@ export type MultiSelectionFilterProps<FilterParam extends string = string, Filte
 > &
     Required<Pick<SelectProps<any>, 'placeholder'>> & {
         allSelectionStatusKey: TranslationKey;
-        partialSelectionStatusKey: TranslationKey;
+        someSelectionStatusKey: TranslationKey;
     };
 
 const MultiSelectionFilter = memo(
     <FilterParam extends string = string, FilterValue extends string = string>({
         allSelectionStatusKey,
-        partialSelectionStatusKey,
+        someSelectionStatusKey,
         placeholder,
         selection,
         selectionOptions,
@@ -51,8 +51,8 @@ const MultiSelectionFilter = memo(
                 )}
 
                 <div aria-label={placeholder} className="adyen-pe-visually-hidden" role="status">
-                    {i18n.get(allSelected ? allSelectionStatusKey : partialSelectionStatusKey, {
-                        values: { count: selection.length, list: listFormatter.format(selection) },
+                    {i18n.get(allSelected ? allSelectionStatusKey : someSelectionStatusKey, {
+                        values: { list: listFormatter.format(selection) },
                     })}
                 </div>
             </>

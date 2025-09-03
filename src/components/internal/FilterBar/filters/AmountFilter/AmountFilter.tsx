@@ -40,7 +40,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
     const [formattedValue, setFormattedValue] = useState<string | undefined>();
     const [value, setValue] = useState<{ minAmount: number | undefined; maxAmount: number | undefined }>();
 
-    const defaultStatusText = useMemo(() => i18n.get('filter.amountStatus.all'), [i18n]);
+    const defaultStatusText = useMemo(() => i18n.get('filters.amount.all.status'), [i18n]);
     const [statusText, setStatusText] = useState(defaultStatusText);
 
     const formatAmount = useMemo(() => {
@@ -84,34 +84,27 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         let statusText = defaultStatusText;
 
         switch (amountFormat) {
-            case AmountFormat.BETWEEN: {
-                formattedValue = `${i18n.get('amount')}: ${formattedMinAmount} ${i18n.get('to').toLowerCase()} ${formattedMaxAmount}`;
-                statusText = i18n.get('filter.amountStatus.between', {
-                    values: {
-                        minAmount: formattedMinAmount,
-                        maxAmount: formattedMaxAmount,
-                    },
+            case AmountFormat.BETWEEN:
+                formattedValue = i18n.get('filters.amount.between', {
+                    values: { minAmount: formattedMinAmount, maxAmount: formattedMaxAmount },
                 });
+                statusText = i18n.get('filters.amount.between.status', { values: { minAmount, maxAmount } });
                 break;
-            }
 
-            case AmountFormat.EXACT: {
-                formattedValue = `${i18n.get('amount')}: ${formattedMaxAmount}`;
-                statusText = i18n.get('filter.amountStatus.exact', { values: { amount: formattedMaxAmount } });
+            case AmountFormat.EXACT:
+                formattedValue = i18n.get('filters.amount.only', { values: { amount: formattedMaxAmount } });
+                statusText = i18n.get('filters.amount.only.status', { values: { amount: maxAmount } });
                 break;
-            }
 
-            case AmountFormat.MAX: {
-                formattedValue = `${i18n.get('amount')} ${i18n.get('to')} ${formattedMaxAmount}`;
-                statusText = i18n.get('filter.amountStatus.max', { values: { amount: formattedMaxAmount } });
+            case AmountFormat.MAX:
+                formattedValue = i18n.get('filters.amount.max', { values: { amount: formattedMaxAmount } });
+                statusText = i18n.get('filters.amount.max.status', { values: { amount: maxAmount } });
                 break;
-            }
 
-            case AmountFormat.MIN: {
-                formattedValue = `${i18n.get('amount')} ${i18n.get('from')} ${formattedMinAmount}`;
-                statusText = i18n.get('filter.amountStatus.min', { values: { amount: formattedMinAmount } });
+            case AmountFormat.MIN:
+                formattedValue = i18n.get('filters.amount.min', { values: { amount: formattedMinAmount } });
+                statusText = i18n.get('filters.amount.min.status', { values: { amount: minAmount } });
                 break;
-            }
 
             case AmountFormat.ALL:
             default:

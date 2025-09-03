@@ -22,9 +22,9 @@ const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Loca
     const from = fromDate && fullDateFormat(fromDate);
     const to = toDate && fullDateFormat(toDate);
 
-    if (from && to) return i18n.get('filter.date.both', { values: { fromDate: from, toDate: to } });
-    if (from) return i18n.get('filter.date.since', { values: { date: from } });
-    if (to) return i18n.get('filter.date.until', { values: { date: to } });
+    if (from && to) return i18n.get('filters.date.between', { values: { fromDate: from, toDate: to } });
+    if (from) return i18n.get('filters.date.since', { values: { date: from } });
+    if (to) return i18n.get('filters.date.until', { values: { date: to } });
 };
 
 const resolveDate = (date?: any) => {
@@ -157,37 +157,21 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
         return selectedPresetOption ?? props.label;
     }, [customSelection, dateTimeFormatter, fromValue, toValue, selectedPresetOption, props.label]);
 
-    const selectedPresetOptionStatusText = useMemo(() => {
-        if (selectedPresetOption !== customSelection) {
-            switch (selectedPresetOption) {
-                case i18n.get('rangePreset.last7Days'):
-                    return i18n.get('filter.dateStatus.last7Days');
-                case i18n.get('rangePreset.last30Days'):
-                    return i18n.get('filter.dateStatus.last30Days');
-                case i18n.get('rangePreset.lastWeek'):
-                    return i18n.get('filter.dateStatus.lastWeek');
-                case i18n.get('rangePreset.lastMonth'):
-                    return i18n.get('filter.dateStatus.lastMonth');
-                case i18n.get('rangePreset.thisWeek'):
-                    return i18n.get('filter.dateStatus.thisWeek');
-                case i18n.get('rangePreset.thisMonth'):
-                    return i18n.get('filter.dateStatus.thisMonth');
-                case i18n.get('rangePreset.yearToDate'):
-                    return i18n.get('filter.dateStatus.yearToDate');
-            }
-        }
-    }, [i18n, customSelection, selectedPresetOption]);
-
     const statusText = useMemo(() => {
+        const selectedPresetOptionStatusText =
+            selectedPresetOption && selectedPresetOption !== customSelection
+                ? i18n.get('filters.date.period.status', { values: { timePeriod: selectedPresetOption } })
+                : undefined;
+
         if (selectedPresetOptionStatusText) return selectedPresetOptionStatusText;
 
         const fromDate = from && fullDateFormat(from);
         const toDate = to && fullDateFormat(to);
 
-        if (from && to) return i18n.get('filter.dateStatus.both', { values: { fromDate, toDate } });
-        if (from) return i18n.get('filter.dateStatus.since', { values: { date: fromDate } });
-        if (to) return i18n.get('filter.dateStatus.until', { values: { date: toDate } });
-    }, [i18n, fullDateFormat, from, to, selectedPresetOptionStatusText]);
+        if (from && to) return i18n.get('filters.date.between.status', { values: { fromDate, toDate } });
+        if (from) return i18n.get('filters.date.since.status', { values: { date: fromDate } });
+        if (to) return i18n.get('filters.date.until.status', { values: { date: toDate } });
+    }, [i18n, fullDateFormat, from, to, customSelection, selectedPresetOption]);
 
     return (
         <BaseFilter<T>

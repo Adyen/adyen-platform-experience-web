@@ -62,7 +62,7 @@ const BalanceAccountSelector = memo(
 
                 <div aria-label={balanceAccountLabel} className="adyen-pe-visually-hidden" role="status">
                     {activeBalanceAccount?.id &&
-                        i18n.get(allSelected ? 'filter.accountStatus.all' : 'filter.accountStatus.id', {
+                        i18n.get(allSelected ? 'filters.account.all.status' : 'filters.account.one.status', {
                             values: { account: activeBalanceAccount.description || activeBalanceAccount.id },
                         })}
                 </div>

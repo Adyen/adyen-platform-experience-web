@@ -623,6 +623,7 @@
     "file": "Arquivo",
     "filter.date.since": "De %{date}",
     "filter.date.until": "Até %{date}",
+    "filterBar": "Barra de filtro",
     "filterPlaceholder.category": "Tipo",
     "filterPlaceholder.currency": "Moeda",
     "filterPlaceholder.status": "Status",

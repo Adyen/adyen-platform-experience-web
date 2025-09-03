@@ -623,6 +623,7 @@
     "file": "Archivo",
     "filter.date.since": "Desde %{date}",
     "filter.date.until": "Hasta %{date}",
+    "filterBar": "Barra de filtro",
     "filterPlaceholder.category": "Tipo",
     "filterPlaceholder.currency": "Divisa",
     "filterPlaceholder.status": "Estado",

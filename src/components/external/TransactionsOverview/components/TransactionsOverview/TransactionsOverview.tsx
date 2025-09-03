@@ -195,8 +195,8 @@ export const TransactionsOverview = ({
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
                 <MultiSelectionFilter
                     {...categoriesFilter}
-                    allSelectionStatusKey="transactions.filterStatus.categoryAll"
-                    partialSelectionStatusKey="transactions.filterStatus.categoryPartial"
+                    allSelectionStatusKey="transactions.filters.category.status.all"
+                    someSelectionStatusKey="transactions.filters.category.status.some"
                     placeholder={i18n.get('filterPlaceholder.category')}
                 />
                 <AmountFilter
@@ -211,8 +211,8 @@ export const TransactionsOverview = ({
                 />
                 <MultiSelectionFilter
                     {...currenciesFilter}
-                    allSelectionStatusKey="transactions.filterStatus.currencyAll"
-                    partialSelectionStatusKey="transactions.filterStatus.currencyPartial"
+                    allSelectionStatusKey="transactions.filters.currency.status.all"
+                    someSelectionStatusKey="transactions.filters.currency.status.some"
                     placeholder={i18n.get('filterPlaceholder.currency')}
                 />
             </FilterBar>
