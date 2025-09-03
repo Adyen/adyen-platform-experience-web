@@ -653,6 +653,7 @@
     "noReportsFound": "Nenhum relatório encontrado",
     "noTransactionsFound": "Nenhuma transação encontrada",
     "other": "Outros",
+    "paginatedNavigation": "Navegação por página",
     "pagination.nextPage": "Próxima página",
     "pagination.previousPage": "Página anterior",
     "pagination.showing": "Exibindo",

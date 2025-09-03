@@ -20,12 +20,32 @@ const classes = {
     limitSelector: BASE_CLASS + '__limit-selector',
 };
 
-export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitOptions, onLimitSelection }: PaginationProps) {
+export default function Pagination({
+    next,
+    hasNext,
+    hasPrev,
+    prev,
+    limit,
+    limitOptions,
+    onLimitSelection,
+    ariaLabelKey,
+    limitSelectorAriaLabelKey,
+}: PaginationProps) {
     const { i18n } = useCoreContext();
 
     const _limitOptions = useMemo(
-        () => limitOptions && Object.freeze(limitOptions.map(option => ({ id: `${option}`, name: `${option}` } as SelectItem))),
-        [limitOptions]
+        () =>
+            limitOptions &&
+            Object.freeze(
+                limitOptions.map(
+                    option =>
+                        ({
+                            name: option.toLocaleString(i18n.locale, { style: 'decimal' }),
+                            id: String(option),
+                        }) as SelectItem
+                )
+            ),
+        [i18n, limitOptions]
     );
 
     const _onLimitChanged = useCallback(
@@ -37,34 +57,29 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
     );
 
     return (
-        <div className={classes.base}>
+        <section aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
             <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
-                    <>
-                        <div className={classes.limit} role="presentation">
-                            <Translation
-                                translationKey="pagination.showing"
-                                fills={{
-                                    limit: (
-                                        <div className={classes.limitSelector}>
-                                            <Select
-                                                setToTargetWidth={true}
-                                                filterable={false}
-                                                multiSelect={false}
-                                                items={_limitOptions}
-                                                onChange={_onLimitChanged}
-                                                selected={`${limit ?? ''}`}
-                                            />
-                                        </div>
-                                    ),
-                                }}
-                            />
-                        </div>
-
-                        <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live={limit ? 'polite' : 'off'}>
-                            {limit && i18n.get('pagination.showing.notice', { values: { limit } })}
-                        </div>
-                    </>
+                    <div className={classes.limit} role="presentation">
+                        <Translation
+                            translationKey="pagination.showing"
+                            fills={{
+                                pageLimit: (
+                                    <div className={classes.limitSelector}>
+                                        <Select
+                                            setToTargetWidth={true}
+                                            filterable={false}
+                                            multiSelect={false}
+                                            items={_limitOptions}
+                                            onChange={_onLimitChanged}
+                                            selected={`${limit ?? ''}`}
+                                            aria-label={i18n.get(limitSelectorAriaLabelKey ?? 'pagination.limitSelector.label')}
+                                        />
+                                    </div>
+                                ),
+                            }}
+                        />
+                    </div>
                 )}
             </div>
 
@@ -73,23 +88,23 @@ export default function Pagination({ next, hasNext, hasPrev, prev, limit, limitO
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
+                    aria-label={i18n.get('pagination.previousPage')}
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
                     <Icon name="chevron-left" />
-                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.previousPage')}</span>
                 </Button>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}
+                    aria-label={i18n.get('pagination.nextPage')}
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >
-                    <span className="adyen-pe-visually-hidden">{i18n.get('pagination.nextPage')}</span>
                     <Icon name="chevron-right" />
                 </Button>
             </div>
-        </div>
+        </section>
     );
 }

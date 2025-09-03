@@ -93,7 +93,7 @@ const usePagination = <Pagination extends PaginationType>(
         [goto, paginationChanged]
     );
 
-    const pageSize = useMemo(() => limit && Math.min(limit, size || Infinity) % limit, [limit, size]);
+    const pageSize = useMemo(() => (page ? Math.min(limit, size - (page - 1) * limit) : 0), [limit, size, page]);
 
     const resetPagination = useCallback(() => {
         resetPageCount();

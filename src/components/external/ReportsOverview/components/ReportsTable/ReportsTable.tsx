@@ -176,7 +176,11 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="reports.pagination"
+                            limitSelectorAriaLabelKey="reports.pagination.limitSelector.label"
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>
