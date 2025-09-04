@@ -4,14 +4,14 @@ import { TypographyElement, TypographyVariant } from '../../../internal/Typograp
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 
 const Unqualified = ({ hideTitle }: { hideTitle?: boolean }) => {
-    const { i18n, resources } = useCoreContext();
+    const { i18n, getImageAsset } = useCoreContext();
 
     return (
         <>
             <CapitalHeader hideTitle={hideTitle} titleKey={'capital.needSomeExtraMoney'} />
             <div className={'adyen-pe-capital-overview__unqualified-state'}>
                 <div className="adyen-pe-capital-overview__unqualified-state-img">
-                    <img srcSet={resources.getImage({ name: 'generic-use-first-touch' })} alt="" />
+                    <img srcSet={getImageAsset?.({ name: 'generic-use-first-touch' })} alt="" />
                 </div>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY} large>
                     {i18n.get('capital.youWillSoonQualifyForAFinancialOffer')}

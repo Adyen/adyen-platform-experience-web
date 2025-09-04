@@ -2,6 +2,7 @@ import type { SessionRequest } from './ConfigContext';
 import type { CustomTranslations as Translations, TranslationSourceRecord } from '../translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';
+import { SupportedLocales } from './Localization/types';
 
 type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
@@ -32,7 +33,7 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      */
     locale?:
         | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
-        | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never);
+        | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : SupportedLocales);
 
     onError?: onErrorHandler;
     onSessionCreate: SessionRequest;

@@ -4,7 +4,7 @@ import { AuthSession } from './ConfigContext/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
-import { Resources } from './Resources/Resources';
+import { AssetOptions, Assets } from './Assets/Assets';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -14,22 +14,19 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     public localization: Localization;
     public loadingContext: string;
-    public cdnTranslationsUrl: string;
     public session = new AuthSession();
     public onError?: onErrorHandler;
-    public resources: Resources;
+    public getImageAsset: (props: AssetOptions) => string;
 
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
-        const { cdnTranslationsUrl, cdnImagesUrl, apiUrl } = resolveEnvironment(this.options.environment);
+        const { cdnTranslationsUrl, cdnAssetsUrl, apiUrl } = resolveEnvironment(this.options.environment);
 
-        this.cdnTranslationsUrl = cdnTranslationsUrl;
-
-        this.localization = new Localization(options.locale, options.availableTranslations, this.cdnTranslationsUrl);
+        this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl);
         this.loadingContext = process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
-        this.resources = new Resources(cdnImagesUrl);
+        this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.setOptions(options);
     }
 

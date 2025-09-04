@@ -41,7 +41,7 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
-export const getRequestBodyForContentType = (body: any, contentType: string) => {
+export const getRequestBodyForContentType = (body: any, contentType?: string) => {
     switch (contentType) {
         case 'application/json':
             return JSON.stringify(body);
@@ -75,7 +75,7 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
         redirect: 'follow',
         signal: options.signal,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType ?? 'application/json') }),
+        ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType) }),
     };
 };
 

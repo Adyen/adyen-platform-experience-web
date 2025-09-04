@@ -16,7 +16,7 @@ export const resolveEnvironment = (() => {
         return {
             apiUrl,
             cdnTranslationsUrl: `${cdnUrl}/assets/translations`,
-            cdnImagesUrl: `${cdnUrl}/assets/images`,
+            cdnAssetsUrl: `${cdnUrl}/assets`,
         };
     };
 })();

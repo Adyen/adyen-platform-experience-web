@@ -44,7 +44,7 @@ export const ErrorMessageDisplay = ({
     renderSecondaryButton,
     withBackground,
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore, resources } = useCoreContext();
+    const { i18n, updateCore, getImageAsset } = useCoreContext();
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
@@ -82,7 +82,7 @@ export const ErrorMessageDisplay = ({
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? resources.getImage({ name: 'no-results' })} alt={i18n.get('thereWasAnUnexpectedError')} />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt={i18n.get('thereWasAnUnexpectedError')} />
                     </picture>
                 </div>
             )}
