@@ -3,7 +3,7 @@ import { AMOUNT_CLASS, BASE_CLASS, BODY_CLASS, LABEL_CLASS, PLACEHOLDER_CLASS } 
 import { SummaryItemLabel } from './SummaryItemLabel';
 import { SummaryItemColumnConfig, SummaryItemProps } from './types';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import classNames from 'classnames';
@@ -68,6 +68,7 @@ export const SummaryItem = ({
                         ) : (
                             <div ref={config.ref} style={getColumnStyle(index)}>
                                 <Typography
+                                    el={TypographyElement.SPAN}
                                     variant={typographyVariant(config, isLongValue)}
                                     className={classNames({ [LABEL_CLASS]: config.valueHasLabelStyle, [AMOUNT_CLASS]: !config.valueHasLabelStyle })}
                                 >

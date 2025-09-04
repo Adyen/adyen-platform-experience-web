@@ -4,6 +4,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BaseList } from '../../../../internal/BaseList/BaseList';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
@@ -11,6 +12,7 @@ import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import { BalancesProps, IBalanceWithKey } from './types';
 
 export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
+    const { i18n } = useCoreContext();
     const { getBalances: getAccountsBalance } = useConfigContext().endpoints;
 
     const fetchCallback = useCallback(async () => {
@@ -59,6 +61,7 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
     return (
         <div className={BASE_CLASS}>
             <ExpandableCard
+                aria-label={i18n.get('transactions.balances.label')}
                 renderHeader={
                     <BalanceItem
                         isEmpty={isEmpty}

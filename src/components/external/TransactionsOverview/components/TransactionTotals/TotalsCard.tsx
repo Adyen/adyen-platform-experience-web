@@ -7,7 +7,7 @@ import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import './TransactionTotals.scss';
 import { ITransactionTotalWithKey, TotalsCardProps } from './types';
 
-export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth }: TotalsCardProps) => {
+export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...ariaAttributes }: TotalsCardProps) => {
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
     const [isHovered, setIsHovered] = useState(false);
 
@@ -37,6 +37,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth }: T
             onFocus={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onBlur={() => setIsHovered(false)}
+            {...ariaAttributes}
         >
             {!isLoading && restOfTotals.length && (
                 <BaseList>
