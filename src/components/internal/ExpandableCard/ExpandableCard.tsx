@@ -3,7 +3,7 @@ import { ExpandableCardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
-import useCoreContext from '../../../core/Context/useCoreContext';
+import useUniqueId from '../../../hooks/useUniqueId';
 import BaseButton from '../BaseButton';
 import Icon from '../Icon';
 import './ExpandableCard.scss';
@@ -17,19 +17,18 @@ import {
     CONTAINER_HIDDEN_CLASS,
     CONTAINER_IN_FLOW_CLASS,
     CONTAINER_OVERLAY_CLASS,
-    CONTAINER_OVERLAY_ID,
     CONTENT_CLASS,
     CONTENT_EXPANDABLE_CLASS,
 } from './constants';
 
-const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...listeners }: PropsWithChildren<ExpandableCardProps>) => {
-    const { i18n } = useCoreContext();
+const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...restProps }: PropsWithChildren<ExpandableCardProps>) => {
     const [isOpen, setIsOpen] = useState(false);
     const [collapsedCardHeight, setCollapsedCardHeight] = useState(0);
     const inNormalFlow = useMemo(() => inFlow === true, [inFlow]);
     const toggleIsOpen = useCallback(() => setIsOpen(isOpen => !isOpen), [setIsOpen]);
-    const expandButtonRef = useRef<HTMLButtonElement>(null);
     const expandableCardRef = useRef<HTMLDivElement>(null);
+    const expandButtonRef = useRef<HTMLButtonElement>(null);
+    const expandedContentId = `elem-${useUniqueId()}`;
     const isClosedFromOutside = useRef(false);
     const isOpenRef = useRef(isOpen);
 
@@ -101,22 +100,19 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, { [CONTAINER_FILLED_CLASS]: filled })}
                         disabled={isOpen}
                         fullWidth={fullWidth}
-                        aria-controls={CONTAINER_OVERLAY_ID}
-                        aria-expanded={isOpen}
-                        aria-hidden={isOpen}
                         onClick={toggleIsOpen}
                         ref={expandButtonRef}
                         data-testid={'expand-button'}
-                        {...listeners}
+                        {...(isOpen ? { 'aria-hidden': true } : { 'aria-controls': expandedContentId, 'aria-expanded': false })}
+                        {...restProps}
                     >
-                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.expand')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
                         <div className={CHEVRON_CLASS}>
                             <Icon name="chevron-down" />
                         </div>
                     </BaseButton>
                     <BaseButton
-                        id={CONTAINER_OVERLAY_ID}
+                        id={expandedContentId}
                         className={classNames(CONTAINER_CLASS, CONTAINER_BUTTON_CLASS, CONTAINER_OVERLAY_CLASS, {
                             [CONTAINER_FILLED_CLASS]: filled,
                             [CONTAINER_HIDDEN_CLASS]: !isOpen,
@@ -124,15 +120,12 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         })}
                         disabled={!isOpen}
                         fullWidth={fullWidth}
-                        aria-controls={CONTAINER_OVERLAY_ID}
-                        aria-expanded={isOpen}
-                        aria-hidden={!isOpen}
                         onClick={toggleIsOpen}
                         ref={clickOutsideRef}
                         data-testid={'collapse-button'}
-                        {...listeners}
+                        {...(isOpen ? { 'aria-controls': expandedContentId, 'aria-expanded': true } : { role: 'presentation' })}
+                        {...restProps}
                     >
-                        <span className="adyen-pe-visually-hidden">{i18n.get('expandableCard.collapse')}</span>
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
                             {renderHeader}
                             <div>{children}</div>
@@ -143,7 +136,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                     </BaseButton>
                 </>
             ) : (
-                <div className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })} {...listeners}>
+                <div className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })} {...restProps}>
                     <div className={CONTENT_CLASS}>{renderHeader}</div>
                 </div>
             )}

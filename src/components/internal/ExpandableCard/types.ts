@@ -1,6 +1,7 @@
 import { ComponentChild } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 
-export interface ExpandableCardProps {
+export interface ExpandableCardProps extends Pick<AriaAttributes, 'aria-label'> {
     renderHeader: ComponentChild;
     filled?: boolean;
     fullWidth?: boolean;
