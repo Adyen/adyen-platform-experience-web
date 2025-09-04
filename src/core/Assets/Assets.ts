@@ -18,7 +18,7 @@ export class Assets {
     }
 
     private returnAsset = ({ name, resourceUrl, mainFolder, extension, subFolder }: AssetOptions & { resourceUrl: string }): string =>
-        `${resourceUrl}/${mainFolder ? `${mainFolder}/` : ''}${subFolder ? `${subFolder}/` : ''}${name}.${extension}`;
+        `${resourceUrl}/${mainFolder ? `${mainFolder}/` : ''}${subFolder ? `${subFolder}/` : ''}${name}${extension ? `.${extension}` : ''}`;
 
     private getAssetUrl = (props: AssetOptions): string => {
         const assetOptions = {
