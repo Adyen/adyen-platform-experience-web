@@ -33,7 +33,8 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      */
     locale?:
         | (AvailableTranslations extends AvailableTranslations ? CreateLocalesUnionFromAvailableTranslations<AvailableTranslations> : never)
-        | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : SupportedLocales);
+        | (CustomTranslations extends CustomTranslations ? CreateLocalesUnionFromCustomTranslations<CustomTranslations> : never)
+        | SupportedLocales;
 
     onError?: onErrorHandler;
     onSessionCreate: SessionRequest;
