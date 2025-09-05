@@ -53,20 +53,23 @@ export const SummaryItem = ({
                 const isLongValue = !!value && value.length > 12;
                 return (
                     <div key={index}>
-                        {isHeader &&
-                            (config.tooltipLabel ? (
-                                <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                        {isHeader && (
+                            <div role="presentation">
+                                {config.tooltipLabel ? (
+                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                                        <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
+                                    </Tooltip>
+                                ) : (
                                     <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                                </Tooltip>
-                            ) : (
-                                <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                            ))}
+                                )}
+                            </div>
+                        )}
                         {isSkeletonVisible ? (
                             <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                         ) : isEmpty ? (
                             <span className={classNames([BASE_CLASS, PLACEHOLDER_CLASS])}></span>
                         ) : (
-                            <div ref={config.ref} style={getColumnStyle(index)}>
+                            <div id={config.elemId} ref={config.ref} style={getColumnStyle(index)} aria-label={config.ariaLabel} role="presentation">
                                 <Typography
                                     el={TypographyElement.SPAN}
                                     variant={typographyVariant(config, isLongValue)}

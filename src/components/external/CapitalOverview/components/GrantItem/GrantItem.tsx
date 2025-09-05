@@ -164,7 +164,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 aria-describedby={`${elementIds.grantAmountLabel} ${elementIds.grantAmount} ${elementIds.grantStatus}`}
                 aria-label={i18n.get('capital.grantItem.label')}
                 filled={grantConfig.isBackgroundFilled}
-                renderHeader={grantOverview}
+                renderContent={grantOverview}
                 inFlow
             >
                 {grantConfig.hasDetails && <GrantDetails grant={grant} />}

@@ -1,7 +1,8 @@
 import classNames from 'classnames';
-import { ExpandableCardProps } from './types';
+import { isFunction } from '../../../utils';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { ExpandableCardContentRender, ExpandableCardProps } from './types';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import useUniqueId from '../../../hooks/useUniqueId';
 import BaseButton from '../BaseButton';
@@ -21,7 +22,7 @@ import {
     CONTENT_EXPANDABLE_CLASS,
 } from './constants';
 
-const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...restProps }: PropsWithChildren<ExpandableCardProps>) => {
+const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ...restProps }: PropsWithChildren<ExpandableCardProps>) => {
     const [isOpen, setIsOpen] = useState(false);
     const [collapsedCardHeight, setCollapsedCardHeight] = useState(0);
     const inNormalFlow = useMemo(() => inFlow === true, [inFlow]);
@@ -40,6 +41,19 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                 isClosedFromOutside.current = true;
             }
         }, [isOpen, toggleIsOpen])
+    );
+
+    const renderCardContent = useMemo<ExpandableCardContentRender>(
+        () =>
+            isFunction(renderContent)
+                ? renderContent
+                : ({ collapsibleContent }) => (
+                      <>
+                          {renderContent}
+                          {collapsibleContent && <div>{collapsibleContent}</div>}
+                      </>
+                  ),
+        [renderContent]
     );
 
     useLayoutEffect(() => {
@@ -106,7 +120,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         {...(isOpen ? { 'aria-hidden': true } : { 'aria-controls': expandedContentId, 'aria-expanded': false })}
                         {...restProps}
                     >
-                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderHeader}</div>
+                        <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>{renderCardContent({ isExpanded: isOpen })}</div>
                         <div className={CHEVRON_CLASS}>
                             <Icon name="chevron-down" />
                         </div>
@@ -127,8 +141,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                         {...restProps}
                     >
                         <div className={classNames(CONTENT_CLASS, CONTENT_EXPANDABLE_CLASS)}>
-                            {renderHeader}
-                            <div>{children}</div>
+                            {renderCardContent({ isExpanded: isOpen, collapsibleContent: children })}
                         </div>
                         <div className={CHEVRON_CLASS}>
                             <Icon name="chevron-up" />
@@ -137,7 +150,7 @@ const ExpandableCard = ({ renderHeader, children, filled, fullWidth, inFlow, ...
                 </>
             ) : (
                 <div className={classNames(CONTAINER_CLASS, { [CONTAINER_FILLED_CLASS]: filled })} {...restProps}>
-                    <div className={CONTENT_CLASS}>{renderHeader}</div>
+                    <div className={CONTENT_CLASS}>{renderCardContent({ isExpanded: false })}</div>
                 </div>
             )}
         </div>
