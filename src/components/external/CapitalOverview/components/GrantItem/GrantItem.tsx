@@ -116,7 +116,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                     <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
                         <CopyText
                             textToCopy={grant.id}
-                            buttonLabel={i18n.get('capital.grantID')}
+                            visibleText={i18n.get('capital.grantID')}
+                            copyButtonAriaLabelKey="capital.grantItem.copyGrantID"
                             isHovered
                             type={'Text' as const}
                             data-testid="grant-id-copy-text"
