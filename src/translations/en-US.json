@@ -661,6 +661,7 @@
     "max": "max",
     "min": "min",
     "mobile": "Mobile",
+    "modal.dismissButton.label": "Close modal",
     "netPayout": "Net payout",
     "nextPayouts": "Next Payouts",
     "noData": "No data",

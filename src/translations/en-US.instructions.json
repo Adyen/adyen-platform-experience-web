@@ -203,6 +203,7 @@
     "inputError.fileRequired": "Will be displayed as input validation error message if at least one file is required but none has been uploaded.",
     "inputError.tooManyFiles": "Will be displayed as input validation error message if the number of uploaded files is more than expected.",
     "inputError.veryLargeFile": "Will be displayed as input validation error message if at least one uploaded file is of a size larger than the maximum allowed file size.",
+    "modal.dismissButton.label": "Used as a label for a button which closes an open modal dialog.",
     "noReportsFound": "Will be displayed if there is no reports data available for the given search criteria.",
     "pagination": "Used as label for a region containing pagination information and controls for a list of records.",
     "pagination.limitSelector.label": "Used as label for select widget with page limit options, allowing the user to select the maximum number of records that can be shown for each page.",
