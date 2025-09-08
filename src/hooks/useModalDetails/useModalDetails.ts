@@ -13,26 +13,33 @@ import { CallbackIsPresent, CallbackParams, GetArgsExceptCallback, hasCallback, 
 
 function useModalDetails<Options extends ModalDetailsOptions<any>>(options: Options) {
     const [selectedDetail, setSelectedDetail] = useState<SelectedDetail<Options> | null>(null);
+
     const updateDetails = useCallback(
-        <T extends SelectedDetail<Options>>(
-            state: T
-        ): CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {} => {
-            if (state && hasCallback(options[state.selection.type])) {
-                return {
-                    callback: options?.[state.selection.type]?.callback
-                        ? (
-                              args: Options[T['selection']['type']] extends { callback: any }
-                                  ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>>
-                                  : never
-                          ) => options[state.selection.type]?.callback?.({ showModal: () => setSelectedDetail(state), ...args })
-                        : () => options[state.selection.type]?.showDetails && setSelectedDetail(state),
-                };
+        <T extends SelectedDetail<Options>>(state: T) => {
+            let updateStruct = {} as CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {};
+
+            if (state) {
+                const modalOptions = options[state.selection.type];
+                const shouldShowModal = modalOptions?.showDetails !== false;
+                const showModal = () => setSelectedDetail(state);
+
+                if (hasCallback(modalOptions))
+                    updateStruct = {
+                        callback: (
+                            args: Options[T['selection']['type']] extends { callback: any }
+                                ? GetArgsExceptCallback<Required<Options[T['selection']['type']]>>
+                                : never
+                        ) => modalOptions.callback({ showModal, ...args }),
+                    };
+
+                if (shouldShowModal) showModal();
             }
-            setSelectedDetail(state);
-            return {} as CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {};
+
+            return updateStruct;
         },
         [options]
     );
+
     const resetDetails = useCallback(() => setSelectedDetail(null), []);
 
     const detailsToShow = useMemo(() => {
