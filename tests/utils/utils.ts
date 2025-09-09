@@ -1,4 +1,4 @@
-import keys from '../../src/assets/translations/en-US.json' assert { type: 'json' };
+import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
 import { Page } from '@playwright/test';
 import dotenv from 'dotenv';
 
@@ -51,7 +51,7 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
             let months = diff % 12;
 
             if (months) {
-                const nearestShorterMonth = originDate === 31 ? MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1 : 1;
+                const nearestShorterMonth = originDate === 31 ? (MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1) : 1;
                 if (originDate >= 30 && originMonth - months <= nearestShorterMonth) months++;
             } else if (years && originMonth === 1 && originDate === 29) months++;
 
