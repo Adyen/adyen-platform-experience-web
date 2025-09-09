@@ -5,11 +5,9 @@ import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popo
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import Typography from '../../../Typography/Typography';
 import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAction';
-import useUniqueIdentifier from '../../../../../hooks/element/useUniqueIdentifier';
 import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
-import { MutableRef, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { Ref } from 'preact';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
@@ -52,7 +50,7 @@ const renderFallback = (() => {
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
 })();
 
-const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
+const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['aria-label']: ariaLabel, ...props }: FilterProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
@@ -61,7 +59,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const [disabledApply, updateDisabledApply] = useBooleanState(isValueEmpty(props.value));
-    const targetElement = useUniqueIdentifier() as NonNullable<MutableRef<Element | null>>;
+    const targetElement = useRef<HTMLButtonElement | null>(null);
 
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
@@ -125,9 +123,10 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                                 ...(editMode ? ['active'] : []),
                                 ...(hasEmptyValue ? [] : ['has-selection']),
                             ]}
+                            aria-label={ariaLabel}
                             onClick={editMode ? closeEditDialog : openEditDialog}
+                            ref={targetElement}
                             tabIndex={0}
-                            ref={targetElement as Ref<HTMLButtonElement>}
                         >
                             <div className="adyen-pe-filter-button__default-container">
                                 <Typography
