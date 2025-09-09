@@ -16,6 +16,7 @@ ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./src/assets"
 UMD_FILE="./dist/umd/index.js"
+CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
@@ -38,6 +39,7 @@ echo "Preparing staging directory for archive"
 echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
 cp "$UMD_FILE" "$STAGING_DIR/index.js"
+cp "$CSS_FILE" "$STAGING_DIR/adyen-platform-experience-web.css"
 
 echo "Creating archive: $ARCHIVE_NAME"
 

@@ -15,16 +15,18 @@ export default defineConfig(({ mode }) => {
     const isAnalyseMode = mode === 'analyse';
     const isDevMode = mode === 'development';
     const isUmdBuild = mode === 'umd';
+    const isTestEnv = process.env.TEST_ENV === '1';
 
     const { api, app } = getEnvironment(mode);
 
     const assetsDir = resolve(__dirname, 'src/assets');
-    const translationsDir = resolve(assetsDir, 'translations');
-    const enUsFile = resolve(translationsDir, 'en-US.json');
+    const enUsFile = resolve(assetsDir, 'translations/en-US.json');
+    const translationsDir = resolve(__dirname, 'src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
+    const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
     const shouldExcludeAsset = (id: string) => {
-        if (externalDependencies.includes(id)) {
+        if (!isUmdBuild && externalDependencies.includes(id)) {
             return true;
         }
 
@@ -34,7 +36,7 @@ export default defineConfig(({ mode }) => {
         }
 
         // Exclude all other files from the assets directory.
-        if (id.startsWith(assetsDir)) {
+        if (id === translationsLocalFile || id.startsWith(assetsDir)) {
             return true;
         }
 
@@ -92,6 +94,7 @@ export default defineConfig(({ mode }) => {
             'process.env.VITE_APP_PORT': JSON.stringify(app.port || null),
             'process.env.VITE_APP_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || app.url || null),
             'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevMode ? app.loadingContext || null : null),
+            'process.env.VITE_LOCAL_ASSETS': JSON.stringify(process.env.USE_CDN == 'true' ? null : isDevMode || isTestEnv),
             'process.env.VITE_BUILD_ID': JSON.stringify(currentVersion.ADYEN_BUILD_ID),
             'process.env.VITE_COMMIT_BRANCH': JSON.stringify(currentVersion.COMMIT_BRANCH),
             'process.env.VITE_COMMIT_HASH': JSON.stringify(currentVersion.COMMIT_HASH),
@@ -102,6 +105,7 @@ export default defineConfig(({ mode }) => {
             'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode ? api.session.maxAgeMs || null : undefined),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(api.session.permissions || null),
             'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
+            'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         },
         json: {
             stringify: true,

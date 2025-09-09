@@ -22,6 +22,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
         port: parseInt(env.PLAYGROUND_PORT ?? ''),
         loadingContext: env.LOADING_CONTEXT,
         url: env.PLAYGROUND_URL ?? '',
+        useCdn: env.USE_CDN,
     },
 });
 
