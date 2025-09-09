@@ -20,12 +20,13 @@ export default defineConfig(({ mode }) => {
     const { api, app } = getEnvironment(mode);
 
     const assetsDir = resolve(__dirname, 'src/assets');
+    const localAssetsDir = resolve(__dirname, 'src/localAssets');
     const translationsDir = resolve(assetsDir, 'translations');
     const enUsFile = resolve(translationsDir, 'en-US.json');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
 
     const shouldExcludeAsset = (id: string) => {
-        if (externalDependencies.includes(id)) {
+        if (!isUmdBuild && externalDependencies.includes(id)) {
             return true;
         }
 
@@ -35,7 +36,7 @@ export default defineConfig(({ mode }) => {
         }
 
         // Exclude all other files from the assets directory.
-        if (id.startsWith(assetsDir)) {
+        if (id.startsWith(assetsDir) || id.startsWith(localAssetsDir)) {
             return true;
         }
 

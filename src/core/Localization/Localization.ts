@@ -19,11 +19,12 @@ import { en_US } from '../../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper, { RestamperWithTimezone } from './datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
-import { translations_dev_assets, formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
+import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
+import { translations_dev_assets } from '../../localAssets/localTranslations';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
