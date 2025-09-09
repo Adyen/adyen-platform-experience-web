@@ -24,7 +24,7 @@ import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
-import { translations_dev_assets } from '../../localAssets/localTranslations';
+import { translations_dev_assets } from '../../translations/local';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;

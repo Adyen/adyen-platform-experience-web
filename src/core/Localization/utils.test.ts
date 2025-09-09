@@ -2,7 +2,7 @@ import { formatCustomTranslations, formatLocale, getTranslation, interpolateElem
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
 import { SUPPORTED_LOCALES } from './constants/localization';
-import { translations_dev_assets } from '../../localAssets/localTranslations';
+import { translations_dev_assets } from '../../translations/local';
 
 const defaultSupportedLocales = SUPPORTED_LOCALES;
 

@@ -1,4 +1,4 @@
-import type { Translations } from '../translations';
+import type { Translations } from './index';
 
 const _getTranslations = (translationsPromise: Promise<{ default: Translations }>) =>
     translationsPromise.then(({ default: translations }) => translations);
