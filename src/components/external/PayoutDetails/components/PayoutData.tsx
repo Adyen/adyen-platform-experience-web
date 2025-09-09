@@ -86,16 +86,19 @@ export const PayoutData = ({
     }, [i18n, payoutData]);
 
     const fundsCaptured = useMemo(() => {
-        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
-            if (breakdown?.amount?.value === 0) return items;
-            if (breakdown?.amount?.value && breakdown.category) {
-                items.push({
-                    key: breakdown.category as TranslationKey,
-                    value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
-                });
-            }
-            return items;
-        }, [] as { key: TranslationKey; value: ListValue }[]);
+        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce(
+            (items, breakdown) => {
+                if (breakdown?.amount?.value === 0) return items;
+                if (breakdown?.amount?.value && breakdown.category) {
+                    items.push({
+                        key: breakdown.category as TranslationKey,
+                        value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
+                    });
+                }
+                return items;
+            },
+            [] as { key: TranslationKey; value: ListValue }[]
+        );
         data?.sort((a, b) => {
             if (a.key === 'capture') return -1;
             if (b.key === 'capture') return 1;

@@ -97,7 +97,7 @@ export default function Modal({
                                     'adyen-pe-modal__header--with-border-bottom': headerWithBorder,
                                 })}
                             >
-                                {title && <div className={`adyen-pe-modal__header__title`}>{title}</div>}
+                                {title && <div className={`adyen-pe-modal__header-title`}>{title}</div>}
 
                                 {isDismissible && (
                                     <Button
@@ -105,8 +105,8 @@ export default function Modal({
                                         variant={ButtonVariant.TERTIARY}
                                         iconButton
                                         classNameModifiers={['circle']}
-                                        className={`adyen-pe-modal__header-icon`}
-                                        aria-label={i18n.get('dismiss')}
+                                        className={`adyen-pe-modal__dismiss-button`}
+                                        aria-label={i18n.get('modal.dismissButton.label')}
                                     >
                                         <Icon name="cross" />
                                     </Button>
