@@ -1,5 +1,5 @@
 import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
