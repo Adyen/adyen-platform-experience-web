@@ -4,6 +4,7 @@
     "accountID": "Label for a balance account ID",
     "back": "Used as label for button which navigates backwards to previous page, view or state",
     "balanceAccounts.all": "Used as label for dropdown menu option to select all available accounts.",
+    "calendar.grid.label": "Used as label for calendar grid visualizing the dates for a given calendar month. The %{monthOfYear} placeholder will be the localized month name (long form) with year, for example, September 2025 (for en-US)",
     "capital.accountIsNotActive": "Label indicating that an account holder is inactive",
     "capital.actionNeeded": "Label indicating that the user need to take action",
     "capital.annualPercentageRate": "Label for the Annual Percentage Rate (APR)",

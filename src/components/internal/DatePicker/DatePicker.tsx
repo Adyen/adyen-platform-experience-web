@@ -15,7 +15,7 @@ import useCalendarControlsRendering from '../Calendar/hooks/useCalendarControlsR
 import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 
-export type DatePickerProps = CalendarProps &
+export type DatePickerProps = Omit<CalendarProps, 'getGridLabel'> &
     Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timeRangeSelectorLabel' | 'timezone'> & {
         onPresetOptionSelected?: (option: string) => any;
     };
@@ -32,6 +32,10 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
 
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
+    const getCalendarGridLabel = useCallback<CalendarProps['getGridLabel']>(
+        block => i18n.get('calendar.grid.label', { values: { monthOfYear: block.label } }),
+        [i18n]
+    );
 
     const onHighlight = useCallback(() => {
         setLastUpdatedTimestamp(performance.now());
@@ -64,6 +68,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 onlyCellsWithin={true}
                 controls={props.controls ?? calendar.controls.MINIMAL}
                 highlight={props.highlight ?? calendar.highlight.MANY}
+                getGridLabel={getCalendarGridLabel}
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
                 trackCurrentDay={true}

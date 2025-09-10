@@ -15,6 +15,7 @@
     "Booked": "Booked",
     "button.clearAll": "Clear all",
     "calendar.controls": "Calendar navigation controls",
+    "calendar.grid.label": "Calendar: %{monthOfYear}",
     "calendar.nextMonth": "Next month",
     "calendar.previousMonth": "Previous month",
     "calendar.timezone": "Timezone is set on: GMT%{offset} (%{time})",

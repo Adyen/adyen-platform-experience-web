@@ -16,6 +16,7 @@ const Calendar = forwardRef((props: CalendarProps, ref) => {
                 ref={calendar.cursorElementRef}
                 config={config}
                 cursorRootProps={calendar.cursorRootProps}
+                getGridLabel={props.getGridLabel}
                 grid={calendar.grid}
                 onlyCellsWithin={props.onlyCellsWithin}
                 prepare={props.prepare}
