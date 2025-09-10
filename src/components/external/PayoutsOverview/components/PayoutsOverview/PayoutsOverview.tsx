@@ -123,7 +123,7 @@ export const PayoutsOverview = ({
             <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
                 <FilterBarMobileSwitch {...filterBarState} />
             </DataOverviewHeader>
-            <FilterBar {...filterBarState}>
+            <FilterBar {...filterBarState} ariaLabelKey="payouts.filters">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
