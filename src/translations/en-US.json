@@ -653,6 +653,7 @@
     "filters.amount.min": "From %{amount}",
     "filters.amount.only": "Only %{amount}",
     "filters.date.between": "%{fromDate} - %{toDate}",
+    "filters.date.presetOptions.label": "Common ranges",
     "filters.date.since": "Since %{date}",
     "filters.date.until": "Until %{date}",
     "from": "From",

@@ -46,6 +46,7 @@ const renderDateFilterModalBody = (() => {
         showTimezoneInfo,
         selectedPresetOption,
         timeRangePresetOptions,
+        timeRangeSelectorLabel,
         timezone,
         sinceDate,
         untilDate,
@@ -88,6 +89,7 @@ const renderDateFilterModalBody = (() => {
                 onPresetOptionSelected={setPresetOption}
                 selectedPresetOption={selectedPresetOption}
                 timeRangePresetOptions={timeRangePresetOptions}
+                timeRangeSelectorLabel={timeRangeSelectorLabel}
                 timezone={timezone}
                 showTimezoneInfo={showTimezoneInfo}
                 sinceDate={resolveDate(sinceDate)}
@@ -108,6 +110,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
     from,
     to,
     selectedPresetOption,
+    timeRangeSelectorLabel,
     ...props
 }: FilterProps<T>) {
     const { i18n } = useCoreContext();
@@ -167,6 +170,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             onChange={onChange}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
+            timeRangeSelectorLabel={timeRangeSelectorLabel ?? i18n.get('filters.date.presetOptions.label')}
             value={computeDateFilterValue(i18n, fullDateFormat, from, to)}
             withContentPadding={false}
         />

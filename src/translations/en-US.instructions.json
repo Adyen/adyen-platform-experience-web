@@ -207,6 +207,7 @@
     "filters.amount.min": "Will be displayed as visible text indicating the current range for an amount filter starting from a minimum amount. The %{amount} placeholder value is formatted as a localised amount.",
     "filters.amount.only": "Will be displayed as visible text indicating the current (exact) amount set for an amount filter. The %{amount} placeholder value is formatted as a localised amount.",
     "filters.date.between": "Will be displayed as visible text indicating the current range for a date filter between 2 dates. Both the %{fromDate} and %{toDate} placeholder values are formatted as localised dates.",
+    "filters.date.presetOptions.label": "Used as label for select widget with preset time range options, allowing the user to select a time range for records that can be shown for each page.",
     "filters.date.since": "Will be displayed as visible text indicating the current range for a date filter starting from a specified date. The %{date} placeholder value is formatted as a localised date.",
     "filters.date.until": "Will be displayed as visible text indicating the current range for a date filter up to a specified date. The %{date} placeholder value is formatted as a localised date.",
     "goToPayment": "Used as a label of a button which links refund with the payment it belongs.",

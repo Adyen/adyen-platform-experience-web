@@ -16,7 +16,7 @@ import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 
 export type DatePickerProps = CalendarProps &
-    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timezone'> & {
+    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timeRangeSelectorLabel' | 'timezone'> & {
         onPresetOptionSelected?: (option: string) => any;
     };
 
@@ -52,6 +52,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                     selectedOption={props.selectedPresetOption}
                     timestamp={lastUpdatedTimestamp}
                     timezone={props.timezone}
+                    aria-label={props.timeRangeSelectorLabel}
                 />
             </div>
             <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
