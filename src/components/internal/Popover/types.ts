@@ -35,7 +35,7 @@ export interface PopoverCoreProps {
     additionalStyle?: { minY?: number; maxY?: number };
 }
 
-type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'role'>;
+type UncontrolledProps = Pick<HTMLAttributes<any>, 'aria-describedby'>;
 
 export type PopoverProps = PopoverCoreProps & UncontrolledProps;
 

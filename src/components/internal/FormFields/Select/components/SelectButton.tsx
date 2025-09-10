@@ -67,7 +67,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
-            aria-haspopup="listbox"
+            aria-haspopup="dialog"
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
@@ -84,7 +84,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             toggleButtonRef={props.toggleButtonRef}
             type={filterable ? undefined : 'button'}
             aria-describedby={props.ariaDescribedBy}
-            id={props.id ?? ''}
+            id={props.id}
             {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
         >
             {showList && filterable ? (
