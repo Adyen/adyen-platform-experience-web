@@ -28,6 +28,7 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ req
 
     expect(responseData).toHaveProperty('data');
     expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
+    expect(responseData.data[1]).toStrictEqual(ENV.payouts_list_response[1]);
 });
 
 sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {
