@@ -204,9 +204,11 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     respondBy: ({ item }) => {
                         const isUrgent = isDisputeActionNeededUrgently(item);
                         const formattedDate = dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES);
+                        // TODO - Check if the API can send the defensibility field in a next iteration
+                        const isActionableDispute = true; /* isDisputeActionNeeded(item) && item.defensibility !== 'NOT_ACTIONABLE' */
 
                         const renderDueDate = () =>
-                            isUrgent ? (
+                            isUrgent && isActionableDispute ? (
                                 <Tooltip content={getTimeToDeadline(item.dueDate!)}>
                                     <span className={classes.dateContentUrgent}>
                                         {formattedDate}
