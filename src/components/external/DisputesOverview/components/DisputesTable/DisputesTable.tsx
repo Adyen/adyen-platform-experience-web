@@ -154,7 +154,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
-            if (diff === 1) return i18n.get('disputes.respondToday', { values: { date: formattedDate } });
+            if (diff <= 1) return i18n.get('disputes.respondToday', { values: { date: formattedDate } });
             return i18n.get('disputes.xDaysToRespond', { values: { days: diff, date: formattedDate } });
         },
         [dateFormat, i18n]
