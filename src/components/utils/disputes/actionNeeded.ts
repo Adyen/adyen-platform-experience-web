@@ -19,8 +19,6 @@ export const getDisputeActionNeededLevel = <T extends WithDisputeStatus>(dispute
     switch (disputeData.status) {
         case 'UNDEFENDED':
         case 'UNRESPONDED': {
-            if (disputeData.defensibility === 'NOT_ACTIONABLE') return DisputeActionNeededLevel.NEVER;
-
             const deadlineTimestamp = parseDate(disputeData.dueDate);
 
             if (deadlineTimestamp != undefined) {

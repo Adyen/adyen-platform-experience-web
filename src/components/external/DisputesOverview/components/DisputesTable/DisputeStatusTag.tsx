@@ -7,11 +7,16 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { PropsWithChildren } from 'preact/compat';
 
+const isDisputeWithDefensibility = (dispute: any): dispute is IDispute => {
+    return dispute && dispute.defensibility;
+};
+
 const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeListItem | IDispute }>) => {
     const { i18n } = useCoreContext();
     const disputeStatus = useMemo(() => i18n.get(DISPUTE_STATUSES[dispute.status]), [i18n, dispute]);
 
     const variant = useMemo<TagVariant>(() => {
+        if (isDisputeWithDefensibility(dispute) && dispute.defensibility === 'NOT_ACTIONABLE') return TagVariant.DEFAULT;
         if (dispute.status === 'WON') return TagVariant.SUCCESS;
         if (isDisputeActionNeededUrgently(dispute)) return TagVariant.ERROR;
         return TagVariant.DEFAULT;
