@@ -42,7 +42,7 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
         tabbableRoot.current = focusElement.current = evt.target as Element | null;
     }, []);
 
-    const onFocusOutCapture = useCallback((evt: FocusEvent) => {
+    const onFocusOut = useCallback((evt: FocusEvent) => {
         if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
         if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
         if (interactionKeyPressed.current) return;
@@ -91,14 +91,14 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
             if (previous instanceof Element) {
                 (previous as unknown as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
                 (previous as unknown as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
-                (previous as unknown as HTMLElement).removeEventListener('focusout', onFocusOutCapture, true);
+                (previous as unknown as HTMLElement).removeEventListener('focusout', onFocusOut, false);
                 (current as unknown as HTMLElement).removeEventListener('click', onClickCapture, true);
             }
 
             if (current instanceof Element) {
                 (current as unknown as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
                 (current as unknown as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
-                (current as unknown as HTMLElement).addEventListener('focusout', onFocusOutCapture, true);
+                (current as unknown as HTMLElement).addEventListener('focusout', onFocusOut, false);
                 (current as unknown as HTMLElement).addEventListener('click', onClickCapture, true);
                 escapedFocus.current = false;
                 tabbableRoot.root = current;
