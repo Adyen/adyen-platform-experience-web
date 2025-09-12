@@ -144,18 +144,14 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const getTimeToDeadline = useCallback(
         (dueDate: string) => {
             if (!dueDate) return '';
-            const now = new Date().getTime();
             const deadline = new Date(dueDate).getTime();
-            const diffInMs = deadline - now;
-
-            const msInDay = 1000 * 60 * 60 * 24;
-
-            const diff = Math.ceil(diffInMs / msInDay);
-
+            const diffInMs = deadline - Date.now();
+            const diffInDays = Math.ceil(diffInMs / DAY_MS);
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
-            if (diff <= 1) return i18n.get('disputes.respondToday', { values: { date: formattedDate } });
-            return i18n.get('disputes.xDaysToRespond', { values: { days: diff, date: formattedDate } });
+            return diff <= 1
+                ? i18n.get('disputes.respondToday', { values: { date: formattedDate } })
+                : i18n.get('disputes.xDaysToRespond', { values: { days: diffInDays, date: formattedDate } });
         },
         [dateFormat, i18n]
     );
