@@ -65,7 +65,7 @@
     "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:e2e": "cross-env TEST_ENV=1 playwright test --project local-chrome-e2e",
     "test:integration": "cross-env TEST_ENV=1 playwright test --project local-chrome",
-    "test:integration:ui": "cross-env TEST_ENV=1 playwright test --project local-chrome --ui",
+    "test:integration:ui": "npm run test:integration -- --ui",
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 playwright test --debug --project local-chrome",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "tsc --preserveWatchOutput",
