@@ -31,6 +31,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { Translation } from '../../../../internal/Translation';
 import './DisputesTable.scss';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
@@ -149,7 +150,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             const diffInDays = Math.ceil(diffInMs / DAY_MS);
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
-            return diff <= 1
+            return diffInDays <= 1
                 ? i18n.get('disputes.respondToday', { values: { date: formattedDate } })
                 : i18n.get('disputes.xDaysToRespond', { values: { days: diffInDays, date: formattedDate } });
         },

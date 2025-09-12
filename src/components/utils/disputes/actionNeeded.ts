@@ -1,11 +1,10 @@
 import { DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS } from './constants';
-import { IDisputeDefensibility, IDisputeStatus } from '../../../types/api/models/disputes';
+import { IDisputeStatus } from '../../../types/api/models/disputes';
 import { parseDate } from '../../../utils';
 
 export interface WithDisputeStatus {
     dueDate?: string;
     status: IDisputeStatus;
-    defensibility?: IDisputeDefensibility;
 }
 
 export const enum DisputeActionNeededLevel {
