@@ -41,6 +41,11 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      * See {@link https://docs.adyen.com/checkout/components-web/localization-components | Localizing Components}
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
+
+    /**
+     * @internal
+     */
+    loadingContext?: string;
 }
 
 export interface CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}>
