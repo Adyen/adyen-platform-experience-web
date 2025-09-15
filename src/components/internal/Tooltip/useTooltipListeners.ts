@@ -23,7 +23,7 @@ export const useTooltipListeners = (): {
 
     const showTooltip = useCallback(() => {
         visibilityTimerRef.current ??= setTimeout(() => {
-            visibilityTimerRef.current = setTimeout(hideTooltip, 5000);
+            visibilityTimerRef.current = setTimeout(hideTooltip, 15000);
             setIsVisible(true);
         }, 500);
     }, [setIsVisible]);
