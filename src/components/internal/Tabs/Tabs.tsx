@@ -15,8 +15,8 @@ function Tabs<TabId extends string>({
     const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: tabs, activeOption: activeTab });
     const { i18n } = useCoreContext();
     return (
-        <section aria-label={ariaLabel ?? i18n.get('tabs')}>
-            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal">
+        <div>
+            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal" aria-label={ariaLabel ?? i18n.get('tabs')}>
                 {tabs.map((tab, index) => {
                     const isActive = activeIndex === index;
                     return (
@@ -43,7 +43,7 @@ function Tabs<TabId extends string>({
             </div>
             <div className="adyen-pe-tabpanels">
                 {tabs.map((tab, index) => (
-                    <section
+                    <div
                         role="tabpanel"
                         key={`panel:${uniqueId}-${tab.id}`}
                         id={`panel:${uniqueId}-${tab.id}`}
@@ -52,10 +52,10 @@ function Tabs<TabId extends string>({
                         hidden={activeIndex !== index}
                     >
                         {tab.content}
-                    </section>
+                    </div>
                 ))}
             </div>
-        </section>
+        </div>
     );
 }
 

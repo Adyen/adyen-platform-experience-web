@@ -18,7 +18,7 @@ export interface DataOverviewHeaderProps {
 export const DataOverviewHeader: FC<DataOverviewHeaderProps> = ({ baseClassName = BASE_CLASS, children, hideTitle, titleKey, descriptionKey }) => {
     const { i18n } = useCoreContext();
     return (
-        <header className={baseClassName}>
+        <div className={baseClassName}>
             <div className={`${baseClassName}__headings`}>
                 {!hideTitle && titleKey && (
                     <div className={`${baseClassName}__title`}>
@@ -36,6 +36,6 @@ export const DataOverviewHeader: FC<DataOverviewHeaderProps> = ({ baseClassName 
                 )}
             </div>
             {children && <div className={`${baseClassName}__controls`}>{children}</div>}
-        </header>
+        </div>
     );
 };

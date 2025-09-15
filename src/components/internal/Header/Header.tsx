@@ -26,7 +26,7 @@ export interface HeaderProps {
 export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subtitleConfig }) => {
     const { i18n } = useCoreContext();
     return (
-        <header className={baseClassName}>
+        <div className={baseClassName}>
             <div className={`${baseClassName}__headings`}>
                 {!hideTitle && titleKey && (
                     <div className={`${baseClassName}__title`}>
@@ -48,6 +48,6 @@ export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, 
                 {hasDivider && <Divider className={`${baseClassName}__divider`} />}
             </div>
             {children && <div className={`${baseClassName}__controls`}>{children}</div>}
-        </header>
+        </div>
     );
 };
