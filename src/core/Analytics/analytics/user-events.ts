@@ -56,6 +56,7 @@ export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filt
  * Can be either a custom name or one of the pre-defined values
  */
 export type EventName =
+    | 'Landed on page'
     | 'Clicked button'
     | 'Modified filter'
     | 'Encountered error'
@@ -86,8 +87,9 @@ export class UserEvents {
      */
     private sharedEventProperties: Partial<AdditionalEventProperties>;
 
-    constructor() {
+    constructor(componentName?: string) {
         this.baseTrackingPayload = {
+            ...(componentName ? { componentName: componentName } : {}),
             category: 'pie',
             subCategory: 'pie component',
             userAgent: navigator.userAgent,
@@ -201,9 +203,6 @@ export class UserEvents {
     }
 }
 
-/** @deprecated - use useAnalyticsContext */
-export const userEvents = new UserEvents();
-
-export const createUserEvents = () => {
-    return new UserEvents();
+export const createUserEvents = (componentName?: string) => {
+    return new UserEvents(componentName);
 };

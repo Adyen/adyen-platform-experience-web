@@ -47,8 +47,9 @@ export const TransactionDetailsProvider = memo(
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
 
         const primaryAction = useCallback(() => {
-            void (!primaryActionDisabled && setActiveView(ActiveView.REFUND));
-            userEvents.addEvent('Initiated refund', {
+            if (primaryActionDisabled) return;
+            setActiveView(ActiveView.REFUND);
+            userEvents.addEvent('Switched to refund view', {
                 category: 'Transaction component',
                 subCategory: 'Transaction details',
             });

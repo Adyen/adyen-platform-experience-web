@@ -4,7 +4,7 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import AuthSession from '../../../../../../core/ConfigContext/session/AuthSession';
 import { ActiveView } from '../../types';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from '../types';
-import type { ITransaction, ITransactionRefundPayload } from '../../../../../../types';
+import { ITransaction, ITransactionRefundPayload, ITransactionWithDetails } from '../../../../../../types';
 
 type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTransaction' | 'transactionId'> &
     Pick<ITransactionRefundContext, 'refundReason'> & {
@@ -13,6 +13,7 @@ type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTr
         refundInProgress: boolean;
         refundTransaction: AuthSession['context']['endpoints']['initiateRefund'];
         setActiveView: (activeView: ActiveView) => void;
+        transactionOriginalAmount: ITransactionWithDetails['originalAmount'];
     };
 
 export const useRefundAction = <T extends _BaseUseRefundActionProps>({
@@ -23,6 +24,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
     refundTransaction,
     setActiveView,
     transactionId,
+    transactionOriginalAmount,
 }: T) => {
     const { i18n } = useCoreContext();
     const userEvents = useAnalyticsContext();
@@ -59,7 +61,10 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
         [amount, refundReason]
     );
 
-    const isFullAmount = useMemo(() => availableAmount === amount.value, [availableAmount, amount]);
+    const isFullAmount = useMemo(
+        () => availableAmount === amount.value && availableAmount === transactionOriginalAmount?.value,
+        [availableAmount, transactionOriginalAmount, amount]
+    );
 
     const refundAction = useCallback(
         // [TODO]: Fix broken/missing type inference for useMutation mutate()

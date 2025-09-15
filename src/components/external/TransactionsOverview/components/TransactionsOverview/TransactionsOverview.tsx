@@ -126,6 +126,13 @@ export const TransactionsOverview = ({
     );
 
     useEffect(() => {
+        userEvents.addEvent('Landed on page', {
+            category: 'PIE components',
+            subCategory: 'Transactions overview',
+        });
+    }, [userEvents]);
+
+    useEffect(() => {
         setAvailableCurrencies(undefined);
         updateFilters({
             [FilterParam.BALANCE_ACCOUNT]: activeBalanceAccount?.id,

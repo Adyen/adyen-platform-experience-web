@@ -1,6 +1,7 @@
 import { memo } from 'preact/compat';
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
+import { ITransactionWithDetails } from '../../../../../types';
 import { EMPTY_ARRAY, noop } from '../../../../../utils';
 import { REFUND_REASONS } from '../constants';
 import { useConfigContext } from '../../../../../core/ConfigContext';
@@ -28,6 +29,7 @@ const TransactionRefundContext = createContext<ITransactionRefundContext>({
     setRefundReason: noop,
     transactionId: '',
     updateItems: noop,
+    transactionOriginalAmount: undefined,
 });
 
 export const TransactionRefundProvider = memo(
@@ -42,6 +44,7 @@ export const TransactionRefundProvider = memo(
         setPrimaryAction,
         setSecondaryAction,
         transactionId,
+        transactionOriginalAmount,
     }: TransactionRefundProviderProps) => {
         const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({
             queryFn: useConfigContext().endpoints.initiateRefund,
@@ -64,6 +67,7 @@ export const TransactionRefundProvider = memo(
             setPrimaryAction,
             setSecondaryAction,
             transactionId,
+            transactionOriginalAmount,
         });
 
         return (
@@ -84,6 +88,7 @@ export const TransactionRefundProvider = memo(
                     setRefundReason,
                     transactionId,
                     updateItems,
+                    transactionOriginalAmount,
                 }}
             >
                 {children}

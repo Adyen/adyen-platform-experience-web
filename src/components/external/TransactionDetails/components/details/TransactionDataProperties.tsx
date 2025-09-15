@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { userEvents } from '../../../../../core/Analytics/analytics/user-events';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';

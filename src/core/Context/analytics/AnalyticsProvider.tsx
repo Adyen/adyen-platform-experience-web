@@ -15,8 +15,8 @@ export interface AnalyticsProviderProps {
  * This would otherwise be problematic when a consumer might have several
  * instantiations of a embedded Component for instance on the same page
  */
-export const AnalyticsProvider = ({ children }: PropsWithChildren<AnalyticsProviderProps>) => {
-    const userEvents = useMemo(() => createUserEvents(), []);
+export const AnalyticsProvider = ({ children, componentName }: PropsWithChildren<AnalyticsProviderProps>) => {
+    const userEvents = useMemo(() => createUserEvents(componentName), [componentName]);
 
     useAnalytics({ userEvents });
 

@@ -65,7 +65,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
                 setSelectedBalanceAccountIndex(index!);
             }
         },
-        [allBalanceAccounts, userEvents, isDefaultValueSelected, selectedBalanceAccountIndex]
+        [allBalanceAccounts, userEvents, selectedBalanceAccountIndex]
     );
 
     return { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection, resetBalanceAccountSelection } as const;
