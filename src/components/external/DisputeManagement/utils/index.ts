@@ -1,8 +1,8 @@
 import Localization from '../../../../core/Localization';
-import defenseDocumentConfig from '../../../../config/disputes/defenseDocumentConfig.json';
-import defenseReasonConfig from '../../../../config/disputes/defenseReasonConfig.json';
+import localDefenseDocumentConfig from '../../../../config/disputes/defenseDocumentConfig.json';
+import localDefenseReasonConfig from '../../../../config/disputes/defenseReasonConfig.json';
 
-type TranslationConfigItem = {
+export type TranslationConfigItem = {
     title: string;
     help?: string | string[];
     helpitems?: string[];
@@ -51,10 +51,18 @@ const getContent = (
     };
 };
 
-export const getDefenseDocumentContent = (i18n: Localization['i18n'], defenseDocumentKey: string) => {
+export const getDefenseDocumentContent = (
+    defenseDocumentConfig: Record<string, TranslationConfigItem>,
+    i18n: Localization['i18n'],
+    defenseDocumentKey: string
+) => {
     return getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.defenseDocument');
 };
 
-export const getDefenseReasonContent = (i18n: Localization['i18n'], defenseReasonKey: string) => {
+export const getDefenseReasonContent = (
+    defenseReasonConfig: Record<string, TranslationConfigItem>,
+    i18n: Localization['i18n'],
+    defenseReasonKey: string
+) => {
     return getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.defenseReason');
 };

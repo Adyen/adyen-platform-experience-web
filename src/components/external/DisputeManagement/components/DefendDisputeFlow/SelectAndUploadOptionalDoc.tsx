@@ -47,8 +47,8 @@ const SelectAndUploadOptionalDoc = ({
     mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
-    const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
-    const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
+    const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload, defenseDocumentConfig } = useDisputeFlow();
+    const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(defenseDocumentConfig, i18n, document), [i18n]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const updateDocumentSelection = useCallback(
