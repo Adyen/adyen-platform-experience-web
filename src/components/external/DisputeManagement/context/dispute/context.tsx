@@ -156,7 +156,7 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
 
     const getDisputesConfig = useCallback(async () => {
         const defenseReasonConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
-            subFolder: 'disputes' + '',
+            subFolder: 'disputes',
             name: 'defenseReasonConfig',
             fallback: localDefenseReasonConfig,
         });
@@ -166,8 +166,8 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
             fallback: localDefenseDocumentConfig,
         });
 
-        setDefenseReasonConfig(defenseReasonConfig!);
-        setDefenseDocumentConfig(defenseDocumentConfig!);
+        setDefenseReasonConfig(defenseReasonConfig ?? localDefenseReasonConfig);
+        setDefenseDocumentConfig(defenseDocumentConfig ?? localDefenseDocumentConfig);
     }, [getCdnConfig]);
 
     return (
