@@ -11,13 +11,12 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
 
     constructor(props: _UIComponentProps<CapitalOverviewProps>) {
         super(props);
-
-        this.customClassNames = 'adyen-pe-capital-overview-component';
         this.componentToRender = this.componentToRender.bind(this);
+        this.customClassNames = 'adyen-pe-capital-overview-component';
     }
 
     public componentToRender = () => {
-        return <CapitalOverview {...this.props} ref={(ref: UIElement<CapitalOverviewProps>) => void (this.componentRef = ref)} />;
+        return <CapitalOverview {...this.props} />;
     };
 
     public async getState(): Promise<CapitalComponentState> {

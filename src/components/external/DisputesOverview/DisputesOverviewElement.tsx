@@ -11,13 +11,7 @@ export class DisputesOverviewElement extends UIElement<DisputeOverviewComponentP
     }
 
     public componentToRender = () => {
-        return (
-            <Disputes
-                {...this.props}
-                balanceAccountId={this.props.balanceAccountId}
-                ref={(ref: UIElement<DisputeOverviewComponentProps>) => void (this.componentRef = ref)}
-            ></Disputes>
-        );
+        return <Disputes {...this.props} />;
     };
 }
 
