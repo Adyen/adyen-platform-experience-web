@@ -15,6 +15,7 @@ cd "$PROJECT_ROOT"
 ARCHIVE_NAME="platform-components_cdn_$VERSION.tar.gz"
 BUILD_SCRIPT="build:umd"
 UMD_FILE="./dist/umd/index.js"
+CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
@@ -26,7 +27,8 @@ if [ ! -f "$UMD_FILE" ]; then
   exit 1
 fi
 
-cp "$UMD_FILE" "$STAGING_DIR/index.js"
+cp "$UMD_FILE" "$STAGING_DIR/adyen-platform-experience-web.js"
+cp "$CSS_FILE" "$STAGING_DIR/adyen-platform-experience-web.css"
 
 echo "Creating archive: $ARCHIVE_NAME"
 

@@ -79,7 +79,7 @@ jobs:
         env:
           VERSION: ${{ env.NEW_VERSION }}
         run: |
-          ./scripts/upload-assets/upload-umd-file.sh
+          ./scripts/upload-assets/generate-umd-file.sh
 
       - name: Upload UMD file in new tag
         env:
