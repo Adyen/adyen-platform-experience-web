@@ -11,10 +11,10 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
     protected componentRef: UIElement<P> | null = null;
 
     public componentToRender: (() => JSXInternal.Element) | null = null;
+    public compRef: RefObject<HTMLDivElement>;
+    public customClassNames: string | undefined;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
-    public customClassNames: string | undefined;
-    public compRef: RefObject<HTMLDivElement>;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -79,25 +79,24 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         const core = this.props.core;
-        const updateCore = core.update.bind(core);
-
         const externalErrorHandler = this.props.onError || core.onError || null;
+        const updateCore = core.update.bind(core);
 
         core.session.errorHandler = externalErrorHandler;
 
         return (
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
+                    componentRef={this.compRef}
                     i18n={core.localization.i18n}
                     loadingContext={core.loadingContext}
-                    updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
-                    componentRef={this.compRef}
+                    updateCore={updateCore}
                 >
                     {this.componentToRender && (
-                        <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                        <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
                             <div className="adyen-pe-component__container">{this.componentToRender()}</div>
-                        </div>
+                        </section>
                     )}
                 </CoreProvider>
             </ConfigProvider>
