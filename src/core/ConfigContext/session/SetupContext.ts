@@ -1,5 +1,5 @@
 import Core from '../../core';
-import { SETUP_ENDPOINT_PATH } from './constants';
+import { ANALYTICS_ENDPOINT_PATH, SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
@@ -85,7 +85,7 @@ export class SetupContext {
                     contentType: 'application/x-www-form-urlencoded',
                 },
                 {
-                    path: { apipath: 'engage' },
+                    path: { apipath: ANALYTICS_ENDPOINT_PATH },
                 }
             );
         }
