@@ -12,8 +12,8 @@ const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeList
     const disputeStatus = useMemo(() => i18n.get(DISPUTE_STATUSES[dispute.status]), [i18n, dispute]);
 
     const variant = useMemo<TagVariant>(() => {
-        if ((dispute as any)?.defensibility === 'NOT_ACTIONABLE') return TagVariant.DEFAULT;
         if (dispute.status === 'WON') return TagVariant.SUCCESS;
+        if ((dispute as any)?.defensibility === 'NOT_ACTIONABLE') return TagVariant.DEFAULT;
         if (isDisputeActionNeededUrgently(dispute)) return TagVariant.ERROR;
         return TagVariant.DEFAULT;
     }, [dispute]);
