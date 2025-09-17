@@ -277,60 +277,62 @@ export const DisputesOverview = ({
             </Header>
 
             <div>
-                <div className={TABS_CONTAINER_CLASS}>
-                    {isMobileContainer ? (
-                        <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
-                    ) : (
-                        <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
-                    )}
-                </div>
+                <div>
+                    <div className={TABS_CONTAINER_CLASS}>
+                        {isMobileContainer ? (
+                            <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                        ) : (
+                            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                        )}
+                    </div>
 
-                <FilterBar {...filterBarState}>
-                    <BalanceAccountSelector
-                        activeBalanceAccount={activeBalanceAccount}
-                        balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                        onBalanceAccountSelection={onBalanceAccountSelection}
-                    />
-                    <DateFilter
-                        canResetFilters={canResetFilters}
-                        defaultParams={defaultParams}
-                        filters={filters}
-                        nowTimestamp={nowTimestamp}
-                        refreshNowTimestamp={refreshNowTimestamp}
-                        sinceDate={sinceDate}
-                        timezone={activeBalanceAccount?.timeZone}
-                        updateFilters={updateFilters}
-                    />
-                    <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
-                    {statusGroup !== 'FRAUD_ALERTS' && (
-                        <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
-                    )}
-                </FilterBar>
-            </div>
-            <DisputeManagementModal
-                dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
-                selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
-                resetDetails={resetDetails}
-                onContactSupport={onContactSupport}
-                refreshDisputesList={refreshDisputesList}
-                setModalVisible={setModalVisible}
-            >
-                <DisputesTable
-                    activeBalanceAccount={activeBalanceAccount}
-                    balanceAccountId={activeBalanceAccount?.id}
-                    loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
-                    data={records}
-                    showPagination={true}
-                    limit={limit}
-                    limitOptions={limitOptions}
+                    <FilterBar {...filterBarState}>
+                        <BalanceAccountSelector
+                            activeBalanceAccount={activeBalanceAccount}
+                            balanceAccountSelectionOptions={balanceAccountSelectionOptions}
+                            onBalanceAccountSelection={onBalanceAccountSelection}
+                        />
+                        <DateFilter
+                            canResetFilters={canResetFilters}
+                            defaultParams={defaultParams}
+                            filters={filters}
+                            nowTimestamp={nowTimestamp}
+                            refreshNowTimestamp={refreshNowTimestamp}
+                            sinceDate={sinceDate}
+                            timezone={activeBalanceAccount?.timeZone}
+                            updateFilters={updateFilters}
+                        />
+                        <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
+                        {statusGroup !== 'FRAUD_ALERTS' && (
+                            <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                        )}
+                    </FilterBar>
+                </div>
+                <DisputeManagementModal
+                    dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
+                    selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
+                    resetDetails={resetDetails}
                     onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
-                    error={error as AdyenPlatformExperienceError}
-                    onRowClick={onRowClick}
-                    statusGroup={statusGroup}
-                    {...paginationProps}
-                />
-            </DisputeManagementModal>
+                    refreshDisputesList={refreshDisputesList}
+                    setModalVisible={setModalVisible}
+                >
+                    <DisputesTable
+                        activeBalanceAccount={activeBalanceAccount}
+                        balanceAccountId={activeBalanceAccount?.id}
+                        loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
+                        data={records}
+                        showPagination={true}
+                        limit={limit}
+                        limitOptions={limitOptions}
+                        onContactSupport={onContactSupport}
+                        onLimitSelection={updateLimit}
+                        error={error as AdyenPlatformExperienceError}
+                        onRowClick={onRowClick}
+                        statusGroup={statusGroup}
+                        {...paginationProps}
+                    />
+                </DisputeManagementModal>
+            </div>
         </div>
     );
 };
