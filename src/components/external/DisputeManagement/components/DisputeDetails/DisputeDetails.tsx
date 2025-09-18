@@ -1,8 +1,6 @@
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
 import type { ExternalUIComponentProps } from '../../../../types';
 import { useDisputeFlow } from '../../context/dispute/context';
+import { Header } from '../../../../internal/Header';
 import { DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
@@ -18,17 +16,12 @@ export const DisputeDetails = ({
     onDismiss,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
     const { flowState } = useDisputeFlow();
-    const { i18n } = useCoreContext();
 
     switch (flowState) {
         case 'details':
             return (
                 <>
-                    {!hideTitle && (
-                        <Typography variant={TypographyVariant.TITLE} medium>
-                            {i18n.get('disputes.disputeManagementTitle')}
-                        </Typography>
-                    )}
+                    <Header hideTitle={hideTitle} titleKey="disputes.disputeManagementTitle" />
                     <DisputeData disputeId={id} dataCustomization={dataCustomization} onContactSupport={onContactSupport} onDismiss={onDismiss} />
                 </>
             );

@@ -12,13 +12,12 @@ import { CustomColumn, ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
-import Typography from '../Typography/Typography';
-import { TypographyVariant } from '../Typography/types';
 import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
 import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/components/constants';
 import { PAYOUT_TABLE_FIELDS } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsCustomization } from '../../external';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
+import { Header } from '../Header';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
@@ -33,7 +32,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const dataId = useMemo(() => (isDetailsWithId(props) ? props.id : null), [props]);
     const getDetail = useConfigContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
-    const { hideTitle, title } = useDataOverviewDetailsTitle(props);
+    const { hideTitle, titleKey } = useDataOverviewDetailsTitle(props);
 
     const { data, error, isFetching } = useFetch(
         useMemo(
@@ -97,13 +96,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            {!hideTitle && (
-                <div className="adyen-pe-overview-details--title">
-                    <Typography variant={TypographyVariant.TITLE} medium>
-                        {title}
-                    </Typography>
-                </div>
-            )}
+            <Header hideTitle={hideTitle} titleKey={titleKey} />
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">
