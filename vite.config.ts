@@ -96,8 +96,11 @@ export default defineConfig(({ mode }) => {
                     'core/**/*.{ts,tsx}',
                 ],
                 exclude: ['**/index.{ts,tsx}', '**/constants.{ts,tsx}', '**/types.ts', 'node_modules'],
-                reporter: ['lcov', 'text'],
+                reporter: ['lcov', 'text', 'json-summary', 'json'],
                 reportsDirectory: resolve(__dirname, 'coverage'),
+                // Uncomment next line once we reach 80% of coverage
+                //thresholds: 80,
+                reportOnFailure: true,
             },
             sequence: {
                 hooks: 'parallel',
