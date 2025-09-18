@@ -1,6 +1,7 @@
 import './DataOverviewDetails.scss';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../core/ConfigContext';
+import { useModalContext } from '../Modal/Modal';
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { useFetch } from '../../../hooks/useFetch';
 import { IBalanceAccountBase, IPayoutDetails } from '../../../types';
@@ -33,6 +34,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
     const getDetail = useConfigContext().endpoints[ENDPOINTS_BY_TYPE[props.type]] as any; // [TODO]: Fix type and remove 'as any'
 
     const { hideTitle, titleKey } = useDataOverviewDetailsTitle(props);
+    const { withinModal } = useModalContext();
 
     const { data, error, isFetching } = useFetch(
         useMemo(
@@ -96,7 +98,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            <Header hideTitle={hideTitle} titleKey={titleKey} />
+            <Header hideTitle={hideTitle} titleKey={titleKey} connected={!withinModal} />
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">

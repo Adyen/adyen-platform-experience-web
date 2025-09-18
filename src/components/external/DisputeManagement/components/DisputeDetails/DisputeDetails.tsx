@@ -1,10 +1,26 @@
+import cx from 'classnames';
+import { PropsWithChildren } from 'preact/compat';
 import type { ExternalUIComponentProps } from '../../../../types';
+import { useModalContext } from '../../../../internal/Modal/Modal';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { Header } from '../../../../internal/Header';
 import { DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
 import DisputeData from '../DisputesData/DisputeData';
+
+const DisputeDetailsContainer = ({ children, hideTitle }: PropsWithChildren<Pick<ExternalUIComponentProps<DisputeManagementProps>, 'hideTitle'>>) => {
+    const { flowState } = useDisputeFlow();
+    const { withinModal } = useModalContext();
+    return (
+        <>
+            <div className={cx({ ['adyen-pe-visually-hidden']: flowState !== 'details' })}>
+                <Header hideTitle={hideTitle} connected={!withinModal} titleKey="disputes.disputeManagementTitle" />
+            </div>
+            {children}
+        </>
+    );
+};
 
 export const DisputeDetails = ({
     id,
@@ -20,17 +36,24 @@ export const DisputeDetails = ({
     switch (flowState) {
         case 'details':
             return (
-                <>
-                    <Header hideTitle={hideTitle} titleKey="disputes.disputeManagementTitle" />
+                <DisputeDetailsContainer hideTitle={hideTitle}>
                     <DisputeData disputeId={id} dataCustomization={dataCustomization} onContactSupport={onContactSupport} onDismiss={onDismiss} />
-                </>
+                </DisputeDetailsContainer>
             );
         case 'accept':
-            return <AcceptDisputeFlow onDisputeAccept={onDisputeAccept} />;
+            return (
+                <DisputeDetailsContainer hideTitle={hideTitle}>
+                    <AcceptDisputeFlow onDisputeAccept={onDisputeAccept} />
+                </DisputeDetailsContainer>
+            );
         case 'defendReasonSelectionView':
         case 'defenseSubmitResponseView':
         case 'uploadDefenseFilesView':
-            return <DefendDisputeFlow onDisputeDefend={onDisputeDefend} />;
+            return (
+                <DisputeDetailsContainer hideTitle={hideTitle}>
+                    <DefendDisputeFlow onDisputeDefend={onDisputeDefend} />
+                </DisputeDetailsContainer>
+            );
         default:
             return null;
     }
