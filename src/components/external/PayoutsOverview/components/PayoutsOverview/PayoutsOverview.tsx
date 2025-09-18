@@ -141,6 +141,7 @@ export const PayoutsOverview = ({
                 />
             </FilterBar>
             <DataDetailsModal
+                ariaLabelKey="payoutDetails"
                 className={BASE_CLASS_DETAILS}
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
