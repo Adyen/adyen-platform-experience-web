@@ -6,7 +6,7 @@ import { MutableRef, useRef } from 'preact/hooks';
 import { HTMLProps, PropsWithChildren } from 'preact/compat';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/preact';
-import { useComponentHeadingElement } from './useComponentHeadingElement';
+import { ComponentHeadingType, useComponentHeadingElement } from './useComponentHeadingElement';
 import { CoreProviderProps } from '../core/Context/types';
 import { CoreContext } from '../core/Context/CoreContext';
 import CoreProvider from '../core/Context/CoreProvider';
@@ -15,8 +15,8 @@ const coreProviderProps = {} as CoreProviderProps;
 
 const ComponentRoot = ({ children }: PropsWithChildren) => <CoreProvider {...coreProviderProps}>{children}</CoreProvider>;
 
-const Heading = ({ id, ...props }: HTMLProps<any>) => {
-    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>();
+const Heading = ({ id, headingType, ...props }: HTMLProps<any> & { headingType?: ComponentHeadingType }) => {
+    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>(headingType);
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };
 
@@ -65,23 +65,64 @@ describe('useComponentHeadingElement', () => {
         expect(result.current.id).toBe(uniqueId);
     });
 
-    test('should set heading element id as aria-labeledby attribute on componentRef element', async () => {
+    test('should set heading element id as ARIA attribute on componentRef element', async () => {
         const headingText = 'Title';
+        const subtitleText = 'Subtitle';
 
-        render(
+        const { rerender } = render(
             <ComponentRoot>
-                <Heading>{headingText}</Heading>
+                <Heading headingType={ComponentHeadingType.TITLE}>{headingText}</Heading>
+                <Heading headingType={ComponentHeadingType.SUBTITLE}>{subtitleText}</Heading>
             </ComponentRoot>
         );
 
         const componentRootElement = screen.getByTestId('root');
         const headingElement = screen.getByText(headingText);
+        const subtitleElement = screen.getByText(subtitleText);
 
-        [componentRootElement, headingElement].forEach(el => {
+        // Check that all the elements are visible as expected
+        [componentRootElement, headingElement, subtitleElement].forEach(el => {
             expect(el).toBeInTheDocument();
             expect(el).toBeVisible();
         });
 
         expect(componentRootElement.getAttribute('aria-labeledby')).toBe(headingElement.id);
+        expect(componentRootElement.getAttribute('aria-describedby')).toBe(subtitleElement.id);
+
+        // Re-render <ComponentRoot /> component without children
+        // The child <Heading /> components will be unmounted
+        rerender(<ComponentRoot />);
+
+        expect(componentRootElement.getAttribute('aria-labeledby')).toBeNull();
+        expect(componentRootElement.getAttribute('aria-describedby')).toBeNull();
+    });
+
+    test('should preserve changed ARIA attribute on componentRef element when unmounted', async () => {
+        const title = 'Title';
+        const subtitle = 'Subtitle';
+
+        const { rerender } = render(
+            <ComponentRoot>
+                <Heading headingType={ComponentHeadingType.TITLE}>{title}</Heading>
+                <Heading headingType={ComponentHeadingType.SUBTITLE}>{subtitle}</Heading>
+            </ComponentRoot>
+        );
+
+        const componentRootElement = screen.getByTestId('root');
+
+        // Change ARIA attributes externally
+        componentRootElement.setAttribute('aria-labeledby', title);
+        componentRootElement.setAttribute('aria-describedby', subtitle);
+
+        expect(componentRootElement.getAttribute('aria-labeledby')).toBe(title);
+        expect(componentRootElement.getAttribute('aria-describedby')).toBe(subtitle);
+
+        // Re-render <ComponentRoot /> component without children
+        // The child <Heading /> components will be unmounted
+        rerender(<ComponentRoot />);
+
+        // Changed ARIA attributes preserved even after unmounting
+        expect(componentRootElement.getAttribute('aria-labeledby')).toBe(title);
+        expect(componentRootElement.getAttribute('aria-describedby')).toBe(subtitle);
     });
 });

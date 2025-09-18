@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { FC } from 'preact/compat';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import useComponentHeadingElement from '../../../hooks/useComponentHeadingElement';
+import useComponentHeadingElement, { ComponentHeadingType } from '../../../hooks/useComponentHeadingElement';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import type { TranslationKey } from '../../../translations';
 import type { UIElementProps } from '../../types';
@@ -25,20 +25,22 @@ export interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subtitleConfig }) => {
-    const { id: headingElemId, ref: headingElemRef } = useComponentHeadingElement<HTMLDivElement>();
+    const { id: titleElemId, ref: titleElemRef } = useComponentHeadingElement<HTMLDivElement>(ComponentHeadingType.TITLE);
+    const { id: subtitleElemId, ref: subtitleElemRef } = useComponentHeadingElement<HTMLDivElement>(ComponentHeadingType.SUBTITLE);
     const { i18n } = useCoreContext();
+
     return (
         <div className={baseClassName}>
             <div className={`${baseClassName}__headings`}>
                 {!hideTitle && titleKey && (
-                    <div ref={headingElemRef} id={headingElemId} className={`${baseClassName}__title`}>
+                    <div ref={titleElemRef} id={titleElemId} className={`${baseClassName}__title`}>
                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.TITLE} medium>
                             {i18n.get(titleKey)}
                         </Typography>
                     </div>
                 )}
                 {subtitleKey && (
-                    <div className={cx(`${baseClassName}__subtitle`, subtitleConfig?.classNames)}>
+                    <div ref={subtitleElemRef} id={subtitleElemId} className={cx(`${baseClassName}__subtitle`, subtitleConfig?.classNames)}>
                         <Typography
                             el={subtitleConfig?.typographyEl ?? TypographyElement.SPAN}
                             variant={subtitleConfig?.variant ?? TypographyVariant.BODY}
