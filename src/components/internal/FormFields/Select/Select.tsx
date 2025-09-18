@@ -58,9 +58,8 @@ const Select = <T extends SelectItem>({
         if (showList) {
             resetSelection(cachedSelectedItems.current);
             pendingClickOutsideTriggeredHideList.current = true;
-            onResetAction && onResetAction();
         }
-    }, [resetSelection, setShowList, setTextFilter, showList, onResetAction]);
+    }, [resetSelection, setShowList, setTextFilter, showList]);
 
     //TODO: Clarify and delete this
     // const selectContainerRef = useClickOutside(
@@ -88,6 +87,7 @@ const Select = <T extends SelectItem>({
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         resetDisabled: !selection.length,
+        onResetAction: onResetAction,
     });
 
     /**
