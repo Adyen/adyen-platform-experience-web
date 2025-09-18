@@ -59,7 +59,6 @@ jobs:
         with:
           lcov-base: ./coverage-base/lcov.info
           lcov-file: ./coverage/lcov.info
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           # This workflow will fail if TOTAL coverage drops more than 0.2%
           fail-drop-percent-threshold: 0.2
           filter-changed-files: true
