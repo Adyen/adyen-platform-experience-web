@@ -10,11 +10,6 @@ export interface AnalyticsProviderProps {
     children?: ComponentChildren;
 }
 
-/**
- * The provider exists to scope analytics to one application instance.
- * This would otherwise be problematic when a consumer might have several
- * instantiations of a embedded Component for instance on the same page
- */
 export const AnalyticsProvider = ({ children, componentName }: PropsWithChildren<AnalyticsProviderProps>) => {
     const userEvents = useMemo(() => createUserEvents(componentName), [componentName]);
 
