@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { FC } from 'preact/compat';
+import { FC, HTMLProps } from 'preact/compat';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useComponentHeadingElement, { ComponentHeadingType } from '../../../hooks/useComponentHeadingElement';
@@ -11,8 +11,9 @@ import './Header.scss';
 
 export const BASE_CLASS = 'adyen-pe-header';
 
-export interface HeaderProps {
+export interface HeaderProps extends HTMLProps<HTMLHeadingElement> {
     baseClassName?: string;
+    connected?: boolean;
     hasDivider?: boolean;
     hideTitle?: UIElementProps['hideTitle'];
     subtitleKey?: TranslationKey;
@@ -24,13 +25,32 @@ export interface HeaderProps {
     };
 }
 
-export const Header: FC<HeaderProps> = ({ baseClassName = BASE_CLASS, children, hasDivider, hideTitle, titleKey, subtitleKey, subtitleConfig }) => {
-    const { id: titleElemId, ref: titleElemRef } = useComponentHeadingElement<HTMLDivElement>(ComponentHeadingType.TITLE);
-    const { id: subtitleElemId, ref: subtitleElemRef } = useComponentHeadingElement<HTMLDivElement>(ComponentHeadingType.SUBTITLE);
+export const Header: FC<HeaderProps> = ({
+    baseClassName = BASE_CLASS,
+    connected = true,
+    children,
+    className,
+    hasDivider,
+    hideTitle,
+    titleKey,
+    subtitleKey,
+    subtitleConfig,
+    ...props
+}) => {
     const { i18n } = useCoreContext();
 
+    const { id: titleElemId, ref: titleElemRef } = useComponentHeadingElement<HTMLDivElement>({
+        headingType: ComponentHeadingType.TITLE,
+        connected,
+    });
+
+    const { id: subtitleElemId, ref: subtitleElemRef } = useComponentHeadingElement<HTMLDivElement>({
+        headingType: ComponentHeadingType.SUBTITLE,
+        connected,
+    });
+
     return (
-        <div className={baseClassName}>
+        <div {...props} className={cx([baseClassName, className])}>
             <div className={`${baseClassName}__headings`}>
                 {!hideTitle && titleKey && (
                     <div ref={titleElemRef} id={titleElemId} className={`${baseClassName}__title`}>

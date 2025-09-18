@@ -6,7 +6,7 @@ import { MutableRef, useRef } from 'preact/hooks';
 import { HTMLProps, PropsWithChildren } from 'preact/compat';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/preact';
-import { ComponentHeadingType, useComponentHeadingElement } from './useComponentHeadingElement';
+import { ComponentHeadingType, useComponentHeadingElement, UseComponentHeadingElementProps } from './useComponentHeadingElement';
 import { CoreProviderProps } from '../core/Context/types';
 import { CoreContext } from '../core/Context/CoreContext';
 import CoreProvider from '../core/Context/CoreProvider';
@@ -15,8 +15,8 @@ const coreProviderProps = {} as CoreProviderProps;
 
 const ComponentRoot = ({ children }: PropsWithChildren) => <CoreProvider {...coreProviderProps}>{children}</CoreProvider>;
 
-const Heading = ({ id, headingType, ...props }: HTMLProps<any> & { headingType?: ComponentHeadingType }) => {
-    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>(headingType);
+const Heading = ({ id, headingType, connected, ...props }: HTMLProps<any> & UseComponentHeadingElementProps) => {
+    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>({ headingType, connected });
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };
 

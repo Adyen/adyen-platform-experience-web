@@ -1,13 +1,21 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
 import useUniqueId from './useUniqueId';
+import { EMPTY_OBJECT } from '../utils';
 
 export const enum ComponentHeadingType {
     TITLE = 1,
     SUBTITLE = 2,
 }
 
-export const useComponentHeadingElement = <T extends HTMLElement>(headingType = ComponentHeadingType.TITLE) => {
+export interface UseComponentHeadingElementProps {
+    headingType?: ComponentHeadingType;
+    connected?: boolean;
+}
+
+export const useComponentHeadingElement = <T extends HTMLElement>(
+    { headingType = ComponentHeadingType.TITLE, connected } = EMPTY_OBJECT as UseComponentHeadingElementProps
+) => {
     const { componentRef } = useCoreContext();
     const headingElementId = `heading-${useUniqueId()}`;
     const headingElementRef = useRef<T | null>(null);
@@ -22,6 +30,8 @@ export const useComponentHeadingElement = <T extends HTMLElement>(headingType = 
     }, [headingType]);
 
     useEffect(() => {
+        if (connected === false) return;
+
         const componentElement = componentRef.current;
         const headingElementId = headingElementRef.current?.id;
 
@@ -34,7 +44,7 @@ export const useComponentHeadingElement = <T extends HTMLElement>(headingType = 
                 componentElement.removeAttribute(ariaAttribute);
             };
         }
-    }, [componentRef, ariaAttribute]);
+    }, [ariaAttribute, componentRef, connected, headingElementId]);
 
     return { id: headingElementId, ref: headingElementRef } as const;
 };
