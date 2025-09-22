@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { renderHook, waitFor } from '@testing-library/preact';
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { useCustomColumnsData } from './useCustomColumnsData'; // Adjust the import path as needed
 
 describe('useCustomColumnsData', () => {
