@@ -11,6 +11,10 @@ PROJECT_ROOT=$(dirname $(dirname "$SCRIPT_DIR"))
 echo "Changing working directory to project root..."
 
 cd "$PROJECT_ROOT"
+if [ -z "$VERSION" ]; then
+  echo "Error: VERSION environment variable is not set. Aborting." >&2
+  exit 1
+fi
 
 ARCHIVE_NAME="platform-components_cdn_$VERSION.tar.gz"
 BUILD_SCRIPT="build:umd"
