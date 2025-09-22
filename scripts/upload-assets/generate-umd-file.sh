@@ -27,7 +27,7 @@ npm run "$BUILD_SCRIPT"
 echo "Build complete"
 
 if [ ! -f "$UMD_FILE" ]; then
-  echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
+  echo "Error: UMD file not found at \"$PROJECT_ROOT/$UMD_FILE\". Aborting" >&2
   exit 1
 fi
 
