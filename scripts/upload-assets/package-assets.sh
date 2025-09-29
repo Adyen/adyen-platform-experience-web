@@ -38,8 +38,20 @@ echo "Preparing staging directory for archive"
 
 echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
-cp "$UMD_FILE" "$STAGING_DIR/index.js"
-cp "$CSS_FILE" "$STAGING_DIR/adyen-platform-experience-web.css"
+
+# Conditionally copy the UMD file based on the environment
+if [ "$DEPLOY_ENV" != "live" ]; then
+  echo "Copying UMD file..."
+  cp "$UMD_FILE" "$STAGING_DIR/index.js"
+  echo "Copying CSS file..."
+  if [ ! -f "$CSS_FILE" ]; then
+    echo "Error: CSS file not found at \"$PROJECT_ROOT/$CSS_FILE\". Aborting" >&2
+    exit 1
+  fi
+  cp "$CSS_FILE" "$STAGING_DIR/adyen-platform-experience-web.css"
+else
+  echo "Skipping UMD and CSS files copy for LIVE environment."
+fi
 
 echo "Creating archive: $ARCHIVE_NAME"
 
