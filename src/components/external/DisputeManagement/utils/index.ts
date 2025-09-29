@@ -1,6 +1,4 @@
 import Localization from '../../../../core/Localization';
-import localDefenseDocumentConfig from '../../../../config/disputes/defenseDocumentConfig.json';
-import localDefenseReasonConfig from '../../../../config/disputes/defenseReasonConfig.json';
 
 export type TranslationConfigItem = {
     title: string;
