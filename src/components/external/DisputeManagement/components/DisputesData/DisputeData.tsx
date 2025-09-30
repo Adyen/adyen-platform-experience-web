@@ -48,6 +48,7 @@ import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/Er
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
 import { CustomButtonObject } from '../../../../types';
+import { TranslationConfigItem } from '../../utils';
 
 type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 
@@ -128,7 +129,7 @@ export const DisputeData = ({
     onDismiss: DisputeManagementProps['onDismiss'];
 }) => {
     const { i18n } = useCoreContext();
-    const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
+    const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
 
     const { getDisputeDetail, getApplicableDefenseDocuments, acceptDispute } = useConfigContext().endpoints;
 
@@ -347,7 +348,7 @@ export const DisputeData = ({
                         />
                     )}
 
-                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} defenseReasonConfig={defenseReasonConfig} />
 
                     {actionButtons.length > 0 ? (
                         <div className={DISPUTE_DATA_ACTION_BAR}>

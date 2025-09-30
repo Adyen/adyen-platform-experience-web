@@ -28,12 +28,14 @@ import {
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
-import { getDefenseDocumentContent, getDefenseReasonContent } from '../../utils';
+import { getDefenseDocumentContent, getDefenseReasonContent, TranslationConfigItem } from '../../utils';
+import { useDisputeFlow } from '../../context/dispute/context';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     extraFields?: Record<any, any>;
+    defenseReasonConfig: Record<string, TranslationConfigItem>;
 };
 
 const disputeDataKeys = {
@@ -54,9 +56,10 @@ const disputeDataKeys = {
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
-const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
+const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount.timeZone);
+    const { defenseDocumentConfig } = useDisputeFlow();
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
 
@@ -158,7 +161,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defenseReason
                 ? {
                       key: disputeDataKeys.defenseReason,
-                      value: getDefenseReasonContent(i18n, defenseReason)?.title ?? defenseReason,
+                      value: getDefenseReasonContent(defenseReasonConfig, i18n, defenseReason)?.title ?? defenseReason,
                       id: 'defenseReason',
                   }
                 : SKIP_ITEM,
@@ -185,7 +188,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
-                                          <Tag label={getDefenseDocumentContent(i18n, document)?.title ?? document} />
+                                          <Tag label={getDefenseDocumentContent(defenseDocumentConfig, i18n, document)?.title ?? document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
                                               endpointName={'downloadDefenseDocument'}
@@ -281,7 +284,17 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 }}
             />
         );
-    }, [dispute, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
+    }, [
+        dispute.dispute,
+        dispute.payment,
+        dispute.defense,
+        i18n,
+        dateFormat,
+        defenseReasonConfig,
+        extraFields,
+        defenseDocumentConfig,
+        dataCustomization?.details?.fields,
+    ]);
 };
 
 export default DisputeDataProperties;

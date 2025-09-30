@@ -1,5 +1,6 @@
 import { DevEnvironment } from './types';
 import { API_ENVIRONMENTS, CDN_ENVIRONMENTS } from './constants';
+import { httpGet } from './Http/http';
 
 export const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 export const normalizeLoadingContext = (loadingContext: string) => loadingContext?.replace?.(/([^/])$/, '$1/');
@@ -17,6 +18,34 @@ export const resolveEnvironment = (() => {
             apiUrl,
             cdnTranslationsUrl: `${cdnUrl}/assets/translations`,
             cdnAssetsUrl: `${cdnUrl}/assets`,
+            cdnConfigUrl: `${cdnUrl}/config`,
         };
     };
 })();
+
+export const getConfigFromCdn = ({ url }: { url: string }) => {
+    return async <Fallback>({
+        name,
+        extension = 'json',
+        fallback,
+        subFolder = '',
+    }: {
+        name: string;
+        extension?: string;
+        subFolder?: string;
+        fallback?: Fallback;
+    }) => {
+        try {
+            return await httpGet<any>({
+                loadingContext: `${url}${subFolder ? `/${subFolder}` : ''}`,
+                path: `/${name}.${extension}`,
+                versionless: true,
+                skipContentType: true,
+                errorLevel: 'error',
+            });
+        } catch (error) {
+            console.warn(error);
+            return fallback;
+        }
+    };
+};

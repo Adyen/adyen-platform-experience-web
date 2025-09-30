@@ -94,6 +94,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     externalErrorHandler={externalErrorHandler}
                     componentRef={this.compRef}
                     getImageAsset={core.getImageAsset}
+                    getCdnConfig={core.getCdnConfig}
                 >
                     {this.componentToRender && (
                         <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>

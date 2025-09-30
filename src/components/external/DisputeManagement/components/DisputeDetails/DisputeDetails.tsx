@@ -7,6 +7,7 @@ import { DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
 import DisputeData from '../DisputesData/DisputeData';
+import { useEffect } from 'preact/hooks';
 
 export const DisputeDetails = ({
     id,
@@ -17,8 +18,12 @@ export const DisputeDetails = ({
     onDisputeDefend,
     onDismiss,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const { flowState } = useDisputeFlow();
+    const { flowState, getDisputesConfig } = useDisputeFlow();
     const { i18n } = useCoreContext();
+
+    useEffect(() => {
+        void getDisputesConfig();
+    }, [getDisputesConfig]);
 
     switch (flowState) {
         case 'details':
