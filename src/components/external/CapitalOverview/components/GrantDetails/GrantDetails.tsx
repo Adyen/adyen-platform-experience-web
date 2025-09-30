@@ -44,8 +44,8 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
             { key: 'capital.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
             { key: 'capital.grantID', value: grant.id },
-            { key: 'accountDescription', value: grant.balanceAccountDescription },
-            { key: 'accountID', value: grant.balanceAccountCode },
+            { key: 'capital.accountDescription', value: grant.balanceAccountDescription },
+            { key: 'capital.accountID', value: grant.balanceAccountCode },
         ];
 
         if (maximumRepaymentPeriodMonths) {

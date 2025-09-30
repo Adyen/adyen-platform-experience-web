@@ -32,23 +32,18 @@ function DataOverviewContainer({
                 <ErrorMessageDisplay
                     withImage
                     centered
-                    title={'somethingWentWrong'}
-                    message={[errorMessage, 'tryRefreshingThePageOrComeBackLater']}
+                    title={'common.errors.default'}
+                    message={[errorMessage, 'common.errors.retry']}
                     refreshComponent={true}
                 />
             ) : balanceAccountsError ? (
                 <ErrorMessageDisplay
                     withImage
                     centered
-                    {...getErrorMessage(balanceAccountsError as AdyenPlatformExperienceError, 'weCouldNotLoadYourBalanceAccounts', onContactSupport)}
+                    {...getErrorMessage(balanceAccountsError as AdyenPlatformExperienceError, 'common.errors.accountUnavailable', onContactSupport)}
                 />
             ) : isBalanceAccountIdWrong ? (
-                <ErrorMessageDisplay
-                    withImage
-                    centered
-                    title={'somethingWentWrong'}
-                    message={[errorMessage, 'theSelectedBalanceAccountIsIncorrect']}
-                />
+                <ErrorMessageDisplay withImage centered title={'common.errors.default'} message={[errorMessage, 'common.errors.accountInvalid']} />
             ) : (
                 <>{children}</>
             )}

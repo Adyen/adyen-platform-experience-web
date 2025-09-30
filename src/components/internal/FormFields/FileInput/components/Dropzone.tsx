@@ -122,7 +122,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     }
 
                     // Determine the current max file size for the file type
-                    const currentMaxFileSize = isFunction(maxFileSize) ? maxFileSize(file.type) ?? DEFAULT_MAX_FILE_SIZE : maxFileSize;
+                    const currentMaxFileSize = isFunction(maxFileSize) ? (maxFileSize(file.type) ?? DEFAULT_MAX_FILE_SIZE) : maxFileSize;
 
                     if (file.size > currentMaxFileSize) {
                         setLargeFileErrorContext({ type: file.type, limit: currentMaxFileSize });
@@ -186,7 +186,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                                     : <Icon name="upload" className={classes.labelIcon} />
                             }
                             <Typography className={classes.labelText} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                                {i18n.get('uploadFile.browse')}
+                                {i18n.get('common.inputs.file.labels.default')}
                             </Typography>
                         </div>
                     )}

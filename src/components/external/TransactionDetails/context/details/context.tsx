@@ -41,7 +41,7 @@ export const TransactionDetailsProvider = memo(
         const { i18n } = useCoreContext();
         const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
 
-        const primaryActionLabel = useMemo(() => ({ title: i18n.get('refundAction') }), [i18n]);
+        const primaryActionLabel = useMemo(() => ({ title: i18n.get('transactions.details.actions.refund') }), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
 
         const primaryAction = useCallback(
@@ -68,7 +68,7 @@ export const TransactionDetailsProvider = memo(
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
                     return {
-                        title: i18n.get('refund.returnToRefund' as TranslationKey),
+                        title: i18n.get('transactions.details.actions.backToRefund'),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon style={{ transform: 'scaleX(-1)' }} name="angle-right" />
@@ -78,7 +78,7 @@ export const TransactionDetailsProvider = memo(
                     };
                 case TransactionNavigationAction.FORWARD:
                     return {
-                        title: i18n.get('refund.goToPayment' as TranslationKey),
+                        title: i18n.get('transactions.details.actions.goToPayment'),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon name="angle-right" />

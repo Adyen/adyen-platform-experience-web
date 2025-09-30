@@ -97,13 +97,13 @@ const CapitalSlider = ({
             </div>
             <div className="adyen-pe-capital-slider__labels" aria-hidden="true">
                 <div>
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('min')}</Typography>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.min')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.minAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </div>
                 <div>
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('max')}</Typography>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.max')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.maxAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>

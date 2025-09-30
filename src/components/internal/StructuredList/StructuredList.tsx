@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
+import { AriaAttributes } from 'preact/compat';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import {
@@ -19,6 +20,7 @@ export const StructuredListLayouts = ['3-9', '4-8', '5-7', '6-6', '7-5', '8-4'] 
 
 const DEFAULT_LAYOUT = '6-6';
 export default function StructuredList({
+    ['aria-label']: ariaLabel,
     items,
     highlightable,
     renderValue,
@@ -27,7 +29,7 @@ export default function StructuredList({
     grid = true,
     classNames,
     align = 'end',
-}: StructuredListProps) {
+}: StructuredListProps & Pick<AriaAttributes, 'aria-label'>) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
     }, [layout]);
@@ -35,7 +37,7 @@ export default function StructuredList({
     const formattedItems = useStructuredListItems(items);
 
     return (
-        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })}>
+        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })} aria-label={ariaLabel}>
             {formattedItems.map((item, index) => (
                 <div
                     data-testid={item.label}

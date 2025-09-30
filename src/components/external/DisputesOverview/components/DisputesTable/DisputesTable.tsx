@@ -95,18 +95,18 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
-    let limitSelectorAriaLabelKey: TranslationKey | undefined = undefined;
+    let limitSelectAriaLabelKey: TranslationKey | undefined = undefined;
 
     if (showPagination) {
         switch (statusGroup) {
             case 'CHARGEBACKS':
-                limitSelectorAriaLabelKey = 'disputes.pagination.chargebacks.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.pagination.chargebacks.limitSelector.label';
                 break;
             case 'FRAUD_ALERTS':
-                limitSelectorAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelector.label';
                 break;
             case 'ONGOING_AND_CLOSED':
-                limitSelectorAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelector.label';
                 break;
         }
     }
@@ -270,7 +270,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} ariaLabelKey="disputes.pagination" limitSelectorAriaLabelKey={limitSelectorAriaLabelKey} />
+                        <Pagination {...paginationProps} ariaLabelKey="disputes.pagination" limitSelectAriaLabelKey={limitSelectAriaLabelKey} />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

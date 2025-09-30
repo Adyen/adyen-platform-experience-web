@@ -13,14 +13,14 @@ export const getDisputesErrorMessage = (
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'somethingWentWrong',
-                message: [errorMessage, 'tryRefreshingThePageOrComeBackLater'],
+                title: 'common.errors.default',
+                message: [errorMessage, 'common.errors.retry'],
                 refreshComponent: true,
             };
         case '00_500': {
-            const secondaryErrorMessage = onContactSupport ? 'theErrorCodeIs' : 'contactSupportForHelpAndShareErrorCode';
+            const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
             return {
-                title: 'somethingWentWrong',
+                title: 'common.errors.default',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
                     [secondaryErrorMessage]: error.requestId ? (

@@ -30,10 +30,10 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
 
     const datePickerClassName = useMemo(() => cx([{ 'adyen-pe-datepicker--with-timezone': withTimezone }, 'adyen-pe-datepicker']), [withTimezone]);
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
-
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
+
     const getCalendarGridLabel = useCallback<CalendarProps['getGridLabel']>(
-        block => i18n.get('calendar.grid.label', { values: { monthOfYear: block.label } }),
+        block => i18n.get('common.filters.types.date.calendar.label', { values: { monthOfYear: block.label } }),
         [i18n]
     );
 
@@ -59,7 +59,12 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                     aria-label={props.timeRangeSelectorLabel}
                 />
             </div>
-            <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
+            <div
+                ref={controlsContainerRef}
+                role="group"
+                className={'adyen-pe-datepicker__controls'}
+                aria-label={i18n.get('common.filters.types.date.calendar.navigation.label')}
+            />
             <Calendar
                 {...props}
                 ref={calendarRef}
@@ -73,7 +78,11 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 renderControl={controlsRenderer}
                 trackCurrentDay={true}
             />
-            {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
+            {withTimezone && (
+                <div className={'adyen-pe-datepicker__timezone'}>
+                    {i18n.get('common.filters.types.date.timezoneInfo.visible', timezoneI18nOptions)}
+                </div>
+            )}
         </div>
     );
 });

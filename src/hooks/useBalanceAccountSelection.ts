@@ -37,7 +37,10 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
             balanceAccounts && balanceAccounts.length > 1
                 ? Object.freeze(
                       allBalanceAccounts?.map(({ description, id }) => {
-                          const name = id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? i18n.get('balanceAccounts.all') : capitalize(description)!;
+                          const name =
+                              id === ALL_BALANCE_ACCOUNTS_SELECTION_ID
+                                  ? i18n.get('common.filters.types.account.options.all')
+                                  : capitalize(description)!;
                           return { id, name } as SelectItem;
                       })
                   )

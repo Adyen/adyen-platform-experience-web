@@ -80,7 +80,7 @@ export const CapitalOfferSummary = ({
                     };
                 default:
                     return {
-                        title: i18n.get('somethingWentWrong'),
+                        title: i18n.get('common.errors.default'),
                         message: i18n.get('capital.weCouldNotLoadFinancialOffers'),
                     };
             }
@@ -111,7 +111,7 @@ export const CapitalOfferSummary = ({
                 key: 'capital.expectedRepaymentPeriod',
                 value: i18n.get('capital.xDays', { values: { days: grantOffer.expectedRepaymentPeriodDays } }),
             },
-            { key: 'account', value: i18n.get('capital.primaryAccount') },
+            { key: 'capital.account', value: i18n.get('capital.primaryAccount') },
         ];
 
         if (maximumRepaymentPeriod) {
@@ -205,7 +205,7 @@ export const CapitalOfferSummary = ({
                 }}
                 renderValue={(val, key) => {
                     const showWarningIcon =
-                        key === 'account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+                        key === 'capital.account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
 
                     return (
                         <Typography
@@ -232,7 +232,7 @@ export const CapitalOfferSummary = ({
                 >
                     {onContactSupport ? (
                         <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
-                            {i18n.get('contactSupport')}
+                            {i18n.get('capital.contactSupport')}
                         </Button>
                     ) : null}
                 </Alert>
@@ -241,7 +241,7 @@ export const CapitalOfferSummary = ({
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                        {i18n.get('back')}
+                        {i18n.get('capital.back')}
                     </Button>
                 )}
                 <Button

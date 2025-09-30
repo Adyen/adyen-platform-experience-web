@@ -172,10 +172,10 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+            <Header hideTitle={hideTitle} titleKey="transactions.overview.titleHeading.visible">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState} ariaLabelKey="transactions.filters">
+            <FilterBar {...filterBarState} ariaLabelKey="transactions.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -192,19 +192,19 @@ export const TransactionsOverview = ({
                     updateFilters={updateFilters}
                 />
                 {/* Remove status filter temporarily */}
-                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
+                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('transactions.overview.filters.types.status.label')} /> */}
+                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('transactions.overview.filters.types.category.label')} />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
-                    name={'range'}
-                    label={i18n.get('amount')}
+                    name={i18n.get('transactions.overview.filters.types.amount.label')}
+                    label={i18n.get('transactions.overview.filters.types.amount.label')}
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
                     updateFilters={updateFilters}
                     onChange={updateFilters}
                 />
-                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
+                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('transactions.overview.filters.types.currency.label')} />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>
@@ -233,7 +233,7 @@ export const TransactionsOverview = ({
             </div>
 
             <DataDetailsModal
-                ariaLabelKey="transactionDetails"
+                ariaLabelKey="transactions.details.modal.label"
                 dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}

@@ -2,8 +2,10 @@ import { formatCustomTranslations, formatLocale, getTranslation, interpolateElem
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
 import { SUPPORTED_LOCALES } from './constants/localization';
+import { TranslationKey } from '../../translations';
 
 const defaultSupportedLocales = SUPPORTED_LOCALES;
+const translationKey = 'abc' as TranslationKey;
 
 describe('parseLocale()', () => {
     test('should return the passed locale if formatted properly', () => {
@@ -131,7 +133,7 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations are already in the defaultSupportedLocales', () => {
         const customTranslations = {
             'en-US': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
@@ -141,13 +143,13 @@ describe('formatCustomTranslations()', () => {
     test('should work when custom translations contain a partial ', () => {
         const customTranslations = {
             en: {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'en-US': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
@@ -157,13 +159,13 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'es-ar': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'es-AR': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
@@ -173,13 +175,13 @@ describe('formatCustomTranslations()', () => {
     test('should format new locales', () => {
         const customTranslations = {
             'ca-ca': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
         const expectedCustomTranslations = {
             'ca-CA': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
@@ -189,13 +191,13 @@ describe('formatCustomTranslations()', () => {
     test('should format new partial locales if properly added in the defaultSupportedLocales', () => {
         const customTranslations = {
             ca: {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
         const defaultSupportedLocales = ['es-ES' as const, 'ca-CA' as const];
         const expectedCustomTranslations = {
             'ca-CA': {
-                paymentId: 'customString',
+                [translationKey]: 'customString',
             },
         };
 
@@ -207,13 +209,13 @@ describe('loadTranslations()', () => {
     test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
         loadTranslations('es-ES', {
             'es-ES': {
-                account: 'es-ES account',
+                [translationKey]: 'es-ES account',
             },
             'es-AR': {
-                account: 'es-AR account',
+                [translationKey]: 'es-AR account',
             },
         } as const).then(translations => {
-            expect(translations['account']).toBe('es-ES account');
+            expect(translations[translationKey]).toBe('es-ES account');
         });
     });
 
@@ -222,24 +224,24 @@ describe('loadTranslations()', () => {
             'ca-CA' as const,
             {
                 'es-ES': {
-                    paymentId: 'paymentId es-ES',
+                    [translationKey]: 'paymentId es-ES',
                 },
                 'ca-CA': {
-                    paymentId: 'paymentId ca-CA',
+                    [translationKey]: 'paymentId ca-CA',
                 },
             } as const
         ).then(translations => {
-            expect(translations['paymentId']).toBe('paymentId ca-CA');
+            expect(translations[translationKey]).toBe('paymentId ca-CA');
         });
     });
 
     test('should return the passed locale if formatted properly', () => {
         loadTranslations('ca-CA', {
             'ca-CA': {
-                paymentId: 'paymentId ca-CA',
+                [translationKey]: 'paymentId ca-CA',
             },
         }).then(translations => {
-            expect(translations['paymentId']).toBe('paymentId ca-CA');
+            expect(translations[translationKey]).toBe('paymentId ca-CA');
         });
     });
 });

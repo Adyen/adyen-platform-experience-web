@@ -25,15 +25,15 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
 
     const refundAmountLabel = useMemo(() => {
         const formattedAmount = i18n.amount(amount.value, amount.currency);
-        return { title: i18n.get('refundPayment', { values: { amount: formattedAmount } }) };
+        return { title: i18n.get('transactions.details.refund.actions.refund.labels.amount', { values: { amount: formattedAmount } }) };
     }, [amount, i18n]);
 
     const refundPaymentLabel = useMemo(() => {
-        return { title: i18n.get('refundAction') };
+        return { title: i18n.get('transactions.details.refund.actions.refund.labels.payment') };
     }, [i18n]);
     const refundingPaymentLabel = useMemo(
         () => ({
-            title: `${i18n.get('inProgress')}..`,
+            title: `${i18n.get('transactions.details.refund.actions.refund.labels.inProgress')}..`,
             state: 'loading',
         }),
         [i18n]

@@ -22,8 +22,8 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
     const _maxTimestamp = (now: Date) => _getTimestamp(new Date(latestDate?.(now.getTime())!), Infinity);
 
     return async (from: Date | number | string = Date(), to: Date | number | string = from) => {
-        const applyButton = page.getByLabel(getTranslatedKey('apply'));
-        const previousMonthButton = page.getByLabel(getTranslatedKey('calendar.previousMonth'));
+        const applyButton = page.getByLabel(getTranslatedKey('common.actions.apply.labels.default'));
+        const previousMonthButton = page.getByLabel(getTranslatedKey('common.filters.types.date.calendar.navigation.previousMonth'));
         const now = new Date();
 
         let maxTimestamp = _maxTimestamp(now);

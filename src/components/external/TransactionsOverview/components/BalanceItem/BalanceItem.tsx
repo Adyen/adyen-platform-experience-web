@@ -21,7 +21,7 @@ export const BalanceItem = ({
         () => [
             {
                 elemId: balanceElemId,
-                labelKey: 'accountBalance',
+                labelKey: 'transactions.overview.balances.tags.balance',
                 ref: amountRef,
                 skeletonWidth: 80,
                 getValue: () => balance && i18n.amount(balance.value, balance.currency),

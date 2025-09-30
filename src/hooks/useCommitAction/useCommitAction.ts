@@ -18,9 +18,9 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
             ({
                 disabled: boolOrFalse(applyDisabled),
                 event: applyAction,
-                title: applyTitle?.trim() || i18n.get('apply'),
+                title: applyTitle?.trim() || i18n.get('common.actions.apply.labels.default'),
                 variant: ButtonVariant.PRIMARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, applyAction, applyDisabled, applyTitle]
     );
 
@@ -29,9 +29,9 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
             ({
                 disabled: boolOrFalse(resetDisabled),
                 event: resetAction,
-                title: resetTitle?.trim() || i18n.get('reset'),
+                title: resetTitle?.trim() || i18n.get('common.actions.reset.labels.default'),
                 variant: ButtonVariant.SECONDARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, resetAction, resetDisabled, resetTitle]
     );
 

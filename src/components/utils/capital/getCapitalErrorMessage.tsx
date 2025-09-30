@@ -3,10 +3,10 @@ import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
 import CopyText from '../../internal/CopyText/CopyText';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
-    contactSupportForHelp: 'contactSupportForHelp',
+    contactSupportForHelp: 'common.errors.contactSupport',
     couldNotLoadOffers: 'capital.weCouldNotLoadFinancialOffers',
-    tryRefreshingThePage: 'tryRefreshingThePageOrComeBackLater',
-    somethingWentWrong: 'somethingWentWrong',
+    tryRefreshingThePage: 'common.errors.retry',
+    somethingWentWrong: 'common.errors.default',
 } as const;
 
 const UNKNOWN_ERROR = {
@@ -17,10 +17,11 @@ const UNKNOWN_ERROR = {
 
 export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage => {
     if (!error) return UNKNOWN_ERROR;
+
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;
 
-    const errorCodeMessage = onContactSupport ? 'theErrorCodeIs' : 'contactSupportForHelpAndShareErrorCode';
+    const errorCodeMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
 
     switch (error.errorCode) {
         case undefined:

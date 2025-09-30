@@ -105,10 +105,10 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
             <Alert
                 className={className}
                 type={AlertTypeOption.CRITICAL}
-                title={i18n.get('somethingWentWrongTryRefreshingOrComeBackLater')}
+                title={i18n.get('capital.somethingWentWrongTryRefreshingOrComeBackLater')}
                 description={
                     <Button className={GRANT_ACTION_CLASS_NAMES.button} onClick={updateCore}>
-                        {i18n.get('refresh')}
+                        {i18n.get('common.actions.refresh.labels.default')}
                     </Button>
                 }
             />

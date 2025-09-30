@@ -25,7 +25,7 @@ const DateFilter = <T extends DateFilterProps = DateFilterProps>({
     updateFilters,
 }: Pick<T, 'sinceDate' | 'untilDate'> & DataOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
-    const label = useMemo(() => i18n.get('dateRange'), [i18n]);
+    const label = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
     const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 

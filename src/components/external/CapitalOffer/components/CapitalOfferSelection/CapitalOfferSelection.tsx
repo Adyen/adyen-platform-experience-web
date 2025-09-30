@@ -202,7 +202,7 @@ export const CapitalOfferSelection = ({
                     <div className="adyen-pe-capital-offer-selection__buttons">
                         {onOfferDismiss && (
                             <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
-                                {i18n.get('back')}
+                                {i18n.get('capital.back')}
                             </Button>
                         )}
                         <Button
@@ -211,7 +211,7 @@ export const CapitalOfferSelection = ({
                             onClick={onReview}
                             disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
                         >
-                            {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
+                            {i18n.get(loadingButtonState ? 'capital.loading' : 'capital.reviewOffer')}
                         </Button>
                     </div>
                 </>

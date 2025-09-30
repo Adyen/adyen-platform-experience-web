@@ -24,11 +24,11 @@ export const TransactionTotalItem = ({
     const columnConfigs: SummaryItemColumnConfig[] = useMemo(() => {
         const incomingsConfig: SummaryItemColumnConfig = {
             elemId: incomingsElemId,
-            labelKey: 'totalIncoming',
+            labelKey: 'transactions.overview.totals.tags.incoming',
             ref: incomingRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.incomings, total.currency),
-            tooltipLabel: 'tooltip.totalIncoming',
+            tooltipLabel: 'transactions.overview.totals.tags.incoming.description',
             get ariaLabel(): string {
                 return `${i18n.get(this.labelKey!)}: ${this.getValue()}`;
             },
@@ -36,11 +36,11 @@ export const TransactionTotalItem = ({
 
         const expensesConfig: SummaryItemColumnConfig = {
             elemId: expensesElemId,
-            labelKey: 'totalOutgoing',
+            labelKey: 'transactions.overview.totals.tags.outgoing',
             ref: expenseRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.expenses, total.currency),
-            tooltipLabel: 'tooltip.totalOutgoing',
+            tooltipLabel: 'transactions.overview.totals.tags.outgoing.description',
             get ariaLabel(): string {
                 return `${i18n.get(this.labelKey!)}: ${this.getValue()}`;
             },

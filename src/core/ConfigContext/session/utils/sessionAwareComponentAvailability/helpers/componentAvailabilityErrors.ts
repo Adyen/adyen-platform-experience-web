@@ -4,17 +4,17 @@ import { TranslationKey } from '../../../../../../translations';
 const componentAvailabilityErrors = (type: ExternalComponentType): TranslationKey => {
     switch (type) {
         case 'payouts':
-            return 'weCouldNotLoadThePayoutsOverview';
+            return 'payouts.overview.errors.unavailable';
         case 'transactions':
-            return 'weCouldNotLoadTheTransactionsOverview';
+            return 'transactions.overview.errors.unavailable';
         case 'transactionDetails':
-            return 'weCouldNotLoadYourTransactions';
+            return 'transactions.details.errors.unavailable';
         case 'payoutDetails':
-            return 'weCouldNotLoadYourPayouts';
+            return 'payouts.details.errors.unavailable';
         case 'reports':
-            return 'weCouldNotLoadTheReportsOverview';
+            return 'reports.overview.errors.unavailable';
         default:
-            return 'somethingWentWrong';
+            return 'common.errors.componentUnavailable';
     }
 };
 

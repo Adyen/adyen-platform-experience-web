@@ -14,9 +14,9 @@ const TransactionRefundNotice = () => {
         () => (
             <div className={`${TX_DATA_CONTAINER} ${TX_DATA_HEAD_CONTAINER}`}>
                 <Typography el={titleEl} variant={TypographyVariant.SUBTITLE} stronger>
-                    {i18n.get('refundAction')}
+                    {i18n.get('transactions.details.refund.titleHeading.visible')}
                 </Typography>
-                <Typography variant={TypographyVariant.BODY}>{i18n.get('refundNotice')}</Typography>
+                <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.details.refund.processingInfo.visible')}</Typography>
             </div>
         ),
         [i18n]

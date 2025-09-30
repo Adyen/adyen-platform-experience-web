@@ -235,7 +235,7 @@ export const DisputeData = ({
         }
         if (showContactSupport && isFunction(onContactSupport)) {
             ctaButtons.push({
-                title: i18n.get('contactSupport'),
+                title: i18n.get('disputes.contactSupport.default'),
                 event: onContactSupport,
                 variant: ButtonVariant.SECONDARY,
             });

@@ -5,13 +5,13 @@ import { ValidationError } from '../types';
 export const defaultMapErrors = (error: ValidationError): TranslationKey => {
     switch (error) {
         case validationErrors.DISALLOWED_FILE_TYPE:
-            return 'inputError.disallowedFileType';
+            return 'common.inputs.file.errors.disallowedType';
         case validationErrors.FILE_REQUIRED:
-            return 'inputError.fileRequired';
+            return 'common.inputs.file.errors.required';
         case validationErrors.TOO_MANY_FILES:
-            return 'inputError.tooManyFiles';
+            return 'common.inputs.file.errors.tooMany';
         case validationErrors.VERY_LARGE_FILE:
-            return 'inputError.veryLargeFile';
+            return 'common.inputs.file.errors.tooLarge';
     }
 };
 
