@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import restamper, { RestampContext } from '../../../../core/Localization/datetime/restamper';
 import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '../../../../core/Localization/datetime/restamper/utils';
 import { isWatchlistUnsubscribeToken } from '../../../../primitives/reactive/watchlist';
-import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils';
+import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT } from '../../../../utils';
 import clock from '../../../../primitives/time/clock';
 
 export type UseTimezoneConfig = {
@@ -42,7 +42,7 @@ const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EM
     const [timestamp, setTimestamp] = useState(Date.now());
     const [clockTime, GMTOffset] = useMemo(() => getTimezoneTime(timezone, timestamp), [timestamp, timezone]);
 
-    useMemo(() => {
+    useEffect(() => {
         if (!shouldWatchClock) return;
 
         return clock.subscribe(snapshot => {
