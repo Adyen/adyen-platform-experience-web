@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import restamper, { RestampContext } from '../../../../core/Localization/datetime/restamper';
 import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '../../../../core/Localization/datetime/restamper/utils';
 import { isWatchlistUnsubscribeToken } from '../../../../primitives/reactive/watchlist';
@@ -38,19 +38,18 @@ export const { getTimezoneTime, getUsedTimezone } = (() => {
 const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EMPTY_OBJECT) => {
     const shouldWatchClock = useMemo(() => boolOrFalse(withClock), [withClock]);
     const timezone = useMemo(() => getUsedTimezone(tz), [tz]);
-    const unwatchClock = useRef(noop);
 
     const [timestamp, setTimestamp] = useState(Date.now());
     const [clockTime, GMTOffset] = useMemo(() => getTimezoneTime(timezone, timestamp), [timestamp, timezone]);
 
     useMemo(() => {
-        unwatchClock.current();
+        if (!shouldWatchClock) return;
 
-        unwatchClock.current = shouldWatchClock
-            ? clock.subscribe(snapshot => {
-                  if (!isWatchlistUnsubscribeToken(snapshot)) setTimestamp(snapshot.now);
-              })
-            : noop;
+        return clock.subscribe(snapshot => {
+            if (!isWatchlistUnsubscribeToken(snapshot)) {
+                setTimestamp(snapshot.now);
+            }
+        });
     }, [setTimestamp, shouldWatchClock]);
 
     return { clockTime, GMTOffset, timestamp, timezone } as const;
