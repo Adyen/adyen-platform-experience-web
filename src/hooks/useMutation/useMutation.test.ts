@@ -71,13 +71,15 @@ describe('useMutation', () => {
             const mockQueryFn = vi.fn().mockRejectedValue(mockError);
             const { result } = renderHook(() => useMutation({ queryFn: mockQueryFn }));
 
+            let caughtError;
             await act(async () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    caughtError = error;
                 }
             });
+            expect(caughtError).toEqual(mockError);
 
             expect(result.current.data).toBeNull();
             expect(result.current.error).toEqual(mockError);
@@ -157,13 +159,15 @@ describe('useMutation', () => {
             const onError = vi.fn();
             const { result } = renderHook(() => useMutation({ queryFn: mockQueryFn, options: { onError } }));
 
+            let caughtError;
             await act(async () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    caughtError = error;
                 }
             });
+            expect(caughtError).toEqual(mockError);
 
             // Wait for callback to execute
             await act(async () => {
@@ -197,13 +201,15 @@ describe('useMutation', () => {
             const onSettled = vi.fn();
             const { result } = renderHook(() => useMutation({ queryFn: mockQueryFn, options: { onSettled } }));
 
+            let caughtError;
             await act(async () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    caughtError = error;
                 }
             });
+            expect(caughtError).toEqual(mockError);
 
             // Wait for callback to execute
             await act(async () => {
@@ -248,7 +254,7 @@ describe('useMutation', () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    console.error(error);
                 }
             });
 
@@ -268,13 +274,15 @@ describe('useMutation', () => {
                 })
             );
 
+            let caughtError;
             await act(async () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    caughtError = error;
                 }
             });
+            expect(caughtError).toEqual(mockError);
 
             expect(mockQueryFn).toHaveBeenCalledTimes(3); // Initial + 2 retries
             expect(result.current.error).toEqual(mockError);
@@ -314,13 +322,15 @@ describe('useMutation', () => {
                 })
             );
 
+            let caughtError;
             await act(async () => {
                 try {
                     await result.current.mutate();
                 } catch (error) {
-                    // Expected to throw
+                    caughtError = error;
                 }
             });
+            expect(caughtError).toEqual(mockError);
 
             expect(shouldRetry).toHaveBeenCalledWith(mockError);
             expect(mockQueryFn).toHaveBeenCalledTimes(1);
