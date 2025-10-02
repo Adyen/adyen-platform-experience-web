@@ -32,7 +32,7 @@ vi.mock('../../../hooks/useResponsiveContainer', () => ({
 }));
 
 vi.mock('../../../utils', () => ({
-    isFunction: vi.fn(fn => typeof fn === TEST_LABELS.FUNCTION_TYPE),
+    isFunction: vi.fn(fn => typeof fn === 'function'),
 }));
 
 // Mock child components
@@ -49,8 +49,10 @@ vi.mock('../Icon', () => ({
 }));
 
 import { useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
+import { isFunction } from '../../../utils';
 
-const mockUseResponsiveContainer = useResponsiveContainer as any;
+const mockUseResponsiveContainer = vi.mocked(useResponsiveContainer);
+const mockIsFunction = vi.mocked(isFunction);
 
 // Test constants to avoid JSX literals
 const TEST_LABELS = {
@@ -59,7 +61,6 @@ const TEST_LABELS = {
     FILTER_ICON: 'filter',
     CROSS_ICON: 'cross',
     BUTTON_ROLE: 'button',
-    FUNCTION_TYPE: 'function',
 } as const;
 
 const TEST_CONTENT = {
@@ -275,7 +276,7 @@ describe('FilterBar Component', () => {
 
             expect(result.current.isMobileContainer).toBe(false);
             expect(result.current.showingFilters).toBe(true);
-            expect(typeof result.current.setShowingFilters).toBe(TEST_LABELS.FUNCTION_TYPE);
+            expect(result.current.setShowingFilters).toEqual(expect.any(Function));
         });
 
         test('returns correct initial state when mobile', () => {
@@ -285,7 +286,7 @@ describe('FilterBar Component', () => {
 
             expect(result.current.isMobileContainer).toBe(true);
             expect(result.current.showingFilters).toBe(false);
-            expect(typeof result.current.setShowingFilters).toBe(TEST_LABELS.FUNCTION_TYPE);
+            expect(result.current.setShowingFilters).toEqual(expect.any(Function));
         });
 
         test('updates showingFilters when isMobileContainer changes from false to true', () => {
