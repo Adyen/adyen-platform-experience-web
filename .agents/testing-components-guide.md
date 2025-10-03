@@ -47,8 +47,7 @@ Extract repetitive setup into helper functions
 ### Common Anti-Patterns to Avoid
 
 Be cautious with hoisting in mock factories.
-Avoid direct Node access. Prefer using the methods from Testing Library.
-Avoid using container methods. Prefer using the methods from Testing Library.
+- Avoid direct DOM access and manipulation (e.g., via `container` or `document.querySelector`). Always prefer using the idiomatic queries from Testing Library like `getByRole`, `getByText`, etc.
 
 ### Coverage Approach
 
