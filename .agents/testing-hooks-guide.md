@@ -31,7 +31,7 @@ One of the most important principles in testing: **Test WHAT the code does, not 
 
 - Spying on setTimeout or setImmediate to verify timing
 - Checking internal variable values not exposed in API
-- Testing that React hooks (useEffect, useCallback) are called
+- Testing that Preact hooks (useEffect, useCallback) are called
 - Verifying order of internal function calls
 - Mocking internal functions to verify they're called
 - Testing error handling mechanisms rather than error outcomes
