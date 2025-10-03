@@ -32,7 +32,7 @@ Use Testing Library queries in this order:
 
 ## Type safety
 
-Casting to any defeats the purpose of TypeScript and loses valuable IDE support. Use vi.mocked() for typed mocks that provide:
+Casting to `any` defeats the purpose of TypeScript and loses valuable IDE support. Use `vi.mocked()` for typed mocks that provide:
 
 - Autocomplete for mock methods
 - Compile-time type checking
