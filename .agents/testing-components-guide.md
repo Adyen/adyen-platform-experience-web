@@ -1,7 +1,7 @@
 ## Testing Standards
 
 - Organization: Group related tests in describe blocks (rendering, interactions, edge cases)
-- We have an ESlint rule (react/jsx-no-literals), so avoid JSX literals. Remember JSX attributes need to be wrapped in curly braces. Centralized string constants make updates easier. Using as const provides better TypeScript inference.
+- We enforce the `react/jsx-no-literals` ESLint rule to improve maintainability. Instead of using string literals directly in JSX, store them in centralized constants. This makes updates easier and, when used with `as const`, provides better TypeScript inference.
 - We have an ESlint rule (arrow-parens)
 - Balance Between DRY and Readability
 
