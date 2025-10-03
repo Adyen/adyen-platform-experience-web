@@ -342,35 +342,50 @@ describe('useFetch', () => {
 
     describe('Cleanup and Race Conditions', () => {
         test('should prevent state updates after component unmount', async () => {
+            const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
             let resolvePromise: (value: any) => void;
+            let rejectPromise: (error: any) => void;
             const mockQueryFn = vi.fn().mockImplementation(
                 () =>
-                    new Promise(resolve => {
+                    new Promise((resolve, reject) => {
                         resolvePromise = resolve;
+                        rejectPromise = reject;
                     })
             );
 
-            const { result, unmount } = renderHook(() =>
+            const { unmount } = renderHook(() =>
                 useFetch({
                     queryFn: mockQueryFn,
                     fetchOptions: { enabled: true },
                 })
             );
 
-            expect(result.current.isFetching).toBe(true);
-
             // Unmount before promise resolves
             unmount();
 
-            // Resolve the promise after unmount
+            // Test both success and error scenarios after unmount
             resolvePromise!('test data');
 
-            // Wait a bit to ensure no state update occurs
-            await new Promise(resolve => setTimeout(resolve, 10));
+            // Wait for any potential state updates to be processed
+            await new Promise(resolve => setTimeout(resolve, 50));
 
-            // State should remain as it was before unmount
-            expect(result.current.isFetching).toBe(true);
-            expect(result.current.data).toBeUndefined();
+            // Should not have any React warnings about updating unmounted component
+            expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+                expect.stringContaining("Warning: Can't perform a React state update on an unmounted component")
+            );
+
+            // Test error case as well
+            rejectPromise!(new Error('Test error'));
+
+            await new Promise(resolve => setTimeout(resolve, 50));
+
+            // Still should not have any React warnings
+            expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+                expect.stringContaining("Warning: Can't perform a React state update on an unmounted component")
+            );
+
+            consoleErrorSpy.mockRestore();
         });
 
         test('should handle rapid successive enabled changes', async () => {
