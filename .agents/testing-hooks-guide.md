@@ -56,9 +56,9 @@ When writing tests for custom Preact hooks:
 
 ### ✓ Side Effects
 
-- [ ] useEffect runs at correct times
-- [ ] Dependencies trigger re-runs properly
-- [ ] Cleanup functions prevent memory leaks
+- [ ] Side effects (e.g., data fetching, subscriptions) are triggered correctly
+- [ ] State and returned values update correctly when dependencies change
+- [ ] Cleanup logic correctly tears down side effects (e.g., subscriptions, timers) on unmount
 
 ### ✓ Error Handling
 
