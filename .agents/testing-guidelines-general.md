@@ -24,7 +24,7 @@ Use Testing Library queries in this order:
 
 - ❌ Testing internal state instead of rendered output
 - ❌ Forgetting to `await` async operations
-- ❌ Not clearing mocks between tests
+- ❌ Not clearing mocks between tests. Ensure mocks are reset in each test, for example by adding `vi.clearAllMocks()` to a `beforeEach` block in `config/setupTests.ts`.
 
 ---
 
