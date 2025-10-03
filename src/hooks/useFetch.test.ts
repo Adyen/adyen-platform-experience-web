@@ -123,7 +123,7 @@ describe('useFetch', () => {
             const mockQueryFn = vi.fn().mockRejectedValue(testError);
             const mockOnSuccess = vi.fn();
 
-            renderHook(() =>
+            const { result } = renderHook(() =>
                 useFetch({
                     queryFn: mockQueryFn,
                     fetchOptions: { enabled: true, onSuccess: mockOnSuccess },
@@ -131,9 +131,10 @@ describe('useFetch', () => {
             );
 
             await waitFor(() => {
-                expect(mockQueryFn).toHaveBeenCalledTimes(1);
+                expect(result.current.isFetching).toBe(false);
             });
 
+            expect(result.current.error).toBe(testError);
             expect(mockOnSuccess).not.toHaveBeenCalled();
         });
     });
