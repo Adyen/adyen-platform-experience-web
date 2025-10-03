@@ -2,7 +2,7 @@
 
 - Organization: Group related tests in describe blocks (rendering, interactions, edge cases)
 - We enforce the `react/jsx-no-literals` ESLint rule to improve maintainability. Instead of using string literals directly in JSX, store them in centralized constants. This makes updates easier and, when used with `as const`, provides better TypeScript inference.
-- We have an ESlint rule (arrow-parens)
+- We enforce the `arrow-parens` ESLint rule with the `"always"` option. Please ensure all arrow function parameters are wrapped in parentheses for consistency.
 - Balance Between DRY and Readability
 
 ## What to Test (Priority Order)
