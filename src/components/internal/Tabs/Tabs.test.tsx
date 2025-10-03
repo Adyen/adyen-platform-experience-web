@@ -135,7 +135,7 @@ describe('Tabs Component', () => {
     describe('Disabled Tabs', () => {
         test('disabled tab has disabled attribute', () => {
             const tabs = createTabs();
-            tabs[1].disabled = true;
+            tabs[1]!.disabled = true;
             render(<Tabs tabs={tabs} />);
 
             const secondTab = screen.getByRole('tab', { name: LABEL_TAB_2 });
@@ -144,7 +144,7 @@ describe('Tabs Component', () => {
 
         test('clicking disabled tab does not switch to it', async () => {
             const tabs = createTabs();
-            tabs[1].disabled = true;
+            tabs[1]!.disabled = true;
             const user = userEvent.setup();
             render(<Tabs tabs={tabs} />);
 
