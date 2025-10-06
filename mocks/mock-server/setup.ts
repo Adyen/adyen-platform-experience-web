@@ -9,6 +9,10 @@ const path = endpoints('mock').setup;
 
 export const setupBasicResponse = {
     endpoints: {
+        sendUxdsEvent: {
+            method: 'POST',
+            url: 'uxdsclient/{apipath}',
+        },
         getBalanceAccounts: {
             method: 'GET',
             url: 'balanceAccounts',

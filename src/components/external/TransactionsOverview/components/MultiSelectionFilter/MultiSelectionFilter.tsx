@@ -10,13 +10,15 @@ const MultiSelectionFilter = memo(
         selection,
         selectionOptions,
         updateSelection,
-    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) => {
+        onResetAction,
+    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder' | 'onResetAction'>) => {
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
         const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
         return selectionOptions && selectionOptions.length > 1 ? (
             <Select
+                onResetAction={onResetAction}
                 onChange={updateSelection}
                 filterable={false}
                 multiSelect={true}

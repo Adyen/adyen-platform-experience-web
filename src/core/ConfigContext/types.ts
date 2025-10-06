@@ -32,19 +32,18 @@ type RequestBodyContent<Path extends keyof EndpointsOperations> = EndpointsOpera
     ? Content
     : never;
 
-type RequestBodyTypes<Path extends keyof EndpointsOperations> = RequestBodyContent<Path> extends never
-    ? undefined
-    : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
+type RequestBodyTypes<Path extends keyof EndpointsOperations> =
+    RequestBodyContent<Path> extends never ? undefined : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
 
-type ParametersIfRequired<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
-    ? IsEmptyParameters<EndpointsOperations[Endpoint]['parameters']> extends true
-        ? []
-        : [_Params<EndpointsOperations[Endpoint]>]
-    : [];
+type ParametersIfRequired<Endpoint extends EndpointName> =
+    _RequiresParameter<EndpointsOperations[Endpoint]> extends true
+        ? IsEmptyParameters<EndpointsOperations[Endpoint]['parameters']> extends true
+            ? []
+            : [_Params<EndpointsOperations[Endpoint]>]
+        : [];
 
-type RequestBodyIfRequired<Endpoint extends EndpointName> = _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true
-    ? [RequestBodyTypes<Endpoint>]
-    : [];
+type RequestBodyIfRequired<Endpoint extends EndpointName> =
+    _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true ? [RequestBodyTypes<Endpoint>] : [];
 
 type _EndpointHttpCallable<Endpoint extends EndpointName> = (
     options: _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true

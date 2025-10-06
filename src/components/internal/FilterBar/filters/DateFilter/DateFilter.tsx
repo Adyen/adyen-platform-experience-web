@@ -11,6 +11,7 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {
         timezone?: UseTimeRangeSelectionConfig['timezone'];
+        onResetAction?: () => void;
     };
 
 const DateFilter = <T extends DateFilterProps = DateFilterProps>({

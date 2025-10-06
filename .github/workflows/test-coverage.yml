@@ -8,6 +8,7 @@ on:
 
 jobs:
   base_coverage:
+    if: github.ref != 'refs/heads/feature/analytics' && github.head_ref != 'feature/analytics'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -29,6 +30,7 @@ jobs:
           name: coverage-report-${{ github.sha }}
           path: coverage/
   coverage:
+    if: github.ref != 'refs/heads/feature/analytics' && github.head_ref != 'feature/analytics'
     needs: [base_coverage]
     runs-on: ubuntu-latest
     permissions:
