@@ -12,7 +12,7 @@ export const resolveEnvironment = (() => {
     const cdnEnvs: Partial<Record<DevEnvironment, string>> = CDN_ENVIRONMENTS;
 
     return (env?: DevEnvironment) => {
-        const cdnEnv = process.env.VITE_TEST_CDN_ASSETS ? 'test' : env === 'test' ? 'live' : env;
+        const cdnEnv = process.env.VITE_TEST_CDN_ASSETS ? 'test' : (env === 'test' ? 'live' : env);
 
         const cdnUrl = cdnEnvs[cdnEnv ?? FALLBACK_CDN_ENV] || cdnEnvs[FALLBACK_CDN_ENV]!;
         const apiUrl = envs[env ?? FALLBACK_ENV] || envs[FALLBACK_ENV]!;
