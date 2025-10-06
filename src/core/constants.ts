@@ -5,5 +5,5 @@ export const API_ENVIRONMENTS = {
 
 export const CDN_ENVIRONMENTS = {
     test: 'https://18e8543875.cdn.adyen.com/platform-components/v1-cdn-test',
-    live: 'https://18e8543875.cdn.adyen.com/platform-components/v1-cdn-live', // TODO change to right LIVE url
+    live: 'https://bae81f955b.cdn.adyen.com/platform-components/v1-cdn-live',
 } as const;

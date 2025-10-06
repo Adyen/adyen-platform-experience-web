@@ -3,6 +3,7 @@ import { API_ENVIRONMENTS, CDN_ENVIRONMENTS } from './constants';
 import { httpGet } from './Http/http';
 
 export const FALLBACK_ENV = 'test' satisfies DevEnvironment;
+export const FALLBACK_CDN_ENV = 'live' satisfies DevEnvironment;
 export const normalizeLoadingContext = (loadingContext: string) => loadingContext?.replace?.(/([^/])$/, '$1/');
 export const normalizeUrl = (url: string) => url?.replace(/^([^/])/, '/$1');
 
@@ -11,7 +12,9 @@ export const resolveEnvironment = (() => {
     const cdnEnvs: Partial<Record<DevEnvironment, string>> = CDN_ENVIRONMENTS;
 
     return (env?: DevEnvironment) => {
-        const cdnUrl = cdnEnvs[env ?? FALLBACK_ENV] || cdnEnvs[FALLBACK_ENV]!;
+        const cdnEnv = process.env.VITE_TEST_CDN_ASSETS ? 'test' : env === 'test' ? 'live' : env;
+
+        const cdnUrl = cdnEnvs[cdnEnv ?? FALLBACK_CDN_ENV] || cdnEnvs[FALLBACK_CDN_ENV]!;
         const apiUrl = envs[env ?? FALLBACK_ENV] || envs[FALLBACK_ENV]!;
 
         return {
