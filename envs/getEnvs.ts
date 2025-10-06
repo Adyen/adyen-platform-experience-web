@@ -23,6 +23,7 @@ const parseEnv = (env: Record<string, string | undefined>) => ({
         loadingContext: env.LOADING_CONTEXT,
         url: env.PLAYGROUND_URL ?? '',
         useCdn: env.USE_CDN,
+        useTestCdn: env.USE_TEST_CDN,
     },
 });
 

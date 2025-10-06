@@ -106,6 +106,7 @@ export default defineConfig(({ mode }) => {
             'process.env.SESSION_PERMISSIONS': JSON.stringify(api.session.permissions || null),
             'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
             'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
+            'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(isDevMode || app.useTestCdn ? true : null),
         },
         json: {
             stringify: true,

@@ -49,6 +49,7 @@
   "scripts": {
     "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
     "build:publish": "npm run build && npm pack",
     "changeset": "changeset",
