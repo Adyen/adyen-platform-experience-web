@@ -30,7 +30,7 @@ const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = tr
                 setTooltipLabel(i18n.get('copied'));
                 onCopyText && onCopyText();
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
     }, [i18n, textToCopy, onCopyText]);
