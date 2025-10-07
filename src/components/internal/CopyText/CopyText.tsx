@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { useCallback, useState } from 'preact/hooks';
+import useAnalyticsContext from '../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
@@ -14,9 +15,10 @@ type CopyTextProps = {
     buttonLabel?: string;
     showCopyTextTooltip?: boolean;
     type?: 'Link' | 'Text' | 'Default';
+    onCopyText?: () => void;
 } & HTMLProps<HTMLSpanElement>;
 
-const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = true, type = 'Link', ...restProps }: CopyTextProps) => {
+const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = true, type = 'Link', onCopyText, ...restProps }: CopyTextProps) => {
     const { i18n } = useCoreContext();
 
     const [tooltipLabel, setTooltipLabel] = useState(i18n.get('copy'));
@@ -26,11 +28,12 @@ const CopyText = ({ textToCopy, isHovered, buttonLabel, showCopyTextTooltip = tr
             try {
                 await navigator.clipboard.writeText(textToCopy);
                 setTooltipLabel(i18n.get('copied'));
+                onCopyText && onCopyText();
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
-    }, [i18n, textToCopy]);
+    }, [i18n, textToCopy, onCopyText]);
 
     const resetTooltipLabel = useCallback(() => {
         setTooltipLabel(i18n.get('copy'));
