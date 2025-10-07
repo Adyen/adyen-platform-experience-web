@@ -7,10 +7,10 @@ import { DataGridColumn, DataGridProps } from './types';
 import SkeletonBody from './components/SkeletonBody';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
-import emptyTableIcon from '../../../images/no-data-female.svg';
 import { DataGridProvider } from './utils/DataGridProvider';
 import { useDataGridContext } from './hooks/useDataGridContext';
 import { TableHeaderCell } from './components/TableHeaderCell';
+import useCoreContext from '../../../core/Context/useCoreContext';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -56,11 +56,13 @@ function DataGridTable<
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
     const { getMinWidthByColumn } = useDataGridContext();
 
+    const { getImageAsset } = useCoreContext();
     const visibleCols = props.columns
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
 
     const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
+
     return (
         <div
             className={classnames('adyen-pe-data-grid', {
@@ -79,33 +81,31 @@ function DataGridTable<
                       }
             }
         >
-            <>
-                <div className="adyen-pe-data-grid__table-wrapper">
-                    <div role="table" className="adyen-pe-data-grid__table">
-                        <div className="adyen-pe-data-grid__head" role="rowgroup">
-                            <div role="rowheader" className="adyen-pe-data-grid__header" style={props.loading ? { width: '100%' } : {}}>
-                                {visibleCols.map(item => (
-                                    <TableHeaderCell key={item.key} label={item.label} position={item.position} cellKey={item.key} />
-                                ))}
-                            </div>
+            <div className="adyen-pe-data-grid__table-wrapper">
+                <div role="table" className="adyen-pe-data-grid__table">
+                    <div className="adyen-pe-data-grid__head" role="rowgroup">
+                        <div role="rowheader" className="adyen-pe-data-grid__header" style={props.loading ? { width: '100%' } : {}}>
+                            {visibleCols.map(item => (
+                                <TableHeaderCell key={item.key} label={item.label} position={item.position} cellKey={item.key} />
+                            ))}
                         </div>
-
-                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
                     </div>
-                    {showMessage &&
-                        (emptyBody && !props.error ? (
-                            <ErrorMessageDisplay
-                                title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
-                                message={props.emptyTableMessage?.message}
-                                imageDesktop={emptyTableIcon}
-                                centered
-                            />
-                        ) : props.error && errorDisplay ? (
-                            errorDisplay()
-                        ) : null)}
+
+                    <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
                 </div>
-                {footer}
-            </>
+                {showMessage &&
+                    (emptyBody && !props.error ? (
+                        <ErrorMessageDisplay
+                            title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
+                            message={props.emptyTableMessage?.message}
+                            imageDesktop={getImageAsset?.({ name: 'no-data-female' })}
+                            centered
+                        />
+                    ) : props.error && errorDisplay ? (
+                        errorDisplay()
+                    ) : null)}
+            </div>
+            {footer}
         </div>
     );
 }

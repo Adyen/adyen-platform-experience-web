@@ -94,6 +94,8 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     updateCore={updateCore}
                     externalErrorHandler={externalErrorHandler}
                     componentRef={this.compRef}
+                    getImageAsset={core.getImageAsset}
+                    getCdnConfig={core.getCdnConfig}
                 >
                     <AnalyticsProvider componentName={this.displayName}>
                         {this.componentToRender && (

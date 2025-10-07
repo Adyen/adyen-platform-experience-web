@@ -2,6 +2,10 @@ import { createContext } from 'preact';
 import { memo, PropsWithChildren, useEffect } from 'preact/compat';
 import { useCallback, useContext, useState } from 'preact/hooks';
 import { IDisputeDefenseDocument, IDisputeDetail } from '../../../../../types/api/models/disputes';
+import { TranslationConfigItem } from '../../utils';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import localDefenseDocumentConfig from '../../../../../config/disputes/defenseDocumentConfig.json';
+import localDefenseReasonConfig from '../../../../../config/disputes/defenseReasonConfig.json';
 
 export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView' | 'defenseSubmitResponseView';
 
@@ -23,6 +27,9 @@ interface DisputeFlowContextValue {
     removeFieldFromDefendPayload: (field: string) => void;
     defendResponse: 'error' | 'success' | null;
     onDefendSubmit: (response: 'success' | 'error') => void;
+    getDisputesConfig: () => Promise<void>;
+    defenseReasonConfig: Record<string, TranslationConfigItem>;
+    defenseDocumentConfig: Record<string, TranslationConfigItem>;
 }
 
 interface DisputeProviderProps {
@@ -142,6 +149,27 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
         });
     }, [selectedDefenseReason]);
 
+    const { getCdnConfig } = useCoreContext();
+
+    const [defenseReasonConfig, setDefenseReasonConfig] = useState<Record<string, TranslationConfigItem>>(localDefenseReasonConfig);
+    const [defenseDocumentConfig, setDefenseDocumentConfig] = useState<Record<string, TranslationConfigItem>>(localDefenseDocumentConfig);
+
+    const getDisputesConfig = useCallback(async () => {
+        const defenseReasonConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
+            subFolder: 'disputes',
+            name: 'defenseReasonConfig',
+            fallback: localDefenseReasonConfig,
+        });
+        const defenseDocumentConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
+            subFolder: 'disputes',
+            name: 'defenseDocumentConfig',
+            fallback: localDefenseDocumentConfig,
+        });
+
+        setDefenseReasonConfig(defenseReasonConfig ?? localDefenseReasonConfig);
+        setDefenseDocumentConfig(defenseDocumentConfig ?? localDefenseDocumentConfig);
+    }, [getCdnConfig]);
+
     return (
         <DisputeFlowContext.Provider
             value={{
@@ -162,6 +190,9 @@ export const DisputeContextProvider = memo(({ dispute, setDispute, children }: P
                 onDefendSubmit,
                 moveFieldInDefendPayload,
                 removeFieldFromDefendPayload,
+                getDisputesConfig,
+                defenseReasonConfig,
+                defenseDocumentConfig,
             }}
         >
             {children}

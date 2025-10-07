@@ -27,8 +27,16 @@ const classes = {
 
 export const DefendDisputeReason = () => {
     const { i18n } = useCoreContext();
-    const { applicableDocuments, dispute, goBack, setFlowState, setSelectedDefenseReason, selectedDefenseReason, setApplicableDocuments } =
-        useDisputeFlow();
+    const {
+        applicableDocuments,
+        dispute,
+        goBack,
+        setFlowState,
+        setSelectedDefenseReason,
+        selectedDefenseReason,
+        setApplicableDocuments,
+        defenseReasonConfig,
+    } = useDisputeFlow();
 
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
     const disputePspReference = dispute?.dispute?.pspReference;
@@ -42,10 +50,10 @@ export const DefendDisputeReason = () => {
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
                     disabled: allowedDefenseReasons.length === 1,
-                    name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
+                    name: getDefenseReasonContent(defenseReasonConfig, i18n, reason)?.title ?? reason,
                 }))
             ) ?? [],
-        [i18n, allowedDefenseReasons]
+        [i18n, allowedDefenseReasons, defenseReasonConfig]
     );
 
     const selected = useMemo(
@@ -119,7 +127,10 @@ export const DefendDisputeReason = () => {
         setShowAlert(false);
     }, []);
 
-    const defenseReasonContent = useMemo(() => (selected ? getDefenseReasonContent(i18n, selected) : undefined), [i18n, selected]);
+    const defenseReasonContent = useMemo(
+        () => (selected ? getDefenseReasonContent(defenseReasonConfig, i18n, selected) : undefined),
+        [defenseReasonConfig, i18n, selected]
+    );
 
     if (!defenseReasons || !selected) {
         return null;
