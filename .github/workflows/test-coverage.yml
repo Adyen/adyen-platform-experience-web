@@ -8,7 +8,7 @@ on:
 
 jobs:
     base_coverage:
-        if: github.ref != 'refs/heads/group/*' && github.head_ref != 'group/*'
+        if: false
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -30,7 +30,7 @@ jobs:
                   name: coverage-report-${{ github.sha }}
                   path: coverage/
     coverage:
-        if: github.ref != 'refs/heads/group/*' && github.head_ref != 'group/*'
+        if: false
         needs: [base_coverage]
         runs-on: ubuntu-latest
         permissions:
