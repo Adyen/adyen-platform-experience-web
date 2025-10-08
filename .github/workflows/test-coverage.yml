@@ -69,4 +69,4 @@ jobs:
         run: |
           git fetch origin develop
           # This command fails if CHANGED lines are less than 80% covered
-          git diff origin/develop | npx @connectis/diff-test-coverage --coverage ./coverage/lcov.info --type lcov --line-coverage 80
+          git diff origin/develop...HEAD | npx @connectis/diff-test-coverage --coverage ./coverage/lcov.info --type lcov --line-coverage 80
