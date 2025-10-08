@@ -1,5 +1,5 @@
 import Core from '../../core';
-import { ANALYTICS_ENDPOINT_PATH, SETUP_ENDPOINT_PATH } from './constants';
+import { SETUP_ENDPOINT_PATH } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
@@ -78,16 +78,11 @@ export class SetupContext {
         const encodedData = window.btoa(formattedOptions);
         const data = new URLSearchParams();
         data.set('data', encodedData);
-        if (this._endpoints.sendUxdsEvent) {
-            return this._endpoints.sendUxdsEvent(
-                {
-                    body: data,
-                    contentType: 'application/x-www-form-urlencoded',
-                },
-                {
-                    path: { apipath: ANALYTICS_ENDPOINT_PATH },
-                }
-            );
+        if (this._endpoints.sendEngageEvent) {
+            return this._endpoints.sendEngageEvent({
+                body: data,
+                contentType: 'application/x-www-form-urlencoded',
+            });
         }
         return;
     }
