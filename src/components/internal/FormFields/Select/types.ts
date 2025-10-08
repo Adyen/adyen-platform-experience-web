@@ -48,7 +48,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     className?: string;
     filterable: boolean;
     filterInputRef?: Ref<HTMLInputElement>;
-    id?: string;
+    id: string;
     isInvalid?: boolean;
     isValid?: boolean;
     multiSelect?: boolean;

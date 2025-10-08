@@ -9,6 +9,7 @@ import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
+import useUniqueId from '../../../../../hooks/useUniqueId';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
 import { BaseFilterProps, FilterEditModalRenderProps, FilterProps } from './types';
@@ -61,6 +62,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
     const [disabledApply, updateDisabledApply] = useBooleanState(isValueEmpty(props.value));
     const targetElement = useRef<HTMLButtonElement | null>(null);
 
+    const filterButtonId = `elem-${useUniqueId()}`;
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
     const onValueUpdated = useCallback(
@@ -124,6 +126,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                                 ...(hasEmptyValue ? [] : ['has-selection']),
                             ]}
                             aria-label={ariaLabel}
+                            id={filterButtonId}
                             onClick={editMode ? closeEditDialog : openEditDialog}
                             ref={targetElement}
                             tabIndex={0}
@@ -171,7 +174,6 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                     variant={PopoverContainerVariant.POPOVER}
                     modifiers={['filter']}
                     open={editMode}
-                    aria-label={`${props.label}`}
                     dismiss={closeEditDialog}
                     dismissible={false}
                     withContentPadding={props.withContentPadding ?? true}

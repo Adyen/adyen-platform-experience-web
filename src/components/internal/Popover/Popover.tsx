@@ -184,8 +184,9 @@ function Popover({
                             popoverElementWithId(elem);
                             setPopoverElement?.(elem);
                         }}
+                        aria-labelledby={targetElement.current?.id}
                         className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
-                        role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
+                        role={variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip'}
                         style={{ visibility: 'hidden' }}
                     >
                         {(title || isDismissible) && (
