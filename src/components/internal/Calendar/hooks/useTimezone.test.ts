@@ -10,11 +10,12 @@ import clock from '../../../../primitives/time/clock';
 vi.mock(import('../../../../primitives/time/clock'), async importOriginal => {
     const mod = await importOriginal();
     const originalClock = mod.default;
+    const originalSubscribe = originalClock.subscribe;
 
     const clock = {
         ...originalClock,
-        subscribe: vi.fn<(typeof originalClock)['subscribe']>((...args) => {
-            const originalUnsubscribe = originalClock.subscribe(...args);
+        subscribe: vi.fn<typeof originalSubscribe>((...args) => {
+            const originalUnsubscribe = originalSubscribe(...args);
             const unsubscribe = vi.fn(originalUnsubscribe);
             clockUnsubscribes.push(unsubscribe);
             return unsubscribe;
@@ -25,7 +26,6 @@ vi.mock(import('../../../../primitives/time/clock'), async importOriginal => {
 });
 
 const clockUnsubscribes = [] as Mock<() => void>[];
-const systemTimestamp = 1703520645123; // Dec 25, 2023, 4:10:45.123 PM UTC
 const systemTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 const validTimezones = [
@@ -39,25 +39,26 @@ const validTimezones = [
 describe('useTimezone', () => {
     beforeEach(() => {
         vi.useFakeTimers();
-        // Date.now() -> Dec 25, 2023, 4:10:45.123 PM UTC
-        vi.setSystemTime(systemTimestamp);
+        vi.setSystemTime(1703520645123); // Dec 25, 2023, 4:10:45.123 PM UTC
     });
 
     afterEach(() => {
         vi.useRealTimers();
         vi.restoreAllMocks();
+        clockUnsubscribes.length = 0;
     });
 
     describe('getTimezoneTime', () => {
         test('should handle valid IANA timezones correctly', () => {
             validTimezones.forEach(({ timezone, time, offset }) => {
-                expect(getTimezoneTime(timezone, systemTimestamp)).toEqual([time, offset]);
+                expect(getTimezoneTime(timezone, Date.now())).toEqual([time, offset]);
             });
         });
 
         test('should fallback to system timezone for invalid timezones', () => {
-            const result1 = getTimezoneTime(systemTimezone, systemTimestamp);
-            const result2 = getTimezoneTime('Invalid/Timezone', systemTimestamp);
+            const currentTimestamp = Date.now();
+            const result1 = getTimezoneTime(systemTimezone, currentTimestamp);
+            const result2 = getTimezoneTime('Invalid/Timezone', currentTimestamp);
             expect(result1).toEqual(result2);
         });
 
@@ -72,8 +73,9 @@ describe('useTimezone', () => {
 
         test('should return consistent results for same inputs', () => {
             const timezone = 'America/New_York';
-            const result1 = getTimezoneTime(timezone, systemTimestamp);
-            const result2 = getTimezoneTime(timezone, systemTimestamp);
+            const currentTimestamp = Date.now();
+            const result1 = getTimezoneTime(timezone, currentTimestamp);
+            const result2 = getTimezoneTime(timezone, currentTimestamp);
             expect(result1).toEqual(result2);
         });
 
@@ -112,7 +114,7 @@ describe('useTimezone', () => {
     describe('useTimezone hook', () => {
         test('should return basic timezone information with default config', () => {
             const { result } = renderHook(() => useTimezone());
-            expect(result.current.timestamp).toBe(systemTimestamp);
+            expect(result.current.timestamp).toBe(Date.now());
             expect(result.current.timezone).toBe(systemTimezone);
         });
 
@@ -123,24 +125,28 @@ describe('useTimezone', () => {
         });
 
         test('should return correct time and offset for valid timezones', () => {
+            const currentTimestamp = Date.now();
+
             validTimezones.forEach(({ timezone, time, offset }) => {
                 const { result } = renderHook(() => useTimezone({ timezone }));
                 expect(result.current.timezone).toBe(timezone);
-                expect(result.current.timestamp).toBe(systemTimestamp);
+                expect(result.current.timestamp).toBe(currentTimestamp);
                 expect(result.current.clockTime).toBe(time);
                 expect(result.current.GMTOffset).toBe(offset);
             });
         });
 
         test('should update when timezone config changes', () => {
+            const currentTimestamp = Date.now();
             const { result, rerender } = renderHook((props?: { timezone?: string }) => useTimezone(props));
-            expect(result.current.timestamp).toBe(systemTimestamp);
+
+            expect(result.current.timestamp).toBe(currentTimestamp);
             expect(result.current.timezone).toBe(systemTimezone);
 
             validTimezones.forEach(({ timezone, time, offset }) => {
                 rerender({ timezone });
                 expect(result.current.timezone).toBe(timezone);
-                expect(result.current.timestamp).toBe(systemTimestamp);
+                expect(result.current.timestamp).toBe(currentTimestamp);
                 expect(result.current.clockTime).toBe(time);
                 expect(result.current.GMTOffset).toBe(offset);
             });
@@ -149,7 +155,7 @@ describe('useTimezone', () => {
         test('should not subscribe to clock updates by default', async () => {
             const { result } = renderHook(() => useTimezone());
             const initialTimestamp = result.current.timestamp;
-            expect(initialTimestamp).toBe(systemTimestamp);
+            expect(initialTimestamp).toBe(Date.now());
 
             // Advance time but timestamp shouldn't change without clock subscription
             await vi.advanceTimersByTimeAsync(5000);
@@ -163,7 +169,7 @@ describe('useTimezone', () => {
             const unsubscribe = clockUnsubscribes.at(-1)!;
             const initialTimestamp = result.current.timestamp;
 
-            expect(initialTimestamp).toBe(systemTimestamp);
+            expect(initialTimestamp).toBe(Date.now());
             expect(clock.subscribe).toHaveBeenCalledOnce();
             expect(unsubscribe).not.toHaveBeenCalled();
 
