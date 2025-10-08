@@ -16,35 +16,24 @@ describe('useMutation', () => {
 
     describe('Initial State', () => {
         test('should initialize with correct default values', () => {
-            const mockQueryFn = vi.fn();
-            const { result } = renderHook(() => useMutation({ queryFn: mockQueryFn }));
-
-            expect(result.current.data).toBeNull();
-            expect(result.current.error).toBeNull();
-            expect(result.current.status).toBe('idle');
-            expect(result.current.isIdle).toBe(true);
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.isSuccess).toBe(false);
-            expect(result.current.isError).toBe(false);
-            expect(typeof result.current.mutate).toBe('function');
-            expect(typeof result.current.reset).toBe('function');
-        });
-
-        test('should work with undefined queryFn', () => {
-            const { result } = renderHook(() => useMutation({ queryFn: undefined }));
-
-            expect(result.current.data).toBeNull();
-            expect(result.current.error).toBeNull();
-            expect(result.current.status).toBe('idle');
-        });
-
-        test('should handle empty options object', () => {
-            const mockQueryFn = vi.fn();
-            const { result } = renderHook(() => useMutation({ queryFn: mockQueryFn, options: {} }));
-
-            expect(result.current.data).toBeNull();
-            expect(result.current.error).toBeNull();
-            expect(result.current.status).toBe('idle');
+            const hookProps = [
+                { queryFn: vi.fn() } as const,
+                { queryFn: vi.fn(), options: {} } as const,
+                { queryFn: undefined } as const,
+            ];
+            
+            hookProps.forEach(props => {
+                const { result } = renderHook(() => useMutation(props));
+                expect(result.current.data).toBeNull();
+                expect(result.current.error).toBeNull();
+                expect(result.current.status).toBe('idle');
+                expect(result.current.isIdle).toBe(true);
+                expect(result.current.isLoading).toBe(false);
+                expect(result.current.isSuccess).toBe(false);
+                expect(result.current.isError).toBe(false);
+                expect(typeof result.current.mutate).toBe('function');
+                expect(typeof result.current.reset).toBe('function');
+            });
         });
     });
 
