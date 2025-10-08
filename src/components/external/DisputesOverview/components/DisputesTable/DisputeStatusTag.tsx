@@ -13,6 +13,7 @@ const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeList
 
     const variant = useMemo<TagVariant>(() => {
         if (dispute.status === 'WON') return TagVariant.SUCCESS;
+        if ((dispute as any)?.defensibility === 'NOT_ACTIONABLE') return TagVariant.DEFAULT;
         if (isDisputeActionNeededUrgently(dispute)) return TagVariant.ERROR;
         return TagVariant.DEFAULT;
     }, [dispute]);

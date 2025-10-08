@@ -1,11 +1,12 @@
+import cx from 'classnames';
+import { JSXInternal } from 'preact/src/jsx';
+import { createRef, RefObject } from 'preact';
+import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
+import { AnalyticsProvider } from '../../../core/Context/analytics/AnalyticsProvider';
 import { ConfigProvider } from '../../../core/ConfigContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
-import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
-import cx from 'classnames';
-import { createRef, RefObject } from 'preact';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -89,15 +90,19 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 <CoreProvider
                     componentRef={this.compRef}
                     i18n={core.localization.i18n}
+                    getCdnConfig={core.getCdnConfig}
+                    getImageAsset={core.getImageAsset}
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}
                     updateCore={updateCore}
                 >
-                    {this.componentToRender && (
-                        <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
-                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
-                        </section>
-                    )}
+                    <AnalyticsProvider componentName={this.displayName}>
+                        {this.componentToRender && (
+                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                                <div className="adyen-pe-component__container">{this.componentToRender()}</div>
+                            </section>
+                        )}
+                    </AnalyticsProvider>
                 </CoreProvider>
             </ConfigProvider>
         );

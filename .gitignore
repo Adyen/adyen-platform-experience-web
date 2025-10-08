@@ -43,6 +43,8 @@ playwright-report
 test-results
 
 scripts/generate-ts-schemas/variables
+scripts/*/variables
+
 
 ## credentials
 .smartlingrc

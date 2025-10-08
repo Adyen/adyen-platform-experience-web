@@ -3,10 +3,10 @@ import { HTMLProps } from 'preact/compat';
 import { TranslationKey } from '../../../translations';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import Icon from '../Icon';
-import Button from '../Button';
-import { ButtonVariant } from '../Button/types';
 import { Tooltip } from '../Tooltip/Tooltip';
+import { ButtonVariant } from '../Button/types';
+import Button from '../Button';
+import Icon from '../Icon';
 import './CopyText.scss';
 
 type CopyTextProps = {
@@ -16,6 +16,7 @@ type CopyTextProps = {
     type?: 'Link' | 'Text' | 'Default';
     textToCopy: string;
     visibleText?: string;
+    onCopyText?: () => void;
 } & HTMLProps<HTMLSpanElement>;
 
 const BASE_CLASSNAME = 'adyen-pe-copy-text';
@@ -36,6 +37,7 @@ const CopyText = ({
     isHovered,
     textToCopy,
     visibleText,
+    onCopyText,
     showCopyTextTooltip = true,
     type = 'Link',
     ...restProps
@@ -50,11 +52,12 @@ const CopyText = ({
             try {
                 await navigator.clipboard.writeText(textToCopy);
                 setIsCopied(true);
+                onCopyText && onCopyText();
             } catch (e) {
                 console.error(e);
             }
         }
-    }, [textToCopy]);
+    }, [textToCopy, onCopyText]);
 
     const visibleTextToCopy = useMemo(
         () => (

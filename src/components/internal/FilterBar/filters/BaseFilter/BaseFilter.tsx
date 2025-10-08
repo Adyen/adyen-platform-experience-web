@@ -78,6 +78,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         applyDisabled: disabledApply || !valueChanged,
         resetDisabled: hasEmptyValue,
+        onResetAction: props?.onResetAction,
     });
 
     const [closeEditDialog, openEditDialog] = useMemo(() => {

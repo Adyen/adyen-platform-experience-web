@@ -16,6 +16,8 @@ export interface HttpOptions {
     signal?: AbortSignal;
     origin?: string;
     body?: any;
+    versionless?: boolean;
+    skipContentType?: boolean;
 }
 
 export type AdyenErrorResponse = {
