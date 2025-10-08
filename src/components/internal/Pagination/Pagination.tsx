@@ -57,7 +57,7 @@ export default function Pagination({
     );
 
     return (
-        <section aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
+        <div role="group" aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
             <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
                     <div className={classes.limit} role="presentation">
@@ -105,6 +105,6 @@ export default function Pagination({
                     <Icon name="chevron-right" />
                 </Button>
             </div>
-        </section>
+        </div>
     );
 }

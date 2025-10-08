@@ -41,7 +41,8 @@ export const FilterBarMobileSwitch = ({ isMobileContainer, showingFilters, setSh
 export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
     const { i18n } = useCoreContext();
     return props.showingFilters ? (
-        <section
+        <div
+            role="group"
             data-testId="filter-bar"
             aria-label={i18n.get(props.ariaLabelKey ?? 'filters')}
             className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar--mobile': props.isMobileContainer })}
@@ -52,7 +53,7 @@ export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
                     {i18n.get('button.clearAll')}
                 </Button>
             )}
-        </section>
+        </div>
     ) : null;
 };
 
