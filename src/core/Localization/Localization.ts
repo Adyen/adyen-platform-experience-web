@@ -22,6 +22,9 @@ import { createTranslationsLoader, getLocalizationProxyDescriptors } from './loc
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
+import { httpGet } from '../Http/http';
+import { SupportedLocales } from './types';
+import { translations_dev_assets } from '../../translations/local';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
@@ -32,6 +35,7 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
+    readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #currentRefresh?: Promise<void>;
@@ -43,8 +47,19 @@ export default class Localization {
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[]) {
+    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '') {
         this.watch(noop);
+
+        this.#fetchTranslationFromCdnPromise = (locale: string) =>
+            process.env.VITE_LOCAL_ASSETS
+                ? translations_dev_assets[locale]!
+                : httpGet<any>({
+                      loadingContext: cdnTranslationsUrl,
+                      path: `/${locale}.json`,
+                      versionless: true,
+                      skipContentType: true,
+                      errorLevel: 'info',
+                  });
 
         this.preferredTranslations = Object.freeze(
             availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
@@ -127,7 +142,7 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(customTranslations);
+            this.#translations = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;

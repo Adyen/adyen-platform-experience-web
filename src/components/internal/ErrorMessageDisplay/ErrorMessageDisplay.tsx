@@ -5,7 +5,6 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
-import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
 import cx from 'classnames';
 
@@ -45,7 +44,7 @@ export const ErrorMessageDisplay = ({
     renderSecondaryButton,
     withBackground,
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore } = useCoreContext();
+    const { i18n, updateCore, getImageAsset } = useCoreContext();
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
@@ -83,7 +82,7 @@ export const ErrorMessageDisplay = ({
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? noResults} alt="" />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt="" />
                     </picture>
                 </div>
             )}

@@ -28,6 +28,7 @@ const TransactionRefundContext = createContext<ITransactionRefundContext>({
     setRefundReason: noop,
     transactionId: '',
     updateItems: noop,
+    transactionOriginalAmount: undefined,
 });
 
 export const TransactionRefundProvider = memo(
@@ -42,6 +43,7 @@ export const TransactionRefundProvider = memo(
         setPrimaryAction,
         setSecondaryAction,
         transactionId,
+        transactionOriginalAmount,
     }: TransactionRefundProviderProps) => {
         const { isLoading: refundInProgress, mutate: refundTransaction } = useMutation({
             queryFn: useConfigContext().endpoints.initiateRefund,
@@ -55,6 +57,7 @@ export const TransactionRefundProvider = memo(
         const { primaryAction, secondaryAction } = useRefundContextActions({
             interactionsDisabled,
             refreshTransaction,
+            availableAmount,
             refundAmount,
             refundInProgress,
             refundReason,
@@ -63,6 +66,7 @@ export const TransactionRefundProvider = memo(
             setPrimaryAction,
             setSecondaryAction,
             transactionId,
+            transactionOriginalAmount,
         });
 
         return (
@@ -83,6 +87,7 @@ export const TransactionRefundProvider = memo(
                     setRefundReason,
                     transactionId,
                     updateItems,
+                    transactionOriginalAmount,
                 }}
             >
                 {children}

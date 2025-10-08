@@ -1,9 +1,10 @@
 import type { CoreOptions, onErrorHandler } from './types';
-import { FALLBACK_ENV, resolveEnvironment } from './utils';
+import { FALLBACK_ENV, getConfigFromCdn, resolveEnvironment } from './utils';
 import { AuthSession } from './ConfigContext/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
+import { AssetOptions, Assets } from './Assets/Assets';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -15,14 +16,19 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public loadingContext: string;
     public session = new AuthSession();
     public onError?: onErrorHandler;
+    public getImageAsset: (props: AssetOptions) => string;
+    public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
 
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
+        const { cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl, apiUrl } = resolveEnvironment(this.options.environment);
 
-        this.localization = new Localization(options.locale, options.availableTranslations);
-        this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
+        this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl);
+        this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
+        this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
+        this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
         this.setOptions(options);
     }
 
