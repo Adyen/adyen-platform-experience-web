@@ -13,7 +13,7 @@ export const BASE_CLASS = 'adyen-pe-header';
 
 export interface HeaderProps extends HTMLProps<HTMLHeadingElement> {
     baseClassName?: string;
-    connected?: boolean;
+    forwardedToRoot?: boolean;
     hasDivider?: boolean;
     hideTitle?: UIElementProps['hideTitle'];
     subtitleKey?: TranslationKey;
@@ -27,7 +27,7 @@ export interface HeaderProps extends HTMLProps<HTMLHeadingElement> {
 
 export const Header: FC<HeaderProps> = ({
     baseClassName = BASE_CLASS,
-    connected = true,
+    forwardedToRoot = true,
     children,
     className,
     hasDivider,
@@ -41,12 +41,12 @@ export const Header: FC<HeaderProps> = ({
 
     const { id: titleElemId, ref: titleElemRef } = useComponentHeadingElement<HTMLDivElement>({
         headingType: ComponentHeadingType.TITLE,
-        connected,
+        forwardedToRoot,
     });
 
     const { id: subtitleElemId, ref: subtitleElemRef } = useComponentHeadingElement<HTMLDivElement>({
         headingType: ComponentHeadingType.SUBTITLE,
-        connected,
+        forwardedToRoot,
     });
 
     return (

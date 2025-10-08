@@ -98,7 +98,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     return (
         <div className="adyen-pe-overview-details">
-            <Header hideTitle={hideTitle} titleKey={titleKey} connected={!withinModal} />
+            <Header hideTitle={hideTitle} titleKey={titleKey} forwardedToRoot={!withinModal} />
 
             {error && errorProps && (
                 <div className="adyen-pe-overview-details--error-container">

@@ -15,8 +15,8 @@ const coreProviderProps = {} as CoreProviderProps;
 
 const ComponentRoot = ({ children }: PropsWithChildren) => <CoreProvider {...coreProviderProps}>{children}</CoreProvider>;
 
-const Heading = ({ id, headingType, connected, ...props }: HTMLProps<any> & UseComponentHeadingElementProps) => {
-    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>({ headingType, connected });
+const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLProps<any> & UseComponentHeadingElementProps) => {
+    const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>({ headingType, forwardedToRoot });
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };
 

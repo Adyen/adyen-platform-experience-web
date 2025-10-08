@@ -9,12 +9,12 @@ export const enum ComponentHeadingType {
 }
 
 export interface UseComponentHeadingElementProps {
+    forwardedToRoot?: boolean;
     headingType?: ComponentHeadingType;
-    connected?: boolean;
 }
 
 export const useComponentHeadingElement = <T extends HTMLElement>(
-    { headingType = ComponentHeadingType.TITLE, connected } = EMPTY_OBJECT as UseComponentHeadingElementProps
+    { headingType = ComponentHeadingType.TITLE, forwardedToRoot } = EMPTY_OBJECT as UseComponentHeadingElementProps
 ) => {
     const { componentRef } = useCoreContext();
     const headingElementId = `heading-${useUniqueId()}`;
@@ -30,7 +30,7 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
     }, [headingType]);
 
     useEffect(() => {
-        if (connected === false) return;
+        if (forwardedToRoot === false) return;
 
         const componentElement = componentRef.current;
         const headingElementId = headingElementRef.current?.id;
@@ -44,7 +44,7 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
                 componentElement.removeAttribute(ariaAttribute);
             };
         }
-    }, [ariaAttribute, componentRef, connected, headingElementId]);
+    }, [ariaAttribute, componentRef, forwardedToRoot, headingElementId]);
 
     return { id: headingElementId, ref: headingElementRef } as const;
 };

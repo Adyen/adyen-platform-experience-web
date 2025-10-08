@@ -15,7 +15,7 @@ const DisputeDetailsContainer = ({ children, hideTitle }: PropsWithChildren<Pick
     return (
         <>
             <div className={cx({ ['adyen-pe-visually-hidden']: flowState !== 'details' })}>
-                <Header hideTitle={hideTitle} connected={!withinModal} titleKey="disputes.disputeManagementTitle" />
+                <Header hideTitle={hideTitle} forwardedToRoot={!withinModal} titleKey="disputes.disputeManagementTitle" />
             </div>
             {children}
         </>
