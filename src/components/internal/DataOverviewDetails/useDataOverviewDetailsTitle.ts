@@ -8,8 +8,8 @@ import type { DetailsComponentProps } from './types';
 type _BaseUseDataOverviewDetailsTitleProps = Pick<ExternalUIComponentProps<DetailsComponentProps>, 'hideTitle' | 'type'>;
 
 export const TITLES_BY_TYPE = {
-    transaction: 'transactions.details.titleHeading.visible',
-    payout: 'payouts.details.titleHeading.visible',
+    transaction: 'transactions.details.titleHeading',
+    payout: 'payouts.details.titleHeading',
 } as const satisfies Record<_BaseUseDataOverviewDetailsTitleProps['type'], TranslationKey>;
 
 export const useDataOverviewDetailsTitle = <T extends _BaseUseDataOverviewDetailsTitleProps>({ hideTitle: _hideTitle, type }: T) => {

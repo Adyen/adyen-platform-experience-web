@@ -62,7 +62,7 @@ export default function Pagination({
                 {_limitOptions && onLimitSelection && (
                     <div className={classes.limit} role="presentation">
                         <Translation
-                            translationKey="common.pagination.controls.limitSelect.visible"
+                            translationKey="common.pagination.controls.limitSelect"
                             fills={{
                                 pageLimit: (
                                     <div className={classes.limitSelector}>

@@ -172,7 +172,7 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="transactions.overview.titleHeading.visible">
+            <Header hideTitle={hideTitle} titleKey="transactions.overview.titleHeading">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
             <FilterBar {...filterBarState} ariaLabelKey="transactions.overview.filters.label">

@@ -79,9 +79,7 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 trackCurrentDay={true}
             />
             {withTimezone && (
-                <div className={'adyen-pe-datepicker__timezone'}>
-                    {i18n.get('common.filters.types.date.timezoneInfo.visible', timezoneI18nOptions)}
-                </div>
+                <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('common.filters.types.date.timezoneInfo', timezoneI18nOptions)}</div>
             )}
         </div>
     );
