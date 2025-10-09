@@ -140,7 +140,7 @@ export const getTranslation = (translations: Record<string, string>, key: string
 /**
  * Returns an array with all the locales
  * @param locale - The locale the user wants to use
- * @param translations -
+ * @param fetchTranslationFromCdnPromise -
  * @param customTranslations -
  */
 export const loadTranslations = async (

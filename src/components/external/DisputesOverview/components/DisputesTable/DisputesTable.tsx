@@ -10,13 +10,14 @@ import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
+import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { BASE_CLASS } from './constants';
 import { CustomColumn } from '../../../../types';
@@ -28,10 +29,9 @@ import PaymentMethodCell from '../../../TransactionsOverview/components/Transact
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { Translation } from '../../../../internal/Translation';
 import './DisputesTable.scss';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
@@ -59,9 +59,9 @@ const classes = {
     cellContent: `${BASE_CLASS}__cell-content`,
     cellContentVStack: `${BASE_CLASS}__cell-content--vstack`,
     cellTextGrey: `${BASE_CLASS}__cell-text--grey`,
+    dateContentUrgent: `${BASE_CLASS}__date-content--urgent`,
     statusContent: `${BASE_CLASS}__status-content`,
     statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
-    dateContentUrgent: `${BASE_CLASS}__date-content--urgent`,
 };
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -97,6 +97,22 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
+    let limitSelectorAriaLabelKey: TranslationKey | undefined = undefined;
+
+    if (showPagination) {
+        switch (statusGroup) {
+            case 'CHARGEBACKS':
+                limitSelectorAriaLabelKey = 'disputes.pagination.chargebacks.limitSelector.label';
+                break;
+            case 'FRAUD_ALERTS':
+                limitSelectorAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelector.label';
+                break;
+            case 'ONGOING_AND_CLOSED':
+                limitSelectorAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelector.label';
+                break;
+        }
+    }
 
     const columns = useTableColumns({
         fields: FIELDS,
@@ -208,17 +224,19 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             isUrgent && isActionableDispute ? (
                                 <Tooltip content={getTimeToDeadline(item.dueDate!)}>
                                     <span className={classes.dateContentUrgent}>
-                                        {formattedDate}
+                                        <time dateTime={item.dueDate!}>{formattedDate}</time>
                                         {<Icon name={'warning-filled'} />}
                                     </span>
                                 </Tooltip>
                             ) : (
-                                <>{formattedDate}</>
+                                <time dateTime={item.dueDate!}>{formattedDate}</time>
                             );
+
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
                                 {item.dueDate ? (
                                     <Typography
+                                        el={TypographyElement.SPAN}
                                         variant={TypographyVariant.BODY}
                                         className={cx(classes.statusContent, {
                                             [classes.cellTextGrey]: isMobileContainer && !isUrgent,
@@ -242,7 +260,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     disputedAmount: ({ item }) => {
                         return (
                             item.amount && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
@@ -251,14 +269,16 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     createdAt: ({ item }) => {
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
-                                <Typography
-                                    variant={TypographyVariant.BODY}
+                                <time
+                                    dateTime={item.createdAt}
                                     className={cx(classes.statusContent, {
                                         [classes.cellTextGrey]: isMobileContainer,
                                     })}
                                 >
-                                    {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
-                                </Typography>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
+                                    </Typography>
+                                </time>
                                 {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
                             </div>
                         );
@@ -268,7 +288,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
@@ -278,7 +298,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination {...paginationProps} ariaLabelKey="disputes.pagination" limitSelectorAriaLabelKey={limitSelectorAriaLabelKey} />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

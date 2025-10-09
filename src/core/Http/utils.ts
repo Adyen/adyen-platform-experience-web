@@ -55,7 +55,7 @@ export const getRequestBodyForContentType = (body: any, contentType?: string) =>
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
     const SDKVersion = !options.versionless && process.env.VITE_VERSION;
-    const contentType = options.skipContentType ? undefined : options.contentType?.toLowerCase() ?? 'application/json';
+    const contentType = options.skipContentType ? undefined : (options.contentType?.toLowerCase() ?? 'application/json');
 
     return {
         method,

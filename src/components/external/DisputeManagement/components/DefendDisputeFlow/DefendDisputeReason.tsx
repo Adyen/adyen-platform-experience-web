@@ -57,7 +57,7 @@ export const DefendDisputeReason = () => {
     );
 
     const selected = useMemo(
-        () => (selectedDefenseReason ? defenseReasons.find(reason => reason.id === selectedDefenseReason)?.id : defenseReasons?.[0]?.id ?? null),
+        () => (selectedDefenseReason ? defenseReasons.find(reason => reason.id === selectedDefenseReason)?.id : (defenseReasons?.[0]?.id ?? null)),
         [selectedDefenseReason, defenseReasons]
     );
 

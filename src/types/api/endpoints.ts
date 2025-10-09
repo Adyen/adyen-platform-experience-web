@@ -32,8 +32,8 @@ export type EndpointCSVData<T extends CSVEndpoints> = EndpointsOperations[T]['re
 export type EndpointData<T extends EndpointName> = T extends CSVEndpoints
     ? EndpointCSVData<T>
     : T extends JSONEndpoints
-    ? EndpointJSONData<T>
-    : never;
+      ? EndpointJSONData<T>
+      : never;
 
 export type SetupEndpointResponse = SetupResource['schemas']['SetupEndpointResponse'];
 

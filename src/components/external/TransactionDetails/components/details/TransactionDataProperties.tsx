@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTransactionDetailsContext from '../../context/details';
 import StructuredList from '../../../../internal/StructuredList';
@@ -69,7 +69,15 @@ const TransactionDataProperties = () => {
             // reference id
             {
                 key: 'referenceID' as const,
-                value: <CopyText type={'Default' as const} textToCopy={id} showCopyTextTooltip={false} onCopyText={onCopyReferenceId} />,
+                value: (
+                    <CopyText
+                        copyButtonAriaLabelKey="transactions.copy.referenceId"
+                        type={'Default' as const}
+                        textToCopy={id}
+                        onCopyText={onCopyReferenceId}
+                        showCopyTextTooltip={false}
+                    />
+                ),
                 id: 'id',
             },
 

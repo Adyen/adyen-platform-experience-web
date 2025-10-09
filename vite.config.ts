@@ -1,5 +1,5 @@
 // eslint-disable import/no-extraneous-dependencies
-import { defineConfig, PluginOption } from 'vite';
+import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
                 output: [
                     {
                         format: 'es',
-                        preserveModules: isUmdBuild ? false : true,
+                        preserveModules: !isUmdBuild,
                         preserveModulesRoot: 'src',
                         sourcemap: false,
                         indent: false,
@@ -80,7 +80,7 @@ export default defineConfig(({ mode }) => {
                 ],
             },
             outDir: resolve(__dirname, './dist'),
-            emptyOutDir: isUmdBuild ? false : true,
+            emptyOutDir: !isUmdBuild,
         },
         css: {
             preprocessorOptions: {

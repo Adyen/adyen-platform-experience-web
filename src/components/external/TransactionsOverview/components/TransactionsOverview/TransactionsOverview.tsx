@@ -227,7 +227,7 @@ export const TransactionsOverview = ({
             <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState}>
+            <FilterBar {...filterBarState} ariaLabelKey="transactions.filters">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -316,6 +316,7 @@ export const TransactionsOverview = ({
             </div>
 
             <DataDetailsModal
+                ariaLabelKey="transactionDetails"
                 dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}

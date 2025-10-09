@@ -47,7 +47,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                             : i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction'),
                     buttonLabelKey: 'capital.submitInformation',
                 },
-            } as const),
+            }) as const,
         [i18n]
     );
 

@@ -29,7 +29,7 @@ const useCommitAction = ({
                 event: applyAction,
                 title: applyTitle?.trim() || i18n.get('apply'),
                 variant: ButtonVariant.PRIMARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, applyAction, applyDisabled, applyTitle]
     );
 
@@ -40,7 +40,7 @@ const useCommitAction = ({
                 event: resetAction,
                 title: resetTitle?.trim() || i18n.get('reset'),
                 variant: ButtonVariant.SECONDARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, resetAction, resetDisabled, resetTitle]
     );
 

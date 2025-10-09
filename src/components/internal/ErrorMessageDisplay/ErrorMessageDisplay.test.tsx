@@ -91,7 +91,7 @@ describe('ErrorMessageDisplay', () => {
             );
 
             const image = screen.getByRole('img');
-            expect(image).toHaveAttribute('alt', TEST_LABELS.ALT_TEXT);
+            expect(image).toHaveAttribute('alt', '');
 
             // Verify picture element has correct sources for responsive images
             const sources = container.querySelectorAll('source');
@@ -106,7 +106,7 @@ describe('ErrorMessageDisplay', () => {
             render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} withImage={true} />);
 
             const image = screen.getByRole('img');
-            expect(image).toHaveAttribute('alt', TEST_LABELS.ALT_TEXT);
+            expect(image).toHaveAttribute('alt', '');
             expect(mockGetImageAsset).toHaveBeenCalledWith({ name: 'no-results' });
         });
 

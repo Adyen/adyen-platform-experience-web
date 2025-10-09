@@ -21,6 +21,7 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { GrantActions } from '../GrantActions/GrantActions';
+import { uniqueId } from '../../../../../utils';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
@@ -28,26 +29,45 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
     const showUnscheduledRepaymentAccounts = useCallback(() => showDetails?.('unscheduledRepayment'), [showDetails]);
 
+    const elementIds = useMemo(
+        () =>
+            ({
+                grantAmount: uniqueId('elem'),
+                grantAmountLabel: uniqueId('elem'),
+                grantStatus: uniqueId('elem'),
+                termEndsPrefix: uniqueId('elem'),
+                termEndsTime: uniqueId('elem'),
+            }) as const,
+        []
+    );
+
     const grantOverview = useMemo(
         () => (
             <div className={GRANT_ITEM_CLASS_NAMES.cardContent}>
                 <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
                     <Typography
+                        id={elementIds.grantAmountLabel}
                         variant={TypographyVariant.CAPTION}
                         className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isLabelColorSecondary })}
                         testId={'grant-amount-label'}
                     >
                         {i18n.get(grantConfig.amountLabelKey)}
                     </Typography>
-                    <div>
+                    <div id={elementIds.grantStatus}>
                         {grant.status === 'Active' ? (
                             <>
-                                <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
+                                <Typography id={elementIds.termEndsPrefix} variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
                                     {i18n.get('capital.termEnds')}
                                 </Typography>
-                                <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
-                                    {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
-                                </Typography>
+                                <time
+                                    id={elementIds.termEndsTime}
+                                    aria-labelledBy={`${elementIds.termEndsPrefix} ${elementIds.termEndsTime}`}
+                                    dateTime={grantConfig.repaymentPeriodEndDate.toISOString()}
+                                >
+                                    <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
+                                        {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
+                                    </Typography>
+                                </time>
                             </>
                         ) : grantConfig.statusKey ? (
                             grantConfig.statusTooltipKey ? (
@@ -63,6 +83,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                     </div>
                 </div>
                 <Typography
+                    id={elementIds.grantAmount}
                     variant={TypographyVariant.TITLE}
                     medium
                     className={cx({
@@ -76,7 +97,11 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                         className={GRANT_ITEM_CLASS_NAMES.progressBar}
                         value={grant.repaidTotalAmount.value}
                         max={grant.totalAmount.value}
-                        labels={{ current: i18n.get('capital.repaid'), max: i18n.get('capital.remaining') }}
+                        labels={{
+                            ariaLabel: i18n.get('capital.grantItem.progress.label'),
+                            current: i18n.get('capital.repaid'),
+                            max: i18n.get('capital.remaining'),
+                        }}
                         tooltips={{
                             remaining: `${i18n.amount(grant.remainingTotalAmount.value, grant.remainingTotalAmount.currency)} ${i18n
                                 .get('capital.remaining')
@@ -91,7 +116,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                     <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
                         <CopyText
                             textToCopy={grant.id}
-                            buttonLabel={i18n.get('capital.grantID')}
+                            visibleText={i18n.get('capital.grantID')}
+                            copyButtonAriaLabelKey="capital.grantItem.copyGrantID"
                             isHovered
                             type={'Text' as const}
                             data-testid="grant-id-copy-text"
@@ -135,7 +161,13 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
 
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
-            <ExpandableCard renderHeader={grantOverview} filled={grantConfig.isBackgroundFilled} inFlow>
+            <ExpandableCard
+                aria-describedby={`${elementIds.grantAmountLabel} ${elementIds.grantAmount} ${elementIds.grantStatus}`}
+                aria-label={i18n.get('capital.grantItem.label')}
+                filled={grantConfig.isBackgroundFilled}
+                renderContent={grantOverview}
+                inFlow
+            >
                 {grantConfig.hasDetails && <GrantDetails grant={grant} />}
             </ExpandableCard>
         </div>

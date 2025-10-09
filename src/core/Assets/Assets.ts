@@ -21,9 +21,7 @@ export class Assets {
         `${resourceUrl}/${mainFolder ? `${mainFolder}/` : ''}${subFolder ? `${subFolder}/` : ''}${name}${extension ? `.${extension}` : ''}`;
 
     private getAssetUrl = (props: AssetOptions): string => {
-        return process.env.VITE_LOCAL_ASSETS
-            ? getLocalAsset({ ...props })
-            : this.returnAsset({ resourceUrl: this.resourceContext, ...props });
+        return process.env.VITE_LOCAL_ASSETS ? getLocalAsset({ ...props }) : this.returnAsset({ resourceUrl: this.resourceContext, ...props });
     };
 
     public getAsset(defaultProps: AssetOptions = {}) {

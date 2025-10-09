@@ -16,7 +16,7 @@ import { DATE_FORMAT_REPORTS } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
@@ -122,22 +122,38 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                 customCells={{
                     createdAt: ({ value }) => {
                         if (!value) return null;
-                        return value && <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_REPORTS)}</Typography>;
+                        return (
+                            value && (
+                                <time dateTime={value}>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(value, DATE_FORMAT_REPORTS)}
+                                    </Typography>
+                                </time>
+                            )
+                        );
                     },
                     dateAndReportType: ({ item }) => {
                         return (
                             <div className={DATE_TYPE_CLASS}>
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.get(`reportType.${item?.['type']}`)}
                                 </Typography>
-                                <Typography className={DATE_TYPE_DATE_SECTION_CLASS} variant={TypographyVariant.BODY}>
-                                    {dateFormat(item.createdAt, DATE_FORMAT_REPORTS)}
-                                </Typography>
+                                <time dateTime={item.createdAt}>
+                                    <Typography className={DATE_TYPE_DATE_SECTION_CLASS} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_REPORTS)}
+                                    </Typography>
+                                </time>
                             </div>
                         );
                     },
                     reportType: ({ item }) => {
-                        return item?.['type'] && <Typography variant={TypographyVariant.BODY}>{i18n.get(`reportType.${item?.['type']}`)}</Typography>;
+                        return (
+                            item?.['type'] && (
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {i18n.get(`reportType.${item?.['type']}`)}
+                                </Typography>
+                            )
+                        );
                     },
                     reportFile: ({ item }) => {
                         const queryParam = {
@@ -152,6 +168,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                                 onDownloadRequested={freeze}
                                 setError={onDownloadErrorAlert}
                                 errorDisplay={errorIcon}
+                                aria-label={i18n.get('report.downloadReport')}
                             />
                         );
                     },
@@ -159,7 +176,11 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="reports.pagination"
+                            limitSelectorAriaLabelKey="reports.pagination.limitSelector.label"
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

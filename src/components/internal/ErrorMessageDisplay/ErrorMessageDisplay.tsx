@@ -82,7 +82,7 @@ export const ErrorMessageDisplay = ({
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt={i18n.get('thereWasAnUnexpectedError')} />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt="" />
                     </picture>
                 </div>
             )}

@@ -1,6 +1,6 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../../constants';
+import { DATE_FORMAT_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS_MOBILE } from '../../../../../constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -9,7 +9,7 @@ import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
@@ -108,7 +108,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             i18n.has(tooltipKey) ? (
                                 <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
                             ) : (
-                                <Typography variant={TypographyVariant.BODY}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                     {i18n.has(`txType.${item.category}`) ? i18n.get(`txType.${item.category}`) : `${item.category}`}
                                 </Typography>
                             )
@@ -117,7 +117,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return (
-                            <Typography variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
                                 {amount}
                             </Typography>
                         );
@@ -127,13 +127,22 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                     <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                    <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
-                                        {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
-                                    </Typography>
+
+                                    <time dateTime={item.createdAt} className={DATE_METHOD_CLASS}>
+                                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                            {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
+                                        </Typography>
+                                    </time>
                                 </div>
                             );
                         }
-                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</Typography>;
+                        return (
+                            <time dateTime={value}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {dateFormat(value, DATE_FORMAT_TRANSACTIONS)}
+                                </Typography>
+                            </time>
+                        );
                     },
 
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
@@ -141,7 +150,11 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="transactions.pagination"
+                            limitSelectorAriaLabelKey="transactions.pagination.limitSelector.label"
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

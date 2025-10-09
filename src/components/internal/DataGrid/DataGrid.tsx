@@ -20,7 +20,7 @@ export const INITIAL_STATE = Object.freeze({
 export type CustomCell<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
-    T extends Columns[number]
+    T extends Columns[number],
 > = {
     [k in T['key']]?: (
         props: Item[0][k] extends NonNullable<Item[0][k]>
@@ -33,7 +33,7 @@ function DataGrid<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     return (
         <div style={{ width: '100%' }}>
@@ -48,7 +48,7 @@ function DataGridTable<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >({ autoFitColumns, errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = useMemo(() => toChildArray(props.children), [props.children]);
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
@@ -114,7 +114,7 @@ function DataGridBody<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >(props: DataGridProps<Items, Columns, ClickedField, CustomCells> & { emptyBody: boolean }) {
     const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 

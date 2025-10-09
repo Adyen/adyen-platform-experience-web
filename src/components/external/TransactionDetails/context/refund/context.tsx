@@ -1,7 +1,6 @@
 import { memo } from 'preact/compat';
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
-import { ITransactionWithDetails } from '../../../../../types';
 import { EMPTY_ARRAY, noop } from '../../../../../utils';
 import { REFUND_REASONS } from '../constants';
 import { useConfigContext } from '../../../../../core/ConfigContext';
