@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v1/uxdsclient/{apipath}": {
+    "/v1/uxdsclient/engage": {
         parameters: {
             query?: never;
             header?: never;
@@ -14,7 +14,24 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["sendUxdsEvent"];
+        post: operations["sendEngageEvent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/uxdsclient/track": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["sendTrackEvent"];
         delete?: never;
         options?: never;
         head?: never;
@@ -33,13 +50,37 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    sendUxdsEvent: {
+    sendEngageEvent: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                apipath: string;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": {
+                    data?: string;
+                };
             };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    sendTrackEvent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: {
