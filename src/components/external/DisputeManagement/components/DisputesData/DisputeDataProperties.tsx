@@ -39,19 +39,19 @@ type DisputeDataPropertiesProps = {
 };
 
 const disputeDataKeys = {
-    acceptedOn: 'disputes.acceptedOn',
-    account: 'disputes.account',
-    defendedOn: 'disputes.defendedOn',
-    defenseReason: 'disputes.defenseReason',
-    disputeEvidence: 'disputes.evidence',
-    disputeReason: 'disputes.disputeReason',
-    disputeReference: 'disputes.disputeReference',
-    expiredOn: 'disputes.expiredOn',
-    merchantReference: 'disputes.merchantReference',
-    openedOn: 'disputes.openedOn',
-    paymentReference: 'disputes.paymentReference',
-    reasonCode: 'disputes.reasonCode',
-    respondBy: 'disputes.respondBy',
+    acceptedOn: 'disputes.management.details.fields.acceptedOn',
+    account: 'disputes.management.details.fields.account',
+    defendedOn: 'disputes.management.details.fields.defendedOn',
+    defenseReason: 'disputes.management.details.fields.defenseReason',
+    disputeEvidence: 'disputes.management.details.fields.evidence',
+    disputeReason: 'disputes.management.details.fields.disputeReason',
+    disputeReference: 'disputes.management.details.fields.disputeReference',
+    expiredOn: 'disputes.management.details.fields.expiredOn',
+    merchantReference: 'disputes.management.details.fields.merchantReference',
+    openedOn: 'disputes.management.details.fields.openedOn',
+    paymentReference: 'disputes.management.details.fields.paymentReference',
+    reasonCode: 'disputes.management.details.fields.reasonCode',
+    respondBy: 'disputes.management.details.fields.respondBy',
 } satisfies Record<string, TranslationKey>;
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
@@ -132,7 +132,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                 key: disputeDataKeys.disputeReference,
                 value: (
                     <CopyText
-                        copyButtonAriaLabelKey="disputes.copy.disputeReference"
+                        copyButtonAriaLabelKey="disputes.management.details.actions.copyDisputeReference"
                         type={'Default' as const}
                         textToCopy={disputeReference}
                         showCopyTextTooltip={false}
@@ -153,7 +153,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                 key: disputeDataKeys.paymentReference,
                 value: (
                     <CopyText
-                        copyButtonAriaLabelKey="disputes.copy.paymentReference"
+                        copyButtonAriaLabelKey="disputes.management.details.actions.copyPaymentReference"
                         type={'Default' as const}
                         textToCopy={paymentReference}
                         showCopyTextTooltip={false}
@@ -168,7 +168,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                       key: disputeDataKeys.merchantReference,
                       value: (
                           <CopyText
-                              copyButtonAriaLabelKey="disputes.copy.merchantReference"
+                              copyButtonAriaLabelKey="disputes.management.details.actions.copyMerchantReference"
                               type={'Default' as const}
                               textToCopy={merchantReference}
                               showCopyTextTooltip={false}
@@ -221,13 +221,13 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                                                       <div className={DISPUTE_DATA_LIST_EVIDENCE_ERROR_MESSAGE}>
                                                           <SVGIcon name="info-filled" />
                                                           <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
-                                                              {i18n.get('disputes.error.failedRetry')}
+                                                              {i18n.get('disputes.management.details.errors.downloadFailure')}
                                                           </Typography>
                                                       </div>
                                                   );
                                               }}
                                               onDownloadRequested={() => console.warn('Download failed for', document)}
-                                              aria-label={i18n.get('disputes.downloadEvidence')}
+                                              aria-label={i18n.get('disputes.management.details.actions.downloadEvidence')}
                                           />
                                       </div>
                                   );

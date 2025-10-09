@@ -36,21 +36,24 @@ import './DisputesTable.scss';
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
 export const FIELD_KEYS = {
-    status: 'disputes.status',
-    respondBy: 'disputes.respondBy',
-    createdAt: 'disputes.openedOn',
-    paymentMethod: 'disputes.paymentMethod',
-    disputeReason: 'disputes.disputeReason',
-    reason: 'disputes.reason',
-    currency: 'disputes.currency',
-    disputedAmount: 'disputes.disputedAmount',
-    totalPaymentAmount: 'disputes.totalPaymentAmount',
+    status: 'disputes.overview.common.fields.status',
+    respondBy: 'disputes.overview.common.fields.respondBy',
+    createdAt: 'disputes.overview.common.fields.openedOn',
+    paymentMethod: 'disputes.overview.common.fields.paymentMethod',
+    disputeReason: 'disputes.overview.common.fields.disputeReason',
+    reason: 'disputes.overview.common.fields.reason',
+    currency: 'disputes.overview.common.fields.currency',
+    disputedAmount: 'disputes.overview.common.fields.disputedAmount',
+    totalPaymentAmount: 'disputes.overview.common.fields.totalPaymentAmount',
 } as const satisfies Record<string, TranslationKey>;
 
 export const EMPTY_TABLE_MESSAGE_KEYS = {
-    CHARGEBACKS: { title: 'disputes.empty.noChargebacksFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks' },
-    FRAUD_ALERTS: { title: 'disputes.empty.noFraudAlertsFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts' },
-    ONGOING_AND_CLOSED: { title: 'disputes.empty.noDisputesFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes' },
+    CHARGEBACKS: { title: 'disputes.overview.chargebacks.errors.listEmpty', message: 'disputes.overview.chargebacks.errors.updateFilters' },
+    FRAUD_ALERTS: { title: 'disputes.overview.fraudAlerts.errors.listEmpty', message: 'disputes.overview.fraudAlerts.errors.updateFilters' },
+    ONGOING_AND_CLOSED: {
+        title: 'disputes.overview.ongoingAndClosed.errors.listEmpty',
+        message: 'disputes.overview.ongoingAndClosed.errors.updateFilters',
+    },
 } as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
 
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
@@ -103,13 +106,13 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     if (showPagination) {
         switch (statusGroup) {
             case 'CHARGEBACKS':
-                limitSelectAriaLabelKey = 'disputes.pagination.chargebacks.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.overview.chargebacks.limitSelect.a11y.label';
                 break;
             case 'FRAUD_ALERTS':
-                limitSelectAriaLabelKey = 'disputes.pagination.fraudAlerts.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.overview.fraudAlerts.limitSelect.a11y.label';
                 break;
             case 'ONGOING_AND_CLOSED':
-                limitSelectAriaLabelKey = 'disputes.pagination.ongoingAndClosed.limitSelector.label';
+                limitSelectAriaLabelKey = 'disputes.overview.ongoingAndClosed.limitSelect.a11y.label';
                 break;
         }
     }
@@ -167,8 +170,8 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
             return diffInDays <= 1
-                ? i18n.get('disputes.respondToday', { values: { date: formattedDate } })
-                : i18n.get('disputes.xDaysToRespond', { values: { days: diffInDays, date: formattedDate } });
+                ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
+                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
         },
         [dateFormat, i18n]
     );
@@ -180,7 +183,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const errorDisplay = useMemo(
         () => () => (
-            <DataOverviewError error={error} errorMessage={'disputes.error.weCouldNotLoadYourDisputes'} onContactSupport={onContactSupport} />
+            <DataOverviewError error={error} errorMessage={'disputes.overview.common.errors.listUnavailable'} onContactSupport={onContactSupport} />
         ),
         [error, onContactSupport]
     );
@@ -244,7 +247,10 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                                         })}
                                     >
                                         {isMobileContainer ? (
-                                            <Translation translationKey="disputes.gridCell.dueDate" fills={{ dueDate: renderDueDate }} />
+                                            <Translation
+                                                translationKey="disputes.overview.common.actionNeeded.dueDate"
+                                                fills={{ dueDate: renderDueDate }}
+                                            />
                                         ) : (
                                             renderDueDate()
                                         )}
@@ -298,7 +304,11 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} ariaLabelKey="disputes.pagination" limitSelectAriaLabelKey={limitSelectAriaLabelKey} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="disputes.overview.common.pagination.a11y.label"
+                            limitSelectAriaLabelKey={limitSelectAriaLabelKey}
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

@@ -24,7 +24,7 @@ export const getDisputesErrorMessage = (
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
                     [secondaryErrorMessage]: error.requestId ? (
-                        <CopyText copyButtonAriaLabelKey="disputes.errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                        <CopyText copyButtonAriaLabelKey="disputes.overview.common.errorDisplay.actions.copyErrorCode" textToCopy={error.requestId} />
                     ) : null,
                 },
                 onContactSupport,
@@ -32,8 +32,8 @@ export const getDisputesErrorMessage = (
         }
         case '30_112':
             return {
-                title: 'disputes.error.entityWasNotFound',
-                message: ['disputes.error.entityWasNotFoundDetail'],
+                title: 'common.errors.notFound',
+                message: ['disputes.management.common.errors.notFound'],
                 onContactSupport,
             };
         default:

@@ -20,7 +20,7 @@ export const DefendDisputeFlow = ({ onDisputeDefend }: Pick<DisputeManagementPro
         <div className="adyen-pe-defend-dispute__container">
             {flowState !== 'defenseSubmitResponseView' && (
                 <Typography className={'adyen-pe-defend-dispute__title'} el={titleEl} variant={TypographyVariant.TITLE} medium>
-                    {i18n.get('disputes.defend.chargeback')}
+                    {i18n.get('disputes.management.defend.chargeback.titleHeading')}
                 </Typography>
             )}
             {flowState === 'defendReasonSelectionView' && <DefendDisputeReason />}

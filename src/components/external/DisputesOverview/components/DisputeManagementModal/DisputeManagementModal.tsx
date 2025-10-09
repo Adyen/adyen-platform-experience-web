@@ -56,7 +56,7 @@ export const DisputeManagementModal: FC<DisputeManagementModalProps> = ({
             {selectedDetail && (
                 <Modal
                     isOpen={isModalOpen}
-                    aria-label={i18n.get('disputes.disputeManagementTitle')}
+                    aria-label={i18n.get('disputes.management.common.titleHeading')}
                     onClose={onCloseCallback}
                     isDismissible={true}
                     headerWithBorder={false}

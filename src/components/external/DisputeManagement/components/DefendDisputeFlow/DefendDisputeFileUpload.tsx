@@ -22,9 +22,9 @@ import { MapErrorCallback } from './types';
 import './DefendDisputeFlow.scss';
 
 const documentRequirements: TranslationKey[] = [
-    'disputes.documentRequirements.mustBeInEnglish',
-    'disputes.documentRequirements.recommendedSize',
-    'disputes.documentRequirements.acceptableFormatAndSize',
+    'disputes.management.defend.common.documentRequirements.language',
+    'disputes.management.defend.common.documentRequirements.recommendedSize',
+    'disputes.management.defend.common.documentRequirements.formatAndSize',
 ];
 
 export const DefendDisputeFileUpload = () => {
@@ -60,18 +60,18 @@ export const DefendDisputeFileUpload = () => {
                 case validationErrors.DISALLOWED_FILE_TYPE:
                     return i18n.get('common.inputs.file.errors.disallowedType');
                 case validationErrors.FILE_REQUIRED:
-                    return i18n.get('disputes.inputError.uploadAtLeastOneSupportingDocumentToContinue');
+                    return i18n.get('disputes.management.defend.common.inputs.file.errors.required');
                 case validationErrors.TOO_MANY_FILES:
                     return i18n.get('common.inputs.file.errors.tooMany');
                 case validationErrors.VERY_LARGE_FILE:
-                    return i18n.get('disputes.inputError.fileIsOverSizeLimitForTypeChooseASmallerFileAndTryAgain', {
+                    return i18n.get('disputes.management.defend.common.inputs.file.errors.tooLarge', {
                         values: {
                             size: file?.size === undefined ? undefined : getHumanReadableFileSize(file.size),
                             type: file?.type?.replace(/^([^/]+\/)*/gi, '')?.toUpperCase(),
                         },
                     });
                 default:
-                    return i18n.get('disputes.inputError.somethingWentWrongPleaseCheckYourDocuments');
+                    return i18n.get('disputes.management.defend.common.inputs.file.errors.default');
             }
         },
         [i18n]
@@ -152,7 +152,7 @@ export const DefendDisputeFileUpload = () => {
     const actionButtons = useMemo<ButtonActionsList>(() => {
         return [
             {
-                title: i18n.get('disputes.defend.submit'),
+                title: i18n.get('disputes.management.defend.common.actions.submit'),
                 disabled: !canSubmitDocuments,
                 state: defendDisputeMutation.isLoading ? 'loading' : 'default',
                 variant: ButtonVariant.PRIMARY,
@@ -163,7 +163,7 @@ export const DefendDisputeFileUpload = () => {
                         return (
                             <>
                                 <Icon name="checkmark-circle-fill" className="adyen-pe-defend-dispute__defended-icon" />
-                                {i18n.get('disputes.defend.defended')}
+                                {i18n.get('disputes.management.defend.common.defended')}
                             </>
                         );
                     }
@@ -171,7 +171,7 @@ export const DefendDisputeFileUpload = () => {
                 },
             },
             {
-                title: i18n.get('disputes.goBack'),
+                title: i18n.get('disputes.management.common.actions.goBack'),
                 disabled: defendDisputeMutation.isLoading,
                 variant: ButtonVariant.SECONDARY,
                 event: disputeDefended ? goBackToDetails : goBack,
@@ -234,12 +234,12 @@ export const DefendDisputeFileUpload = () => {
         <>
             <>
                 <Typography className="adyen-pe-defend-dispute-file-uploader__subtitle" variant={TypographyVariant.BODY}>
-                    {i18n.get('disputes.defend.uploadDocumentsInformation')}
+                    {i18n.get('disputes.management.defend.common.documentUploadInfo')}
                 </Typography>
                 <Card
                     renderHeader={
                         <Typography variant={TypographyVariant.BODY} stronger className={'adyen-pe-defend-dispute-document-requirements'}>
-                            {i18n.get('disputes.documentRequirements')}
+                            {i18n.get('disputes.management.defend.common.documentRequirements')}
                         </Typography>
                     }
                     filled
@@ -280,7 +280,7 @@ export const DefendDisputeFileUpload = () => {
                                     selection={oneOrMoreSelectedDocument}
                                     setSelection={(val: string) => setOneOrMoreSelectedDocument(val)}
                                     items={oneOrMoreDocuments}
-                                    title={i18n.get('disputes.uploadDocuments.extraRequiredDocument')}
+                                    title={i18n.get('disputes.management.defend.common.documentTypes.required')}
                                     required
                                 />
                             ) : null}
@@ -298,7 +298,7 @@ export const DefendDisputeFileUpload = () => {
                                           setSelection={addOptionalDocument}
                                           index={index}
                                           items={availableOptionalDocuments}
-                                          title={i18n.get('disputes.uploadDocuments.optionalDocument')}
+                                          title={i18n.get('disputes.management.defend.common.documentTypes.optional')}
                                           required
                                       />
                                   </div>
@@ -308,7 +308,7 @@ export const DefendDisputeFileUpload = () => {
                     {canAddOptionalDocument && (
                         <Button align="center" onClick={addEmptyOptionalDocument} variant={ButtonVariant.SECONDARY} fullWidth>
                             <Icon name="plus" />
-                            {i18n.get('disputes.uploadDocuments.addOptionalDocument')}
+                            {i18n.get('disputes.management.defend.common.actions.addOptionalDocument')}
                         </Button>
                     )}
                 </div>

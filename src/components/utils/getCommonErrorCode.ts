@@ -28,7 +28,7 @@ export const getCommonErrorMessage = (error: AdyenPlatformExperienceError | unde
         case '30_112':
             return {
                 title: 'common.errors.notFound',
-                message: ['transactions.common.errors.notFound'],
+                message: ['transactions.details.errors.notFound'],
                 onContactSupport,
             };
         case '00_403':
