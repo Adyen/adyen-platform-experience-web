@@ -40,6 +40,7 @@ export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 
     popoverClassNameModifiers?: string[];
     fitPosition?: boolean;
     fixedPopoverPositioning?: boolean;
+    onResetAction?: () => void;
 }
 
 export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {

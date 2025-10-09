@@ -36,6 +36,7 @@ const Select = <T extends SelectItem>({
     showOverlay = false,
     fitPosition,
     fixedPopoverPositioning,
+    onResetAction,
     ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
@@ -79,6 +80,7 @@ const Select = <T extends SelectItem>({
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         resetDisabled: !selection.length,
+        onResetAction: onResetAction,
     });
 
     /**

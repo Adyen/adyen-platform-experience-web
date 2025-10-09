@@ -29,7 +29,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "anaCreditActionDetails" | "initiateRefund" | "getDisputeList" | "getDisputeDetail" | "getApplicableDefenseDocuments" | "acceptDispute" | "defendDispute" | "downloadDefenseDocument";
+        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "createGrantOffer" | "createNetworkTokenActivationData" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails";
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components["schemas"]["RegionDTO"][];

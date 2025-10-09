@@ -41,6 +41,7 @@ export const DefendDisputeFileUpload = () => {
         onDefendSubmit,
         removeFieldFromDefendPayload,
         setFlowState,
+        defenseDocumentConfig,
     } = useDisputeFlow();
 
     const disputePspReference = dispute?.dispute.pspReference;
@@ -84,7 +85,7 @@ export const DefendDisputeFileUpload = () => {
         };
 
         (applicableDocuments ?? []).forEach(({ documentTypeCode, requirementLevel }) => {
-            const name = getDefenseDocumentContent(i18n, documentTypeCode)?.title || documentTypeCode;
+            const name = getDefenseDocumentContent(defenseDocumentConfig, i18n, documentTypeCode)?.title || documentTypeCode;
             switch (requirementLevel) {
                 case 'REQUIRED':
                     docs.requiredDocuments.push(documentTypeCode);
@@ -176,7 +177,7 @@ export const DefendDisputeFileUpload = () => {
                 event: disputeDefended ? goBackToDetails : goBack,
             },
         ];
-    }, [i18n, defendDisputeCallback, defendDisputeMutation.isLoading, disputeDefended, goBack]);
+    }, [i18n, canSubmitDocuments, defendDisputeMutation.isLoading, defendDisputeCallback, disputeDefended, goBackToDetails, goBack]);
 
     const addOptionalDocument = useCallback((documentType?: string, index?: number) => {
         if (documentType === undefined) {

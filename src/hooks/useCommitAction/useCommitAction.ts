@@ -5,12 +5,21 @@ import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './t
 import useCoreContext from '../../core/Context/useCoreContext';
 import { boolOrFalse, EMPTY_OBJECT } from '../../utils';
 
-const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle }: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
+const useCommitAction = ({
+    applyDisabled,
+    applyTitle,
+    resetDisabled,
+    resetTitle,
+    onResetAction,
+}: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
     const { i18n } = useCoreContext();
     const [commitAction, setCommitAction] = useState(CommitAction.NONE);
 
     const applyAction = useCallback(() => setCommitAction(CommitAction.APPLY), [setCommitAction]);
-    const resetAction = useCallback(() => setCommitAction(CommitAction.CLEAR), [setCommitAction]);
+    const resetAction = useCallback(() => {
+        setCommitAction(CommitAction.CLEAR);
+        onResetAction && onResetAction();
+    }, [setCommitAction, onResetAction]);
     const resetCommitAction = useCallback(() => setCommitAction(CommitAction.NONE), [setCommitAction]);
 
     const applyButtonAction = useMemo(

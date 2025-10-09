@@ -263,6 +263,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         refundMode={refundMode}
                         refreshTransaction={refreshTransaction}
                         transactionId={transaction.id}
+                        transactionOriginalAmount={transaction.originalAmount}
                     >
                         <TransactionRefundNotice />
 
@@ -294,7 +295,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     subtitle={i18n.get('transactions.details.refund.alerts.refundSuccess')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={onRefundSuccess}>
-                            {i18n.get('transactions.details.refund.actions.goBack')}
+                            {i18n.get('transactions.details.refund.actions.back')}
                         </Button>
                     )}
                 />
@@ -308,7 +309,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     subtitle={i18n.get('transactions.details.refund.alerts.refundFailure')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('transactions.details.refund.actions.goBack')}
+                            {i18n.get('transactions.details.refund.actions.back')}
                         </Button>
                     )}
                 />

@@ -1,4 +1,4 @@
-import keys from '../../src/translations/en-US.json' with { type: 'json' };
+import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
 import type { Page } from '@playwright/test';
 import dotenv from 'dotenv';
 

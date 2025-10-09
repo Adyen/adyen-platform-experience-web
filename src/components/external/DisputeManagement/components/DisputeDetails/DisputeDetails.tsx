@@ -8,6 +8,7 @@ import { DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';
 import DisputeData from '../DisputesData/DisputeData';
+import { useEffect } from 'preact/hooks';
 
 const DisputeDetailsContainer = ({ children, hideTitle }: PropsWithChildren<Pick<ExternalUIComponentProps<DisputeManagementProps>, 'hideTitle'>>) => {
     const { flowState } = useDisputeFlow();
@@ -15,7 +16,7 @@ const DisputeDetailsContainer = ({ children, hideTitle }: PropsWithChildren<Pick
     return (
         <>
             <div className={cx({ ['adyen-pe-visually-hidden']: flowState !== 'details' })}>
-                <Header hideTitle={hideTitle} connected={!withinModal} titleKey="disputes.disputeManagementTitle" />
+                <Header hideTitle={hideTitle} forwardedToRoot={!withinModal} titleKey="disputes.disputeManagementTitle" />
             </div>
             {children}
         </>
@@ -31,7 +32,11 @@ export const DisputeDetails = ({
     onDisputeDefend,
     onDismiss,
 }: ExternalUIComponentProps<DisputeManagementProps>) => {
-    const { flowState } = useDisputeFlow();
+    const { flowState, getDisputesConfig } = useDisputeFlow();
+
+    useEffect(() => {
+        void getDisputesConfig();
+    }, [getDisputesConfig]);
 
     switch (flowState) {
         case 'details':

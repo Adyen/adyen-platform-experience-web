@@ -1,7 +1,8 @@
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import CopyText from '../../../../internal/CopyText/CopyText';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useTransactionDetailsContext from '../../context/details';
 import StructuredList from '../../../../internal/StructuredList';
@@ -18,6 +19,16 @@ import { REFUND_REASONS_KEYS } from '../../context/constants';
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
     const { transaction, extraFields, dataCustomization } = useTransactionDetailsContext();
+    const userEvents = useAnalyticsContext();
+
+    const onCopyReferenceId = useCallback(() => {
+        userEvents.addEvent('Clicked button', {
+            label: 'Copy button',
+            value: 'referenceID',
+            category: 'Transaction component',
+            subCategory: 'Transaction details',
+        });
+    }, [userEvents]);
 
     return useMemo(() => {
         const { balanceAccount, category, id, paymentPspReference, refundMetadata } = transaction;
@@ -70,6 +81,7 @@ const TransactionDataProperties = () => {
                         copyButtonAriaLabelKey="transactions.details.fields.referenceID.copy.label"
                         type={'Default' as const}
                         textToCopy={id}
+                        onCopyText={onCopyReferenceId}
                         showCopyTextTooltip={false}
                     />
                 ),
@@ -136,7 +148,7 @@ const TransactionDataProperties = () => {
                 }}
             />
         );
-    }, [dataCustomization?.details?.fields, extraFields, i18n, transaction]);
+    }, [dataCustomization?.details?.fields, extraFields, i18n, transaction, onCopyReferenceId]);
 };
 
 export default TransactionDataProperties;

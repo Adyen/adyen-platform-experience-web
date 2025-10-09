@@ -88,7 +88,7 @@ export const RangeSelection = ({
                         e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
                     }}
                     min={minAmount}
-                    isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}
+                    isInvalid={!isUndefined(maxAmount) && maxAmount < (minAmount ?? 0)}
                     errorMessage={i18n.get('common.filters.types.amount.errors.smallerMax')}
                 />
             </div>

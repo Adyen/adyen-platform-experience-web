@@ -155,7 +155,7 @@ test.describe('Refund action modal', () => {
         await expect(page.getByText(getTranslatedKey('transactions.details.refund.alerts.refundSent'))).toBeVisible();
         await expect(page.getByText(getTranslatedKey('transactions.details.refund.alerts.refundSuccess'))).toBeVisible();
 
-        const goBackButton = page.getByRole('button', { name: getTranslatedKey('transactions.details.refund.actions.goBack') });
+        const goBackButton = page.getByRole('button', { name: getTranslatedKey('transactions.details.refund.actions.back') });
         await goBackButton.click();
         const referenceID = page
             .getByRole('dialog')

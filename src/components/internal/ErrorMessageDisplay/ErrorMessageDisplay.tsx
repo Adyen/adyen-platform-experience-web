@@ -1,7 +1,6 @@
 import cx from 'classnames';
 import Button from '../Button';
 import Typography from '../Typography/Typography';
-import noResults from '../../../images/no-results.svg';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { TranslationKey } from '../../../translations';
@@ -10,7 +9,7 @@ import { useCallback } from 'preact/hooks';
 import './ErrorMessageDisplay.scss';
 
 const BASE_CLASS = 'adyen-pe-error-message-display';
-const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
+export const IMAGE_BREAKPOINT_MEDIUM_PX = 680;
 
 const classes = {
     base: BASE_CLASS,
@@ -61,7 +60,7 @@ export const ErrorMessageDisplay = ({
     renderSecondaryButton,
     withBackground,
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore } = useCoreContext();
+    const { i18n, updateCore, getImageAsset } = useCoreContext();
 
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) =>
@@ -91,7 +90,7 @@ export const ErrorMessageDisplay = ({
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? noResults} alt="" />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt="" />
                     </picture>
                 </div>
             )}
@@ -99,6 +98,7 @@ export const ErrorMessageDisplay = ({
             <Typography el={TypographyElement.DIV} variant={TypographyVariant.TITLE}>
                 {i18n.get(title)}
             </Typography>
+
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
 
             {(onContactSupport || refreshComponent || renderSecondaryButton) && (

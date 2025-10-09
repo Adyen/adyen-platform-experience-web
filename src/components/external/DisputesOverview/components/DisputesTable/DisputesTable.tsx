@@ -10,9 +10,10 @@ import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
+import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
-import { DATE_FORMAT_DISPUTES } from '../../../../../constants';
+import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
@@ -28,6 +29,7 @@ import PaymentMethodCell from '../../../TransactionsOverview/components/Transact
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { Translation } from '../../../../internal/Translation';
 import './DisputesTable.scss';
 
@@ -57,6 +59,7 @@ const classes = {
     cellContent: `${BASE_CLASS}__cell-content`,
     cellContentVStack: `${BASE_CLASS}__cell-content--vstack`,
     cellTextGrey: `${BASE_CLASS}__cell-text--grey`,
+    dateContentUrgent: `${BASE_CLASS}__date-content--urgent`,
     statusContent: `${BASE_CLASS}__status-content`,
     statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
 };
@@ -155,6 +158,21 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const removeAlert = useCallback(() => setAlert(null), []);
 
+    const getTimeToDeadline = useCallback(
+        (dueDate: string) => {
+            if (!dueDate) return '';
+            const deadline = new Date(dueDate).getTime();
+            const diffInMs = deadline - Date.now();
+            const diffInDays = Math.ceil(diffInMs / DAY_MS);
+            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+
+            return diffInDays <= 1
+                ? i18n.get('disputes.respondToday', { values: { date: formattedDate } })
+                : i18n.get('disputes.xDaysToRespond', { values: { days: diffInDays, date: formattedDate } });
+        },
+        [dateFormat, i18n]
+    );
+
     const EMPTY_TABLE_MESSAGE = {
         title: EMPTY_TABLE_MESSAGE_KEYS[statusGroup].title,
         message: [EMPTY_TABLE_MESSAGE_KEYS[statusGroup].message],
@@ -198,12 +216,22 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     },
                     respondBy: ({ item }) => {
                         const isUrgent = isDisputeActionNeededUrgently(item);
-                        const renderDueDate = () => (
-                            <>
-                                <time dateTime={item.dueDate!}>{dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES)}</time>
-                                {isUrgent && <Icon name={'warning-filled'} />}
-                            </>
-                        );
+                        const formattedDate = dateFormat(item.dueDate!, DATE_FORMAT_DISPUTES);
+                        // TODO - Check if the API can send the defensibility field in a next iteration
+                        const isActionableDispute = true; /* isDisputeActionNeeded(item) && item.defensibility !== 'NOT_ACTIONABLE' */
+
+                        const renderDueDate = () =>
+                            isUrgent && isActionableDispute ? (
+                                <Tooltip content={getTimeToDeadline(item.dueDate!)}>
+                                    <span className={classes.dateContentUrgent}>
+                                        <time dateTime={item.dueDate!}>{formattedDate}</time>
+                                        {<Icon name={'warning-filled'} />}
+                                    </span>
+                                </Tooltip>
+                            ) : (
+                                <time dateTime={item.dueDate!}>{formattedDate}</time>
+                            );
+
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
                                 {item.dueDate ? (

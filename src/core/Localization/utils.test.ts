@@ -2,6 +2,7 @@ import { formatCustomTranslations, formatLocale, getTranslation, interpolateElem
 import { createElement } from 'preact';
 import { describe, expect, test } from 'vitest';
 import { SUPPORTED_LOCALES } from './constants/localization';
+import { translations_dev_assets } from '../../translations/local';
 import { TranslationKey } from '../../translations';
 
 const defaultSupportedLocales = SUPPORTED_LOCALES;
@@ -207,7 +208,7 @@ describe('formatCustomTranslations()', () => {
 
 describe('loadTranslations()', () => {
     test('should accept customTranslations without a countryCode for default defaultSupportedLocales', () => {
-        loadTranslations('es-ES', {
+        loadTranslations('es-ES', () => translations_dev_assets['es-ES']!, {
             'es-ES': {
                 [translationKey]: 'es-ES account',
             },
@@ -220,23 +221,20 @@ describe('loadTranslations()', () => {
     });
 
     test('should return the passed locale if formatted properly', () => {
-        loadTranslations(
-            'ca-CA' as const,
-            {
-                'es-ES': {
-                    [translationKey]: 'paymentId es-ES',
-                },
-                'ca-CA': {
-                    [translationKey]: 'paymentId ca-CA',
-                },
-            } as const
-        ).then(translations => {
+        loadTranslations('ca-CA' as const, () => translations_dev_assets['es-ES']!, {
+            'es-ES': {
+                [translationKey]: 'paymentId es-ES',
+            },
+            'ca-CA': {
+                [translationKey]: 'paymentId ca-CA',
+            },
+        } as const).then(translations => {
             expect(translations[translationKey]).toBe('paymentId ca-CA');
         });
     });
 
     test('should return the passed locale if formatted properly', () => {
-        loadTranslations('ca-CA', {
+        loadTranslations('ca-CA', () => translations_dev_assets['es-ES']!, {
             'ca-CA': {
                 [translationKey]: 'paymentId ca-CA',
             },
