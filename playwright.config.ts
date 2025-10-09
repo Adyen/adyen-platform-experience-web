@@ -1,10 +1,10 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
 import { getEnvironment } from './envs/getEnvs';
 
-const { playground } = getEnvironment(process.env.CI ? 'demo' : 'mocked');
+// Always run tests in 'development' mode
+const { app } = getEnvironment('development');
 
-const baseUrl = `http://${playground.host}:${playground.port}`;
+const baseUrl = `http://${app.host}:${app.port}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -28,6 +28,7 @@ const config: PlaywrightTestConfig = {
     workers: process.env.CI ? 1 : undefined,
 
     reporter: 'html',
+
     use: {
         /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
         actionTimeout: 5000,
@@ -36,6 +37,7 @@ const config: PlaywrightTestConfig = {
 
         trace: 'on-first-retry',
         headless: !!process.env.CI,
+        timezoneId: 'UTC',
     },
 
     /* Configure projects for major browsers */
@@ -47,27 +49,18 @@ const config: PlaywrightTestConfig = {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
+                    args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
                 },
             },
         },
         {
-            name: 'chromium',
-            testDir: 'tests/integration',
+            name: 'local-chrome-e2e',
+            testDir: 'tests/e2e',
             use: {
-                ...devices['Desktop Chrome'],
+                // Use the pre-installed browser already on the machine
+                channel: 'chrome',
                 launchOptions: {
-                    args: process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
-                },
-            },
-        },
-        {
-            name: 'firefox',
-            testDir: 'tests/integration',
-            use: {
-                ...devices['Desktop Firefox'],
-                launchOptions: {
-                    args: process.env.PWDEBUG ? ['--devtools'] : [],
+                    args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
                 },
             },
         },
@@ -81,10 +74,10 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'npm run storybook:demo',
+        command: 'npm run storybook:static',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
-        port: process.env.CI ? playground.port : undefined,
+        port: process.env.CI ? app.port : undefined,
     },
 };
 

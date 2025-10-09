@@ -4,6 +4,7 @@ import { getClassName, memoComparator } from '../../../../../utils/preact';
 import { CalendarGridDayOfWeekProps, CalendarGridDayOfWeekRenderProps } from './types';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CalendarGridRenderToken } from '../../types';
+import { Ref } from 'preact';
 
 const DEFAULT_CELL_CLASSNAME = 'adyen-pe-calendar__cell adyen-pe-calendar__cell--day-of-week';
 const DEFAULT_CELL_ABBR_CLASSNAME = 'adyen-pe-calendar__day-of-week';
@@ -40,14 +41,19 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, shor
     };
 
     const renderProps = getGridDayOfWeekRenderProps(props, prepare);
-    const { children: _, className, ...extendedProps } = renderProps.props || EMPTY_OBJECT;
+    const { children: _, className, onCommand, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
+
     const classes = getClassName(renderProps.className, DEFAULT_CELL_CLASSNAME, className);
 
-    const { children: __, className: childClassName, ...extendedChildProps } = renderProps.childProps || EMPTY_OBJECT;
+    const {
+        children: __,
+        className: childClassName,
+        ...extendedChildProps
+    } = renderProps.childProps || (EMPTY_OBJECT as NonNullable<typeof renderProps.childProps>);
     const childClasses = getClassName(renderProps.childClassName, DEFAULT_CELL_ABBR_CLASSNAME, childClassName);
 
     return (
-        <th {...extendedProps} {...props} className={classes}>
+        <th {...extendedProps} ref={extendedProps.ref as Ref<HTMLTableCellElement>} {...props} className={classes}>
             <abbr {...extendedChildProps} className={childClasses}>
                 {shortLabel}
             </abbr>

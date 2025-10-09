@@ -1,0 +1,68 @@
+@use '../../../style';
+
+.adyen-pe-tabs {
+    display: flex;
+    gap: style.token(spacer-090);
+    margin: 0 0 style.token(spacer-030);
+
+    &__tab {
+        appearance: none;
+        background: none;
+        border: 0;
+        color: style.token(color-label-secondary);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-stronger-font-weight);
+        margin: 0;
+        outline: none;
+        padding: 0 0 style.token(spacer-020) 0;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+
+        &::before {
+            background: style.token(color-outline-primary-active);
+            bottom: -1px;
+            content: '';
+            height: 2px;
+            left: 0;
+            opacity: 0;
+            position: absolute;
+            transition: opacity 0.25s ease-out;
+            width: 100%;
+        }
+
+        &::after {
+            border-radius: style.token(border-radius-s);
+            content: '';
+            inset: -3px;
+            margin-bottom: style.token(spacer-020);
+            position: absolute;
+        }
+
+        &:focus-visible::after {
+            box-shadow:
+                0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+                0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
+        }
+
+        &:focus,
+        &:hover:not(:disabled),
+        &[aria-selected='true'] {
+            color: style.token(color-label-primary);
+
+            &::before {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.adyen-pe-tabpanels {
+    padding-top: style.token(spacer-080);
+
+    &__panel {
+        padding: 0;
+    }
+}

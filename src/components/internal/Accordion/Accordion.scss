@@ -21,6 +21,15 @@
             align-items: center;
             display: flex;
             gap: style.token(spacer-010);
+
+            .adyen-pe-icon {
+                font-size: 8px;
+                margin: 0 style.token(spacer-020);
+            }
+
+            .adyen-pe-icon svg {
+                display: block;
+            }
         }
     }
 

@@ -1,12 +1,14 @@
-import { Locator, Page } from '@playwright/test';
-import { BasePage } from '../basePage';
-import { getPagePath, getTranslatedKey } from '../../utils/utils';
+import type { Locator, Page } from '@playwright/test';
+import { getTranslatedKey } from '../../utils/utils';
 
-export class TransactionDetailsPage extends BasePage {
-    public readonly transactionValue: Locator;
+export class TransactionDetailsPage {
+    private readonly root: Locator;
 
     constructor(page: Page, rootElementSelector = '.adyen-pe-overview-details') {
-        super(page, rootElementSelector, getPagePath('transaction'));
-        this.transactionValue = this.rootElement.getByLabel(`${getTranslatedKey('referenceID')}`);
+        this.root = page.locator(rootElementSelector);
+    }
+
+    get referenceId(): Locator {
+        return this.root.getByTestId(`${getTranslatedKey('referenceID')}`).locator('dd');
     }
 }

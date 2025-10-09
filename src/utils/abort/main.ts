@@ -3,7 +3,7 @@ import { isUndefined } from '../value/is';
 import { ABORT_EVENT, MAX_ABORT_TIMEOUT } from './constants';
 import { abortError, augmentSignalReason, timeoutError } from './internals';
 
-declare var AbortSignal: {
+declare let AbortSignal: {
     any: (signals: AbortSignal[]) => AbortSignal;
 } & typeof window.AbortSignal;
 
@@ -73,30 +73,6 @@ export const abortSignalForAny = (signals: AbortSignal[]) => {
         // And also throw the appropriate exception (if applicable)
         if (_exception !== NIL_EXCEPTION) throw _exception;
     }
-
-    return signal;
-};
-
-export const abortSignalWithTimeout = (ms: number) => {
-    const _timeout = clamp(0, ms, MAX_ABORT_TIMEOUT);
-
-    if ('timeout' in AbortSignal) {
-        return AbortSignal.timeout(_timeout);
-    }
-
-    let _controller = new AbortController();
-    const { signal } = _controller;
-
-    setTimeout(
-        () =>
-            requestAnimationFrame(() => {
-                const reason = timeoutError();
-                _controller.abort(reason);
-                _controller = undefined!;
-                augmentSignalReason(signal, reason);
-            }),
-        _timeout
-    );
 
     return signal;
 };

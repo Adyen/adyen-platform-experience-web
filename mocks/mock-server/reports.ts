@@ -1,6 +1,6 @@
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
-import { compareDates, delay, getPaginationLinks } from './utils';
+import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { getReports } from '../mock-data/reports';
 
 const DEFAULT_SORT_DIRECTION = 'desc';
@@ -67,7 +67,6 @@ export const reportsMock = [
 
     http.get(`${DOWNLOAD}`, async ({ request }) => {
         const url = new URL(request.url);
-        const balanceAccountId = url.searchParams.get('balanceAccountId');
         const createdAt = url.searchParams.get('createdAt');
         const reportDate = new Date(createdAt || Date.now()).toISOString().split('T', 1)[0]?.split('-');
         const filename = `${['balanceaccount', 'payout', 'report'].concat(reportDate!).filter(Boolean).join('_')}.csv`;

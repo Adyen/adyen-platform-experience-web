@@ -5,13 +5,21 @@ import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './t
 import useCoreContext from '../../core/Context/useCoreContext';
 import { boolOrFalse, EMPTY_OBJECT } from '../../utils';
 
-const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle }: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
+const useCommitAction = ({
+    applyDisabled,
+    applyTitle,
+    resetDisabled,
+    resetTitle,
+    onResetAction,
+}: UseCommitActionConfig = EMPTY_OBJECT): CommitActionProperties => {
     const { i18n } = useCoreContext();
     const [commitAction, setCommitAction] = useState(CommitAction.NONE);
-    const [committing, setCommitting] = useState(commitAction !== CommitAction.NONE);
 
     const applyAction = useCallback(() => setCommitAction(CommitAction.APPLY), [setCommitAction]);
-    const resetAction = useCallback(() => setCommitAction(CommitAction.CLEAR), [setCommitAction]);
+    const resetAction = useCallback(() => {
+        setCommitAction(CommitAction.CLEAR);
+        onResetAction && onResetAction();
+    }, [setCommitAction, onResetAction]);
     const resetCommitAction = useCallback(() => setCommitAction(CommitAction.NONE), [setCommitAction]);
 
     const applyButtonAction = useMemo(
@@ -21,7 +29,7 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
                 event: applyAction,
                 title: applyTitle?.trim() || i18n.get('apply'),
                 variant: ButtonVariant.PRIMARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, applyAction, applyDisabled, applyTitle]
     );
 
@@ -32,21 +40,21 @@ const useCommitAction = ({ applyDisabled, applyTitle, resetDisabled, resetTitle 
                 event: resetAction,
                 title: resetTitle?.trim() || i18n.get('reset'),
                 variant: ButtonVariant.SECONDARY,
-            } as ButtonActionObject),
+            }) as ButtonActionObject,
         [i18n, resetAction, resetDisabled, resetTitle]
     );
 
     const commitActionButtons = useMemo(() => [applyButtonAction, resetButtonAction] as const, [applyButtonAction, resetButtonAction]);
+    const committing = useMemo(() => commitAction !== CommitAction.NONE, [commitAction]);
 
     useEffect(() => {
-        setCommitting(commitAction !== CommitAction.NONE);
         switch (commitAction) {
             case CommitAction.APPLY:
             case CommitAction.CLEAR:
                 resetCommitAction();
                 break;
         }
-    }, [commitAction, setCommitting, resetCommitAction]);
+    }, [commitAction, resetCommitAction]);
 
     return { commitAction, commitActionButtons, committing, resetCommitAction } as const;
 };

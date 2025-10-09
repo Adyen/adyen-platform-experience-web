@@ -1,50 +1,66 @@
 import classnames from 'classnames';
+import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../translations';
 import { IPayoutDetails } from '../../../../types';
-import { components } from '../../../../types/api/resources/PayoutsResource';
 import { EMPTY_OBJECT } from '../../../../utils';
 import Accordion from '../../../internal/Accordion/Accordion';
 import Card from '../../../internal/Card/Card';
-import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../../constants';
 import StructuredList from '../../../internal/StructuredList';
-import { ListValue } from '../../../internal/StructuredList/types';
-import { TypographyVariant } from '../../../internal/Typography/types';
+import { ListValue, StructuredListProps } from '../../../internal/StructuredList/types';
+import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
-import TransactionDataSkeleton from '../../TransactionDetails/components/TransactionDataSkeleton';
-import useTimezoneAwareDateFormatting from '../../../hooks/useTimezoneAwareDateFormatting';
+import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import './PayoutData.scss';
 import {
     PD_BASE_CLASS,
+    PD_BUTTON_ACTIONS,
     PD_CARD_CLASS,
     PD_CARD_TITLE_CLASS,
     PD_CONTENT_CLASS,
+    PD_EXTRA_DETAILS_CLASS,
+    PD_EXTRA_DETAILS_ICON,
+    PD_EXTRA_DETAILS_LABEL,
     PD_SECTION_AMOUNT_CLASS,
     PD_SECTION_CLASS,
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
+    PD_TITLE_CLASS_WITH_EXTRA_DETAILS,
+    PD_TITLE_CONTAINER_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
-
-type Payout = components['schemas']['PayoutDTO'];
+import { Tag } from '../../../internal/Tag/Tag';
+import { TagVariant } from '../../../internal/Tag/types';
+import Link from '../../../internal/Link/Link';
+import Icon from '../../../internal/DataGrid/components/Icon';
+import { isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
+import { ButtonVariant } from '../../../internal/Button/types';
+import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
+import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
+import { PayoutDetailsCustomization } from '../types';
 
 export const PayoutData = ({
     balanceAccountId,
     balanceAccountDescription,
     payout: payoutData,
-    isFetching,
+    extraFields,
 }: {
     payout?: IPayoutDetails;
     isFetching?: boolean;
     balanceAccountId: string;
     balanceAccountDescription?: string;
+    extraFields?: Record<string, any> | undefined;
+    dataCustomization?: { details?: PayoutDetailsCustomization };
 }) => {
-    const { payout }: { payout: Payout } = payoutData ?? EMPTY_OBJECT;
-    const { i18n } = useCoreContext();
+    const { payout } = payoutData ?? (EMPTY_OBJECT as NonNullable<typeof payoutData>);
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { i18n } = useCoreContext();
+
     const adjustments = useMemo(() => {
         const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
@@ -70,16 +86,19 @@ export const PayoutData = ({
     }, [i18n, payoutData]);
 
     const fundsCaptured = useMemo(() => {
-        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
-            if (breakdown?.amount?.value === 0) return items;
-            if (breakdown?.amount?.value && breakdown.category) {
-                items.push({
-                    key: breakdown.category as TranslationKey,
-                    value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
-                });
-            }
-            return items;
-        }, [] as { key: TranslationKey; value: ListValue }[]);
+        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce(
+            (items, breakdown) => {
+                if (breakdown?.amount?.value === 0) return items;
+                if (breakdown?.amount?.value && breakdown.category) {
+                    items.push({
+                        key: breakdown.category as TranslationKey,
+                        value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
+                    });
+                }
+                return items;
+            },
+            [] as { key: TranslationKey; value: ListValue }[]
+        );
         data?.sort((a, b) => {
             if (a.key === 'capture') return -1;
             if (b.key === 'capture') return 1;
@@ -88,27 +107,60 @@ export const PayoutData = ({
         return data;
     }, [payoutData, i18n]);
 
-    const creationDate = useMemo(
-        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUT_DETAILS) : ''),
-        [payout, dateFormat]
-    );
+    const extraDetails: StructuredListProps['items'] =
+        Object.entries(extraFields || {})
+            .filter(([, field]) => field.type !== 'button' && field.visibility !== 'hidden')
+            .map(([key, value]) => ({
+                key: key as TranslationKey,
+                value: isCustomDataObject(value) ? value.value : value,
+                type: isCustomDataObject(value) ? value.type : 'text',
+                config: isCustomDataObject(value) ? value.config : undefined,
+            })) || [];
+
+    const buttonActions = useMemo(() => {
+        const extraActions = extraFields
+            ? Object.values(extraFields)
+                  .filter(field => field.type === 'button')
+                  .map(field => ({
+                      title: field.value,
+                      variant: ButtonVariant.SECONDARY,
+                      event: field.config?.action,
+                      classNames: field?.config?.className ? [field?.config?.className] : [],
+                  }))
+            : [];
+        const actions = [...extraActions].filter(Boolean);
+        return actions;
+    }, [extraFields]);
 
     return (
         <>
             {!payout ? (
-                <TransactionDataSkeleton isLoading={isFetching} skeletonRowNumber={6} />
+                <DataOverviewDetailsSkeleton skeletonRowNumber={6} />
             ) : (
                 <div className={PD_BASE_CLASS}>
-                    <div className={PD_TITLE_CLASS}>
-                        <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                            {i18n.get('netPayout')}
-                        </Typography>
+                    <div
+                        className={cx(PD_TITLE_CLASS, {
+                            [PD_TITLE_CLASS_WITH_EXTRA_DETAILS]: extraDetails.length,
+                        })}
+                    >
+                        <div className={PD_TITLE_CONTAINER_CLASS}>
+                            <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                                {i18n.get('netPayout')}
+                            </Typography>
+                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayPayouts')}></Tag>}
+                        </div>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
                                 hideCurrency: true,
                             })} ${payout.payoutAmount.currency}`}
                         </Typography>
-                        <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
+                        {payout?.createdAt && (
+                            <time dateTime={payout.createdAt}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {dateFormat(payout.createdAt, DATE_FORMAT_PAYOUT_DETAILS)}
+                                </Typography>
+                            </time>
+                        )}
                         <div className={PD_SECTION_CLASS}>
                             {balanceAccountDescription && (
                                 <Typography variant={TypographyVariant.CAPTION} stronger wide>
@@ -118,6 +170,40 @@ export const PayoutData = ({
                             <Typography variant={TypographyVariant.CAPTION} className={PD_TITLE_BA_CLASS}>{`${balanceAccountId}`}</Typography>
                         </div>
                     </div>
+                    {extraDetails && extraDetails.length > 0 ? (
+                        <div>
+                            <StructuredList
+                                classNames={PD_EXTRA_DETAILS_CLASS}
+                                items={extraDetails}
+                                align="start"
+                                layout="5-7"
+                                renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
+                                renderValue={(val, key, type, config) => {
+                                    if (type === 'link' && config) {
+                                        return (
+                                            <Link classNames={[cx(config?.className)]} href={config.href} target={config.target || '_blank'}>
+                                                {val}
+                                            </Link>
+                                        );
+                                    }
+                                    if (type === 'icon' && config) {
+                                        const icon = { url: config.src, alt: config.alt || val };
+                                        return (
+                                            <div className={cx(PD_EXTRA_DETAILS_ICON, config?.className)}>
+                                                <Icon {...icon} />
+                                                <Typography variant={TypographyVariant.BODY}>{val}</Typography>
+                                            </div>
+                                        );
+                                    }
+                                    return (
+                                        <Typography className={cx(config?.className)} variant={TypographyVariant.BODY}>
+                                            {val}
+                                        </Typography>
+                                    );
+                                }}
+                            />
+                        </div>
+                    ) : null}
                     <div className={PD_CONTENT_CLASS}>
                         <div className={PD_SECTION_CLASS}>
                             {payout?.fundsCapturedAmount &&
@@ -133,7 +219,7 @@ export const PayoutData = ({
                                         <div className={PD_SECTION_CLASS}>
                                             {
                                                 <div className={PD_CARD_CLASS}>
-                                                    <Card>
+                                                    <Card noPadding>
                                                         <StructuredList items={fundsCaptured} />
                                                     </Card>
                                                 </div>
@@ -163,6 +249,7 @@ export const PayoutData = ({
                                     {adjustments?.additions && Object.keys(adjustments?.additions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('additions')}
@@ -176,6 +263,7 @@ export const PayoutData = ({
                                     {adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0 && (
                                         <div className={PD_CARD_CLASS}>
                                             <Card
+                                                noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
                                                         {i18n.get('subtractions')}
@@ -215,6 +303,11 @@ export const PayoutData = ({
                             </Typography>
                         </div>
                     )}
+                    {buttonActions.length ? (
+                        <div className={PD_BUTTON_ACTIONS}>
+                            <ButtonActions actions={buttonActions} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
+                        </div>
+                    ) : null}
                 </div>
             )}
         </>

@@ -1,5 +1,5 @@
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
-import Popover from '../../../Popover/Popover';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
+import PopoverContainer from '../../../Popover/PopoverContainer';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { boolOrFalse, isFunction } from '../../../../../utils';
@@ -17,6 +17,7 @@ const SelectList = fixedForwardRef(
             active,
             commitActions,
             items,
+            disableFocusTrap,
             multiSelect,
             onKeyDown,
             onSelect,
@@ -30,11 +31,12 @@ const SelectList = fixedForwardRef(
             popoverClassNameModifiers,
             showOverlay,
             fitPosition,
+            fixedPopoverPositioning,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
         const { i18n } = useCoreContext();
-        const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
         const listClassName = cx(DROPDOWN_LIST_CLASS, { [DROPDOWN_LIST_ACTIVE_CLASS]: showList });
         const noOptionsClassName = cx(DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS);
@@ -42,10 +44,10 @@ const SelectList = fixedForwardRef(
         const multipleSelection = useMemo(() => boolOrFalse(multiSelect), [multiSelect]);
 
         return showList ? (
-            <Popover
+            <PopoverContainer
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
-                disableFocusTrap={true}
+                disableFocusTrap={disableFocusTrap}
                 divider={true}
                 dismiss={dismissPopover}
                 dismissible={false}
@@ -56,8 +58,9 @@ const SelectList = fixedForwardRef(
                 targetElement={toggleButtonRef as PopoverProps['targetElement']}
                 withContentPadding={false}
                 position={PopoverContainerPosition.BOTTOM}
-                showOverlay={showOverlay && isSmViewport}
+                showOverlay={showOverlay && isSmContainer}
                 fitPosition={fitPosition}
+                fixedPositioning={fixedPopoverPositioning}
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
@@ -78,7 +81,7 @@ const SelectList = fixedForwardRef(
                         <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
                     )}
                 </ul>
-            </Popover>
+            </PopoverContainer>
         ) : null;
     }
 );

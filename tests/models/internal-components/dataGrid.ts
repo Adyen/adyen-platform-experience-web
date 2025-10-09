@@ -1,11 +1,11 @@
-import { Locator } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 class DataGridPage {
     public rootElement: Locator;
     public readonly gridBody: Locator;
 
-    constructor(rootElement: Locator) {
-        this.rootElement = rootElement.getByRole('table');
+    constructor(page: Page, rootElementSelector: string) {
+        this.rootElement = page.locator(rootElementSelector).getByRole('table');
         this.gridBody = this.rootElement.getByRole('rowgroup').nth(1);
     }
 

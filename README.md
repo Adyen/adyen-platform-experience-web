@@ -4,9 +4,17 @@
 
 [![npm](https://img.shields.io/npm/v/@adyen/adyen-platform-experience-web.svg)](http://npm.im/@adyen/adyen-platform-experience-web)
 
-Adyen Platform Experience provides you with the building blocks to create an internal dashboard for your platform customers.
+Adyen Platform Experience components provides you with the building blocks to create an interactive dashboard for your platform customers.
 
-## Prerequisites
+## Contributing
+
+We strongly encourage you to contribute to our repository.
+
+Keep in mind we merge every pull request into the `develop` branch. We aim to keep `develop` in good shape, which allows us to release a new version whenever we need to.
+
+Find out more in our [contribution guidelines](https://github.com/Adyen/.github/blob/master/CONTRIBUTING.md).
+
+## Requirements
 
 -   [Adyen test account](https://www.adyen.com/signup)
 -   [API key](https://docs.adyen.com/development-resources/how-to-get-the-api-key)
@@ -34,7 +42,7 @@ import AdyenPlatformExperience from '@adyen/adyen-platform-experience-web';
 To run the development environment:
 
 1. Clone [this repository](https://github.com/Adyen/adyen-platform-experience-web).
-2. Create a `.env` file on your project's root folder following the example in [`env.default`](envs/env.default) and fill in the environment variables.
+2. In the `envs` folder, create a `.env` file following the example in [`env.default`](envs/env.default) and fill in the environment variables.
 3. Install the dependencies by running:
 
 ```sh
@@ -47,23 +55,14 @@ npm install
 npm start
 ```
 
-## Contributing
-
-We merge every pull request into the `main` branch. We aim to keep `main` in good shape, which allows us to release a new version whenever we need to.
-
-Have a look at our [contributing guidelines](https://github.com/Adyen/.github/blob/main/CONTRIBUTING.md) to find out how to raise a pull request.
-
 ## See also
 
--   [Documentation](https://docs.adyen.com/)
+-   [Documentation](https://docs.adyen.com/platforms/components-overview/)
 -   [API Explorer](https://docs.adyen.com/api-explorer/)
 
 ## Support
 
-If you have a feature request, or spotted a bug or a technical problem, [create an issue here](https://github.com/Adyen/adyen-platform-experience-web/issues/new/choose).
-
-For other questions, [contact our support team](https://www.adyen.help/hc/en-us/requests/new).
+If you have a feature request, or spotted a bug or a technical problem, [create a GitHub issue here](https://github.com/Adyen/adyen-platform-experience-web/issues/new/choose). For other questions, contact our Support Team via [Customer Area](https://ca-live.adyen.com/ca/ca/contactUs/support.shtml) or via email: support@adyen.com
 
 ## License
-
-This repository is available under the [MIT license](LICENSE).
+MIT license. For more information, see the [LICENSE file](LICENSE).

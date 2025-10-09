@@ -19,13 +19,29 @@
     transition-property: color, background-color, box-shadow;
     user-select: none;
 
+    &--condensed {
+        border-radius: style.token(border-radius-s);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+    }
+
+    &--full-width {
+        width: 100%;
+    }
+
     &__label {
         align-items: center;
         display: inline-flex;
+        font-weight: inherit;
+        gap: style.token(spacer-040);
         line-height: style.token(text-body-line-height);
         vertical-align: middle;
         white-space: nowrap;
         width: 100%;
+
+        &--centered {
+            justify-content: center;
+        }
     }
 
     &--hidden {
@@ -46,6 +62,11 @@
 
         &:disabled {
             background-color: style.token(color-background-disabled);
+            color: style.token(color-label-disabled);
+        }
+
+        &.--loading {
+            background: style.token(color-background-disabled);
             color: style.token(color-label-disabled);
         }
     }
@@ -88,7 +109,6 @@
         text-decoration: underline;
 
         &:hover {
-            background-color: style.token(color-background-primary);
             color: style.token(color-label-primary-hover);
             text-decoration: none;
         }
@@ -102,6 +122,21 @@
         &:disabled {
             background-color: style.token(color-background-primary);
             color: style.token(color-label-disabled);
+        }
+    }
+
+    &--loading {
+        gap: style.token(spacer-040);
+    }
+
+    &--tertiary-with-background {
+        background-color: transparent;
+        color: style.token(color-label-primary);
+
+        &:hover {
+            background-color: style.token(color-background-secondary-hover);
+            color: style.token(color-label-primary-hover);
+            text-decoration: none;
         }
     }
 
@@ -146,5 +181,14 @@
 
     &:disabled {
         cursor: not-allowed;
+    }
+
+    &__anchor {
+        padding: style.token(spacer-020) style.token(spacer-040);
+        transition: none;
+
+        &:hover {
+            background: style.token(color-background-secondary-hover);
+        }
     }
 }

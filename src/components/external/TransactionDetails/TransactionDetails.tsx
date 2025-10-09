@@ -1,24 +1,18 @@
-import { _UIComponentProps } from '../../types';
+import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
-import { DetailsComponentProps } from './types';
+import { TransactionDetailsProps } from './types';
 
-export class TransactionElement extends UIElement<DetailsComponentProps> {
-    public static type = 'transactionDetails';
+export class TransactionElement extends UIElement<TransactionDetailsProps> {
+    public static type: ExternalComponentType = 'transactionDetails';
 
-    constructor(props: _UIComponentProps<DetailsComponentProps>) {
+    constructor(props: _UIComponentProps<TransactionDetailsProps>) {
         super(props);
         this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {
-        return (
-            <DataOverviewDetails
-                {...this.props}
-                type={'transaction'}
-                ref={(ref: UIElement<DetailsComponentProps>) => void (this.componentRef = ref)}
-            />
-        );
+        return <DataOverviewDetails {...this.props} type="transaction" />;
     };
 }
 

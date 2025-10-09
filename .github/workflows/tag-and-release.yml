@@ -5,17 +5,17 @@ on:
   workflow_dispatch:
 
   pull_request:
-    types:
-      - closed
-    branches:
-      - 'changeset-release/**'
-      - 'releases/**'
-      - 'main'
+    types: [closed]
+    branches: ['main', 'releases/**', 'changeset-release/**']
 
 jobs:
   create-github-release:
+    permissions:
+      contents: write
+      actions: write
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
+    if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
@@ -37,12 +37,15 @@ jobs:
           name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}
           path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           retention-days: 1
+          if-no-files-found: error
+          compression-level: 0
+          overwrite: true
 
       - name: Push tags and create a release
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run create-tag
+          publish: npm run changeset -- tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -51,13 +54,16 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const tag = `v${{ env.NEW_VERSION }}`;
+            const fs = require('fs');
+            const tag = `v${process.env.NEW_VERSION}`;
             const { data: release } = await github.rest.repos.getReleaseByTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag: tag
             });
-            core.setOutput('upload_url', release.upload_url);
+            // Write the output to the file defined by GITHUB_OUTPUT (new method)
+            const outputFile = process.env.GITHUB_OUTPUT;
+            fs.appendFileSync(outputFile, `upload_url=${release.upload_url}\n`);
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -69,7 +75,42 @@ jobs:
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
 
+      - name: Build umd file
+        env:
+          VERSION: ${{ env.NEW_VERSION }}
+        run: |
+          ./scripts/upload-assets/generate-umd-file.sh
+
+      - name: Upload UMD file in new tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ${{ github.repository }}
+          ASSET_PATH: './platform-components-${{ env.NEW_VERSION }}.tar.gz'
+          ASSET_NAME: 'platform-components-${{ env.NEW_VERSION }}.tar.gz'
+        run: |
+          echo "Targeting repository: $TARGET_REPO"
+          echo "Using tag: ${{ env.NEW_VERSION }}"
+          
+          # Upload the new asset to the target repo using the new tag
+          gh release upload "v${{ env.NEW_VERSION }}" "$ASSET_PATH" \
+            --repo "$TARGET_REPO"
+
   trigger-npm-publish:
+    permissions:
+      contents: write
+      actions: write
     needs: create-github-release
     uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
     secrets: inherit
+    with:
+      source_run_id: ${{ github.run_id }}
+
+  upload-assets:
+    permissions:
+      contents: write
+      actions: write
+    needs: create-github-release
+    uses: adyen/adyen-platform-experience-web/.github/workflows/upload-assets-to-release-tag.yml@main
+    secrets: inherit
+    with:
+      environment_choice: 'live'

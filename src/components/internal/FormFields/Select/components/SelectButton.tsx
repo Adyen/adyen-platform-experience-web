@@ -1,13 +1,13 @@
 import cx from 'classnames';
 import { Ref } from 'preact';
 import { MutableRef, useMemo } from 'preact/hooks';
-import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Img from '../../../Img';
+import Icon from '../../../Icon';
 import Button from '../../../Button';
 import { ButtonVariant } from '../../../Button/types';
 import Typography from '../../../Typography/Typography';
-import ChevronDown from '../../../SVGIcons/ChevronDown';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { boolOrFalse } from '../../../../../utils';
 import {
@@ -32,7 +32,12 @@ const SelectButtonElement = <T extends SelectItem>({
     filterable,
     toggleButtonRef,
     ...props
-}: PropsWithChildren<SelectButtonProps<T> & Partial<HTMLAttributes<HTMLButtonElement | HTMLDivElement>>>) => {
+}: PropsWithChildren<
+    SelectButtonProps<T> &
+        (Partial<ButtonHTMLAttributes<HTMLButtonElement>> &
+            Partial<AnchorHTMLAttributes<HTMLAnchorElement>> &
+            Partial<HTMLAttributes<HTMLDivElement>>)
+>) => {
     const baseClassName = useMemo(() => (filterable ? cx(DROPDOWN_BUTTON_CLASSNAME, className) : className), [className, filterable]);
     return filterable ? (
         <div {...props} className={baseClassName} ref={toggleButtonRef as Ref<HTMLDivElement>} />
@@ -43,6 +48,8 @@ const SelectButtonElement = <T extends SelectItem>({
             disabled={disabled}
             variant={ButtonVariant.SECONDARY}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
+            aria-label={props['aria-label']}
+            aria-labelledby={props['aria-labelledby']}
         />
     );
 };
@@ -60,7 +67,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
-            aria-haspopup="listbox"
+            aria-haspopup="dialog"
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
@@ -71,17 +78,20 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             filterable={filterable}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
-            role={filterable ? 'button' : undefined}
+            role={!filterable || showList ? 'button' : undefined}
             tabIndex={0}
             title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
-            type={!filterable ? 'button' : ''}
+            type={filterable ? undefined : 'button'}
             aria-describedby={props.ariaDescribedBy}
-            id={props.id ?? ''}
+            id={props.id}
+            {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
         >
             {showList && filterable ? (
                 <input
                     aria-autocomplete="list"
+                    aria-label={props['aria-label']}
+                    aria-labelledby={props['aria-labelledby']}
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}
@@ -96,11 +106,9 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             ) : (
                 <>
                     {buttonActiveItem?.icon && (
-                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem.name.trim()} />
+                        <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem?.name?.trim() ?? ''} />
                     )}
-                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>
-                        {buttonActiveItem?.selectedOptionName?.trim() || buttonActiveItem?.name.trim() || placeholderText}
-                    </span>
+                    <span className={DROPDOWN_BUTTON_TEXT_CLASS}>{buttonActiveItem?.selectedOptionName?.trim() || buttonTitleText}</span>
                     {multiSelect && props.appliedFilterNumber > 0 && (
                         <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
@@ -112,7 +120,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             )}
             {!withoutCollapseIndicator && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
-                    <ChevronDown role="presentation" />
+                    <Icon name="chevron-down" />
                 </span>
             )}
         </SelectButtonElement>

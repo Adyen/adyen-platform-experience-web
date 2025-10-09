@@ -5,8 +5,8 @@ import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 import './ErrorMessageDisplay.scss';
 import { JSXInternal } from 'preact/src/jsx';
-import noResults from '../../../images/no-results.svg';
 import Button from '../Button';
+import cx from 'classnames';
 
 export const IMAGE_BREAKPOINT_SIZES = {
     md: 680,
@@ -23,6 +23,10 @@ type ErrorMessageDisplayProps = {
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    absolutePosition?: boolean;
+    outlined?: boolean;
+    renderSecondaryButton?: () => JSXInternal.Element;
+    withBackground?: boolean;
 };
 
 export const ErrorMessageDisplay = ({
@@ -35,9 +39,12 @@ export const ErrorMessageDisplay = ({
     refreshComponent,
     onContactSupport,
     translationValues,
+    absolutePosition = true,
+    outlined = true,
+    renderSecondaryButton,
+    withBackground,
 }: ErrorMessageDisplayProps) => {
-    const { i18n, updateCore } = useCoreContext();
-
+    const { i18n, updateCore, getImageAsset } = useCoreContext();
     const renderMessage = useCallback(
         (errorMessage: TranslationKey | TranslationKey[]) => {
             if (Array.isArray(errorMessage)) {
@@ -62,21 +69,29 @@ export const ErrorMessageDisplay = ({
     );
 
     return (
-        <div className={`adyen-pe-error-message-display ${centered ? 'adyen-pe-error-message-display--centered' : ''}`}>
+        <div
+            className={cx(['adyen-pe-error-message-display'], {
+                'adyen-pe-error-message-display--absolute-position': absolutePosition,
+                'adyen-pe-error-message-display--outlined': outlined,
+                'adyen-pe-error-message-display--with-background': withBackground !== false && !outlined,
+                'adyen-pe-error-message-display--centered': centered,
+            })}
+        >
             {(imageDesktop || imageMobile || withImage) && (
                 <div className="adyen-pe-error-message-display__illustration">
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageDesktop} />
                         <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? noResults} alt={i18n.get('thereWasAnUnexpectedError')} />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt="" />
                     </picture>
                 </div>
             )}
             <Typography variant={TypographyVariant.TITLE}>{i18n.get(title)}</Typography>
             {message && <Typography variant={TypographyVariant.BODY}>{renderMessage(message)}</Typography>}
 
-            {(onContactSupport || refreshComponent) && (
+            {(onContactSupport || refreshComponent || renderSecondaryButton) && (
                 <div className={'adyen-pe-error-message-display__button'}>
+                    {renderSecondaryButton && renderSecondaryButton()}
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('reachOutToSupport')}</Button>}
                     {!onContactSupport && refreshComponent && <Button onClick={updateCore}>{i18n.get('refresh')}</Button>}
                 </div>

@@ -1,20 +1,18 @@
-import { PayoutDetailsWithIdProps } from '../../internal/DataOverviewDetails/types';
-import { _UIComponentProps } from '../../types';
+import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import DataOverviewDetails from '../../internal/DataOverviewDetails/DataOverviewDetails';
+import { PayoutDetailsProps } from './types';
 
-export class PayoutElement extends UIElement<PayoutDetailsWithIdProps> {
-    public static type = 'payoutDetails';
+export class PayoutElement extends UIElement<PayoutDetailsProps> {
+    public static type: ExternalComponentType = 'payoutDetails';
 
-    constructor(props: _UIComponentProps<PayoutDetailsWithIdProps>) {
+    constructor(props: _UIComponentProps<PayoutDetailsProps>) {
         super(props);
         this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {
-        return (
-            <DataOverviewDetails {...this.props} type={'payout'} ref={(ref: UIElement<PayoutDetailsWithIdProps>) => void (this.componentRef = ref)} />
-        );
+        return <DataOverviewDetails {...this.props} type="payout" />;
     };
 }
 

@@ -1,25 +1,28 @@
 import classNames from 'classnames';
 import { VNode } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { AriaAttributes } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { EndpointName } from '../../../../types/api/endpoints';
-import { mediaQueries, useResponsiveViewport } from '../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import Spinner from '../../Spinner';
-import Download from '../../SVGIcons/Download';
+import Icon from '../../Icon';
 import Button from '../Button';
 import { ButtonVariant } from '../types';
 import useDownload from './useDownload';
 import './DownloadButton.scss';
 
 interface DownloadButtonProps {
-    params: any;
+    requestParams: any;
+    iconButton?: boolean;
     endpointName: EndpointName;
     className?: string;
     disabled?: boolean;
     onDownloadRequested?: () => void;
     setError?: (error?: AdyenPlatformExperienceError) => any;
     errorDisplay?: VNode<any>;
+    errorMessage?: (error: any) => VNode<any>;
 }
 
 function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
@@ -39,11 +42,22 @@ function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     a.click();
 }
 
-function DownloadButton({ className, disabled, endpointName, params, setError, errorDisplay, onDownloadRequested }: DownloadButtonProps) {
+function DownloadButton({
+    className,
+    disabled,
+    endpointName,
+    requestParams,
+    setError,
+    errorDisplay,
+    onDownloadRequested,
+    iconButton = false,
+    errorMessage,
+    ...ariaAttributeProps
+}: DownloadButtonProps & Pick<AriaAttributes, 'aria-describedby' | 'aria-label' | 'aria-labelledby'>) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
-    const isSmViewport = useResponsiveViewport(mediaQueries.down.xs);
-    const { data, error, isFetching } = useDownload(endpointName, params, fetchData);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const { data, error, isFetching } = useDownload(endpointName, requestParams, fetchData);
 
     useEffect(() => {
         if (fetchData) {
@@ -62,32 +76,55 @@ function DownloadButton({ className, disabled, endpointName, params, setError, e
         if (setError && error) {
             setError(error as AdyenPlatformExperienceError);
         }
-    }, [error]);
+    }, [error, setError]);
 
     const onClick = () => {
         setFetchData(true);
         onDownloadRequested?.();
     };
 
+    const buttonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Icon name="download" />), [isFetching]);
+
+    const buttonLabel = useMemo(() => {
+        if (iconButton) {
+            return buttonIcon;
+        } else {
+            return isFetching ? `${i18n.get('downloading')}..` : i18n.get('download');
+        }
+    }, [buttonIcon, i18n, isFetching, iconButton]);
+
     return (
-        <div className="adyen-pe-download">
-            {isSmViewport ? (
-                <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
-                    {isFetching ? <Spinner size={'small'} /> : <Download />}
-                </Button>
-            ) : (
-                <Button
-                    className={classNames('adyen-pe-download__button', { 'adyen-pe-download__button--loading': isFetching }, className)}
-                    disabled={disabled || isFetching}
-                    variant={ButtonVariant.SECONDARY}
-                    onClick={onClick}
-                    iconLeft={isFetching ? <Spinner size={'small'} /> : <Download />}
-                >
-                    {isFetching ? `${i18n.get('downloading')}..` : i18n.get('download')}
-                </Button>
-            )}
-            {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
-        </div>
+        <>
+            <div
+                className={classNames('adyen-pe-download', {
+                    'adyen-pe-download-icon-button-container': iconButton,
+                })}
+            >
+                {isSmContainer ? (
+                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...ariaAttributeProps}>
+                        {buttonIcon}
+                    </Button>
+                ) : (
+                    <Button
+                        className={classNames(
+                            'adyen-pe-download__button',
+                            { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
+                            className
+                        )}
+                        disabled={disabled || isFetching}
+                        variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
+                        onClick={onClick}
+                        {...(!iconButton && { iconLeft: buttonIcon })}
+                        {...ariaAttributeProps}
+                    >
+                        {buttonLabel}
+                    </Button>
+                )}
+                {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
+            </div>
+            {/* [TODO]: Remove errorMessage prop and rely on errorDisplay for rendering error  */}
+            {error && errorMessage && errorMessage(error)}
+        </>
     );
 }
 

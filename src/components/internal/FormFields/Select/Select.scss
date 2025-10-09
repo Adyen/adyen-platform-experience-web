@@ -4,10 +4,10 @@
     --adyen-pe-separation-margin: #{style.token(spacer-060)};
     display: inline-flex;
     flex: none;
+    font-size: style.$adyen-pe-svg-icon-size-base;
 
     svg {
-        height: 100%;
-        width: auto;
+        display: block;
     }
 }
 
@@ -36,13 +36,6 @@
     isolation: isolate;
     overflow: hidden;
     position: relative;
-
-    &--active,
-    &:active {
-        &[role='button'] {
-            min-width: 100px;
-        }
-    }
 
     &.adyen-pe-button--secondary {
         background: style.token(color-background-primary);

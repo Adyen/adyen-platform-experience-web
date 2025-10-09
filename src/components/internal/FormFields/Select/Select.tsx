@@ -2,8 +2,9 @@ import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '../../../types';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
-import { boolOrFalse, EMPTY_ARRAY, noop, uuid } from '../../../../utils';
+import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import useCommitAction, { CommitAction } from '../../../../hooks/useCommitAction';
+import useUniqueId from '../../../../hooks/useUniqueId';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
 import useSelect from './hooks/useSelect';
@@ -18,6 +19,7 @@ const Select = <T extends SelectItem>({
     popoverClassNameModifiers,
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
+    disableFocusTrap = false,
     multiSelect = false,
     readonly = false,
     onChange = noop,
@@ -33,6 +35,9 @@ const Select = <T extends SelectItem>({
     withoutCollapseIndicator = false,
     showOverlay = false,
     fitPosition,
+    fixedPopoverPositioning,
+    onResetAction,
+    ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
@@ -40,14 +45,18 @@ const Select = <T extends SelectItem>({
     const filterInputRef = useRef<HTMLInputElement>(null);
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
-    const selectListId = useRef(`select-${uuid()}`);
-    const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
+
+    const selectButtonUniqueId = `elem-${useUniqueId()}`;
+    const selectButtonId = uniqueId ?? selectButtonUniqueId;
+    const selectListId = `select-${useUniqueId()}`;
 
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
     const pendingClickOutsideTriggeredHideList = useRef(true);
     const clearSelectionInProgress = useRef(false);
     const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
+
+    const appliedFilterNumber = useMemo(() => selection.length, [selection]);
 
     const dismissPopover = useCallback(() => {
         setTextFilter('');
@@ -57,19 +66,6 @@ const Select = <T extends SelectItem>({
             pendingClickOutsideTriggeredHideList.current = true;
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
-
-    //TODO: Clarify and delete this
-    // const selectContainerRef = useClickOutside(
-    //     useRef<HTMLDivElement>(null),
-    //     useCallback(() => {
-    //         setTextFilter('');
-    //         setShowList(false);
-    //         if (showList) {
-    //             resetSelection(cachedSelectedItems.current);
-    //             pendingClickOutsideTriggeredHideList.current = true;
-    //         }
-    //     }, [resetSelection, showList, setShowList, setTextFilter])
-    // );
 
     const dropdownClassName = useMemo(
         () =>
@@ -84,6 +80,7 @@ const Select = <T extends SelectItem>({
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         resetDisabled: !selection.length,
+        onResetAction: onResetAction,
     });
 
     /**
@@ -154,11 +151,8 @@ const Select = <T extends SelectItem>({
     }, [closeList, commitSelection, multiSelect, selection]);
 
     useEffect(() => {
-        if (committing) {
-            setAppliedFilterNumber(selection.length);
-            closeList();
-        }
-    }, [committing, closeList, setAppliedFilterNumber, selection.length]);
+        if (committing) closeList();
+    }, [committing, closeList]);
 
     /**
      * Handle keyDown events on the selectList button
@@ -213,6 +207,7 @@ const Select = <T extends SelectItem>({
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
+                                item.tabIndex = 0;
                                 item.focus();
                                 break focus;
                             }
@@ -221,7 +216,10 @@ const Select = <T extends SelectItem>({
                         item = item.nextElementSibling as HTMLLIElement;
                     }
 
-                    if (firstAvailableItem) firstAvailableItem.focus();
+                    if (firstAvailableItem) {
+                        firstAvailableItem.tabIndex = 0;
+                        firstAvailableItem.focus();
+                    }
                 }
             });
         }
@@ -239,6 +237,7 @@ const Select = <T extends SelectItem>({
             switch (evt.code) {
                 case InteractionKeyCode.ESCAPE:
                     evt.preventDefault();
+                    evt.stopPropagation();
                     // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
                     closeList();
                     break;
@@ -251,6 +250,8 @@ const Select = <T extends SelectItem>({
                     let item = target.nextElementSibling as HTMLLIElement;
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                            target.tabIndex = -1;
+                            item.tabIndex = 0;
                             item.focus();
                             break;
                         }
@@ -264,6 +265,8 @@ const Select = <T extends SelectItem>({
                         let item = target.previousElementSibling as HTMLLIElement;
                         while (item) {
                             if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                                target.tabIndex = -1;
+                                item.tabIndex = 0;
                                 item.focus();
                                 break focus;
                             }
@@ -275,9 +278,6 @@ const Select = <T extends SelectItem>({
                     }
                     break;
                 }
-                case InteractionKeyCode.TAB:
-                    closeList();
-                    break;
                 default:
             }
         },
@@ -318,7 +318,7 @@ const Select = <T extends SelectItem>({
     return (
         <div className={dropdownClassName}>
             <SelectButton
-                id={uniqueId ?? undefined}
+                id={selectButtonId}
                 appliedFilterNumber={appliedFilterNumber}
                 active={selection}
                 filterInputRef={filterInputRef}
@@ -330,12 +330,13 @@ const Select = <T extends SelectItem>({
                 multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
-                selectListId={selectListId.current}
+                selectListId={selectListId}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
                 withoutCollapseIndicator={withoutCollapseIndicator}
-                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
+                ariaDescribedBy={!isCollatingErrors && selectButtonId ? `${selectButtonId}${ARIA_ERROR_SUFFIX}` : undefined}
+                {...ariaAttributeProps}
             />
             <SelectList
                 popoverClassNameModifiers={popoverClassNameModifiers}
@@ -345,9 +346,10 @@ const Select = <T extends SelectItem>({
                 commitActions={commitActionButtons}
                 items={items}
                 multiSelect={multiSelect}
+                disableFocusTrap={disableFocusTrap}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
-                selectListId={selectListId.current}
+                selectListId={selectListId}
                 ref={selectListRef}
                 toggleButtonRef={toggleButtonRef}
                 renderListItem={renderListItem}
@@ -355,6 +357,7 @@ const Select = <T extends SelectItem>({
                 showOverlay={showOverlay}
                 textFilter={textFilter}
                 fitPosition={fitPosition}
+                fixedPopoverPositioning={fixedPopoverPositioning}
             />
         </div>
     );

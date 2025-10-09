@@ -24,12 +24,13 @@ import { boolOrTrue, isFunction } from '../../../utils';
 import { isFocusable, SELECTORS } from '../../../primitives/dom/tabbableRoot/tabbable';
 import classNames from 'classnames';
 import { createPortal, PropsWithChildren } from 'preact/compat';
-import { Ref, useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { Ref } from 'preact';
 import './Popover.scss';
 
 const findFirstFocusableElement = (root: Element) => {
     let focusable: HTMLElement | undefined;
-    const elements = root.querySelector(`.${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
+    const elements = root.querySelector(`:scope .${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
     if (elements) {
         Array.prototype.some.call(elements, elem => {
             if (isFocusable(elem)) return (focusable = elem);
@@ -40,7 +41,7 @@ const findFirstFocusableElement = (root: Element) => {
 };
 
 const getGapByVariant = (variant: PopoverContainerVariant): [number, number, number, number] => {
-    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [15, 15, 15, 15];
+    return variant === PopoverContainerVariant.TOOLTIP ? [10, 3, 5, 5] : [8, 8, 8, 8];
 };
 
 function Popover({
@@ -65,10 +66,14 @@ function Popover({
     classNameModifiers,
     showOverlay = false,
     fitPosition,
+    fixedPositioning = false,
+    additionalStyle,
+    setPopoverElement,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
+    const contentRef = useUniqueIdentifier() as Ref<HTMLDivElement> | undefined;
     const popoverOpen = useRef<boolean>();
 
     const onCloseFocusTrap = useCallback(
@@ -95,11 +100,25 @@ function Popover({
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
-        usePopoverPositioner(getGapByVariant(variant), targetElement, variant, position, arrowRef, setToTargetWidth, showOverlay, fitPosition),
+        usePopoverPositioner(
+            getGapByVariant(variant),
+            targetElement,
+            variant,
+            position,
+            arrowRef,
+            setToTargetWidth,
+            showOverlay,
+            fitPosition,
+            fixedPositioning,
+            additionalStyle,
+            undefined,
+            contentRef
+        ),
         dismiss,
         variant === PopoverContainerVariant.TOOLTIP && !open,
         ClickOutsideVariant.POPOVER
     );
+
     const popoverFocusTrapElement = useFocusTrap(disableFocusTrap ? null : popoverPositionAnchorElement, onCloseFocusTrap);
 
     const popoverElement = useReflex<Element & { [CONTROL_ELEMENT_PROPERTY]?: (typeof targetElement)['current'] }>(
@@ -142,7 +161,7 @@ function Popover({
 
     useEffect(() => {
         if (popoverElement.current) popoverElement.current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-    }, [targetElement]);
+    }, [popoverElement, targetElement]);
 
     useEffect(() => {
         document.removeEventListener('keydown', cachedOnKeyDown.current);
@@ -160,12 +179,15 @@ function Popover({
                 <>
                     {showOverlay && <div className="adyen-pe-popover__overlay"></div>}
                     <div
-                        id="popover"
-                        ref={popoverElementWithId}
                         {...uncontrolledProps}
+                        ref={elem => {
+                            popoverElementWithId(elem);
+                            setPopoverElement?.(elem);
+                        }}
+                        aria-labelledby={targetElement.current?.id}
                         className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
+                        role={variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip'}
                         style={{ visibility: 'hidden' }}
-                        role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
                     >
                         {(title || isDismissible) && (
                             <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>
@@ -184,6 +206,7 @@ function Popover({
                                         [`${POPOVER_CONTENT_CLASSNAME}--with-padding`]: withContentPadding,
                                         [`${POPOVER_CONTENT_CLASSNAME}--overlay`]: showOverlay,
                                     })}
+                                    ref={contentRef}
                                 >
                                     {children}
                                 </div>

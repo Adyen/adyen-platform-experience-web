@@ -1,0 +1,33 @@
+name: Leaked Secrets Scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - "main"
+      - "develop"
+permissions:
+  contents: read
+
+jobs:
+  trufflehog:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set BASE and HEAD
+        id: vars
+        run: |
+          echo "BASE_SHA=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+          echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Run TruffleHog
+        uses: trufflesecurity/trufflehog@v3.62.0
+        with:
+          path: .
+          base: ${{ steps.vars.outputs.BASE_SHA }}
+          head: ${{ steps.vars.outputs.HEAD_SHA }}

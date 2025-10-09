@@ -1,13 +1,14 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import { useAuthContext } from '../../../../../core/Auth';
-import { useFetch } from '../../../../../hooks/useFetch/useFetch';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useConfigContext } from '../../../../../core/ConfigContext';
+import { useFetch } from '../../../../../hooks/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
 import { ITransaction } from '../../../../../types';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
@@ -31,7 +32,8 @@ const TransactionTotals = memo(
         currencies,
         fullWidth,
     }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
-        const { getTransactionTotals } = useAuthContext().endpoints;
+        const { i18n } = useCoreContext();
+        const { getTransactionTotals } = useConfigContext().endpoints;
 
         const fetchCallback = useCallback(async () => {
             return getTransactionTotals?.(EMPTY_OBJECT, {
@@ -68,21 +70,33 @@ const TransactionTotals = memo(
         }, [availableCurrencies, data]);
 
         const totals = getTotals() ?? [];
-        const isXsScreen = useResponsiveViewport(mediaQueries.only.xs);
+        const isXsContainer = useResponsiveContainer(containerQueries.only.xs);
 
         return (
             <div className={BASE_CLASS}>
-                {isXsScreen ? (
+                {isXsContainer ? (
                     <>
                         <div className={ITEM_CLASS}>
-                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="expenses" fullWidth={fullWidth} />
+                            <TotalsCard
+                                aria-label={i18n.get('totalIncoming')}
+                                totals={totals}
+                                isLoading={isLoading}
+                                hiddenField="expenses"
+                                fullWidth={fullWidth}
+                            />
                         </div>
                         <div className={ITEM_CLASS}>
-                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="incomings" fullWidth={fullWidth} />
+                            <TotalsCard
+                                aria-label={i18n.get('totalOutgoing')}
+                                totals={totals}
+                                isLoading={isLoading}
+                                hiddenField="incomings"
+                                fullWidth={fullWidth}
+                            />
                         </div>
                     </>
                 ) : (
-                    <TotalsCard totals={totals} isLoading={isLoading} fullWidth={fullWidth} />
+                    <TotalsCard aria-label={i18n.get('transactions.totals.label')} totals={totals} isLoading={isLoading} fullWidth={fullWidth} />
                 )}
             </div>
         );

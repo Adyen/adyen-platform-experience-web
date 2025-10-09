@@ -75,7 +75,7 @@ describe('today', () => {
 
             const $today = today(timezone);
             const unsubscribe = $today.subscribe(watchFn);
-            let currentDayTimestamp = watchFn.mock.lastCall[0]?.timestamp as number;
+            let currentDayTimestamp = watchFn.mock.lastCall?.[0]?.timestamp as number;
 
             expect($today.timestamp).toBe(currentDayTimestamp);
             expect($today.timezone).toBe(timezone ?? SYSTEM_TIMEZONE);

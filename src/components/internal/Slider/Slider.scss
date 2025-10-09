@@ -1,0 +1,74 @@
+@use '../../../style';
+
+$adyen-pe-slider-track-color: style.token(color-background-selected);
+$adyen-pe-slider-progress-color: style.token(color-background-highlight-strong);
+$adyen-pe-slider-thumb-background-color: style.token(color-background-primary);
+$adyen-pe-slider-thumb-border-color: style.token(color-background-highlight-strong);
+$adyen-pe-slider-thumb-size: style.token(spacer-070);
+$adyen-pe-slider-border-size: 3px;
+$adyen-pe-slider-border-radius: style.token(border-radius-m);
+$adyen-pe-slider-margin: style.token(spacer-070);
+
+@mixin adyen-pe-slider-thumb-appearance {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: $adyen-pe-slider-thumb-background-color;
+    border: $adyen-pe-slider-border-size solid $adyen-pe-slider-thumb-border-color;
+    border-radius: $adyen-pe-slider-border-radius;
+    box-sizing: border-box;
+    height: $adyen-pe-slider-thumb-size;
+    transition: background-color 0.5s;
+    width: $adyen-pe-slider-thumb-size;
+
+    &:hover {
+        background-color: $adyen-pe-slider-thumb-border-color;
+    }
+
+    &:active {
+        background-color: $adyen-pe-slider-thumb-border-color;
+    }
+}
+
+@mixin adyen-pe-slider-thumb {
+    &:focus {
+        &::-webkit-slider-thumb {
+            background-color: $adyen-pe-slider-thumb-border-color;
+        }
+
+        &::-moz-range-thumb {
+            background-color: $adyen-pe-slider-thumb-border-color;
+        }
+    }
+
+    &:focus-within {
+        &::-webkit-slider-thumb {
+            background-color: $adyen-pe-slider-thumb-background-color;
+        }
+
+        &::-moz-range-thumb {
+            background-color: $adyen-pe-slider-thumb-background-color;
+        }
+    }
+
+    &::-webkit-slider-thumb {
+        @include adyen-pe-slider-thumb-appearance;
+    }
+
+    &::-moz-range-thumb {
+        @include adyen-pe-slider-thumb-appearance;
+    }
+}
+
+.adyen-pe-slider {
+    @include adyen-pe-slider-thumb;
+    -webkit-appearance: none;
+    background: $adyen-pe-slider-track-color;
+    background-image: linear-gradient($adyen-pe-slider-progress-color, $adyen-pe-slider-progress-color);
+    background-repeat: no-repeat;
+    background-size: 50% 100%;
+    border-radius: $adyen-pe-slider-border-radius;
+    cursor: pointer;
+    height: $adyen-pe-slider-border-size;
+    width: 100%;
+}

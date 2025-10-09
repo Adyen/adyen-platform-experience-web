@@ -5,6 +5,7 @@ import { CalendarBlockCellData, CalendarDayOfWeekData, CalendarGrid } from '../.
 export interface CalendarGridProps {
     config: ReturnType<CalendarGrid['config']>;
     cursorRootProps: CalendarGridCursorRootProps;
+    getGridLabel: CalendarProps['getGridLabel'];
     grid: CalendarGrid;
     onlyCellsWithin?: CalendarProps['onlyCellsWithin'];
     prepare?: CalendarProps['prepare'];

@@ -7,7 +7,7 @@ dotenv.config({ path: './envs/.env' });
 
 const environment = process.env.NODE_ENV as 'live' | 'test';
 
-const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View'];
+const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View', 'Reports Overview Component: View'];
 
 export const SESSION = {
     accountHolder: process.env.SESSION_ACCOUNT_HOLDER,
@@ -28,7 +28,7 @@ export const sessionAwareTest = base.extend<TestFixtures>({
         const apiContext = await request.newContext({
             timeout: 60000,
             ignoreHTTPSErrors: true,
-            baseURL: `${resolveEnvironment(environment)}`,
+            baseURL: `${resolveEnvironment(environment).apiUrl}`,
         });
         try {
             await use(apiContext);

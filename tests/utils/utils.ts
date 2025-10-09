@@ -1,11 +1,8 @@
-import { pages } from '../../playground/pages';
-import keys from '../../src/translations/en-US.json' assert { type: 'json' };
-import { Page } from '@playwright/test';
+import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
+import type { Page } from '@playwright/test';
 import dotenv from 'dotenv';
-dotenv.config({ path: './envs/.env' });
 
-type PageId = (typeof pages)[number]['id'];
-export const getPagePath = (id: PageId) => pages.find(page => page.id === id)?.id ?? '';
+dotenv.config({ path: './envs/.env' });
 
 export const getTranslatedKey = (key: keyof typeof keys) => keys[key] ?? '';
 
@@ -54,7 +51,7 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
             let months = diff % 12;
 
             if (months) {
-                const nearestShorterMonth = originDate === 31 ? MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1 : 1;
+                const nearestShorterMonth = originDate === 31 ? (MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1) : 1;
                 if (originDate >= 30 && originMonth - months <= nearestShorterMonth) months++;
             } else if (years && originMonth === 1 && originDate === 29) months++;
 
@@ -71,6 +68,21 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
     };
 };
 
-export const goToPage = async ({ page, id }: { page: Page; id: string }) => {
-    await page.goto(`http://localhost:${process.env.PLAYGROUND_PORT}/iframe.html?id=${id}`);
+export const goToStory = async (page: Page, params: { id: string; args?: Record<string, string> }) => {
+    const { args, ...restOfParams } = params;
+    const queryParams = new URLSearchParams({
+        ...restOfParams,
+        ...(args
+            ? {
+                  args: Object.entries(args)
+                      .map(entry => entry.join(':'))
+                      .join(';'),
+              }
+            : {}),
+    });
+    await page.goto(`/iframe.html?${queryParams.toString()}`);
+};
+
+export const setTime = async (page: Page) => {
+    await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };

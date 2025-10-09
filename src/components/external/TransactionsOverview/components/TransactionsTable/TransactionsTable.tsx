@@ -1,23 +1,22 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { DATE_FORMAT_TRANSACTIONS_MOBILE, DATE_FORMAT_TRANSACTIONS } from '../../../../internal/DataOverviewDisplay/constants';
+import { DATE_FORMAT_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS_MOBILE } from '../../../../../constants';
 import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../../translations';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
-import { CellTextPosition } from '../../../../internal/DataGrid/types';
 import Pagination from '../../../../internal/Pagination';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import PaymentMethodCell from './PaymentMethodCell';
 import { TransactionTableProps } from './types';
-import { useTableColumns } from '../../../../hooks/useTableColumns';
+import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
 // const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
@@ -42,9 +41,9 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(activeBalanceAccount?.timeZone);
     const [hoveredRow, setHoveredRow] = useState<undefined | number>();
-    const isSmAndUpViewport = useResponsiveViewport(mediaQueries.up.sm);
-    const isMdAndUpViewport = useResponsiveViewport(mediaQueries.up.md);
-    const isXsAndDownViewport = useResponsiveViewport(mediaQueries.down.xs);
+    const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
+    const isMdAndUpContainer = useResponsiveContainer(containerQueries.up.md);
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const amountLabel = i18n.get('amount');
     const columns = useTableColumns({
@@ -55,11 +54,11 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 label: hasMultipleCurrencies
                     ? undefined
                     : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                position: CellTextPosition.RIGHT,
-                flex: isSmAndUpViewport ? 1.5 : undefined,
+                position: 'right',
+                flex: isSmAndUpContainer ? 1.5 : undefined,
             },
-            transactionType: { visible: isMdAndUpViewport },
-            paymentMethod: { visible: isSmAndUpViewport },
+            transactionType: { visible: isMdAndUpContainer },
+            paymentMethod: { visible: isSmAndUpContainer },
         },
     });
 
@@ -109,30 +108,41 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             i18n.has(tooltipKey) ? (
                                 <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
                             ) : (
-                                <Typography variant={TypographyVariant.BODY}>{item.category}</Typography>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {i18n.has(`txType.${item.category}`) ? i18n.get(`txType.${item.category}`) : `${item.category}`}
+                                </Typography>
                             )
                         ) : null;
                     },
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
                         return (
-                            <Typography variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
                                 {amount}
                             </Typography>
                         );
                     },
                     createdAt: ({ item, value }) => {
-                        if (isXsAndDownViewport) {
+                        if (isXsAndDownContainer) {
                             return (
                                 <div className={DATE_AND_PAYMENT_METHOD_CLASS}>
                                     <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />
-                                    <Typography variant={TypographyVariant.BODY} className={DATE_METHOD_CLASS}>
-                                        {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
-                                    </Typography>
+
+                                    <time dateTime={item.createdAt} className={DATE_METHOD_CLASS}>
+                                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                            {dateFormat(item.createdAt, DATE_FORMAT_TRANSACTIONS_MOBILE)}
+                                        </Typography>
+                                    </time>
                                 </div>
                             );
                         }
-                        return <Typography variant={TypographyVariant.BODY}>{dateFormat(value, DATE_FORMAT_TRANSACTIONS)}</Typography>;
+                        return (
+                            <time dateTime={value}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {dateFormat(value, DATE_FORMAT_TRANSACTIONS)}
+                                </Typography>
+                            </time>
+                        );
                     },
 
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
@@ -140,7 +150,11 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="transactions.pagination"
+                            limitSelectorAriaLabelKey="transactions.pagination.limitSelector.label"
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

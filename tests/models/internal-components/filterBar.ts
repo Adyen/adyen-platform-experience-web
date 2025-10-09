@@ -1,11 +1,11 @@
-import { Locator } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { getTranslatedKey } from '../../utils/utils';
 
 class FilterBarPage {
     public rootElement: Locator;
 
-    constructor(rootElement: Locator) {
-        this.rootElement = rootElement.getByLabel(getTranslatedKey('filterBar'));
+    constructor(page: Page, rootElementSelector: string) {
+        this.rootElement = page.locator(rootElementSelector).getByTestId('filter-bar');
     }
 
     getFilter(label: string) {

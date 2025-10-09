@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: style.token(spacer-040);
-    padding: style.token(spacer-050) style.token(spacer-000);
+    padding: style.token(spacer-060) style.token(spacer-000);
     white-space: nowrap;
 
     .adyen-pe-button--secondary.adyen-pe-dropdown__button,
@@ -42,6 +42,9 @@
         justify-content: space-between;
 
         &__button {
+            --icon-size: 16px;
+
+            font-size: var(--icon-size);
             padding: 0;
             width: calc(#{style.token(spacer-060)} * 3);
         }

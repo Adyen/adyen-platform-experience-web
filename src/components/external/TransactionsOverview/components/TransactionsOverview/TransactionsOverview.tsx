@@ -1,50 +1,54 @@
+import { FilterType } from '../../../../../core/Analytics/analytics/user-events';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
-import useBalanceAccountSelection from '../../../../hooks/useBalanceAccountSelection';
+import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
+import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
+import { Header } from '../../../../internal/Header';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { hasOwnProperty, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
 import MultiSelectionFilter from '../MultiSelectionFilter';
-import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
+import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { mediaQueries, useResponsiveViewport } from '../../../../hooks/useResponsiveViewport';
-import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     onRecordSelection,
     showDetails,
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
-    columns,
-    onDataRetrieved,
+    dataCustomization,
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const { i18n } = useCoreContext();
-    const { getTransactions: transactionsEndpointCall } = useAuthContext().endpoints;
+    const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
+    const userEvents = useAnalyticsContext();
 
     const getTransactions = useCallback(
         async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
@@ -94,13 +98,39 @@ export const TransactionsOverview = ({
         setAvailableCurrencies(currencies);
         setIsAvailableCurrenciesFetching(isFetching);
     }, []);
+
     const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
         {
             filters,
-            updateFilters,
+            updateFilters: e => {
+                if (hasOwnProperty(e, 'categories') && e.categories !== filters[FilterParam.CATEGORIES]) {
+                    userEvents.addModifyFilterEvent({
+                        actionType: 'update',
+                        label: 'Category filter',
+                        value: e[FilterParam.CATEGORIES],
+                        category: 'Transaction component',
+                    });
+                }
+                if (hasOwnProperty(e, 'currencies') && e.currencies !== filters[FilterParam.CURRENCIES]) {
+                    userEvents.addModifyFilterEvent({
+                        actionType: 'update',
+                        label: 'Currency filter',
+                        value: e[FilterParam.CURRENCIES],
+                        category: 'Transaction component',
+                    });
+                }
+                updateFilters(e);
+            },
         },
         availableCurrencies
     );
+
+    useEffect(() => {
+        userEvents.addEvent('Landed on page', {
+            category: 'PIE components',
+            subCategory: 'Transactions overview',
+        });
+    }, [userEvents]);
 
     useEffect(() => {
         setAvailableCurrencies(undefined);
@@ -119,7 +149,7 @@ export const TransactionsOverview = ({
         statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
     }, [statusesFilter]);
 
-    const isNarrowViewport = useResponsiveViewport(mediaQueries.down.sm);
+    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
 
     const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
 
@@ -133,17 +163,58 @@ export const TransactionsOverview = ({
 
     const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
+        []
+    );
+
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, TRANSACTION_FIELDS), [dataCustomization?.list?.fields]);
+
+    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
-        (value: ITransaction) => {
+        ({ id, category }: ITransaction) => {
+            if (category) {
+                userEvents.addEvent('Viewed transaction details', {
+                    transactionType: category,
+                    category: 'Transaction component',
+                    subCategory: 'Transaction details',
+                });
+            }
             updateDetails({
-                selection: { type: 'transaction', data: { ...value, balanceAccount: activeBalanceAccount } },
+                selection: {
+                    type: 'transaction',
+                    data: id,
+                    balanceAccount: activeBalanceAccount || '',
+                },
                 modalSize: 'small',
-            }).callback({ id: value.id });
+            }).callback({ id });
         },
-        [updateDetails, activeBalanceAccount]
+        [activeBalanceAccount, updateDetails, userEvents]
     );
+
+    const onResetAction = useCallback(
+        (type: FilterType) => {
+            userEvents.addModifyFilterEvent({
+                actionType: 'reset',
+                label: type,
+                category: 'Transaction component',
+            });
+        },
+        [userEvents]
+    );
+
+    const onResetAmountFilter = useMemo(() => onResetAction.bind(null, 'Amount filter'), [onResetAction]);
+    const onResetDateFilter = useMemo(() => onResetAction.bind(null, 'Date filter'), [onResetAction]);
+    const onResetCurrencyFilter = useMemo(() => onResetAction.bind(null, 'Currency filter'), [onResetAction]);
+    const onResetCategoryFilter = useMemo(() => onResetAction.bind(null, 'Category filter'), [onResetAction]);
 
     const sinceDate = useMemo(() => {
         const date = new Date(nowTimestamp);
@@ -151,23 +222,12 @@ export const TransactionsOverview = ({
         return date.toString();
     }, [nowTimestamp]);
 
-    const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
-            records.map(record => {
-                const retrievedItem = retrievedData.find(item => item.id === record.id);
-                return { ...retrievedItem, ...record };
-            }),
-        []
-    );
-
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ records, onDataRetrieved, mergeCustomData });
-
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
-            <FilterBar {...filterBarState}>
+            </Header>
+            <FilterBar {...filterBarState} ariaLabelKey="transactions.filters">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -181,11 +241,26 @@ export const TransactionsOverview = ({
                     refreshNowTimestamp={refreshNowTimestamp}
                     sinceDate={sinceDate}
                     timezone={activeBalanceAccount?.timeZone}
-                    updateFilters={updateFilters}
+                    updateFilters={e => {
+                        if (e?.createdSince !== filters[FilterParam.CREATED_SINCE] || e?.createdUntil !== filters[FilterParam.CREATED_UNTIL]) {
+                            userEvents.addModifyFilterEvent({
+                                actionType: 'update',
+                                label: 'Date filter',
+                                category: 'Transaction component',
+                                value: `${e[FilterParam.CREATED_SINCE]},${e[FilterParam.CREATED_UNTIL]}`,
+                            });
+                        }
+                        updateFilters(e);
+                    }}
+                    onResetAction={onResetDateFilter}
                 />
                 {/* Remove status filter temporarily */}
                 {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
+                <MultiSelectionFilter
+                    {...categoriesFilter}
+                    onResetAction={onResetCategoryFilter}
+                    placeholder={i18n.get('filterPlaceholder.category')}
+                />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
@@ -193,10 +268,26 @@ export const TransactionsOverview = ({
                     label={i18n.get('amount')}
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
-                    updateFilters={updateFilters}
+                    updateFilters={e => {
+                        const hasValue = e?.maxAmount || e?.minAmount;
+                        if (hasValue && (e?.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e?.minAmount !== filters[FilterParam.MIN_AMOUNT])) {
+                            userEvents.addModifyFilterEvent({
+                                actionType: 'update',
+                                label: 'Amount filter',
+                                category: 'Transaction component',
+                                value: `${e[FilterParam.MIN_AMOUNT]},${e[FilterParam.MAX_AMOUNT]}`,
+                            });
+                        }
+                        updateFilters(e);
+                    }}
                     onChange={updateFilters}
+                    onResetAction={onResetAmountFilter}
                 />
-                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
+                <MultiSelectionFilter
+                    {...currenciesFilter}
+                    onResetAction={onResetCurrencyFilter}
+                    placeholder={i18n.get('filterPlaceholder.currency')}
+                />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>
@@ -211,7 +302,7 @@ export const TransactionsOverview = ({
                         currencies={currenciesFilter.selection}
                         minAmount={filters[FilterParam.MIN_AMOUNT] ? parseFloat(filters[FilterParam.MIN_AMOUNT]) : undefined}
                         maxAmount={filters[FilterParam.MAX_AMOUNT] ? parseFloat(filters[FilterParam.MAX_AMOUNT]) : undefined}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
                 <div className={SUMMARY_ITEM_CLASS}>
@@ -219,12 +310,14 @@ export const TransactionsOverview = ({
                         balanceAccountId={activeBalanceAccount?.id}
                         onCurrenciesChange={handleCurrenciesChange}
                         defaultCurrencyCode={activeBalanceAccount?.defaultCurrencyCode}
-                        fullWidth={isNarrowViewport}
+                        fullWidth={isNarrowContainer}
                     />
                 </div>
             </div>
 
             <DataDetailsModal
+                ariaLabelKey="transactionDetails"
+                dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
                 className={BASE_CLASS_DETAILS}
@@ -241,8 +334,8 @@ export const TransactionsOverview = ({
                     onLimitSelection={updateLimit}
                     onRowClick={onRowClick}
                     showPagination={true}
-                    transactions={onDataRetrieved ? transactions : records}
-                    customColumns={columns}
+                    transactions={dataCustomization?.list?.onDataRetrieve ? transactions : records}
+                    customColumns={dataCustomization?.list?.fields}
                     {...paginationProps}
                 />
             </DataDetailsModal>

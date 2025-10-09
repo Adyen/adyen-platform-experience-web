@@ -4,3 +4,5 @@ export * from './payouts';
 export * from './transactions';
 export * from './transactionTotals';
 export * from './reports';
+export * from './capital';
+export * from './disputes';

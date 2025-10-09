@@ -11,6 +11,7 @@ export const getErrorMessage = (
     if (!error) return UNDEFINED_ERROR;
     const commonError = getCommonErrorMessage(error, onContactSupport);
     if (commonError) return commonError;
+
     switch (error.errorCode) {
         case undefined:
             return {
@@ -24,7 +25,9 @@ export const getErrorMessage = (
                 title: 'somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? <CopyText text={error.requestId} /> : null,
+                    [secondaryErrorMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="errorDisplay.copyErrorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };

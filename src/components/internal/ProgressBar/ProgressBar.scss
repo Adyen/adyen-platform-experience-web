@@ -1,0 +1,69 @@
+@use '../../../style';
+
+.adyen-pe-progress-bar {
+    $adyen-progress-bar-fill-color: style.token(color-decorative-blue);
+    $adyen-progress-border-radius: style.token(border-radius-m);
+
+    &__track {
+        cursor: pointer;
+        height: style.token(spacer-040);
+        position: relative;
+        width: 100%;
+
+        &:hover {
+            filter: brightness(0.8);
+        }
+
+        &-background {
+            background-color: $adyen-progress-bar-fill-color;
+            border-radius: $adyen-progress-border-radius;
+            height: 100%;
+            opacity: 0.2;
+            position: absolute;
+            width: 100%;
+        }
+
+        &-fill {
+            background-color: $adyen-progress-bar-fill-color;
+            border-radius: $adyen-progress-border-radius;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            transition: width 0.3s ease-in-out;
+        }
+
+        &-remaining {
+            height: 100%;
+            position: absolute;
+            right: 0;
+        }
+    }
+
+    &__legend {
+        font-size: style.token(text-caption-font-size);
+        margin-top: style.token(spacer-040);
+        width: 100%;
+
+        &-label {
+            margin-right: style.token(spacer-070);
+
+            &::before {
+                border-radius: 50%;
+                content: '';
+                display: inline-block;
+                height: style.token(spacer-040);
+                margin-right: style.token(spacer-020);
+                width: style.token(spacer-040);
+            }
+
+            &:first-child::before {
+                background-color: $adyen-progress-bar-fill-color;
+            }
+
+            &:last-child::before {
+                background-color: $adyen-progress-bar-fill-color;
+                opacity: 0.2;
+            }
+        }
+    }
+}

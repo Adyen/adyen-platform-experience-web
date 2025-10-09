@@ -27,7 +27,7 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ req
     const responseData = await payoutsList.json();
 
     expect(responseData).toHaveProperty('data');
-    expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
+    expect(responseData.data).toStrictEqual(ENV.payouts_list_response);
 });
 
 sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {

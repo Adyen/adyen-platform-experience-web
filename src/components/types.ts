@@ -1,7 +1,14 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
 import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
-import type { ITransaction } from '../types';
+import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
+import { AnchorHTMLAttributes } from 'preact/compat';
+import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
+import { StringWithAutocompleteOptions } from '../utils/types';
+import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { TransactionDetailsFields } from './external';
+import { IDisputeListItem } from '../types/api/models/disputes';
+import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -86,6 +93,8 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 export type DataGridCustomColumnConfig<k> = {
     key: k;
     flex?: number;
+    align?: 'right' | 'left' | 'center';
+    visibility?: 'visible' | 'hidden';
 };
 
 export type CustomColumn<T extends string> = {
@@ -98,29 +107,91 @@ interface _DataOverviewComponentProps {
     onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
     preferredLimit?: 10 | 20;
     showDetails?: boolean;
+    onContactSupport?: () => void;
 }
 
-export type ReportsOverviewComponentProps = Omit<_DataOverviewComponentProps, 'showDetails'>;
+export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
 
-export type CustomDataObject = { value: any; icon?: { url: string; alt?: string } };
-
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | (string | number) };
-
-export type OnDataRetrievedCallback<DataRetrieved> = (data: DataRetrieved[]) => Promise<CustomDataRetrieved[]>;
-
-interface _CustomizableDataOverview<Columns extends string, DataRetrieved> {
-    columns?: CustomColumn<Columns>[] | Columns[];
-    onDataRetrieved?: OnDataRetrievedCallback<DataRetrieved>;
+interface BaseCustomObject {
+    value: any;
 }
+
+type BaseDetails = {
+    className?: string;
+};
+
+export interface CustomIconObject extends BaseCustomObject {
+    type: 'icon';
+    config: BaseDetails & { src: string; alt?: string };
+}
+
+export interface CustomTextObject extends BaseCustomObject {
+    type: 'text';
+    config?: BaseDetails;
+}
+
+export interface CustomLinkObject extends BaseCustomObject {
+    type: 'link';
+    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
+}
+
+export interface CustomButtonObject extends BaseCustomObject {
+    type: 'button';
+    config: BaseDetails & { action: () => void };
+}
+
+export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
+
+export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
+
+export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
+export type DetailsCustomFieldConfig<k> = {
+    key: k;
+    visibility?: 'visible' | 'hidden';
+};
+
+export type CustomDetailsField<T extends string> = {
+    [k in T]: DetailsCustomFieldConfig<k>;
+}[T];
+
+export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
+interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
+    dataCustomization?: CustomizationOptions;
+}
+
+type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
+    list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
+    details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
+};
+
+export interface ReportsOverviewComponentProps
+    extends Omit<_DataOverviewComponentProps, 'showDetails'>,
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport, any, any>, 'details'>> {}
 
 export interface TransactionOverviewComponentProps
     extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<TransactionsTableFields, ITransaction>,
+        _CustomizableDataOverview<
+            OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, ITransactionWithDetails>
+        >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
         _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
+
+export interface DisputeOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
@@ -132,3 +203,14 @@ export const enum FilterParam {
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
 }
+
+export type ExternalComponentType =
+    | 'transactions'
+    | 'transactionDetails'
+    | 'payouts'
+    | 'payoutDetails'
+    | 'reports'
+    | 'capitalOverview'
+    | 'capitalOffer'
+    | 'disputes'
+    | 'disputesManagement';

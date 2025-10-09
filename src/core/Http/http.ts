@@ -1,4 +1,12 @@
-import { getErrorType, getRequestObject, getResponseContentType, getResponseDownloadFilename, handleFetchError, isAdyenErrorResponse } from './utils';
+import {
+    ErrorTypes,
+    getErrorType,
+    getRequestObject,
+    getResponseContentType,
+    getResponseDownloadFilename,
+    handleFetchError,
+    isAdyenErrorResponse,
+} from './utils';
 import { API_VERSION } from './constants';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { HttpOptions } from './types';
@@ -13,10 +21,11 @@ const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
     }
 };
 
-export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
+export async function http<T>(options: HttpOptions): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
-    const request = getRequestObject(options, data);
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
+    const versionless = options.versionless || false;
+    const request = getRequestObject(options);
+    const url = new URL(`${normalizeLoadingContext(loadingContext)}${versionless ? '' : API_VERSION}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
@@ -40,6 +49,11 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
             const res = await fetch(url, request); // (!)
 
             if (res.ok) {
+                if (res.status === 204) {
+                    // No content to process
+                    return null;
+                }
+
                 try {
                     const contentType = getResponseContentType(res);
 
@@ -76,12 +90,13 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
             const response = await res.json(); // (!)
 
             error.message = options.errorMessage || `Service at ${url} not available`;
-            error.errorCode = String(response.status);
+            error.errorCode = response?.status == undefined ? undefined : String(response.status);
             error.requestId = response?.requestId;
 
             if (isAdyenErrorResponse(response)) {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
+                error.status = response.status;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {
@@ -90,6 +105,12 @@ export async function http<T>(options: HttpOptions, data?: any): Promise<T> {
                 // The exception will be propagated to the caller (unhandled)
                 errorHandlerHelper(options.errorHandler, ex);
                 throw ex;
+            }
+
+            if (!error.type) {
+                // If the error type isn't already set, mark the error as a network error.
+                // [Note]: There could be other reasons (besides network) for having an error here.
+                error.type = ErrorTypes.NETWORK_ERROR;
             }
 
             errorHandlerHelper(options.errorHandler, ex);
@@ -108,6 +129,6 @@ export function httpGet<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
     return http<T>({ ...options, method: 'GET' });
 }
 
-export function httpPost<T>(options: Omit<HttpOptions, 'method'>, data?: any): Promise<T> {
-    return http<T>({ ...options, method: 'POST' }, data);
+export function httpPost<T>(options: Omit<HttpOptions, 'method'>): Promise<T> {
+    return http<T>({ ...options, method: 'POST' });
 }

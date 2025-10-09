@@ -1,5 +1,5 @@
 import Localization from '../../../../../core/Localization';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BASE_LOCALE } from '../../../../../core/Localization/datetime/restamper/constants';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -22,9 +22,9 @@ const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Loca
     const from = fromDate && fullDateFormat(fromDate);
     const to = toDate && fullDateFormat(toDate);
 
-    if (from && to) return `${from} - ${to}`;
-    if (from) return i18n.get('filter.date.since', { values: { date: from } });
-    if (to) return i18n.get('filter.date.until', { values: { date: to } });
+    if (from && to) return i18n.get('filters.date.between', { values: { fromDate: from, toDate: to } });
+    if (from) return i18n.get('filters.date.since', { values: { date: from } });
+    if (to) return i18n.get('filters.date.until', { values: { date: to } });
 };
 
 const resolveDate = (date?: any) => {
@@ -46,6 +46,7 @@ const renderDateFilterModalBody = (() => {
         showTimezoneInfo,
         selectedPresetOption,
         timeRangePresetOptions,
+        timeRangeSelectorLabel,
         timezone,
         sinceDate,
         untilDate,
@@ -88,6 +89,7 @@ const renderDateFilterModalBody = (() => {
                 onPresetOptionSelected={setPresetOption}
                 selectedPresetOption={selectedPresetOption}
                 timeRangePresetOptions={timeRangePresetOptions}
+                timeRangeSelectorLabel={timeRangeSelectorLabel}
                 timezone={timezone}
                 showTimezoneInfo={showTimezoneInfo}
                 sinceDate={resolveDate(sinceDate)}
@@ -108,6 +110,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
     from,
     to,
     selectedPresetOption,
+    timeRangeSelectorLabel,
     ...props
 }: FilterProps<T>) {
     const { i18n } = useCoreContext();
@@ -118,7 +121,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
 
     const onChange = useCallback<NonNullable<typeof props.onChange>>(
         params => {
-            const { from, to, selectedPresetOption } = params ?? EMPTY_OBJECT;
+            const { from, to, selectedPresetOption } = params ?? (EMPTY_OBJECT as NonNullable<typeof params>);
             try {
                 setSelectedPresetOption(selectedPresetOptionValue ?? selectedPresetOption);
                 setFrom(resolveDate(fromValue ?? from));
@@ -167,6 +170,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             onChange={onChange}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
+            timeRangeSelectorLabel={timeRangeSelectorLabel ?? i18n.get('filters.date.presetOptions.label')}
             value={computeDateFilterValue(i18n, fullDateFormat, from, to)}
             withContentPadding={false}
         />

@@ -1,10 +1,8 @@
 import { Preview } from '@storybook/preact';
-import '../playground/assets/style/style.scss';
-import '../src/components/shared.scss';
-import { getMockHandlers } from '../mocks/mock-server/utils';
+import { Container } from '../stories/utils/Container';
+import { getMockHandlers } from '../mocks/mock-server/utils/utils';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
-import { Container } from '../stories/utils/Container';
 
 initialize({}, [...getMockHandlers(mocks)]);
 
@@ -12,9 +10,6 @@ const preview: Preview = {
     parameters: {
         controls: {
             hideNoControlsWarning: true,
-        },
-        options: {
-            storySort: { order: ['components', ['Transactions', 'Payouts']] },
         },
     },
     argTypes: {
@@ -29,6 +24,15 @@ const preview: Preview = {
             },
         },
         balanceAccountId: { type: 'string' },
+        locale: { control: 'select', options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'] },
+        skipDecorators: {
+            table: {
+                disable: true,
+            },
+        },
+    },
+    args: {
+        locale: 'en-US',
     },
     loaders: [
         async context => {
@@ -44,7 +48,15 @@ const preview: Preview = {
         mswLoader,
     ],
     render: (args, context) => {
-        return <Container component={args.component} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
+        return (
+            <Container
+                locale={context.args.locale || 'en-US'}
+                component={args.component}
+                componentConfiguration={args}
+                context={context}
+                mockedApi={args.mockedApi}
+            />
+        );
     },
 };
 

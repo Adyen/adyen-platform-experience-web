@@ -7,6 +7,7 @@ import './Typography.scss';
 import { ComponentChild } from 'preact';
 
 interface TypographyProps {
+    id?: string;
     el?: TypographyElement;
     stronger?: boolean;
     strongest?: boolean;
@@ -16,9 +17,10 @@ interface TypographyProps {
     wide?: boolean;
     children: ComponentChild;
     className?: string;
+    testId?: string;
 }
 
-function Typography({ el, className, stronger, strongest, variant, medium, large, wide, children }: PropsWithChildren<TypographyProps>) {
+function Typography({ el, id, className, stronger, strongest, variant, medium, large, testId, wide, children }: PropsWithChildren<TypographyProps>) {
     const Tag = el || 'p';
     const conditionalClasses = useMemo(
         () => ({
@@ -51,7 +53,11 @@ function Typography({ el, className, stronger, strongest, variant, medium, large
         [variant, wide, stronger, medium, large, strongest]
     );
 
-    return <Tag className={cx([`${DEFAULT_TYPOGRAPHY_CLASSNAME}`, conditionalClasses, className])}>{children}</Tag>;
+    return (
+        <Tag id={id} className={cx([`${DEFAULT_TYPOGRAPHY_CLASSNAME}`, conditionalClasses, className])} data-testid={testId}>
+            {children}
+        </Tag>
+    );
 }
 
 export default memo(Typography);

@@ -25,13 +25,16 @@ export interface paths {
          */
         get: operations['getTransactions'];
     };
+    '/v1/transactions/{transactionId}/refundPayment': {
+        /** @description Add @Operation annotation to provide a description */
+        post: operations['initiateRefund'];
+    };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
     schemas: {
-        /** @description Amount */
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
             currency: string;
@@ -41,43 +44,77 @@ export interface components {
              */
             value: number;
         };
-        /** @description Information about the bank account */
         BankAccount: {
             /** @description Last four digits of the account number or IBAN. */
             accountNumberLastFourDigits: string;
         };
-        /**
-         * @description Category
-         * @enum {string}
-         */
+        /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
-        /** @description Payment method or payment instrument */
+        ExistingRefund: {
+            amount: components['schemas']['Amount'];
+            status: components['schemas']['RefundStatus'];
+        };
         PaymentMethod: {
             /** @description Last four digits of the card */
             lastFourDigits?: string;
             /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
             type: string;
+
+            description?: string;
         };
-        /** @description Transactions made within the filters provided for given balanceAccountId */
+        RefundDetails: {
+            refundLocked?: boolean;
+            refundMode: components['schemas']['RefundMode'];
+            refundStatuses?: components['schemas']['ExistingRefund'][];
+            refundableAmount?: components['schemas']['Amount'];
+        };
+        /** @enum {string} */
+        RefundMode: 'non_refundable' | 'partially_refundable_with_line_items_required' | 'partially_refundable_any_amount' | 'fully_refundable_only';
+        /** @enum {string} */
+        RefundReason: 'requested_by_customer' | 'issue_with_item_sold' | 'fraudulent' | 'duplicate' | 'other';
+        /** @enum {string} */
+        RefundStatus: 'in_progress' | 'completed' | 'failed';
+        RefundTransactionDetails: {
+            originalPaymentId: string;
+            refundPspReference: string;
+            refundReason?: components['schemas']['RefundReason'];
+            refundType: components['schemas']['RefundType'];
+        };
+        /** @enum {string} */
+        RefundType: 'partial' | 'full';
         SingleTransaction: {
+            /** @description Amount */
             amount: components['schemas']['Amount'];
             /** @description BalanceAccount ID */
             balanceAccountId: string;
+            /** @description Information about the bank account */
             bankAccount?: components['schemas']['BankAccount'];
+            /** @description Category */
             category: components['schemas']['Category'];
             /**
              * Format: date-time
              * @description Date created
              */
             createdAt: string;
+            /** @description The remaining amount on the payment without this split */
+            deductedAmount?: components['schemas']['Amount'];
             /** @description ID */
             id: string;
+            /** @description Amount in original PSP payment */
+            originalAmount?: components['schemas']['Amount'];
+            /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
+            /** @description When Category is payment, this is the PSP reference of the PSP payment */
+            paymentPspReference?: string;
+            /** @description Additional data related to refund operations */
+            refundDetails?: components['schemas']['RefundDetails'];
+            /** @description When Category is refund, additional information and references related to the refund */
+            refundMetadata?: components['schemas']['RefundTransactionDetails'];
+            /** @description Status */
             status: components['schemas']['Status'];
         };
         /** @enum {string} */
         Status: 'Pending' | 'Booked' | 'Reversed';
-        /** @description Collection of transaction totals per currency */
         TransactionTotal: {
             /** @description ISO currency code */
             currency: string;
@@ -96,23 +133,33 @@ export interface components {
             /** @description Collection of transaction totals per currency */
             data: components['schemas']['TransactionTotal'][];
         };
-        /** @description Link to a different page */
         Link: {
             /** @description Cursor for a different page */
             cursor: string;
         };
-        /** @description Links */
         Links: {
+            /** @description Link to a different page */
             next: components['schemas']['Link'];
+            /** @description Link to a different page */
             prev: components['schemas']['Link'];
         };
         TransactionsResponse: {
+            /** @description Links */
             _links: components['schemas']['Links'];
             /** @description Transactions made within the filters provided for given balanceAccountId */
             data: components['schemas']['SingleTransaction'][];
         };
         /** @enum {string} */
         SortDirection: 'asc' | 'desc';
+        RefundResponse: {
+            amount: components['schemas']['Amount'];
+            refundReason?: string;
+            status?: string;
+        };
+        RefundRequest: {
+            amount: components['schemas']['Amount'];
+            refundReason: components['schemas']['RefundReason'];
+        };
     };
     responses: never;
     parameters: never;
@@ -196,6 +243,27 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['TransactionsResponse'];
+                };
+            };
+        };
+    };
+    /** @description Add @Operation annotation to provide a description */
+    initiateRefund: {
+        parameters: {
+            path: {
+                transactionId: string;
+            };
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['RefundRequest'];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    'application/json': components['schemas']['RefundResponse'];
                 };
             };
         };

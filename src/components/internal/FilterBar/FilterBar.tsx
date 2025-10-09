@@ -1,31 +1,29 @@
 import cx from 'classnames';
 import Button from '../Button';
-import Close from '../SVGIcons/Close';
-import Filter from '../SVGIcons/Filter';
+import Icon from '../Icon';
 import { isFunction } from '../../../utils';
 import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
-import { mediaQueries, useResponsiveViewport } from '../../hooks/useResponsiveViewport';
+import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
 
 const MOBILE_SWITCH_CLASS = 'adyen-pe-filter-bar-mobile-switch';
 
 export const useFilterBarState = () => {
-    const isMobileViewport = useResponsiveViewport(mediaQueries.down.xs);
-    const [showingFilters, setShowingFilters] = useState(!isMobileViewport);
-
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+    const [showingFilters, setShowingFilters] = useState(!isMobileContainer);
     useEffect(() => {
-        setShowingFilters(!isMobileViewport);
-    }, [isMobileViewport]);
+        setShowingFilters(!isMobileContainer);
+    }, [isMobileContainer]);
 
-    return { isMobileViewport, showingFilters, setShowingFilters } as const;
+    return { isMobileContainer, showingFilters, setShowingFilters } as const;
 };
 
-export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setShowingFilters }: FilterBarMobileSwitchProps) => {
-    return isMobileViewport ? (
+export const FilterBarMobileSwitch = ({ isMobileContainer, showingFilters, setShowingFilters }: FilterBarMobileSwitchProps) => {
+    return isMobileContainer ? (
         <div className={MOBILE_SWITCH_CLASS}>
             <Button
                 iconButton
@@ -34,7 +32,7 @@ export const FilterBarMobileSwitch = ({ isMobileViewport, showingFilters, setSho
                 onClick={() => setShowingFilters?.(!showingFilters)}
                 variant={ButtonVariant.SECONDARY}
             >
-                {showingFilters ? <Close /> : <Filter />}
+                <Icon name={showingFilters ? 'cross' : 'filter'} />
             </Button>
         </div>
     ) : null;
@@ -44,8 +42,10 @@ export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
     const { i18n } = useCoreContext();
     return props.showingFilters ? (
         <div
-            aria-label={i18n.get('filterBar')}
-            className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar__content--mobile': props.isMobileViewport })}
+            role="group"
+            data-testId="filter-bar"
+            aria-label={i18n.get(props.ariaLabelKey ?? 'filters')}
+            className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar--mobile': props.isMobileContainer })}
         >
             {props.children}
             {props.canResetFilters && !!props.resetFilters && (

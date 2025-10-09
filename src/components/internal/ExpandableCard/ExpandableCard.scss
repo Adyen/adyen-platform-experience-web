@@ -1,17 +1,6 @@
 @use '../../../style';
-//stylelint-disable no-invalid-position-at-import-rule
+// stylelint-disable no-invalid-position-at-import-rule
 @import '../../../style/breakpoints.scss';
-
-// TODO: Move this to an accessibility mixin
-.adyen-pe-sr-only {
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute !important;
-    width: 1px;
-}
 
 .adyen-pe-expandable-card {
     $adyen-pe-expandable-card: &;
@@ -30,6 +19,11 @@
             position: absolute;
             top: 0;
             z-index: 100;
+
+            &#{$adyen-pe-expandable-card}__container--in-flow[aria-expanded='true'] {
+                margin-top: calc(var(--adyen-pe-expandable-card-height, 0) * -1);
+                position: relative;
+            }
         }
 
         &--hidden {
@@ -49,7 +43,7 @@
         &--filled {
             background-color: style.token(color-background-secondary);
 
-            &:hover {
+            &:not(:only-child):hover {
                 background-color: style.token(color-background-secondary-hover);
             }
         }
