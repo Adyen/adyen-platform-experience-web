@@ -4,23 +4,18 @@ import useMutation from '../useMutation/useMutation';
 import { EmbeddedEventItem } from './useAnalytics';
 
 export const usePushAnalyticEvent = () => {
-    const { sendUxdsEvent } = useConfigContext().endpoints;
+    const { sendTrackEvent } = useConfigContext().endpoints;
 
     const { mutate: sendAnalytics } = useMutation({
-        queryFn: sendUxdsEvent,
+        queryFn: sendTrackEvent,
     });
 
     const track = useCallback(
         (options: URLSearchParams) =>
-            sendAnalytics?.(
-                {
-                    body: options.toString(),
-                    contentType: 'application/x-www-form-urlencoded',
-                },
-                {
-                    path: { apipath: 'track' },
-                }
-            ),
+            sendAnalytics?.({
+                body: options.toString(),
+                contentType: 'application/x-www-form-urlencoded',
+            }),
         [sendAnalytics]
     );
 
