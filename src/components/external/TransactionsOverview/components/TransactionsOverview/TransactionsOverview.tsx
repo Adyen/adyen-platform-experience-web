@@ -3,7 +3,7 @@ import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/Tran
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
-import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
+import FilterBar, { FilterBarMobileSwitch } from '../../../../internal/FilterBar';
 import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { useConfigContext } from '../../../../../core/ConfigContext';
@@ -27,6 +27,7 @@ import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData'
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
+import { useFilterBarState } from '../../../../internal/FilterBar/useFilterBar';
 
 export const TransactionsOverview = ({
     onFiltersChanged,

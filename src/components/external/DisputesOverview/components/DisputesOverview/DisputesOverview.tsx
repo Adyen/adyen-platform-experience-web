@@ -9,7 +9,7 @@ import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction, listFrom } from '../../../../../utils';
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
+import FilterBar, { FilterBarMobileSwitch } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
@@ -27,6 +27,7 @@ import { TabComponentProps } from '../../../../internal/Tabs/types';
 import Select from '../../../../internal/FormFields/Select';
 import Tabs from '../../../../internal/Tabs/Tabs';
 import './DisputesOverview.scss';
+import { useFilterBarState } from '../../../../internal/FilterBar/useFilterBar';
 
 const DEFAULT_DISPUTE_STATUS_GROUP: IDisputeStatusGroup = 'CHARGEBACKS';
 const DISPUTE_SCHEMES_FILTER_PARAM = 'schemeCodes';
