@@ -19,39 +19,39 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
         const maximumRepaymentPeriodMonths = grant.maximumRepaymentPeriodDays ? Math.ceil(grant.maximumRepaymentPeriodDays / 30) : null;
         const items: StructuredListItem[] = [
             {
-                key: 'capital.remainingAmount',
+                key: 'capital.common.fields.remainingAmount',
                 value: i18n.amount(grant.remainingGrantAmount.value, grant.remainingGrantAmount.currency),
             },
-            { key: 'capital.remainingFees', value: formatAmount(grant.remainingFeesAmount) },
-            { key: 'capital.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
-            { key: 'capital.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
+            { key: 'capital.common.fields.remainingFees', value: formatAmount(grant.remainingFeesAmount) },
+            { key: 'capital.common.fields.repaidAmount', value: formatAmount(grant.repaidGrantAmount) },
+            { key: 'capital.common.fields.repaidFees', value: formatAmount(grant.repaidFeesAmount) },
             {
-                key: 'capital.dailyRepaymentRate',
-                value: `${i18n.get('capital.xPercent', {
+                key: 'capital.common.fields.dailyRepaymentRate',
+                value: `${i18n.get('capital.common.values.percentage', {
                     values: { percentage: getPercentage(grant.repaymentRate) },
                 })}`,
             },
             {
-                key: 'capital.expectedRepaymentPeriod',
-                value: i18n.get('capital.daysAndDaysLeft', {
+                key: 'capital.common.fields.expectedRepaymentPeriod',
+                value: i18n.get('capital.common.values.daysWithDaysLeft', {
                     values: {
                         days: grant.expectedRepaymentPeriodDays,
                         daysLeft: grant.repaymentPeriodLeft,
                     },
                 }),
             },
-            { key: 'capital.totalFees', value: formatAmount(grant.feesAmount) },
-            { key: 'capital.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
-            { key: 'capital.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
-            { key: 'capital.grantID', value: grant.id },
-            { key: 'capital.accountDescription', value: grant.balanceAccountDescription },
-            { key: 'capital.accountID', value: grant.balanceAccountCode },
+            { key: 'capital.common.fields.totalFees', value: formatAmount(grant.feesAmount) },
+            { key: 'capital.common.fields.totalRepaymentAmount', value: formatAmount(grant.totalAmount) },
+            { key: 'capital.common.fields.repaymentThreshold', value: formatAmount(grant.thresholdAmount) },
+            { key: 'capital.common.fields.grantID', value: grant.id },
+            { key: 'capital.common.fields.accountDescription', value: grant.balanceAccountDescription },
+            { key: 'capital.common.fields.accountID', value: grant.balanceAccountCode },
         ];
 
         if (maximumRepaymentPeriodMonths) {
             items.splice(5, 0, {
-                key: 'capital.maximumRepaymentPeriod',
-                value: i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriodMonths } }),
+                key: 'capital.common.fields.maximumRepaymentPeriod',
+                value: i18n.get('capital.common.values.numberOfMonths', { values: { months: maximumRepaymentPeriodMonths } }),
             });
         }
 
@@ -71,10 +71,10 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                 </div>
                 <StructuredList
                     renderLabel={(val, key) =>
-                        key === 'capital.repaymentThreshold' ? (
+                        key === 'capital.common.fields.repaymentThreshold' ? (
                             <Tooltip
                                 isContainerHovered
-                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
+                                content={i18n.get('capital.common.fields.repaymentThreshold.description', {
                                     values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                                 })}
                             >

@@ -305,7 +305,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
             return (
                 <_RefundResponseViewWrapper
                     renderIcon={() => <Icon name="cross-circle-fill" className={cx(TX_REFUND_RESPONSE_ICON, TX_REFUND_RESPONSE_ERROR_ICON)} />}
-                    title={i18n.get('common.errors.default')}
+                    title={i18n.get('common.errors.somethingWentWrong')}
                     subtitle={i18n.get('transactions.details.refund.alerts.refundFailure')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>

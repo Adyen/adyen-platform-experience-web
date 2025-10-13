@@ -44,7 +44,7 @@ export const ConfigProvider = ({ children, session, type }: ConfigProviderProps)
                     <ErrorMessageDisplay
                         withImage
                         centered
-                        title={'common.errors.default'}
+                        title={'common.errors.somethingWentWrong'}
                         message={[componentAvailabilityErrors(type), 'common.errors.contactSupport']}
                     />
                 ))}

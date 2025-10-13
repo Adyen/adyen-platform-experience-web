@@ -88,7 +88,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
     return (
         <div className="adyen-pe-grant-list">
             <div className="adyen-pe-grant-list__header-container">
-                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.titleHeading'} />
                 {showNewOfferButton ? (
                     <Button onClick={onNewOfferRequest} className={'adyen-pe-grant-list__offer-button'} variant={ButtonVariant.SECONDARY}>
                         {i18n.get('capital.seeNewOffer')}

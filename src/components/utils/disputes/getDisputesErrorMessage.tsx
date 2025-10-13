@@ -13,18 +13,18 @@ export const getDisputesErrorMessage = (
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'common.errors.default',
+                title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, 'common.errors.retry'],
                 refreshComponent: true,
             };
         case '00_500': {
             const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
             return {
-                title: 'common.errors.default',
+                title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
                     [secondaryErrorMessage]: error.requestId ? (
-                        <CopyText copyButtonAriaLabelKey="disputes.overview.common.errorDisplay.actions.copyErrorCode" textToCopy={error.requestId} />
+                        <CopyText copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
                     ) : null,
                 },
                 onContactSupport,

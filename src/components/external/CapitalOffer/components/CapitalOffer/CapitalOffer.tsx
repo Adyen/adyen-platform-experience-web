@@ -74,7 +74,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     if (!isRegionSupported) {
         return (
             <div className={CAPITAL_OFFER_CLASS_NAMES.errorContainer}>
-                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.titleHeading'} />
                 <CapitalErrorMessageDisplay unsupportedRegion />
             </div>
         );
@@ -85,7 +85,7 @@ export const CapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             <CapitalHeader
                 hasDivider
                 hideTitle={hideTitle}
-                titleKey={capitalOfferState === 'OfferSummary' ? 'capital.businessFinancingSummary' : 'capital.businessFinancingOffer'}
+                titleKey={capitalOfferState === 'OfferSummary' ? 'capital.offer.summary.titleHeading' : 'capital.offer.selection.titleHeading'}
             />
             {capitalOfferState === 'OfferSelection' && (
                 <CapitalOfferSelection
