@@ -73,8 +73,8 @@ const DisputeDataAlert = ({
                 type === 'REQUEST_FOR_INFORMATION'
                     ? 'disputes.contactSupport.toDefendRequestForInformation'
                     : type === 'NOTIFICATION_OF_FRAUD'
-                    ? 'disputes.contactSupport.toResolveNotificationOfFraud'
-                    : 'disputes.contactSupport.toDefendDispute';
+                      ? 'disputes.contactSupport.toResolveNotificationOfFraud'
+                      : 'disputes.contactSupport.toDefendDispute';
 
             return (
                 <Alert
@@ -90,9 +90,11 @@ const DisputeDataAlert = ({
                                         translationKey={'disputes.alert.responseDeadline'}
                                         fills={{
                                             date: (
-                                                <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
-                                                    {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
-                                                </Typography>
+                                                <time dateTime={dueDate}>
+                                                    <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
+                                                        {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
+                                                    </Typography>
+                                                </time>
                                             ),
                                         }}
                                     />
@@ -128,7 +130,7 @@ export const DisputeData = ({
     onDismiss: DisputeManagementProps['onDismiss'];
 }) => {
     const { i18n } = useCoreContext();
-    const { dispute: storedDispute, setDispute, setFlowState } = useDisputeFlow();
+    const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
 
     const { getDisputeDetail, getApplicableDefenseDocuments, acceptDispute } = useConfigContext().endpoints;
 
@@ -347,7 +349,7 @@ export const DisputeData = ({
                         />
                     )}
 
-                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} />
+                    <DisputeDataProperties dispute={dispute} dataCustomization={dataCustomization} defenseReasonConfig={defenseReasonConfig} />
 
                     {actionButtons.length > 0 ? (
                         <div className={DISPUTE_DATA_ACTION_BAR}>

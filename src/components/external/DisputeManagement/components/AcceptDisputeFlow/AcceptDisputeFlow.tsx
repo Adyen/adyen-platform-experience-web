@@ -1,5 +1,6 @@
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { useModalContext } from '../../../../internal/Modal/Modal';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
@@ -19,8 +20,10 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
     const { i18n } = useCoreContext();
     const { acceptDispute } = useConfigContext().endpoints;
     const { dispute, clearStates, goBack } = useDisputeFlow();
+    const { withinModal } = useModalContext();
 
     const cachedDispute = useRef(dispute).current ?? dispute;
+    const titleEl = withinModal ? TypographyElement.H2 : TypographyElement.DIV;
 
     const disputePspReference = cachedDispute?.dispute.pspReference;
     const disputeType = cachedDispute?.dispute.type;
@@ -119,7 +122,7 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
                 </div>
             ) : (
                 <>
-                    <Typography className="adyen-pe-accept-dispute__title" variant={TypographyVariant.TITLE} medium>
+                    <Typography className="adyen-pe-accept-dispute__title" el={titleEl} variant={TypographyVariant.TITLE} medium>
                         {i18n.get(acceptTitle.current)}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} medium>

@@ -1,24 +1,26 @@
 import { describe, test, expect } from 'vitest';
 import { Content, getDefenseDocumentContent, getDefenseReasonContent } from './index';
 import Localization from '../../../../core/Localization';
+import defenseDocumentContent from '../../../../config/disputes/defenseDocumentConfig.json';
+import defenseReasonContent from '../../../../config/disputes/defenseReasonConfig.json';
 
 const localization = new Localization();
 
 describe('getDefenseDocumentContent', () => {
     test("should return undefined if the defense document key doesn't exist", () => {
-        const result = getDefenseDocumentContent(localization.i18n, 'KeyThatDoesNotExist');
+        const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'KeyThatDoesNotExist');
         expect(result).toBeUndefined();
     });
 
     test('should return the right content for defense document with "title" field', () => {
-        const result = getDefenseDocumentContent(localization.i18n, 'ChargebackCodeNotApplicable');
+        const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'ChargebackCodeNotApplicable');
         expect(result).toEqual<Content>({
             title: 'Documentation to support that the chargeback code is not applicable',
         });
     });
 
     test('should return the right content for defense document with "title" field and "help" field of "string" type', () => {
-        const result = getDefenseDocumentContent(localization.i18n, 'AcquirerMemberMessageText');
+        const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'AcquirerMemberMessageText');
         expect(result).toEqual<Content>({
             title: 'Clearing Text',
             primaryDescriptionItems: ['A description of the dispute reason'],
@@ -26,7 +28,7 @@ describe('getDefenseDocumentContent', () => {
     });
 
     test('should return the right content for defense document with "title", "help", and "helpitems" fields', () => {
-        const result = getDefenseDocumentContent(localization.i18n, 'CardholderIdentification');
+        const result = getDefenseDocumentContent(defenseDocumentContent, localization.i18n, 'CardholderIdentification');
         expect(result).toEqual<Content>({
             title: 'Compelling Evidence of Card holder Participation',
             primaryDescriptionItems: ['Documentation proving the card holder participated in the transacion. This can be:'],
@@ -41,19 +43,19 @@ describe('getDefenseDocumentContent', () => {
 
 describe('getDefenseReasonContent', () => {
     test("should return undefined if the defense reason key doesn't exist", () => {
-        const result = getDefenseReasonContent(localization.i18n, 'KeyThatDoesNotExist');
+        const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'KeyThatDoesNotExist');
         expect(result).toBeUndefined();
     });
 
     test('should return the right content for defense reason with "title" field', () => {
-        const result = getDefenseReasonContent(localization.i18n, 'CardPresentFraud');
+        const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'CardPresentFraud');
         expect(result).toEqual<Content>({
             title: 'Card Present Fraud Evidence',
         });
     });
 
     test('should return the right content for defense reason with "title" field and "help" field of "string" type', () => {
-        const result = getDefenseReasonContent(localization.i18n, 'ATMDispute');
+        const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'ATMDispute');
         expect(result).toEqual<Content>({
             title: 'ATM Dispute',
             primaryDescriptionItems: ['Invalid chargeback reason code for E-commerce/ POS payment'],
@@ -61,7 +63,7 @@ describe('getDefenseReasonContent', () => {
     });
 
     test('should return the right content for defense reason with "title" field and "help" field of "array" type', () => {
-        const result = getDefenseReasonContent(localization.i18n, 'IdentifiedAddendum');
+        const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'IdentifiedAddendum');
         expect(result).toEqual<Content>({
             title: 'Identified Addendum',
             primaryDescriptionItems: [
@@ -73,7 +75,7 @@ describe('getDefenseReasonContent', () => {
     });
 
     test('should return the right content for defense reason with "title", "help", and "helpitems" fields', () => {
-        const result = getDefenseReasonContent(localization.i18n, 'CancellationOrReturns');
+        const result = getDefenseReasonContent(defenseReasonContent, localization.i18n, 'CancellationOrReturns');
         expect(result).toEqual<Content>({
             title: 'Cancellation or Returns',
             primaryDescriptionItems: ['Use this defense reason if one of the following is applicable:'],

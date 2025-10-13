@@ -94,7 +94,7 @@ export const ReportsOverview = ({
             <Header hideTitle={hideTitle} titleKey="reportsTitle" subtitleKey="reportsNotice">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState}>
+            <FilterBar {...filterBarState} ariaLabelKey="reports.filters">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}

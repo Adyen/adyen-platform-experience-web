@@ -263,6 +263,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         refundMode={refundMode}
                         refreshTransaction={refreshTransaction}
                         transactionId={transaction.id}
+                        transactionOriginalAmount={transaction.originalAmount}
                     >
                         <TransactionRefundNotice />
 

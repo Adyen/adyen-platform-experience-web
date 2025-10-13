@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-capital-overview--prequalified';
@@ -23,12 +23,12 @@ test.describe('Prequalified', () => {
     test('should go to offer selection screen with "Back" button when "See options" button is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'See options' }).click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
     test('should go back to prequalified intro screen when "Back" button in offer selection screen is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'See options' }).click();
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Need some extra money?')).toBeVisible();
     });
 
@@ -57,7 +57,7 @@ test.describe('onOfferDismiss argument', () => {
     }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
         await page.getByRole('button', { name: 'See options' }).click();
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Need some extra money?')).toBeHidden();
     });
 });
@@ -74,6 +74,6 @@ test.describe('skipPreQualifiedIntro argument', () => {
     test('should render offer selection screen without "Back" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { skipPreQualifiedIntro: 'true' } });
         await expect(page.getByText('Business financing offer')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });

@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-capital-overview--new-offer';
@@ -22,12 +22,12 @@ test.describe('New offer', () => {
     test('should go to offer selection screen with "Back" button when "See new offer" button is clicked', async ({ page }) => {
         await page.getByText('See new offer').click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
     test('should go back to grants screen when "Back" button in offer selection screen is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'See new offer' }).click();
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
 

@@ -41,17 +41,17 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
             headerSubtitleKey="capital.sendRepaymentSubtitle"
         >
             <div className={CLASS_NAMES.repaymentInfo}>
-                <section className={CLASS_NAMES.repaymentAccount}>
+                <div className={CLASS_NAMES.repaymentAccount}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                         {i18n.get('capital.bankAccountDetails')}
                     </Typography>
                     <AccountDetails bankAccount={bankAccount} />
-                </section>
-                <section className={CLASS_NAMES.repaymentNotice}>
+                </div>
+                <div className={CLASS_NAMES.repaymentNotice}>
                     <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
                         {i18n.get('capital.sendRepaymentNotice')}
                     </Typography>
-                </section>
+                </div>
             </div>
             <InfoBox className={CLASS_NAMES.balanceInfo}>
                 <Typography variant={TypographyVariant.BODY}>

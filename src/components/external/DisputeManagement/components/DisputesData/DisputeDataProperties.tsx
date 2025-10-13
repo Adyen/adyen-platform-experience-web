@@ -28,12 +28,14 @@ import {
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
 import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
-import { getDefenseDocumentContent, getDefenseReasonContent } from '../../utils';
+import { getDefenseDocumentContent, getDefenseReasonContent, TranslationConfigItem } from '../../utils';
+import { useDisputeFlow } from '../../context/dispute/context';
 
 type DisputeDataPropertiesProps = {
     dispute: IDisputeDetail;
     dataCustomization?: { details?: DisputeDetailsCustomization };
     extraFields?: Record<any, any>;
+    defenseReasonConfig: Record<string, TranslationConfigItem>;
 };
 
 const disputeDataKeys = {
@@ -54,9 +56,10 @@ const disputeDataKeys = {
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
 
-const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataPropertiesProps) => {
+const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig }: DisputeDataPropertiesProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(dispute.payment.balanceAccount.timeZone);
+    const { defenseDocumentConfig } = useDisputeFlow();
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
 
@@ -111,7 +114,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // created at
             {
                 key: disputeDataKeys.openedOn,
-                value: dateFormat(createdAt, DATE_FORMAT_DISPUTE_DETAILS),
+                value: <time dateTime={createdAt}>{dateFormat(createdAt, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                 id: 'openedOn',
             },
 
@@ -119,7 +122,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && isActionableDispute
                 ? {
                       key: disputeDataKeys.respondBy,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={dueDate}>{dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'respondBy',
                   }
                 : SKIP_ITEM,
@@ -127,7 +130,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // dispute reference
             {
                 key: disputeDataKeys.disputeReference,
-                value: <CopyText type={'Default' as const} textToCopy={disputeReference} showCopyTextTooltip={false} />,
+                value: (
+                    <CopyText
+                        copyButtonAriaLabelKey="disputes.copy.disputeReference"
+                        type={'Default' as const}
+                        textToCopy={disputeReference}
+                        showCopyTextTooltip={false}
+                    />
+                ),
                 id: 'disputeId',
             },
 
@@ -141,7 +151,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             // psp reference
             {
                 key: disputeDataKeys.paymentReference,
-                value: <CopyText type={'Default' as const} textToCopy={paymentReference} showCopyTextTooltip={false} />,
+                value: (
+                    <CopyText
+                        copyButtonAriaLabelKey="disputes.copy.paymentReference"
+                        type={'Default' as const}
+                        textToCopy={paymentReference}
+                        showCopyTextTooltip={false}
+                    />
+                ),
                 id: 'paymentPspReference',
             },
 
@@ -149,7 +166,14 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             merchantReference
                 ? {
                       key: disputeDataKeys.merchantReference,
-                      value: <CopyText type={'Default' as const} textToCopy={merchantReference} showCopyTextTooltip={false} />,
+                      value: (
+                          <CopyText
+                              copyButtonAriaLabelKey="disputes.copy.merchantReference"
+                              type={'Default' as const}
+                              textToCopy={merchantReference}
+                              showCopyTextTooltip={false}
+                          />
+                      ),
                       id: 'paymentMerchantReference',
                   }
                 : SKIP_ITEM,
@@ -158,7 +182,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defenseReason
                 ? {
                       key: disputeDataKeys.defenseReason,
-                      value: getDefenseReasonContent(i18n, defenseReason)?.title ?? defenseReason,
+                      value: getDefenseReasonContent(defenseReasonConfig, i18n, defenseReason)?.title ?? defenseReason,
                       id: 'defenseReason',
                   }
                 : SKIP_ITEM,
@@ -167,7 +191,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             defendedOn
                 ? {
                       key: disputeDataKeys.defendedOn,
-                      value: dateFormat(defendedOn, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={defendedOn}>{dateFormat(defendedOn, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'defendedOn',
                   }
                 : SKIP_ITEM,
@@ -185,7 +209,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                   };
                                   return (
                                       <div key={`${document}-${index}`} className={DISPUTE_DATA_LIST_EVIDENCE}>
-                                          <Tag label={getDefenseDocumentContent(i18n, document)?.title ?? document} />
+                                          <Tag label={getDefenseDocumentContent(defenseDocumentConfig, i18n, document)?.title ?? document} />
                                           <DownloadButton
                                               className={'adyen-pe-dispute-document-download'}
                                               endpointName={'downloadDefenseDocument'}
@@ -203,6 +227,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                                                   );
                                               }}
                                               onDownloadRequested={() => console.warn('Download failed for', document)}
+                                              aria-label={i18n.get('disputes.downloadEvidence')}
                                           />
                                       </div>
                                   );
@@ -217,7 +242,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             acceptedDate && DISPUTE_STATUSES_WITH_ACCEPTED_DATE.includes(status)
                 ? {
                       key: disputeDataKeys.acceptedOn,
-                      value: dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={acceptedDate}>{dateFormat(acceptedDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'acceptedOn',
                   }
                 : SKIP_ITEM,
@@ -226,7 +251,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
             dueDate && isExpiredDispute
                 ? {
                       key: disputeDataKeys.expiredOn,
-                      value: dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS),
+                      value: <time dateTime={dueDate}>{dateFormat(dueDate, DATE_FORMAT_DISPUTE_DETAILS)}</time>,
                       id: 'expiredOn',
                   }
                 : SKIP_ITEM,
@@ -281,7 +306,17 @@ const DisputeDataProperties = ({ dispute, dataCustomization }: DisputeDataProper
                 }}
             />
         );
-    }, [dispute, i18n, dateFormat, extraFields, dataCustomization?.details?.fields]);
+    }, [
+        dispute.dispute,
+        dispute.payment,
+        dispute.defense,
+        i18n,
+        dateFormat,
+        defenseReasonConfig,
+        extraFields,
+        defenseDocumentConfig,
+        dataCustomization?.details?.fields,
+    ]);
 };
 
 export default DisputeDataProperties;

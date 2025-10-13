@@ -42,7 +42,7 @@ function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }
             </div>
             <div className="adyen-pe-segmented-content-container">
                 {items.map((item, index) => (
-                    <section
+                    <div
                         key={`segment:${uniqueId}-${item.id}`}
                         id={`segment:${uniqueId}-${item.id}`}
                         className="adyen-pe-segmented-content"
@@ -50,7 +50,7 @@ function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }
                         hidden={activeIndex !== index}
                     >
                         {item.content}
-                    </section>
+                    </div>
                 ))}
             </div>
         </div>
