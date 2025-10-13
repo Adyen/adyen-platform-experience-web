@@ -16,14 +16,14 @@ export const getErrorMessage = (
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'common.errors.default',
+                title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, 'common.errors.retry'],
                 refreshComponent: true,
             };
         case '00_500': {
             const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
             return {
-                title: 'common.errors.default',
+                title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
                     [secondaryErrorMessage]: error.requestId ? (

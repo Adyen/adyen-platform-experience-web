@@ -120,7 +120,7 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="payouts.overview.titleHeading" subtitleKey="payouts.overview.generateInfo">
+            <Header hideTitle={hideTitle} titleKey="payouts.overview.title" subtitleKey="payouts.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
             <FilterBar {...filterBarState} ariaLabelKey="payouts.overview.filters.label">

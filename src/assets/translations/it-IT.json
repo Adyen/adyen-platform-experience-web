@@ -591,7 +591,7 @@
     "disputes.management.details.types.chargeback": "Riaccredito",
     "disputes.management.details.types.notificationOfFraud": "Notifica di frode",
     "disputes.management.details.types.requestForInformation": "Richiesta di informazioni",
-    "disputes.management.titleHeading": "Gestione delle contestazioni",
+    "disputes.management.title": "Gestione delle contestazioni",
     "disputes.merchantReference": "Riferimento esercente",
     "disputes.openedOn": "Aperto il",
     "disputes.overview.common.statusGroups.chargebacks": "Chargebacks",

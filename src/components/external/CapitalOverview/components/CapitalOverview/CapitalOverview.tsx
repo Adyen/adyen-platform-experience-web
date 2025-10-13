@@ -113,7 +113,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'Error':
                         return (
                             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
-                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
                                 <ErrorMessageDisplay
                                     absolutePosition={false}
                                     outlined={false}
@@ -153,7 +153,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
                     case 'UnsupportedRegion':
                         return (
                             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
-                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
                                 <CapitalErrorMessageDisplay unsupportedRegion />
                             </div>
                         );

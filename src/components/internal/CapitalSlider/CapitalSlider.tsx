@@ -72,7 +72,7 @@ const CapitalSlider = ({
         <div className={cx('adyen-pe-capital-slider', className)}>
             <label id={labelId} htmlFor={sliderId} className="adyen-pe-capital-slider__label" role="presentation">
                 <Typography variant={TypographyVariant.BODY} stronger>
-                    {i18n.get('capital.howMuchMoneyDoYouNeed')}
+                    {i18n.get('capital.offer.selection.slider.a11y.label')}
                 </Typography>
             </label>
             <div>
@@ -97,13 +97,13 @@ const CapitalSlider = ({
             </div>
             <div className="adyen-pe-capital-slider__labels" aria-hidden="true">
                 <div>
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.min')}</Typography>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.offer.selection.slider.markers.min')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.minAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </div>
                 <div>
-                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.max')}</Typography>
+                    <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.offer.selection.slider.markers.max')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.maxAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
