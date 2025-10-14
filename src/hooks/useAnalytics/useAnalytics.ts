@@ -48,10 +48,10 @@ export const useAnalytics = ({ userEvents }: UseAnalyticsProps) => {
         const customizedLocale = Object.keys(i18n.customTranslations);
         if (customizedLocale.length > 0) {
             for (const locale of customizedLocale) {
-                const translations = i18n.customTranslations[locale]!;
-                const keys = Object.keys(translations!);
-                if (keys.length > 0) {
-                    const oldCustomizedKeys = [...keys].filter(key => oldTranslationKeys.has(key));
+                const translations = i18n.customTranslations?.[locale];
+                const keys = translations ? Object.keys(translations) : [];
+                if (keys?.length > 0) {
+                    const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
                     // This event is a temporary event that tracks platforms that are still using old translations.
                     // We will reach out to these platforms to encourage them to migrate to the new translations.
                     // We will keep maintaining old translations mapping for backward compatibility until all platforms have migrated.
