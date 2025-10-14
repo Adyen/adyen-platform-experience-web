@@ -9,6 +9,7 @@ import './GrantDetails.scss';
 import StructuredList from '../../../../internal/StructuredList';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
+import { Translation } from '../../../../internal/Translation';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
@@ -63,10 +64,18 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
             <div className={GRANT_DETAILS_CLASS_NAMES.content}>
                 <div className={GRANT_DETAILS_CLASS_NAMES.header}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {i18n.get('capital.yourRequestedFundsWere')}
-                    </Typography>
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
-                        {i18n.amount(grant.grantAmount.value, grant.grantAmount.currency)}
+                        <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
+                            <Translation
+                                translationKey="capital.overview.grants.item.details.requestedFunds"
+                                fills={{
+                                    amount: (
+                                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
+                                            {i18n.amount(grant.grantAmount.value, grant.grantAmount.currency)}
+                                        </Typography>
+                                    ),
+                                }}
+                            />
+                        </Typography>
                     </Typography>
                 </div>
                 <StructuredList

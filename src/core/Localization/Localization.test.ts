@@ -125,7 +125,7 @@ describe('Localization', () => {
                 // "capital.actionNeeded" maps to itself in swapConfig (1:1 mapping)
                 lang.customTranslations = {
                     'en-US': {
-                        'capital.actionNeeded': 'Action Required',
+                        ['capital.actionNeeded' as TranslationKey]: 'Action Required',
                     },
                 };
 

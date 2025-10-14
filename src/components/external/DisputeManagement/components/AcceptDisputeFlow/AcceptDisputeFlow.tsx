@@ -31,14 +31,14 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
 
     const acceptedLabel = useRef<TranslationKey>('disputes.management.accept.chargeback.accepted');
     const acceptDisclaimer = useRef<TranslationKey>('disputes.management.accept.chargeback.disclaimer');
-    const acceptTitle = useRef<TranslationKey>('disputes.management.accept.chargeback.titleHeading');
+    const acceptTitle = useRef<TranslationKey>('disputes.management.accept.chargeback.title');
     const acceptButtonTitle = useRef<TranslationKey>('disputes.management.accept.chargeback.actions.accept');
     const isRFI = useRef(isRequestForInformation);
 
     if ((isRFI.current ||= isRequestForInformation)) {
         acceptedLabel.current = 'disputes.management.accept.requestForInformation.accepted';
         acceptDisclaimer.current = 'disputes.management.accept.requestForInformation.disclaimer';
-        acceptTitle.current = 'disputes.management.accept.requestForInformation.titleHeading';
+        acceptTitle.current = 'disputes.management.accept.requestForInformation.title';
         acceptButtonTitle.current = 'disputes.management.accept.requestForInformation.actions.accept';
     }
 

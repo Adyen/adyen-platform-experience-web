@@ -591,7 +591,7 @@
     "disputes.management.details.types.chargeback": "Chargeback",
     "disputes.management.details.types.notificationOfFraud": "Meddelelse om bedrageri",
     "disputes.management.details.types.requestForInformation": "Anmodning om oplysninger",
-    "disputes.management.titleHeading": "Insigelseshåndtering",
+    "disputes.management.title": "Insigelseshåndtering",
     "disputes.merchantReference": "Sælgers reference",
     "disputes.openedOn": "Åbnet den",
     "disputes.overview.common.statusGroups.chargebacks": "Chargebacks",

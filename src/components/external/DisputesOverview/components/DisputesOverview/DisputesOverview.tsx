@@ -277,7 +277,7 @@ export const DisputesOverview = ({
 
     return (
         <div style={mobileStyleOverrides} className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
-            <Header hideTitle={hideTitle} titleKey="disputes.overview.common.titleHeading">
+            <Header hideTitle={hideTitle} titleKey="disputes.overview.common.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 

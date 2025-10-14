@@ -91,7 +91,7 @@ export const ReportsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="reports.overview.titleHeading" subtitleKey="reports.overview.generateInfo">
+            <Header hideTitle={hideTitle} titleKey="reports.overview.title" subtitleKey="reports.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
             <FilterBar {...filterBarState} ariaLabelKey="reports.overview.filters.label">
