@@ -25,6 +25,7 @@ import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct 
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translations_dev_assets } from '../../translations/local';
+import localSwapConfig from '../../config/translations/swapConfig.json';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
@@ -36,18 +37,21 @@ export default class Localization {
     #translations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
+    readonly #fetchSwapConfigFromCdn: () => Promise<Record<string, string | string[]>>;
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
     #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
+    #keySwapConfig: Record<string, string | string[]> = localSwapConfig;
+    #warnedDeprecatedKeys = new Set<string>();
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '') {
+    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '', cdnConfigUrl = '') {
         this.watch(noop);
 
         this.#fetchTranslationFromCdnPromise = (locale: string) =>
@@ -61,12 +65,41 @@ export default class Localization {
                       errorLevel: 'info',
                   });
 
+        this.#fetchSwapConfigFromCdn = async () => {
+            // If no CDN config URL provided, use local fallback
+            if (!cdnConfigUrl || process.env.VITE_LOCAL_ASSETS) {
+                return localSwapConfig;
+            }
+
+            try {
+                return await httpGet<Record<string, string | string[]>>({
+                    loadingContext: cdnConfigUrl,
+                    path: '/translations/swapConfig.json',
+                    versionless: true,
+                    skipContentType: true,
+                    errorLevel: 'error',
+                });
+            } catch (error) {
+                console.warn('Failed to load swapConfig from CDN, using local fallback', error);
+                return localSwapConfig;
+            }
+        };
+
         this.preferredTranslations = Object.freeze(
             availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
         );
 
         this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
+
+        // Load swap config
+        this.#fetchSwapConfigFromCdn()
+            .then(config => {
+                this.#keySwapConfig = config;
+            })
+            .catch(error => {
+                console.warn('Failed to initialize swapConfig', error);
+            });
     }
 
     get customTranslations(): CustomTranslations {
@@ -165,6 +198,37 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
+        // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
+        if (this.#customTranslations) {
+            const oldKeyMapping = this.#keySwapConfig[key];
+
+            // Only process if oldKey is a string (skip arrays for now, they represent multi-key mappings that we will treat as new keys)
+            // Also skip if oldKey is the same as the new key (1:1 mappings)
+            if (oldKeyMapping && !Array.isArray(oldKeyMapping) && oldKeyMapping !== key) {
+                // Check if the custom translations contain the old key
+                const customTranslationsForLocale = this.#customTranslations[this.#locale];
+
+                if (customTranslationsForLocale) {
+                    const translationWithOldKey = getTranslation(customTranslationsForLocale, oldKeyMapping, options);
+
+                    if (!isNull(translationWithOldKey)) {
+                        // Warn about deprecated key usage (only once per key)
+                        if (!this.#warnedDeprecatedKeys.has(oldKeyMapping)) {
+                            console.warn(
+                                `[Adyen Platform Experience Web] Deprecated translation key detected: "${oldKeyMapping}". ` +
+                                    `Please update to use the new key: "${key}". ` +
+                                    `This backward compatibility will be removed in a future version.`
+                            );
+                            this.#warnedDeprecatedKeys.add(oldKeyMapping);
+                        }
+
+                        return translationWithOldKey;
+                    }
+                }
+            }
+        }
+
+        // Get translation normally (this includes custom translations with new key + default translations)
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
     }

@@ -15,6 +15,7 @@ cd "$PROJECT_ROOT"
 ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./src/assets"
+CONFIG_DIR="./src/config"
 UMD_FILE="./dist/umd/index.js"
 CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
@@ -52,6 +53,8 @@ if [ "$DEPLOY_ENV" != "live" ]; then
 else
   echo "Skipping UMD and CSS files copy for LIVE environment."
 fi
+
+cp -r "$CONFIG_DIR" "$STAGING_DIR/config"
 
 echo "Creating archive: $ARCHIVE_NAME"
 
