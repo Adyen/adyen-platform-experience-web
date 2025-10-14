@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
-import { Fragment, FunctionalComponent, h } from 'preact';
+import { Fragment, FunctionalComponent } from 'preact';
 import { AccountDetailsProps, BankAccountField } from './types';
-import { getAccountFieldCopyButtonLabelKey, getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
+import { getAccountFieldCopyButtonLabelKey, getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey, isAccountFieldPrimary } from './utils';
 import './AccountDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-account-details';
@@ -31,6 +31,7 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
                         <AccountDetail
                             className={CLASS_NAMES.detail}
                             contentClassName={CLASS_NAMES.detailContent}
+                            isPrimary={isAccountFieldPrimary(field)}
                             labelClassName={CLASS_NAMES.detailLabel}
                             label={getAccountFieldTranslationKey(field)}
                             copyButtonLabel={getAccountFieldCopyButtonLabelKey(field)}
