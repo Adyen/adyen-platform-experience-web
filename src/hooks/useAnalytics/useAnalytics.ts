@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'preact/hooks';
 import useCoreContext from '../../core/Context/useCoreContext';
 import { usePushAnalyticEvent } from './usePushAnalyticEvent';
 import type { AnalyticsEventPayload, EventQueueItem, MixpanelProperty, UserEvents } from '../../core/Analytics/analytics/user-events';
-import oldTranslationKeys from './const';
+import oldTranslationKeys from './constants';
 
 type UseAnalyticsProps = {
     userEvents: UserEvents;
