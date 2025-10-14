@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory, setTime } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--grant-active-with-gb-repayment-account';
+const STORY_ID = 'mocked-capital-overview--repayment-gb';
 
-test.describe('Grant: Active - With GB repayment account', () => {
+test.describe('Repayment - GB', () => {
     test.beforeEach(async ({ page }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
@@ -35,20 +35,27 @@ test.describe('Grant: Active - With GB repayment account', () => {
             await Promise.all([
                 expect(dismissButton).toBeVisible(),
                 expect(page.getByText('Send repayment')).toBeVisible(),
-                expect(page.getByText('Transfer money to this bank account')).toBeVisible(),
-                expect(page.getByText('Bank account details')).toBeVisible(),
-                expect(copyIconButtons).toHaveCount(3),
+                expect(page.getByText('Pay off your loan faster by making one-time payments.')).toBeVisible(),
+                expect(page.getByText('Loan repayment bank account')).toBeVisible(),
+                expect(copyIconButtons).toHaveCount(4),
                 expect(page.getByText('IBAN')).toBeVisible(),
-                expect(page.getByText('GB01 ADYB 0123 4567 8901 23', { exact: true })).toBeVisible(),
+                expect(page.getByText('GB01 ADYB 0123 4567 8901 23')).toBeVisible(),
                 expect(page.getByText('Account number')).toBeVisible(),
-                expect(page.getByText('123456789012', { exact: true })).toBeVisible(),
+                expect(page.getByText('123456789012')).toBeVisible(),
                 expect(page.getByText('Sort code')).toBeVisible(),
-                expect(page.getByText('012345678', { exact: true })).toBeVisible(),
+                expect(page.getByText('012345678')).toBeVisible(),
+                expect(page.getByText('Account owned by')).toBeVisible(),
+                expect(page.getByText('Adyen N.V. London Branch', { exact: true }).first()).toBeVisible(),
                 expect(page.getByText('Country/region')).toBeVisible(),
                 expect(page.getByText('GB', { exact: true })).toBeVisible(),
-                expect(page.getByText('repayment bank transfer made towards your loan')).toBeVisible(),
-                expect(page.getByText('current remaining amount, including fees')).toBeVisible(),
-                expect(page.getByText('€8,220.00')).toBeVisible(),
+                expect(page.getByText('Your verified bank accounts')).toBeVisible(),
+                expect(page.getByText('NL**INGB******8101')).toBeVisible(),
+                expect(page.getByText('NL**INGB******4151')).toBeVisible(),
+                expect(page.getByText('How to send a loan payment')).toBeVisible(),
+                expect(page.getByText('Add Adyen N.V. London Branch as a payee using your bank’s website or app.')).toBeVisible(),
+                expect(page.getByText('Send your payment.')).toBeVisible(),
+                expect(page.getByText('Wait 1-3 business days for the payment to be applied to your loan.')).toBeVisible(),
+                expect(page.getByText('Payments made from a verified account are usually applied faster.')).toBeVisible(),
             ]);
         });
 
