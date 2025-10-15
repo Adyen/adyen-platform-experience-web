@@ -703,7 +703,6 @@
     "payouts.details.errors.unavailable": "We couldn't load the payout details.",
     "payouts.details.modal.label": "Payout details",
     "payouts.details.tags.netPayout": "Net payout",
-    "payouts.details.tags.nextPayout": "Next payout",
     "payouts.details.tags.sameDaySum": "Sum of same-day payouts",
     "payouts.details.title": "Payout details",
     "payouts.overview.errors.listEmpty": "No payouts found",
