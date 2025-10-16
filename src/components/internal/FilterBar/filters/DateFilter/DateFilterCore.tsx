@@ -22,9 +22,9 @@ const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Loca
     const from = fromDate && fullDateFormat(fromDate);
     const to = toDate && fullDateFormat(toDate);
 
-    if (from && to) return i18n.get('filters.date.between', { values: { fromDate: from, toDate: to } });
-    if (from) return i18n.get('filters.date.since', { values: { date: from } });
-    if (to) return i18n.get('filters.date.until', { values: { date: to } });
+    if (from && to) return i18n.get('common.filters.types.date.range.between', { values: { fromDate: from, toDate: to } });
+    if (from) return i18n.get('common.filters.types.date.range.since', { values: { date: from } });
+    if (to) return i18n.get('common.filters.types.date.range.until', { values: { date: to } });
 };
 
 const resolveDate = (date?: any) => {
@@ -133,7 +133,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
         [selectedPresetOptionValue, fromValue, toValue, props]
     );
 
-    const customSelection = useMemo(() => i18n.get('rangePreset.custom'), [i18n]);
+    const customSelection = useMemo(() => i18n.get('common.filters.types.date.rangeSelect.options.custom'), [i18n]);
 
     const dateTimeFormatter = useMemo(() => {
         const _formattingOptions = { ...formattingOptions, timeZone: props.timezone };
@@ -170,7 +170,7 @@ export default function DateFilterCore<T extends DateFilterProps = DateFilterPro
             onChange={onChange}
             render={renderDateFilterModalBody}
             selectedPresetOption={selectedPresetOption}
-            timeRangeSelectorLabel={timeRangeSelectorLabel ?? i18n.get('filters.date.presetOptions.label')}
+            timeRangeSelectorLabel={timeRangeSelectorLabel ?? i18n.get('common.filters.types.date.rangeSelect.label')}
             value={computeDateFilterValue(i18n, fullDateFormat, from, to)}
             withContentPadding={false}
         />

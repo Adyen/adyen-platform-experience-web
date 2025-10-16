@@ -78,7 +78,7 @@ const TransactionTotals = memo(
                     <>
                         <div className={ITEM_CLASS}>
                             <TotalsCard
-                                aria-label={i18n.get('totalIncoming')}
+                                aria-label={i18n.get('transactions.overview.totals.labels.incoming')}
                                 totals={totals}
                                 isLoading={isLoading}
                                 hiddenField="expenses"
@@ -87,7 +87,7 @@ const TransactionTotals = memo(
                         </div>
                         <div className={ITEM_CLASS}>
                             <TotalsCard
-                                aria-label={i18n.get('totalOutgoing')}
+                                aria-label={i18n.get('transactions.overview.totals.labels.outgoing')}
                                 totals={totals}
                                 isLoading={isLoading}
                                 hiddenField="incomings"
@@ -96,7 +96,12 @@ const TransactionTotals = memo(
                         </div>
                     </>
                 ) : (
-                    <TotalsCard aria-label={i18n.get('transactions.totals.label')} totals={totals} isLoading={isLoading} fullWidth={fullWidth} />
+                    <TotalsCard
+                        aria-label={i18n.get('transactions.overview.totals.labels.default')}
+                        totals={totals}
+                        isLoading={isLoading}
+                        fullWidth={fullWidth}
+                    />
                 )}
             </div>
         );

@@ -15,7 +15,6 @@ import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { getLabel } from '../../../../utils/getLabel';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
@@ -26,6 +25,13 @@ import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 const AMOUNT_FIELDS = ['fundsCapturedAmount', 'adjustmentAmount', 'payoutAmount'] as const;
 export const PAYOUT_TABLE_FIELDS = ['createdAt', ...AMOUNT_FIELDS] as const;
 export type PayoutsTableFields = (typeof PAYOUT_TABLE_FIELDS)[number];
+
+const FIELDS_KEYS = {
+    adjustmentAmount: 'payouts.overview.list.fields.adjustmentAmount',
+    createdAt: 'payouts.overview.list.fields.createdAt',
+    fundsCapturedAmount: 'payouts.overview.list.fields.fundsCapturedAmount',
+    payoutAmount: 'payouts.overview.list.fields.payoutAmount',
+} as const satisfies Partial<Record<PayoutsTableFields, TranslationKey>>;
 
 const _isAmountFieldKey = (key: (typeof PAYOUT_TABLE_FIELDS)[number]): key is (typeof AMOUNT_FIELDS)[number] => {
     return AMOUNT_FIELDS.includes(key as (typeof AMOUNT_FIELDS)[number]);
@@ -61,7 +67,7 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
 
     const getAmountFieldConfig = useCallback(
         (key: (typeof PAYOUT_TABLE_FIELDS)[number]) => {
-            const label = i18n.get(getLabel(key));
+            const label = i18n.get(FIELDS_KEYS[key]);
             if (_isAmountFieldKey(key)) {
                 return {
                     label: data?.[0]?.[key]?.currency ? `${label} (${getCurrencyCode(data?.[0]?.[key]?.currency)})` : label,
@@ -73,8 +79,9 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     );
 
     const columns = useTableColumns({
-        fields: PAYOUT_TABLE_FIELDS,
         customColumns,
+        fields: PAYOUT_TABLE_FIELDS,
+        fieldsKeys: FIELDS_KEYS,
         columnConfig: useMemo(
             () => ({
                 fundsCapturedAmount: { ...getAmountFieldConfig('fundsCapturedAmount'), visible: isSmAndUpContainer },
@@ -86,12 +93,12 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
     });
 
     const EMPTY_TABLE_MESSAGE = {
-        title: 'noPayoutsFound',
-        message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
+        title: 'payouts.overview.errors.listEmpty',
+        message: ['common.errors.updateFilters'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
-        () => () => <DataOverviewError error={error} errorMessage={'weCouldNotLoadYourPayouts'} onContactSupport={onContactSupport} />,
+        () => () => <DataOverviewError error={error} errorMessage={'payouts.overview.errors.listUnavailable'} onContactSupport={onContactSupport} />,
         [error, onContactSupport]
     );
 
@@ -159,8 +166,8 @@ export const PayoutsTable: FC<PayoutsTableProps> = ({
                     <DataGrid.Footer>
                         <Pagination
                             {...paginationProps}
-                            ariaLabelKey="payouts.pagination"
-                            limitSelectorAriaLabelKey="payouts.pagination.limitSelector.label"
+                            ariaLabelKey="payouts.overview.pagination.label"
+                            limitSelectAriaLabelKey="payouts.overview.pagination.controls.limitSelect.label"
                         />
                     </DataGrid.Footer>
                 )}

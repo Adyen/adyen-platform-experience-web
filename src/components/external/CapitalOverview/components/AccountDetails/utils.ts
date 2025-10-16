@@ -41,28 +41,28 @@ export const getAccountFieldCopyButtonLabelKey = (field: string): TranslationKey
     switch (field) {
         // Explicit list of copyable account fields
         case 'iban':
-            return 'capital.sendRepayment.copyIban';
+            return 'capital.overview.sendRepayment.actions.copyIban';
         case 'accountNumber':
-            return 'capital.sendRepayment.copyAccountNumber';
+            return 'capital.overview.sendRepayment.actions.copyAccountNumber';
         case 'routingNumber':
-            return 'capital.sendRepayment.copyRoutingNumber';
+            return 'capital.overview.sendRepayment.actions.copyRoutingNumber';
         case 'sortCode':
-            return 'capital.sendRepayment.copySortCode';
+            return 'capital.overview.sendRepayment.actions.copySortCode';
     }
 };
 
 export const getAccountFieldTranslationKey = (field: string): TranslationKey => {
     switch (field) {
         case 'region':
-            return 'capital.bankCountryOrRegion';
+            return 'capital.overview.sendRepayment.accountDetails.fields.countryOrRegion';
         case 'iban':
-            return 'capital.bankAccountIban';
+            return 'capital.overview.sendRepayment.accountDetails.fields.accountIban';
         case 'accountNumber':
-            return 'capital.bankAccountNumber';
+            return 'capital.overview.sendRepayment.accountDetails.fields.accountNumber';
         case 'routingNumber':
-            return 'capital.bankRoutingNumber';
+            return 'capital.overview.sendRepayment.accountDetails.fields.routingNumber';
         case 'sortCode':
-            return 'capital.bankSortCode';
+            return 'capital.overview.sendRepayment.accountDetails.fields.sortCode';
         default:
             return field as TranslationKey;
     }

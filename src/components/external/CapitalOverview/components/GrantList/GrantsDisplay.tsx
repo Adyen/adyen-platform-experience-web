@@ -88,10 +88,10 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
     return (
         <div className="adyen-pe-grant-list">
             <div className="adyen-pe-grant-list__header-container">
-                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.businessFinancing'} />
+                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
                 {showNewOfferButton ? (
                     <Button onClick={onNewOfferRequest} className={'adyen-pe-grant-list__offer-button'} variant={ButtonVariant.SECONDARY}>
-                        {i18n.get('capital.seeNewOffer')}
+                        {i18n.get('capital.overview.grants.list.actions.newOffer')}
                     </Button>
                 ) : null}
             </div>
@@ -101,17 +101,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                 <SegmentedControl
                     items={[
                         {
-                            label: 'capital.inProgress',
+                            label: 'capital.overview.grants.list.tabs.labels.inProgress',
                             content: <List grants={activeGrants} showDetails={showGrantDetails} />,
                             id: 'active',
                         },
                         {
-                            label: 'capital.closed',
+                            label: 'capital.overview.grants.list.tabs.labels.closed',
                             content: <List grants={inactiveGrants} showDetails={showGrantDetails} />,
                             id: 'inactive',
                         },
                     ]}
                     activeItem={'active'}
+                    aria-label={i18n.get('capital.overview.grants.list.tabs.a11y.label')}
                 />
             )}
         </div>

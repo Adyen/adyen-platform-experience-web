@@ -1,7 +1,7 @@
 import { FilterType } from '../../../../../core/Analytics/analytics/user-events';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
@@ -224,10 +224,10 @@ export const TransactionsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+            <Header hideTitle={hideTitle} titleKey="transactions.overview.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState} ariaLabelKey="transactions.filters">
+            <FilterBar {...filterBarState} ariaLabelKey="transactions.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -255,17 +255,17 @@ export const TransactionsOverview = ({
                     onResetAction={onResetDateFilter}
                 />
                 {/* Remove status filter temporarily */}
-                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
+                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('transactions.overview.filters.types.status.label')} /> */}
                 <MultiSelectionFilter
                     {...categoriesFilter}
                     onResetAction={onResetCategoryFilter}
-                    placeholder={i18n.get('filterPlaceholder.category')}
+                    placeholder={i18n.get('transactions.overview.filters.types.category.label')}
                 />
                 <AmountFilter
                     availableCurrencies={availableCurrencies}
                     selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
-                    name={'range'}
-                    label={i18n.get('amount')}
+                    name={i18n.get('transactions.overview.filters.types.amount.label')}
+                    label={i18n.get('transactions.overview.filters.types.amount.label')}
                     minAmount={filters[FilterParam.MIN_AMOUNT]}
                     maxAmount={filters[FilterParam.MAX_AMOUNT]}
                     updateFilters={e => {
@@ -286,7 +286,7 @@ export const TransactionsOverview = ({
                 <MultiSelectionFilter
                     {...currenciesFilter}
                     onResetAction={onResetCurrencyFilter}
-                    placeholder={i18n.get('filterPlaceholder.currency')}
+                    placeholder={i18n.get('transactions.overview.filters.types.currency.label')}
                 />
             </FilterBar>
             <div className={SUMMARY_CLASS}>
@@ -316,7 +316,7 @@ export const TransactionsOverview = ({
             </div>
 
             <DataDetailsModal
-                ariaLabelKey="transactionDetails"
+                ariaLabelKey="transactions.details.title"
                 dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}

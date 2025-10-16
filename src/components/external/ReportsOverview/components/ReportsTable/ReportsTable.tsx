@@ -28,6 +28,12 @@ import { useTableColumns } from '../../../../../hooks/useTableColumns';
 export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
 export type ReportsTableFields = (typeof FIELDS)[number];
 
+const FIELDS_KEYS = {
+    createdAt: 'reports.overview.list.fields.createdAt',
+    reportFile: 'reports.overview.list.fields.reportFile',
+    reportType: 'reports.overview.list.fields.reportType',
+} as const satisfies Partial<Record<ReportsTableFields, TranslationKey>>;
+
 export interface ReportsTableProps extends WithPaginationLimitSelection<PaginationProps> {
     balanceAccountId: string | undefined;
     loading: boolean;
@@ -58,8 +64,9 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const columns = useTableColumns({
-        fields: FIELDS,
         customColumns,
+        fields: FIELDS,
+        fieldsKeys: FIELDS_KEYS,
         columnConfig: useMemo(
             () => ({
                 dateAndReportType: { visible: isXsAndDownContainer },
@@ -76,12 +83,12 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     }, []);
 
     const EMPTY_TABLE_MESSAGE = {
-        title: 'noReportsFound',
-        message: ['tryDifferentSearchOrResetYourFiltersAndWeWillTryAgain'],
+        title: 'reports.overview.errors.listEmpty',
+        message: ['common.errors.updateFilters'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
-        () => () => <DataOverviewError error={error} errorMessage={'weCouldNotLoadYourReports'} onContactSupport={onContactSupport} />,
+        () => () => <DataOverviewError error={error} errorMessage={'reports.overview.errors.listUnavailable'} onContactSupport={onContactSupport} />,
         [error, onContactSupport]
     );
 
@@ -92,13 +99,13 @@ export const ReportsTable: FC<ReportsTableProps> = ({
             const alertDetails: Partial<{ key: number; description: string; title: string }> = {};
             switch (error?.errorCode) {
                 case '999_429_001':
-                    alertDetails.title = i18n.get('error.somethingWentWrongWithDownload');
-                    alertDetails.description = i18n.get('reportsError.tooManyDownloads');
+                    alertDetails.title = i18n.get('reports.overview.errors.download');
+                    alertDetails.description = i18n.get('reports.overview.errors.tooManyDownloads');
                     break;
                 case '00_500':
                 default:
-                    alertDetails.title = i18n.get('error.somethingWentWrongWithDownload');
-                    alertDetails.description = i18n.get('error.pleaseTryAgainLater');
+                    alertDetails.title = i18n.get('reports.overview.errors.download');
+                    alertDetails.description = i18n.get('reports.overview.errors.retryDownload');
                     break;
             }
             setAlert(alertDetails as { title: string; description: string });
@@ -135,9 +142,11 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     dateAndReportType: ({ item }) => {
                         return (
                             <div className={DATE_TYPE_CLASS}>
-                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                                    {i18n.get(`reportType.${item?.['type']}`)}
-                                </Typography>
+                                {item?.['type'] && (
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                                        {i18n.get(`reports.common.types.${item['type']}`)}
+                                    </Typography>
+                                )}
                                 <time dateTime={item.createdAt}>
                                     <Typography className={DATE_TYPE_DATE_SECTION_CLASS} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                         {dateFormat(item.createdAt, DATE_FORMAT_REPORTS)}
@@ -150,7 +159,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         return (
                             item?.['type'] && (
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                                    {i18n.get(`reportType.${item?.['type']}`)}
+                                    {i18n.get(`reports.common.types.${item['type']}`)}
                                 </Typography>
                             )
                         );
@@ -168,7 +177,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                                 onDownloadRequested={freeze}
                                 setError={onDownloadErrorAlert}
                                 errorDisplay={errorIcon}
-                                aria-label={i18n.get('report.downloadReport')}
+                                aria-label={i18n.get('reports.overview.list.controls.downloadReport.label')}
                             />
                         );
                     },
@@ -178,8 +187,8 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     <DataGrid.Footer>
                         <Pagination
                             {...paginationProps}
-                            ariaLabelKey="reports.pagination"
-                            limitSelectorAriaLabelKey="reports.pagination.limitSelector.label"
+                            ariaLabelKey="reports.overview.pagination.label"
+                            limitSelectAriaLabelKey="reports.overview.pagination.controls.limitSelect.label"
                         />
                     </DataGrid.Footer>
                 )}

@@ -13,7 +13,7 @@ test.describe('Error - Dynamic offer - Exceeded retries', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('How much money do you need?')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't load financial offers.Try refreshing the page or come back later.")).toBeVisible();
+        await expect(page.getByText("We couldn't load financial offers. Try refreshing the page or come back later.")).toBeVisible();
         await expect(page.getByRole('button', { name: 'Refresh' })).toBeVisible();
     });
 });

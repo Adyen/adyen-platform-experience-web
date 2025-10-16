@@ -12,7 +12,7 @@ test.describe('Error - Dynamic offer config - No config', () => {
         await expect(page.getByText('Business financing offer')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
-        await expect(page.getByText("We couldn't continue with the offer.Contact support for help.")).toBeVisible();
+        await expect(page.getByText("We couldn't continue with the offer. Contact support for help.")).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });
 });

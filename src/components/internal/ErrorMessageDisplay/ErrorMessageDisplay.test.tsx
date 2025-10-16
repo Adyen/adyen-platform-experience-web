@@ -4,31 +4,29 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
-import { ErrorMessageDisplay, IMAGE_BREAKPOINT_SIZES } from './ErrorMessageDisplay';
+import { ErrorMessageDisplay, IMAGE_BREAKPOINT_MEDIUM_PX } from './ErrorMessageDisplay';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 
 vi.mock('../../../core/Context/useCoreContext');
 
 const TEST_LABELS = {
-    TITLE: 'Something went wrong',
     MESSAGE: 'Please try again later',
     MESSAGE_2: 'Contact support if issue persists',
     REFRESH: 'Refresh',
     SUPPORT: 'Contact Support',
-    ALT_TEXT: 'Error illustration',
+    TITLE: 'Something went wrong',
 } as const;
 
 describe('ErrorMessageDisplay', () => {
     const mockI18n = {
         get: vi.fn((key: TranslationKey) => {
-            const translations: Record<string, string> = {
-                testTitle: TEST_LABELS.TITLE,
-                testMessage: TEST_LABELS.MESSAGE,
-                testMessage2: TEST_LABELS.MESSAGE_2,
-                refresh: TEST_LABELS.REFRESH,
-                reachOutToSupport: TEST_LABELS.SUPPORT,
-                thereWasAnUnexpectedError: TEST_LABELS.ALT_TEXT,
+            const translations: Partial<Record<TranslationKey, string>> = {
+                ['common.actions.contactSupport.labels.reachOut']: TEST_LABELS.SUPPORT,
+                ['common.actions.refresh.labels.default']: TEST_LABELS.REFRESH,
+                ['testMessage' as TranslationKey]: TEST_LABELS.MESSAGE,
+                ['testMessage2' as TranslationKey]: TEST_LABELS.MESSAGE_2,
+                ['testTitle' as TranslationKey]: TEST_LABELS.TITLE,
             };
             return translations[key] || key;
         }),
@@ -77,7 +75,7 @@ describe('ErrorMessageDisplay', () => {
 
             // Both messages are rendered in the same paragraph, separated by <br />
             const messageContainer = screen.getByText((_, element) => {
-                return element?.textContent === `${TEST_LABELS.MESSAGE}${TEST_LABELS.MESSAGE_2}`;
+                return element?.textContent === `${TEST_LABELS.MESSAGE}  ${TEST_LABELS.MESSAGE_2}`;
             });
 
             expect(messageContainer).toBeInTheDocument();
@@ -96,9 +94,9 @@ describe('ErrorMessageDisplay', () => {
             // Verify picture element has correct sources for responsive images
             const sources = container.querySelectorAll('source');
             expect(sources).toHaveLength(2);
-            expect(sources[0]).toHaveAttribute('media', `(min-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`);
+            expect(sources[0]).toHaveAttribute('media', `(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
             expect(sources[0]).toHaveAttribute('srcSet', 'desktop.svg');
-            expect(sources[1]).toHaveAttribute('media', `(max-width: ${IMAGE_BREAKPOINT_SIZES.md}px)`);
+            expect(sources[1]).toHaveAttribute('media', `(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
             expect(sources[1]).toHaveAttribute('srcSet', 'mobile.svg');
         });
 

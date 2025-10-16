@@ -89,7 +89,7 @@ function DownloadButton({
         if (iconButton) {
             return buttonIcon;
         } else {
-            return isFetching ? `${i18n.get('downloading')}..` : i18n.get('download');
+            return isFetching ? `${i18n.get('common.actions.download.labels.inProgress')}..` : i18n.get('common.actions.download.labels.default');
         }
     }, [buttonIcon, i18n, isFetching, iconButton]);
 

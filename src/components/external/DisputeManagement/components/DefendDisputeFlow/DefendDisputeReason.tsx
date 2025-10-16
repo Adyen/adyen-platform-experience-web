@@ -110,12 +110,12 @@ export const DefendDisputeReason = () => {
     const actionButtons = useMemo(() => {
         return [
             {
-                title: i18n.get('disputes.defend.continue'),
+                title: i18n.get('disputes.management.defend.common.actions.continue'),
                 disabled: isReasonSubmitted || isFetching,
                 event: onDefenseReasonSubmit,
             },
             {
-                title: i18n.get('disputes.goBack'),
+                title: i18n.get('disputes.management.common.actions.goBack'),
                 disabled: isReasonSubmitted || isFetching,
                 event: goBack,
             },
@@ -140,12 +140,13 @@ export const DefendDisputeReason = () => {
         <>
             <div className={classes.selector}>
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
-                    {i18n.get('disputes.defend.selectDefenseReason')}
+                    {i18n.get('disputes.management.defend.chargeback.selectDefenseReason')}
                 </Typography>
                 <Select
                     items={defenseReasons}
                     onChange={onChange}
                     selected={selected}
+                    aria-label={i18n.get('disputes.management.defend.common.inputs.reasonSelect.a11y.label')}
                     popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
                     fixedPopoverPositioning
                 />
@@ -178,7 +179,7 @@ export const DefendDisputeReason = () => {
             {showAlert && (
                 <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
                     <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
-                        {i18n.get('disputes.defend.chargebackFeeInformation')}
+                        {i18n.get('disputes.management.defend.chargeback.feeInfo')}
                     </Typography>
                 </Alert>
             )}

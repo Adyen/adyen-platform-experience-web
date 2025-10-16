@@ -13,7 +13,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
     const [isHovered, setIsHovered] = useState(false);
 
-    const localizedPlainCurrencyText = useMemo(() => i18n.get('currency'), [i18n]);
+    const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.totals.currency.label'), [i18n]);
 
     const [firstTotal, ...restOfTotals] = useMemo(() => {
         return totals.map((t: Partial<ITransactionTotalWithKey>) => {
@@ -23,6 +23,17 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
             return t as ITransactionTotalWithKey;
         });
     }, [totals]);
+
+    const totalsListLabel = useMemo(() => {
+        switch (hiddenField) {
+            case 'expenses':
+                return i18n.get('transactions.overview.totals.lists.incoming');
+            case 'incomings':
+                return i18n.get('transactions.overview.totals.lists.outgoing');
+            default:
+                return i18n.get('transactions.overview.totals.lists.default');
+        }
+    }, [i18n, hiddenField]);
 
     const renderFirstTotal = useMemo(
         () => (
@@ -76,7 +87,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
     return (
         <ExpandableCard
             renderContent={({ collapsibleContent }) => (
-                <div role="list" aria-label={ariaAttributes['aria-label']}>
+                <div role="list" aria-label={totalsListLabel}>
                     {renderFirstTotal}
                     {collapsibleContent}
                 </div>

@@ -22,7 +22,7 @@ const BalanceAccountSelector = memo(
     }: Omit<ReturnType<typeof useBalanceAccountSelection>, 'resetBalanceAccountSelection'>) => {
         const { i18n } = useCoreContext();
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-        const balanceAccountLabel = useMemo(() => i18n.get('balanceAccount'), [i18n]);
+        const balanceAccountLabel = useMemo(() => i18n.get('common.filters.types.account.label'), [i18n]);
 
         const renderListItem = useCallback<_GetRenderListItemType<typeof balanceAccountSelectionOptions>>(
             data => (
