@@ -316,7 +316,7 @@ export const TransactionsOverview = ({
             </div>
 
             <DataDetailsModal
-                ariaLabelKey="transactions.details.modal.label"
+                ariaLabelKey="transactions.details.title"
                 dataCustomization={dataCustomization?.details}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
