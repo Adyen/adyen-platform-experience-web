@@ -8,10 +8,23 @@ import { InputBaseProps } from './types';
 import './FormFields.scss';
 
 function InputBase(
-    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, ...props }: InputBaseProps,
+    {
+        onInput,
+        onKeyUp,
+        trimOnBlur,
+        onBlurHandler,
+        onBlur,
+        onFocusHandler,
+        errorMessage,
+        iconBefore,
+        iconAfter,
+        iconBeforeInteractive,
+        iconAfterInteractive,
+        ...props
+    }: InputBaseProps,
     ref: ForwardedRef<HTMLInputElement | null>
 ) {
-    const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
+    const { classNameModifiers, isInvalid, isValid, readonly = false, type, uniqueId, isCollatingErrors, disabled } = props;
 
     /**
      * To avoid confusion with misplaced/misdirected onChange handlers - InputBase only accepts onInput, onBlur & onFocus handlers.
@@ -69,23 +82,55 @@ function InputBase(
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
+    const hasIcons = iconBefore || iconAfter;
+
+    const inputElement = (
+        <input
+            id={uniqueId}
+            {...newProps}
+            type={type}
+            className={inputClassNames}
+            readOnly={readonly}
+            aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
+            aria-invalid={isInvalid}
+            onInput={handleInput}
+            onBlurCapture={handleBlur}
+            onFocus={handleFocus}
+            onKeyUp={handleKeyUp}
+            disabled={disabled}
+            ref={ref}
+        />
+    );
+
     return (
         <>
-            <input
-                id={uniqueId}
-                {...newProps}
-                type={type}
-                className={inputClassNames}
-                readOnly={readonly}
-                aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
-                aria-invalid={isInvalid}
-                onInput={handleInput}
-                onBlurCapture={handleBlur}
-                onFocus={handleFocus}
-                onKeyUp={handleKeyUp}
-                disabled={disabled}
-                ref={ref}
-            />
+            {hasIcons ? (
+                <div className="adyen-pe-input__container">
+                    {iconBefore && (
+                        <span
+                            className={classNames('adyen-pe-input__icon-before', {
+                                'adyen-pe-input__icon-before--interactive': iconBeforeInteractive,
+                            })}
+                            aria-hidden="true"
+                        >
+                            {iconBefore}
+                        </span>
+                    )}
+                    {inputElement}
+                    {iconAfter && (
+                        <span
+                            className={classNames('adyen-pe-input__icon-after', {
+                                'adyen-pe-input__icon-after--interactive': iconAfterInteractive,
+                            })}
+                            aria-hidden="true"
+                        >
+                            {iconAfter}
+                        </span>
+                    )}
+                </div>
+            ) : (
+                inputElement
+            )}
             {isInvalid && errorMessage && (
                 <span className="adyen-pe-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
                     {errorMessage}
