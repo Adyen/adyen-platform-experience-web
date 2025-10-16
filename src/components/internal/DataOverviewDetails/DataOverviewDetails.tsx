@@ -18,12 +18,12 @@ import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetail
 import { PAYOUT_TABLE_FIELDS } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsCustomization } from '../../external';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
+import { TranslationKey } from '../../../translations';
 import { Header } from '../Header';
 
 const ENDPOINTS_BY_TYPE = {
     transaction: 'getTransaction',
     payout: 'getPayout',
-    dispute: 'getDisputeDetail',
 } as const;
 
 const isDetailsWithId = (props: DetailsComponentProps): props is DetailsWithId => !('data' in props);
@@ -65,9 +65,20 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
 
     const errorProps = useMemo(() => {
         if (error) {
-            return getErrorMessage(error as AdyenPlatformExperienceError, 'weCouldNotLoadYourTransactions', props.onContactSupport);
+            let errorMessageKey!: TranslationKey;
+            switch (props.type) {
+                case 'transaction':
+                    errorMessageKey = 'transactions.details.errors.unavailable';
+                    break;
+                case 'payout':
+                    errorMessageKey = 'payouts.details.errors.unavailable';
+                    break;
+                default:
+                    break;
+            }
+            return getErrorMessage(error as AdyenPlatformExperienceError, errorMessageKey, props.onContactSupport);
         }
-    }, [error, props.onContactSupport]);
+    }, [error, props.onContactSupport, props.type]);
 
     const detailsData = details ?? data;
 

@@ -14,8 +14,8 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
     const { i18n } = useCoreContext();
     const { getBalances: getAccountsBalance } = useConfigContext().endpoints;
 
-    const balancesAriaLabel = useMemo(() => i18n.get('transactions.balances.label'), [i18n]);
-    const localizedPlainCurrencyText = useMemo(() => i18n.get('currency'), [i18n]);
+    const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
+    const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
 
     const fetchCallback = useCallback(async () => {
         return getAccountsBalance?.(EMPTY_OBJECT, {
@@ -105,7 +105,7 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
             <ExpandableCard
                 aria-label={balancesAriaLabel}
                 renderContent={({ collapsibleContent }) => (
-                    <div role="list" aria-label={balancesAriaLabel}>
+                    <div role="list" aria-label={i18n.get('transactions.overview.balances.lists.default')}>
                         {renderFirstBalance}
                         {collapsibleContent}
                     </div>

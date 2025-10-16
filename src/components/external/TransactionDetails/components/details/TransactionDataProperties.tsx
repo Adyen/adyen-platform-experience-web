@@ -14,6 +14,7 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import Icon from '../../../../internal/DataGrid/components/Icon';
 import cx from 'classnames';
+import { REFUND_REASONS_KEYS } from '../../context/constants';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -43,24 +44,30 @@ const TransactionDataProperties = () => {
         const deductedAmount = getFormattedAmount(transaction.deductedAmount);
         const originalAmount = getFormattedAmount(transaction.originalAmount);
 
-        const deductedAmountKey = isRefundTransaction ? 'refund.refundFee' : 'refund.fee';
-        const originalAmountKey = isRefundTransaction ? 'refund.originalPayment' : 'refund.originalAmount';
-        const paymentReferenceKey = isRefundTransaction ? 'refund.paymentPspReference' : 'refund.pspReference';
+        const deductedAmountKey: TranslationKey = isRefundTransaction ? 'transactions.details.fields.refundFee' : 'transactions.details.fields.fee';
+        const originalAmountKey: TranslationKey = isRefundTransaction
+            ? 'transactions.details.fields.originalPayment'
+            : 'transactions.details.fields.originalAmount';
+        const paymentReferenceKey: TranslationKey = isRefundTransaction
+            ? 'transactions.details.fields.paymentPspReference'
+            : 'transactions.details.fields.pspReference';
 
         const listItems: StructuredListProps['items'] = [
             // amounts
-            originalAmount ? { key: originalAmountKey as TranslationKey, value: originalAmount, id: 'originalAmount' } : SKIP_ITEM,
-            deductedAmount ? { key: deductedAmountKey as TranslationKey, value: deductedAmount, id: 'deductedAmount' } : SKIP_ITEM,
+            originalAmount ? { key: originalAmountKey, value: originalAmount, id: 'originalAmount' } : SKIP_ITEM,
+            deductedAmount ? { key: deductedAmountKey, value: deductedAmount, id: 'deductedAmount' } : SKIP_ITEM,
 
             // balance account
-            balanceAccount?.description ? { key: 'account' as const, value: balanceAccount.description, id: 'description' } : SKIP_ITEM,
+            balanceAccount?.description
+                ? { key: 'transactions.details.fields.account' as const, value: balanceAccount.description, id: 'description' }
+                : SKIP_ITEM,
 
             // refund reason
             isRefundTransaction && refundMetadata?.refundReason
                 ? {
-                      key: 'refundReason' as const,
-                      value: i18n.has(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
-                          ? i18n.get(`refundReason.${refundMetadata.refundReason}` as TranslationKey)
+                      key: 'transactions.details.fields.refundReason' as const,
+                      value: i18n.has(REFUND_REASONS_KEYS[refundMetadata.refundReason])
+                          ? i18n.get(REFUND_REASONS_KEYS[refundMetadata.refundReason])
                           : refundMetadata.refundReason,
                       id: 'refundReason',
                   }
@@ -68,10 +75,10 @@ const TransactionDataProperties = () => {
 
             // reference id
             {
-                key: 'referenceID' as const,
+                key: 'transactions.details.fields.referenceID' as const,
                 value: (
                     <CopyText
-                        copyButtonAriaLabelKey="transactions.copy.referenceId"
+                        copyButtonAriaLabelKey="transactions.details.actions.copyReferenceID"
                         type={'Default' as const}
                         textToCopy={id}
                         onCopyText={onCopyReferenceId}
@@ -82,11 +89,15 @@ const TransactionDataProperties = () => {
             },
 
             isRefundTransaction && refundMetadata?.refundPspReference
-                ? { key: 'refund.refundPspReference' as TranslationKey, value: refundMetadata.refundPspReference, id: 'refundPspReference' }
+                ? {
+                      key: 'transactions.details.fields.refundPspReference' as const,
+                      value: refundMetadata.refundPspReference,
+                      id: 'refundPspReference',
+                  }
                 : SKIP_ITEM,
 
             // psp reference
-            paymentPspReference ? { key: paymentReferenceKey as TranslationKey, value: paymentPspReference, id: 'paymentPspReference' } : SKIP_ITEM,
+            paymentPspReference ? { key: paymentReferenceKey, value: paymentPspReference, id: 'paymentPspReference' } : SKIP_ITEM,
         ]
             .filter(Boolean)
             .filter(val => !dataCustomization?.details?.fields?.some(field => field.key === val.id && field.visibility === 'hidden'));

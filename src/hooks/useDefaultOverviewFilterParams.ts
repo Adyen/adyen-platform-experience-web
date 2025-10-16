@@ -6,7 +6,7 @@ import { FilterParam } from '../components/types';
 
 const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes') => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
-    const defaultTimeRange = 'rangePreset.last30Days';
+    const defaultTimeRange = 'common.filters.types.date.rangeSelect.options.last30Days';
     const { from, to } = timeRangeOptions[defaultTimeRange];
 
     const defaultFilterParams = {

@@ -7,7 +7,6 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Icon from '../../../../internal/Icon';
 import type { ButtonActionObject } from '../../../../internal/Button/ButtonActions/types';
 import type { ITransactionDetailsContext, TransactionDetailsProviderProps } from './types';
-import type { TranslationKey } from '../../../../../translations';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { ActiveView } from '../types';
 
@@ -43,7 +42,7 @@ export const TransactionDetailsProvider = memo(
         const { currentTransaction, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
         const userEvents = useAnalyticsContext();
 
-        const primaryActionLabel = useMemo(() => ({ title: i18n.get('refundAction') }), [i18n]);
+        const primaryActionLabel = useMemo(() => ({ title: i18n.get('transactions.details.actions.refund') }), [i18n]);
         const primaryActionDisabled = useMemo(() => !primaryActionAvailable || refundDisabled, [primaryActionAvailable, refundDisabled]);
 
         const primaryAction = useCallback(() => {
@@ -84,7 +83,7 @@ export const TransactionDetailsProvider = memo(
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
                     return {
-                        title: i18n.get('refund.returnToRefund' as TranslationKey),
+                        title: i18n.get('transactions.details.actions.backToRefund'),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon style={{ transform: 'scaleX(-1)' }} name="angle-right" />
@@ -94,7 +93,7 @@ export const TransactionDetailsProvider = memo(
                     };
                 case TransactionNavigationAction.FORWARD:
                     return {
-                        title: i18n.get('refund.goToPayment' as TranslationKey),
+                        title: i18n.get('transactions.details.actions.goToPayment'),
                         renderTitle: (title: string) => (
                             <>
                                 <Icon name="angle-right" />

@@ -16,7 +16,7 @@ function Tabs<TabId extends string>({
     const { i18n } = useCoreContext();
     return (
         <div>
-            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal" aria-label={ariaLabel ?? i18n.get('tabs')}>
+            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal" aria-label={ariaLabel}>
                 {tabs.map((tab, index) => {
                     const isActive = activeIndex === index;
                     return (

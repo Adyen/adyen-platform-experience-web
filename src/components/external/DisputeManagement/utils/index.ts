@@ -54,7 +54,7 @@ export const getDefenseDocumentContent = (
     i18n: Localization['i18n'],
     defenseDocumentKey: string
 ) => {
-    return getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.defenseDocument');
+    return getContent(i18n, defenseDocumentConfig, defenseDocumentKey, 'disputes.management.common.defenseDocuments');
 };
 
 export const getDefenseReasonContent = (
@@ -62,5 +62,5 @@ export const getDefenseReasonContent = (
     i18n: Localization['i18n'],
     defenseReasonKey: string
 ) => {
-    return getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.defenseReason');
+    return getContent(i18n, defenseReasonConfig, defenseReasonKey, 'disputes.management.common.defenseReasons');
 };

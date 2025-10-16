@@ -54,7 +54,7 @@ const _BaseRefundAmountInput = ({
             <div className={TX_DATA_INPUT_HEAD}>
                 <div id={labelIdentifier.current}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('refundAmount')}
+                        {i18n.get('transactions.details.refund.inputs.amount.label')}
                     </Typography>
                 </div>
             </div>
@@ -114,12 +114,12 @@ export const TransactionRefundPartialAmountInput = ({ locale }: { locale: string
         let message: typeof errorMessage = null;
 
         if (amount || value) {
-            if (amount < 0) message = 'noNegativeNumbersAllowed';
-            if (amount > availableAmount) message = 'refundAmount.excess';
-        } else message = 'refundAmount.required';
+            if (amount < 0) message = 'transactions.details.refund.inputs.amount.errors.negative';
+            if (amount > availableAmount) message = 'transactions.details.refund.inputs.amount.errors.excess';
+        } else message = 'transactions.details.refund.inputs.amount.errors.required';
 
         // Get the decimal separator based on the user's locale
-        const decimalSeparator = 1.1.toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
+        const decimalSeparator = (1.1).toLocaleString(locale).match(/\d(.*?)\d/)?.[1] || '.';
         // Split the input value at the decimal separator
         const parts = value.split(decimalSeparator);
 

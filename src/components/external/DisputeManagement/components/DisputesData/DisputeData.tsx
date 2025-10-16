@@ -71,10 +71,10 @@ const DisputeDataAlert = ({
             const { dueDate, type } = dispute;
             const translationKey =
                 type === 'REQUEST_FOR_INFORMATION'
-                    ? 'disputes.contactSupport.toDefendRequestForInformation'
+                    ? 'disputes.management.details.alerts.contactSupport.requestForInformation'
                     : type === 'NOTIFICATION_OF_FRAUD'
-                      ? 'disputes.contactSupport.toResolveNotificationOfFraud'
-                      : 'disputes.contactSupport.toDefendDispute';
+                      ? 'disputes.management.details.alerts.contactSupport.notificationOfFraud'
+                      : 'disputes.management.details.alerts.contactSupport.chargeback';
 
             return (
                 <Alert
@@ -87,7 +87,7 @@ const DisputeDataAlert = ({
                                 <>
                                     {' '}
                                     <Translation
-                                        translationKey={'disputes.alert.responseDeadline'}
+                                        translationKey={'disputes.management.details.alerts.responseDeadline'}
                                         fills={{
                                             date: (
                                                 <time dateTime={dueDate}>
@@ -106,13 +106,28 @@ const DisputeDataAlert = ({
             );
         }
         case 'autoDefended':
-            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.autoDefended')} />;
+            return (
+                <Alert
+                    type={AlertTypeOption.HIGHLIGHT}
+                    variant={AlertVariantOption.TIP}
+                    description={i18n.get('disputes.management.details.alerts.autoDefended')}
+                />
+            );
         case 'notDefended': {
-            const translationKey = dispute.status === 'EXPIRED' ? 'disputes.alert.notDefendedExpired' : 'disputes.alert.notDefendedLost';
+            const translationKey =
+                dispute.status === 'EXPIRED'
+                    ? 'disputes.management.details.alerts.notDefendedExpired'
+                    : 'disputes.management.details.alerts.notDefendedLost';
             return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get(translationKey)} />;
         }
         case 'notDefendable':
-            return <Alert type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} description={i18n.get('disputes.alert.notDefendable')} />;
+            return (
+                <Alert
+                    type={AlertTypeOption.HIGHLIGHT}
+                    variant={AlertVariantOption.TIP}
+                    description={i18n.get('disputes.management.details.alerts.notDefendable')}
+                />
+            );
     }
 
     return null;
@@ -223,19 +238,19 @@ export const DisputeData = ({
         const ctaButtons = [];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('disputes.defend.chargeback'),
+                title: i18n.get('disputes.management.details.actions.defendChargeback'),
                 event: onDefendClick,
             });
         if (isAcceptable) {
             ctaButtons.push({
-                title: i18n.get('disputes.accept'),
+                title: i18n.get('disputes.management.details.actions.accept'),
                 event: onAcceptClick,
                 variant: ButtonVariant.SECONDARY,
             });
         }
         if (showContactSupport && isFunction(onContactSupport)) {
             ctaButtons.push({
-                title: i18n.get('contactSupport'),
+                title: i18n.get('disputes.management.details.actions.contactSupport'),
                 event: onContactSupport,
                 variant: ButtonVariant.SECONDARY,
             });
@@ -258,7 +273,7 @@ export const DisputeData = ({
     const renderBackButton = useCallback(() => {
         return (
             <Button variant={ButtonVariant.SECONDARY} onClick={onDismiss}>
-                {i18n.get('disputes.goBack')}
+                {i18n.get('disputes.management.common.actions.goBack')}
             </Button>
         );
     }, [i18n, onDismiss]);
@@ -310,7 +325,11 @@ export const DisputeData = ({
         disputeAlertMode = 'notDefended';
     }
 
-    const errorProps = getDisputesErrorMessage(error as AdyenPlatformExperienceError, 'disputes.error.weCouldNotLoadYourDispute', onContactSupport);
+    const errorProps = getDisputesErrorMessage(
+        error as AdyenPlatformExperienceError,
+        'disputes.management.common.errors.unavailable',
+        onContactSupport
+    );
 
     return (
         <div className={cx(DISPUTE_DATA_CLASS, { [DISPUTE_DATA_MOBILE_CLASS]: !isSmAndUpContainer })}>

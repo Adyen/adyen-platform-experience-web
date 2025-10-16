@@ -37,26 +37,26 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
         <GrantAdjustmentDetails
             className={BASE_CLASS}
             onDetailsClose={onDetailsClose}
-            headerTitleKey="capital.sendRepayment"
-            headerSubtitleKey="capital.sendRepaymentSubtitle"
+            headerTitleKey="capital.overview.sendRepayment.title"
+            headerSubtitleKey="capital.overview.sendRepayment.instruction"
         >
             <div className={CLASS_NAMES.repaymentInfo}>
                 <div className={CLASS_NAMES.repaymentAccount}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('capital.bankAccountDetails')}
+                        {i18n.get('capital.overview.sendRepayment.accountDetails.title')}
                     </Typography>
                     <AccountDetails bankAccount={bankAccount} />
                 </div>
                 <div className={CLASS_NAMES.repaymentNotice}>
                     <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                        {i18n.get('capital.sendRepaymentNotice')}
+                        {i18n.get('capital.overview.sendRepayment.repaymentInfo')}
                     </Typography>
                 </div>
             </div>
             <InfoBox className={CLASS_NAMES.balanceInfo}>
                 <Typography variant={TypographyVariant.BODY}>
                     <Translation
-                        translationKey="capital.repaymentBalanceInfo"
+                        translationKey="capital.overview.sendRepayment.remainingAmountInfo"
                         fills={{
                             amount: (
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
