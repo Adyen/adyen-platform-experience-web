@@ -79,8 +79,92 @@
     outline: none;
     padding: 5px 8px;
     position: relative;
-    transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition:
+        border 0.2s ease-out,
+        box-shadow 0.2s ease-out;
     width: 100%;
+
+    &__container {
+        align-items: center;
+        background: style.token(color-background-primary);
+        border: 1px solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-direction: row;
+        height: 40px;
+        position: relative;
+        transition:
+            border 0.2s ease-out,
+            box-shadow 0.2s ease-out;
+        width: 100%;
+
+        &:hover {
+            border-color: style.token(color-outline-primary-hover);
+        }
+
+        &:focus-within {
+            background: style.token(color-background-primary);
+            outline: 1px solid style.token(color-outline-selected);
+        }
+    }
+
+    &__container > * {
+        flex-shrink: 0;
+    }
+
+    &__container > input {
+        background: transparent;
+        border: 0;
+        flex: 1;
+        height: auto;
+        outline: none;
+        padding: 5px 8px;
+
+        &:hover {
+            border: 0;
+        }
+
+        &:focus,
+        &:active {
+            background: transparent;
+            outline: none;
+        }
+    }
+
+    /* stylelint-disable selector-no-qualifying-type */
+    // Hide native search input clear button
+    &__container > input[type='search']::-webkit-search-cancel-button,
+    &__container > input[type='search']::-webkit-search-decoration {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    /* stylelint-enable selector-no-qualifying-type */
+
+    &__icon-before {
+        color: style.token(color-icon-secondary);
+        display: flex;
+        margin-left: 8px;
+        pointer-events: none;
+        transform: scale(1.2);
+
+        &--interactive {
+            cursor: pointer;
+            pointer-events: auto;
+        }
+    }
+
+    &__icon-after {
+        color: style.token(color-icon-secondary);
+        display: flex;
+        margin-right: 8px;
+        pointer-events: none;
+        transform: scale(1.2);
+
+        &--interactive {
+            cursor: pointer;
+            pointer-events: auto;
+        }
+    }
 
     &__invalid-value {
         color: style.token(color-label-critical);
@@ -203,3 +287,14 @@
 .adyen-pe-input[type='number'] {
     appearance: textfield;
 }
+
+/* stylelint-disable selector-no-qualifying-type */
+.adyen-pe-input[type='search']::-webkit-search-cancel-button,
+.adyen-pe-input[type='search']::-webkit-search-decoration,
+.adyen-pe-input[type='search']::-webkit-search-results-button,
+.adyen-pe-input[type='search']::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+/* stylelint-enable selector-no-qualifying-type */
