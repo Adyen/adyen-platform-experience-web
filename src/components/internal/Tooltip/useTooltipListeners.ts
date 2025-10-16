@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import { InteractionKeyCode } from '../../types';
 import useBooleanState from '../../../hooks/useBooleanState';
 
@@ -43,6 +43,8 @@ export const useTooltipListeners = (): {
         },
         [hideTooltip]
     );
+
+    useEffect(() => hideTooltip, [hideTooltip]);
 
     return {
         listeners: {

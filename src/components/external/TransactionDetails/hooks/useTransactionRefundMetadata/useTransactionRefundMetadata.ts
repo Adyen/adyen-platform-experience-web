@@ -37,16 +37,19 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                     }
                     return -1;
                 })
-                .reduce((res, currentStatusValue) => {
-                    const currentStatus = currentStatusValue.status;
-                    const amount = ~currentStatusValue.amount.value + 1;
-                    if (res?.[currentStatus]) {
-                        res?.[currentStatus]?.amounts.push(amount);
-                        return res;
-                    } else {
-                        return { ...res, [currentStatus]: { amounts: [amount], currency: currentStatusValue.amount.currency } };
-                    }
-                }, {} as Record<'in_progress' | 'completed' | 'failed', { amounts: number[]; currency: string }>) ?? {}
+                .reduce(
+                    (res, currentStatusValue) => {
+                        const currentStatus = currentStatusValue.status;
+                        const amount = ~currentStatusValue.amount.value + 1;
+                        if (res?.[currentStatus]) {
+                            res?.[currentStatus]?.amounts.push(amount);
+                            return res;
+                        } else {
+                            return { ...res, [currentStatus]: { amounts: [amount], currency: currentStatusValue.amount.currency } };
+                        }
+                    },
+                    {} as Record<'in_progress' | 'completed' | 'failed', { amounts: number[]; currency: string }>
+                ) ?? {}
         );
     }, [transaction?.refundDetails?.refundStatuses]);
 
@@ -62,46 +65,42 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
 
     const refundStatuses = useMemo(() => {
         if (refundableAmount === 0 && refundedAmount > 0 && allRefunded && refundedAmount === originalAmount) {
-            return [{ type: AlertTypeOption.HIGHLIGHT, label: i18n.get('refund.fullAmountRefunded') }];
+            return [{ type: AlertTypeOption.HIGHLIGHT, label: i18n.get('transactions.details.refund.alerts.refundedFull') }];
         } else {
             const statusAlerts = Object.keys(statuses)?.map(status => {
-                const currentStatus = status as 'in_progress' | 'completed' | 'failed';
-                const formattedAmount = statuses?.[currentStatus]?.amounts.reduce((res, value, currentIndex) => {
-                    const amountsLength = statuses?.[currentStatus]?.amounts.length;
-                    if (amountsLength > 1 && currentIndex === amountsLength - 1)
-                        return `${res ? `${res}` : ''} ${i18n.get('and')} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
-                    return `${res ? `${res},` : ''} ${i18n.amount(value, statuses?.[currentStatus]?.currency)}`;
-                }, '');
-                const totalAmount = statuses?.[currentStatus]?.amounts.reduce((sum, amount) => sum + amount, 0);
+                const { amounts, currency } = statuses[status as 'in_progress' | 'completed' | 'failed'];
+                const listFormatter = new Intl.ListFormat(i18n.locale, { type: 'conjunction' });
+                const formattedAmount = listFormatter.format(amounts.map(amount => i18n.amount(amount, currency)));
+                const totalAmount = amounts.reduce((sum, amount) => sum + amount, 0);
 
                 switch (status) {
                     case RefundStatus.COMPLETED:
                         return {
                             type: AlertTypeOption.HIGHLIGHT,
-                            label: i18n.get('refund.amountAlreadyRefunded', { values: { amount: formattedAmount } }),
+                            label: i18n.get('transactions.details.refund.alerts.refundedAmount', { values: { amount: formattedAmount } }),
                         };
                     case RefundStatus.IN_PROGRESS:
                         if (totalAmount === originalAmount) {
                             return {
                                 type: AlertTypeOption.HIGHLIGHT,
-                                label: i18n.get('refund.theRefundIsBeingProcessed'),
+                                label: i18n.get('transactions.details.refund.alerts.inProgress'),
                             };
                         } else {
                             return {
                                 type: AlertTypeOption.HIGHLIGHT,
-                                label: i18n.get('refund.amountInProgress', { values: { amount: formattedAmount } }),
+                                label: i18n.get('transactions.details.refund.alerts.inProgressAmount', { values: { amount: formattedAmount } }),
                             };
                         }
                     case RefundStatus.FAILED:
                         if (totalAmount === originalAmount) {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: i18n.get('refund.fullAmountFailed'),
+                                label: i18n.get('transactions.details.refund.alerts.notPossible'),
                             };
                         } else {
                             return {
                                 type: AlertTypeOption.WARNING,
-                                label: i18n.get('refund.amountFailed', { values: { amount: formattedAmount } }),
+                                label: i18n.get('transactions.details.refund.alerts.notPossibleAmount', { values: { amount: formattedAmount } }),
                             };
                         }
                     default:
@@ -119,12 +118,12 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
                 case RefundMode.FULL_AMOUNT:
                     return {
                         type: AlertTypeOption.HIGHLIGHT,
-                        description: i18n.get('refund.onlyRefundable', { values: { amount: formattedAmount } }),
+                        description: i18n.get('transactions.details.refund.alerts.refundableAmount', { values: { amount: formattedAmount } }),
                     };
                 case RefundMode.PARTIAL_AMOUNT:
                     return {
                         type: AlertTypeOption.HIGHLIGHT,
-                        description: i18n.get('refund.maximumRefundable', { values: { amount: formattedAmount } }),
+                        description: i18n.get('transactions.details.refund.alerts.refundableMaximum', { values: { amount: formattedAmount } }),
                     };
                 default:
                     return null;

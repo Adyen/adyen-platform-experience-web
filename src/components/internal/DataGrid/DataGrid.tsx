@@ -55,8 +55,8 @@ function DataGridTable<
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
     const { getMinWidthByColumn } = useDataGridContext();
-
     const { getImageAsset } = useCoreContext();
+
     const visibleCols = props.columns
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
@@ -96,7 +96,7 @@ function DataGridTable<
                 {showMessage &&
                     (emptyBody && !props.error ? (
                         <ErrorMessageDisplay
-                            title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
+                            title={props.emptyTableMessage?.title ?? 'common.errors.noResults'}
                             message={props.emptyTableMessage?.message}
                             imageDesktop={getImageAsset?.({ name: 'no-data-female' })}
                             centered

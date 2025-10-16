@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { TX_DATA_CONTAINER, TX_DATA_INPUT_CONTAINER, TX_DATA_INPUT_CONTAINER_SHORT, TX_DATA_INPUT_HEAD } from '../constants';
-import { REFUND_REASONS } from '../../context/constants';
+import { REFUND_REASONS, REFUND_REASONS_KEYS } from '../../context/constants';
 import type { RefundReason } from '../../context/types';
 import useTransactionRefundContext from '../../context/refund';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -18,7 +18,10 @@ const TransactionRefundReason = () => {
     const refundReasons = useMemo(
         () =>
             Object.freeze(
-                REFUND_REASONS.map(reason => ({ id: reason, name: i18n.has(`refundReason.${reason}`) ? i18n.get(`refundReason.${reason}`) : reason }))
+                REFUND_REASONS.map(reason => ({
+                    id: reason,
+                    name: i18n.has(REFUND_REASONS_KEYS[reason]) ? i18n.get(REFUND_REASONS_KEYS[reason]) : reason,
+                }))
             ),
         [i18n]
     );
@@ -35,7 +38,7 @@ const TransactionRefundReason = () => {
         <div className={TX_DATA_CONTAINER}>
             <div id={labelId} className={TX_DATA_INPUT_HEAD}>
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                    {i18n.get('refundReason')}
+                    {i18n.get('transactions.details.refund.inputs.reason.label')}
                 </Typography>
             </div>
 

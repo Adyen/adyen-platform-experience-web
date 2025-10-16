@@ -20,13 +20,13 @@ const PreQualifiedIntro = ({
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.needSomeExtraMoney'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
             <div className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrant}>
                 <InfoBox>
                     <Typography variant={TypographyVariant.BODY}>
-                        {i18n.get('capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part1')}
+                        {i18n.get('capital.overview.prequalified.alreadyQualifyInfo.part1')}
                         <strong>
-                            {i18n.get('capital.youHaveBeenPrequalifiedForBusinessFinancingUpToX.part2', {
+                            {i18n.get('capital.overview.prequalified.alreadyQualifyInfo.part2', {
                                 values: {
                                     amount: i18n.amount(dynamicOfferConfig.maxAmount.value, dynamicOfferConfig.maxAmount.currency, {
                                         minimumFractionDigits: 0,
@@ -37,7 +37,7 @@ const PreQualifiedIntro = ({
                     </Typography>
                 </InfoBox>
                 <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequest}>
-                    {i18n.get('capital.seeOptions')}
+                    {i18n.get('capital.overview.prequalified.actions.seeOptions')}
                 </Button>
             </div>
         </>

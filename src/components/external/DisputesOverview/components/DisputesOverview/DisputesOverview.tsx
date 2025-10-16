@@ -120,7 +120,7 @@ export const DisputesOverview = ({
     // (will not cause the active status group tab to change).
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
 
-    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.filters.statusGroup.label'), [i18n]);
+    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.overview.common.filters.types.statusGroup'), [i18n]);
 
     const disputeDetails = useMemo(
         () => ({
@@ -277,7 +277,7 @@ export const DisputesOverview = ({
 
     return (
         <div style={mobileStyleOverrides} className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
-            <Header hideTitle={hideTitle} titleKey="disputes.title">
+            <Header hideTitle={hideTitle} titleKey="disputes.overview.common.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
@@ -300,7 +300,7 @@ export const DisputesOverview = ({
                         )}
                     </div>
 
-                    <FilterBar {...filterBarState} ariaLabelKey="disputes.filters">
+                    <FilterBar {...filterBarState} ariaLabelKey="disputes.overview.common.filters.a11y.label">
                         <BalanceAccountSelector
                             activeBalanceAccount={activeBalanceAccount}
                             balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -316,9 +316,17 @@ export const DisputesOverview = ({
                             timezone={activeBalanceAccount?.timeZone}
                             updateFilters={updateFilters}
                         />
-                        <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} onResetAction={noop} />
+                        <MultiSelectionFilter
+                            {...disputeSchemesFilter}
+                            placeholder={i18n.get('disputes.overview.common.filters.types.paymentMethod')}
+                            onResetAction={noop}
+                        />
                         {statusGroup !== 'FRAUD_ALERTS' && (
-                            <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} onResetAction={noop} />
+                            <MultiSelectionFilter
+                                {...disputeReasonsFilter}
+                                placeholder={i18n.get('disputes.overview.common.filters.types.disputeReason')}
+                                onResetAction={noop}
+                            />
                         )}
                     </FilterBar>
                 </div>

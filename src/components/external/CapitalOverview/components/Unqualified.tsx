@@ -8,13 +8,13 @@ const Unqualified = ({ hideTitle }: { hideTitle?: boolean }) => {
 
     return (
         <>
-            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.needSomeExtraMoney'} />
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.overview.common.titles.qualificationIntro'} />
             <div className={'adyen-pe-capital-overview__unqualified-state'}>
                 <div className="adyen-pe-capital-overview__unqualified-state-img">
                     <img srcSet={getImageAsset?.({ name: 'generic-use-first-touch' })} alt="" />
                 </div>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY} large>
-                    {i18n.get('capital.youWillSoonQualifyForAFinancialOffer')}
+                    {i18n.get('capital.overview.unqualified.soonQualifyInfo')}
                 </Typography>
             </div>
         </>

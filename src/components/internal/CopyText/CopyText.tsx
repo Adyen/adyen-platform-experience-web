@@ -45,7 +45,7 @@ const CopyText = ({
     const { i18n } = useCoreContext();
     const [isCopied, setIsCopied] = useState(false);
     const resetIsCopied = useCallback(() => setIsCopied(false), []);
-    const copyButtonLabel = useMemo(() => i18n.get(copyButtonAriaLabelKey ?? 'copy'), [i18n, copyButtonAriaLabelKey]);
+    const copyButtonLabel = useMemo(() => i18n.get(copyButtonAriaLabelKey ?? 'common.actions.copy.labels.default'), [i18n, copyButtonAriaLabelKey]);
 
     const onClick = useCallback(async () => {
         if (textToCopy) {
@@ -89,7 +89,7 @@ const CopyText = ({
                 visibleTextToCopy
             )}
 
-            <Tooltip content={i18n.get(isCopied ? 'copied' : 'copy')}>
+            <Tooltip content={i18n.get(isCopied ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default')}>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     className={classes.base}
@@ -110,7 +110,7 @@ const CopyText = ({
             </Tooltip>
 
             <div className="adyen-pe-visually-hidden" aria-atomic="true" aria-live="polite">
-                {isCopied && i18n.get('copied')}
+                {isCopied && i18n.get('common.actions.copy.labels.done')}
             </div>
         </span>
     );

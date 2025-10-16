@@ -1,8 +1,8 @@
 import { ExpandableContainerProps } from './types';
 import { useCallback, useState } from 'preact/hooks';
 import './ExpandableContainer.scss';
-import useCoreContext from '../../../core/Context/useCoreContext';
 import { FunctionalComponent } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 import { EXPANDABLE_CONTAINER_CLASS_NAMES } from './constants';
 import cx from 'classnames';
 import Button from '../Button/Button';
@@ -10,8 +10,11 @@ import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import uuid from '../../../utils/random/uuid';
 
-export const ExpandableContainer: FunctionalComponent<ExpandableContainerProps> = ({ className, children }) => {
-    const { i18n } = useCoreContext();
+export const ExpandableContainer: FunctionalComponent<ExpandableContainerProps & Pick<AriaAttributes, 'aria-label'>> = ({
+    className,
+    children,
+    ['aria-label']: ariaLabel,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const contentId = uuid();
 
@@ -33,7 +36,7 @@ export const ExpandableContainer: FunctionalComponent<ExpandableContainerProps> 
                 onClick={toggleIsOpen}
                 aria-controls={contentId}
                 aria-expanded={isOpen}
-                aria-label={i18n.get(isOpen ? 'expandableCard.collapse' : 'expandableCard.expand')}
+                aria-label={ariaLabel}
             >
                 <Icon name={isOpen ? 'chevron-up' : 'chevron-down'} className={EXPANDABLE_CONTAINER_CLASS_NAMES.toggleButtonIcon} />
             </Button>

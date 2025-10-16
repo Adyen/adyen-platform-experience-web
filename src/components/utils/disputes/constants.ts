@@ -17,34 +17,34 @@ export const DISPUTE_PAYMENT_SCHEMES = {
 } as const;
 
 export const DISPUTE_REASON_CATEGORIES = {
-    FRAUD: 'disputes.reasonCategory.fraud',
-    CONSUMER_DISPUTE: 'disputes.reasonCategory.consumerDispute',
-    PROCESSING_ERROR: 'disputes.reasonCategory.processingError',
-    REQUEST_FOR_INFORMATION: 'disputes.reasonCategory.requestForInformation',
-    AUTHORISATION_ERROR: 'disputes.reasonCategory.authorisationError',
-    ADJUSTMENT: 'disputes.reasonCategory.adjustment',
-    OTHER: 'disputes.reasonCategory.other',
+    FRAUD: 'disputes.common.reasonCategories.fraud',
+    CONSUMER_DISPUTE: 'disputes.common.reasonCategories.consumerDispute',
+    PROCESSING_ERROR: 'disputes.common.reasonCategories.processingError',
+    REQUEST_FOR_INFORMATION: 'disputes.common.reasonCategories.requestForInformation',
+    AUTHORISATION_ERROR: 'disputes.common.reasonCategories.authorisationError',
+    ADJUSTMENT: 'disputes.common.reasonCategories.adjustment',
+    OTHER: 'disputes.common.reasonCategories.other',
 } satisfies Record<IDispute['reason']['category'], TranslationKey>;
 
 export const DISPUTE_STATUS_GROUPS = {
-    CHARGEBACKS: 'disputes.statusGroup.chargebacks',
-    FRAUD_ALERTS: 'disputes.statusGroup.fraudAlerts',
-    ONGOING_AND_CLOSED: 'disputes.statusGroup.ongoingAndClosed',
+    CHARGEBACKS: 'disputes.overview.common.statusGroups.chargebacks',
+    FRAUD_ALERTS: 'disputes.overview.common.statusGroups.fraudAlerts',
+    ONGOING_AND_CLOSED: 'disputes.overview.common.statusGroups.ongoingAndClosed',
 } satisfies Record<IDisputeStatusGroup, TranslationKey>;
 
 export const DISPUTE_STATUSES = {
-    ACCEPTED: 'disputes.status.accepted',
-    EXPIRED: 'disputes.status.expired',
-    LOST: 'disputes.status.lost',
-    PENDING: 'disputes.status.pending',
-    RESPONDED: 'disputes.status.responded',
-    UNDEFENDED: 'disputes.status.undefended',
-    UNRESPONDED: 'disputes.status.unresponded',
-    WON: 'disputes.status.won',
+    ACCEPTED: 'disputes.common.statuses.accepted',
+    EXPIRED: 'disputes.common.statuses.expired',
+    LOST: 'disputes.common.statuses.lost',
+    PENDING: 'disputes.common.statuses.pending',
+    RESPONDED: 'disputes.common.statuses.responded',
+    UNDEFENDED: 'disputes.common.statuses.undefended',
+    UNRESPONDED: 'disputes.common.statuses.unresponded',
+    WON: 'disputes.common.statuses.won',
 } as const satisfies Record<IDisputeStatus, TranslationKey>;
 
 export const DISPUTE_TYPES = {
-    CHARGEBACK: 'disputes.type.chargeback',
-    NOTIFICATION_OF_FRAUD: 'disputes.type.notificationOfFraud',
-    REQUEST_FOR_INFORMATION: 'disputes.type.requestForInformation',
+    CHARGEBACK: 'disputes.management.details.types.chargeback',
+    NOTIFICATION_OF_FRAUD: 'disputes.management.details.types.notificationOfFraud',
+    REQUEST_FOR_INFORMATION: 'disputes.management.details.types.requestForInformation',
 } as const satisfies Record<IDisputeType, TranslationKey>;

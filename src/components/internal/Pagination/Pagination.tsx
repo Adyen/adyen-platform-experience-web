@@ -29,7 +29,7 @@ export default function Pagination({
     limitOptions,
     onLimitSelection,
     ariaLabelKey,
-    limitSelectorAriaLabelKey,
+    limitSelectAriaLabelKey,
 }: PaginationProps) {
     const { i18n } = useCoreContext();
 
@@ -57,12 +57,12 @@ export default function Pagination({
     );
 
     return (
-        <div role="group" aria-label={i18n.get(ariaLabelKey ?? 'pagination')} className={classes.base}>
+        <div role="group" aria-label={i18n.get(ariaLabelKey ?? 'common.pagination.label')} className={classes.base}>
             <div className={classes.context}>
                 {_limitOptions && onLimitSelection && (
                     <div className={classes.limit} role="presentation">
                         <Translation
-                            translationKey="pagination.showing"
+                            translationKey="common.pagination.controls.limitSelect"
                             fills={{
                                 pageLimit: (
                                     <div className={classes.limitSelector}>
@@ -73,7 +73,7 @@ export default function Pagination({
                                             items={_limitOptions}
                                             onChange={_onLimitChanged}
                                             selected={`${limit ?? ''}`}
-                                            aria-label={i18n.get(limitSelectorAriaLabelKey ?? 'pagination.limitSelector.label')}
+                                            aria-label={i18n.get(limitSelectAriaLabelKey ?? 'common.pagination.controls.limitSelect.label')}
                                         />
                                     </div>
                                 ),
@@ -88,7 +88,7 @@ export default function Pagination({
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasPrev}
                     iconButton={true}
-                    aria-label={i18n.get('pagination.previousPage')}
+                    aria-label={i18n.get('common.pagination.controls.previousPage.label')}
                     classNameModifiers={['circle'].concat(hasPrev ? EMPTY_ARRAY : 'disabled')}
                     onClick={prev}
                 >
@@ -98,7 +98,7 @@ export default function Pagination({
                     variant={ButtonVariant.TERTIARY}
                     disabled={!hasNext}
                     iconButton={true}
-                    aria-label={i18n.get('pagination.nextPage')}
+                    aria-label={i18n.get('common.pagination.controls.nextPage.label')}
                     classNameModifiers={['circle'].concat(hasNext ? EMPTY_ARRAY : 'disabled')}
                     onClick={next}
                 >

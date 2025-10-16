@@ -120,10 +120,10 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="payoutsTitle" subtitleKey="payoutsNotice">
+            <Header hideTitle={hideTitle} titleKey="payouts.overview.title" subtitleKey="payouts.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState} ariaLabelKey="payouts.filters">
+            <FilterBar {...filterBarState} ariaLabelKey="payouts.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -141,7 +141,7 @@ export const PayoutsOverview = ({
                 />
             </FilterBar>
             <DataDetailsModal
-                ariaLabelKey="payoutDetails"
+                ariaLabelKey="payouts.details.title"
                 className={BASE_CLASS_DETAILS}
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}

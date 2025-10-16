@@ -38,7 +38,7 @@ const useCalendarControlsRendering = (renderControl?: CalendarRenderControl) => 
 
                 return shouldRenderControl ? (
                     <Button
-                        aria-label={i18n.get(`calendar.${labelModifier}Month`)}
+                        aria-label={i18n.get(`common.filters.types.date.calendar.navigation.${labelModifier}Month`)}
                         variant={ButtonVariant.TERTIARY}
                         disabled={!shouldRenderControl}
                         classNameModifiers={['circle', directionModifier]}

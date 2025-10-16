@@ -22,6 +22,7 @@ import cx from 'classnames';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
+import { Translation } from '../../../../internal/Translation';
 
 const errorMessageWithAlert = ['30_013'];
 
@@ -74,14 +75,14 @@ export const CapitalOfferSummary = ({
             switch (err.errorCode) {
                 case '30_013':
                     return {
-                        title: i18n.get('capital.thereIsNoPrimaryAccountConfigured'),
-                        message: i18n.get('capital.weCouldNotContinueWithTheOfferContactSupportForHelp'),
+                        title: i18n.get('capital.offer.common.errors.noPrimaryAccount'),
+                        message: i18n.get('capital.offer.common.errors.cannotContinueSupport'),
                         errorCode: '30_013',
                     };
                 default:
                     return {
-                        title: i18n.get('somethingWentWrong'),
-                        message: i18n.get('capital.weCouldNotLoadFinancialOffers'),
+                        title: i18n.get('common.errors.somethingWentWrong'),
+                        message: i18n.get('capital.offer.common.errors.unavailable'),
                     };
             }
         }
@@ -92,42 +93,42 @@ export const CapitalOfferSummary = ({
     const structuredListItems = useMemo(() => {
         const summaryItems: StructuredListItem[] = [
             {
-                key: 'capital.fees',
+                key: 'capital.common.fields.fees',
                 value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
             },
             {
-                key: 'capital.totalRepaymentAmount',
+                key: 'capital.common.fields.totalRepaymentAmount',
                 value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
             },
             {
-                key: 'capital.repaymentThreshold',
+                key: 'capital.common.fields.repaymentThreshold',
                 value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
             },
             {
-                key: 'capital.dailyRepaymentRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
+                key: 'capital.common.fields.dailyRepaymentRate',
+                value: i18n.get('capital.common.values.percentage', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
             },
             {
-                key: 'capital.expectedRepaymentPeriod',
-                value: i18n.get('capital.xDays', { values: { days: grantOffer.expectedRepaymentPeriodDays } }),
+                key: 'capital.common.fields.expectedRepaymentPeriod',
+                value: i18n.get('capital.common.values.numberOfDays', { values: { days: grantOffer.expectedRepaymentPeriodDays } }),
             },
-            { key: 'account', value: i18n.get('capital.primaryAccount') },
+            { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
         ];
 
         if (maximumRepaymentPeriod) {
             summaryItems.splice(4, 0, {
-                key: 'capital.maximumRepaymentPeriod',
+                key: 'capital.common.fields.maximumRepaymentPeriod',
                 value:
                     maximumRepaymentPeriod === 1
-                        ? i18n.get('capital.oneMonth')
-                        : i18n.get('capital.xMonths', { values: { months: maximumRepaymentPeriod } }),
+                        ? i18n.get('capital.common.values.oneMonth')
+                        : i18n.get('capital.common.values.numberOfMonths', { values: { months: maximumRepaymentPeriod } }),
             });
         }
 
         if (grantOffer.aprBasisPoints) {
             summaryItems.splice(1, 0, {
-                key: 'capital.annualPercentageRate',
-                value: i18n.get('capital.xPercent', { values: { percentage: getPercentage(grantOffer.aprBasisPoints) } }),
+                key: 'capital.common.fields.annualPercentageRate',
+                value: i18n.get('capital.common.values.percentage', { values: { percentage: getPercentage(grantOffer.aprBasisPoints) } }),
             });
         }
 
@@ -140,11 +141,17 @@ export const CapitalOfferSummary = ({
         <div className="adyen-pe-capital-offer-summary">
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
-                    {i18n.get('capital.youAreRequestingFundingOf')}{' '}
-                    <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}.`}</strong>
+                    <Translation
+                        translationKey="capital.offer.common.fundingRequestInfo"
+                        fills={{
+                            amount: (
+                                <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}`}</strong>
+                            ),
+                        }}
+                    />
                 </Typography>
                 <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                    {i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
+                    {i18n.get('capital.offer.common.repaymentInfo', {
                         values: {
                             amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
                             days: CAPITAL_REPAYMENT_FREQUENCY,
@@ -156,11 +163,11 @@ export const CapitalOfferSummary = ({
             <StructuredList
                 classNames="adyen-pe-capital-offer-summary__details"
                 renderLabel={(val, key) => {
-                    if (key === 'capital.repaymentThreshold') {
+                    if (key === 'capital.common.fields.repaymentThreshold') {
                         return (
                             <Tooltip
                                 isContainerHovered
-                                content={i18n.get('capital.minimumRepaymentToRepayTheFinancingOnTime', {
+                                content={i18n.get('capital.common.fields.repaymentThreshold.description', {
                                     values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                                 })}
                             >
@@ -177,9 +184,9 @@ export const CapitalOfferSummary = ({
                         );
                     }
 
-                    if (key === 'capital.annualPercentageRate') {
+                    if (key === 'capital.common.fields.annualPercentageRate') {
                         return (
-                            <Tooltip isContainerHovered content={i18n.get('capital.annualPercentageRateIsTheCostOfBorrowingForALoan')}>
+                            <Tooltip isContainerHovered content={i18n.get('capital.common.fields.annualPercentageRate.description')}>
                                 <span>
                                     <Typography
                                         className={'adyen-pe-capital-offer-summary__list-label'}
@@ -205,7 +212,10 @@ export const CapitalOfferSummary = ({
                 }}
                 renderValue={(val, key) => {
                     const showWarningIcon =
-                        key === 'account' && requestFundsMutation.error && requestErrorAlert && requestErrorAlert.errorCode === '30_013';
+                        key === 'capital.common.fields.account' &&
+                        requestFundsMutation.error &&
+                        requestErrorAlert &&
+                        requestErrorAlert.errorCode === '30_013';
 
                     return (
                         <Typography
@@ -232,7 +242,7 @@ export const CapitalOfferSummary = ({
                 >
                     {onContactSupport ? (
                         <Button className={'adyen-pe-capital-offer-summary__error-alert-button'} onClick={onContactSupport}>
-                            {i18n.get('contactSupport')}
+                            {i18n.get('capital.common.actions.contactSupport')}
                         </Button>
                     ) : null}
                 </Alert>
@@ -241,7 +251,7 @@ export const CapitalOfferSummary = ({
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                        {i18n.get('back')}
+                        {i18n.get('capital.common.actions.goBack')}
                     </Button>
                 )}
                 <Button
@@ -249,8 +259,13 @@ export const CapitalOfferSummary = ({
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
                     onClick={onRequestFundsHandler}
                     disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error || !!requestFundsMutation.data}
+                    aria-label={i18n.get('capital.offer.summary.actions.requestFunds')}
                 >
-                    {i18n.get(requestFundsMutation.isLoading ? 'capital.requesting' : 'capital.requestFunds')}
+                    {i18n.get(
+                        requestFundsMutation.isLoading
+                            ? 'capital.offer.summary.actions.requestFunds.states.loading'
+                            : 'capital.offer.summary.actions.requestFunds'
+                    )}
                 </Button>
             </div>
         </div>

@@ -56,7 +56,7 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
             description={
                 <div className={DISPUTE_DATA_ISSUER_COMMENTS_ALERT}>
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
-                        {i18n.get('disputes.issuerComment.title')}
+                        {i18n.get('disputes.management.details.issuerComment')}
                     </Typography>
 
                     <div
@@ -83,7 +83,11 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
 
                     {isTruncated && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={onButtonClick}>
-                            {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
+                            {i18n.get(
+                                isExpanded
+                                    ? 'disputes.management.details.issuerComment.showLess'
+                                    : 'disputes.management.details.issuerComment.showMore'
+                            )}
                         </Button>
                     )}
                 </div>
