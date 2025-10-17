@@ -1,5 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
+import useUniqueId from '../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { GrantAdjustmentDetailsProps } from '../GrantAdjustmentDetails/types';
 import Typography from '../../../../internal/Typography/Typography';
@@ -24,6 +25,10 @@ const CLASS_NAMES = {
 export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsProps> = ({ grant, onDetailsClose }) => {
     const { i18n } = useCoreContext();
 
+    const repaymentAccountDetailsLabelElemId = `list-${useUniqueId()}`;
+    const repaymentInstructionsLabelElemId = `list-${useUniqueId()}`;
+    const transferInstrumentsLabelElemId = `list-${useUniqueId()}`;
+
     const bankAccount = useMemo(() => {
         // There can be more than one unscheduled repayment account, however, we are only showing the first one.
         // If there be any need to show the rest of them in the future, some updates will be required.
@@ -38,20 +43,20 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
             headerSubtitleKey="capital.overview.repayment.subtitle"
         >
             <div className={CLASS_NAMES.repaymentAccount}>
-                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                <Typography id={repaymentAccountDetailsLabelElemId} el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                     {i18n.get('capital.overview.repayment.accountDetails.title')}
                 </Typography>
-                <AccountDetails bankAccount={bankAccount} />
+                <AccountDetails bankAccount={bankAccount} aria-labelledby={repaymentAccountDetailsLabelElemId} />
             </div>
             <div className={CLASS_NAMES.notice}>
                 {!!grant.transferInstruments?.length && (
                     <>
                         <div>
-                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                            <Typography id={transferInstrumentsLabelElemId} el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
                                 {i18n.get('capital.overview.repayment.transferInstruments')}
                             </Typography>
 
-                            <ul className={CLASS_NAMES.transferInstrumentList}>
+                            <ul className={CLASS_NAMES.transferInstrumentList} aria-labelledby={transferInstrumentsLabelElemId}>
                                 {grant.transferInstruments?.map(({ accountIdentifier }) => (
                                     <li key={accountIdentifier} className={CLASS_NAMES.transferInstrumentItem}>
                                         <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
@@ -65,10 +70,10 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
                     </>
                 )}
                 <div>
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                    <Typography id={repaymentInstructionsLabelElemId} el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
                         {i18n.get('capital.overview.repayment.instructions.title')}
                     </Typography>
-                    <ul className={CLASS_NAMES.instructionList}>
+                    <ol className={CLASS_NAMES.instructionList} aria-labelledby={repaymentInstructionsLabelElemId}>
                         <li>
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
                                 <Translation
@@ -93,7 +98,7 @@ export const GrantRepaymentDetails: FunctionalComponent<GrantAdjustmentDetailsPr
                                 {i18n.get('capital.overview.repayment.instructions.waiting')}
                             </Typography>
                         </li>
-                    </ul>
+                    </ol>
                 </div>
                 <Typography className={CLASS_NAMES.verifiedBankAccountDetails} el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
                     {i18n.get('capital.overview.repayment.instructions.verifiedAccount')}
