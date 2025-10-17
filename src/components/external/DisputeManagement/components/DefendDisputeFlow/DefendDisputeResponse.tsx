@@ -45,13 +45,13 @@ export const DefendDisputeResponse = ({ onDisputeDefend }: Pick<DisputeManagemen
             {defendResponse === 'success' ? (
                 <div className="adyen-pe-defend-dispute__success">
                     <Icon name="checkmark-circle-fill" className="adyen-pe-defend-dispute__success-icon" />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.defend.evidenceSubmitted')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.management.defend.common.evidenceSubmitted')}</Typography>
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-defend-dispute__success-description">
-                        {i18n.get('disputes.defend.submitSuccessfulInformation')}
+                        {i18n.get('disputes.management.defend.chargeback.submitSuccessInfo')}
                     </Typography>
                     <div className="adyen-pe-defend-dispute__success-buttons">
                         <Button variant={ButtonVariant.SECONDARY} onClick={goBackToDetails}>
-                            {i18n.get('disputes.showDisputeDetails')}
+                            {i18n.get('disputes.management.common.actions.showDetails')}
                         </Button>
                     </div>
                 </div>
@@ -59,13 +59,11 @@ export const DefendDisputeResponse = ({ onDisputeDefend }: Pick<DisputeManagemen
                 <div className="adyen-pe-defend-dispute__error">
                     <Icon name="cross-circle-fill" className="adyen-pe-defend-dispute__error-icon" />
                     <Typography variant={TypographyVariant.TITLE} medium>
-                        {i18n.get('disputes.defend.somethingWentWrong')}
+                        {i18n.get('disputes.management.defend.common.errors.somethingWentWrong')}
                     </Typography>
-                    <Typography variant={TypographyVariant.BODY}>
-                        {i18n.get('disputes.error.weCouldNotProcessTheDisputePleaseTryAgainOrContactSupport')}
-                    </Typography>
+                    <Typography variant={TypographyVariant.BODY}>{i18n.get('disputes.management.defend.common.errors.defenseFailed')}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBackToFileUploadView}>
-                        {i18n.get('disputes.goBack')}
+                        {i18n.get('disputes.management.common.actions.goBack')}
                     </Button>
                 </div>
             )}

@@ -5,7 +5,6 @@ export interface CardProps {
     title?: string;
     subTitle?: string;
     footer?: string;
-    el?: 'header' | 'div';
     renderHeader?: ComponentChild;
     renderFooter?: ComponentChild;
     filled?: boolean;

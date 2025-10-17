@@ -9,8 +9,9 @@ const getHumanReadableIban = (iban: string, useNonBreakingSpaces = true) => {
 const isCopyableAccountField = (field: string): boolean => {
     switch (field) {
         // Explicit list of copyable account fields
-        case 'iban':
         case 'accountNumber':
+        case 'beneficiaryName':
+        case 'iban':
         case 'routingNumber':
         case 'sortCode':
             return true;
@@ -37,19 +38,52 @@ export const getAccountFieldFormattedValue = (field: string, value?: string) => 
     }
 };
 
+export const getAccountFieldCopyButtonLabelKey = (field: string): TranslationKey | undefined => {
+    switch (field) {
+        // Explicit list of copyable account fields
+        case 'accountNumber':
+            return 'capital.overview.repayment.actions.copyAccountNumber';
+        case 'beneficiaryName':
+            return 'capital.overview.repayment.actions.copyBeneficiaryName';
+        case 'iban':
+            return 'capital.overview.repayment.actions.copyIban';
+        case 'routingNumber':
+            return 'capital.overview.repayment.actions.copyRoutingNumber';
+        case 'sortCode':
+            return 'capital.overview.repayment.actions.copySortCode';
+    }
+};
+
 export const getAccountFieldTranslationKey = (field: string): TranslationKey => {
     switch (field) {
-        case 'region':
-            return 'capital.bankCountryOrRegion';
-        case 'iban':
-            return 'capital.bankAccountIban';
         case 'accountNumber':
-            return 'capital.bankAccountNumber';
+            return 'capital.overview.repayment.accountDetails.fields.accountNumber';
+        case 'beneficiaryName':
+            return 'capital.overview.repayment.accountDetails.fields.beneficiaryName';
+        case 'iban':
+            return 'capital.overview.repayment.accountDetails.fields.iban';
+        case 'region':
+            return 'capital.overview.repayment.accountDetails.fields.countryOrRegion';
         case 'routingNumber':
-            return 'capital.bankRoutingNumber';
+            return 'capital.overview.repayment.accountDetails.fields.routingNumber';
         case 'sortCode':
-            return 'capital.bankSortCode';
+            return 'capital.overview.repayment.accountDetails.fields.sortCode';
         default:
             return field as TranslationKey;
+    }
+};
+
+export const isAccountFieldPrimary = (field: string): boolean => {
+    switch (field) {
+        case 'accountNumber':
+        case 'iban':
+        case 'routingNumber':
+        case 'sortCode':
+            return true;
+
+        case 'beneficiaryName':
+        case 'region':
+        default:
+            return false;
     }
 };

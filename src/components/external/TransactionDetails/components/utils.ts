@@ -1,7 +1,6 @@
 import { EMPTY_OBJECT } from '../../../../utils';
 import { RefundType } from '../context/types';
 import { TagVariant } from '../../../internal/Tag/types';
-import { parsePaymentMethodType } from '../../TransactionsOverview/components/utils';
 import type { TransactionDetailData } from '../types';
 
 export const getAmountStyleForTransaction = (transaction: TransactionDetailData) => {

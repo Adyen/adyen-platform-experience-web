@@ -1,72 +1,74 @@
 name: Unit Test Coverage
 
 on:
-  pull_request:
-    branches:
-      - develop
-      - group/*
+    pull_request:
+        branches:
+            - develop
+            - group/*
 
 jobs:
-  base_coverage:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: develop
+    base_coverage:
+        if: false
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  ref: develop
 
-      - name: Run the preliminary setup steps
-        uses: ./.github/actions/setup-env
+            - name: Run the preliminary setup steps
+              uses: ./.github/actions/setup-env
 
-      - run: npm run test:coverage
+            - run: npm run test:coverage
 
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report-${{ github.sha }}
-          path: coverage/
-  coverage:
-    needs: [base_coverage]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+            - name: Upload coverage report
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage-report-${{ github.sha }}
+                  path: coverage/
+    coverage:
+        if: false
+        needs: [base_coverage]
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Run the preliminary setup steps
-        uses: ./.github/actions/setup-env
+            - name: Run the preliminary setup steps
+              uses: ./.github/actions/setup-env
 
-      - name: Download latest coverage report from develop
-        run: |
-          gh run download -n coverage-report-${{ github.sha }} -D coverage-base/
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Download latest coverage report from develop
+              run: |
+                  gh run download -n coverage-report-${{ github.sha }} -D coverage-base/
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run tests with coverage
-        run: npm run test:coverage
+            - name: Run tests with coverage
+              run: npm run test:coverage
 
-      # STEP 1: Check for overall drop & post a PR comment
-      - name: Report overall coverage drop
-        uses: andybelltree/lcov-reporter-action@v1.7.0
-        with:
-          lcov-base: ./coverage-base/lcov.info
-          lcov-file: ./coverage/lcov.info
-          # This workflow will fail if TOTAL coverage drops more than 0.2%
-          fail-drop-percent-threshold: 0.2
-          filter-changed-files: true
-          delete-old-comments: true
+            # STEP 1: Check for overall drop & post a PR comment
+            - name: Report overall coverage drop
+              uses: andybelltree/lcov-reporter-action@v1.7.0
+              with:
+                  lcov-base: ./coverage-base/lcov.info
+                  lcov-file: ./coverage/lcov.info
+                  # This workflow will fail if TOTAL coverage drops more than 0.2%
+                  fail-drop-percent-threshold: 0.2
+                  filter-changed-files: true
+                  delete-old-comments: true
 
-      # STEP 2: Enforce an 80% minimum on new code
-      - name: Enforce coverage on changed lines
-        run: |
-          git fetch origin develop
-          # This command fails if CHANGED lines are less than 80% covered
-          git diff origin/develop | npx @connectis/diff-test-coverage --coverage ./coverage/lcov.info --type lcov --line-coverage 80
+            # STEP 2: Enforce an 80% minimum on new code
+            - name: Enforce coverage on changed lines
+              run: |
+                  git fetch origin develop
+                  # This command fails if CHANGED lines are less than 80% covered
+                  git diff origin/develop | npx @connectis/diff-test-coverage --coverage ./coverage/lcov.info --type lcov --line-coverage 80

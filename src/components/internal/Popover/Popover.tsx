@@ -30,7 +30,7 @@ import './Popover.scss';
 
 const findFirstFocusableElement = (root: Element) => {
     let focusable: HTMLElement | undefined;
-    const elements = root.querySelector(`.${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
+    const elements = root.querySelector(`:scope .${TOOLTIP_CONTENT_CLASSNAME}`)?.querySelectorAll(SELECTORS);
     if (elements) {
         Array.prototype.some.call(elements, elem => {
             if (isFocusable(elem)) return (focusable = elem);
@@ -68,6 +68,7 @@ function Popover({
     fitPosition,
     fixedPositioning = false,
     additionalStyle,
+    setPopoverElement,
     ...uncontrolledProps
 }: PropsWithChildren<PopoverProps>) {
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
@@ -178,12 +179,15 @@ function Popover({
                 <>
                     {showOverlay && <div className="adyen-pe-popover__overlay"></div>}
                     <div
-                        id="popover"
-                        ref={popoverElementWithId}
                         {...uncontrolledProps}
+                        ref={elem => {
+                            popoverElementWithId(elem);
+                            setPopoverElement?.(elem);
+                        }}
+                        aria-labelledby={targetElement.current?.id}
                         className={classNames(classNamesByVariant, conditionalClasses, classNameModifiers)}
+                        role={variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip'}
                         style={{ visibility: 'hidden' }}
-                        role={uncontrolledProps.role ?? (variant === PopoverContainerVariant.POPOVER ? 'dialog' : 'tooltip')}
                     >
                         {(title || isDismissible) && (
                             <div className={getModifierClasses(POPOVER_HEADER_CLASSNAME, modifiers, [POPOVER_HEADER_CLASSNAME])}>

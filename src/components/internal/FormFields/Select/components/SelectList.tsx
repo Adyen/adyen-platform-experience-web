@@ -17,6 +17,7 @@ const SelectList = fixedForwardRef(
             active,
             commitActions,
             items,
+            disableFocusTrap,
             multiSelect,
             onKeyDown,
             onSelect,
@@ -46,7 +47,7 @@ const SelectList = fixedForwardRef(
             <PopoverContainer
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
-                disableFocusTrap={true}
+                disableFocusTrap={disableFocusTrap}
                 divider={true}
                 dismiss={dismissPopover}
                 dismissible={false}
@@ -77,7 +78,7 @@ const SelectList = fixedForwardRef(
                             );
                         })
                     ) : (
-                        <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
+                        <div className={noOptionsClassName}>{i18n.get('common.inputs.select.errors.noOptions')}</div>
                     )}
                 </ul>
             </PopoverContainer>

@@ -13,6 +13,8 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         transactionsTotals: `${baseUrl}/transactions/totals`,
         sessions: `/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,
+        sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
+        sendTrackEvent: `${baseUrl}/uxdsclient/track`,
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
         capital: {
