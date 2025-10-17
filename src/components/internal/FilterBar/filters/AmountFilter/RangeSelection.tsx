@@ -2,7 +2,7 @@ import { FilterEditModalRenderProps } from '../BaseFilter/types';
 import { RangeFilterBody } from './types';
 import InputBase from '../../../FormFields/InputBase';
 import './AmountFilter.scss';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
@@ -18,6 +18,7 @@ export const RangeSelection = ({
     ...props
 }: FilterEditModalRenderProps<RangeFilterBody>) => {
     const { i18n } = useCoreContext();
+    const firstInputElementRef = useRef<HTMLInputElement | null>(null);
 
     const [minAmount, setMinAmount] = useState<number | undefined>(
         !isUndefined(props.minAmount) ? parseFloat(props.minAmount) / AMOUNT_MULTIPLIER : undefined
@@ -50,11 +51,18 @@ export const RangeSelection = ({
         } else onValueUpdated(`${minAmount}-${maxAmount}`);
     }, [filterValue, onValueUpdated]);
 
+    useEffect(() => {
+        if (firstInputElementRef.current) {
+            firstInputElementRef.current.focus();
+        }
+    }, []);
+
     return (
         <div className="adyen-pe-range-selection-filter">
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
+                <label htmlFor="minValue">{`${i18n.get('common.filters.types.amount.inputs.min.label')}:`}</label>
                 <InputBase
+                    ref={firstInputElementRef}
                     data-testid={'minValueFilter'}
                     lang={i18n.locale}
                     name={'minValue'}
@@ -65,11 +73,11 @@ export const RangeSelection = ({
                     }}
                     min={0}
                     isInvalid={minAmount ? minAmount < 0 : false}
-                    errorMessage={i18n.get('noNegativeNumbersAllowed')}
+                    errorMessage={i18n.get('common.filters.types.amount.errors.negative')}
                 />
             </div>
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
+                <label htmlFor="maxValue">{`${i18n.get('common.filters.types.amount.inputs.max.label')}:`}</label>
                 <InputBase
                     data-testid={'maxValueFilter'}
                     lang={i18n.locale}
@@ -81,7 +89,7 @@ export const RangeSelection = ({
                     }}
                     min={minAmount}
                     isInvalid={!isUndefined(maxAmount) && maxAmount < (minAmount ?? 0)}
-                    errorMessage={i18n.get('toValueShouldBeGreaterThanTheFromValue')}
+                    errorMessage={i18n.get('common.filters.types.amount.errors.smallerMax')}
                 />
             </div>
         </div>

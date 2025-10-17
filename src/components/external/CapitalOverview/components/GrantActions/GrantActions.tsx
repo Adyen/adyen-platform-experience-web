@@ -33,21 +33,23 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
             ({
                 signToS: {
                     getTitle: (formattedDate: string | undefined) =>
-                        `${i18n.get('capital.signTermsAndConditionsToReceiveFunds')}${
-                            formattedDate ? ` ${i18n.get('capital.thisOfferExpiresOn', { values: { date: formattedDate } })}` : ''
-                        }`,
-                    buttonLabelKey: 'capital.goToTermsAndConditions',
+                        formattedDate
+                            ? i18n.get('capital.overview.grants.item.alerts.signTermsAndConditionsBy', {
+                                  values: { date: formattedDate },
+                              })
+                            : i18n.get('capital.overview.grants.item.alerts.signTermsAndConditions'),
+                    buttonLabelKey: 'capital.overview.grants.item.actions.viewTermsAndConditions',
                 },
                 AnaCredit: {
                     getTitle: (formattedDate: string | undefined) =>
                         formattedDate
-                            ? i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisActionBy', {
+                            ? i18n.get('capital.overview.grants.item.alerts.actionNeededBy', {
                                   values: { date: formattedDate },
                               })
-                            : i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteThisAction'),
-                    buttonLabelKey: 'capital.submitInformation',
+                            : i18n.get('capital.overview.grants.item.alerts.actionNeeded'),
+                    buttonLabelKey: 'capital.overview.grants.item.actions.submitInformation',
                 },
-            } as const),
+            }) as const,
         [i18n]
     );
 
@@ -105,10 +107,10 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
             <Alert
                 className={className}
                 type={AlertTypeOption.CRITICAL}
-                title={i18n.get('somethingWentWrongTryRefreshingOrComeBackLater')}
+                title={i18n.get('capital.overview.grants.item.alerts.somethingWentWrong')}
                 description={
                     <Button className={GRANT_ACTION_CLASS_NAMES.button} onClick={updateCore}>
-                        {i18n.get('refresh')}
+                        {i18n.get('common.actions.refresh.labels.default')}
                     </Button>
                 }
             />
@@ -124,15 +126,13 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
             <Alert
                 className={className}
                 type={AlertTypeOption.WARNING}
-                title={i18n.get('capital.weNeedABitMoreInformationToProcessYourFundsPleaseCompleteTheseActions')}
+                title={i18n.get('capital.overview.grants.item.alerts.actionNeededMany')}
                 description={
                     <div className={GRANT_ACTION_CLASS_NAMES.actionsInformation}>
                         <ol className={GRANT_ACTION_CLASS_NAMES.actionsContainer}>
                             {missingActions.map(action => {
                                 const config = ACTION_CONFIG[action.type];
-
                                 const isLoading = loadingAction === action.type;
-
                                 return (
                                     <li key={action.type}>
                                         <Button
@@ -146,6 +146,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                                             disabled={isLoading || actionMutation.isLoading}
                                             state={isLoading ? 'loading' : undefined}
                                             variant={ButtonVariant.TERTIARY}
+                                            aria-label={i18n.get(config.buttonLabelKey)}
                                         >
                                             <span className={GRANT_ACTION_CLASS_NAMES.buttonLabel}>{i18n.get(config.buttonLabelKey)}</span>
                                         </Button>
@@ -155,7 +156,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                         </ol>
                         {formattedExpiryDate ? (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
-                                {i18n.get('capital.thisOfferExpiresOn', { values: { date: formattedExpiryDate } })}
+                                {i18n.get('capital.overview.grants.item.alerts.offerExpiration', { values: { date: formattedExpiryDate } })}
                             </Typography>
                         ) : null}
                     </div>
@@ -182,6 +183,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                     disabled={!!loadingAction}
                     state={loadingAction ? 'loading' : undefined}
                     variant={ButtonVariant.TERTIARY}
+                    aria-label={i18n.get(config.buttonLabelKey)}
                 >
                     <span className={GRANT_ACTION_CLASS_NAMES.buttonLabel}>{i18n.get(config.buttonLabelKey)}</span>
                 </Button>

@@ -13,7 +13,7 @@ test.describe('Error - Dynamic offer config - Inactive account holder', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Your account is inactive')).toBeVisible();
         await expect(
-            page.getByText("We couldn't load financial offers.Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92")
+            page.getByText("We couldn't load financial offers. Contact support for help and share error code 769ac4ce59f0f159ad672d38d3291e92")
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });

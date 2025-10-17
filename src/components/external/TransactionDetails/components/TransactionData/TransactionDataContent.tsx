@@ -185,7 +185,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     <Alert
                         type={AlertTypeOption.HIGHLIGHT}
                         variant={AlertVariantOption.TIP}
-                        description={`${i18n.get('refund.theRefundIsBeingProcessed')} ${i18n.get('pleaseComeBackLater')}`}
+                        description={i18n.get('transactions.details.refund.alerts.inProgressBlocked')}
                     />
                 )}
                 {refundStatuses.map((status, index) => (
@@ -263,6 +263,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                         refundMode={refundMode}
                         refreshTransaction={refreshTransaction}
                         transactionId={transaction.id}
+                        transactionOriginalAmount={transaction.originalAmount}
                     >
                         <TransactionRefundNotice />
 
@@ -290,11 +291,11 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
             return (
                 <_RefundResponseViewWrapper
                     renderIcon={() => <Icon name="checkmark-circle-fill" className={cx(TX_REFUND_RESPONSE_ICON, TX_REFUND_RESPONSE_SUCCESS_ICON)} />}
-                    title={i18n.get('refundActionSuccessTitle')}
-                    subtitle={i18n.get('refundActionSuccessSubtitle')}
+                    title={i18n.get('transactions.details.refund.alerts.refundSent')}
+                    subtitle={i18n.get('transactions.details.refund.alerts.refundSuccess')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={onRefundSuccess}>
-                            {i18n.get('goBack')}
+                            {i18n.get('transactions.details.refund.actions.back')}
                         </Button>
                     )}
                 />
@@ -304,11 +305,11 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
             return (
                 <_RefundResponseViewWrapper
                     renderIcon={() => <Icon name="cross-circle-fill" className={cx(TX_REFUND_RESPONSE_ICON, TX_REFUND_RESPONSE_ERROR_ICON)} />}
-                    title={i18n.get('refundActionErrorTitle')}
-                    subtitle={i18n.get('refundActionErrorSubtitle')}
+                    title={i18n.get('common.errors.somethingWentWrong')}
+                    subtitle={i18n.get('transactions.details.refund.alerts.refundFailure')}
                     action={() => (
                         <Button variant={ButtonVariant.SECONDARY} onClick={refreshTransaction}>
-                            {i18n.get('goBack')}
+                            {i18n.get('transactions.details.refund.actions.back')}
                         </Button>
                     )}
                 />

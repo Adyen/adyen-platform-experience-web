@@ -18,6 +18,3 @@ export const CONTENT_EXPANDABLE_CLASS = CONTENT_CLASS + '--expandable';
 
 // Custom properties
 export const CARD_HEIGHT_PROPERTY = `--${NAMESPACE}-height`;
-
-// Other constants
-export const CONTAINER_OVERLAY_ID = CONTAINER_OVERLAY_CLASS;

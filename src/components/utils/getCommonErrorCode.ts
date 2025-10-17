@@ -10,21 +10,25 @@ export type ErrorMessage = {
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
 };
 
-export const UNDEFINED_ERROR = { title: 'thereWasAnUnexpectedError', message: ['contactSupportForHelp'] } satisfies ErrorMessage;
+export const UNDEFINED_ERROR = {
+    title: 'common.errors.unexpected',
+    message: ['common.errors.contactSupport'],
+} satisfies ErrorMessage;
 
 export const getCommonErrorMessage = (error: AdyenPlatformExperienceError | undefined, onContactSupport?: () => void): ErrorMessage | null => {
     if (!error) return null;
+
     switch (error.errorCode) {
         case '29_001':
             return {
-                title: 'theRequestIsMissingRequiredFieldsOrContainsInvalidData',
-                message: ['contactSupportForHelp'],
+                title: 'common.errors.requestInvalid',
+                message: ['common.errors.contactSupport'],
                 onContactSupport,
             };
         case '30_112':
             return {
-                title: 'entityWasNotFound',
-                message: ['entityWasNotFoundDetail'],
+                title: 'common.errors.notFound',
+                message: ['transactions.details.errors.notFound'],
                 onContactSupport,
             };
         case '00_403':

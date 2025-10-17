@@ -33,7 +33,7 @@ export const GrantAdjustmentDetails: FunctionalComponent<GrantAdjustmentDetailsC
                     variant={ButtonVariant.TERTIARY}
                     iconButton
                     classNameModifiers={['circle']}
-                    aria-label={i18n.get('dismiss')}
+                    aria-label={i18n.get('common.actions.dismiss.labels.dismiss')}
                 >
                     <Icon name="cross" />
                 </Button>
