@@ -114,20 +114,22 @@
 
     &__container > input {
         background: transparent;
-        border: 0;
+        border: 0 !important;
+        box-shadow: none !important;
         flex: 1;
         height: auto;
         outline: none;
         padding: 5px 8px;
 
         &:hover {
-            border: 0;
+            border: 0 !important;
         }
 
         &:focus,
         &:active {
             background: transparent;
-            outline: none;
+            border: 0 !important;
+            outline: none !important;
         }
     }
 
@@ -157,10 +159,44 @@
         }
     }
 
+    &__dropdown {
+        align-items: center;
+        display: flex;
+        pointer-events: auto;
+
+        &--start {
+            height: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            padding: style.token(spacer-020);
+        }
+
+        &--end {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
     &__invalid-value {
         color: style.token(color-label-critical);
         max-width: 20rem;
         text-wrap: wrap;
+    }
+}
+
+.adyen-pe-dropdown {
+    &--input-field {
+        align-items: center;
+        background: style.token(color-background-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        height: 100%;
+        padding: style.token(spacer-030) style.token(spacer-040);
+    }
+
+    .adyen-pe-button--tertiary {
+        font-weight: 400;
+        text-decoration: none;
     }
 }
 
