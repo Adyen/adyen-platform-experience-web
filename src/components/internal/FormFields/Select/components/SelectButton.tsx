@@ -31,6 +31,7 @@ const SelectButtonElement = <T extends SelectItem>({
     className,
     filterable,
     toggleButtonRef,
+    buttonVariant,
     ...props
 }: PropsWithChildren<
     SelectButtonProps<T> &
@@ -46,7 +47,7 @@ const SelectButtonElement = <T extends SelectItem>({
             {...props}
             className={baseClassName}
             disabled={disabled}
-            variant={ButtonVariant.SECONDARY}
+            variant={buttonVariant ?? ButtonVariant.SECONDARY}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
             aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
@@ -63,6 +64,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
 
     return (
         <SelectButtonElement
+            buttonVariant={props.buttonVariant}
             active={active}
             disabled={readonly}
             aria-disabled={readonly}

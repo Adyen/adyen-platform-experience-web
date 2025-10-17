@@ -1,6 +1,7 @@
 import { Ref, VNode } from 'preact';
 import { AriaAttributes, HTMLAttributes } from 'preact/compat';
 import { CommitActionProperties } from '../../../../hooks/useCommitAction';
+import { ButtonVariant } from '../../Button/types';
 
 type _Selected<T> = T | readonly T[];
 
@@ -25,6 +26,12 @@ export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 
     isInvalid?: boolean;
     isValid?: boolean;
     items: readonly T[];
+    buttonVariant?: ButtonVariant;
+    /**
+     * When true, closing the list will not restore focus to the toggle button.
+     * Useful when Select is embedded inside composite controls that should own focus.
+     */
+    disableToggleFocusOnClose?: boolean;
     disableFocusTrap?: boolean;
     multiSelect?: boolean;
     name?: string;
@@ -50,6 +57,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     filterable: boolean;
     filterInputRef?: Ref<HTMLInputElement>;
     id: string;
+    buttonVariant?: ButtonVariant;
     isInvalid?: boolean;
     isValid?: boolean;
     multiSelect?: boolean;
