@@ -37,7 +37,6 @@ export default class Localization {
     #translations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
     readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
-    readonly #fetchSwapConfigFromCdn: () => Promise<Record<string, string | string[]>>;
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #currentRefresh?: Promise<void>;
@@ -65,7 +64,15 @@ export default class Localization {
                       errorLevel: 'info',
                   });
 
-        this.#fetchSwapConfigFromCdn = async () => {
+        this.preferredTranslations = Object.freeze(
+            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
+        );
+
+        this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
+        this.locale = locale;
+
+        // Load swap config
+        (async () => {
             // If no CDN config URL provided, use local fallback
             if (!cdnConfigUrl || process.env.VITE_LOCAL_ASSETS) {
                 return localSwapConfig;
@@ -83,23 +90,7 @@ export default class Localization {
                 console.warn('Failed to load swapConfig from CDN, using local fallback', error);
                 return localSwapConfig;
             }
-        };
-
-        this.preferredTranslations = Object.freeze(
-            availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
-        );
-
-        this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
-        this.locale = locale;
-
-        // Load swap config
-        this.#fetchSwapConfigFromCdn()
-            .then(config => {
-                this.#keySwapConfig = config;
-            })
-            .catch(error => {
-                console.warn('Failed to initialize swapConfig', error);
-            });
+        })().then(config => (this.#keySwapConfig = config));
     }
 
     get customTranslations(): CustomTranslations {
@@ -200,30 +191,25 @@ export default class Localization {
     get(key: TranslationKey, options?: TranslationOptions): string {
         // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
         if (this.#customTranslations) {
-            const oldKeyMapping = this.#keySwapConfig[key];
+            const oldKey = this.#keySwapConfig[key];
 
             // Only process if oldKey is a string (skip arrays for now, they represent multi-key mappings that we will treat as new keys)
             // Also skip if oldKey is the same as the new key (1:1 mappings)
-            if (oldKeyMapping && !Array.isArray(oldKeyMapping) && oldKeyMapping !== key) {
-                // Check if the custom translations contain the old key
-                const customTranslationsForLocale = this.#customTranslations[this.#locale];
+            if (oldKey && typeof oldKey === 'string' && oldKey !== key) {
+                const translationForOldKey = getTranslation(this.#translations, oldKey, options);
 
-                if (customTranslationsForLocale) {
-                    const translationWithOldKey = getTranslation(customTranslationsForLocale, oldKeyMapping, options);
-
-                    if (!isNull(translationWithOldKey)) {
-                        // Warn about deprecated key usage (only once per key)
-                        if (!this.#warnedDeprecatedKeys.has(oldKeyMapping)) {
-                            console.warn(
-                                `[Adyen Platform Experience Web] Deprecated translation key detected: "${oldKeyMapping}". ` +
-                                    `Please update to use the new key: "${key}". ` +
-                                    `This backward compatibility will be removed in a future version.`
-                            );
-                            this.#warnedDeprecatedKeys.add(oldKeyMapping);
-                        }
-
-                        return translationWithOldKey;
+                if (!isNull(translationForOldKey)) {
+                    // Warn about deprecated key usage (only once per key)
+                    if (!this.#warnedDeprecatedKeys.has(oldKey)) {
+                        console.warn(
+                            `[Adyen Platform Experience Web] Deprecated translation key detected: "${oldKey}". ` +
+                                `Please update to use the new key: "${key}". ` +
+                                `This backward compatibility will be removed in a future version.`
+                        );
+                        this.#warnedDeprecatedKeys.add(oldKey);
                     }
+
+                    return translationForOldKey;
                 }
             }
         }
