@@ -4,11 +4,18 @@ import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
-import { InputBaseProps } from './types';
+import { InputBaseProps, InputFieldElementPosition } from './types';
+import Select from './Select';
 import './FormFields.scss';
+import { ButtonVariant } from '../Button/types';
 
 function InputBase(
-    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, iconBeforeSlot, iconAfterSlot, ...props }: InputBaseProps,
+    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, iconBeforeSlot, iconAfterSlot,         iconBeforeInteractive,
+        iconAfterInteractive,
+        dropdown,
+        dropdownPosition = InputFieldElementPosition.START,
+        onDropdownInput,
+        onUpdateDropdown,...props }: InputBaseProps,
     ref: ForwardedRef<HTMLInputElement | null>
 ) {
     const { classNameModifiers, isInvalid, isValid, readonly = false, type, uniqueId, isCollatingErrors, disabled } = props;
@@ -55,6 +62,17 @@ function InputBase(
         [onFocusHandler]
     );
 
+    const handleDropdownChange = useCallback(
+        (event: any) => {
+            const selectedValue = event.target?.value;
+            onDropdownInput?.(selectedValue);
+            if (dropdown) {
+                onUpdateDropdown?.({ ...dropdown, value: selectedValue });
+            }
+        },
+        [dropdown, onDropdownInput, onUpdateDropdown]
+    );
+
     const inputClassNames = classNames(
         'adyen-pe-input',
         [`adyen-pe-input--${type}`],
@@ -67,9 +85,24 @@ function InputBase(
     );
 
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
-    const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
+    const {
+        classNameModifiers: cnm,
+        uniqueId: uid,
+        isInvalid: iiv,
+        isValid: iv,
+        isCollatingErrors: ce,
+        autoFocus,
+        autofocus,
+        ...newProps
+    } = props as any;
 
     const hasIcons = iconBeforeSlot || iconAfterSlot;
+    const shouldShowDropdown = !!dropdown && dropdown.items.length > 0;
+    const shouldDisplayDropdownAtStart = shouldShowDropdown && dropdownPosition === InputFieldElementPosition.START;
+    const shouldDisplayDropdownAtEnd = shouldShowDropdown && dropdownPosition === InputFieldElementPosition.END;
+    const hasDropdownOrIcons = hasIcons || shouldShowDropdown;
+
+    const isDropdownReadOnly = readonly || dropdown?.readonly;
 
     const inputElement = (
         <input
@@ -86,16 +119,60 @@ function InputBase(
             onKeyUp={handleKeyUp}
             disabled={disabled}
             ref={ref}
+            autoFocus={false}
         />
     );
 
     return (
         <>
-            {hasIcons ? (
+            {hasDropdownOrIcons ? (
                 <div className="adyen-pe-input__container">
+                    {shouldDisplayDropdownAtStart && dropdown && (
+                        <div
+                            role="presentation"
+                            className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start"
+                            onClickCapture={e => e.stopPropagation()}
+                            onMouseDownCapture={e => e.stopPropagation()}
+                        >
+                            <Select
+                                buttonVariant={ButtonVariant.TERTIARY}
+                                items={dropdown.items}
+                                selected={dropdown.value}
+                                onChange={handleDropdownChange}
+                                readonly={isDropdownReadOnly}
+                                filterable={dropdown.dynamicFiltering}
+                                aria-label={dropdown['aria-label']}
+                                classNameModifiers={['input-field']}
+                                isInvalid={isInvalid}
+                                isValid={isValid}
+                                isCollatingErrors={isCollatingErrors}
+                            />
+                        </div>
+                    )}
                     {iconBeforeSlot && <span className="adyen-pe-input__slot-before">{iconBeforeSlot}</span>}
                     {inputElement}
                     {iconAfterSlot && <span className="adyen-pe-input__slot-after">{iconAfterSlot}</span>}
+                    {shouldDisplayDropdownAtEnd && dropdown && (
+                        <div
+                            role="presentation"
+                            className="adyen-pe-input__dropdown adyen-pe-input__dropdown--end"
+                            onClickCapture={e => e.stopPropagation()}
+                            onMouseDownCapture={e => e.stopPropagation()}
+                        >
+                            <Select
+                                items={dropdown.items}
+                                selected={dropdown.value}
+                                onChange={handleDropdownChange}
+                                readonly={isDropdownReadOnly}
+                                filterable={dropdown.dynamicFiltering}
+                                aria-label={dropdown['aria-label']}
+                                classNameModifiers={['input-field']}
+                                isInvalid={isInvalid}
+                                isValid={isValid}
+                                isCollatingErrors={isCollatingErrors}
+                            />
+                        </div>
+                    )}
                 </div>
             ) : (
                 inputElement
