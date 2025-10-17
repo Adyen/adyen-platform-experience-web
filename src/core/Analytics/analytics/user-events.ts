@@ -1,3 +1,5 @@
+import { ExternalComponentType } from '../../../components/types';
+
 export type MixpanelProperty = string | number | boolean | any[] | null | undefined;
 
 /**
@@ -17,7 +19,7 @@ export type BaseEventProperties = {
     category: 'pie';
     subCategory: 'pie component';
     capabilities?: string[];
-    componentName?: string;
+    componentName?: ExternalComponentType;
     countryCode?: string;
     locale?: string;
     sdkVersion?: string;
@@ -87,7 +89,7 @@ export class UserEvents {
      */
     private sharedEventProperties: Partial<AdditionalEventProperties>;
 
-    constructor(componentName?: string) {
+    constructor(componentName?: ExternalComponentType) {
         this.baseTrackingPayload = {
             ...(componentName ? { componentName: componentName } : {}),
             category: 'pie',
@@ -203,6 +205,6 @@ export class UserEvents {
     }
 }
 
-export const createUserEvents = (componentName?: string) => {
+export const createUserEvents = (componentName?: ExternalComponentType) => {
     return new UserEvents(componentName);
 };

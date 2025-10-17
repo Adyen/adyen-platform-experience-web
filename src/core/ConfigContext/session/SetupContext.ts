@@ -79,10 +79,13 @@ export class SetupContext {
         const data = new URLSearchParams();
         data.set('data', encodedData);
         if (this._endpoints.sendEngageEvent) {
-            return this._endpoints.sendEngageEvent({
-                body: data,
-                contentType: 'application/x-www-form-urlencoded',
-            });
+            return this._endpoints.sendEngageEvent(
+                {
+                    body: data,
+                    contentType: 'application/x-www-form-urlencoded',
+                },
+                EMPTY_OBJECT
+            );
         }
         return;
     }
