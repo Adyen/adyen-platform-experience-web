@@ -4,9 +4,10 @@ import { useMemo } from 'preact/hooks';
 import { createUserEvents } from '../../Analytics/analytics/user-events';
 import { AnalyticsContext } from './AnalyticsContext';
 import { useAnalytics } from '../../../hooks/useAnalytics/useAnalytics';
+import { ExternalComponentType } from '../../../components/types';
 
 export interface AnalyticsProviderProps {
-    componentName?: string;
+    componentName?: ExternalComponentType;
     children?: ComponentChildren;
 }
 
