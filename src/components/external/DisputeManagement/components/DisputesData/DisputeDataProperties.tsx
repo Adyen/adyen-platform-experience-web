@@ -15,7 +15,6 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { CustomColumn } from '../../../../types';
-import { PAYOUT_TABLE_FIELDS } from '../../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DisputeDetailsCustomization } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
 import {
@@ -27,7 +26,7 @@ import {
 } from './constants';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import SVGIcon from '../../../../internal/Icon';
-import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
+import { getDisputeReason } from '../../../../utils/translation/getters';
 import { getDefenseDocumentContent, getDefenseReasonContent, TranslationConfigItem } from '../../utils';
 import { useDisputeFlow } from '../../context/dispute/context';
 
@@ -69,9 +68,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
 
             setExtraFields(
                 dataCustomization?.details?.fields.reduce((acc, field) => {
-                    return DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
-                        PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
-                        field?.visibility === 'hidden'
+                    return DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) || field?.visibility === 'hidden'
                         ? acc
                         : { ...acc, ...(detailsData?.[field.key] ? { [field.key]: detailsData[field.key] } : {}) };
                 }, {} as CustomColumn<any>)
@@ -98,7 +95,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
             // dispute reason
             {
                 key: disputeDataKeys.disputeReason,
-                value: `${i18n.get(DISPUTE_REASON_CATEGORIES[disputeReason.category])} - ${disputeReason.title}`, // [NOTE]: Not translated at the moment (maybe in the future)
+                value: `${getDisputeReason(i18n, disputeReason.category)} - ${disputeReason.title}`, // [NOTE]: Not translated at the moment (maybe in the future)
                 id: 'disputeReason',
             },
 

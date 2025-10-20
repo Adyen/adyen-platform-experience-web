@@ -11,8 +11,8 @@ import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
 import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
+import { getDisputeReason } from '../../../../utils/translation/getters';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
-import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
@@ -290,7 +290,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                         );
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,
+                    disputeReason: ({ item }) => <span>{getDisputeReason(i18n, item.reason.category)}</span>,
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (
