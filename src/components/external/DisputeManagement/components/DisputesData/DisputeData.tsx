@@ -198,6 +198,7 @@ export const DisputeData = ({
 
         return comments.filter(Boolean);
     }, [dispute]);
+
     const disputeType = useMemo(() => getDisputeType(i18n, dispute?.dispute.type), [i18n, dispute]);
 
     const showContactSupport =
