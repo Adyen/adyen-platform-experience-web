@@ -146,6 +146,7 @@ function InputBase(
                                 isInvalid={isInvalid}
                                 isValid={isValid}
                                 isCollatingErrors={isCollatingErrors}
+                                disableToggleFocusOnClose
                             />
                         </div>
                     )}
