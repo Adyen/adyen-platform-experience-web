@@ -1,9 +1,12 @@
-import { ICategory, ITransaction } from '../../../types';
+import { ICategory, IReport, ITransaction } from '../../../types';
 import { createDynamicTranslationFactory, KeyFactoryFunction, TranslationFallbackFunction } from './factory';
 import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/context/constants';
 import { RefundReason } from '../../external/TransactionDetails/context/types';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
+
+const reportTypeKeyFactory: KeyFactoryFunction = type => type && `reports.common.types.${type as IReport['type']}`;
+export const getReportType = createDynamicTranslationFactory(reportTypeKeyFactory, originalValueFallback);
 
 const txCategoryKeyFactory: KeyFactoryFunction = category => category && `transactions.common.types.${category as ICategory}`;
 export const getTransactionCategory = createDynamicTranslationFactory(txCategoryKeyFactory, originalValueFallback);
