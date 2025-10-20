@@ -2,10 +2,7 @@ import { ComponentChildren, JSX } from 'preact';
 import { TargetedEvent } from 'preact/compat';
 import { SelectItem } from './Select/types';
 
-export enum InputFieldElementPosition {
-    START = 'start',
-    END = 'end',
-}
+export type InputFieldElementPosition = 'start' | 'end';
 
 export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
     'aria-label'?: string;

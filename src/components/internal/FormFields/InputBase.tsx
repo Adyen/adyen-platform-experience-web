@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
-import { InputBaseProps, InputFieldElementPosition } from './types';
+import { InputBaseProps } from './types';
 import Select from './Select';
 import './FormFields.scss';
 import { ButtonVariant } from '../Button/types';
@@ -23,7 +23,7 @@ function InputBase(
         iconBeforeInteractive,
         iconAfterInteractive,
         dropdown,
-        dropdownPosition = InputFieldElementPosition.START,
+        dropdownPosition = 'start',
         onDropdownInput,
         onUpdateDropdown,
         ...props
@@ -110,8 +110,8 @@ function InputBase(
 
     const hasIcons = iconBefore || iconAfter;
     const shouldShowDropdown = !!dropdown && dropdown.items.length > 0;
-    const shouldDisplayDropdownAtStart = shouldShowDropdown && dropdownPosition === InputFieldElementPosition.START;
-    const shouldDisplayDropdownAtEnd = shouldShowDropdown && dropdownPosition === InputFieldElementPosition.END;
+    const shouldDisplayDropdownAtStart = shouldShowDropdown && dropdownPosition === 'start';
+    const shouldDisplayDropdownAtEnd = shouldShowDropdown && dropdownPosition === 'end';
     const hasDropdownOrIcons = hasIcons || shouldShowDropdown;
 
     const isDropdownReadOnly = readonly || dropdown?.readonly;

@@ -114,21 +114,21 @@
 
     &__container > input {
         background: transparent;
-        border: 0 !important;
-        box-shadow: none !important;
+        border: 0;
+        box-shadow: none;
         flex: 1;
         height: auto;
         outline: none;
         padding: 5px 8px;
 
         &:hover {
-            border: 0 !important;
+            border: 0;
         }
 
         &:focus,
         &:active {
             background: transparent;
-            border: 0 !important;
+            border: 0;
             outline: none !important;
         }
     }
