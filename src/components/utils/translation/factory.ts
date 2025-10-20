@@ -16,7 +16,7 @@ export interface TranslationFallbackFunction {
 
 export const createKeyFactoryFromConfig = (config?: KeyFactoryConfig): KeyFactoryFunction => {
     const { prefix = '', suffix = '' } = config ?? (EMPTY_OBJECT as NonNullable<typeof config>);
-    return (value?: string) => value ?? `${prefix}${value}${suffix}`;
+    return (value?: string) => (value == undefined ? undefined : `${prefix}${value}${suffix}`);
 };
 
 export const createDynamicTranslationFactory =
