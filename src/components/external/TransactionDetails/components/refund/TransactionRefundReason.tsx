@@ -6,7 +6,7 @@ import useTransactionRefundContext from '../../context/refund';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Select from '../../../../internal/FormFields/Select';
 import Typography from '../../../../internal/Typography/Typography';
-import { getRefundReasonTranslation } from '../../../../utils/transactions/translation';
+import { getTransactionRefundReason } from '../../../../utils/translation/getters';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { SelectProps } from '../../../../internal/FormFields/Select/types';
 import useUniqueId from '../../../../../hooks/useUniqueId';
@@ -21,7 +21,7 @@ const TransactionRefundReason = () => {
             Object.freeze(
                 REFUND_REASONS.map(reason => ({
                     id: reason,
-                    name: getRefundReasonTranslation(i18n, reason) as string,
+                    name: getTransactionRefundReason(i18n, reason) as string,
                 }))
             ),
         [i18n]

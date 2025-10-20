@@ -11,7 +11,7 @@ import Pagination from '../../../../internal/Pagination';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { getCategoryDescriptionTranslation, getCategoryTranslation } from '../../../../utils/transactions/translation';
+import { getTransactionCategoryDescription, getTransactionCategory } from '../../../../utils/translation/getters';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
@@ -109,15 +109,15 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     // status: ({ item }) => {
                     //     return (
                     //         <Tag
-                    //             label={getStatusTranslation(i18n, item.status)}
+                    //             label={getTransactionStatus(i18n, item.status)}
                     //             variant={getTagVariantForTransaction(item)}
                     //         />
                     //     );
                     // },
                     transactionType: ({ item, rowIndex }) => {
-                        const category = getCategoryTranslation(i18n, item.category);
+                        const category = getTransactionCategory(i18n, item.category);
                         if (category) {
-                            const tooltip = getCategoryDescriptionTranslation(i18n, item.category);
+                            const tooltip = getTransactionCategoryDescription(i18n, item.category);
                             const renderCategory = () => (
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                     {category}

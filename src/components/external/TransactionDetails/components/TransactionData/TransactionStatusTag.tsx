@@ -3,7 +3,7 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { RefundedState, RefundType } from '../../context/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { getCategoryTranslation } from '../../../../utils/transactions/translation';
+import { getTransactionCategory } from '../../../../utils/translation/getters';
 import { getRefundTypeForTransaction } from '../utils';
 import { TX_DATA_TAGS } from '../constants';
 
@@ -15,8 +15,8 @@ const TransactionStatusTag = ({ transaction, refundedState }: { transaction: ITr
 
     return (
         <div className={TX_DATA_TAGS}>
-            {/*{status && <Tag label={getStatusTranslation(i18n, status)} variant={getTagVariantForTransaction(transaction)} />}*/}
-            {category && <Tag label={getCategoryTranslation(i18n, category)} variant={TagVariant.DEFAULT} />}
+            {/*{status && <Tag label={getTransactionStatus(i18n, status)} variant={getTagVariantForTransaction(transaction)} />}*/}
+            {category && <Tag label={getTransactionCategory(i18n, category)} variant={TagVariant.DEFAULT} />}
 
             {/* refund type: only available for transaction.category == Refund */}
             {refundType && (

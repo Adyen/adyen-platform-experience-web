@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import CopyText from '../../../../internal/CopyText/CopyText';
-import { getRefundReasonTranslation } from '../../../../utils/transactions/translation';
+import { getTransactionRefundReason } from '../../../../utils/translation/getters';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
@@ -66,7 +66,7 @@ const TransactionDataProperties = () => {
             isRefundTransaction && refundMetadata?.refundReason
                 ? {
                       key: 'transactions.details.fields.refundReason' as const,
-                      value: getRefundReasonTranslation(i18n, refundMetadata.refundReason),
+                      value: getTransactionRefundReason(i18n, refundMetadata.refundReason),
                       id: 'refundReason',
                   }
                 : SKIP_ITEM,
