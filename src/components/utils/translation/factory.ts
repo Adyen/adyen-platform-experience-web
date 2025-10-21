@@ -10,6 +10,10 @@ export interface KeyFactoryFunction {
     (value?: string): string | undefined;
 }
 
+export interface TranslationFactoryFunction {
+    (i18n: Localization['i18n'], value?: string, options?: TranslationOptions): string | undefined;
+}
+
 export interface TranslationFallbackFunction {
     (translationKey: string | undefined, value: string | undefined, options: TranslationOptions | undefined): string | undefined;
 }
@@ -20,8 +24,8 @@ export const createKeyFactoryFromConfig = (config?: KeyFactoryConfig): KeyFactor
 };
 
 export const createDynamicTranslationFactory =
-    (keyFactory: KeyFactoryFunction, translationFallback?: TranslationFallbackFunction) =>
-    (i18n: Localization['i18n'], value?: string, options?: TranslationOptions) => {
+    (keyFactory: KeyFactoryFunction, translationFallback?: TranslationFallbackFunction): TranslationFactoryFunction =>
+    (i18n, value, options) => {
         let translation: string | undefined = undefined;
         const translationKey = keyFactory(value);
 

@@ -6,6 +6,12 @@ import { RefundReason } from '../../external/TransactionDetails/context/types';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
 
+const payoutAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.adjustments.types.' });
+export const getPayoutAdjustmentType = createDynamicTranslationFactory(payoutAdjustmentTypeKeyFactory, originalValueFallback);
+
+const payoutFundsCapturedTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.fundsCaptured.types.' });
+export const getPayoutFundsCapturedType = createDynamicTranslationFactory(payoutFundsCapturedTypeKeyFactory, originalValueFallback);
+
 const reportTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'reports.common.types.' });
 export const getReportType = createDynamicTranslationFactory(reportTypeKeyFactory, originalValueFallback);
 
