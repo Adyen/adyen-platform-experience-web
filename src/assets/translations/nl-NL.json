@@ -819,7 +819,7 @@
     "transactions.overview.errors.unavailable": "We konden het transactieoverzicht niet laden.",
     "transactions.overview.filters.label": "Filters voor transacties",
     "transactions.overview.filters.types.amount.label": "Bedrag",
-    "transactions.overview.filters.types.category.label": "Type",
+    "transactions.overview.filters.types.category.label": "Soort",
     "transactions.overview.filters.types.currency.label": "Valuta",
     "transactions.overview.filters.types.status.label": "Status",
     "transactions.overview.list.fields.amount": "Bedrag",
