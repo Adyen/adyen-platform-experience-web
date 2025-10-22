@@ -32,8 +32,6 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 ...context.args.coreOptions,
             });
 
-            setTimeout(() => core.update({ locale: 'es-ES' }), 10000);
-
             Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
         })();
