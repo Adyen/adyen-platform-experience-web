@@ -5,7 +5,7 @@ import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
-import { encodeAnalyticsEvent, oldTranslationKeys } from './Analytics/analytics/constants';
+import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/oldTranslations';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -20,6 +20,8 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public getImageAsset: (props: AssetOptions) => string;
     public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
 
+    private readyCustomTranslationsAnalytics: boolean;
+
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
@@ -30,14 +32,16 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
+        this.readyCustomTranslationsAnalytics = false;
         this.setOptions(options);
     }
 
     async initialize(): Promise<this> {
         return Promise.all([this.localization.ready]).then(() => {
             const analyticsPayload = this.setTranslationsPayload();
-            if (analyticsPayload.length > 0) {
+            if (analyticsPayload.length > 0 && !this.readyCustomTranslationsAnalytics) {
                 this.session.analyticsPayload = analyticsPayload;
+                this.readyCustomTranslationsAnalytics = true;
             }
             return this;
         });
@@ -103,51 +107,10 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     };
 
     private setTranslationsPayload() {
-        const payloads = [];
         if (this.localization) {
-            const { i18n } = this.localization;
-            const customizedLocale = Object.keys(i18n.customTranslations);
-            if (customizedLocale.length > 0) {
-                for (const locale of customizedLocale) {
-                    const translations = i18n.customTranslations?.[locale];
-                    const keys = translations ? Object.keys(translations) : [];
-                    if (keys?.length > 0) {
-                        const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
-                        // This event is a temporary event that tracks platforms that are still using old translations.
-                        // We will reach out to these platforms to encourage them to migrate to the new translations.
-                        // We will keep maintaining old translations mapping for backward compatibility until all platforms have migrated.
-                        if (oldCustomizedKeys.length > 0) {
-                            const oldTranslationsEvent = encodeAnalyticsEvent({
-                                event: 'Customized old translation',
-                                properties: {
-                                    category: 'PIE',
-                                    subCategory: 'PIE Component',
-                                    locale: locale,
-                                    keys: oldCustomizedKeys,
-                                    userAgent: navigator.userAgent,
-                                },
-                            });
-                            payloads.push(oldTranslationsEvent);
-                        }
-
-                        // This event is permanent to keep track of all the customizations that user made to translations
-                        const allTranslationsEvent = encodeAnalyticsEvent({
-                            event: 'Customized translation',
-                            properties: {
-                                category: 'PIE',
-                                subCategory: 'PIE Component',
-                                locale: locale,
-                                keys: keys,
-                                userAgent: navigator.userAgent,
-                            },
-                        });
-                        payloads.push(allTranslationsEvent);
-                    }
-                }
-            }
+            return getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
         }
-
-        return payloads;
+        return [];
     }
 
     /**

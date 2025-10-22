@@ -34,7 +34,7 @@ export const usePushAnalyticEvent = () => {
 
     return useCallback(
         (options: EmbeddedEventItem) => {
-            const componentName = (options.properties.componentName as ExternalComponentType) ?? '';
+            const componentName = options.properties.componentName as ExternalComponentType;
             const formattedOptions = JSON.stringify(options);
             const encodedData = window.btoa(formattedOptions);
             const data = new URLSearchParams();

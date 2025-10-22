@@ -52,7 +52,7 @@ export class SetupContext {
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
                     this._setAnalyticsUserProfile()?.then(() => {
-                        this.setCoreAnalytics();
+                        this.setCustomTranslationsAnalytics();
                     });
                 }));
         };
@@ -76,7 +76,7 @@ export class SetupContext {
         }) as Promise<SetupResponse>;
     }
 
-    private _setAnalyticsUserProfile() {
+    private async _setAnalyticsUserProfile() {
         const formattedOptions = JSON.stringify([{}]);
         const encodedData = window.btoa(formattedOptions);
         const data = new URLSearchParams();
@@ -93,7 +93,7 @@ export class SetupContext {
         return;
     }
 
-    private async setCoreAnalytics() {
+    private async setCustomTranslationsAnalytics() {
         if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
             Promise.all(
                 this.analyticsPayload.map((payload: URLSearchParams) => {

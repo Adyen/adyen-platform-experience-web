@@ -1,4 +1,5 @@
-import { EmbeddedEventItem } from '../../../hooks/useAnalytics/useAnalytics';
+import { encodeAnalyticsEvent } from './utils';
+import Localization from '../../Localization';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -785,10 +786,46 @@ export const oldTranslationKeys = new Set([
     'weCouldNotLoadYourTransactions',
 ]);
 
-export const encodeAnalyticsEvent = (event: EmbeddedEventItem) => {
-    const formattedOptions = JSON.stringify(event);
-    const encodedData = window.btoa(formattedOptions);
-    const data = new URLSearchParams();
-    data.set('data', encodedData);
-    return data;
+export const getCustomTranslationsAnalyticsPayload = (customTranslations: Localization['customTranslations']) => {
+    const payloads = [];
+    const customizedLocale = Object.keys(customTranslations);
+    if (customizedLocale.length > 0) {
+        for (const locale of customizedLocale) {
+            const translations = customTranslations?.[locale];
+            const keys = translations ? Object.keys(translations) : [];
+            if (keys?.length > 0) {
+                const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
+                // This event is a temporary event that tracks platforms that are still using old translations.
+                // We will reach out to these platforms to encourage them to migrate to the new translations.
+                // We will keep maintaining old translations mapping for backward compatibility until all platforms have migrated.
+                if (oldCustomizedKeys.length > 0) {
+                    const oldTranslationsEvent = encodeAnalyticsEvent({
+                        event: 'Customized old translation',
+                        properties: {
+                            category: 'PIE',
+                            subCategory: 'Core',
+                            locale: locale,
+                            keys: oldCustomizedKeys,
+                            userAgent: navigator.userAgent,
+                        },
+                    });
+                    payloads.push(oldTranslationsEvent);
+                }
+
+                // This event is permanent to keep track of all the customizations that user made to translations
+                const allTranslationsEvent = encodeAnalyticsEvent({
+                    event: 'Customized translation',
+                    properties: {
+                        category: 'PIE',
+                        subCategory: 'Core',
+                        locale: locale,
+                        keys: keys,
+                        userAgent: navigator.userAgent,
+                    },
+                });
+                payloads.push(allTranslationsEvent);
+            }
+        }
+    }
+    return payloads;
 };
