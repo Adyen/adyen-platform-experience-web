@@ -809,7 +809,9 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                             userAgent: navigator.userAgent,
                         },
                     });
-                    payloads.push(oldTranslationsEvent);
+                    if (oldTranslationsEvent) {
+                        payloads.push(oldTranslationsEvent);
+                    }
                 }
 
                 // This event is permanent to keep track of all the customizations that user made to translations
@@ -823,7 +825,9 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                         userAgent: navigator.userAgent,
                     },
                 });
-                payloads.push(allTranslationsEvent);
+                if (allTranslationsEvent) {
+                    payloads.push(allTranslationsEvent);
+                }
             }
         }
     }

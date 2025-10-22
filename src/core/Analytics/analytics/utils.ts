@@ -1,9 +1,18 @@
 import { EmbeddedEventItem } from '../../../hooks/useAnalytics/useAnalytics';
 
+export function bytesToBase64(bytes: Uint8Array) {
+    const binString = Array.from(bytes, (byte: number) => String.fromCodePoint(byte)).join('');
+    return btoa(binString);
+}
+
 export const encodeAnalyticsEvent = (event: EmbeddedEventItem) => {
-    const formattedOptions = JSON.stringify(event);
-    const encodedData = window.btoa(formattedOptions);
-    const data = new URLSearchParams();
-    data.set('data', encodedData);
-    return data;
+    try {
+        const formattedOptions = JSON.stringify(event);
+        const encodedData = bytesToBase64(new TextEncoder().encode(formattedOptions));
+        const data = new URLSearchParams();
+        data.set('data', encodedData);
+        return data;
+    } catch (err) {
+        return null;
+    }
 };
