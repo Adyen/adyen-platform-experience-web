@@ -1,4 +1,6 @@
-const oldTranslationKeys = new Set([
+import { EmbeddedEventItem } from '../../../hooks/useAnalytics/useAnalytics';
+
+export const oldTranslationKeys = new Set([
     'account',
     'accountBalance',
     'accountDescription',
@@ -783,4 +785,10 @@ const oldTranslationKeys = new Set([
     'weCouldNotLoadYourTransactions',
 ]);
 
-export default oldTranslationKeys;
+export const encodeAnalyticsEvent = (event: EmbeddedEventItem) => {
+    const formattedOptions = JSON.stringify(event);
+    const encodedData = window.btoa(formattedOptions);
+    const data = new URLSearchParams();
+    data.set('data', encodedData);
+    return data;
+};

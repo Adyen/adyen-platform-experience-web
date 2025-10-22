@@ -97,6 +97,10 @@ export class AuthSession {
         this._setupContext.loadingContext = loadingContext;
     }
 
+    set analyticsPayload(payload: Array<URLSearchParams>) {
+        this._setupContext.analyticsPayload = payload;
+    }
+
     set errorHandler(errorHandler: onErrorHandler | null) {
         this._specification.errorHandler = errorHandler;
     }

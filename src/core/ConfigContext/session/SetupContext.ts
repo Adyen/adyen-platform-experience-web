@@ -36,6 +36,7 @@ export class SetupContext {
     });
 
     declare public loadingContext?: Core<any>['loadingContext'];
+    declare public analyticsPayload?: Array<URLSearchParams> | undefined;
     declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
@@ -50,7 +51,9 @@ export class SetupContext {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
-                    this._setAnalyticsUserProfile();
+                    this._setAnalyticsUserProfile()?.then(() => {
+                        this.setCoreAnalytics();
+                    });
                 }));
         };
     }
@@ -86,6 +89,25 @@ export class SetupContext {
                 },
                 EMPTY_OBJECT
             );
+        }
+        return;
+    }
+
+    private async setCoreAnalytics() {
+        if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
+            Promise.all(
+                this.analyticsPayload.map((payload: URLSearchParams) => {
+                    return this._endpoints.sendTrackEvent!(
+                        {
+                            body: payload,
+                            contentType: 'application/x-www-form-urlencoded',
+                        },
+                        EMPTY_OBJECT
+                    );
+                })
+            ).then(() => {
+                this.analyticsPayload = undefined;
+            });
         }
         return;
     }
