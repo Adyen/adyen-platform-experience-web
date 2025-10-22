@@ -38,10 +38,12 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     async initialize(): Promise<this> {
         return Promise.all([this.localization.ready]).then(() => {
-            const analyticsPayload = this.setTranslationsPayload();
-            if (analyticsPayload.length > 0 && !this.readyCustomTranslationsAnalytics) {
-                this.session.analyticsPayload = analyticsPayload;
-                this.readyCustomTranslationsAnalytics = true;
+            if (!this.readyCustomTranslationsAnalytics) {
+                const analyticsPayload = this.setTranslationsPayload();
+                if (analyticsPayload.length > 0) {
+                    this.session.analyticsPayload = analyticsPayload;
+                    this.readyCustomTranslationsAnalytics = true;
+                }
             }
             return this;
         });
