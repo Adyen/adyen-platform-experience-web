@@ -26,20 +26,11 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
                 locale: locale || 'en-US',
-                translations: {
-                    en_US: {
-                        ['calendar.controls']: 'Test old translation',
-                        ['common.filters.types.date.label']: 'Test new translation',
-                        ['balanceAccounts.all']: 'Test new translation',
-                    },
-                },
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
                 ...context.args.coreOptions,
             });
-
-            setTimeout(() => core.update({ locale: 'es-ES' }), 10000);
 
             Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
