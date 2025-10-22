@@ -44,7 +44,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        Component: ExternalComponentType | "CAPITAL_OFFER" | "CAPITAL_OVERVIEW" | "DISPUTES" | "DISPUTES_MANAGEMENT" | "PAYOUT_DETAILS" | "PAYOUTS" | "REPORTS" | "TRANSACTION_DETAILS" | "TRANSACTIONS";
+        Component: "transactions" | "transactionDetails" | "payouts" | "payoutDetails" | "reports" | "capitalOverview" | "capitalOffer" | "disputes" | "disputesManagement";
     };
     responses: never;
     parameters: never;
