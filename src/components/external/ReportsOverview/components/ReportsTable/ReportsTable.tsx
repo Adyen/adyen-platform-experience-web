@@ -24,6 +24,7 @@ import './ReportsTable.scss';
 import { CustomColumn } from '../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
+import { getReportType } from '../../../../utils/translation/getters';
 
 export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
 export type ReportsTableFields = (typeof FIELDS)[number];
@@ -142,9 +143,9 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     dateAndReportType: ({ item }) => {
                         return (
                             <div className={DATE_TYPE_CLASS}>
-                                {item?.['type'] && (
+                                {item?.type && (
                                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                                        {i18n.get(`reports.common.types.${item['type']}`)}
+                                        {getReportType(i18n, item.type)}
                                     </Typography>
                                 )}
                                 <time dateTime={item.createdAt}>
@@ -157,9 +158,9 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     },
                     reportType: ({ item }) => {
                         return (
-                            item?.['type'] && (
+                            item?.type && (
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                                    {i18n.get(`reports.common.types.${item['type']}`)}
+                                    {getReportType(i18n, item.type)}
                                 </Typography>
                             )
                         );

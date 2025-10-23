@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import CopyText from '../../../../internal/CopyText/CopyText';
+import { getTransactionRefundReason } from '../../../../utils/translation/getters';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET } from '../constants';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
@@ -14,7 +15,6 @@ import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import Icon from '../../../../internal/DataGrid/components/Icon';
 import cx from 'classnames';
-import { REFUND_REASONS_KEYS } from '../../context/constants';
 
 const TransactionDataProperties = () => {
     const { i18n } = useCoreContext();
@@ -66,9 +66,7 @@ const TransactionDataProperties = () => {
             isRefundTransaction && refundMetadata?.refundReason
                 ? {
                       key: 'transactions.details.fields.refundReason' as const,
-                      value: i18n.has(REFUND_REASONS_KEYS[refundMetadata.refundReason])
-                          ? i18n.get(REFUND_REASONS_KEYS[refundMetadata.refundReason])
-                          : refundMetadata.refundReason,
+                      value: getTransactionRefundReason(i18n, refundMetadata.refundReason),
                       id: 'refundReason',
                   }
                 : SKIP_ITEM,
