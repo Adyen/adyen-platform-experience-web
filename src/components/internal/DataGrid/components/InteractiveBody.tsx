@@ -26,16 +26,16 @@ export const InteractiveBody = <
     return (
         <>
             {data?.map((item, index) => {
-                const onHover = onRowHover && onRowHover.bind(null, index);
-                const offHover = onRowHover && onRowHover.bind(null, undefined);
+                const onHoverEnter = onRowHover && onRowHover.bind(null, index);
+                const onHoverLeave = onRowHover && onRowHover.bind(null, undefined);
                 return (
                     <div
                         role="row"
                         tabIndex={0}
-                        onMouseEnter={onHover}
-                        onFocus={onHover}
-                        onMouseLeave={offHover}
-                        onBlur={offHover}
+                        onMouseEnter={onHoverEnter}
+                        onFocus={onHoverEnter}
+                        onMouseLeave={onHoverLeave}
+                        onBlur={onHoverLeave}
                         ref={ref}
                         aria-selected={index === currentIndex}
                         data-index={index}
