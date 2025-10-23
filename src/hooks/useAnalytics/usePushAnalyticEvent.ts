@@ -4,6 +4,7 @@ import useMutation from '../useMutation/useMutation';
 import { EmbeddedEventItem } from './useAnalytics';
 import { ExternalComponentType } from '../../components/types';
 import { EMPTY_OBJECT } from '../../utils';
+import { encodeAnalyticsEvent } from '../../core/Analytics/analytics/utils';
 
 export const usePushAnalyticEvent = () => {
     const { sendTrackEvent } = useConfigContext().endpoints;
@@ -35,11 +36,10 @@ export const usePushAnalyticEvent = () => {
     return useCallback(
         (options: EmbeddedEventItem) => {
             const componentName = options.properties.componentName as ExternalComponentType;
-            const formattedOptions = JSON.stringify(options);
-            const encodedData = window.btoa(formattedOptions);
-            const data = new URLSearchParams();
-            data.set('data', encodedData);
-            track(data, componentName);
+            const data = encodeAnalyticsEvent(options);
+            if (data) {
+                track(data, componentName);
+            }
         },
         [track]
     );

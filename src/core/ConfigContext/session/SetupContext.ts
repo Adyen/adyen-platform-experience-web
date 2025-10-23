@@ -18,6 +18,7 @@ import {
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { HttpMethod } from '../../Http/types';
+import { encodeAnalyticsEvent } from '../../Analytics/analytics/utils';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
@@ -77,11 +78,8 @@ export class SetupContext {
     }
 
     private async _setAnalyticsUserProfile() {
-        const formattedOptions = JSON.stringify([{}]);
-        const encodedData = window.btoa(formattedOptions);
-        const data = new URLSearchParams();
-        data.set('data', encodedData);
-        if (this._endpoints.sendEngageEvent) {
+        const data = encodeAnalyticsEvent([{}]);
+        if (this._endpoints.sendEngageEvent && data) {
             return this._endpoints.sendEngageEvent(
                 {
                     body: data,
