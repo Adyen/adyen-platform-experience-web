@@ -28,7 +28,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.options = { environment: FALLBACK_ENV, ...options };
         const { cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl, apiUrl } = resolveEnvironment(this.options.environment);
 
-        this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl);
+        this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
         this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
