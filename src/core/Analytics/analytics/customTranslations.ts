@@ -1,5 +1,7 @@
 import { encodeAnalyticsEvent } from './utils';
 import Localization from '../../Localization';
+import currentTranslations from '../../../assets/translations/en-US.json';
+import { translations_dev_assets } from '../../../translations/local';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -789,44 +791,64 @@ export const oldTranslationKeys = new Set([
 export const getCustomTranslationsAnalyticsPayload = (customTranslations: Localization['customTranslations']) => {
     const payloads = [];
     const customizedLocale = Object.keys(customTranslations);
+    const currentLocales = Object.keys(translations_dev_assets);
     if (customizedLocale.length > 0) {
         for (const locale of customizedLocale) {
-            const translations = customTranslations?.[locale];
-            const keys = translations ? Object.keys(translations) : [];
-            if (keys?.length > 0) {
-                const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
-                // This event is a temporary event that tracks platforms that are still using old translations.
-                // We will reach out to these platforms to encourage them to migrate to the new translations.
-                // We will keep maintaining old translations mapping for backward compatibility until all platforms have migrated.
-                if (oldCustomizedKeys.length > 0) {
-                    const oldTranslationsEvent = encodeAnalyticsEvent({
-                        event: 'Customized old translation',
-                        properties: {
-                            category: 'PIE',
-                            subCategory: 'Core',
-                            locale: locale,
-                            keys: oldCustomizedKeys,
-                            userAgent: navigator.userAgent,
-                        },
-                    });
-                    if (oldTranslationsEvent) {
-                        payloads.push(oldTranslationsEvent);
-                    }
-                }
-
-                // This event is permanent to keep track of all the customizations that user made to translations
-                const allTranslationsEvent = encodeAnalyticsEvent({
-                    event: 'Customized translation',
+            if (!currentLocales.includes(locale)) {
+                const newLanguageEvent = encodeAnalyticsEvent({
+                    event: 'Added new language',
                     properties: {
                         category: 'PIE',
                         subCategory: 'Core',
                         locale: locale,
-                        keys: keys,
                         userAgent: navigator.userAgent,
                     },
                 });
-                if (allTranslationsEvent) {
-                    payloads.push(allTranslationsEvent);
+                if (newLanguageEvent) {
+                    payloads.push(newLanguageEvent);
+                }
+            } else {
+                const translations = customTranslations?.[locale];
+                const keys = translations ? Object.keys(translations) : [];
+                if (keys?.length > 0) {
+                    const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
+                    // This event is a temporary event that tracks platforms that are still using old translations.
+                    // We will reach out to these platforms to encourage them to migrate to the new translations.
+                    // We will keep maintaining old translations mapping for backward compatibility until all platforms have migrated.
+                    if (oldCustomizedKeys.length > 0) {
+                        const oldTranslationsEvent = encodeAnalyticsEvent({
+                            event: 'Customized old translation',
+                            properties: {
+                                category: 'PIE',
+                                subCategory: 'Core',
+                                locale: locale,
+                                keys: oldCustomizedKeys,
+                                userAgent: navigator.userAgent,
+                            },
+                        });
+                        if (oldTranslationsEvent) {
+                            payloads.push(oldTranslationsEvent);
+                        }
+                    }
+
+                    const currentTranslationKeys = Object.keys(currentTranslations);
+                    const formattedCurrentTranslationKeys = new Set(currentTranslationKeys);
+                    const matchingCustomizedKeys = keys.filter(key => formattedCurrentTranslationKeys.has(key));
+
+                    // This event is permanent to keep track of all the customizations that user made to translations
+                    const allTranslationsEvent = encodeAnalyticsEvent({
+                        event: 'Customized translation',
+                        properties: {
+                            category: 'PIE',
+                            subCategory: 'Core',
+                            locale: locale,
+                            keys: matchingCustomizedKeys,
+                            userAgent: navigator.userAgent,
+                        },
+                    });
+                    if (allTranslationsEvent) {
+                        payloads.push(allTranslationsEvent);
+                    }
                 }
             }
         }

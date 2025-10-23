@@ -5,7 +5,7 @@ import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
-import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/oldTranslations';
+import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
