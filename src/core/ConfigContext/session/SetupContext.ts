@@ -93,6 +93,7 @@ export class SetupContext {
 
     private async setCustomTranslationsAnalytics() {
         if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
+            const retryPayload: URLSearchParams[] = [];
             Promise.all(
                 this.analyticsPayload.map((payload: URLSearchParams) => {
                     return this._endpoints.sendTrackEvent!(
@@ -101,10 +102,12 @@ export class SetupContext {
                             contentType: 'application/x-www-form-urlencoded',
                         },
                         EMPTY_OBJECT
-                    );
+                    ).catch(() => {
+                        retryPayload.push(payload);
+                    });
                 })
-            ).then(() => {
-                this.analyticsPayload = undefined;
+            ).finally(() => {
+                this.analyticsPayload = retryPayload.length > 0 ? retryPayload : undefined;
             });
         }
         return;

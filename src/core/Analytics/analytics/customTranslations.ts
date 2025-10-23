@@ -788,10 +788,12 @@ export const oldTranslationKeys = new Set([
     'weCouldNotLoadYourTransactions',
 ]);
 
+const currentLocales = Object.keys(translations_dev_assets);
+const currentTranslationKeys = new Set(Object.keys(currentTranslations));
+
 export const getCustomTranslationsAnalyticsPayload = (customTranslations: Localization['customTranslations']) => {
     const payloads = [];
     const customizedLocale = Object.keys(customTranslations);
-    const currentLocales = Object.keys(translations_dev_assets);
     if (customizedLocale.length > 0) {
         for (const locale of customizedLocale) {
             if (!currentLocales.includes(locale)) {
@@ -831,9 +833,7 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                         }
                     }
 
-                    const currentTranslationKeys = Object.keys(currentTranslations);
-                    const formattedCurrentTranslationKeys = new Set(currentTranslationKeys);
-                    const matchingCustomizedKeys = keys.filter(key => formattedCurrentTranslationKeys.has(key));
+                    const matchingCustomizedKeys = keys.filter(key => currentTranslationKeys.has(key));
 
                     // This event is permanent to keep track of all the customizations that user made to translations
                     const allTranslationsEvent = encodeAnalyticsEvent({
