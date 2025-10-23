@@ -12,7 +12,7 @@ export const analyticsMock = [
             return HttpResponse.error();
         }
         await delay(200);
-        return HttpResponse.json();
+        return HttpResponse.json({});
     }),
 
     http.post(engagePath, async () => {
@@ -20,6 +20,6 @@ export const analyticsMock = [
             return HttpResponse.error();
         }
         await delay(200);
-        return HttpResponse.json();
+        return HttpResponse.json({});
     }),
 ];

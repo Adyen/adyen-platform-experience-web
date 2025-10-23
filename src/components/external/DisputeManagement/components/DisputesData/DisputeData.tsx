@@ -19,7 +19,6 @@ import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
 import { isDisputeActionNeeded } from '../../../../utils/disputes/actionNeeded';
-import { DISPUTE_TYPES } from '../../../../utils/disputes/constants';
 import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
@@ -44,6 +43,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
+import { getDisputeType } from '../../../../utils/translation/getters';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
@@ -199,10 +199,7 @@ export const DisputeData = ({
         return comments.filter(Boolean);
     }, [dispute]);
 
-    const disputeType = useMemo(() => {
-        const type = dispute?.dispute.type;
-        return type && i18n.get(DISPUTE_TYPES[type]);
-    }, [i18n, dispute]);
+    const disputeType = useMemo(() => getDisputeType(i18n, dispute?.dispute.type), [i18n, dispute]);
 
     const showContactSupport =
         (!!defensibility && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility)) || dispute?.dispute.type === 'NOTIFICATION_OF_FRAUD';
