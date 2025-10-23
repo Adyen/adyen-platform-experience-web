@@ -32,6 +32,9 @@ jobs:
           # If 'live' is chosen, check out 'main'. Otherwise, check out 'develop'.
           ref: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) == 'live' && 'main' || 'develop' }}
 
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
       - name: Build and package assets
         env:
           DEPLOY_ENV: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}
