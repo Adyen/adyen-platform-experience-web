@@ -5,6 +5,7 @@ import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
+import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -19,6 +20,8 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public getImageAsset: (props: AssetOptions) => string;
     public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
 
+    private readyCustomTranslationsAnalytics: boolean;
+
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
@@ -29,11 +32,21 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
+        this.readyCustomTranslationsAnalytics = false;
         this.setOptions(options);
     }
 
     async initialize(): Promise<this> {
-        return Promise.all([this.localization.ready]).then(() => this);
+        return Promise.all([this.localization.ready]).then(() => {
+            if (!this.readyCustomTranslationsAnalytics) {
+                const analyticsPayload = this.setTranslationsPayload();
+                if (analyticsPayload.length > 0) {
+                    this.session.analyticsPayload = analyticsPayload;
+                    this.readyCustomTranslationsAnalytics = true;
+                }
+            }
+            return this;
+        });
     }
 
     /**
@@ -94,6 +107,13 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
         return this;
     };
+
+    private setTranslationsPayload() {
+        if (this.localization) {
+            return getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
+        }
+        return [];
+    }
 
     /**
      * @internal

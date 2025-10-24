@@ -18,6 +18,7 @@ import {
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
 import type { HttpMethod } from '../../Http/types';
+import { encodeAnalyticsEvent } from '../../Analytics/analytics/utils';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
@@ -36,6 +37,7 @@ export class SetupContext {
     });
 
     declare public loadingContext?: Core<any>['loadingContext'];
+    declare public analyticsPayload?: Array<URLSearchParams> | undefined;
     declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
@@ -50,7 +52,9 @@ export class SetupContext {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
-                    this._setAnalyticsUserProfile();
+                    this._setAnalyticsUserProfile()?.then(() => {
+                        this.setCustomTranslationsAnalytics();
+                    });
                 }));
         };
     }
@@ -73,15 +77,37 @@ export class SetupContext {
         }) as Promise<SetupResponse>;
     }
 
-    private _setAnalyticsUserProfile() {
-        const formattedOptions = JSON.stringify([{}]);
-        const encodedData = window.btoa(formattedOptions);
-        const data = new URLSearchParams();
-        data.set('data', encodedData);
-        if (this._endpoints.sendEngageEvent) {
-            return this._endpoints.sendEngageEvent({
-                body: data,
-                contentType: 'application/x-www-form-urlencoded',
+    private async _setAnalyticsUserProfile() {
+        const data = encodeAnalyticsEvent([{}]);
+        if (this._endpoints.sendEngageEvent && data) {
+            return this._endpoints.sendEngageEvent(
+                {
+                    body: data,
+                    contentType: 'application/x-www-form-urlencoded',
+                },
+                EMPTY_OBJECT
+            );
+        }
+        return;
+    }
+
+    private async setCustomTranslationsAnalytics() {
+        if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
+            const retryPayload: URLSearchParams[] = [];
+            Promise.all(
+                this.analyticsPayload.map((payload: URLSearchParams) => {
+                    return this._endpoints.sendTrackEvent!(
+                        {
+                            body: payload,
+                            contentType: 'application/x-www-form-urlencoded',
+                        },
+                        EMPTY_OBJECT
+                    ).catch(() => {
+                        retryPayload.push(payload);
+                    });
+                })
+            ).finally(() => {
+                this.analyticsPayload = retryPayload.length > 0 ? retryPayload : undefined;
             });
         }
         return;

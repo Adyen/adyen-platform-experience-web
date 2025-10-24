@@ -44,22 +44,6 @@ export const useAnalytics = ({ userEvents }: UseAnalyticsProps) => {
     useEffect(() => {
         userEvents.subscribe(pushEvents);
 
-        const customizedLocale = Object.keys(i18n.customTranslations);
-        if (customizedLocale.length > 0) {
-            for (const locale of customizedLocale) {
-                const translations = i18n.customTranslations[locale]!;
-                const keys = Object.keys(translations!);
-                if (keys.length > 0) {
-                    userEvents.addEvent('Customized translation', {
-                        category: 'PIE',
-                        subCategory: 'PIE Component',
-                        locale: locale,
-                        keys: keys,
-                    });
-                }
-            }
-        }
-
         return () => {
             userEvents.unsubscribe(pushEvents);
         };
