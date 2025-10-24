@@ -60,5 +60,5 @@ export type DevEnvironment = 'test' | 'live' | 'beta';
 
 export type onErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {
-    enabled: boolean;
+    enabled?: boolean;
 };
