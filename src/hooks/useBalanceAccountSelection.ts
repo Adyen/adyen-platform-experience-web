@@ -57,7 +57,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
             if (index! >= 0) {
                 if (isDefaultValueSelected.current && index !== selectedBalanceAccountIndex) {
-                    userEvents?.addModifyFilterEvent?.({
+                    userEvents.addModifyFilterEvent?.({
                         actionType: 'update',
                         label: 'Balance account filter',
                         category: 'Transaction component',

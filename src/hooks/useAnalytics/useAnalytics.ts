@@ -29,7 +29,7 @@ export const useAnalytics = ({ userEvents, analyticsEnabled }: UseAnalyticsProps
 
     useEffect(() => {
         if (analyticsEnabled) {
-            userEvents?.updateBaseTrackingPayload?.({
+            userEvents.updateBaseTrackingPayload?.({
                 sdkVersion,
                 userAgent: navigator.userAgent,
             });
@@ -46,12 +46,12 @@ export const useAnalytics = ({ userEvents, analyticsEnabled }: UseAnalyticsProps
 
     useEffect(() => {
         if (analyticsEnabled) {
-            userEvents?.subscribe?.(pushEvents);
+            userEvents.subscribe?.(pushEvents);
         }
 
         return () => {
             if (analyticsEnabled) {
-                userEvents?.unsubscribe?.(pushEvents);
+                userEvents.unsubscribe?.(pushEvents);
             }
         };
     }, [userEvents, pushEvents, i18n, analyticsEnabled]);
