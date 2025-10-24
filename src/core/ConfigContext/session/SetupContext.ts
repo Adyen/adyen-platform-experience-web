@@ -38,6 +38,7 @@ export class SetupContext {
 
     declare public loadingContext?: Core<any>['loadingContext'];
     declare public analyticsPayload?: Array<URLSearchParams> | undefined;
+    declare public analyticsEnabled?: boolean;
     declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
@@ -52,9 +53,11 @@ export class SetupContext {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
-                    this._setAnalyticsUserProfile()?.then(() => {
-                        this.setCustomTranslationsAnalytics();
-                    });
+                    if (this.analyticsEnabled) {
+                        this._setAnalyticsUserProfile()?.then(() => {
+                            this.setCustomTranslationsAnalytics();
+                        });
+                    }
                 }));
         };
     }

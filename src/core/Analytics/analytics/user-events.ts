@@ -205,6 +205,6 @@ export class UserEvents {
     }
 }
 
-export const createUserEvents = (componentName?: ExternalComponentType) => {
-    return new UserEvents(componentName);
+export const createUserEvents = (analyticsEnabled = true, componentName?: ExternalComponentType): Partial<UserEvents> => {
+    return analyticsEnabled ? new UserEvents(componentName) : {};
 };

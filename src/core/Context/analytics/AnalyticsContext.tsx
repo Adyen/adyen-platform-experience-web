@@ -16,4 +16,4 @@ const defaultUserEvents: UserEvents = {
     unsubscribe: noop,
 } as unknown as UserEvents;
 
-export const AnalyticsContext = createContext<UserEvents>(defaultUserEvents);
+export const AnalyticsContext = createContext<Partial<UserEvents>>(defaultUserEvents);

@@ -45,6 +45,10 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 
+    analytics?: {
+        enabled: boolean;
+    };
+
     /**
      * @internal
      */

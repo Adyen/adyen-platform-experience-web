@@ -22,7 +22,7 @@ const TransactionDataProperties = () => {
     const userEvents = useAnalyticsContext();
 
     const onCopyReferenceId = useCallback(() => {
-        userEvents.addEvent('Clicked button', {
+        userEvents?.addEvent?.('Clicked button', {
             label: 'Copy button',
             value: 'referenceID',
             category: 'Transaction component',

@@ -77,7 +77,7 @@ export const useRefundAction = <T extends _BaseUseRefundActionProps>({
                 refundParams
             )
                 .then(() => {
-                    userEvents.addEvent('Completed refund', {
+                    userEvents?.addEvent?.('Completed refund', {
                         refundReason: refundReason,
                         isFullRefund: isFullAmount,
                         category: 'Transaction component',
