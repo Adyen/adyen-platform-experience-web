@@ -1,14 +1,9 @@
 import { createContext } from 'preact';
 import { TimelineEntry, TimelineGapObject } from './types';
 
-export interface RegisterTimelineEntryResult {
-    timelineEntriesRef: { current: TimelineEntry[] };
-    index: number;
-    unregister: () => void;
-}
-
 export interface TimelineContextValue {
-    registerTimelineEntry: (entry: TimelineEntry) => RegisterTimelineEntryResult;
+    registerTimelineEntry: (entry: TimelineEntry) => () => void;
+    entries: TimelineEntry[];
     showAll: boolean;
     showMoreIndex: number | null;
     hiddenItems: number | null;

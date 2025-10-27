@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { render, screen } from '@testing-library/preact';
-import { describe, expect, test, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { useCallback, useState } from 'preact/hooks';
 import { TimelineItem } from './TimelineItem';
 import { TimelineContext, TimelineContextValue } from '../context';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -47,20 +48,6 @@ beforeEach(() => {
     } as any);
 });
 
-const DEFAULT_CONTEXT: TimelineContextValue = {
-    registerTimelineEntry: vi.fn(() => ({
-        timelineEntriesRef: { current: [] },
-        index: 0,
-        unregister: vi.fn(),
-    })),
-    showAll: false,
-    showMoreIndex: null,
-    hiddenItems: null,
-    visibleIndexes: [0],
-    timeGapLimit: null,
-    toggleShowAll: vi.fn(),
-};
-
 const TITLE = 'Milestone';
 const TIMESTAMP_VALUE = 'Timestamp';
 const TIMESTAMP_DATE = new Date('01-30-2000 14:00:00');
@@ -70,13 +57,39 @@ const DEFAULT_PROPS = {
     timestamp: { date: TIMESTAMP_DATE, value: TIMESTAMP_VALUE },
 };
 
+// Helper to create a test wrapper with stateful context
+const TestWrapper = ({ children, contextOverrides = {} }: { children: any; contextOverrides?: Partial<TimelineContextValue> }) => {
+    const [entries, setEntries] = useState<any[]>([]);
+
+    const registerTimelineEntry = useCallback((entry: any) => {
+        setEntries((prev: any[]) => [...prev, entry]);
+        return () => {
+            setEntries((prev: any[]) => prev.filter((e: any) => e !== entry));
+        };
+    }, []);
+
+    const context: TimelineContextValue = {
+        registerTimelineEntry,
+        entries,
+        showAll: false,
+        showMoreIndex: null,
+        hiddenItems: null,
+        visibleIndexes: null,
+        timeGapLimit: null,
+        toggleShowAll: vi.fn(),
+        ...contextOverrides,
+    };
+
+    return <TimelineContext.Provider value={context}>{children}</TimelineContext.Provider>;
+};
+
 describe('TimelineItem', () => {
     describe('should render props correctly', () => {
         test('required props: title and timestamp', () => {
             render(
-                <TimelineContext.Provider value={DEFAULT_CONTEXT}>
+                <TestWrapper contextOverrides={{ showAll: true }}>
                     <TimelineItem {...DEFAULT_PROPS} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -85,11 +98,11 @@ describe('TimelineItem', () => {
         });
 
         test('description', () => {
-            const DESCRIPTION = 'This is a description';
+            const DESCRIPTION = 'Description';
             render(
-                <TimelineContext.Provider value={DEFAULT_CONTEXT}>
+                <TestWrapper contextOverrides={{ showAll: true }}>
                     <TimelineItem {...DEFAULT_PROPS} description={DESCRIPTION} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -104,9 +117,9 @@ describe('TimelineItem', () => {
                 { label: 'Label2', value: 'Value2', key: 'common.actions.apply.labels.default' } as const,
             ];
             render(
-                <TimelineContext.Provider value={DEFAULT_CONTEXT}>
+                <TestWrapper contextOverrides={{ showAll: true }}>
                     <TimelineItem {...DEFAULT_PROPS} dataList={DATA_LIST} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -120,9 +133,9 @@ describe('TimelineItem', () => {
         test('tag', () => {
             const TAG = { label: 'Tag' };
             render(
-                <TimelineContext.Provider value={DEFAULT_CONTEXT}>
+                <TestWrapper contextOverrides={{ showAll: true }}>
                     <TimelineItem {...DEFAULT_PROPS} tag={TAG} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -134,16 +147,10 @@ describe('TimelineItem', () => {
 
     describe('should render show more correctly', () => {
         test('shows if show more index is the same as index and has number of hidden items', () => {
-            const context: TimelineContextValue = {
-                ...DEFAULT_CONTEXT,
-                showMoreIndex: 0,
-                hiddenItems: 2,
-            };
-
             render(
-                <TimelineContext.Provider value={context}>
+                <TestWrapper contextOverrides={{ showAll: false, showMoreIndex: 0, hiddenItems: 2, visibleIndexes: [0] }}>
                     <TimelineItem {...DEFAULT_PROPS} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -153,17 +160,10 @@ describe('TimelineItem', () => {
         });
 
         test('button has show less if show all is true', () => {
-            const context: TimelineContextValue = {
-                ...DEFAULT_CONTEXT,
-                showAll: true,
-                showMoreIndex: 0,
-                hiddenItems: 2,
-            };
-
             render(
-                <TimelineContext.Provider value={context}>
+                <TestWrapper contextOverrides={{ showAll: true, showMoreIndex: 0, hiddenItems: 2 }}>
                     <TimelineItem {...DEFAULT_PROPS} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
@@ -175,15 +175,10 @@ describe('TimelineItem', () => {
 
     describe('should render only when visible', () => {
         test('does not render when not in visible indexes', () => {
-            const context: TimelineContextValue = {
-                ...DEFAULT_CONTEXT,
-                visibleIndexes: [1, 2],
-            };
-
             render(
-                <TimelineContext.Provider value={context}>
+                <TestWrapper contextOverrides={{ showAll: false, visibleIndexes: [1, 2] }}>
                     <TimelineItem {...DEFAULT_PROPS} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.queryByText(TITLE)).toBeNull();
@@ -192,16 +187,10 @@ describe('TimelineItem', () => {
         });
 
         test('renders when not in visible indexes if show all is true', () => {
-            const context: TimelineContextValue = {
-                ...DEFAULT_CONTEXT,
-                showAll: true,
-                visibleIndexes: [1, 2],
-            };
-
             render(
-                <TimelineContext.Provider value={context}>
+                <TestWrapper contextOverrides={{ showAll: true, visibleIndexes: [1, 2] }}>
                     <TimelineItem {...DEFAULT_PROPS} />
-                </TimelineContext.Provider>
+                </TestWrapper>
             );
 
             expect(screen.getByText(TITLE)).toBeInTheDocument();
