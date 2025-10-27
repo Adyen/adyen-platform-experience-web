@@ -16,7 +16,6 @@
     }
 
     &__information {
-        color: style.token(color-label-highlight);
         display: block;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
@@ -40,20 +39,6 @@
         &:hover {
             color: style.token(color-label-primary-hover);
         }
-    }
-
-    &__container--information,
-    &__icon--information {
-        color: style.token(color-label-highlight);
-
-        &:hover {
-            color: style.token(color-label-highlight);
-        }
-    }
-
-    &__icon--information span {
-        cursor: pointer;
-        display: flex;
     }
 
     &:hover {

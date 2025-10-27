@@ -82,7 +82,7 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                     renderLabel={(val, key) =>
                         key === 'capital.common.fields.repaymentThreshold' ? (
                             <Tooltip
-                                isContainerHovered
+                                showUnderline
                                 content={i18n.get('capital.common.fields.repaymentThreshold.description', {
                                     values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                                 })}

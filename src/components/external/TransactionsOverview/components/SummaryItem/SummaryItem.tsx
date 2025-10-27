@@ -14,7 +14,7 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 export const SummaryItem = ({
     columnConfigs,
     isHeader = false,
-    isHovered = false,
+    showLabelUnderline = false,
     isSkeletonVisible = false,
     isLoading = false,
     widths,
@@ -56,7 +56,7 @@ export const SummaryItem = ({
                         {isHeader && (
                             <div role="presentation">
                                 {config.tooltipLabel ? (
-                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} showUnderline={showLabelUnderline}>
                                         <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                                     </Tooltip>
                                 ) : (
