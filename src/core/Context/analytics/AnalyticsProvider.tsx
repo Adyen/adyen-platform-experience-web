@@ -8,13 +8,14 @@ import { ExternalComponentType } from '../../../components/types';
 
 export interface AnalyticsProviderProps {
     componentName?: ExternalComponentType;
+    analyticsEnabled: boolean;
     children?: ComponentChildren;
 }
 
-export const AnalyticsProvider = ({ children, componentName }: PropsWithChildren<AnalyticsProviderProps>) => {
-    const userEvents = useMemo(() => createUserEvents(componentName), [componentName]);
+export const AnalyticsProvider = ({ children, componentName, analyticsEnabled }: PropsWithChildren<AnalyticsProviderProps>) => {
+    const userEvents = useMemo(() => createUserEvents(analyticsEnabled, componentName), [componentName, analyticsEnabled]);
 
-    useAnalytics({ userEvents });
+    useAnalytics({ userEvents, analyticsEnabled });
 
     return <AnalyticsContext.Provider value={userEvents}>{children}</AnalyticsContext.Provider>;
 };
