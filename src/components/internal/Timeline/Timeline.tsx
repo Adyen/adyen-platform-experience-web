@@ -1,6 +1,6 @@
 import { ComponentChildren } from 'preact';
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
-import { TimelineContext, RegisterTimelineEntryResult } from './context';
+import { TimelineContext } from './context';
 import { TimelineEntry, TimelineGapObject, TimelineShowMoreObject } from './types';
 import './Timeline.scss';
 
@@ -11,26 +11,23 @@ export interface TimelineProps {
 }
 
 export default function Timeline({ children, showMore = null, timeGapLimit = null }: TimelineProps) {
-    const timelineEntriesRef = useRef<TimelineEntry[]>([]);
+    const [entries, setEntries] = useState<TimelineEntry[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const [, forceUpdate] = useState({});
-
-    // Track entries length to trigger recalculation of memos
-    const entriesLength = timelineEntriesRef.current.length;
+    const entryIdCounter = useRef(0);
 
     const hiddenItems = useMemo(() => {
-        if (showMore && entriesLength > showMore.limit) {
-            return entriesLength - showMore.limit;
+        if (showMore && entries.length > showMore.limit) {
+            return entries.length - showMore.limit;
         }
         return null;
-    }, [showMore, entriesLength]);
+    }, [showMore, entries.length]);
 
     const visibleIndexes = useMemo(() => {
-        if (!showMore || !entriesLength) {
+        if (!showMore || !entries.length) {
             return null;
         }
 
-        const timelineIndexes = Array.from(timelineEntriesRef.current.keys());
+        const timelineIndexes = Array.from(entries.keys());
 
         if (showMore.placement === 'before-last') {
             const lastIndex = timelineIndexes[timelineIndexes.length - 1];
@@ -45,7 +42,7 @@ export default function Timeline({ children, showMore = null, timeGapLimit = nul
         }
 
         return timelineIndexes.slice(0, showMore.limit);
-    }, [entriesLength, showMore]);
+    }, [entries, showMore]);
 
     const showMoreIndex = useMemo(() => {
         if (!showMore) {
@@ -63,20 +60,15 @@ export default function Timeline({ children, showMore = null, timeGapLimit = nul
         }
     }, [showMore]);
 
-    const registerTimelineEntry = useCallback((entry: TimelineEntry): RegisterTimelineEntryResult => {
-        const index = timelineEntriesRef.current.length;
-        timelineEntriesRef.current.push(entry);
-        forceUpdate({});
+    const registerTimelineEntry = useCallback((entry: TimelineEntry) => {
+        // Assign unique ID to track this specific entry
+        const entryId = entryIdCounter.current++;
+        const entryWithId = { ...entry, _id: entryId };
 
-        const unregister = () => {
-            timelineEntriesRef.current = timelineEntriesRef.current.filter((_, i) => i !== index);
-            forceUpdate({});
-        };
+        setEntries(prev => [...prev, entryWithId]);
 
-        return {
-            timelineEntriesRef,
-            index,
-            unregister,
+        return () => {
+            setEntries(prev => prev.filter(e => (e as any)._id !== entryId));
         };
     }, []);
 
@@ -87,6 +79,7 @@ export default function Timeline({ children, showMore = null, timeGapLimit = nul
     const contextValue = useMemo(
         () => ({
             registerTimelineEntry,
+            entries,
             showAll,
             showMoreIndex,
             hiddenItems,
@@ -94,7 +87,7 @@ export default function Timeline({ children, showMore = null, timeGapLimit = nul
             timeGapLimit,
             toggleShowAll,
         }),
-        [registerTimelineEntry, showAll, showMoreIndex, hiddenItems, visibleIndexes, timeGapLimit, toggleShowAll]
+        [registerTimelineEntry, entries, showAll, showMoreIndex, hiddenItems, visibleIndexes, timeGapLimit, toggleShowAll]
     );
 
     return (

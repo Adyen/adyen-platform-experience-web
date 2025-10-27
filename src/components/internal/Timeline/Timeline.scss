@@ -4,6 +4,8 @@
     max-width: 500px;
 
     &__items {
-        all: unset;
+        list-style: none;
+        margin: 0;
+        padding: 0;
     }
 }

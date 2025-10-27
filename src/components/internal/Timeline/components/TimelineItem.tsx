@@ -1,5 +1,5 @@
 import { ComponentChildren } from 'preact';
-import { useContext, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { TimelineContext } from '../context';
 import { DateUnit, TimelineDataList, TimelineEntry, TimelineStatus, TimelineTagProps, TimelineTimestamp } from '../types';
@@ -14,6 +14,7 @@ import Icon from '../../Icon';
 import './TimelineItem.scss';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../translations';
+import useUniqueId from '../../../../hooks/useUniqueId';
 
 const UNIT_TRANSLATION_KEYS: Record<DateUnit, TranslationKey> = {
     day: 'common.timeline.timelineItem.timeGap.unit.day',
@@ -37,33 +38,37 @@ export function TimelineItem({ dataList = null, description = null, status = 'bl
         throw new Error('TimelineItem must be used within a Timeline component');
     }
 
-    const { registerTimelineEntry, showAll, showMoreIndex, hiddenItems, visibleIndexes, timeGapLimit, toggleShowAll } = context;
+    const { registerTimelineEntry, entries, showAll, showMoreIndex, hiddenItems, visibleIndexes, timeGapLimit, toggleShowAll } = context;
 
-    // Register this timeline entry on mount only
-    const registrationRef = useRef<{ timelineEntriesRef: { current: TimelineEntry[] }; index: number; unregister: () => void } | null>(null);
+    const instanceIdRef = useRef<string>(useUniqueId());
 
-    if (!registrationRef.current) {
-        registrationRef.current = registerTimelineEntry({
+    // Register this timeline entry on mount, unregister on unmount
+    useLayoutEffect(() => {
+        const entry = {
             title: title || undefined,
             description: description || undefined,
             date: timestamp.date,
-        });
-    }
+            _instanceId: instanceIdRef.current,
+        };
+        const unregister = registerTimelineEntry(entry as any);
+        return unregister;
+    }, [registerTimelineEntry, title, description, timestamp.date]);
 
-    const { timelineEntriesRef, index, unregister } = registrationRef.current;
-
-    useEffect(() => {
-        return () => unregister();
-    }, [unregister]);
+    // Calculate index by finding this entry using the instance ID
+    const index = useMemo(() => {
+        const foundIndex = entries.findIndex(entry => (entry as any)._instanceId === instanceIdRef.current);
+        return foundIndex;
+    }, [entries]);
 
     const allItemsShowing = showAll || !visibleIndexes;
-    const isVisible = allItemsShowing ? true : visibleIndexes.includes(index);
+    // If index is -1, component is registering - use allItemsShowing to determine visibility
+    const isVisible = index === -1 ? allItemsShowing : allItemsShowing ? true : visibleIndexes.includes(index);
 
     const timeGap = useMemo(() => {
-        if (!timeGapLimit) {
+        if (!timeGapLimit || index <= 0) {
             return null;
         }
-        const previousEntry = timelineEntriesRef.current[index - 1];
+        const previousEntry = entries[index - 1];
         if (!previousEntry) {
             return null;
         }
@@ -82,13 +87,13 @@ export function TimelineItem({ dataList = null, description = null, status = 'bl
         });
 
         return timeGapLimit.thresholdAmount < timegapInSelectedUnit.value ? formattedTimeGap : null;
-    }, [timeGapLimit, timelineEntriesRef, index, allItemsShowing, visibleIndexes, timestamp.date, i18n]);
+    }, [timeGapLimit, entries, index, allItemsShowing, visibleIndexes, timestamp.date, i18n]);
 
     const timeGapAriaLabel = timeGap ? i18n.get('common.timeline.timelineItem.timeGap.a11y.label', { values: { timeGap } }) : '';
 
     const displayShowMoreButton = hiddenItems && showMoreIndex === index;
 
-    const isLastItem = index === timelineEntriesRef.current.length - 1;
+    const isLastItem = index === entries.length - 1;
 
     const iconConditionalClasses = cx('adyen-pe-timeline-item__icon', {
         [`adyen-pe-timeline-item__icon--${status}`]: status,
@@ -154,7 +159,7 @@ export function TimelineItem({ dataList = null, description = null, status = 'bl
                                     label: entry.label,
                                     value: entry.value,
                                     key: entry.key,
-                                    id: entry.label,
+                                    id: entry.key,
                                 }))}
                             />
                         </div>
