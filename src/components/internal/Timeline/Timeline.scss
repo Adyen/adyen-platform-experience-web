@@ -1,0 +1,9 @@
+@use '../../../style/variable-generator' as style;
+
+.adyen-pe-timeline {
+    max-width: 500px;
+
+    &__items {
+        all: unset;
+    }
+}
