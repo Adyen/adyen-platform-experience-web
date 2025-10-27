@@ -231,11 +231,16 @@ export const DisputeData = ({
         void getCustomButtons();
     }, [getCustomButtons]);
 
+    const defendButtonLabel = useMemo(() => {
+        if (storedDispute?.dispute.type === 'REQUEST_FOR_INFORMATION') return i18n.get('disputes.management.defend.requestForInformationButtonLabel');
+        return i18n.get('disputes.management.details.actions.defendChargeback');
+    }, [i18n, storedDispute?.dispute.type]);
+
     const actionButtons = useMemo(() => {
         const ctaButtons = [];
         if (isDefendable)
             ctaButtons.push({
-                title: i18n.get('disputes.management.details.actions.defendChargeback'),
+                title: defendButtonLabel,
                 event: onDefendClick,
             });
         if (isAcceptable) {
@@ -263,7 +268,7 @@ export const DisputeData = ({
             });
         }
         return ctaButtons;
-    }, [isDefendable, i18n, onDefendClick, isAcceptable, showContactSupport, onContactSupport, extraButtons, onAcceptClick]);
+    }, [isDefendable, defendButtonLabel, onDefendClick, isAcceptable, showContactSupport, onContactSupport, extraButtons, i18n, onAcceptClick]);
 
     const actionNeeded = useMemo(() => !!dispute && isDisputeActionNeeded(dispute.dispute), [dispute]);
 
