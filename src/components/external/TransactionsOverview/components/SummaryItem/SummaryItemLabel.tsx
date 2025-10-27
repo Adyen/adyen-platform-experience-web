@@ -1,6 +1,6 @@
 import { LABEL_CLASS, LABEL_CONTAINER_CLASS, LABEL_CONTAINER_CLASS_LOADING } from './constants';
 import { SummaryItemLabelProps } from './types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { fixedForwardRef } from '../../../../../utils/preact';
 import classNames from 'classnames';
@@ -16,7 +16,7 @@ export const SummaryItemLabel = fixedForwardRef(
                 {...restArgs}
             >
                 {config.labelKey && (
-                    <Typography variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} className={LABEL_CLASS}>
                         {i18n.get(config.labelKey)}
                     </Typography>
                 )}

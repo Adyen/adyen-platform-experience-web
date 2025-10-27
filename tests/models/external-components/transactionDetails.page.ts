@@ -1,10 +1,14 @@
-import { Locator, Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { getTranslatedKey } from '../../utils/utils';
 
 export class TransactionDetailsPage {
-    public readonly transactionValue: Locator;
+    private readonly root: Locator;
 
     constructor(page: Page, rootElementSelector = '.adyen-pe-overview-details') {
-        this.transactionValue = page.locator(rootElementSelector).getByLabel(`${getTranslatedKey('referenceID')}`);
+        this.root = page.locator(rootElementSelector);
+    }
+
+    get referenceId(): Locator {
+        return this.root.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
     }
 }

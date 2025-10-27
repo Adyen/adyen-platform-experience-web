@@ -11,6 +11,7 @@ export interface UseCommitActionConfig {
     applyTitle?: string;
     resetDisabled?: boolean;
     resetTitle?: string;
+    onResetAction?: () => void;
 }
 
 export interface CommitActionProperties {

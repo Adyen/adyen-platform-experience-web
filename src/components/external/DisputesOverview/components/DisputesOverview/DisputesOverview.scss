@@ -2,9 +2,11 @@
 @use '../../../../../style';
 
 .adyen-pe-disputes-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
     &--xs {
-        display: flex;
-        flex-direction: column;
         gap: style.token(spacer-080);
 
         @include mixins.adyen-pe-error-message-display-mobile-fix {

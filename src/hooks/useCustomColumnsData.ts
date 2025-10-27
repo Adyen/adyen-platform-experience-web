@@ -34,11 +34,11 @@ export const useCustomColumnsData = <T>({
     }, [hasCustomColumn, onDataRetrieve, mergeCustomData, records]);
 
     useEffect(() => {
-        if (records.length) {
+        if (hasCustomColumn && onDataRetrieve) {
             setLoadingCustomRecords(true);
-            void mergedRecords();
         }
-    }, [mergedRecords, records]);
+        void mergedRecords();
+    }, [hasCustomColumn, mergedRecords, onDataRetrieve]);
 
     return { customRecords, loadingCustomRecords } as const;
 };

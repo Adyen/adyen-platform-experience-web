@@ -75,6 +75,26 @@ jobs:
           asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
           asset_content_type: application/gzip
 
+      - name: Build umd file
+        env:
+          VERSION: ${{ env.NEW_VERSION }}
+        run: |
+          ./scripts/upload-assets/generate-umd-file.sh
+
+      - name: Upload UMD file in new tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ${{ github.repository }}
+          ASSET_PATH: './platform-components-${{ env.NEW_VERSION }}.tar.gz'
+          ASSET_NAME: 'platform-components-${{ env.NEW_VERSION }}.tar.gz'
+        run: |
+          echo "Targeting repository: $TARGET_REPO"
+          echo "Using tag: ${{ env.NEW_VERSION }}"
+          
+          # Upload the new asset to the target repo using the new tag
+          gh release upload "v${{ env.NEW_VERSION }}" "$ASSET_PATH" \
+            --repo "$TARGET_REPO"
+
   trigger-npm-publish:
     permissions:
       contents: write
@@ -84,3 +104,13 @@ jobs:
     secrets: inherit
     with:
       source_run_id: ${{ github.run_id }}
+
+  upload-assets:
+    permissions:
+      contents: write
+      actions: write
+    needs: create-github-release
+    uses: adyen/adyen-platform-experience-web/.github/workflows/upload-assets-to-release-tag.yml@main
+    secrets: inherit
+    with:
+      environment_choice: 'live'

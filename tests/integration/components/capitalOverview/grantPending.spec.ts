@@ -21,11 +21,15 @@ test.describe('Grant: Pending', () => {
 
     test('should render a tooltip when status tag is hovered', async ({ page }) => {
         await page.getByText('Pending').hover();
-        await expect(page.getByText('You should get the funds within one business day')).toBeVisible();
+        const tooltip = page.getByText('You should get the funds within one business day');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 
     test('should render a tooltip with the grant ID when "Grant ID" label is hovered', async ({ page }) => {
         await page.getByText('Grant ID').hover();
-        await expect(page.getByText('7e18b082372f')).toBeVisible();
+        const tooltip = page.getByText('7e18b082372f');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 });

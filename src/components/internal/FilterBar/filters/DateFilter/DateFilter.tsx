@@ -11,6 +11,7 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {
         timezone?: UseTimeRangeSelectionConfig['timezone'];
+        onResetAction?: () => void;
     };
 
 const DateFilter = <T extends DateFilterProps = DateFilterProps>({
@@ -25,6 +26,7 @@ const DateFilter = <T extends DateFilterProps = DateFilterProps>({
     updateFilters,
 }: Pick<T, 'sinceDate' | 'untilDate'> & DataOverviewDateFilterProps) => {
     const { i18n } = useCoreContext();
+    const label = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
     const defaultTimeRangePreset = useMemo(() => i18n.get(defaultParams.current.defaultTimeRange), [i18n]);
     const [selectedTimeRangePreset, setSelectedTimeRangePreset] = useState(defaultTimeRangePreset);
 
@@ -59,7 +61,8 @@ const DateFilter = <T extends DateFilterProps = DateFilterProps>({
 
     return (
         <DateFilterCore
-            label={i18n.get('dateRange')}
+            label={label}
+            aria-label={label}
             name={FilterParam.CREATED_SINCE}
             sinceDate={sinceDate}
             untilDate={untilDate ?? new Date(nowTimestamp).toString()}

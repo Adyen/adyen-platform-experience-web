@@ -137,23 +137,43 @@ export const GrantActive: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantActiveWithGBRepaymentAccount: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Active - With GB repayment account',
+export const RepaymentNL: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment - NL',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActiveWithGBRepaymentAccount,
+        msw: CapitalOverviewMockedResponses.repaymentNL,
     },
 };
 
-export const GrantActiveWithUSRepaymentAccount: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Active - With US repayment account',
+export const RepaymentGB: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment - GB',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActiveWithUSRepaymentAccount,
+        msw: CapitalOverviewMockedResponses.repaymentGB,
+    },
+};
+
+export const RepaymentUS: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment - US',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.repaymentUS,
+    },
+};
+
+export const RepaymentNoTransferInstruments: ElementStory<typeof CapitalOverview> = {
+    name: 'Repayment - No transfer instruments',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.repaymentNoTransferInstruments,
     },
 };
 

@@ -7,8 +7,10 @@ import { operations as CapitalGrantOfferOps } from './resources/CapitalGrantOffe
 import { operations as CapitalGrantsOps } from './resources/CapitalGrantsResource';
 import { operations as CapitalMissingActionsOps } from './resources/CapitalMissingActionsResource';
 import { components as SetupResource } from './resources/SetupResource';
+import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 
-export type EndpointsOperations = BalanceAccountOps &
+export type EndpointsOperations = AnalyticsOps &
+    BalanceAccountOps &
     CapitalGrantOfferOps &
     CapitalGrantsOps &
     CapitalMissingActionsOps &
@@ -30,8 +32,8 @@ export type EndpointCSVData<T extends CSVEndpoints> = EndpointsOperations[T]['re
 export type EndpointData<T extends EndpointName> = T extends CSVEndpoints
     ? EndpointCSVData<T>
     : T extends JSONEndpoints
-    ? EndpointJSONData<T>
-    : never;
+      ? EndpointJSONData<T>
+      : never;
 
 export type SetupEndpointResponse = SetupResource['schemas']['SetupEndpointResponse'];
 

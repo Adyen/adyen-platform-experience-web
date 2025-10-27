@@ -24,7 +24,7 @@ export const useRefundContextActions = <T extends _BaseUseRefundContextActionsPr
     const primaryAction = useCallback(() => !primaryActionDisabled && refundAction(), [primaryActionDisabled, refundAction]);
 
     const secondaryActionDisabled = interactionsDisabled;
-    const secondaryActionLabel = useMemo(() => i18n.get('back'), [i18n]);
+    const secondaryActionLabel = useMemo(() => i18n.get('transactions.details.refund.actions.back'), [i18n]);
 
     const secondaryAction = useCallback(
         () => void (!secondaryActionDisabled && setActiveView(ActiveView.DETAILS)),

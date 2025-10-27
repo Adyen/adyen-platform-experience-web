@@ -4,6 +4,7 @@ import { RefObject } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 
 export type SummaryItemColumnConfig = {
+    elemId?: string;
     labelKey?: TranslationKey;
     ref: RefObject<HTMLDivElement>;
     tooltipRef?: RefObject<HTMLSpanElement>;
@@ -12,6 +13,7 @@ export type SummaryItemColumnConfig = {
     valueHasLabelStyle?: boolean;
     tooltipLabel?: TranslationKey;
     getValue: () => string | undefined;
+    ariaLabel?: string;
 };
 
 export type SummaryItemProps = {

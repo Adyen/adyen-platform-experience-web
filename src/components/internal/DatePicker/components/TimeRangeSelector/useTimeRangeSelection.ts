@@ -16,14 +16,14 @@ export type UseTimeRangeSelectionData = ReturnType<typeof useTimeRangeSelection>
 
 export const getTimeRangeSelectionDefaultPresetOptions = () =>
     Object.freeze({
-        'rangePreset.last7Days': RangePreset.lastNDays(7),
-        'rangePreset.last30Days': RangePreset.lastNDays(30),
-        'rangePreset.thisWeek': RangePreset.thisWeek(),
-        'rangePreset.lastWeek': RangePreset.lastWeek(),
-        'rangePreset.thisMonth': RangePreset.thisMonth(),
-        'rangePreset.lastMonth': RangePreset.lastMonth(),
-        'rangePreset.yearToDate': RangePreset.yearToDate(),
-    } as const);
+        'common.filters.types.date.rangeSelect.options.last7Days': RangePreset.lastNDays(7),
+        'common.filters.types.date.rangeSelect.options.last30Days': RangePreset.lastNDays(30),
+        'common.filters.types.date.rangeSelect.options.thisWeek': RangePreset.thisWeek(),
+        'common.filters.types.date.rangeSelect.options.lastWeek': RangePreset.lastWeek(),
+        'common.filters.types.date.rangeSelect.options.thisMonth': RangePreset.thisMonth(),
+        'common.filters.types.date.rangeSelect.options.lastMonth': RangePreset.lastMonth(),
+        'common.filters.types.date.rangeSelect.options.yearToDate': RangePreset.yearToDate(),
+    } as const) satisfies UseTimeRangeSelectionConfig['options'];
 
 export const useTimeRangeSelection = ({
     now = Date.now(),
@@ -39,9 +39,9 @@ export const useTimeRangeSelection = ({
     const TZ = useRef<typeof timezone>();
 
     const [customOption, getRangesForOption, selectionOptions] = useMemo(() => {
-        const customOption = i18n.get('rangePreset.custom');
-        const optionKeys = Object.keys(presetOptions);
-        const selectionOptions = Object.freeze(optionKeys.map(key => i18n.get(key as TranslationKey)));
+        const customOption = i18n.get('common.filters.types.date.rangeSelect.options.custom');
+        const optionKeys = Object.keys(presetOptions) as TranslationKey[];
+        const selectionOptions = Object.freeze(optionKeys.map(key => i18n.get(key)));
 
         const getRangesForOption = (option: string, options: readonly string[] = selectionOptions) => {
             const optionIndex = options.findIndex(currentOption => currentOption === option);

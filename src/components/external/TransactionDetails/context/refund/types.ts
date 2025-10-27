@@ -30,4 +30,5 @@ export interface TransactionRefundProviderProps extends TransactionDataContextPr
     refreshTransaction: () => void;
     refundMode: IRefundMode;
     transactionId: TransactionDetailData['id'];
+    transactionOriginalAmount: TransactionDetailData['originalAmount'];
 }

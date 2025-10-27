@@ -1,5 +1,4 @@
 import { useMemo } from 'preact/hooks';
-import { getLabel } from '../components/utils/getLabel';
 import { CellTextPosition } from '../components/internal/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../components/types';
 import useCoreContext from '../core/Context/useCoreContext';
@@ -66,7 +65,7 @@ export const useTableColumns = <T extends string, C extends string>({
                 });
             } else {
                 const { key, flex, align } = current;
-                const label = i18n.get(getLabel(fieldsKeys?.[key] || (key as any)));
+                const label = i18n.get(fieldsKeys?.[key] || (key as any));
                 const config = removeUndefinedProperties<T>(columnConfig?.[key] || EMPTY_OBJECT);
 
                 columnMap.set(current.key, {

@@ -47,6 +47,14 @@
         }
     }
 
+    &__date-content {
+        &--urgent {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-030);
+        }
+    }
+
     .adyen-pe-download {
         &__error {
             align-items: center;

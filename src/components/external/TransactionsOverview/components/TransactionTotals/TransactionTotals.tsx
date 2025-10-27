@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { OperationParameters } from '../../../../../types/api/endpoints';
@@ -31,6 +32,7 @@ const TransactionTotals = memo(
         currencies,
         fullWidth,
     }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
+        const { i18n } = useCoreContext();
         const { getTransactionTotals } = useConfigContext().endpoints;
 
         const fetchCallback = useCallback(async () => {
@@ -75,14 +77,31 @@ const TransactionTotals = memo(
                 {isXsContainer ? (
                     <>
                         <div className={ITEM_CLASS}>
-                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="expenses" fullWidth={fullWidth} />
+                            <TotalsCard
+                                aria-label={i18n.get('transactions.overview.totals.labels.incoming')}
+                                totals={totals}
+                                isLoading={isLoading}
+                                hiddenField="expenses"
+                                fullWidth={fullWidth}
+                            />
                         </div>
                         <div className={ITEM_CLASS}>
-                            <TotalsCard totals={totals} isLoading={isLoading} hiddenField="incomings" fullWidth={fullWidth} />
+                            <TotalsCard
+                                aria-label={i18n.get('transactions.overview.totals.labels.outgoing')}
+                                totals={totals}
+                                isLoading={isLoading}
+                                hiddenField="incomings"
+                                fullWidth={fullWidth}
+                            />
                         </div>
                     </>
                 ) : (
-                    <TotalsCard totals={totals} isLoading={isLoading} fullWidth={fullWidth} />
+                    <TotalsCard
+                        aria-label={i18n.get('transactions.overview.totals.labels.default')}
+                        totals={totals}
+                        isLoading={isLoading}
+                        fullWidth={fullWidth}
+                    />
                 )}
             </div>
         );

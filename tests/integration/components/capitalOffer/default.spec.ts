@@ -28,7 +28,7 @@ test.describe('Default', () => {
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
         await expect(page.getByText('180 days')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeHidden();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Review offer' })).toBeVisible();
     });
 
@@ -67,19 +67,21 @@ test.describe('Default', () => {
         await expect(page.getByText('180 days')).toBeVisible();
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('Primary account')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Request funds' })).toBeVisible();
     });
 
     test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {
         await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByText('Repayment threshold').hover();
-        await expect(page.getByText('Minimum repayment every 30 days to repay the financing on time')).toBeVisible();
+        const tooltip = page.getByText('Minimum repayment every 30 days to repay the financing on time');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 
     test('should go back to offer selection screen when "Back" button in offer summary screen is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'Review offer' }).click();
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
     });
 
@@ -94,7 +96,7 @@ test.describe('Default', () => {
 test.describe('onOfferDismiss argument', () => {
     test('should render "Back" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
-        await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
 

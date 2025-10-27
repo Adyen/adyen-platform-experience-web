@@ -32,7 +32,7 @@ export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number
         else if (!isBitSafeInteger(value)) normalizedValue = fallbackValue ?? defaultInteger;
 
         const clampedValue = clamp(minInteger, normalizedValue, maxInteger) as T;
-        return clampedValue === normalizedValue ? clampedValue : fallbackValue ?? defaultInteger;
+        return clampedValue === normalizedValue ? clampedValue : (fallbackValue ?? defaultInteger);
     };
 
     return (initialValue?: T) => {
@@ -59,7 +59,7 @@ export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number
 export const getRangeTimestampsConfigParameterUnwrapper =
     (config: RangeTimestampsConfig, context: RangeTimestampsConfigContext) =>
     <T = {}>(value: T): RangeTimestampsConfigParameterValue<T> =>
-        isFunction(value) ? value.call(config, context) : value;
+        isFunction(value) ? value.call(config, context) : (value as RangeTimestampsConfigParameterValue<T>);
 
 export const isRangeTimestampsConfigWithoutOffsets = (config: RangeTimestampsConfig): config is RangeTimestampsConfigWithoutOffsets =>
     !hasOwnProperty(config, 'offsets');

@@ -1,5 +1,5 @@
-import keys from '../../src/translations/en-US.json' assert { type: 'json' };
-import { Page } from '@playwright/test';
+import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
+import type { Page } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
@@ -22,8 +22,8 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
     const _maxTimestamp = (now: Date) => _getTimestamp(new Date(latestDate?.(now.getTime())!), Infinity);
 
     return async (from: Date | number | string = Date(), to: Date | number | string = from) => {
-        const applyButton = page.getByLabel(getTranslatedKey('apply'));
-        const previousMonthButton = page.getByLabel(getTranslatedKey('calendar.previousMonth'));
+        const applyButton = page.getByLabel(getTranslatedKey('common.actions.apply.labels.default'));
+        const previousMonthButton = page.getByLabel(getTranslatedKey('common.filters.types.date.calendar.navigation.previousMonth'));
         const now = new Date();
 
         let maxTimestamp = _maxTimestamp(now);
@@ -51,7 +51,7 @@ export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) =>
             let months = diff % 12;
 
             if (months) {
-                const nearestShorterMonth = originDate === 31 ? MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1 : 1;
+                const nearestShorterMonth = originDate === 31 ? (MONTHS_WITH_30_DAYS.findLast(month => month < originMonth) ?? 1) : 1;
                 if (originDate >= 30 && originMonth - months <= nearestShorterMonth) months++;
             } else if (years && originMonth === 1 && originDate === 29) months++;
 

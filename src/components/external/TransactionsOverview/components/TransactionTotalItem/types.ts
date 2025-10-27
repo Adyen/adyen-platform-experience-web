@@ -9,4 +9,6 @@ export type TransactionTotalItemProps = {
     isLoading?: boolean;
     widths?: number[];
     onWidthsSet: (widths: number[]) => void;
+    expensesElemId?: string;
+    incomingsElemId?: string;
 };

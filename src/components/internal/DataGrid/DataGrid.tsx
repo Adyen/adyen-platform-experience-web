@@ -7,10 +7,10 @@ import { DataGridColumn, DataGridProps } from './types';
 import SkeletonBody from './components/SkeletonBody';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { useMemo } from 'preact/hooks';
-import emptyTableIcon from '../../../images/no-data-female.svg';
 import { DataGridProvider } from './utils/DataGridProvider';
 import { useDataGridContext } from './hooks/useDataGridContext';
 import { TableHeaderCell } from './components/TableHeaderCell';
+import useCoreContext from '../../../core/Context/useCoreContext';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,
@@ -20,7 +20,7 @@ export const INITIAL_STATE = Object.freeze({
 export type CustomCell<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
-    T extends Columns[number]
+    T extends Columns[number],
 > = {
     [k in T['key']]?: (
         props: Item[0][k] extends NonNullable<Item[0][k]>
@@ -33,7 +33,7 @@ function DataGrid<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >({ errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     return (
         <div style={{ width: '100%' }}>
@@ -48,19 +48,21 @@ function DataGridTable<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >({ autoFitColumns, errorDisplay, ...props }: DataGridProps<Items, Columns, ClickedField, CustomCells>) {
     const children = useMemo(() => toChildArray(props.children), [props.children]);
     const footer = useMemo(() => children.find((child: ComponentChild) => (child as any)?.['type'] === DataGridFooter), [children]);
     const emptyBody = useMemo(() => props.data?.length === 0, [props.data]);
     const showMessage = useMemo(() => !props.loading && (emptyBody || props.error), [emptyBody, props.error, props.loading]);
     const { getMinWidthByColumn } = useDataGridContext();
+    const { getImageAsset } = useCoreContext();
 
     const visibleCols = props.columns
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
 
     const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
+
     return (
         <div
             className={classnames('adyen-pe-data-grid', {
@@ -79,33 +81,31 @@ function DataGridTable<
                       }
             }
         >
-            <>
-                <div className="adyen-pe-data-grid__table-wrapper">
-                    <div role="table" className="adyen-pe-data-grid__table">
-                        <div className="adyen-pe-data-grid__head" role="rowgroup">
-                            <div role="rowheader" className="adyen-pe-data-grid__header" style={props.loading ? { width: '100%' } : {}}>
-                                {visibleCols.map(item => (
-                                    <TableHeaderCell key={item.key} label={item.label} position={item.position} cellKey={item.key} />
-                                ))}
-                            </div>
+            <div className="adyen-pe-data-grid__table-wrapper">
+                <div role="table" className="adyen-pe-data-grid__table">
+                    <div className="adyen-pe-data-grid__head" role="rowgroup">
+                        <div role="rowheader" className="adyen-pe-data-grid__header" style={props.loading ? { width: '100%' } : {}}>
+                            {visibleCols.map(item => (
+                                <TableHeaderCell key={item.key} label={item.label} position={item.position} cellKey={item.key} />
+                            ))}
                         </div>
-
-                        <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
                     </div>
-                    {showMessage &&
-                        (emptyBody && !props.error ? (
-                            <ErrorMessageDisplay
-                                title={props.emptyTableMessage?.title ?? 'thereAreNoResults'}
-                                message={props.emptyTableMessage?.message}
-                                imageDesktop={emptyTableIcon}
-                                centered
-                            />
-                        ) : props.error && errorDisplay ? (
-                            errorDisplay()
-                        ) : null)}
+
+                    <DataGridBody<Items, Columns, ClickedField, CustomCells> {...props} columns={visibleCols as Columns} emptyBody={emptyBody} />
                 </div>
-                {footer}
-            </>
+                {showMessage &&
+                    (emptyBody && !props.error ? (
+                        <ErrorMessageDisplay
+                            title={props.emptyTableMessage?.title ?? 'common.errors.noResults'}
+                            message={props.emptyTableMessage?.message}
+                            imageDesktop={getImageAsset?.({ name: 'no-data-female' })}
+                            centered
+                        />
+                    ) : props.error && errorDisplay ? (
+                        errorDisplay()
+                    ) : null)}
+            </div>
+            {footer}
         </div>
     );
 }
@@ -114,7 +114,7 @@ function DataGridBody<
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >(props: DataGridProps<Items, Columns, ClickedField, CustomCells> & { emptyBody: boolean }) {
     const showSkeleton = useMemo(() => props.loading || props.emptyBody || props.error, [props.emptyBody, props.error, props.loading]);
 
