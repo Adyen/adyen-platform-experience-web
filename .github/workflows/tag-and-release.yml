@@ -85,8 +85,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO: ${{ github.repository }}
-          ASSET_PATH: './platform-components-${{ env.NEW_VERSION }}.tar.gz'
-          ASSET_NAME: 'platform-components-${{ env.NEW_VERSION }}.tar.gz'
+          ASSET_PATH: './platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
+          ASSET_NAME: 'platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
         run: |
           echo "Targeting repository: $TARGET_REPO"
           echo "Using tag: ${{ env.NEW_VERSION }}"
