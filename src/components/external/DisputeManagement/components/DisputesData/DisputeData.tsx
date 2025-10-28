@@ -232,8 +232,9 @@ export const DisputeData = ({
     }, [getCustomButtons]);
 
     const defendButtonLabel = useMemo(() => {
-        if (storedDispute?.dispute.type === 'REQUEST_FOR_INFORMATION') return i18n.get('disputes.management.details.actions.submitInformation');
-        return i18n.get('disputes.management.details.actions.defendChargeback');
+        return storedDispute?.dispute.type === 'REQUEST_FOR_INFORMATION'
+            ? i18n.get('disputes.management.details.actions.submitInformation')
+            : i18n.get('disputes.management.details.actions.defendChargeback');
     }, [i18n, storedDispute?.dispute.type]);
 
     const actionButtons = useMemo(() => {
