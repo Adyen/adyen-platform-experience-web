@@ -1,5 +1,3 @@
-// @ts-ignore
-import rc from 'run-con';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { describe, expect, it } from 'vitest';
@@ -15,8 +13,6 @@ type I18nConfig = {
     allowUsEnglishAsLocale?: boolean;
     placeholderFormat: string;
     customFileNamespaces?: CustomFileNamespaces;
-    configs: string[];
-    config: string;
 };
 
 describe('supported locales', async () => {
@@ -32,10 +28,11 @@ describe('supported locales', async () => {
         expect(SUPPORTED_LOCALES).toStrictEqual(locales);
     });
 
-    describe('.i18nrc config', () => {
+    describe('.i18nrc config', async () => {
         const englishLocale = 'en-US';
-        const i18n: I18nConfig = rc('i18n');
-        const relativeTranslationsDir = path.relative(path.dirname(i18n.config), translationsDir);
+        const i18nConfigPath = path.resolve(__dirname, '../../../../.i18nrc');
+        const i18n: I18nConfig = JSON.parse(await fs.readFile(i18nConfigPath, 'utf8'));
+        const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), translationsDir);
 
         it('should have the correct translation source paths', () => {
             // prettier-ignore
