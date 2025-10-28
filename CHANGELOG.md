@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.8.1
+
+### Patch Changes
+
+- fb0059d: c2558b3: Resolved a bug in the package build process that prevented successful integration of the library in consuming applications.
+
 ## 1.8.0
 
 ### Minor Changes
