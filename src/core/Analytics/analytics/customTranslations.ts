@@ -1,7 +1,7 @@
-import { encodeAnalyticsEvent } from './utils';
 import Localization from '../../Localization';
 import currentTranslations from '../../../assets/translations/en-US.json';
-import { translations_dev_assets } from '../../../translations/local';
+import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
+import { encodeAnalyticsEvent } from './utils';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -788,7 +788,6 @@ export const oldTranslationKeys = new Set([
     'weCouldNotLoadYourTransactions',
 ]);
 
-const currentLocales = Object.keys(translations_dev_assets);
 const currentTranslationKeys = new Set(Object.keys(currentTranslations));
 
 export const getCustomTranslationsAnalyticsPayload = (customTranslations: Localization['customTranslations']) => {
@@ -796,7 +795,7 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
     const customizedLocale = Object.keys(customTranslations);
     if (customizedLocale.length > 0) {
         for (const locale of customizedLocale) {
-            if (!currentLocales.includes(locale)) {
+            if (!SUPPORTED_LOCALES.includes(locale as any)) {
                 const newLanguageEvent = encodeAnalyticsEvent({
                     event: 'Added new language',
                     properties: {
