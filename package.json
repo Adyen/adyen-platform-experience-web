@@ -125,6 +125,7 @@
     "postcss": "^8.3.11",
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^5.9.0",
+    "run-con": "^1.2.11",
     "sass": "^1.77.6",
     "sass-loader": "^12.3.0",
     "storybook": "8.6.4",
