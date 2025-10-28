@@ -137,7 +137,7 @@ export const DefendDisputeReason = () => {
     const defendDisputeLabel = useMemo(
         () =>
             isRequestForInformation
-                ? i18n.get('disputes.management.defend.rfi.selectDefenseReason')
+                ? i18n.get('disputes.management.defend.requestForInformation.selectDefenseReason')
                 : i18n.get('disputes.management.defend.chargeback.selectDefenseReason'),
         [i18n, isRequestForInformation]
     );
