@@ -5,11 +5,11 @@ import { StepperProps } from './types';
 import { Step } from './Step';
 import './Stepper.scss';
 
-export const Stepper = ({ index, onChange, variant = 'vertical', children, nextStepDisabled, ariaLabel }: StepperProps) => {
-    const [latestActiveStep, setLatestActiveStep] = useState(index);
+export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children, nextStepDisabled, ariaLabel }: StepperProps) => {
+    const [latestActiveStep, setLatestActiveStep] = useState(activeIndex);
     const listRef = useRef<HTMLOListElement>(null);
     const stepRefs = useRef<(HTMLButtonElement | null)[]>([]);
-    const [focusedStep, setFocusedStep] = useState(index);
+    const [focusedStep, setFocusedStep] = useState(activeIndex);
 
     const steps = useMemo(() => {
         const childrenArray = Array.isArray(children) ? children : [children];
@@ -20,10 +20,10 @@ export const Stepper = ({ index, onChange, variant = 'vertical', children, nextS
     const isHorizontal = variant === 'horizontal';
 
     useEffect(() => {
-        if (index > latestActiveStep) {
-            setLatestActiveStep(index);
+        if (activeIndex > latestActiveStep) {
+            setLatestActiveStep(activeIndex);
         }
-    }, [index, latestActiveStep]);
+    }, [activeIndex, latestActiveStep]);
 
     const canActivate = useCallback(
         (nextIndex: number) => {
@@ -116,8 +116,8 @@ export const Stepper = ({ index, onChange, variant = 'vertical', children, nextS
                         totalSteps={totalSteps}
                         key={stepIndex}
                         index={stepIndex}
-                        active={stepIndex === index}
-                        completed={stepIndex < index}
+                        active={stepIndex === activeIndex}
+                        completed={stepIndex < activeIndex}
                         disabled={!canActivate(stepIndex)}
                         onClick={() => handleStepClick(stepIndex)}
                         ref={(el: any) => {

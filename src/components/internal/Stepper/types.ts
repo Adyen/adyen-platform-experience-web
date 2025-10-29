@@ -3,7 +3,7 @@ import { ComponentChildren } from 'preact';
 export type StepperVariant = 'vertical' | 'horizontal';
 
 export interface StepperProps {
-    index: number;
+    activeIndex: number;
     onChange: (index: number) => void;
     variant?: StepperVariant;
     children: ComponentChildren;
@@ -17,6 +17,6 @@ export interface StepProps {
     completed: boolean;
     disabled: boolean;
     onClick: () => void;
-    children: any;
+    children: ComponentChildren;
     totalSteps: number;
 }
