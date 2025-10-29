@@ -18,7 +18,12 @@ const DISABLED_STEP_ITEM_CLASS = 'adyen-pe-step__item adyen-pe-step--disabled';
 
 const TEST_ARIA_LABEL = 'Test Aria Label';
 
-const renderStepper = (props: { index: number; onChange: ReturnType<typeof vi.fn>; variant?: 'vertical' | 'horizontal'; ariaLabel?: string }) => {
+const renderStepper = (props: {
+    activeIndex: number;
+    onChange: ReturnType<typeof vi.fn>;
+    variant?: 'vertical' | 'horizontal';
+    ariaLabel?: string;
+}) => {
     return render(
         <Stepper {...props} ariaLabel={props.ariaLabel || TEST_ARIA_LABEL} data-testid="stepper">
             {DEFAULT_STEPS.map(step => (
@@ -41,7 +46,7 @@ describe('Stepper', () => {
 
     test('renders correctly with three steps', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         expect(screen.getByText('Step 1')).toBeInTheDocument();
         expect(screen.getByText('Step 2')).toBeInTheDocument();
@@ -52,7 +57,7 @@ describe('Stepper', () => {
 
     test('shows first step as active by default', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const step1Button = screen.getByRole('button', { name: 'step: Step 1' });
 
@@ -66,7 +71,7 @@ describe('Stepper', () => {
 
     test('shows completed steps correctly', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 1, onChange: mockOnChange });
+        renderStepper({ activeIndex: 1, onChange: mockOnChange });
 
         // Check the second step is active
         const step2Button = screen.getByRole('button', { name: 'step: Step 2' });
@@ -80,7 +85,7 @@ describe('Stepper', () => {
 
     test('prevents activating future steps in linear behavior', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const step3Button = screen.getByRole('button', { name: 'step: Step 3' });
 
@@ -95,7 +100,7 @@ describe('Stepper', () => {
 
     test('calls onChange when clicking on allowed steps', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const step2 = screen.getByRole('button', { name: 'step: Step 2' });
         fireEvent.click(step2);
@@ -104,7 +109,7 @@ describe('Stepper', () => {
 
     test('does not call onChange when clicking on disabled steps', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const step3 = screen.getByRole('button', { name: 'step: Step 3' });
         fireEvent.click(step3);
@@ -113,7 +118,7 @@ describe('Stepper', () => {
 
     test('focuses on next step using arrow keys', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange, variant: 'vertical' });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'vertical' });
 
         const list = screen.getByRole('list');
         const step1 = screen.getByRole('button', { name: 'step: Step 1' });
@@ -130,7 +135,7 @@ describe('Stepper', () => {
 
     test('focuses on previous step using arrow keys', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 1, onChange: mockOnChange, variant: 'vertical' });
+        renderStepper({ activeIndex: 1, onChange: mockOnChange, variant: 'vertical' });
 
         const list = screen.getByRole('list');
         const step1 = screen.getByRole('button', { name: 'step: Step 1' });
@@ -145,7 +150,7 @@ describe('Stepper', () => {
 
     test('activates focused step using Enter key', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
         const step2 = screen.getByRole('button', { name: 'step: Step 2' });
@@ -158,7 +163,7 @@ describe('Stepper', () => {
 
     test('activates focused step using Space key', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
         const step2 = screen.getByRole('button', { name: 'step: Step 2' });
@@ -171,7 +176,7 @@ describe('Stepper', () => {
 
     test('does not activate disabled step using Enter key', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
         const step3 = screen.getByRole('button', { name: 'step: Step 3' });
@@ -184,7 +189,7 @@ describe('Stepper', () => {
 
     test('applies horizontal variant class', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange, variant: 'horizontal' });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'horizontal' });
 
         const list = screen.getByRole('list');
         expect(list).toHaveClass('adyen-pe-stepper__list--horizontal');
@@ -192,7 +197,7 @@ describe('Stepper', () => {
 
     test('uses horizontal arrow keys for horizontal variant', () => {
         const mockOnChange = vi.fn();
-        renderStepper({ index: 0, onChange: mockOnChange, variant: 'horizontal' });
+        renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'horizontal' });
 
         const list = screen.getByRole('list');
         const step1 = screen.getByRole('button', { name: 'step: Step 1' });
