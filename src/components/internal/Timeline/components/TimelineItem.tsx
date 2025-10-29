@@ -1,8 +1,8 @@
 import { ComponentChildren } from 'preact';
-import { useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'preact/hooks';
+import { useContext, useLayoutEffect, useMemo, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { TimelineContext } from '../context';
-import { DateUnit, TimelineDataList, TimelineEntry, TimelineStatus, TimelineTagProps, TimelineTimestamp } from '../types';
+import { TimelineDateUnit, TimelineDataList, TimelineStatus, TimelineTagProps, TimelineTimestamp } from '../types';
 import { DateText, formatDistanceStrict } from './DateText';
 import Button from '../../Button';
 import { ButtonVariant } from '../../Button/types';
@@ -16,7 +16,7 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../translations';
 import useUniqueId from '../../../../hooks/useUniqueId';
 
-const UNIT_TRANSLATION_KEYS: Record<DateUnit, TranslationKey> = {
+const UNIT_TRANSLATION_KEYS: Record<TimelineDateUnit, TranslationKey> = {
     day: 'common.timeline.timelineItem.timeGap.unit.day',
 };
 
@@ -139,7 +139,7 @@ export function TimelineItem({ dataList = null, description = null, status = 'bl
 
                     {timestamp && (
                         <Typography className="adyen-pe-timeline-item__timestamp" el={TypographyElement.DIV} variant={TypographyVariant.CAPTION}>
-                            <DateText date={timestamp.date} format={timestamp.format} />
+                            <DateText date={timestamp.date} format={timestamp.format} timezone={timestamp.timezone} />
                             {timestamp.value && ` ${timestamp.value}`}
                         </Typography>
                     )}
