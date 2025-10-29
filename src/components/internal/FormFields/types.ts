@@ -1,7 +1,16 @@
 import { ComponentChildren, JSX } from 'preact';
 import { TargetedEvent } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
-import AriaRole = JSXInternal.AriaRole;
+import { SelectItem } from './Select/types';
+
+export type InputFieldElementPosition = 'start' | 'end';
+
+export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
+    'aria-label'?: string;
+    dynamicFiltering?: boolean;
+    items: readonly T[];
+    readonly?: boolean;
+    value?: T['id'] | readonly T['id'][];
+}
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
@@ -28,7 +37,7 @@ export interface InputBaseProps {
     value?: any;
     maxLength?: number;
     required?: boolean;
-    role?: AriaRole;
+    role?: JSX.HTMLAttributes<HTMLInputElement>['role'];
     min?: number;
     errorMessage?: string;
     lang?: HTMLInputElement['lang'];
@@ -36,4 +45,8 @@ export interface InputBaseProps {
     iconAfter?: ComponentChildren;
     iconBeforeInteractive?: boolean;
     iconAfterInteractive?: boolean;
+    dropdown?: InputFieldDropdownProps;
+    dropdownPosition?: InputFieldElementPosition;
+    onDropdownInput?: (selectedValue: any) => void;
+    onUpdateDropdown?: (updatedDropdownProps: InputFieldDropdownProps) => void;
 }
