@@ -111,7 +111,7 @@ function InputBase(
                             className={classNames('adyen-pe-input__icon-before', {
                                 'adyen-pe-input__icon-before--interactive': iconBeforeInteractive,
                             })}
-                            aria-hidden="true"
+                            {...(!iconBeforeInteractive && { 'aria-hidden': 'true' })}
                         >
                             {iconBefore}
                         </span>
@@ -122,7 +122,7 @@ function InputBase(
                             className={classNames('adyen-pe-input__icon-after', {
                                 'adyen-pe-input__icon-after--interactive': iconAfterInteractive,
                             })}
-                            aria-hidden="true"
+                            {...(!iconAfterInteractive && { 'aria-hidden': 'true' })}
                         >
                             {iconAfter}
                         </span>
