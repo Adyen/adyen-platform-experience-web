@@ -50,7 +50,7 @@ describe('SearchBar', () => {
 
         render(<SearchBar value="Test" onClear={handleClear} onInput={handleInput} debounceTime={0} />);
 
-        const button = screen.getByRole('button', { name: 'Clear search', hidden: true });
+        const button = screen.getByRole('button', { name: 'Clear search' });
         expect(screen.getByRole('searchbox')).toHaveValue('Test');
 
         fireEvent.click(button);
@@ -114,7 +114,7 @@ describe('SearchBar', () => {
         fireEvent.input(input, { target: { value: 'Test' } });
 
         // Click clear before debounce completes
-        const clearButton = screen.getByRole('button', { name: 'Clear search', hidden: true });
+        const clearButton = screen.getByRole('button', { name: 'Clear search' });
         fireEvent.click(clearButton);
 
         // Advance time
@@ -130,11 +130,11 @@ describe('SearchBar', () => {
     test('shows clear button after typing into empty input', async () => {
         render(<SearchBar />);
 
-        expect(screen.queryByRole('button', { name: 'Clear search', hidden: true })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Clear search' })).not.toBeInTheDocument();
 
         fireEvent.input(screen.getByRole('searchbox'), { target: { value: 'New text' } });
 
-        const button = screen.getByRole('button', { name: 'Clear search', hidden: true });
+        const button = screen.getByRole('button', { name: 'Clear search' });
         expect(button).toBeInTheDocument();
     });
 });

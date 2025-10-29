@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { forwardRef, TargetedEvent } from 'preact/compat';
 import { JSX } from 'preact';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import InputBase from '../FormFields/InputBase';
 import { InputBaseProps } from '../FormFields/types';
@@ -76,6 +76,10 @@ export const SearchBar = forwardRef<SearchBarRef, SearchBarProps>(
         const focus = useCallback(() => {
             inputRef.current?.focus();
         }, []);
+
+        useImperativeHandle(ref, () => ({
+            focus,
+        }));
 
         useEffect(() => {
             if (value !== undefined) {
