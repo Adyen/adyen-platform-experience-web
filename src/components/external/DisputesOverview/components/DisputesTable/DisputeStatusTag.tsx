@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { DISPUTE_STATUSES } from '../../../../utils/disputes/constants';
+import { getDisputeStatus } from '../../../../utils/translation/getters';
 import { IDispute, IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
 import { Tag } from '../../../../internal/Tag/Tag';
@@ -9,7 +9,7 @@ import { PropsWithChildren } from 'preact/compat';
 
 const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeListItem | IDispute }>) => {
     const { i18n } = useCoreContext();
-    const disputeStatus = useMemo(() => i18n.get(DISPUTE_STATUSES[dispute.status]), [i18n, dispute]);
+    const disputeStatus = useMemo(() => getDisputeStatus(i18n, dispute.status), [i18n, dispute]);
 
     const variant = useMemo<TagVariant>(() => {
         if (dispute.status === 'WON') return TagVariant.SUCCESS;

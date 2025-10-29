@@ -45,6 +45,8 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
      */
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 
+    analytics?: AnalyticsConfig;
+
     /**
      * @internal
      */
@@ -57,3 +59,6 @@ export interface CoreOptions<AvailableTranslations extends TranslationSourceReco
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
 export type onErrorHandler = (error: Error) => any;
+export type AnalyticsConfig = {
+    enabled?: boolean;
+};

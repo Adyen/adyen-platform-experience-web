@@ -43,6 +43,8 @@ import { ButtonVariant } from '../../../internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
 import { PayoutDetailsCustomization } from '../types';
+import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '../../../utils/translation/getters';
+import { TranslationFactoryFunction } from '../../../utils/translation/factory';
 
 export const PayoutData = ({
     balanceAccountId,
@@ -69,7 +71,7 @@ export const PayoutData = ({
                     const targetObj = accumulator[amount && amount < 0 ? 'subtractions' : 'additions'];
 
                     targetObj.push({
-                        key: `payouts.details.breakdown.adjustments.types.${currentValue.category}` as TranslationKey,
+                        key: currentValue.category as TranslationKey,
                         value: i18n.amount(amount, currency, { hideCurrency: true }),
                     });
                 }
@@ -88,7 +90,7 @@ export const PayoutData = ({
                 if (breakdown?.amount?.value === 0) return items;
                 if (breakdown?.amount?.value && breakdown.category) {
                     items.push({
-                        key: `payouts.details.breakdown.fundsCaptured.types.${breakdown.category}` as TranslationKey,
+                        key: breakdown.category as TranslationKey,
                         value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
                     });
                 }
@@ -97,13 +99,30 @@ export const PayoutData = ({
             [] as { key: TranslationKey; value: ListValue }[]
         );
         data?.sort((a, b) => {
-            const captureType = 'payouts.details.breakdown.fundsCaptured.types.capture';
+            const captureType = 'capture' as TranslationKey;
             if (a.key === captureType) return -1;
             if (b.key === captureType) return 1;
             return a.key.localeCompare(b.key);
         });
         return data;
     }, [payoutData, i18n]);
+
+    const { payoutAdjustmentTypeLabelRenderer, payoutFundsCapturedTypeLabelRenderer } = useMemo(() => {
+        const payoutBreakdownTypeLabelRenderer =
+            (translationFn: TranslationFactoryFunction): StructuredListProps['renderLabel'] =>
+            (_, type) => {
+                return (
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                        {translationFn(i18n, type)}
+                    </Typography>
+                );
+            };
+
+        return {
+            payoutAdjustmentTypeLabelRenderer: payoutBreakdownTypeLabelRenderer(getPayoutAdjustmentType),
+            payoutFundsCapturedTypeLabelRenderer: payoutBreakdownTypeLabelRenderer(getPayoutFundsCapturedType),
+        } as const;
+    }, [i18n]);
 
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
@@ -224,7 +243,7 @@ export const PayoutData = ({
                                             {
                                                 <div className={PD_CARD_CLASS}>
                                                     <Card noPadding>
-                                                        <StructuredList items={fundsCaptured} />
+                                                        <StructuredList items={fundsCaptured} renderLabel={payoutFundsCapturedTypeLabelRenderer} />
                                                     </Card>
                                                 </div>
                                             }
@@ -266,7 +285,7 @@ export const PayoutData = ({
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.additions} />
+                                                <StructuredList items={adjustments?.additions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
                                             </Card>
                                         </div>
                                     )}
@@ -280,7 +299,7 @@ export const PayoutData = ({
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.subtractions} />
+                                                <StructuredList items={adjustments?.subtractions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
                                             </Card>
                                         </div>
                                     )}

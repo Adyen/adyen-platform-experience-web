@@ -1,5 +1,5 @@
 import Localization from './Localization';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import { es_ES, TranslationKey } from '../../core';
 
 describe('Localization', () => {
@@ -82,6 +82,64 @@ describe('Localization', () => {
 
             lang.ready.then(() => {
                 expect(lang.get(translationKey)).toBe(translationKey);
+            });
+        });
+
+        describe('backward compatibility with swapConfig', () => {
+            test('returns custom translation when user provides old key that maps to new key', async () => {
+                const lang = new Localization('en-US');
+
+                // User provides translation using the old key "contactSupport"
+                lang.customTranslations = {
+                    'en-US': {
+                        contactSupport: 'Call us now',
+                    } as unknown as Record<TranslationKey, string>,
+                };
+
+                await lang.ready;
+
+                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
+                expect(result).toBe('Call us now');
+            });
+
+            test('returns translation normally when new key is used', async () => {
+                const lang = new Localization('en-US');
+
+                // User provides translation using the new key
+                lang.customTranslations = {
+                    'en-US': {
+                        'capital.common.actions.contactSupport': 'Get help now',
+                    },
+                };
+
+                await lang.ready;
+
+                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
+                expect(result).toBe('Get help now');
+            });
+
+            test('does not check swapConfig for 1:1 mappings', async () => {
+                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+                const lang = new Localization('en-US');
+
+                // "capital.actionNeeded" maps to itself in swapConfig (1:1 mapping)
+                lang.customTranslations = {
+                    'en-US': {
+                        ['capital.actionNeeded' as TranslationKey]: 'Action Required',
+                    },
+                };
+
+                await lang.ready;
+
+                const result = lang.get('capital.actionNeeded' as TranslationKey);
+
+                // Should return the custom translation
+                expect(result).toBe('Action Required');
+
+                // Should not emit deprecation warning for 1:1 mappings
+                expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+                consoleWarnSpy.mockRestore();
             });
         });
     });
