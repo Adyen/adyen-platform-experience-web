@@ -131,15 +131,6 @@
         }
     }
 
-    /* stylelint-disable selector-no-qualifying-type */
-    // Hide native search input clear button
-    &__container > input[type='search']::-webkit-search-cancel-button,
-    &__container > input[type='search']::-webkit-search-decoration {
-        -webkit-appearance: none;
-        appearance: none;
-    }
-    /* stylelint-enable selector-no-qualifying-type */
-
     &__icon-before {
         color: style.token(color-icon-secondary);
         display: flex;

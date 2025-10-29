@@ -27,8 +27,6 @@ export const debounce = <T extends (...args: any[]) => any>(func: T, delay: numb
         timeoutId = setTimeout(() => {
             if (lastArgs) {
                 func(...lastArgs);
-            } else {
-                func();
             }
             lastArgs = undefined;
         }, delay);
