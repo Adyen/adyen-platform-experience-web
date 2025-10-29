@@ -1,4 +1,4 @@
-import { enumerable, getter, isUndefined, noop, struct } from '../../../utils';
+import { boolOrFalse, enumerable, getter, isUndefined, noop, struct } from '../../../utils';
 import type { Abortable } from './types';
 
 export const createAbortable = <T>(abortReason?: T) => {
@@ -37,7 +37,8 @@ export const createAbortable = <T>(abortReason?: T) => {
         return _abortPromise;
     };
 
-    const _refreshIfNecessary = () => {
+    const _refreshIfNecessary = (abort = false) => {
+        if (boolOrFalse(abort)) _abort();
         if (isUndefined(_abortController)) {
             _abortController = new AbortController();
             _abortSignal = _abortController.signal;
