@@ -1,7 +1,6 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS_MOBILE } from '../../../../../constants';
-import Category from '../Category/Category';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getCurrencyCode } from '../../../../../core/Localization/amount/amount-util';
@@ -9,8 +8,10 @@ import { TranslationKey } from '../../../../../translations';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import DataGrid from '../../../../internal/DataGrid';
 import Pagination from '../../../../internal/Pagination';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
+import { getTransactionCategoryDescription, getTransactionCategory } from '../../../../utils/translation/getters';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
@@ -105,28 +106,32 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                 emptyTableMessage={EMPTY_TABLE_MESSAGE}
                 customCells={{
                     // Remove status column temporarily
-                    /* status: ({ value }) => {
-                        return (
-                            <Tag
-                                label={i18n.get(`transactions.common.statuses.${value}`)}
-                                variant={value === 'Booked' ? TagVariant.SUCCESS : value === 'Reversed' ? TagVariant.ERROR : TagVariant.DEFAULT}
-                            />
-                        );
-                    },*/
-
+                    // status: ({ item }) => {
+                    //     return (
+                    //         <Tag
+                    //             label={getTransactionStatus(i18n, item.status)}
+                    //             variant={getTagVariantForTransaction(item)}
+                    //         />
+                    //     );
+                    // },
                     transactionType: ({ item, rowIndex }) => {
-                        const tooltipKey = `transactions.common.types.${item.category}.description` satisfies TranslationKey;
-                        return item.category ? (
-                            i18n.has(tooltipKey) ? (
-                                <Category isContainerHovered={rowIndex === hoveredRow} value={item.category} />
-                            ) : (
+                        const category = getTransactionCategory(i18n, item.category);
+                        if (category) {
+                            const tooltip = getTransactionCategoryDescription(i18n, item.category);
+                            const renderCategory = () => (
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                                    {i18n.has(`transactions.common.types.${item.category}`)
-                                        ? i18n.get(`transactions.common.types.${item.category}`)
-                                        : `${item.category}`}
+                                    {category}
                                 </Typography>
-                            )
-                        ) : null;
+                            );
+                            return tooltip ? (
+                                <Tooltip content={tooltip} isContainerHovered={rowIndex === hoveredRow}>
+                                    <span>{renderCategory()}</span>
+                                </Tooltip>
+                            ) : (
+                                renderCategory()
+                            );
+                        }
+                        return null;
                     },
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
@@ -158,7 +163,6 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                             </time>
                         );
                     },
-
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} bankAccount={item.bankAccount} />,
                 }}
             >

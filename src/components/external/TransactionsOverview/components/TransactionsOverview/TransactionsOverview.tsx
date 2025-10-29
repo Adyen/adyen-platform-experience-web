@@ -104,7 +104,7 @@ export const TransactionsOverview = ({
             filters,
             updateFilters: e => {
                 if (hasOwnProperty(e, 'categories') && e.categories !== filters[FilterParam.CATEGORIES]) {
-                    userEvents.addModifyFilterEvent({
+                    userEvents.addModifyFilterEvent?.({
                         actionType: 'update',
                         label: 'Category filter',
                         value: e[FilterParam.CATEGORIES],
@@ -112,7 +112,7 @@ export const TransactionsOverview = ({
                     });
                 }
                 if (hasOwnProperty(e, 'currencies') && e.currencies !== filters[FilterParam.CURRENCIES]) {
-                    userEvents.addModifyFilterEvent({
+                    userEvents.addModifyFilterEvent?.({
                         actionType: 'update',
                         label: 'Currency filter',
                         value: e[FilterParam.CURRENCIES],
@@ -126,7 +126,7 @@ export const TransactionsOverview = ({
     );
 
     useEffect(() => {
-        userEvents.addEvent('Landed on page', {
+        userEvents.addEvent?.('Landed on page', {
             category: 'PIE components',
             subCategory: 'Transactions overview',
         });
@@ -182,7 +182,7 @@ export const TransactionsOverview = ({
     const onRowClick = useCallback(
         ({ id, category }: ITransaction) => {
             if (category) {
-                userEvents.addEvent('Viewed transaction details', {
+                userEvents.addEvent?.('Viewed transaction details', {
                     transactionType: category,
                     category: 'Transaction component',
                     subCategory: 'Transaction details',
@@ -202,7 +202,7 @@ export const TransactionsOverview = ({
 
     const onResetAction = useCallback(
         (type: FilterType) => {
-            userEvents.addModifyFilterEvent({
+            userEvents.addModifyFilterEvent?.({
                 actionType: 'reset',
                 label: type,
                 category: 'Transaction component',
@@ -243,7 +243,7 @@ export const TransactionsOverview = ({
                     timezone={activeBalanceAccount?.timeZone}
                     updateFilters={e => {
                         if (e?.createdSince !== filters[FilterParam.CREATED_SINCE] || e?.createdUntil !== filters[FilterParam.CREATED_UNTIL]) {
-                            userEvents.addModifyFilterEvent({
+                            userEvents.addModifyFilterEvent?.({
                                 actionType: 'update',
                                 label: 'Date filter',
                                 category: 'Transaction component',
@@ -271,7 +271,7 @@ export const TransactionsOverview = ({
                     updateFilters={e => {
                         const hasValue = e?.maxAmount || e?.minAmount;
                         if (hasValue && (e?.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e?.minAmount !== filters[FilterParam.MIN_AMOUNT])) {
-                            userEvents.addModifyFilterEvent({
+                            userEvents.addModifyFilterEvent?.({
                                 actionType: 'update',
                                 label: 'Amount filter',
                                 category: 'Transaction component',
