@@ -29,6 +29,9 @@ import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData'
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
+import { TimelineItem } from '../../../../internal/Timeline/components/TimelineItem';
+import Timeline from '../../../../internal/Timeline/Timeline';
+import { TimelineDateFormat } from '../../../../internal/Timeline/types';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -289,6 +292,55 @@ export const TransactionsOverview = ({
                     placeholder={i18n.get('transactions.overview.filters.types.currency.label')}
                 />
             </FilterBar>
+            <Timeline showMore={{ limit: 4, placement: 'before-last' }} timeGapLimit={{ thresholdAmount: 5, unit: 'day' }}>
+                <TimelineItem
+                    title="Payment received"
+                    timestamp={{
+                        date: new Date(),
+                        value: 'Completed at',
+                        format: TimelineDateFormat.FULL_DATE_EXACT_TIME,
+                        timezone: activeBalanceAccount?.timeZone,
+                    }}
+                    description="Payment of €250.00 received from customer"
+                    dataList={[
+                        { label: 'Transaction ID', value: 'TXN-98765', key: 'common.actions.apply.labels.default' },
+                        { label: 'Amount', value: '€250.00', key: 'common.actions.apply.labels.default' },
+                        { label: 'Payment Method', value: 'Credit Card', key: 'common.actions.apply.labels.default' },
+                    ]}
+                    tag={{ label: 'Completed' }}
+                    status={'green'}
+                />
+                <TimelineItem timestamp={{ date: new Date(Date.now() - 3600000) }} description="Customer requested invoice copy" />
+                <TimelineItem
+                    title="Order shipped"
+                    timestamp={{ date: new Date(Date.now() - 86400000), value: 'Shipped at', timezone: activeBalanceAccount?.timeZone }}
+                    description="Order shipped"
+                    status={'blue'}
+                />
+                <TimelineItem
+                    title="Order processing"
+                    timestamp={{ date: new Date(Date.now() - 2 * 86400000), value: 'Started at' }}
+                    description="Order is being prepared for shipment"
+                    status={'yellow'}
+                />
+                <TimelineItem
+                    title="Order placed"
+                    timestamp={{ date: new Date(Date.now() - 10 * 86400000), value: 'Placed at' }}
+                    description="Customer placed order #12345"
+                    dataList={[
+                        { label: 'Order ID', value: '12345', key: 'common.actions.apply.labels.default' },
+                        { label: 'Items', value: '3', key: 'common.actions.apply.labels.default' },
+                        { label: 'Total', value: '€250.00', key: 'common.actions.apply.labels.default' },
+                    ]}
+                    status={'black'}
+                />
+                <TimelineItem
+                    title="Account created"
+                    timestamp={{ date: new Date(Date.now() - 30 * 86400000), value: 'Created at' }}
+                    description="New customer account created"
+                    status={'grey'}
+                />
+            </Timeline>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>
                     <TransactionTotals

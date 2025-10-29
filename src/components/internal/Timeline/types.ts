@@ -17,7 +17,7 @@ export interface TimelineGapObject {
 
 export type TimelineStatus = 'black' | 'blue' | 'green' | 'red' | 'grey' | 'orange' | 'yellow';
 
-export enum DateFormat {
+export enum TimelineDateFormat {
     FULL_DATE = 'full-date',
     FULL_DATE_EXACT_TIME = 'full-date-exact-time',
     FULL_DATE_EXACT_TIME_WITHOUT_PERIOD = 'full-date-exact-time-without-period',
@@ -27,8 +27,9 @@ export enum DateFormat {
 
 export interface TimelineTimestamp {
     date: Date;
-    format?: DateFormat;
+    format?: TimelineDateFormat;
     value?: string;
+    timezone?: string;
 }
 
 export interface TimelineDataListObject {
@@ -47,4 +48,4 @@ export interface TimelineEntry {
     date: Date;
 }
 
-export type DateUnit = 'day';
+export type TimelineDateUnit = 'day';

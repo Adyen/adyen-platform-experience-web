@@ -1,22 +1,23 @@
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import { DateFormat, DateUnit } from '../types';
+import { TimelineDateFormat, TimelineDateUnit } from '../types';
+import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 
 interface DateTextProps {
     date: Date;
-    format?: DateFormat;
+    format?: TimelineDateFormat;
+    timezone?: string;
 }
 
-function getDateFormatOptions(format?: DateFormat): Intl.DateTimeFormatOptions {
+function getDateFormatOptions(format?: TimelineDateFormat): Intl.DateTimeFormatOptions {
     switch (format) {
-        case DateFormat.FULL_DATE:
+        case TimelineDateFormat.FULL_DATE:
             return {
                 year: 'numeric',
                 month: 'short',
                 day: 'numeric',
             };
-        case DateFormat.FULL_DATE_EXACT_TIME:
-        case DateFormat.FULL_DATE_EXACT_TIME_WITHOUT_PERIOD:
+        case TimelineDateFormat.FULL_DATE_EXACT_TIME:
+        case TimelineDateFormat.FULL_DATE_EXACT_TIME_WITHOUT_PERIOD:
             return {
                 year: 'numeric',
                 month: 'short',
@@ -26,13 +27,13 @@ function getDateFormatOptions(format?: DateFormat): Intl.DateTimeFormatOptions {
                 second: '2-digit',
                 hour12: false,
             };
-        case DateFormat.SHORT_DATE:
+        case TimelineDateFormat.SHORT_DATE:
             return {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
             };
-        case DateFormat.SHORT_DATE_TIME:
+        case TimelineDateFormat.SHORT_DATE_TIME:
             return {
                 year: 'numeric',
                 month: '2-digit',
@@ -54,18 +55,23 @@ function getDateFormatOptions(format?: DateFormat): Intl.DateTimeFormatOptions {
     }
 }
 
-export function DateText({ date, format }: DateTextProps) {
-    const { i18n } = useCoreContext();
+export function DateText({ date, format, timezone }: DateTextProps) {
+    const { dateFormat } = useTimezoneAwareDateFormatting(timezone);
 
     const formattedDate = useMemo(() => {
         const options = getDateFormatOptions(format);
-        return i18n.date(date, options);
-    }, [date, format, i18n]);
+
+        return dateFormat(date, options);
+    }, [date, dateFormat, format]);
 
     return <>{formattedDate}</>;
 }
 
-export function formatDistanceStrict(dateLeft: Date, dateRight: Date, options: { unit: DateUnit }): { value: number; unit: DateUnit } {
+export function formatDistanceStrict(
+    dateLeft: Date,
+    dateRight: Date,
+    options: { unit: TimelineDateUnit }
+): { value: number; unit: TimelineDateUnit } {
     const leftTime = dateLeft.getTime();
     const rightTime = dateRight.getTime();
     const diffMs = Math.abs(leftTime - rightTime);
@@ -76,7 +82,7 @@ export function formatDistanceStrict(dateLeft: Date, dateRight: Date, options: {
     const day = hour * 24;
 
     let value: number;
-    let unit: DateUnit;
+    let unit: TimelineDateUnit;
 
     // TODO - Add more supported units
     switch (options.unit) {
