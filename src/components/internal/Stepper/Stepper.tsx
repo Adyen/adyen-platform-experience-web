@@ -44,6 +44,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
     );
 
     const focusStep = useCallback((stepIndex: number) => {
+        setFocusedStep(stepIndex);
         const stepElement = stepRefs.current[stepIndex];
         if (stepElement) {
             stepElement.focus();
@@ -53,14 +54,12 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
     const focusNext = useCallback(() => {
         const nextIndex = Math.min(focusedStep + 1, totalSteps - 1);
         if (canActivate(nextIndex)) {
-            setFocusedStep(nextIndex);
             focusStep(nextIndex);
         }
     }, [canActivate, focusStep, focusedStep, totalSteps]);
 
     const focusPrev = useCallback(() => {
         const prevIndex = Math.max(focusedStep - 1, 0);
-        setFocusedStep(prevIndex);
         focusStep(prevIndex);
     }, [focusStep, focusedStep]);
 
