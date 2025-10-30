@@ -34,6 +34,12 @@ expect(result).toEqual(['04:10 PM', '']);
 - Only mock external dependencies, not internal utilities
 - Use `vi.mocked()` for typed mocks instead of casting to `any`
 
+### Code Style
+
+- Use consistent formatting with trailing commas
+- Simple arrays stay inline, complex ones get expanded
+- Keep variable names descriptive and purpose-driven
+
 ## Query Priority (Testing Library)
 
 1. `getByRole` - Best for accessibility
@@ -62,13 +68,13 @@ Use `vi.mocked()` instead of casting to `any` for:
 
 ### When writing tests for hooks
 
-1. Always follow `.agents/testing-hooks-guide.md`
+1. Always follow `.agents/testing/unit-tests/hooks_testing_guidelines.md`
 2. Complete the analysis phase before writing any tests
 3. Wait for user confirmation after analysis
 
 ### When writing tests for components
 
-1. Always follow `.agents/testing-components-guide.md`
+1. Always follow `.agents/testing/unit-tests/components_testing_guidelines.md`
 
 ### After tests are complete
 
@@ -107,7 +113,18 @@ Recommended: Accept X% coverage because [reasoning]
 
 ## Coverage Requirements
 
-- 85% minimum coverage
 - Focus on behavior coverage, not just line coverage
 - Accept build artifact gaps (HMR, source maps)
-- If coverage is less than 80%, iterate
+- If coverage is less than 80% for the file being tested, iterate
+
+## Quality Checklist
+
+- Analysis phase completed and confirmed
+- All assertions use concrete values (no typeof, toMatch, toContain)
+- Testing behavior, not implementation
+- Common setup in beforeEach, test-specific constants in test functions
+- Edge cases covered with concrete expectations
+- Async operations properly awaited
+- Mocks cleared between tests
+- Try to cover more with fewer and more precise tests. Avoid having too many tests if it is not increasing the coverage.
+- Follow the best practices from Vitest and @testing-library/preact

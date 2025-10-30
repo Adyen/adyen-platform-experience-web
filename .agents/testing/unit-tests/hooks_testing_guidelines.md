@@ -162,7 +162,7 @@ describe('useHook', () => {
         vi.useFakeTimers();
         vi.setSystemTime(1703520645123);
         vi.clearAllMocks();
-        mockUseCoreContext.mockReturnValue({ i18n: new Localization().i18n } as any);
+        mockUseCoreContext.mockReturnValue({ i18n: new Localization().i18n });
     });
 
     afterEach(() => {
@@ -195,20 +195,3 @@ test('should handle nullish timezones gracefully', () => {
     expect(noParamResult.current.value).toBe(expectedFormat);
 });
 ```
-
-### Code Style
-
-- Use consistent formatting with trailing commas
-- Simple arrays stay inline, complex ones get expanded
-- Keep variable names descriptive and purpose-driven
-
-## Quality Checklist
-
-- Analysis phase completed and confirmed
-- All assertions use concrete values (no typeof, toMatch, toContain)
-- Testing behavior, not implementation
-- Common setup in beforeEach, test-specific constants in test functions
-- Edge cases covered with concrete expectations
-- Async operations properly awaited
-- Mocks cleared between tests
-- Coverage meets 85% minimum
