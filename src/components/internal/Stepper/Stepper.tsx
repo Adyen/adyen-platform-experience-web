@@ -75,20 +75,28 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
         (event: KeyboardEvent) => {
             switch (event.code) {
                 case InteractionKeyCode.ARROW_RIGHT:
-                    event.preventDefault();
-                    isHorizontal && focusNext();
+                    if (isHorizontal) {
+                        event.preventDefault();
+                        focusNext();
+                    }
                     break;
                 case InteractionKeyCode.ARROW_LEFT:
-                    event.preventDefault();
-                    isHorizontal && focusPrev();
+                    if (isHorizontal) {
+                        event.preventDefault();
+                        focusPrev();
+                    }
                     break;
                 case InteractionKeyCode.ARROW_DOWN:
-                    event.preventDefault();
-                    !isHorizontal && focusNext();
+                    if (!isHorizontal) {
+                        event.preventDefault();
+                        focusNext();
+                    }
                     break;
                 case InteractionKeyCode.ARROW_UP:
-                    event.preventDefault();
-                    !isHorizontal && focusPrev();
+                    if (!isHorizontal) {
+                        event.preventDefault();
+                        focusPrev();
+                    }
                     break;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
@@ -101,7 +109,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
     );
 
     return (
-        <nav className="adyen-pe-stepper">
+        <div className="adyen-pe-stepper">
             <ol
                 aria-label={ariaLabel}
                 ref={listRef}
@@ -129,6 +137,6 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                     </Step>
                 ))}
             </ol>
-        </nav>
+        </div>
     );
 };
