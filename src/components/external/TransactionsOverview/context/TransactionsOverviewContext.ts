@@ -15,7 +15,8 @@ export interface ITransactionsOverviewContext {
     balances: Readonly<{ [k: string]: Readonly<{ available: number }> }>;
     currencies: readonly string[];
     currentView: TransactionsOverviewSplitView;
-    logModifyFilterEvent: <T extends MixpanelProperty>(label: FilterType, value: T) => void;
+    logModifyFilterEvent(label: FilterType, actionType: 'reset'): void;
+    logModifyFilterEvent(label: FilterType, actionType: 'update', value: MixpanelProperty): void;
     setBalanceAccount: (balanceAccount: IBalanceAccountBase | undefined) => void;
 }
 

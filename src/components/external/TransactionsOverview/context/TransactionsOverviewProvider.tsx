@@ -4,6 +4,7 @@ import useAccountBalances from '../hooks/useAccountBalances';
 import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
 import TransactionsOverviewContext, { ITransactionsOverviewContext, TransactionsOverviewSplitView } from './TransactionsOverviewContext';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../types';
+import { FilterType, MixpanelProperty } from '../../../../core/Analytics/analytics/user-events';
 import { IBalanceAccountBase } from '../../../../types';
 
 export type TransactionOverviewProviderProps = PropsWithChildren<
@@ -22,17 +23,17 @@ export default function TransactionsOverviewProvider({ balanceAccounts, children
     const { balances, currencies } = useAccountBalances(balanceAccount);
     const userEvents = useAnalyticsContext();
 
-    const logModifyFilterEvent = useCallback<ITransactionsOverviewContext['logModifyFilterEvent']>(
-        (label, value) => {
+    const logModifyFilterEvent = useCallback(
+        (label: FilterType, actionType: 'reset' | 'update', value?: MixpanelProperty) => {
             try {
                 userEvents.addModifyFilterEvent?.({
-                    actionType: 'update',
+                    ...(actionType === 'update' ? { value } : {}),
                     category: 'Transaction component',
+                    actionType,
                     label,
-                    value,
                 });
             } catch (e) {
-                console.warn(e);
+                console.error(e);
             }
         },
         [userEvents]
