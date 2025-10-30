@@ -48,7 +48,7 @@ export const TransactionDetailsProvider = memo(
         const primaryAction = useCallback(() => {
             if (primaryActionDisabled) return;
             setActiveView(ActiveView.REFUND);
-            userEvents.addEvent('Switched to refund view', {
+            userEvents.addEvent?.('Switched to refund view', {
                 category: 'Transaction component',
                 subCategory: 'Transaction details',
             });
@@ -63,14 +63,14 @@ export const TransactionDetailsProvider = memo(
         const secondaryAction = useCallback(() => {
             switch (_secondaryAction) {
                 case TransactionNavigationAction.BACKWARD:
-                    userEvents.addEvent('Clicked button', {
+                    userEvents.addEvent?.('Clicked button', {
                         label: 'Return to refund',
                         category: 'Transaction component',
                         subCategory: 'Transaction details',
                     });
                     return void backward();
                 case TransactionNavigationAction.FORWARD:
-                    userEvents.addEvent('Clicked button', {
+                    userEvents.addEvent?.('Clicked button', {
                         label: 'Go to payment',
                         category: 'Transaction component',
                         subCategory: 'Transaction details',

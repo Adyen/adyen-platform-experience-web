@@ -96,7 +96,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     externalErrorHandler={externalErrorHandler}
                     updateCore={updateCore}
                 >
-                    <AnalyticsProvider componentName={this.displayName}>
+                    <AnalyticsProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
                         {this.componentToRender && (
                             <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
                                 <div className="adyen-pe-component__container">{this.componentToRender()}</div>
