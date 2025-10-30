@@ -24,4 +24,5 @@ export interface StructuredListProps {
     grid?: boolean;
     classNames?: string;
     align?: 'start' | 'end';
+    condensed?: boolean;
 }
