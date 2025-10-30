@@ -59,7 +59,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const step1Button = screen.getByRole('button', { name: 'step: Step 1' });
+        const step1Button = screen.getByRole('button', { name: 'Step 1' });
 
         // Check the button has aria-current for active state
         expect(step1Button).toHaveAttribute('aria-current', 'step');
@@ -74,7 +74,7 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 1, onChange: mockOnChange });
 
         // Check the second step is active
-        const step2Button = screen.getByRole('button', { name: 'step: Step 2' });
+        const step2Button = screen.getByRole('button', { name: 'Step 2' });
         expect(step2Button).toHaveAttribute('aria-current', 'step');
 
         // Verify the list items have appropriate classes
@@ -87,7 +87,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const step3Button = screen.getByRole('button', { name: 'step: Step 3' });
+        const step3Button = screen.getByRole('button', { name: 'Step 3' });
 
         // Check the button is disabled
         expect(step3Button).toHaveAttribute('aria-disabled', 'true');
@@ -102,7 +102,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
         fireEvent.click(step2);
         expect(mockOnChange).toHaveBeenCalledWith(1);
     });
@@ -111,7 +111,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const step3 = screen.getByRole('button', { name: 'step: Step 3' });
+        const step3 = screen.getByRole('button', { name: 'Step 3' });
         fireEvent.click(step3);
         expect(mockOnChange).not.toHaveBeenCalled();
     });
@@ -121,8 +121,8 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'vertical' });
 
         const list = screen.getByRole('list');
-        const step1 = screen.getByRole('button', { name: 'step: Step 1' });
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step1 = screen.getByRole('button', { name: 'Step 1' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step1.focus();
         fireEvent.keyDown(list, {
@@ -138,8 +138,8 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 1, onChange: mockOnChange, variant: 'vertical' });
 
         const list = screen.getByRole('list');
-        const step1 = screen.getByRole('button', { name: 'step: Step 1' });
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step1 = screen.getByRole('button', { name: 'Step 1' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step2.focus();
         fireEvent.keyDown(list, { code: 'ArrowUp' });
@@ -153,7 +153,7 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step2.focus();
         fireEvent.keyDown(list, { code: 'Enter' });
@@ -166,7 +166,7 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step2.focus();
         fireEvent.keyDown(list, { code: 'Space' });
@@ -179,7 +179,7 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
         const list = screen.getByRole('list');
-        const step3 = screen.getByRole('button', { name: 'step: Step 3' });
+        const step3 = screen.getByRole('button', { name: 'Step 3' });
 
         step3.focus();
         fireEvent.keyDown(list, { code: 'Enter' });
@@ -200,8 +200,8 @@ describe('Stepper', () => {
         renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'horizontal' });
 
         const list = screen.getByRole('list');
-        const step1 = screen.getByRole('button', { name: 'step: Step 1' });
-        const step2 = screen.getByRole('button', { name: 'step: Step 2' });
+        const step1 = screen.getByRole('button', { name: 'Step 1' });
+        const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step1.focus();
         fireEvent.keyDown(list, { code: 'ArrowRight' });
