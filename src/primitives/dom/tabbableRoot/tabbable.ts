@@ -7,7 +7,7 @@ export interface TabbableRoot {
     tabbables: Element[];
 }
 
-export const SELECTORS = `
+export const SELECTORS = `:scope ${`
     a[href],
     audio[controls],
     video[controls],
@@ -17,7 +17,7 @@ export const SELECTORS = `
     textarea,
     [contenteditable],
     [tabindex]
-`.replace(/\s+/, '');
+`.replace(/\s+/, '')}`;
 
 const ATTRIBUTES = ['contenteditable', 'controls', 'disabled', 'hidden', 'href', 'inert', 'tabindex'];
 const CHECKED_RADIOS = new Map<HTMLFormElement, Map<string, HTMLInputElement | null>>();
@@ -32,7 +32,7 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
     let checkedRadio = checkedRadiosForForm?.get(name);
 
     if (isUndefined(checkedRadio) && form) {
-        checkedRadio = (form.querySelector(`input[type=radio][name='${name}']:checked`) as HTMLInputElement) || null;
+        checkedRadio = (form.querySelector(`:scope input[type=radio][name='${name}']:checked`) as HTMLInputElement) || null;
         CHECKED_RADIOS.set(form, (checkedRadiosForForm || new Map<string, HTMLInputElement | null>()).set(name, checkedRadio));
     }
 
@@ -40,14 +40,49 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
 };
 
 const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
+    let shouldRefreshTabbables = false;
+
     for (const record of records) {
-        if (record.type !== 'attributes') {
-            if (some(record.addedNodes, (node: Node) => node instanceof Element && isTabbable(node as Element))) return true;
-            if (some(record.removedNodes, (node: Node) => tabbables.includes(node as Element))) return true;
-        } else if (isTabbable(record.target as Element)) return true;
-        else if (tabbables.includes(record.target as Element)) return true;
+        if (record.type === 'attributes') {
+            shouldRefreshTabbables ||=
+                record.target instanceof Element &&
+                // Target is a tabbable element (possibly due to attribute changes)
+                // For example, disabled set to false, tabindex set to a number, etc.
+                (isTabbable(record.target) ||
+                    // Target is already contained in the list of tabbables
+                    // Attribute changes could make it no longer tabbable (e.g. disabled set to true)
+                    tabbables.includes(record.target));
+        } else {
+            shouldRefreshTabbables ||=
+                // At least one tabbable node was added to the DOM tree of the root element
+                some(
+                    record.addedNodes,
+                    (node: Node) =>
+                        node instanceof Element &&
+                        // Added node is a tabbable element
+                        (isTabbable(node) ||
+                            // At least one descendant of added node is a tabbable element
+                            some(node.querySelectorAll(SELECTORS), isTabbable))
+                );
+
+            shouldRefreshTabbables ||=
+                // At least one tabbable node was removed from the DOM tree of the root element
+                // That is, removed from the list of tabbables for the root element
+                some(
+                    record.removedNodes,
+                    (node: Node) =>
+                        node instanceof Element &&
+                        // Removed node is a tabbable element
+                        (tabbables.includes(node) ||
+                            // At least one descendant of removed node is a tabbable element
+                            some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node)))
+                );
+        }
+
+        if (shouldRefreshTabbables) break;
     }
-    return false;
+
+    return shouldRefreshTabbables;
 };
 
 export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {

@@ -9,7 +9,6 @@ import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFi
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 import { IPayout } from '../../../../../types';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import { DataOverviewHeader } from '../../../../internal/DataOverviewDisplay/DataOverviewHeader';
 import { PayoutsOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -17,6 +16,7 @@ import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
+import { Header } from '../../../../internal/Header';
 import './PayoutsOverview.scss';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
@@ -120,10 +120,10 @@ export const PayoutsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <DataOverviewHeader hideTitle={hideTitle} titleKey="payoutsTitle" descriptionKey="payoutsNotice">
+            <Header hideTitle={hideTitle} titleKey="payouts.overview.title" subtitleKey="payouts.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
-            </DataOverviewHeader>
-            <FilterBar {...filterBarState}>
+            </Header>
+            <FilterBar {...filterBarState} ariaLabelKey="payouts.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -141,6 +141,7 @@ export const PayoutsOverview = ({
                 />
             </FilterBar>
             <DataDetailsModal
+                ariaLabelKey="payouts.details.title"
                 className={BASE_CLASS_DETAILS}
                 onContactSupport={onContactSupport}
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}

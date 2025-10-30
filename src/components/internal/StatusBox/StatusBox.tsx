@@ -21,7 +21,7 @@ export type StatusBoxKeys = keyof StatusBoxProps;
 
 type StatusBoxOptions = { classNames?: { [K in StatusBoxKeys]?: string } };
 
-const StatusBox = ({ tag, amount, paymentMethod, paymentMethodType, date, classNames }: StatusBoxProps & StatusBoxOptions) => {
+const StatusBox = ({ tag, amount, paymentMethod, paymentMethodType, date, formattedDate, classNames }: StatusBoxProps & StatusBoxOptions) => {
     return (
         <div className={STATUS_BOX_CLASS}>
             {tag && <div className={STATUS_BOX_DATA_TAGS}>{tag}</div>}
@@ -38,7 +38,11 @@ const StatusBox = ({ tag, amount, paymentMethod, paymentMethodType, date, classN
                 </div>
             )}
 
-            {date && <div className={STATUS_BOX_DATA_LABEL}>{date}</div>}
+            {date && formattedDate && (
+                <div className={STATUS_BOX_DATA_LABEL}>
+                    <time dateTime={date}>{formattedDate}</time>
+                </div>
+            )}
         </div>
     );
 };

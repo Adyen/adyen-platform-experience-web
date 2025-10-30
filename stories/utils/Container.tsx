@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/types';
 import { PreactRenderer } from '@storybook/preact';
-import { AdyenPlatformExperience, all_locales } from '../../src';
+import { AdyenPlatformExperience } from '../../src';
 import BaseElement from '../../src/components/external/BaseElement';
 import sessionRequest from './sessionRequest';
 import './styles.scss';
@@ -25,7 +25,6 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
-                availableTranslations: [all_locales],
                 locale: locale || 'en-US',
 
                 onSessionCreate: async () => {

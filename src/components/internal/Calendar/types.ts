@@ -1,5 +1,6 @@
 import { VNode } from 'preact';
 import {
+    CalendarBlock,
     CalendarConfig,
     CalendarGridControlRecord,
     CalendarSelection,
@@ -39,6 +40,7 @@ export interface CalendarProps {
     onHighlight?: (from?: number, to?: number) => any;
     onlyCellsWithin?: boolean;
     originDate?: Time | Time[];
+    getGridLabel: (block: CalendarBlock) => string | undefined;
     prepare?: (renderToken: CalendarGridRenderToken, renderContext: any) => any;
     renderControl?: (...args: CalendarGridControlRecord) => VNode | null;
     sinceDate?: Time;

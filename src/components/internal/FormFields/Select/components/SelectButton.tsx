@@ -48,6 +48,8 @@ const SelectButtonElement = <T extends SelectItem>({
             disabled={disabled}
             variant={ButtonVariant.SECONDARY}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
+            aria-label={props['aria-label']}
+            aria-labelledby={props['aria-labelledby']}
         />
     );
 };
@@ -55,7 +57,7 @@ const SelectButtonElement = <T extends SelectItem>({
 const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
     const { i18n } = useCoreContext();
     const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
-    const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('select.filter.placeholder'), [i18n, placeholder]);
+    const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('common.inputs.select.placeholder'), [i18n, placeholder]);
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
 
@@ -65,7 +67,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
-            aria-haspopup="listbox"
+            aria-haspopup="dialog"
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
@@ -76,17 +78,20 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             filterable={filterable}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
-            role={filterable ? 'button' : undefined}
+            role={!filterable || showList ? 'button' : undefined}
             tabIndex={0}
             title={buttonTitleText}
             toggleButtonRef={props.toggleButtonRef}
-            type={!filterable ? 'button' : undefined}
+            type={filterable ? undefined : 'button'}
             aria-describedby={props.ariaDescribedBy}
-            id={props.id ?? ''}
+            id={props.id}
+            {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
         >
             {showList && filterable ? (
                 <input
                     aria-autocomplete="list"
+                    aria-label={props['aria-label']}
+                    aria-labelledby={props['aria-labelledby']}
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}

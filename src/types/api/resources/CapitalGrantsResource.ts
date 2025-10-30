@@ -58,10 +58,11 @@ export interface components {
             value: number;
         };
         FundsCollectionDetailDTO: {
+            beneficiaryName: string;
             order: string[];
             region: string;
         };
-        GBCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "order" | "region">, "region"> & {
+        GBCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "beneficiaryName" | "order" | "region">, "region"> & {
             accountNumber: string;
             iban?: string;
             sortCode: string;
@@ -74,7 +75,7 @@ export interface components {
         };
         GrantResponseDTO: {
             balanceAccountCode: string;
-            balanceAccountDescription: string;
+            balanceAccountDescription?: string;
             /** Format: int32 */
             expectedRepaymentPeriodDays: number;
             feesAmount: components["schemas"]["Amount"];
@@ -101,6 +102,7 @@ export interface components {
             termEndsAt: string;
             thresholdAmount: components["schemas"]["Amount"];
             totalAmount: components["schemas"]["Amount"];
+            transferInstruments?: components["schemas"]["TransferInstrumentReference"][];
             unscheduledRepaymentAccounts?: components["schemas"]["FundsCollectionDetailDTO"][];
         };
         /** @enum {string} */
@@ -113,7 +115,7 @@ export interface components {
         };
         /** @enum {string} */
         MissingActionType: "signToS" | "AnaCredit";
-        NLCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "order" | "region">, "region"> & {
+        NLCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "beneficiaryName" | "order" | "region">, "region"> & {
             iban: string;
         } & {
             /**
@@ -122,7 +124,11 @@ export interface components {
              */
             region: "NL";
         };
-        USCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "order" | "region">, "region"> & {
+        TransferInstrumentReference: {
+            /** @description The masked IBAN or bank account number. */
+            accountIdentifier: string;
+        };
+        USCapitalFundsCollection: Omit<WithRequired<components["schemas"]["FundsCollectionDetailDTO"], "beneficiaryName" | "order" | "region">, "region"> & {
             accountNumber: string;
             routingNumber: string;
         } & {

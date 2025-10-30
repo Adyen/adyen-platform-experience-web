@@ -35,8 +35,8 @@ export class SetupContext {
         return this._fetchSetupEndpoint(abortSignal);
     });
 
-    public declare loadingContext?: Core<any>['loadingContext'];
-    public declare readonly refresh: (signal: AbortSignal) => Promise<void>;
+    declare public loadingContext?: Core<any>['loadingContext'];
+    declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
         let _refreshPromise: Promise<void> | undefined;
@@ -50,6 +50,7 @@ export class SetupContext {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
+                    this._setAnalyticsUserProfile();
                 }));
         };
     }
@@ -70,6 +71,20 @@ export class SetupContext {
             loadingContext: this.loadingContext,
             signal,
         }) as Promise<SetupResponse>;
+    }
+
+    private _setAnalyticsUserProfile() {
+        const formattedOptions = JSON.stringify([{}]);
+        const encodedData = window.btoa(formattedOptions);
+        const data = new URLSearchParams();
+        data.set('data', encodedData);
+        if (this._endpoints.sendEngageEvent) {
+            return this._endpoints.sendEngageEvent({
+                body: data,
+                contentType: 'application/x-www-form-urlencoded',
+            });
+        }
+        return;
     }
 
     private _getEndpointsProxy(endpoints: SetupEndpoint) {

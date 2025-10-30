@@ -22,7 +22,9 @@ test.describe('Grant: Missing Action Sign TOS', () => {
 
     test('should render a tooltip status tag is hovered', async ({ page }) => {
         await page.getByText('Action needed').hover();
-        await expect(page.getByText('Sign the terms to receive your funds')).toBeVisible();
+        const tooltip = page.getByText('Sign the terms to receive your funds');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 
     test('should go to terms and conditions page when "Go to Terms & Conditions" button in clicked', async ({ page }) => {

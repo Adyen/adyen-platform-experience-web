@@ -46,7 +46,7 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
                 {expectedRepaymentDate &&
-                    i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
+                    i18n.get('capital.offer.common.repaymentInfo', {
                         values: {
                             amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
                             days: CAPITAL_REPAYMENT_FREQUENCY,
@@ -66,16 +66,16 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
                     </Typography>
                 )}
                 items={[
-                    { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
+                    { key: 'capital.common.fields.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
                     {
-                        key: 'capital.dailyRepaymentRate',
-                        value: `${i18n.get('capital.xPercent', {
+                        key: 'capital.common.fields.dailyRepaymentRate',
+                        value: `${i18n.get('capital.common.values.percentage', {
                             values: { percentage: getPercentage(data.repaymentRate) },
                         })}`,
                     },
                     {
-                        key: 'capital.expectedRepaymentPeriod',
-                        value: i18n.get('capital.xDays', { values: { days: data.expectedRepaymentPeriodDays } }),
+                        key: 'capital.common.fields.expectedRepaymentPeriod',
+                        value: i18n.get('capital.common.values.numberOfDays', { values: { days: data.expectedRepaymentPeriodDays } }),
                     },
                 ]}
             />
@@ -202,7 +202,7 @@ export const CapitalOfferSelection = ({
                     <div className="adyen-pe-capital-offer-selection__buttons">
                         {onOfferDismiss && (
                             <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
-                                {i18n.get('back')}
+                                {i18n.get('capital.common.actions.goBack')}
                             </Button>
                         )}
                         <Button
@@ -210,8 +210,13 @@ export const CapitalOfferSelection = ({
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
                             disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
+                            aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >
-                            {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
+                            {i18n.get(
+                                loadingButtonState
+                                    ? 'capital.offer.selection.actions.reviewOffer.states.loading'
+                                    : 'capital.offer.selection.actions.reviewOffer'
+                            )}
                         </Button>
                     </div>
                 </>

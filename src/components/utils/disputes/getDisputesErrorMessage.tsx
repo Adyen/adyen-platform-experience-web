@@ -13,25 +13,27 @@ export const getDisputesErrorMessage = (
     switch (error.errorCode) {
         case undefined:
             return {
-                title: 'somethingWentWrong',
-                message: [errorMessage, 'tryRefreshingThePageOrComeBackLater'],
+                title: 'common.errors.somethingWentWrong',
+                message: [errorMessage, 'common.errors.retry'],
                 refreshComponent: true,
             };
         case '00_500': {
-            const secondaryErrorMessage = onContactSupport ? 'theErrorCodeIs' : 'contactSupportForHelpAndShareErrorCode';
+            const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
             return {
-                title: 'somethingWentWrong',
+                title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues: {
-                    [secondaryErrorMessage]: error.requestId ? <CopyText textToCopy={error.requestId} /> : null,
+                    [secondaryErrorMessage]: error.requestId ? (
+                        <CopyText copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
+                    ) : null,
                 },
                 onContactSupport,
             };
         }
         case '30_112':
             return {
-                title: 'disputes.error.entityWasNotFound',
-                message: ['disputes.error.entityWasNotFoundDetail'],
+                title: 'common.errors.notFound',
+                message: ['disputes.management.common.errors.notFound'],
                 onContactSupport,
             };
         default:

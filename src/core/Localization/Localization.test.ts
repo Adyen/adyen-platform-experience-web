@@ -1,14 +1,16 @@
 import Localization from './Localization';
 import { describe, expect, test } from 'vitest';
-import { es_ES } from '../../core';
+import { es_ES, TranslationKey } from '../../core';
 
 describe('Localization', () => {
+    const translationKey = 'abc' as TranslationKey;
+
     describe('constructor', () => {
         test('sets up locale and customTranslations', () => {
             const lang = new Localization('es-ES', [es_ES]);
 
             lang.customTranslations = {
-                'es-ES': { account: 'es' },
+                'es-ES': { [translationKey]: 'es' },
             };
 
             lang.ready.then(() => {
@@ -21,7 +23,7 @@ describe('Localization', () => {
             const lang = new Localization('es', [es_ES]);
 
             lang.customTranslations = {
-                es: { paymentId: 'es' },
+                es: { [translationKey]: 'es' },
             };
 
             lang.ready.then(() => {
@@ -34,7 +36,7 @@ describe('Localization', () => {
             const lang = new Localization('ca-CA');
 
             lang.customTranslations = {
-                'ca-CA': { paymentId: 'ca' },
+                'ca-CA': { [translationKey]: 'ca' },
             };
 
             lang.ready.then(() => {
@@ -47,7 +49,7 @@ describe('Localization', () => {
             const lang = new Localization('ca');
 
             lang.customTranslations = {
-                'ca-CA': { paymentId: 'ca' },
+                'ca-CA': { [translationKey]: 'ca' },
             };
 
             lang.ready.then(() => {
@@ -60,7 +62,7 @@ describe('Localization', () => {
             const lang = new Localization('FAKE');
 
             lang.customTranslations = {
-                FAKE: { paymentId: 'ca' },
+                FAKE: { [translationKey]: 'ca' },
             };
 
             lang.ready.then(() => {
@@ -73,10 +75,9 @@ describe('Localization', () => {
     describe('get', () => {
         test('gets a string even if it is empty', () => {
             const lang = new Localization('en-US');
-            const translationKey = 'paymentId';
 
             lang.customTranslations = {
-                'en-US': { paymentId: '' },
+                'en-US': { [translationKey]: '' },
             };
 
             lang.ready.then(() => {

@@ -70,7 +70,7 @@ const DEFENDABLE_CHARGEBACK_REASONS: Record<string, Record<string, readonly IDis
     '4853': {
         AirlineFlightProvided: [
             { documentTypeCode: 'FlightTicketUsed', requirementLevel: 'ONE_OR_MORE' } as const,
-            { documentTypeCode: 'FlightTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
+            { documentTypeCode: 'FligthTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
             { documentTypeCode: 'PaperAirlineTicket', requirementLevel: 'ONE_OR_MORE' } as const,
         ] as const,
         CancellationOrReturns: [
@@ -887,8 +887,8 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
     const disputeType: IDisputeType = FRAUD_ALERTS.includes(dispute as any)
         ? 'NOTIFICATION_OF_FRAUD'
         : RFI_ONLY_STATUSES.includes(disputeStatus) || disputeCategory === 'REQUEST_FOR_INFORMATION'
-        ? 'REQUEST_FOR_INFORMATION'
-        : 'CHARGEBACK';
+          ? 'REQUEST_FOR_INFORMATION'
+          : 'CHARGEBACK';
 
     const disputeModificationDate = getDate(1, new Date(dispute.createdAt));
 

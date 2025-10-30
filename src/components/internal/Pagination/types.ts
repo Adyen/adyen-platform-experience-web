@@ -1,4 +1,5 @@
 import { UseReactiveStateRecord } from '../../../hooks/useReactiveState/types';
+import { TranslationKey } from '../../../translations';
 
 export const enum PageNeighbour {
     NEXT = 'next',
@@ -13,8 +14,8 @@ export const enum PaginationType {
 export type ForPaginationType<T extends PaginationType, CursorType, OffsetType> = T extends PaginationType.CURSOR
     ? CursorType
     : T extends PaginationType.OFFSET
-    ? OffsetType
-    : never;
+      ? OffsetType
+      : never;
 
 type BothPageNeighbours<T = any> = { [P in PageNeighbour]: T };
 type NextPageNeighbour<T = any> = Omit<BothPageNeighbours<T>, PageNeighbour.PREV>;
@@ -82,4 +83,7 @@ export interface UsePagination extends Required<WithPaginationLimit>, WithPagina
     resetPagination: () => void;
 }
 
-export type PaginationProps = WithPaginationLimitSelection<Omit<UsePagination, 'goto' | 'resetPagination'> & Partial<Pick<UsePagination, 'goto'>>>;
+export type PaginationProps = WithPaginationLimitSelection<Omit<UsePagination, 'goto' | 'resetPagination'> & Partial<Pick<UsePagination, 'goto'>>> & {
+    ariaLabelKey?: TranslationKey;
+    limitSelectAriaLabelKey?: TranslationKey;
+};

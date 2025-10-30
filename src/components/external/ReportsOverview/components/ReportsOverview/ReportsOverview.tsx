@@ -91,10 +91,10 @@ export const ReportsOverview = ({
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="reportsTitle" subtitleKey="reportsNotice">
+            <Header hideTitle={hideTitle} titleKey="reports.overview.title" subtitleKey="reports.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState}>
+            <FilterBar {...filterBarState} ariaLabelKey="reports.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
