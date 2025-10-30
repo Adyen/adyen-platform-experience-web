@@ -124,7 +124,7 @@ Calculate expected values from system behavior:
 test('should handle nullish timezones gracefully', () => {
     const currentTime = Date.now();
     const systemTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const formatOptions = { month: 'short', day: 'numeric', year: 'numeric' } as const;
+    const formatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
     const systemTimezoneFormat = new Intl.DateTimeFormat('en-US', {
         ...formatOptions,
         timeZone: systemTimezone,
@@ -186,7 +186,7 @@ Don't create multiple tests for the same behavior. Consolidate:
 ```typescript
 // Good: Single test with data-driven approach
 test('should handle nullish timezones gracefully', () => {
-    const { result: nullResult } = renderHook(() => useHook(null as any));
+    const { result: nullResult } = renderHook(() => useHook(null));
     const { result: undefinedResult } = renderHook(() => useHook(undefined));
     const { result: noParamResult } = renderHook(() => useHook());
 
