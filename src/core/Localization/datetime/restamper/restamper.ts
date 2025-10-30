@@ -41,7 +41,7 @@ const restamper = (() => {
         const formatter = this.formatter ?? SYSTEM_TIMEZONE_FORMATTER;
 
         return Object.freeze({
-            formatted: formatter?.format(timestamp),
+            formatted: formatter?.format(new Date(timestamp)),
             offset: getTimezoneOffsetForTimestamp(timestamp, formatter),
             timestamp,
         } as const);
