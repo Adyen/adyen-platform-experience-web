@@ -1,8 +1,8 @@
 import { createContext } from 'preact';
 import { useContext } from 'preact/hooks';
+import { useFilterBarState } from '../../../internal/FilterBar';
 import { IBalanceAccountBase, ITransaction } from '../../../../types';
 import { EMPTY_ARRAY, EMPTY_OBJECT, noop } from '../../../../utils';
-import { FilterType, MixpanelProperty } from '../../../../core/Analytics/analytics/user-events';
 
 export const enum TransactionsOverviewSplitView {
     TRANSACTIONS = 'transactions',
@@ -17,11 +17,12 @@ export interface ITransactionsOverviewContext {
     categories: readonly ITransaction['category'][];
     currencies: readonly string[];
     currentView: TransactionsOverviewSplitView;
-    logFilterEvent(label: FilterType, actionType: 'reset'): void;
-    logFilterEvent(label: FilterType, actionType: 'update', value: MixpanelProperty): void;
+    eventCategory: string;
+    filterBar: ReturnType<typeof useFilterBarState>;
     setBalanceAccount: (balanceAccount: IBalanceAccountBase | undefined) => void;
     setCategories: (categories: readonly ITransaction['category'][]) => void;
     setCurrencies: (currencies: readonly string[]) => void;
+    setCurrentView: (view: TransactionsOverviewSplitView) => void;
     setStatuses: (categories: readonly ITransaction['status'][]) => void;
     statuses: readonly ITransaction['status'][];
 }
@@ -32,10 +33,12 @@ const context = createContext<ITransactionsOverviewContext>({
     categories: EMPTY_ARRAY,
     currencies: EMPTY_ARRAY,
     currentView: TransactionsOverviewSplitView.TRANSACTIONS,
-    logFilterEvent: noop,
+    eventCategory: 'Transaction component',
+    filterBar: EMPTY_OBJECT as any,
     setBalanceAccount: noop,
     setCategories: noop,
     setCurrencies: noop,
+    setCurrentView: noop,
     setStatuses: noop,
     statuses: EMPTY_ARRAY,
 });
