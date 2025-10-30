@@ -180,7 +180,6 @@
     "common.pagination.controls.nextPage.label": "Next page",
     "common.pagination.controls.previousPage.label": "Previous page",
     "common.pagination.label": "Pagination",
-    "common.stepper.step.a11y.label": "Step %{step} of %{totalSteps}",
     "common.tags.noData": "No data",
     "disputes.common.reasonCategories.adjustment": "Adjustment",
     "disputes.common.reasonCategories.authorisationError": "Authorisation error",
