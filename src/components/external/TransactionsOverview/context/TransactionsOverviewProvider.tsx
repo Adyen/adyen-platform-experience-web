@@ -5,7 +5,7 @@ import useAnalyticsContext from '../../../../core/Context/analytics/useAnalytics
 import TransactionsOverviewContext, { ITransactionsOverviewContext, TransactionsOverviewSplitView } from './TransactionsOverviewContext';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../types';
 import { FilterType, MixpanelProperty } from '../../../../core/Analytics/analytics/user-events';
-import { IBalanceAccountBase } from '../../../../types';
+import { IBalanceAccountBase, type ITransaction } from '../../../../types';
 
 export type TransactionOverviewProviderProps = PropsWithChildren<
     ExternalUIComponentProps<
@@ -19,11 +19,13 @@ export type TransactionOverviewProviderProps = PropsWithChildren<
 export default function TransactionsOverviewProvider({ balanceAccounts, children }: TransactionOverviewProviderProps) {
     const [balanceAccount, setBalanceAccount] = useState<ITransactionsOverviewContext['balanceAccount']>();
     const [currentView, setCurrentView] = useState(TransactionsOverviewSplitView.TRANSACTIONS);
+    const [categories, setCategories] = useState<readonly ITransaction['category'][]>([]);
+    const [currencies, setCurrencies] = useState<readonly string[]>([]);
 
-    const { balances, currencies } = useAccountBalances(balanceAccount);
+    const { balances, currencies: availableCurrencies } = useAccountBalances(balanceAccount);
     const userEvents = useAnalyticsContext();
 
-    const logModifyFilterEvent = useCallback(
+    const logFilterEvent = useCallback(
         (label: FilterType, actionType: 'reset' | 'update', value?: MixpanelProperty) => {
             try {
                 userEvents.addModifyFilterEvent?.({
@@ -42,13 +44,16 @@ export default function TransactionsOverviewProvider({ balanceAccounts, children
     return (
         <TransactionsOverviewContext.Provider
             value={{
+                availableCurrencies,
                 balanceAccount,
                 balanceAccounts,
                 balances,
+                categories,
                 currencies,
                 currentView,
-                logModifyFilterEvent,
+                logFilterEvent,
                 setBalanceAccount,
+                setCategories,
             }}
         >
             {children}

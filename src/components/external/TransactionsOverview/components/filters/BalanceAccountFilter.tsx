@@ -4,7 +4,7 @@ import { useTransactionsOverviewContext } from '../../context/TransactionsOvervi
 import { useRef } from 'preact/hooks';
 
 const BalanceAccountFilter = () => {
-    const { balanceAccounts, currentView, logModifyFilterEvent, setBalanceAccount } = useTransactionsOverviewContext();
+    const { balanceAccounts, currentView, logFilterEvent, setBalanceAccount } = useTransactionsOverviewContext();
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
     const cachedBalanceAccountIdRef = useRef<string | undefined>();
 
@@ -16,14 +16,14 @@ const BalanceAccountFilter = () => {
         // Update the cached balance account id with current
         cachedBalanceAccountIdRef.current = currentBalanceAccountId;
 
-        // Set active balance account in transactions overview context
-        setBalanceAccount(activeBalanceAccount);
-
         if (cachedBalanceAccountId && currentBalanceAccountId) {
             // Balance account changed from previous to current (using selector)
-            // Log modify filter event for balance account filter
-            logModifyFilterEvent('Balance account filter', 'update', currentBalanceAccountId);
+            // Log filter modification event for balance account filter
+            logFilterEvent('Balance account filter', 'update', currentBalanceAccountId);
         }
+
+        // Set active balance account in transactions overview context
+        setBalanceAccount(activeBalanceAccount);
     }
 
     return (
