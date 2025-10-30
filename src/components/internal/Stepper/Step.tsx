@@ -4,29 +4,15 @@ import { StepProps } from './types';
 import Icon from '../Icon';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { useMemo } from 'preact/hooks';
+
+const DefaultRenderStep = ({ completed, index }: { completed: boolean; index: number }) => {
+    if (completed) {
+        return <Icon name="checkmark-circle-fill" />;
+    }
+    return <span className="adyen-pe-step__number">{index + 1}</span>;
+};
 
 export const Step = forwardRef<HTMLButtonElement, StepProps>(({ index, active, completed, disabled, onClick, children, totalSteps }, ref) => {
-    const { i18n } = useCoreContext();
-
-    const renderStep = () => {
-        if (completed) {
-            return <Icon name="checkmark-circle-fill" />;
-        }
-        return <span className="adyen-pe-step__number">{index + 1}</span>;
-    };
-
-    const ariaLabel = useMemo(() => {
-        const label = i18n.get('common.stepper.step.a11y.label', {
-            values: {
-                step: index + 1,
-                totalSteps,
-            },
-        });
-        return typeof children === 'string' ? `${label}: ${children}` : label;
-    }, [children, i18n, index, totalSteps]);
-
     return (
         <li
             className={cx('adyen-pe-step__item', {
@@ -36,7 +22,6 @@ export const Step = forwardRef<HTMLButtonElement, StepProps>(({ index, active, c
             })}
         >
             <button
-                aria-label={ariaLabel}
                 aria-disabled={disabled}
                 aria-current={active ? 'step' : undefined}
                 tabIndex={active ? 0 : -1}
@@ -46,7 +31,9 @@ export const Step = forwardRef<HTMLButtonElement, StepProps>(({ index, active, c
                 onClick={onClick}
                 disabled={disabled}
             >
-                <div className="adyen-pe-step__icon">{renderStep()}</div>
+                <div className="adyen-pe-step__icon" aria-hidden="true">
+                    <DefaultRenderStep completed={completed} index={index} />
+                </div>
                 <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} className="adyen-pe-step__label">
                     {children}
                 </Typography>
