@@ -26,7 +26,6 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
                 locale: locale || 'en-US',
-
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
@@ -40,5 +39,9 @@ export const Container = <T extends new (args: any) => any>({ component, compone
         return () => Component.unmount();
     }, []);
 
-    return <div ref={container} id="component-root" className="component-wrapper" />;
+    return (
+        <>
+            <div ref={container} id="component-root" className="component-wrapper" />
+        </>
+    );
 };
