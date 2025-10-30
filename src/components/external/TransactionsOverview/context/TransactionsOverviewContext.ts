@@ -21,6 +21,9 @@ export interface ITransactionsOverviewContext {
     logFilterEvent(label: FilterType, actionType: 'update', value: MixpanelProperty): void;
     setBalanceAccount: (balanceAccount: IBalanceAccountBase | undefined) => void;
     setCategories: (categories: readonly ITransaction['category'][]) => void;
+    setCurrencies: (currencies: readonly string[]) => void;
+    setStatuses: (categories: readonly ITransaction['status'][]) => void;
+    statuses: readonly ITransaction['status'][];
 }
 
 const context = createContext<ITransactionsOverviewContext>({
@@ -32,6 +35,9 @@ const context = createContext<ITransactionsOverviewContext>({
     logFilterEvent: noop,
     setBalanceAccount: noop,
     setCategories: noop,
+    setCurrencies: noop,
+    setStatuses: noop,
+    statuses: EMPTY_ARRAY,
 });
 
 export const useTransactionsOverviewContext = () => useContext(context);

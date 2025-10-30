@@ -19,6 +19,7 @@ export type TransactionOverviewProviderProps = PropsWithChildren<
 export default function TransactionsOverviewProvider({ balanceAccounts, children }: TransactionOverviewProviderProps) {
     const [balanceAccount, setBalanceAccount] = useState<ITransactionsOverviewContext['balanceAccount']>();
     const [currentView, setCurrentView] = useState(TransactionsOverviewSplitView.TRANSACTIONS);
+    const [statuses, setStatuses] = useState<readonly ITransaction['status'][]>(['Booked']);
     const [categories, setCategories] = useState<readonly ITransaction['category'][]>([]);
     const [currencies, setCurrencies] = useState<readonly string[]>([]);
 
@@ -54,6 +55,9 @@ export default function TransactionsOverviewProvider({ balanceAccounts, children
                 logFilterEvent,
                 setBalanceAccount,
                 setCategories,
+                setCurrencies,
+                setStatuses,
+                statuses,
             }}
         >
             {children}
