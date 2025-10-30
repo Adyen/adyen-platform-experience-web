@@ -18,13 +18,13 @@ export type SummaryItemColumnConfig = {
 
 export type SummaryItemProps = {
     columnConfigs: SummaryItemColumnConfig[];
+    isEmpty?: boolean;
     isHeader?: boolean;
-    isHovered?: boolean;
     isSkeletonVisible?: boolean;
     isLoading?: boolean;
     widths?: number[];
     onWidthsSet: (widths: number[]) => void;
-    isEmpty?: boolean;
+    showLabelUnderline?: boolean;
 };
 
 export type SummaryItemLabelProps = {

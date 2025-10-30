@@ -15,15 +15,15 @@ const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
 };
 
-export const Tooltip = ({ content, children, showTooltip, position, isContainerHovered = false }: PropsWithChildren<TooltipProps>) => {
+export const Tooltip = ({ content, children, showTooltip, position, showUnderline = false }: PropsWithChildren<TooltipProps>) => {
     const [popoverElement, setPopoverElement] = useState<HTMLDivElement | null>(null);
     const { isVisible, listeners } = useTooltipListeners();
     const targetElementRef = useUniqueIdentifier();
     const canShowTooltip = isVisible || !!showTooltip;
 
     const targetClassName = useMemo(
-        () => classNames(children?.props?.className, 'adyen-pe-tooltip-target', { 'adyen-pe-tooltip-target--hovered': isContainerHovered }),
-        [children?.props?.className, isContainerHovered]
+        () => classNames(children?.props?.className, 'adyen-pe-tooltip-target', { 'adyen-pe-tooltip-target--underlined': showUnderline }),
+        [children?.props?.className, showUnderline]
     );
 
     return (

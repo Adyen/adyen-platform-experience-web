@@ -43,7 +43,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
                 aria-describedby={firstTotal ? `${firstTotal.incomingsElemId} ${firstTotal.expensesElemId}` : undefined}
             >
                 <TransactionTotalItem
-                    isHovered={isHovered}
+                    showLabelUnderline={isHovered}
                     total={firstTotal}
                     hiddenField={hiddenField}
                     widths={maxWidths}
@@ -70,7 +70,7 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
                         aria-describedby={`${total.incomingsElemId} ${total.expensesElemId}`}
                     >
                         <TransactionTotalItem
-                            isHovered={isHovered}
+                            showLabelUnderline={isHovered}
                             total={total}
                             hiddenField={hiddenField}
                             widths={maxWidths}
