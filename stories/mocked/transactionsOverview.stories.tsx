@@ -6,6 +6,7 @@ import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
+import MultistepFormExample from '../../src/hooks/form/example/MultistepFormExample';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
 export const Default: ElementStory<typeof TransactionsOverview> = {
@@ -88,6 +89,13 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     },
     parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,
+    },
+};
+
+export const TestInternalComponent: ElementStory<typeof TransactionsOverview> = {
+    name: 'Test Internal Component',
+    decorators: () => {
+        return MultistepFormExample();
     },
 };
 
