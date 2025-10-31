@@ -622,7 +622,7 @@
     "disputes.management.defend.common.inputs.file.errors.required": "Upload at least one supporting document to continue",
     "disputes.management.defend.common.inputs.file.errors.tooLarge": "File is over %{size} limit for %{type}. Choose a smaller file and try again.",
     "disputes.management.defend.common.inputs.reasonSelect.a11y.label": "Select defense reason",
-    "disputes.management.defend.requestForInformation.selectDefenseReason": "Select the reason you’re defending this request for information.",
+    "disputes.management.defend.requestForInformation.selectDefenseReason": "Select the reason you’re providing this information.",
     "disputes.management.defend.requestForInformation.title": "Response to Request for Information",
     "disputes.management.details.actions.accept": "Accept",
     "disputes.management.details.actions.contactSupport": "Contact support",
