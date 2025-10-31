@@ -61,7 +61,7 @@
     "start": "npm run storybook",
     "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
     "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
-    "storybook:static": "vite-node --mode development ./.storybook/buildStorybook.ts && vite serve storybook-static --config vite.config.ts",
+    "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 vite-node --mode development ./.storybook/buildStorybook.ts && vite serve storybook-static --config vite.config.ts",
     "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",

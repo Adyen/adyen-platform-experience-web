@@ -3,6 +3,7 @@ import { ITransaction } from '../../../../types';
 const PAYMENT_METHODS = Object.freeze({
     klarna: 'Klarna',
     paypal: 'PayPal',
+    klarna_paynow: 'Klarna Pay Now',
 });
 
 export function parsePaymentMethodType(paymentMethod: NonNullable<ITransaction['paymentMethod']>, format?: 'detail' | 'fourDigit') {

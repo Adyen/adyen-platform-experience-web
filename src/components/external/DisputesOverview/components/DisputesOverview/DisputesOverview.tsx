@@ -107,7 +107,7 @@ export const DisputesOverview = ({
     const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
     const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount, 'last90Days');
 
     const [modalVisible, setModalVisible] = useState(false);
     const [mobileStyleOverrides, setMobileStyleOverrides] = useState<h.JSX.CSSProperties | undefined>();

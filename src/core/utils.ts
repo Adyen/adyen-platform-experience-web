@@ -38,6 +38,19 @@ export const getConfigFromCdn = ({ url }: { url: string }) => {
         subFolder?: string;
         fallback?: Fallback;
     }) => {
+        // If VITE_LOCAL_ASSETS is enabled load from local config folder
+        if (process.env.VITE_LOCAL_ASSETS) {
+            try {
+                const configPath = `../config${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
+                const module = await import(/* @vite-ignore */ configPath);
+                return module.default || module;
+            } catch (error) {
+                console.warn(error);
+                return fallback;
+            }
+        }
+
+        // Otherwise, fetch from CDN
         try {
             return await httpGet<any>({
                 loadingContext: `${url}${subFolder ? `/${subFolder}` : ''}`,
