@@ -173,7 +173,7 @@
     "disputes.management.defend.common.inputs.file.errors.required": "Input validation error message that appears if a user attempts to proceed with an action (e.g., submitting a dispute defense) without first uploading at least one required supporting document.",
     "disputes.management.defend.common.inputs.file.errors.tooLarge": "Input validation error message shown during file upload when a selected file exceeds the maximum size (indicated by %{size}) for its specific file type (indicated by %{type}). It instructs the user to select a smaller file.",
     "disputes.management.defend.common.inputs.reasonSelect.a11y.label": "Label for a dropdown menu where the user is prompted to choose the type of the reason for defending a dispute.",
-    "disputes.management.defend.requestForInformation.selectDefenseReason": "Description text for a select dropdown menu containing applicable dispute defense reasons as options.",
+    "disputes.management.defend.requestForInformation.selectDefenseReason": "Description text for a select dropdown menu containing applicable reasons as options.",
     "disputes.management.defend.requestForInformation.title": "Title for the section related to defending requests for information",
     "disputes.management.details.actions.accept": "Label text for button that initiates the process for accepting a dispute",
     "disputes.management.details.actions.copyDisputeReference": "Label for a button that copies the dispute reference",
