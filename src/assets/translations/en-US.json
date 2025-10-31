@@ -160,6 +160,7 @@
     "common.filters.types.date.rangeSelect.options.custom": "Custom",
     "common.filters.types.date.rangeSelect.options.last30Days": "Last 30 days",
     "common.filters.types.date.rangeSelect.options.last7Days": "Last 7 days",
+    "common.filters.types.date.rangeSelect.options.last90Days": "Last 90 days",
     "common.filters.types.date.rangeSelect.options.lastMonth": "Last month",
     "common.filters.types.date.rangeSelect.options.lastWeek": "Last week",
     "common.filters.types.date.rangeSelect.options.thisMonth": "This month",
