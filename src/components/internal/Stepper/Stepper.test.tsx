@@ -51,7 +51,7 @@ describe('Stepper', () => {
         expect(screen.getByText('Step 1')).toBeInTheDocument();
         expect(screen.getByText('Step 2')).toBeInTheDocument();
         expect(screen.getByText('Step 3')).toBeInTheDocument();
-        expect(screen.getByRole('list')).toBeInTheDocument();
+        expect(screen.getByRole('toolbar')).toBeInTheDocument();
         expect(screen.getAllByRole('listitem')).toHaveLength(3);
     });
 
@@ -120,7 +120,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'vertical' });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step1 = screen.getByRole('button', { name: 'Step 1' });
         const step2 = screen.getByRole('button', { name: 'Step 2' });
 
@@ -137,7 +137,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 1, onChange: mockOnChange, variant: 'vertical' });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step1 = screen.getByRole('button', { name: 'Step 1' });
         const step2 = screen.getByRole('button', { name: 'Step 2' });
 
@@ -152,7 +152,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step2.focus();
@@ -165,7 +165,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step2 = screen.getByRole('button', { name: 'Step 2' });
 
         step2.focus();
@@ -178,7 +178,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step3 = screen.getByRole('button', { name: 'Step 3' });
 
         step3.focus();
@@ -191,7 +191,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'horizontal' });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         expect(list).toHaveClass('adyen-pe-stepper__list--horizontal');
     });
 
@@ -199,7 +199,7 @@ describe('Stepper', () => {
         const mockOnChange = vi.fn();
         renderStepper({ activeIndex: 0, onChange: mockOnChange, variant: 'horizontal' });
 
-        const list = screen.getByRole('list');
+        const list = screen.getByRole('toolbar');
         const step1 = screen.getByRole('button', { name: 'Step 1' });
         const step2 = screen.getByRole('button', { name: 'Step 2' });
 
