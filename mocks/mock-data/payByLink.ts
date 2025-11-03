@@ -54,12 +54,10 @@ export const PAY_BY_LINK_CONFIGURATION = {
             {
                 durationUnit: 'days',
                 quantity: 7,
-                type: {},
             },
             {
                 durationUnit: 'days',
                 quantity: 30,
-                type: {},
             },
         ],
     },
