@@ -18,9 +18,9 @@ export const payByLinkMocks = [
 
         const url = new URL(request.url);
         const cursor = url.searchParams.get('cursor');
-        const limit = parseInt(url.searchParams.get('limit') || String(defaultPaginationLimit), 10);
+        const limit = parseInt(url.searchParams.get('limit'), 10) || defaultPaginationLimit;
 
-        const startIndex = cursor ? parseInt(cursor, 10) : 0;
+        const startIndex = parseInt(cursor, 10) || 0;
         const endIndex = Math.min(startIndex + limit, STORES.length);
         const data = STORES.slice(startIndex, endIndex);
 
