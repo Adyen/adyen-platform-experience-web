@@ -25,7 +25,7 @@ export interface ITransactionsOverviewContext {
     setCategories: (categories: readonly ITransaction['category'][]) => void;
     setCurrencies: (currencies: readonly string[]) => void;
     setCurrentView: (view: TransactionsOverviewSplitView) => void;
-    setDateRange: (range: RangeTimestamps) => void;
+    setDateRange: (range?: RangeTimestamps) => void;
     setStatuses: (categories: readonly ITransaction['status'][]) => void;
     statuses: readonly ITransaction['status'][];
 }

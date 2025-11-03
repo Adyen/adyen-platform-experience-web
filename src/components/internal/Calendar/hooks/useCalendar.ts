@@ -101,33 +101,29 @@ const useCalendar = (
         )
     );
 
-    useImperativeHandle(
-        ref,
-        () => {
-            const { from, to } = grid?.highlight || EMPTY_OBJECT;
-            return {
-                clear: () => {
-                    grid?.highlight && (grid.highlight.from = undefined);
-                },
-                get config() {
-                    return { ...(config.current ?? EMPTY_OBJECT) };
-                },
-                get from() {
-                    return getDateObjectFromTimestamp(from);
-                },
-                set from(date) {
-                    grid?.highlight && date && (grid.highlight.from = date.getTime());
-                },
-                get to() {
-                    return getDateObjectFromTimestamp(to);
-                },
-                set to(date) {
-                    grid?.highlight && date && (grid.highlight.to = date.getTime());
-                },
-            } as CalendarHandle;
-        },
-        [grid, lastMutationTimestamp]
-    );
+    useImperativeHandle(ref, () => {
+        const { from, to } = grid?.highlight || EMPTY_OBJECT;
+        return {
+            clear: () => {
+                grid?.highlight && (grid.highlight.from = undefined);
+            },
+            get config() {
+                return { ...(config.current ?? EMPTY_OBJECT) };
+            },
+            get from() {
+                return getDateObjectFromTimestamp(from);
+            },
+            set from(date) {
+                grid?.highlight && date && (grid.highlight.from = date.getTime());
+            },
+            get to() {
+                return getDateObjectFromTimestamp(to);
+            },
+            set to(date) {
+                grid?.highlight && date && (grid.highlight.to = date.getTime());
+            },
+        } as CalendarHandle;
+    }, [grid, lastMutationTimestamp]);
 
     useEffect(() => {
         grid.config({
@@ -165,8 +161,9 @@ const useCalendar = (
             .filter(Boolean);
         if (origins[0]) grid.highlight.from = +origins[0];
         if (origins[1]) grid.highlight.to = +origins[1];
-        return kill;
-    }, []);
+    }, [grid, originDate]);
+
+    useEffect(() => kill, [kill]);
 
     return { cursorElementRef, cursorRootProps, grid };
 };

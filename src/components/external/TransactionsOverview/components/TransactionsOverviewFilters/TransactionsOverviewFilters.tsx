@@ -4,10 +4,20 @@ import useMultiSelectionFilterProps from '../../hooks/useMultiSelectionFilterPro
 import useMultiSelectionFilterCallbacks from '../../hooks/useMultiSelectionFilterCallbacks';
 import useBalanceAccountSelectorProps from '../../hooks/useBalanceAccountSelectorProps';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
+import TransactionsOverviewDateFilter from '../TransactionsOverviewDateFilter/TransactionsOverviewDateFilter';
 import { TransactionsOverviewSplitView, useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
-import { TRANSACTION_CATEGORIES /*, TRANSACTION_STATUSES */ } from './constants';
+import { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
 import { FilterBar } from '../../../../internal/FilterBar';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
+import { EMPTY_OBJECT } from '../../../../../utils';
+import {
+    TRANSACTION_CATEGORIES,
+    TRANSACTION_DATE_RANGE_CUSTOM,
+    TRANSACTION_DATE_RANGES,
+    TRANSACTION_DATE_RANGE_DEFAULT,
+    /* TRANSACTION_STATUSES, */
+    type TransactionDateRange,
+} from './constants';
 
 const TransactionsOverviewFilters = () => {
     const ctx = useTransactionsOverviewContext();
@@ -34,7 +44,31 @@ TransactionsOverviewFilters.BalanceAccount = () => {
     return <BalanceAccountSelector {...balanceAccountSelectorProps} />;
 };
 
-TransactionsOverviewFilters.Date = () => null;
+TransactionsOverviewFilters.Date = () => {
+    const { i18n } = useCoreContext();
+    const { balanceAccount, dateRange, setDateRange } = useTransactionsOverviewContext();
+    const mapOptionName = useCallback((option: TransactionDateRange) => i18n.get(option), [i18n]);
+
+    const currentOption = useMemo(() => {
+        if (dateRange) {
+            const entries = Object.entries(TRANSACTION_DATE_RANGES ?? EMPTY_OBJECT) as [TransactionDateRange, RangeTimestamps][];
+            return entries.find(([, range]) => range === dateRange)?.[0] ?? TRANSACTION_DATE_RANGE_CUSTOM;
+        }
+    }, [dateRange]);
+
+    // [TODO]: Provide filter modification callbacks (such as logging events)
+    return (
+        <TransactionsOverviewDateFilter<TransactionDateRange>
+            currentOption={currentOption}
+            customOption={TRANSACTION_DATE_RANGE_CUSTOM}
+            defaultOption={TRANSACTION_DATE_RANGE_DEFAULT}
+            mapOptionName={mapOptionName}
+            onChange={setDateRange}
+            ranges={TRANSACTION_DATE_RANGES}
+            timezone={balanceAccount?.timeZone}
+        />
+    );
+};
 
 // TransactionsOverviewFilters.Status = () => {
 //     const { i18n } = useCoreContext();
