@@ -98,6 +98,9 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                         focusPrev();
                     }
                     break;
+                case InteractionKeyCode.TAB:
+                    setFocusedStep(activeIndex);
+                    break;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
                     event.preventDefault();
@@ -105,7 +108,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                     break;
             }
         },
-        [isHorizontal, focusNext, focusPrev, activateFocused]
+        [isHorizontal, activeIndex, activateFocused, focusNext, focusPrev]
     );
 
     return (
