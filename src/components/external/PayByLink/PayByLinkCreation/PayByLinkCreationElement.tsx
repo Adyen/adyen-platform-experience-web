@@ -7,7 +7,6 @@ export class PayByLinkCreationElement extends UIElement<PayByLinkCreationCompone
 
     constructor(props: _UIComponentProps<PayByLinkCreationComponentProps>) {
         super(props);
-        this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {
