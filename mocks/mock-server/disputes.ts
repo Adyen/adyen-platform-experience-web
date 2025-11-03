@@ -28,6 +28,7 @@ import {
     NOTIFICATION_OF_FRAUD,
     RFI_ACCEPTABLE,
     RFI_ACCEPTED,
+    RFI_DEFENDABLE,
     RFI_EXPIRED,
     RFI_UNRESPONDED,
 } from '../mock-data/disputes';
@@ -405,6 +406,13 @@ export const DISPUTE_DETAILS_HANDLERS = {
         handlers: [
             httpGetDetails(endpoints('mock').disputes.details, () => {
                 return HttpResponse.json(RFI_ACCEPTED);
+            }),
+        ],
+    },
+    rfiDefendable: {
+        handlers: [
+            httpGetDetails(endpoints('mock').disputes.details, () => {
+                return HttpResponse.json(RFI_DEFENDABLE);
             }),
         ],
     },
