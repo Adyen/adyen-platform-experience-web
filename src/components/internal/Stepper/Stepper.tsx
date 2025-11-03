@@ -113,6 +113,8 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
             <ol
                 aria-label={ariaLabel}
                 ref={listRef}
+                role="toolbar"
+                aria-orientation={variant}
                 className={cx('adyen-pe-stepper__list', {
                     'adyen-pe-stepper__list--horizontal': isHorizontal,
                 })}
