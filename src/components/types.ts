@@ -194,6 +194,10 @@ export interface DisputeOverviewComponentProps
         _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+export interface PayByLinkCreationComponentProps extends UIElementProps {
+    // Placeholder for component props
+}
+
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
@@ -214,4 +218,5 @@ export type ExternalComponentType =
     | 'capitalOverview'
     | 'capitalOffer'
     | 'disputes'
-    | 'disputesManagement';
+    | 'disputesManagement'
+    | 'payByLinkCreation';
