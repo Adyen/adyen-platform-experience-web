@@ -5,12 +5,10 @@ import AriaRole = JSXInternal.AriaRole;
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
-    autoCorrect?: string;
     classNameModifiers?: string[];
     isInvalid?: boolean;
     isValid?: boolean;
     readonly?: boolean;
-    spellCheck?: boolean;
     type?: string;
     uniqueId?: string;
     isCollatingErrors?: boolean;
