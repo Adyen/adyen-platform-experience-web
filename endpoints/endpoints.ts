@@ -17,6 +17,9 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
+        stores: `${baseUrl}/stores`,
+        currencies: `${baseUrl}/currencies`,
+        countries: `${baseUrl}/countries`,
         capital: {
             createOffer: `${baseUrl}/capital/grantOffers/create`,
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
@@ -33,6 +36,10 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             defend: `${baseUrl}/disputes/${matchVariable}/defend`,
             documents: `${baseUrl}/disputes/${matchVariable}/documents`,
             download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
+        },
+        payByLink: {
+            configuration: `${baseUrl}/paybylink/paymentLinks/configuration`,
+            installments: `${baseUrl}/paybylink/installments`,
         },
     } as const;
 };
