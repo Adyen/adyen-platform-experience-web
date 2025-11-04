@@ -109,6 +109,34 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/anaCredit',
         },
+        getStores: {
+            method: 'GET',
+            url: 'stores',
+        },
+        getCurrencies: {
+            method: 'GET',
+            url: 'currencies',
+        },
+        getCountries: {
+            method: 'GET',
+            url: 'countries',
+        },
+        getPayByLinkConfiguration: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks/configuration',
+        },
+        getPayByLinkInstallments: {
+            method: 'GET',
+            url: 'paybylink/installments',
+        },
+        getPaymentLinks: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks',
+        },
+        payByLinkFilters: {
+            method: 'GET',
+            url: 'paybylink/filters',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

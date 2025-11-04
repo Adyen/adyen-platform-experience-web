@@ -311,12 +311,17 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                'application/json': components['schemas']['PaymentLinkConfiguration'];
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['PaymentLinkConfiguration'];
+                };
             };
         };
-        responses: never;
     };
     getPayByLinkInstallments: {
         parameters: {
