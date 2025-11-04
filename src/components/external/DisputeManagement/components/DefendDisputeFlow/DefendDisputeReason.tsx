@@ -122,7 +122,9 @@ export const DefendDisputeReason = () => {
         ];
     }, [isFetching, isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
 
-    const [showAlert, setShowAlert] = useState(true);
+    const isRequestForInformation = useMemo(() => dispute?.dispute.type === 'REQUEST_FOR_INFORMATION', [dispute?.dispute.type]);
+
+    const [showAlert, setShowAlert] = useState(!isRequestForInformation);
     const closeAlert = useCallback(() => {
         setShowAlert(false);
     }, []);
@@ -130,6 +132,14 @@ export const DefendDisputeReason = () => {
     const defenseReasonContent = useMemo(
         () => (selected ? getDefenseReasonContent(defenseReasonConfig, i18n, selected) : undefined),
         [defenseReasonConfig, i18n, selected]
+    );
+
+    const defendDisputeLabel = useMemo(
+        () =>
+            isRequestForInformation
+                ? i18n.get('disputes.management.defend.requestForInformation.selectDefenseReason')
+                : i18n.get('disputes.management.defend.chargeback.selectDefenseReason'),
+        [i18n, isRequestForInformation]
     );
 
     if (!defenseReasons || !selected) {
@@ -140,7 +150,7 @@ export const DefendDisputeReason = () => {
         <>
             <div className={classes.selector}>
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
-                    {i18n.get('disputes.management.defend.chargeback.selectDefenseReason')}
+                    {defendDisputeLabel}
                 </Typography>
                 <Select
                     items={defenseReasons}
