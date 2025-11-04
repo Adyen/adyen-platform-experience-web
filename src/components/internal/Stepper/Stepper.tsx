@@ -138,6 +138,8 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                             }
                         }}
                     >
+                        {/* Warning: Nested children without a wrapper may cause the first element to be skipped.
+                        Use <></> or a plain <div> as a wrapper for multiple children elements. */}
                         {step.props?.children || step}
                     </Step>
                 ))}
