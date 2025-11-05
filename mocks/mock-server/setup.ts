@@ -137,6 +137,14 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/filters',
         },
+        getPayByLinkFilters: {
+            method: 'GET',
+            url: 'paybylink/filters',
+        },
+        getPayByLinkList: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 
