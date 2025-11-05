@@ -2,7 +2,7 @@ import useAnalyticsContext from '../core/Context/analytics/useAnalyticsContext';
 import { capitalize, uniqueId } from '../utils';
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
-import type { SelectItem } from '../components/internal/FormFields/Select/types';
+import type { SelectChangeEvent, SelectItem } from '../components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '../types';
 
 export const ALL_BALANCE_ACCOUNTS_SELECTION_ID = uniqueId();
@@ -52,7 +52,7 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
     );
 
     const onBalanceAccountSelection = useCallback(
-        ({ target }: any) => {
+        ({ target }: SelectChangeEvent) => {
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
             if (index! >= 0) {

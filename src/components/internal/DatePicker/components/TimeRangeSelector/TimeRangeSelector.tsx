@@ -1,7 +1,7 @@
 import { AriaAttributes } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
 import Select from '../../../FormFields/Select';
-import { SelectItem } from '../../../FormFields/Select/types';
+import { SelectChangeEvent, SelectItem } from '../../../FormFields/Select/types';
 import { useTimeRangeSelection, UseTimeRangeSelectionConfig } from './useTimeRangeSelection';
 
 const TimeRangeSelector = ({
@@ -18,7 +18,7 @@ const TimeRangeSelector = ({
     }) => {
     const { customSelection, from, onSelection, options, selectedOption, to } = useTimeRangeSelection(useTimeRangeSelectionConfig);
     const selectOptions = useMemo(() => Object.freeze(options.map(id => ({ id, name: id }) as SelectItem)), [options]);
-    const onSelectedOptionChanged = useCallback(({ target }: any) => onSelection(target?.value), [onSelection]);
+    const onSelectedOptionChanged = useCallback(({ target }: SelectChangeEvent) => onSelection(target?.value), [onSelection]);
     const rangeSelectionInProgress = useRef(true);
     const cachedTimestamp = useRef(timestamp);
 

@@ -77,7 +77,7 @@ const DisputesOverviewTabsDropdown = ({
             aria-label={ariaLabel}
             items={selectItems}
             selected={statusGroup}
-            onChange={({ target }) => setStatusGroup(target.value)}
+            onChange={({ target }) => setStatusGroup(target.value as IDisputeStatusGroup)}
             showOverlay={true}
             multiSelect={false}
             filterable={false}
