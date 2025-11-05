@@ -11,6 +11,7 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import Select from '../../../../internal/FormFields/Select';
+import { SelectChangeEvent } from '../../../../internal/FormFields/Select/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
@@ -100,7 +101,7 @@ export const DefendDisputeReason = () => {
     }, [applicableDocuments, setFlowState]);
 
     const onChange = useCallback(
-        (param: any) => {
+        (param: SelectChangeEvent) => {
             if (selectedDefenseReason !== param.target.value && applicableDocuments?.length) setApplicableDocuments([]);
             if (param?.target?.value) setSelectedDefenseReason(param.target.value);
         },
