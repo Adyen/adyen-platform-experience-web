@@ -7,4 +7,5 @@ export * from './ReportsOverview';
 export * from './CapitalOverview';
 export * from './DisputesOverview';
 export * from './DisputeManagement';
+export * from './PayByLinkOverview';
 export * from './PayByLink/PayByLinkCreation';
