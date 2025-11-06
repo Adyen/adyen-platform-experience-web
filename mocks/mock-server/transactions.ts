@@ -310,6 +310,27 @@ export const transactionsMocks = [
         return HttpResponse.json({ data });
     }),
 
+    http.get(mockEndpoints.downloadTransactions, async ({ request }) => {
+        const { transactions } = fetchTransactionsForRequest(request);
+        const filename = 'transactions';
+
+        return new HttpResponse(
+            new Blob([
+                'Transaction ID,Balance Account ID,Creation Date,Transaction Type,Currency,Net Amount\r\n',
+                ...transactions.slice(0, 100).map(({ balanceAccountId, createdAt, amount, category, id }) => {
+                    return `${id},${balanceAccountId},"${createdAt}",${category},${amount.currency},"${amount.value}"\r\n`;
+                }),
+            ]),
+            {
+                headers: {
+                    'Content-Disposition': `attachment; filename=${filename}`,
+                    'Content-Type': 'text/csv',
+                },
+                status: 200,
+            }
+        );
+    }),
+
     http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
 
     http.post(mockEndpoints.initiateRefund, async ({ request, params }) => {
