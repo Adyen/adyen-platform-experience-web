@@ -14,7 +14,6 @@ import { Tag } from '../../../internal/Tag/Tag';
 import { TagVariant } from '../../../internal/Tag/types';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
-import { AMOUNT_CLASS } from '../../TransactionsOverview/components/TransactionsTable/constants';
 import { IPayByLinkStatus } from '../../../../types';
 import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE } from '../../../../constants/dateFormats';
 
@@ -88,13 +87,13 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     });
 
     const EMPTY_TABLE_MESSAGE = {
-        title: 'transactions.overview.errors.listEmpty',
+        title: 'payByLink.overview.errors.listEmpty',
         message: ['common.errors.updateFilters'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const errorDisplay = useMemo(
         () => () => (
-            <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'transactions.overview.errors.listUnavailable'} />
+            <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'payByLink.overview.errors.listUnavailable'} />
         ),
         [error, onContactSupport]
     );
@@ -118,7 +117,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                     amount: ({ value }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: true });
                         return (
-                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
+                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                 {amount}
                             </Typography>
                         );
@@ -160,8 +159,8 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                     <DataGrid.Footer>
                         <Pagination
                             {...paginationProps}
-                            ariaLabelKey="transactions.overview.pagination.label"
-                            limitSelectAriaLabelKey="transactions.overview.pagination.controls.limitSelect.label"
+                            ariaLabelKey="payByLink.overview.pagination.label"
+                            limitSelectAriaLabelKey="payByLink.overview.pagination.controls.limitSelect.label"
                         />
                     </DataGrid.Footer>
                 )}
