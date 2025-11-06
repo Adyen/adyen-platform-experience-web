@@ -41,6 +41,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'transactions/totals',
         },
+        downloadTransactions: {
+            method: 'GET',
+            url: 'transactions/download',
+        },
         getPayout: {
             method: 'GET',
             url: 'payouts/breakdown',
