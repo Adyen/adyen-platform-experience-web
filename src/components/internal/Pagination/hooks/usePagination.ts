@@ -4,7 +4,7 @@ import useBooleanState from '../../../../hooks/useBooleanState';
 import useMounted from '../../../../hooks/useMounted';
 import { PaginationType, UsePagination } from '../types';
 import { getClampedPageLimit } from '../utils';
-import { noop } from '../../../../utils';
+import { clamp, noop } from '../../../../utils';
 
 const usePagination = <Pagination extends PaginationType>(
     paginationSetupConfig: UsePaginationSetupConfig<Pagination>,
@@ -93,7 +93,7 @@ const usePagination = <Pagination extends PaginationType>(
         [goto, paginationChanged]
     );
 
-    const pageSize = useMemo(() => (page ? Math.min(limit, size - (page - 1) * limit) : 0), [limit, size, page]);
+    const pageSize = useMemo(() => (page ? clamp(0, size - (page - 1) * limit, limit) : 0), [limit, size, page]);
 
     const resetPagination = useCallback(() => {
         resetPageCount();
