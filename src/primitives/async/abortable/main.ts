@@ -37,7 +37,7 @@ export const createAbortable = <T>(abortReason?: T) => {
         return _abortPromise;
     };
 
-    const _refreshIfNecessary = (abort = false) => {
+    const _refresh = (abort = false) => {
         if (boolOrFalse(abort)) _abort();
         if (isUndefined(_abortController)) {
             _abortController = new AbortController();
@@ -51,11 +51,11 @@ export const createAbortable = <T>(abortReason?: T) => {
         abort: enumerable(_abort),
         promise: getter(() => _abortPromise),
         reason: enumerable(abortReason),
-        refresh: enumerable(_refreshIfNecessary),
+        refresh: enumerable(_refresh),
         signal: getter(() => _abortSignal),
     });
 
-    return _refreshIfNecessary();
+    return _refresh();
 };
 
 export default createAbortable;
