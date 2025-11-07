@@ -1,4 +1,4 @@
-import { IBalanceAccountBase } from '../types';
+import { IBalance, IBalanceAccountBase } from '../types';
 import { EMPTY_ARRAY, isFunction } from '../utils';
 import { createAbortable } from '../primitives/async/abortable';
 import { useConfigContext } from '../core/ConfigContext';
@@ -17,8 +17,8 @@ const useAccountBalances = (balanceAccount?: IBalanceAccountBase) => {
             const { signal } = abortable.refresh(true);
             try {
                 const path = { balanceAccountId };
-                const { data } = await getBalances({ signal }, { path });
-                if (!signal.aborted) return data;
+                const json = await getBalances({ signal }, { path });
+                if (!signal.aborted) return json?.data;
             } catch (error) {
                 if (!signal.aborted) throw error;
             }
@@ -30,22 +30,17 @@ const useAccountBalances = (balanceAccount?: IBalanceAccountBase) => {
         queryFn: fetchBalances,
     });
 
-    const balances = useMemo(() => {
-        const balancesData = data || (EMPTY_ARRAY as NonNullable<typeof data>);
-        const balancesMap = new Map<string, Readonly<{ available: number; reserved: number }>>();
-
-        balancesData.forEach(({ currency, value: available, reservedValue: reserved }) => {
-            balancesMap.set(currency, { available, reserved } as const);
-        });
-
-        const balancesEntriesSortedByCurrency = [...balancesMap.entries()].sort(([a], [b]) => a.localeCompare(b));
-        return Object.freeze(Object.fromEntries(balancesEntriesSortedByCurrency));
+    const { balances, balancesLookup, currencies } = useMemo(() => {
+        const balances = [...(Array.isArray(data) ? data : (EMPTY_ARRAY as unknown as Readonly<IBalance>[]))];
+        const currencySortedBalances = [...balances].sort(({ currency: a }, { currency: b }) => a.localeCompare(b));
+        const balancesLookup = Object.freeze(Object.fromEntries(balances.map(balance => [balance.currency, balance])));
+        const currencies = Object.freeze([...new Set(currencySortedBalances.map(({ currency }) => currency))]);
+        return { balances, balancesLookup, currencies } as const;
     }, [data]);
-
-    const currencies = useMemo(() => Object.freeze(Object.keys(balances)), [balances]);
 
     return {
         balances,
+        balancesLookup,
         currencies,
         error,
         isAvailable: canGetBalances,

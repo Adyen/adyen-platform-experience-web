@@ -11,32 +11,31 @@ import { BalancesProps, IBalanceWithKey } from './types';
 
 export const Balances = memo(({ balanceAccount, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
     const { i18n } = useCoreContext();
-    const { balances, currencies, isEmpty, isWaiting } = useAccountBalances(balanceAccount);
+    const { balances: balancesList, currencies, isEmpty, isWaiting } = useAccountBalances(balanceAccount);
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
-    const accountBalances = useMemo(() => {
-        const defaultFirstSortedCurrencies = [...currencies].sort((firstCurrency, secondCurrency) => {
+    const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
+    const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
+
+    const balances = useMemo(() => {
+        return balancesList.sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
             if (defaultCurrencyCode) {
                 if (firstCurrency === defaultCurrencyCode) return -1;
                 if (secondCurrency === defaultCurrencyCode) return 1;
             }
             return firstCurrency.localeCompare(secondCurrency);
         });
-        return defaultFirstSortedCurrencies.map(currency => ({ currency, value: balances[currency]?.available }));
-    }, [balances, defaultCurrencyCode]);
+    }, [balancesList, defaultCurrencyCode]);
 
     const [firstBalance, ...restOfBalances] = useMemo(() => {
         return (
-            accountBalances?.map((t: Partial<IBalanceWithKey>) => {
+            balances?.map((t: Partial<IBalanceWithKey>) => {
                 t['key'] = `${t.currency}-${Math.random()}`;
                 t['balanceElemId'] = uniqueId('elem');
                 return t as IBalanceWithKey;
             }) ?? []
         );
-    }, [accountBalances]);
-
-    const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
-    const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
+    }, [balances]);
 
     const renderFirstBalance = useMemo(
         () => (
