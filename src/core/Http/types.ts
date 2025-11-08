@@ -16,7 +16,7 @@ export interface HttpOptions {
     signal?: AbortSignal;
     origin?: string;
     body?: any;
-    apiVersion?: `v${number}` | `V${number}` | number;
+    apiVersion?: number;
     versionless?: boolean;
     skipContentType?: boolean;
 }
