@@ -1,5 +1,6 @@
 import {
     ErrorTypes,
+    getApiVersion,
     getErrorType,
     getRequestObject,
     getResponseContentType,
@@ -7,7 +8,6 @@ import {
     handleFetchError,
     isAdyenErrorResponse,
 } from './utils';
-import { API_VERSION } from './constants';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { HttpOptions } from './types';
 import { onErrorHandler } from '../types';
@@ -24,8 +24,9 @@ const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
 export async function http<T>(options: HttpOptions): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
     const versionless = options.versionless || false;
+    const apiVersion = getApiVersion(options);
     const request = getRequestObject(options);
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}${versionless ? '' : API_VERSION}${normalizeUrl(path)}`);
+    const url = new URL(`${normalizeLoadingContext(loadingContext)}${versionless ? '' : apiVersion}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
