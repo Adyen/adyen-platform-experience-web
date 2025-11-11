@@ -9,11 +9,12 @@ import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
 import { BalancesProps, IBalanceWithKey } from './types';
 
-export const Balances = memo(({ balanceAccount, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
+export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }: BalancesProps) => {
     const { i18n } = useCoreContext();
     const { balances: balancesList, currencies, isEmpty, isWaiting } = useAccountBalances(balanceAccount);
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
+    const defaultCurrencyCode = balanceAccount?.defaultCurrencyCode;
     const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
 

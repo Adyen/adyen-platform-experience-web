@@ -8,6 +8,5 @@ export type IBalanceWithKey = IBalance & {
 export type BalancesProps = {
     balanceAccount?: IBalanceAccountBase;
     onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
-    defaultCurrencyCode: ITransaction['amount']['currency'] | undefined;
     fullWidth?: boolean;
 };
