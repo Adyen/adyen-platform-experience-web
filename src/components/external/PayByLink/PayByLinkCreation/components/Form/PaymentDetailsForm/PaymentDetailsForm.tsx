@@ -5,27 +5,38 @@ import { MerchantReferenceField } from './Fields/MerchantReferenceField';
 import { LinkTypeField } from './Fields/LinkTypeField';
 import { DescriptionField } from './Fields/DescriptionField';
 import { DeliveryDateField } from './Fields/DeliveryDateField';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { FormValues } from '../../types';
+import { VisibleField } from '../VisibleField';
 
 export const PaymentDetailsForm = ({ timezone }: { timezone?: string }) => {
-    const { fieldsConfig } = useWizardFormContext<FormValues>();
-
     return (
         <div className="adyen-pe-pay-by-link-creation__form-fields-container">
-            {fieldsConfig['store']?.visible && <StoreField />}
+            <VisibleField name="store">
+                <StoreField />
+            </VisibleField>
 
-            {fieldsConfig['linkValidity']?.visible && <ValidityField />}
+            <VisibleField name="linkValidity">
+                <ValidityField />
+            </VisibleField>
 
-            {fieldsConfig['amountValue']?.visible && <AmountField />}
+            <VisibleField name="amountValue">
+                <AmountField />
+            </VisibleField>
 
-            {fieldsConfig['merchantReference']?.visible && <MerchantReferenceField />}
+            <VisibleField name="merchantReference">
+                <MerchantReferenceField />
+            </VisibleField>
 
-            {fieldsConfig['linkType']?.visible && <LinkTypeField />}
+            <VisibleField name="linkType">
+                <LinkTypeField />
+            </VisibleField>
 
-            {fieldsConfig['description']?.visible && <DescriptionField />}
+            <VisibleField name="description">
+                <DescriptionField />
+            </VisibleField>
 
-            {fieldsConfig['deliveryDate']?.visible && <DeliveryDateField timezone={timezone} />}
+            <VisibleField name="deliveryDate">
+                <DeliveryDateField timezone={timezone} />
+            </VisibleField>
         </div>
     );
 };
