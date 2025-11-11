@@ -1,10 +1,10 @@
-import { FieldError, UseFormReturn } from '../types';
+import { FieldValues, UseFormReturn } from '../types';
 
-export interface WizardStep<TFieldValues = Record<string, any>> {
+export interface WizardStep<TFieldValues> {
     id: string;
     title: string;
     description?: string;
-    fields: (keyof TFieldValues | string)[]; // Fields that belong to this step
+    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean }[]>;
     validate?: (values: Partial<TFieldValues>) => boolean | Promise<boolean>;
     isOptional?: boolean;
 }
@@ -27,25 +27,23 @@ export type WizardAction =
     | { type: 'SET_TRANSITIONING'; payload: boolean }
     | { type: 'RESET_WIZARD' };
 
-export interface UseWizardFormOptions<TFieldValues = Record<string, any>> {
-    steps: WizardStep<TFieldValues>[];
+export interface UseWizardFormOptions<TFieldValues> {
+    steps: Readonly<WizardStep<TFieldValues>[]>;
     defaultValues?: Partial<TFieldValues>;
     mode?: 'onBlur' | 'onInput' | 'all';
     onStepChange?: (newStep: number, previousStep: number) => void;
     validateBeforeNext?: boolean; // Default true
 }
 
-export interface UseWizardFormReturn<TFieldValues = Record<string, any>> extends UseFormReturn<TFieldValues> {
-    // Wizard-specific methods
+export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldValues> {
+    // Wizard state
     currentStep: number;
-    totalSteps: number;
     currentStepConfig: WizardStep<TFieldValues>;
     isFirstStep: boolean;
     isLastStep: boolean;
     canGoNext: boolean;
     canGoPrevious: boolean;
-    completedSteps: Set<number>;
-    visitedSteps: Set<number>;
+    fieldsConfig: Partial<Record<FieldValues<TFieldValues>, WizardStep<TFieldValues>['fields'][number]>>;
 
     // Navigation methods
     goToStep: (step: number, options?: { skipValidation?: boolean }) => Promise<boolean>;
@@ -53,23 +51,21 @@ export interface UseWizardFormReturn<TFieldValues = Record<string, any>> extends
     previousStep: () => void;
 
     // Validation methods
-    validateCurrentStep: () => Promise<boolean>;
     validateStep: (step: number) => Promise<boolean>;
-    getStepErrors: (step: number) => Record<string, FieldError>;
     isStepValid: (step: number) => boolean;
     isStepComplete: (step: number) => boolean;
 
-    // Reset
-    resetWizard: (values?: Partial<TFieldValues>) => void;
+    // Summary data
+    getSummaryData: () => WizardSummaryData<TFieldValues>;
 }
 
-export type WizardFormContextValue<TFieldValues = Record<string, any>> = UseWizardFormReturn<TFieldValues>;
+export type WizardFormContextValue<TFieldValues> = UseWizardFormReturn<TFieldValues>;
 
-export interface WizardSummaryData {
+export interface WizardSummaryData<TFieldValues> {
     [stepId: string]: {
         title: string;
         fields: {
-            label: string;
+            label: FieldValues<TFieldValues>;
             value: any;
             displayValue?: string;
         }[];

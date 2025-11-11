@@ -4,7 +4,7 @@ import { WizardFormContextValue } from './types';
 
 const WizardFormContext = createContext<WizardFormContextValue<any> | null>(null);
 
-export function useWizardFormContext<TFieldValues = Record<string, any>>(): WizardFormContextValue<TFieldValues> {
+export function useWizardFormContext<TFieldValues>(): WizardFormContextValue<TFieldValues> {
     const context = useContext(WizardFormContext);
     if (!context) {
         throw new Error('useWizardFormContext must be used within a WizardFormProvider');
@@ -12,12 +12,12 @@ export function useWizardFormContext<TFieldValues = Record<string, any>>(): Wiza
     return context as WizardFormContextValue<TFieldValues>;
 }
 
-interface WizardFormProviderProps<TFieldValues = Record<string, any>> extends WizardFormContextValue<TFieldValues> {
+interface WizardFormProviderProps<TFieldValues> extends WizardFormContextValue<TFieldValues> {
     children: ComponentChildren;
 }
 
-export function WizardFormProvider<TFieldValues = Record<string, any>>({ children, ...methods }: WizardFormProviderProps<TFieldValues>) {
-    return <WizardFormContext.Provider value={methods}>{children}</WizardFormContext.Provider>;
+export function WizardFormProvider<TFieldValues>({ children, ...methods }: WizardFormProviderProps<TFieldValues>) {
+    return <WizardFormContext.Provider value={methods as WizardFormContextValue<TFieldValues>}>{children}</WizardFormContext.Provider>;
 }
 
 export { WizardFormContext };

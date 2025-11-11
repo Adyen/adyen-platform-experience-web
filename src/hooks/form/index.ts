@@ -6,7 +6,6 @@ export type {
     // Core types
     FieldValue,
     FieldError,
-    FieldPath,
     ValidationValue,
     ValidationResult,
     ValidateFn,
