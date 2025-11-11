@@ -1,7 +1,7 @@
 // Core form types
 import { ComponentChild } from 'preact';
 
-export type FieldValue = unknown;
+export type FieldValue = string | number | boolean;
 export type FieldError = { message?: string; type: 'validation' | 'required' } | undefined;
 
 // Validation rule types

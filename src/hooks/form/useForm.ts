@@ -50,7 +50,7 @@ function flattenObject(obj: any, prefix = ''): Record<string, any> {
     return result;
 }
 
-async function validateField(value: any, rules: ValidationRules | undefined): Promise<FieldError> {
+async function validateField(value: FieldValue, rules: ValidationRules | undefined): Promise<FieldError> {
     if (!rules) return undefined;
 
     if (rules.required) {
@@ -225,7 +225,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
             }
 
             const validationPromises = fieldsToValidate.map(async fieldName => {
-                const value = control._values.get(fieldName);
+                const value = control._values.get(fieldName)!;
                 const rules = control._fieldRules.get(fieldName);
 
                 if (rules) {
@@ -284,7 +284,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
 export async function validateFieldWithRaceConditionHandling<TFieldValues>(
     control: InternalFormControl<TFieldValues>,
     name: FieldValues<TFieldValues>,
-    value: any,
+    value: FieldValue,
     rules?: ValidationRules
 ): Promise<void> {
     const currentCounter = (control._validationCounters.get(name) || 0) + 1;

@@ -24,7 +24,7 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
         };
     }, [control, internalControl, name, rules]);
 
-    const value = internalControl._values.get(name);
+    const value = internalControl._values.get(name)!;
 
     const fieldState: ControllerFieldState = {
         error: internalControl._errors.get(name),
@@ -88,7 +88,7 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
         // Update computed state
         internalControl._computedTouchedFields[name] = true;
 
-        const value = internalControl._values.get(name);
+        const value = internalControl._values.get(name)!;
         void validateFieldWithRaceConditionHandling(internalControl, name, value, rules);
 
         control.notify();
