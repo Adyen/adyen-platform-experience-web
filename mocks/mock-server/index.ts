@@ -9,6 +9,7 @@ import { analyticsMock } from './analytics';
 import { setupMock } from './setup';
 import { capitalMock } from './capital';
 import { disputesMocks } from './disputes';
+import { payByLinkMocks } from './payByLink';
 
 export const mocks = [
     balanceAccountMock,
@@ -20,5 +21,6 @@ export const mocks = [
     reportsMock,
     capitalMock,
     disputesMocks,
+    payByLinkMocks,
 ];
 export const mockWorker = setupWorker(...getMockHandlers(mocks));
