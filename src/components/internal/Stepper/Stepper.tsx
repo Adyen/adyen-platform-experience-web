@@ -27,7 +27,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
 
     const canActivate = useCallback(
         (nextIndex: number) => {
-            if (nextStepDisabled && nextIndex !== latestActiveStep) return false;
+            if (nextStepDisabled && nextIndex > latestActiveStep) return false;
             return nextIndex <= latestActiveStep + 1;
         },
         [latestActiveStep, nextStepDisabled]

@@ -13,75 +13,6 @@ export const STORES = [
     },
 ];
 
-export const PAY_BY_LINK_CONFIGURATION = {
-    amountValue: {
-        fillMode: 'optional',
-    },
-    billingAddress: {
-        fillMode: 'employeeOptional',
-    },
-    countryCode: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    currency: {
-        fillMode: 'USD',
-        optionsMode: 'all',
-    },
-    deliveryDate: {
-        fillMode: 'optional',
-    },
-    description: {
-        fillMode: 'optional',
-    },
-    emailAddress: {
-        fillMode: 'employeeOptional',
-    },
-    emailSender: {
-        fillMode: 'optional',
-    },
-    fullName: {
-        fillMode: 'employeeOptional',
-    },
-    linkType: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    linkValidity: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-        subset: [
-            {
-                durationUnit: 'days',
-                quantity: 7,
-            },
-            {
-                durationUnit: 'days',
-                quantity: 30,
-            },
-        ],
-    },
-    merchantReference: {
-        fillMode: 'optional',
-    },
-    phoneNumber: {
-        fillMode: 'employeeOptional',
-    },
-    shippingAddress: {
-        fillMode: 'employeeOptional',
-    },
-    shopperLocale: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    shopperReference: {
-        fillMode: 'optional',
-    },
-    stores: {
-        fillMode: 'optional',
-    },
-};
-
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'SEK', 'NZD'];
 
 export const COUNTRIES = [
@@ -181,3 +112,78 @@ export const INSTALLMENTS = [
         installments: [2, 3, 6, 9],
     },
 ];
+
+export const PAY_BY_LINK_CONFIGURATION = {
+    amountValue: {
+        required: true,
+    },
+    billingAddress: {
+        required: true,
+    },
+    countryCode: {
+        required: true,
+        options: COUNTRIES,
+    },
+    currency: {
+        required: true,
+        options: CURRENCIES.map(id => ({ id })),
+    },
+    deliveryDate: {
+        required: true,
+    },
+    description: {
+        required: true,
+    },
+    emailAddress: {
+        required: true,
+    },
+    emailSender: {
+        required: true,
+    },
+    fullName: {
+        required: true,
+    },
+    linkType: {
+        required: true,
+        options: ['singleUse', 'open'],
+    },
+    linkValidity: {
+        required: true,
+        options: [
+            {
+                durationUnit: 'day',
+                quantity: 7,
+                type: 'flexible',
+            },
+            {
+                durationUnit: 'day',
+                quantity: 30,
+                type: 'flexible',
+            },
+            {
+                durationUnit: 'week',
+                quantity: 1,
+                type: 'flexible',
+            },
+        ],
+    },
+    merchantReference: {
+        required: true,
+    },
+    phoneNumber: {
+        required: true,
+    },
+    shippingAddress: {
+        required: true,
+    },
+    shopperLocale: {
+        required: true,
+        options: ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'nl-NL', 'pt-BR', 'ja-JP', 'zh-CN'],
+    },
+    shopperReference: {
+        required: true,
+    },
+    store: {
+        required: true,
+    },
+};

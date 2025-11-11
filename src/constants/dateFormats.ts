@@ -59,3 +59,12 @@ export const DATE_FORMAT_RESPONSE_DEADLINE: Intl.DateTimeFormatOptions = {
     year: undefined,
     timeZoneName: SHORT_OFFSET,
 };
+
+export const DATE_FORMAT_DELIVERY_DATE: Intl.DateTimeFormatOptions = {
+    month: SHORT,
+    weekday: LONG,
+    hour: DIGITS_2,
+    minute: NUMERIC,
+    year: undefined,
+    timeZoneName: SHORT_OFFSET,
+};

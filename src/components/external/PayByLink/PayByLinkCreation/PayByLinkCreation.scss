@@ -1,0 +1,79 @@
+@use '../../../../style/variable-generator' as style;
+
+.adyen-pe-pay-by-link-creation {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    &__form-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        margin-top: style.token(spacer-060);
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-100);
+    }
+
+    &__form-buttons-container {
+        display: flex;
+    }
+
+    &__buttons {
+        display: flex;
+        gap: style.token(spacer-050);
+        margin-left: auto;
+    }
+
+    &__title-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-010);
+    }
+
+    &__form-description {
+        color: style.token(color-label-secondary);
+    }
+
+    &__form-fields-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__form-field-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+    }
+
+    &__form-field-label-container {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-020);
+    }
+
+    &__form-field-label-optional {
+        color: style.token(color-label-secondary);
+        font-weight: 400;
+    }
+
+    &__form-field-support-text {
+        color: style.token(color-label-secondary);
+        font-weight: 400;
+    }
+
+    &__form-field-checkbox {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
+    &__form-field-date-field-container {
+        padding: style.token(spacer-080);
+    }
+}

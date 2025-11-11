@@ -179,9 +179,9 @@ export interface components {
             id?: string;
         };
         LinkValidity: {
-            durationUnit?: string;
-            quantity?: number;
-            type?: string;
+            durationUnit: 'hour' | 'minute' | 'day' | 'week';
+            quantity: number;
+            type?: 'fixed' | 'flexible';
         };
         Theme: {
             brandName?: string;
@@ -195,7 +195,7 @@ export interface components {
                 required: components['schemas']['FillMode'];
             };
             countryCode?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options?: components['schemas']['Country'][];
             };
             currency: {
@@ -218,11 +218,11 @@ export interface components {
                 required: components['schemas']['FillMode'];
             };
             linkType?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options: string[];
             };
             linkValidity?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options: components['schemas']['LinkValidity'][];
             };
             merchantReference: {
@@ -243,7 +243,7 @@ export interface components {
             };
             store: {
                 /** @description will be always true, but let's have it for future compatibility */
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
             };
         };
     };

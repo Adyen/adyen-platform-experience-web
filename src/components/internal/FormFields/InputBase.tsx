@@ -140,12 +140,7 @@ function InputBase(
             {hasDropdownOrIcons ? (
                 <div className="adyen-pe-input__container">
                     {shouldDisplayDropdownAtStart && dropdown && (
-                        <div
-                            role="presentation"
-                            className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start"
-                            onClickCapture={e => e.stopPropagation()}
-                            onMouseDownCapture={e => e.stopPropagation()}
-                        >
+                        <div role="presentation" className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start">
                             <Select
                                 buttonVariant={ButtonVariant.TERTIARY}
                                 items={dropdown.items}
