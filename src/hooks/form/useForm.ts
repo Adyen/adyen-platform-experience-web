@@ -1,15 +1,5 @@
 import { useRef, useCallback } from 'preact/hooks';
-import {
-    UseFormOptions,
-    UseFormReturn,
-    InternalFormControl,
-    FormState,
-    FieldValue,
-    FieldError,
-    FieldPath,
-    ValidationRules,
-    ValidationResult,
-} from './types';
+import { UseFormOptions, UseFormReturn, InternalFormControl, FormState, FieldValue, FieldError, ValidationRules, FieldValues } from './types';
 
 export function getNestedValue(obj: any, path: string): any {
     const keys = path.split('.');
@@ -71,55 +61,22 @@ async function validateField(value: any, rules: ValidationRules | undefined): Pr
         }
     }
 
-    if (rules.minLength != null && typeof value === 'string') {
-        const minLengthConfig =
-            typeof rules.minLength === 'number' ? { value: rules.minLength, message: `Minimum length is ${rules.minLength}` } : rules.minLength;
-        if (value.length < minLengthConfig.value) {
-            return { type: 'minLength', message: minLengthConfig.message };
-        }
-    }
-
-    if (rules.maxLength != null && typeof value === 'string') {
-        const maxLengthConfig =
-            typeof rules.maxLength === 'number' ? { value: rules.maxLength, message: `Maximum length is ${rules.maxLength}` } : rules.maxLength;
-        if (value.length > maxLengthConfig.value) {
-            return { type: 'maxLength', message: maxLengthConfig.message };
-        }
-    }
-
-    if (rules.pattern && typeof value === 'string') {
-        const patternConfig = rules.pattern instanceof RegExp ? { value: rules.pattern, message: 'Invalid format' } : rules.pattern;
-        if (!patternConfig.value.test(value)) {
-            return { type: 'pattern', message: patternConfig.message };
-        }
-    }
-
     if (rules.validate) {
         try {
-            let validationFunctions: Record<string, (value: any) => ValidationResult | Promise<ValidationResult>>;
-
-            if (typeof rules.validate === 'function') {
-                validationFunctions = { validate: rules.validate };
-            } else {
-                validationFunctions = rules.validate;
-            }
-
-            for (const [key, validateFn] of Object.entries(validationFunctions)) {
-                const result = await validateFn(value);
-                if (result !== true && result != null) {
-                    return { type: key, message: typeof result === 'string' ? result : 'Validation failed' };
-                }
+            const result = await rules.validate(value);
+            if (!result.valid) {
+                return { message: result.message, type: 'validation' };
             }
         } catch (error) {
             console.error('A custom validation function threw an error:', error);
-            return { type: 'validate', message: 'Validation error occurred' };
+            return { type: 'validation', message: 'Validation error occurred' };
         }
     }
 
     return undefined;
 }
 
-export function useForm<TFieldValues = Record<string, any>>(options: UseFormOptions<TFieldValues> = {}): UseFormReturn<TFieldValues> {
+export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}): UseFormReturn<TFieldValues> {
     const { defaultValues = {} as Partial<TFieldValues>, mode = 'onBlur' } = options;
 
     const controlRef = useRef<InternalFormControl<TFieldValues>>();
@@ -151,7 +108,7 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
         // Flatten defaultValues to support nested objects
         const flattenedDefaults = flattenObject(defaultValues);
         Object.entries(flattenedDefaults).forEach(([key, value]) => {
-            control._values.set(key, value);
+            control._values.set(key as FieldValues<TFieldValues>, value);
         });
 
         controlRef.current = control;
@@ -160,23 +117,25 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
     const control = controlRef.current;
 
     const errors = control._computedErrors;
-    const touchedFields = control._computedTouchedFields;
     const dirtyFields = control._computedDirtyFields;
 
     const hasErrors = Object.keys(errors).length > 0;
     const isValid = !hasErrors && !control._isSubmitting;
 
-    const formState: FormState = {
-        errors,
-        touchedFields,
+    const formState: FormState<TFieldValues> = {
         dirtyFields,
         isSubmitting: control._isSubmitting,
         isValid,
+        errors,
     };
 
     const setValue = useCallback(
-        (name: FieldPath, value: FieldValue, options?: { shouldValidate?: boolean; shouldDirty?: boolean; shouldTouch?: boolean }) => {
-            const defaultValue = getNestedValue(control._defaultValues, name);
+        (
+            name: FieldValues<TFieldValues>,
+            value: FieldValue,
+            options?: { shouldValidate?: boolean; shouldDirty?: boolean; shouldTouch?: boolean }
+        ) => {
+            const defaultValue = getNestedValue(control._defaultValues, name as string);
             const isDirty = value !== defaultValue;
 
             control._values.set(name, value);
@@ -207,14 +166,14 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
     );
 
     const getValues = useCallback(
-        (name?: FieldPath): any => {
+        (name?: FieldValues<TFieldValues>): any => {
             if (name) {
                 return control._values.get(name);
             }
 
             const values = {} as TFieldValues;
             control._values.forEach((value, key) => {
-                setNestedValue(values, key, value);
+                setNestedValue(values, key as string, value);
             });
             return values;
         },
@@ -239,7 +198,7 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
             // Flatten resetValues to support nested objects
             const flattenedResetValues = flattenObject(resetValues);
             Object.entries(flattenedResetValues).forEach(([key, value]) => {
-                control._values.set(key, value);
+                control._values.set(key as FieldValues<TFieldValues>, value);
             });
 
             control._isSubmitting = false;
@@ -249,14 +208,14 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
     );
 
     const trigger = useCallback(
-        async (name?: FieldPath | FieldPath[]): Promise<boolean> => {
+        async (name?: FieldValues<TFieldValues> | FieldValues<TFieldValues>[]): Promise<boolean> => {
             const fieldsToValidate = name ? (Array.isArray(name) ? name : [name]) : Array.from(control._values.keys());
 
             let hasTouchedChanged = false;
             fieldsToValidate.forEach(fieldName => {
                 if (!control._touched.has(fieldName)) {
                     control._touched.set(fieldName, true);
-                    control._computedTouchedFields[fieldName] = true;
+                    control._computedTouchedFields[fieldName as FieldValues<TFieldValues>] = true;
                     hasTouchedChanged = true;
                 }
             });
@@ -324,7 +283,7 @@ export function useForm<TFieldValues = Record<string, any>>(options: UseFormOpti
 
 export async function validateFieldWithRaceConditionHandling<TFieldValues>(
     control: InternalFormControl<TFieldValues>,
-    name: string,
+    name: FieldValues<TFieldValues>,
     value: any,
     rules?: ValidationRules
 ): Promise<void> {
@@ -346,7 +305,7 @@ export async function validateFieldWithRaceConditionHandling<TFieldValues>(
         }
     } catch (err) {
         if (control._validationCounters.get(name) === currentCounter) {
-            const errorObj = { type: 'validate', message: 'Validation error' };
+            const errorObj = { type: 'validation', message: 'Validation error' } as const;
             control._errors.set(name, errorObj);
             control._computedErrors[name] = errorObj;
             control.notify();

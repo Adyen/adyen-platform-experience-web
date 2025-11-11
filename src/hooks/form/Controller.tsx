@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useCallback } from 'preact/hooks';
-import { ControllerProps, ControllerFieldState, FormState, InternalFormControl } from './types';
+import { ControllerProps, ControllerFieldState, FormState, InternalFormControl, FieldValues } from './types';
 import { validateFieldWithRaceConditionHandling, getNestedValue } from './useForm';
 
-export function Controller<TFieldValues = Record<string, any>>({ name, control, rules, render }: ControllerProps) {
+export function Controller<TFieldValues>({ name, control, rules, render }: ControllerProps<TFieldValues>) {
     const [, rerender] = useReducer<number, void>(x => x + 1, 0);
 
     // Cast to internal control for implementation access
@@ -32,12 +32,11 @@ export function Controller<TFieldValues = Record<string, any>>({ name, control, 
         isDirty: internalControl._dirty.get(name) || false,
     };
 
-    const formState: FormState = {
-        errors: internalControl._computedErrors,
-        touchedFields: internalControl._computedTouchedFields,
+    const formState: FormState<TFieldValues> = {
         dirtyFields: internalControl._computedDirtyFields,
         isSubmitting: internalControl._isSubmitting,
         isValid: Object.keys(internalControl._computedErrors).length === 0 && !internalControl._isSubmitting,
+        errors: internalControl._computedErrors,
     };
 
     const handleChange = useCallback(
@@ -60,7 +59,7 @@ export function Controller<TFieldValues = Record<string, any>>({ name, control, 
                 }
             }
 
-            const defaultValue = getNestedValue(internalControl._defaultValues, name);
+            const defaultValue = getNestedValue(internalControl._defaultValues, name as string);
             const isDirty = newValue !== defaultValue;
 
             internalControl._values.set(name, newValue);
@@ -68,7 +67,7 @@ export function Controller<TFieldValues = Record<string, any>>({ name, control, 
 
             // Update computed state
             if (isDirty) {
-                internalControl._computedDirtyFields[name] = true;
+                internalControl._computedDirtyFields[name as FieldValues<TFieldValues>] = true;
             } else {
                 delete internalControl._computedDirtyFields[name];
             }

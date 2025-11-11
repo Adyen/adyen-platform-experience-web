@@ -1,7 +1,7 @@
-import { useReducer, useCallback } from 'preact/hooks';
+import { useReducer, useCallback, useMemo } from 'preact/hooks';
 import { getNestedValue, useForm } from '../useForm';
-import { UseWizardFormOptions, UseWizardFormReturn, WizardState, WizardAction } from './types';
-import { FieldError } from '../types';
+import { UseWizardFormOptions, UseWizardFormReturn, WizardState, WizardAction, WizardStep, WizardSummaryData } from './types';
+import { FieldValues } from '../types';
 
 function wizardReducer(state: WizardState, action: WizardAction): WizardState {
     switch (action.type) {
@@ -69,7 +69,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
     }
 }
 
-export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWizardFormOptions<TFieldValues>): UseWizardFormReturn<TFieldValues> {
+export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TFieldValues>): UseWizardFormReturn<TFieldValues> {
     const { steps, defaultValues, mode = 'onBlur', onStepChange, validateBeforeNext = true } = options;
 
     const [wizardState, dispatch] = useReducer(wizardReducer, {
@@ -85,7 +85,7 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
         mode,
     });
 
-    const { formState, trigger, getValues, reset: formReset } = form;
+    const { trigger, getValues } = form;
 
     const totalSteps = steps.length;
     const currentStepConfig = steps[wizardState.currentStep]!;
@@ -93,6 +93,14 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
     const isLastStep = wizardState.currentStep === totalSteps - 1;
     const canGoPrevious = !isFirstStep && !wizardState.isTransitioning;
     const canGoNext = !isLastStep && !wizardState.isTransitioning;
+    const fieldsConfig: Record<FieldValues<TFieldValues>, WizardStep<TFieldValues>['fields'][number]> = useMemo(() => {
+        return steps
+            .flatMap(step => step.fields)
+            .reduce(
+                (prev, currentValue) => ({ ...prev, [currentValue.fieldName]: currentValue }),
+                {} as Record<FieldValues<TFieldValues>, WizardStep<TFieldValues>['fields'][number]>
+            );
+    }, [steps]);
 
     const validateStep = useCallback(
         async (stepIndex: number): Promise<boolean> => {
@@ -102,15 +110,16 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
             // Skip validation for optional steps if no fields are filled
             if (step.isOptional) {
                 const values = getValues();
-                const hasValues = step.fields.some(field => {
-                    const value = getNestedValue(values, field as string);
+                const hasValues = step.fields.some(({ fieldName }) => {
+                    const value = getNestedValue(values, fieldName as string);
                     return value !== undefined && value !== '' && value !== null;
                 });
                 if (!hasValues) return true;
             }
 
             // Trigger validation for all fields in this step
-            const validationResults = await Promise.all(step.fields.map(field => trigger(field as string)));
+            const validationResults = await Promise.all(step.fields.map(({ fieldName }) => trigger(fieldName)));
+
             const fieldsValid = validationResults.every(result => result);
 
             // Run custom step validation if provided
@@ -133,23 +142,6 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
         });
         return isValid;
     }, [wizardState.currentStep, validateStep]);
-
-    const getStepErrors = useCallback(
-        (stepIndex: number): Record<string, FieldError> => {
-            const step = steps[stepIndex];
-            if (!step) return {};
-
-            const errors: Record<string, FieldError> = {};
-            step.fields.forEach(field => {
-                const fieldName = field as string;
-                if (formState.errors[fieldName]) {
-                    errors[fieldName] = formState.errors[fieldName];
-                }
-            });
-            return errors;
-        },
-        [steps, formState.errors]
-    );
 
     const isStepValid = useCallback(
         (stepIndex: number): boolean => {
@@ -243,26 +235,40 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
         }
     }, [canGoPrevious, wizardState.currentStep, onStepChange]);
 
-    const resetWizard = useCallback(
-        (values?: Partial<TFieldValues>): void => {
-            dispatch({ type: 'RESET_WIZARD' });
-            formReset(values || defaultValues);
-        },
-        [formReset, defaultValues]
-    );
+    const getSummaryData = useCallback((): WizardSummaryData<TFieldValues> => {
+        const values = getValues();
+        const summary: WizardSummaryData<TFieldValues> = {};
+
+        steps.forEach(step => {
+            const stepFields = step.fields
+                .filter(field => field.visible !== false)
+                .map(field => ({
+                    label: field.fieldName,
+                    value: getNestedValue(values, field.fieldName as string),
+                }))
+                .filter(field => field.value !== undefined && field.value !== null && field.value !== '');
+
+            if (stepFields.length > 0) {
+                summary[step.id] = {
+                    title: step.title,
+                    fields: stepFields,
+                };
+            }
+        });
+
+        return summary;
+    }, [steps, getValues]);
 
     return {
         ...form,
         // Wizard state
         currentStep: wizardState.currentStep,
-        totalSteps,
         currentStepConfig,
         isFirstStep,
         isLastStep,
         canGoNext,
         canGoPrevious,
-        completedSteps: wizardState.completedSteps,
-        visitedSteps: wizardState.visitedSteps,
+        fieldsConfig,
 
         // Navigation methods
         goToStep,
@@ -270,13 +276,11 @@ export function useWizardForm<TFieldValues = Record<string, any>>(options: UseWi
         previousStep,
 
         // Validation methods
-        validateCurrentStep,
         validateStep,
-        getStepErrors,
         isStepValid,
         isStepComplete,
 
-        // Reset
-        resetWizard,
+        // Summary data
+        getSummaryData,
     };
 }
