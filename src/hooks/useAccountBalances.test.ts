@@ -34,6 +34,7 @@ describe('useAccountBalances', () => {
             error: undefined,
             isAvailable: false,
             isEmpty: true,
+            isMultiCurrency: false,
             isWaiting: false,
         };
 
@@ -58,6 +59,7 @@ describe('useAccountBalances', () => {
             error: undefined,
             isAvailable: true,
             isEmpty: true,
+            isMultiCurrency: false,
             isWaiting: true,
         };
 
@@ -90,6 +92,7 @@ describe('useAccountBalances', () => {
             error: undefined,
             isAvailable: true,
             isEmpty: true,
+            isMultiCurrency: false,
             isWaiting: false,
         };
 
@@ -135,6 +138,7 @@ describe('useAccountBalances', () => {
                 error: undefined,
                 isAvailable: true,
                 isEmpty: true,
+                isMultiCurrency: false,
                 isWaiting: false,
             })
         );
@@ -150,6 +154,7 @@ describe('useAccountBalances', () => {
             error: undefined,
             isAvailable: true,
             isEmpty: true,
+            isMultiCurrency: false,
             isWaiting: false,
         };
 
@@ -201,6 +206,7 @@ describe('useAccountBalances', () => {
                 error: undefined,
                 isAvailable: true,
                 isEmpty: false,
+                isMultiCurrency: true,
                 isWaiting: false,
             })
         );
@@ -226,6 +232,7 @@ describe('useAccountBalances', () => {
                 error: 'unknown_error',
                 isAvailable: true,
                 isEmpty: true,
+                isMultiCurrency: false,
                 isWaiting: false,
             })
         );

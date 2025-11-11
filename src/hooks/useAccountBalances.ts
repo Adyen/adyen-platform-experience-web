@@ -45,6 +45,7 @@ const useAccountBalances = (balanceAccount?: IBalanceAccountBase) => {
         error,
         isAvailable: canGetBalances,
         isEmpty: !!error || !currencies.length,
+        isMultiCurrency: currencies.length > 1,
         isWaiting: isFetching || (canGetBalances && !balanceAccountId),
     } as const;
 };
