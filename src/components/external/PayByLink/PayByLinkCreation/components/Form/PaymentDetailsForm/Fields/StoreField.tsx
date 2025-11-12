@@ -5,29 +5,30 @@ import FormField from '../../FormField';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { StoresDTO } from '../../../../../../../../types/api/models/stores';
-import { useMemo } from 'preact/hooks';
-
-const STORES: StoresDTO[] = [
-    {
-        storeCode: 'EvergreenGoods',
-        description: 'My Store Description',
-    },
-    {
-        storeCode: 'Starlight Boutique',
-        description: 'My Store Description',
-    },
-];
+import { useMemo, useCallback } from 'preact/hooks';
+import { useFetch } from '../../../../../../../../hooks/useFetch';
+import { useConfigContext } from '../../../../../../../../core/ConfigContext';
+import { EMPTY_OBJECT } from '../../../../../../../../utils';
 
 const StoreField = () => {
     const { i18n } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
+    const { getStores } = useConfigContext().endpoints;
+
+    const storesQuery = useFetch({
+        fetchOptions: { enabled: !!getStores },
+        queryFn: useCallback(async () => {
+            return getStores?.(EMPTY_OBJECT, {});
+        }, [getStores]),
+    });
 
     const selectItems = useMemo(() => {
-        return STORES.map(({ storeCode, description }) => ({
+        const stores: StoresDTO[] = storesQuery.data?.data ?? [];
+        return stores.map(({ storeCode, description }) => ({
             id: storeCode || description || '',
             name: storeCode || description || '',
         }));
-    }, []);
+    }, [storesQuery.data]);
 
     const isRequired = useMemo(() => fieldsConfig['store']?.required, [fieldsConfig]);
 
@@ -45,7 +46,14 @@ const StoreField = () => {
                     };
                     return (
                         <div>
-                            <Select {...field} selected={field.value as string} onChange={onInput} items={selectItems} isValid={!fieldState.error} />
+                            <Select
+                                {...field}
+                                selected={field.value as string}
+                                onChange={onInput}
+                                items={selectItems}
+                                readonly={storesQuery.isFetching}
+                                isValid={!fieldState.error}
+                            />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
                         </div>
                     );

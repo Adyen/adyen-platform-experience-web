@@ -4,32 +4,43 @@ import Select from '../../../../../../../internal/FormFields/Select';
 import FormField from '../../FormField';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
-import { useMemo } from 'preact/hooks';
-import { LinkValidityDTO } from '../../../../../../../../types/api/models/payByLink';
+import { useMemo, useCallback } from 'preact/hooks';
+import { FunctionalComponent } from 'preact';
+import { LinkValidityDTO, PaymentLinkConfiguration } from '../../../../../../../../types/api/models/payByLink';
+import { useFetch } from '../../../../../../../../hooks/useFetch';
+import { useConfigContext } from '../../../../../../../../core/ConfigContext';
+import { EMPTY_OBJECT } from '../../../../../../../../utils';
+import { TranslationKey } from '../../../../../../../../translations';
 
-const VALIDITY: LinkValidityDTO[] = [
-    {
-        type: 'fixed',
-        quantity: 24,
-        durationUnit: 'hour',
-    },
-    {
-        type: 'fixed',
-        quantity: 1,
-        durationUnit: 'day',
-    },
-];
+export type ValidityFieldProps = {
+    configuration?: PaymentLinkConfiguration;
+    isLoading?: boolean;
+};
 
-export const ValidityField = () => {
+export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configuration, isLoading }) => {
     const { i18n } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
+    const { getPayByLinkConfiguration } = useConfigContext().endpoints;
+
+    const configurationQuery = useFetch({
+        fetchOptions: { enabled: !!getPayByLinkConfiguration && !configuration },
+        queryFn: useCallback(async () => {
+            return getPayByLinkConfiguration?.(EMPTY_OBJECT);
+        }, [getPayByLinkConfiguration]),
+    });
+    const configData = configuration ?? configurationQuery.data;
+    const effectiveLoading = isLoading ?? configurationQuery.isFetching;
 
     const selectItemsValidity = useMemo(() => {
-        return VALIDITY.map(({ quantity, durationUnit }) => ({
-            id: `${quantity}` || '',
-            name: i18n.get(`payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit}`, { values: { quantity }, count: quantity }),
-        }));
-    }, [i18n]);
+        const options: LinkValidityDTO[] = configData?.linkValidity?.options ?? [];
+        return options.map(({ quantity, durationUnit }) => {
+            const key = `payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit}` as TranslationKey;
+            return {
+                id: `${quantity}` || '',
+                name: i18n.get(key, { values: { quantity }, count: quantity }),
+            };
+        });
+    }, [configData, i18n]);
 
     const isRequired = useMemo(() => fieldsConfig['linkValidity']?.required, [fieldsConfig]);
 
@@ -56,6 +67,7 @@ export const ValidityField = () => {
                                 selected={field.value as string}
                                 onChange={onInput}
                                 items={selectItemsValidity}
+                                readonly={effectiveLoading}
                                 isValid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>

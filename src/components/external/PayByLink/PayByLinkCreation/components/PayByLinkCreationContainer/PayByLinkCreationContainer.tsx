@@ -189,7 +189,13 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                             {(() => {
                                 switch (currentFormStep) {
                                     case 'Payment':
-                                        return <PaymentDetailsForm timezone={timezone} />;
+                                        return (
+                                            <PaymentDetailsForm
+                                                timezone={timezone}
+                                                configuration={configurationQuery.data}
+                                                isConfigLoading={configurationQuery.isFetching}
+                                            />
+                                        );
                                     case 'Customer':
                                         return (
                                             <CustomerDetailsForm isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
@@ -197,7 +203,12 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                                     case 'Summary':
                                         return <FormSummary />;
                                     default:
-                                        return <PaymentDetailsForm />;
+                                        return (
+                                            <PaymentDetailsForm
+                                                configuration={configurationQuery.data}
+                                                isConfigLoading={configurationQuery.isFetching}
+                                            />
+                                        );
                                 }
                             })()}
                         </div>

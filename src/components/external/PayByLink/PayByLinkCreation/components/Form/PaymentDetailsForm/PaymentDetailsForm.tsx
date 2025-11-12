@@ -6,8 +6,17 @@ import { LinkTypeField } from './Fields/LinkTypeField';
 import { DescriptionField } from './Fields/DescriptionField';
 import { DeliveryDateField } from './Fields/DeliveryDateField';
 import { VisibleField } from '../VisibleField';
+import { PaymentLinkConfiguration } from '../../../../../../../types/api/models/payByLink';
 
-export const PaymentDetailsForm = ({ timezone }: { timezone?: string }) => {
+export const PaymentDetailsForm = ({
+    timezone,
+    configuration,
+    isConfigLoading,
+}: {
+    timezone?: string;
+    configuration?: PaymentLinkConfiguration;
+    isConfigLoading?: boolean;
+}) => {
     return (
         <div className="adyen-pe-pay-by-link-creation__form-fields-container">
             <VisibleField name="store">
@@ -15,7 +24,7 @@ export const PaymentDetailsForm = ({ timezone }: { timezone?: string }) => {
             </VisibleField>
 
             <VisibleField name="linkValidity">
-                <ValidityField />
+                <ValidityField configuration={configuration} isLoading={isConfigLoading} />
             </VisibleField>
 
             <VisibleField name="amountValue">
@@ -27,7 +36,7 @@ export const PaymentDetailsForm = ({ timezone }: { timezone?: string }) => {
             </VisibleField>
 
             <VisibleField name="linkType">
-                <LinkTypeField />
+                <LinkTypeField configuration={configuration} isLoading={isConfigLoading} />
             </VisibleField>
 
             <VisibleField name="description">

@@ -1,15 +1,15 @@
 export const STORES = [
     {
         description: 'Main Store - New York',
-        storeCode: 'STORE_NY_001',
+        storeCode: 'New York Store',
     },
     {
         description: 'Main Store - London',
-        storeCode: 'STORE_LON_001',
+        storeCode: 'London Store',
     },
     {
         description: 'Main Store - Amsterdam',
-        storeCode: 'STORE_AMS_001',
+        storeCode: 'Amsterdam Store',
     },
 ];
 
