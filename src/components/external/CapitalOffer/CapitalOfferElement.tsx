@@ -3,6 +3,8 @@ import UIElement from '../UIElement/UIElement';
 import { CapitalOfferElementProps } from './types';
 import { CapitalOffer } from './components/CapitalOffer/CapitalOffer';
 
+import { FormSuccess } from '../PayByLink/PayByLinkCreation/components/FormSuccess';
+
 export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     public static type: ExternalComponentType = 'capitalOffer';
 
@@ -13,7 +15,7 @@ export class CapitalOfferElement extends UIElement<CapitalOfferElementProps> {
     }
 
     public componentToRender = () => {
-        return <CapitalOffer {...this.props} />;
+        return <FormSuccess />;
     };
 }
 

@@ -1,0 +1,35 @@
+@use '../../../../../../style' as style;
+
+.adyen-pe-pay-by-link-form-success {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+
+    &__icon {
+        color: style.token(color-background-success-strong);
+        font-size: 40px;
+        height: 40px;
+        margin-bottom: style.token(spacer-090);
+    }
+
+    &__title {
+        margin-bottom: style.token(spacer-040);
+    }
+
+    &__description {
+        margin-bottom: style.token(spacer-100);
+        color: style.token(color-label-secondary);
+    }
+
+    &__actions {
+        display: flex;
+        align-items: flex-end;
+        gap: style.token(spacer-040);
+    }
+
+    &__button-icon {
+        margin-right: style.token(spacer-040);
+    }
+}
