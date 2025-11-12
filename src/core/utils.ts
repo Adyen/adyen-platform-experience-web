@@ -65,3 +65,43 @@ export const getConfigFromCdn = ({ url }: { url: string }) => {
         }
     };
 };
+
+export const getDatasetFromCdn = ({ url }: { url: string }) => {
+    return async <Fallback>({
+        name,
+        extension = 'json',
+        fallback,
+        subFolder = '',
+    }: {
+        name: string;
+        extension?: string;
+        subFolder?: string;
+        fallback?: Fallback;
+    }) => {
+        // If VITE_LOCAL_ASSETS is enabled load from local assets/datasets folder
+        if (process.env.VITE_LOCAL_ASSETS) {
+            try {
+                const datasetPath = `../assets/datasets${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
+                const module = await import(/* @vite-ignore */ datasetPath);
+                return (module.default || module) as Fallback;
+            } catch (error) {
+                console.warn(error);
+                return fallback as Fallback;
+            }
+        }
+
+        // Otherwise, fetch from CDN
+        try {
+            return (await httpGet<any>({
+                loadingContext: `${url}${subFolder ? `/${subFolder}` : ''}`,
+                path: `/${name}.${extension}`,
+                versionless: true,
+                skipContentType: true,
+                errorLevel: 'error',
+            })) as Fallback;
+        } catch (error) {
+            console.warn(error);
+            return fallback as Fallback;
+        }
+    };
+};

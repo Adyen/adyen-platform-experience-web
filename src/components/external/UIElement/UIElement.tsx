@@ -93,6 +93,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     getCdnConfig={core.getCdnConfig}
                     getImageAsset={core.getImageAsset}
                     getDatasetAsset={core.getDatasetAsset}
+                    getCdnDataset={core.getCdnDataset}
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}
                     updateCore={updateCore}

@@ -18,4 +18,5 @@ export interface CoreProviderProps {
     getImageAsset?: (props: AssetOptions) => string;
     getDatasetAsset?: (props: AssetOptions) => string;
     getCdnConfig?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+    getCdnDataset?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 }

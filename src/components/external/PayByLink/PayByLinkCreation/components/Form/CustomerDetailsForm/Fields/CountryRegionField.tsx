@@ -11,7 +11,7 @@ import { useConfigContext } from '../../../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../../../utils';
 
 export const CountryRegionField = () => {
-    const { i18n, getDatasetAsset } = useCoreContext();
+    const { i18n, getCdnDataset } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
     const { getCountries } = useConfigContext().endpoints;
 
@@ -25,16 +25,19 @@ export const CountryRegionField = () => {
     const datasetQuery = useFetch({
         fetchOptions: { enabled: !!i18n?.locale },
         queryFn: useCallback(async () => {
-            // Build dataset URL using Core's asset helper (points to CDN or local assets depending on env)
             const fileName = `${i18n.locale}`;
-            const url = getDatasetAsset?.({ name: fileName, extension: 'json', subFolder: 'countries' });
-
-            if (!url) return [] as { id: string; name: string }[];
-
-            const res = await fetch(url);
-            if (!res.ok) return [] as { id: string; name: string }[];
-            return (await res.json()) as { id: string; name: string }[];
-        }, [getDatasetAsset, i18n.locale]),
+            if (getCdnDataset) {
+                return (
+                    (await getCdnDataset<Array<{ id: string; name: string }>>({
+                        name: fileName,
+                        extension: 'json',
+                        subFolder: 'countries',
+                        fallback: [] as Array<{ id: string; name: string }>,
+                    })) ?? []
+                );
+            }
+            return [] as Array<{ id: string; name: string }>;
+        }, [getCdnDataset, i18n.locale]),
     });
 
     const countriesListItems = useMemo(() => {
