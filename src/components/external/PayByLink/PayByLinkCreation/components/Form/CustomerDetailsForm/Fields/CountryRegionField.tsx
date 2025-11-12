@@ -6,13 +6,12 @@ import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/
 import { useMemo, useCallback } from 'preact/hooks';
 import Select from '../../../../../../../internal/FormFields/Select';
 import { CountryDTO } from '../../../../../../../../types/api/models/countries';
-import { TranslationKey } from '../../../../../../../../translations';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../../../utils';
 
 export const CountryRegionField = () => {
-    const { i18n } = useCoreContext();
+    const { i18n, getDatasetAsset } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
     const { getCountries } = useConfigContext().endpoints;
 
@@ -23,17 +22,29 @@ export const CountryRegionField = () => {
         }, [getCountries]),
     });
 
-    const countriesListItems = useMemo(() => {
-        const countries: CountryDTO[] = countriesQuery.data?.data ?? [];
-        return countries.map(({ countryCode }) => {
-            const label = `payByLink.linkCreation.fields.country.countryName.${countryCode}` as TranslationKey;
+    const datasetQuery = useFetch({
+        fetchOptions: { enabled: !!i18n?.locale },
+        queryFn: useCallback(async () => {
+            // Build dataset URL using Core's asset helper (points to CDN or local assets depending on env)
+            const fileName = `${i18n.locale}`;
+            const url = getDatasetAsset?.({ name: fileName, extension: 'json', subFolder: 'countries' });
 
-            return {
-                id: countryCode,
-                name: i18n.get(label),
-            };
-        });
-    }, [countriesQuery.data, i18n]);
+            if (!url) return [] as { id: string; name: string }[];
+
+            const res = await fetch(url);
+            if (!res.ok) return [] as { id: string; name: string }[];
+            return (await res.json()) as { id: string; name: string }[];
+        }, [getDatasetAsset, i18n.locale]),
+    });
+
+    const countriesListItems = useMemo(() => {
+        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: CountryDTO) => countryCode).filter(Boolean));
+        const store = datasetQuery.data ?? [];
+
+        const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;
+
+        return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
+    }, [countriesQuery.data, datasetQuery.data]);
 
     const isRequired = useMemo(() => fieldsConfig['countryCode']?.required, [fieldsConfig]);
 
@@ -56,7 +67,7 @@ export const CountryRegionField = () => {
                                 selected={field.value as string}
                                 onChange={onInput}
                                 items={countriesListItems}
-                                readonly={countriesQuery.isFetching}
+                                readonly={countriesQuery.isFetching || datasetQuery.isFetching}
                                 isValid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>

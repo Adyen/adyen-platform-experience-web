@@ -16,5 +16,6 @@ export interface CoreProviderProps {
     externalErrorHandler?: onErrorHandler | null;
     componentRef: RefObject<HTMLDivElement>;
     getImageAsset?: (props: AssetOptions) => string;
+    getDatasetAsset?: (props: AssetOptions) => string;
     getCdnConfig?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 }

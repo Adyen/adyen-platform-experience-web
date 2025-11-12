@@ -19,6 +19,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public session = new AuthSession();
     public onError?: onErrorHandler;
     public getImageAsset: (props: AssetOptions) => string;
+    public getDatasetAsset: (props: AssetOptions) => string;
     public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
 
     private readyCustomTranslationsAnalytics: boolean;
@@ -32,6 +33,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
         this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
+        this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
         this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
         this.readyCustomTranslationsAnalytics = false;
         this.analyticsEnabled = options?.analytics?.enabled ?? true;

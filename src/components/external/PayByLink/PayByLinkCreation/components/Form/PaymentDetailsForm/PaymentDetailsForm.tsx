@@ -6,7 +6,6 @@ import { LinkTypeField } from './Fields/LinkTypeField';
 import { DescriptionField } from './Fields/DescriptionField';
 import { DeliveryDateField } from './Fields/DeliveryDateField';
 import { VisibleField } from '../VisibleField';
-import { PaymentLinkConfiguration } from '../../../../../../../types/api/models/payByLink';
 
 export const PaymentDetailsForm = ({
     timezone,
@@ -14,7 +13,7 @@ export const PaymentDetailsForm = ({
     isConfigLoading,
 }: {
     timezone?: string;
-    configuration?: PaymentLinkConfiguration;
+    configuration?: any;
     isConfigLoading?: boolean;
 }) => {
     return (
