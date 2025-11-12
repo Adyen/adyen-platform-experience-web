@@ -136,5 +136,3 @@ export const SearchBar = forwardRef<SearchBarRef, SearchBarProps>(
         );
     }
 );
-
-SearchBar.displayName = 'SearchBar';
