@@ -49,6 +49,7 @@ export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldV
     goToStep: (step: number, options?: { skipValidation?: boolean }) => Promise<boolean>;
     nextStep: () => Promise<boolean>;
     previousStep: () => void;
+    resetWizard: () => void;
 
     // Validation methods
     validateStep: (step: number) => Promise<boolean>;
