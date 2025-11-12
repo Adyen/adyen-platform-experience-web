@@ -16,6 +16,7 @@ function BaseButton(props: ButtonProps, ref: Ref<HTMLButtonElement>) {
         DEFAULT_BASE_BUTTON_CLASSNAME,
         disabledValue,
         props,
+        props.type,
         props.onClick
     );
 
