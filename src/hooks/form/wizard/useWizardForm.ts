@@ -235,6 +235,10 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         }
     }, [canGoPrevious, wizardState.currentStep, onStepChange]);
 
+    const resetWizard = useCallback((): void => {
+        dispatch({ type: 'RESET_WIZARD' });
+    }, []);
+
     const getSummaryData = useCallback((): WizardSummaryData<TFieldValues> => {
         const values = getValues();
         const summary: WizardSummaryData<TFieldValues> = {};
@@ -274,6 +278,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         goToStep,
         nextStep,
         previousStep,
+        resetWizard,
 
         // Validation methods
         validateStep,

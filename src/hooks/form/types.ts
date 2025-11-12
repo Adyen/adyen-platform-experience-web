@@ -1,7 +1,7 @@
 // Core form types
 import { ComponentChild } from 'preact';
 
-export type FieldValue = string | number | boolean;
+export type FieldValue = string | number | boolean | string[] | number[] | FileList | Date | null | undefined;
 export type FieldError = { message?: string; type: 'validation' | 'required' } | undefined;
 
 // Validation rule types
@@ -51,14 +51,27 @@ export interface UseFormOptions<TFieldValues> {
 }
 
 // Public form control interface - only exposes public methods
-export interface FormControl {
+export interface FormControl<TFieldValues> {
     subscribe: (callback: () => void) => () => void;
     notify: () => void;
+
+    // Public APIs to interact without touching internals
+    setValue: (
+        name: FieldValues<TFieldValues>,
+        value: FieldValue,
+        options?: { shouldValidate?: boolean; shouldDirty?: boolean; shouldTouch?: boolean }
+    ) => void;
+    setTouched: (name: FieldValues<TFieldValues>, touched: boolean) => void;
+    getValue: (name: FieldValues<TFieldValues>) => any;
+    getFieldState: (name: FieldValues<TFieldValues>) => ControllerFieldState;
+    getFormState: () => FormState<TFieldValues>;
+    register: (name: FieldValues<TFieldValues>, rules: ValidationRules) => () => void;
+    trigger: (name?: FieldValues<TFieldValues> | FieldValues<TFieldValues>[]) => Promise<boolean>;
 }
 
 // Internal form control interface - includes all state properties
 // This should only be used internally within the form system implementation
-export interface InternalFormControl<TFieldValues> extends FormControl {
+export interface InternalFormControl<TFieldValues> extends FormControl<TFieldValues> {
     _values: Map<FieldValues<TFieldValues>, FieldValue>;
     _errors: Map<FieldValues<TFieldValues>, FieldError>;
     _touched: Map<FieldValues<TFieldValues>, boolean>;
@@ -77,7 +90,7 @@ export interface InternalFormControl<TFieldValues> extends FormControl {
 
 // UseForm return type
 export interface UseFormReturn<TFieldValues> {
-    control: FormControl;
+    control: FormControl<TFieldValues>;
     handleSubmit: (
         onValid: (data: TFieldValues) => void | Promise<void>,
         onInvalid?: (errors: Record<string, FieldError>) => void
@@ -96,7 +109,7 @@ export interface UseFormReturn<TFieldValues> {
 // Controller props
 export interface ControllerProps<TFieldValues> {
     name: FieldValues<TFieldValues>;
-    control: FormControl;
+    control: FormControl<TFieldValues>;
     rules?: ValidationRules;
     render: (props: ControllerRenderProps<TFieldValues>) => ComponentChild;
 }
