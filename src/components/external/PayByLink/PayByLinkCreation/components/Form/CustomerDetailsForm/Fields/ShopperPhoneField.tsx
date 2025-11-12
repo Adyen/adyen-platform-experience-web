@@ -5,21 +5,33 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import InputBase from '../../../../../../../internal/FormFields/InputBase';
-import { phoneNumberPrefixes } from '../../enums';
+import { useFetch } from '../../../../../../../../hooks/useFetch';
 
 export const ShopperPhoneField = () => {
-    const { i18n } = useCoreContext();
+    const { i18n, getCdnDataset } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
     const [phoneCode, setPhoneCode] = useState<string>('');
 
+    const phonesDatasetQuery = useFetch({
+        fetchOptions: { enabled: true },
+        queryFn: useCallback(async () => {
+            if (getCdnDataset) {
+                return (
+                    (await getCdnDataset<Array<{ id: string; prefix: string }>>({
+                        name: 'phonenumbers',
+                        extension: 'json',
+                        fallback: [] as Array<{ id: string; prefix: string }>,
+                    })) ?? []
+                );
+            }
+            return [] as Array<{ id: string; prefix: string }>;
+        }, [getCdnDataset]),
+    });
+
     const phoneCodesDropdown = useMemo(() => {
-        return Object.entries(phoneNumberPrefixes).map(([country, code]) => {
-            return {
-                id: code,
-                name: `${country} (${code})`,
-            };
-        });
-    }, []);
+        const phones = phonesDatasetQuery.data ?? [];
+        return phones.map(({ id, prefix }) => ({ id: prefix, name: `${id} (${prefix})` })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
+    }, [phonesDatasetQuery.data]);
 
     const onSelectPhoneCode = useCallback(
         (value: string) => {
@@ -53,6 +65,7 @@ export const ShopperPhoneField = () => {
                                 items: phoneCodesDropdown,
                                 value: phoneCode,
                                 placeholder: i18n.get('payByLink.linkCreation.fields.shopperPhone.phonePrefix.placeholder'),
+                                readonly: phonesDatasetQuery.isFetching,
                             }}
                             onDropdownInput={val => {
                                 onSelectPhoneCode(val);
