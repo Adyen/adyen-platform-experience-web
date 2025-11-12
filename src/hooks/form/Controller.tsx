@@ -1,12 +1,8 @@
 import { useEffect, useReducer, useCallback } from 'preact/hooks';
-import { ControllerProps, ControllerFieldState, FormState, InternalFormControl, FieldValues } from './types';
-import { validateFieldWithRaceConditionHandling, getNestedValue } from './useForm';
+import { ControllerProps, ControllerFieldState, FormState } from './types';
 
 export function Controller<TFieldValues>({ name, control, rules, render }: ControllerProps<TFieldValues>) {
     const [, rerender] = useReducer<number, void>(x => x + 1, 0);
-
-    // Cast to internal control for implementation access
-    const internalControl = control as InternalFormControl<TFieldValues>;
 
     useEffect(() => {
         const unsubscribe = control.subscribe(() => {
@@ -14,30 +10,22 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
             rerender();
         });
 
+        let unregister = () => {};
         if (rules) {
-            internalControl._fieldRules.set(name, rules);
+            unregister = control.register(name, rules);
         }
 
         return () => {
             unsubscribe();
-            internalControl._fieldRules.delete(name);
+            unregister();
         };
-    }, [control, internalControl, name, rules]);
+    }, [control, name, rules]);
 
-    const value = internalControl._values.get(name)!;
+    const value = control.getValue(name);
 
-    const fieldState: ControllerFieldState = {
-        error: internalControl._errors.get(name),
-        isTouched: internalControl._touched.get(name) || false,
-        isDirty: internalControl._dirty.get(name) || false,
-    };
+    const fieldState: ControllerFieldState = control.getFieldState(name);
 
-    const formState: FormState<TFieldValues> = {
-        dirtyFields: internalControl._computedDirtyFields,
-        isSubmitting: internalControl._isSubmitting,
-        isValid: Object.keys(internalControl._computedErrors).length === 0 && !internalControl._isSubmitting,
-        errors: internalControl._computedErrors,
-    };
+    const formState: FormState<TFieldValues> = control.getFormState();
 
     const handleChange = useCallback(
         (value: any) => {
@@ -59,40 +47,15 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
                 }
             }
 
-            const defaultValue = getNestedValue(internalControl._defaultValues, name as string);
-            const isDirty = newValue !== defaultValue;
-
-            internalControl._values.set(name, newValue);
-            internalControl._dirty.set(name, isDirty);
-
-            // Update computed state
-            if (isDirty) {
-                internalControl._computedDirtyFields[name as FieldValues<TFieldValues>] = true;
-            } else {
-                delete internalControl._computedDirtyFields[name];
-            }
-
-            const mode = internalControl._options.mode || 'onBlur';
-            if (mode === 'onInput' || mode === 'all') {
-                void validateFieldWithRaceConditionHandling(internalControl, name, newValue, rules);
-            }
-
-            control.notify();
+            control.setValue(name, newValue);
         },
-        [control, internalControl, name, rules]
+        [control, name]
     );
 
     const handleBlur = useCallback(() => {
-        internalControl._touched.set(name, true);
-
-        // Update computed state
-        internalControl._computedTouchedFields[name] = true;
-
-        const value = internalControl._values.get(name)!;
-        void validateFieldWithRaceConditionHandling(internalControl, name, value, rules);
-
-        control.notify();
-    }, [control, internalControl, name, rules]);
+        control.setTouched(name, true);
+        void control.trigger(name);
+    }, [control, name]);
 
     const field = {
         name,
@@ -100,12 +63,6 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
         onInput: handleChange,
         onBlur: handleBlur,
     };
-
-    useEffect(() => {
-        return () => {
-            internalControl._validationCounters.delete(name);
-        };
-    }, [internalControl, name]);
 
     return render({
         field,
