@@ -6,23 +6,33 @@ import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/
 import { useCallback, useMemo } from 'preact/hooks';
 import InputBase from '../../../../../../../internal/FormFields/InputBase';
 import { CurrencyDTO } from '../../../../../../../../types/api/models/currencies';
-
-const CURRENCIES: CurrencyDTO[] = ['EUR', 'USD'];
+import { useFetch } from '../../../../../../../../hooks/useFetch';
+import { useConfigContext } from '../../../../../../../../core/ConfigContext';
+import { EMPTY_OBJECT } from '../../../../../../../../utils';
 
 export const AmountField = () => {
     const { i18n } = useCoreContext();
     const { control, setValue, fieldsConfig } = useWizardFormContext<FormValues>();
+    const { getCurrencies } = useConfigContext().endpoints;
+
+    const currenciesQuery = useFetch({
+        fetchOptions: { enabled: !!getCurrencies },
+        queryFn: useCallback(async () => {
+            return getCurrencies?.(EMPTY_OBJECT);
+        }, [getCurrencies]),
+    });
 
     const isRequired = useMemo(() => fieldsConfig['amountValue']?.required, [fieldsConfig]);
 
     const currencyDropdown = useMemo(() => {
-        return CURRENCIES.map(currency => {
+        const currencies: CurrencyDTO[] = currenciesQuery.data?.data ?? [];
+        return currencies.map(currency => {
             return {
                 id: currency,
                 name: currency,
             };
         });
-    }, []);
+    }, [currenciesQuery.data]);
 
     const onCurrencySelect = useCallback(
         (value: string) => {
@@ -31,6 +41,7 @@ export const AmountField = () => {
         [setValue]
     );
 
+    // TODO - check if we can determine this from the BE or just make it null
     const defaultCurrency = useMemo(() => 'EUR', []);
 
     return (
@@ -52,7 +63,7 @@ export const AmountField = () => {
                             type="number"
                             min={0}
                             {...field}
-                            dropdown={{ items: currencyDropdown, value: defaultCurrency }}
+                            dropdown={{ items: currencyDropdown, value: defaultCurrency, readonly: currenciesQuery.isFetching }}
                             onDropdownInput={onCurrencySelect}
                             isValid={false}
                             isInvalid={!!fieldState.error}
