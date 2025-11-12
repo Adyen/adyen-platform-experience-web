@@ -142,6 +142,7 @@ function InputBase(
                     {shouldDisplayDropdownAtStart && dropdown && (
                         <div role="presentation" className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start">
                             <Select
+                                placeholder={dropdown.placeholder}
                                 buttonVariant={ButtonVariant.TERTIARY}
                                 items={dropdown.items}
                                 selected={dropdown.value}
@@ -186,6 +187,7 @@ function InputBase(
                             onMouseDownCapture={e => e.stopPropagation()}
                         >
                             <Select
+                                placeholder={dropdown.placeholder}
                                 items={dropdown.items}
                                 selected={dropdown.value}
                                 onChange={handleDropdownChange}

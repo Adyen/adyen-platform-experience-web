@@ -10,6 +10,7 @@ export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
     items: readonly T[];
     readonly?: boolean;
     value?: T['id'] | readonly T['id'][];
+    placeholder?: string;
 }
 
 export interface InputBaseProps {

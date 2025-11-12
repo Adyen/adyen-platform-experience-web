@@ -5,24 +5,21 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useMemo } from 'preact/hooks';
 import Select from '../../../../../../../internal/FormFields/Select';
-import { TranslationKey } from '../../../../../../../../translations';
-
-const shopperLocale = ['en', 'nl', 'es'];
+import { SUPPORTED_LANGUAGES } from '../../enums';
 
 export const LanguageField = () => {
     const { i18n } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
 
     const localeListItems = useMemo(() => {
-        return shopperLocale.map(locale => {
-            const label = `payByLink.linkCreation.fields.locale.${locale}` as TranslationKey;
-
+        return SUPPORTED_LANGUAGES.map(({ text, value }) => {
             return {
-                id: locale,
-                name: i18n.get(label),
+                // TODO - Handle 'auto detect' option when submitting information to the BE
+                id: value === null ? 'auto' : value,
+                name: text,
             };
         });
-    }, [i18n]);
+    }, []);
 
     const isRequired = useMemo(() => fieldsConfig['shopperLocale']?.required, [fieldsConfig]);
 
