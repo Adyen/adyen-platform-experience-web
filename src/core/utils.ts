@@ -101,7 +101,15 @@ export const getDatasetFromCdn = ({ url }: { url: string }) => {
             })) as Fallback;
         } catch (error) {
             console.warn(error);
-            return fallback as Fallback;
+            // Try dynamic import of local dataset as a fallback
+            try {
+                const datasetPath = `../assets/datasets${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
+                const module = await import(/* @vite-ignore */ datasetPath);
+                return (module.default || module) as Fallback;
+            } catch (localError) {
+                console.warn(localError);
+                return fallback as Fallback;
+            }
         }
     };
 };
