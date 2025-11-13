@@ -51,7 +51,7 @@ export interface paths {
          */
         get: operations['getPayByLinkConfiguration'];
         put?: never;
-        post?: never;
+        post?: operations['createPayByLinkConfiguration'];
         delete?: never;
         options?: never;
         head?: never;
@@ -108,6 +108,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        PaymentLinkRequestDTO: Partial<Record<keyof components['schemas']['PaymentLinkConfiguration'], any>>;
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -306,6 +307,30 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['FiltersResponseDTO'];
+                };
+            };
+        };
+    };
+    createPayByLinkConfiguration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['PaymentLinkRequestDTO'];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['PaymentLinksItem'];
                 };
             };
         };

@@ -16,6 +16,7 @@ import { useFetch } from '../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../utils';
 import './PayByLinkCreationForm.scss';
+import useMutation from '../../../../../../hooks/useMutation/useMutation';
 
 type PayByLinkCreationFormContainerProps = {
     onSubmitted?: (data: FormValues) => void;
@@ -24,7 +25,7 @@ type PayByLinkCreationFormContainerProps = {
 export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreationFormContainerProps) => {
     const { i18n } = useCoreContext();
 
-    const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall } = useConfigContext().endpoints;
+    const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall, createPayByLinkConfiguration } = useConfigContext().endpoints;
 
     const configurationQuery = useFetch({
         fetchOptions: { enabled: !!payByLinkConfigurationEndpointCall },
@@ -249,10 +250,17 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
     };
 
     // Only called when the form is actually submitted (final step)
+    const submitMutation = useMutation({
+        queryFn: createPayByLinkConfiguration,
+        options: {
+            onSuccess: () => {
+                onSubmitted?.({});
+            },
+        },
+    });
+
     const onSubmit = async (data: FormValues) => {
-        // TODO: Send data to API
-        console.log(data);
-        onSubmitted?.(data);
+        await submitMutation.mutate({ body: data, contentType: 'application/json' });
     };
 
     const onError = (errors: any) => {
@@ -328,6 +336,7 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                                     type={isLastStep ? 'submit' : 'button'}
                                     variant={ButtonVariant.PRIMARY}
                                     onClick={!isLastStep ? handleContinue : undefined}
+                                    state={submitMutation.isLoading ? 'loading' : undefined}
                                 >
                                     {isLastStep
                                         ? i18n.get('payByLink.linkCreation.form.steps.submit')

@@ -125,6 +125,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/paymentLinks/configuration',
         },
+        createPayByLinkConfiguration: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks/configuration',
+        },
         getPayByLinkInstallments: {
             method: 'GET',
             url: 'paybylink/installments',
