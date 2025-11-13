@@ -93,26 +93,4 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const TestInternalComponent: ElementStory<typeof TransactionsOverview> = {
-    name: 'Test Internal Component',
-    decorators: () => {
-        return (
-            <InputBase
-                dropdown={{
-                    items: [
-                        { id: 'EUR', name: 'EUR' },
-                        { id: 'USD', name: 'USD' },
-                    ],
-                    value: 'EUR',
-                    'aria-label': 'Currency selector',
-                }}
-                onDropdownInput={(value: any) => console.log('Dropdown changed:', value)}
-                value="Entered Text"
-                type={'number'}
-                placeholder="Enter amount"
-            />
-        );
-    },
-};
-
 export default meta;
