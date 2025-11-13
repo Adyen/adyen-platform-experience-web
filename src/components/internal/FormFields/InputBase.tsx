@@ -8,20 +8,7 @@ import { InputBaseProps } from './types';
 import './FormFields.scss';
 
 function InputBase(
-    {
-        onInput,
-        onKeyUp,
-        trimOnBlur,
-        onBlurHandler,
-        onBlur,
-        onFocusHandler,
-        errorMessage,
-        iconBefore,
-        iconAfter,
-        iconBeforeInteractive,
-        iconAfterInteractive,
-        ...props
-    }: InputBaseProps,
+    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, iconBeforeSlot, iconAfterSlot, ...props }: InputBaseProps,
     ref: ForwardedRef<HTMLInputElement | null>
 ) {
     const { classNameModifiers, isInvalid, isValid, readonly = false, type, uniqueId, isCollatingErrors, disabled } = props;
@@ -82,7 +69,7 @@ function InputBase(
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
-    const hasIcons = iconBefore || iconAfter;
+    const hasIcons = iconBeforeSlot || iconAfterSlot;
 
     const inputElement = (
         <input
@@ -106,27 +93,9 @@ function InputBase(
         <>
             {hasIcons ? (
                 <div className="adyen-pe-input__container">
-                    {iconBefore && (
-                        <span
-                            className={classNames('adyen-pe-input__icon-before', {
-                                'adyen-pe-input__icon-before--interactive': iconBeforeInteractive,
-                            })}
-                            {...(!iconBeforeInteractive && { 'aria-hidden': 'true' })}
-                        >
-                            {iconBefore}
-                        </span>
-                    )}
+                    {iconBeforeSlot && <span className="adyen-pe-input__slot-before">{iconBeforeSlot}</span>}
                     {inputElement}
-                    {iconAfter && (
-                        <span
-                            className={classNames('adyen-pe-input__icon-after', {
-                                'adyen-pe-input__icon-after--interactive': iconAfterInteractive,
-                            })}
-                            {...(!iconAfterInteractive && { 'aria-hidden': 'true' })}
-                        >
-                            {iconAfter}
-                        </span>
-                    )}
+                    {iconAfterSlot && <span className="adyen-pe-input__slot-after">{iconAfterSlot}</span>}
                 </div>
             ) : (
                 inputElement
