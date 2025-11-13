@@ -10,7 +10,8 @@ import { useFetch } from '../../../../../../../../hooks/useFetch';
 export const ShopperPhoneField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { control, fieldsConfig } = useWizardFormContext<FormValues>();
-    const [phoneCode, setPhoneCode] = useState<string>('');
+    // TODO - check if we can get the default value from somewhere or let it be null as default
+    const [phoneCode, setPhoneCode] = useState<string>('NL');
 
     const phonesDatasetQuery = useFetch({
         fetchOptions: { enabled: true },
@@ -30,7 +31,7 @@ export const ShopperPhoneField = () => {
 
     const phoneCodesDropdown = useMemo(() => {
         const phones = phonesDatasetQuery.data ?? [];
-        return phones.map(({ id, prefix }) => ({ id: prefix, name: `${id} (${prefix})` })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
+        return phones.map(({ id, prefix }) => ({ id: id, name: `${id} (${prefix})` })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
     }, [phonesDatasetQuery.data]);
 
     const onSelectPhoneCode = useCallback(

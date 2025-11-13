@@ -3,7 +3,13 @@
 .adyen-pe-structured-list {
     $adyen-pe-structured-list: &;
 
+    display: flex;
+    flex-direction: column;
     margin: 0;
+
+    &--expanded {
+        gap: style.token(spacer-050);
+    }
 
     &__grid {
         display: flex;
@@ -27,7 +33,7 @@
     }
 
     &__label {
-        color: style.token(color-label-primary);
+        color: style.token(color-label-secondary);
         overflow-wrap: anywhere;
     }
 

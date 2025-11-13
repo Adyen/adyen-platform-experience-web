@@ -9,7 +9,7 @@ import { useEffect } from 'preact/hooks';
 import cx from 'classnames';
 
 export const EmailDependentCheckboxField = ({ name, label }: { name: 'sendLinkToShopper' | 'sendPaymentSuccessToShopper'; label: string }) => {
-    const { setValue, control } = useWizardFormContext<FormValues>();
+    const { setValue, control, getValues } = useWizardFormContext<FormValues>();
 
     const inputId = uuid();
 
@@ -30,6 +30,10 @@ export const EmailDependentCheckboxField = ({ name, label }: { name: 'sendLinkTo
             setValue(name, false, { shouldDirty: false, shouldValidate: false });
         }
     }, [isEmailEmpty, isChecked, name, setValue]);
+
+    useEffect(() => {
+        if (getValues(name) === undefined) setValue(name, false);
+    }, [getValues, name, setValue]);
 
     return (
         <div>

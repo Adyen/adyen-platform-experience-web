@@ -1,10 +1,11 @@
 import { FieldValues, UseFormReturn } from '../types';
+import { TranslationKey } from '../../../translations';
 
 export interface WizardStep<TFieldValues> {
     id: string;
-    title: string;
+    title?: string;
     description?: string;
-    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean }[]>;
+    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean; label?: TranslationKey }[]>;
     validate?: (values: Partial<TFieldValues>) => boolean | Promise<boolean>;
     isOptional?: boolean;
 }
@@ -64,9 +65,10 @@ export type WizardFormContextValue<TFieldValues> = UseWizardFormReturn<TFieldVal
 
 export interface WizardSummaryData<TFieldValues> {
     [stepId: string]: {
-        title: string;
+        title?: string;
         fields: {
-            label: FieldValues<TFieldValues>;
+            id: FieldValues<TFieldValues>;
+            label?: TranslationKey;
             value: any;
             displayValue?: string;
         }[];

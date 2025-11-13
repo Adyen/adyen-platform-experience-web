@@ -247,8 +247,9 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
             const stepFields = step.fields
                 .filter(field => field.visible !== false)
                 .map(field => ({
-                    label: field.fieldName,
+                    label: field.label,
                     value: getNestedValue(values, field.fieldName as string),
+                    id: field.fieldName,
                 }))
                 .filter(field => field.value !== undefined && field.value !== null && field.value !== '');
 

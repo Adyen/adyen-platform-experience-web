@@ -1,7 +1,7 @@
 import { _UIComponentProps, PayByLinkCreationComponentProps } from '../../../../../types';
 import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
+import { TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { FormValues, LinkCreationFormStep } from '../types';
@@ -47,40 +47,124 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                 description: i18n.get('payByLink.linkCreation.paymentDetailsForm.description'),
                 fields: (
                     [
-                        { fieldName: 'store', required: true, visible: !!configurationQuery.data?.['store'] },
-                        { fieldName: 'linkValidity', required: true, visible: !!configurationQuery.data?.['linkValidity'] },
-                        { fieldName: 'amountValue', required: true, visible: !!configurationQuery.data?.['amountValue'] },
-                        { fieldName: 'currency', required: true, visible: !!configurationQuery.data?.['currency'] },
-                        { fieldName: 'merchantReference', required: true, visible: !!configurationQuery.data?.['merchantReference'] },
-                        { fieldName: 'linkType', required: true, visible: !!configurationQuery.data?.['linkType'] },
-                        { fieldName: 'description', required: true, visible: !!configurationQuery.data?.['description'] },
-                        { fieldName: 'deliveryDate', required: true, visible: !!configurationQuery.data?.['deliveryDate'] },
+                        {
+                            fieldName: 'store',
+                            required: true,
+                            visible: !!configurationQuery.data?.['store'],
+                            label: 'payByLink.creation.summary.fields.store',
+                        },
+                        {
+                            fieldName: 'linkValidity',
+                            required: true,
+                            visible: !!configurationQuery.data?.['linkValidity'],
+                            label: 'payByLink.creation.summary.fields.linkValidity',
+                        },
+                        {
+                            fieldName: 'amountValue',
+                            required: true,
+                            visible: !!configurationQuery.data?.['amountValue'],
+                            label: 'payByLink.creation.summary.fields.amountValue',
+                        },
+                        {
+                            fieldName: 'currency',
+                            required: true,
+                            visible: !!configurationQuery.data?.['currency'],
+                            label: 'payByLink.creation.summary.fields.currency',
+                        },
+                        {
+                            fieldName: 'merchantReference',
+                            required: true,
+                            visible: !!configurationQuery.data?.['merchantReference'],
+                            label: 'payByLink.creation.summary.fields.merchantReference',
+                        },
+                        {
+                            fieldName: 'linkType',
+                            required: true,
+                            visible: !!configurationQuery.data?.['linkType'],
+                            label: 'payByLink.creation.summary.fields.linkType',
+                        },
+                        {
+                            fieldName: 'description',
+                            required: true,
+                            visible: !!configurationQuery.data?.['description'],
+                            label: 'payByLink.creation.summary.fields.description',
+                        },
+                        {
+                            fieldName: 'deliveryDate',
+                            required: true,
+                            visible: !!configurationQuery.data?.['deliveryDate'],
+                        },
                     ] as const
                 ).filter(field => !!configurationQuery.data?.[field.fieldName]),
                 isOptional: false,
             },
             {
                 id: 'customer',
-                title: i18n.get('payByLink.linkCreation.customerDetailsForm.title'),
-                description: i18n.get('payByLink.linkCreation.customerDetailsForm.description'),
                 fields: (
                     [
-                        { fieldName: 'shopperReference', required: true, visible: !!configurationQuery.data?.['shopperReference'] },
-                        { fieldName: 'fullName', required: true, visible: !!configurationQuery.data?.['fullName'] },
-                        { fieldName: 'emailAddress', required: true, visible: !!configurationQuery.data?.['emailAddress'] },
-                        { fieldName: 'emailAddress', required: true, visible: !!configurationQuery.data?.['emailAddress'] },
-                        { fieldName: 'sendLinkToShopper', required: true, visible: !!configurationQuery.data?.['sendLinkToShopper'] },
+                        {
+                            fieldName: 'shopperReference',
+                            required: true,
+                            visible: !!configurationQuery.data?.['shopperReference'],
+                            label: 'payByLink.creation.summary.fields.shopperReference',
+                        },
+                        {
+                            fieldName: 'fullName',
+                            required: true,
+                            visible: !!configurationQuery.data?.['fullName'],
+                            label: 'payByLink.creation.summary.fields.fullName',
+                        },
+                        {
+                            fieldName: 'emailAddress',
+                            required: true,
+                            visible: !!configurationQuery.data?.['emailAddress'],
+                            label: 'payByLink.creation.summary.fields.emailAddress',
+                        },
+                        {
+                            fieldName: 'sendLinkToShopper',
+                            required: true,
+                            visible: !!configurationQuery.data?.['sendLinkToShopper'],
+                        },
                         {
                             fieldName: 'sendPaymentSuccessToShopper',
                             required: true,
                             visible: !!configurationQuery.data?.['sendPaymentSuccessToShopper'],
                         },
-                        { fieldName: 'emailSender', required: true, visible: !!configurationQuery.data?.['emailSender'] },
-                        { fieldName: 'phoneNumber', required: true, visible: !!configurationQuery.data?.['phoneNumber'] },
-                        { fieldName: 'countryCode', required: true, visible: !!configurationQuery.data?.['countryCode'] },
-                        { fieldName: 'shippingAddress', required: true, visible: !!configurationQuery.data?.['shippingAddress'] },
-                        { fieldName: 'billingAddress', required: true, visible: !!configurationQuery.data?.['billingAddress'] },
-                        { fieldName: 'shopperLocale', required: true, visible: !!configurationQuery.data?.['shopperLocale'] },
+                        {
+                            fieldName: 'emailSender',
+                            required: true,
+                            visible: !!configurationQuery.data?.['emailSender'],
+                            label: 'payByLink.creation.summary.fields.emailAddress',
+                        },
+                        {
+                            fieldName: 'phoneNumber',
+                            required: true,
+                            visible: !!configurationQuery.data?.['phoneNumber'],
+                            label: 'payByLink.creation.summary.fields.phoneNumber',
+                        },
+                        {
+                            fieldName: 'countryCode',
+                            required: true,
+                            visible: !!configurationQuery.data?.['countryCode'],
+                            label: 'payByLink.creation.summary.fields.countryCode',
+                        },
+                        {
+                            fieldName: 'shippingAddress',
+                            required: true,
+                            visible: !!configurationQuery.data?.['shippingAddress'],
+                            label: 'payByLink.creation.summary.fields.shippingAddress',
+                        },
+                        {
+                            fieldName: 'billingAddress',
+                            required: true,
+                            visible: !!configurationQuery.data?.['billingAddress'],
+                            label: 'payByLink.creation.summary.fields.billingAddress',
+                        },
+                        {
+                            fieldName: 'shopperLocale',
+                            required: true,
+                            visible: !!configurationQuery.data?.['shopperLocale'],
+                        },
                     ] as const
                 ).filter(field => !!configurationQuery.data?.[field.fieldName]),
                 isOptional: false,
@@ -175,18 +259,6 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
             </Stepper>
             <WizardFormProvider {...wizardForm}>
                 <div className="adyen-pe-pay-by-link-creation__form-container">
-                    <div className="adyen-pe-pay-by-link-creation__title-container">
-                        <Typography variant={TypographyVariant.TITLE} el={TypographyElement.H2} className="adyen-pe-pay-by-link-creation__form-title">
-                            {currentStepConfig.title}
-                        </Typography>
-                        <Typography
-                            variant={TypographyVariant.BODY}
-                            el={TypographyElement.SPAN}
-                            className="adyen-pe-pay-by-link-creation__form-description"
-                        >
-                            {currentStepConfig.description}
-                        </Typography>
-                    </div>
                     <form
                         className="adyen-pe-pay-by-link-creation__form"
                         onSubmit={e => {

@@ -7,6 +7,7 @@ import {
     SL_ALIGN_END,
     SL_BASE_CLASS,
     SL_CONTENT_CLASS,
+    SL_EXPANDED_CLASS,
     SL_GRID_CLASS,
     SL_ITEM_CLASS,
     SL_ITEM_WITH_HIGHLIGHT_CLASS,
@@ -29,6 +30,7 @@ export default function StructuredList({
     grid = true,
     classNames,
     align = 'end',
+    condensed = true,
 }: StructuredListProps & Pick<AriaAttributes, 'aria-label'>) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
@@ -37,7 +39,7 @@ export default function StructuredList({
     const formattedItems = useStructuredListItems(items);
 
     return (
-        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end' })} aria-label={ariaLabel}>
+        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end', [SL_EXPANDED_CLASS]: !condensed })} aria-label={ariaLabel}>
             {formattedItems.map((item, index) => (
                 <div
                     data-testid={item.label}
@@ -51,7 +53,9 @@ export default function StructuredList({
                         {renderLabel ? renderLabel(item.label, item.key) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
                     </dt>
                     <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
-                        {renderValue ? (
+                        {item.render ? (
+                            item.render(item)
+                        ) : renderValue ? (
                             renderValue(item.value, item.key, item.type, item.config)
                         ) : (
                             <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>
