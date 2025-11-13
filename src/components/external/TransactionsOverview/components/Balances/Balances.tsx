@@ -1,18 +1,18 @@
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
 import { uniqueId } from '../../../../../utils';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
 import { BalancesProps, IBalanceWithKey } from './types';
 
-export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }: BalancesProps) => {
+export const Balances = memo(({ balanceAccount, balances: balancesList, balancesEmpty, loadingBalances }: BalancesProps) => {
     const { i18n } = useCoreContext();
-    const { balances: balancesList, currencies, isEmpty, isWaiting } = useAccountBalances(balanceAccount);
     const [maxWidths, setMaxWidths] = useMaxWidthsState();
+    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
 
     const defaultCurrencyCode = balanceAccount?.defaultCurrencyCode;
     const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
@@ -46,22 +46,22 @@ export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }:
                 aria-describedby={firstBalance ? `${firstBalance.balanceElemId}` : undefined}
             >
                 <BalanceItem
-                    isEmpty={isEmpty}
+                    isEmpty={balancesEmpty}
                     balance={firstBalance}
                     widths={maxWidths}
                     isHeader
-                    isSkeleton={isWaiting}
-                    isLoading={isWaiting}
+                    isSkeleton={loadingBalances}
+                    isLoading={loadingBalances}
                     onWidthsSet={setMaxWidths}
                     balanceElemId={firstBalance?.balanceElemId}
                 />
             </div>
         ),
-        [isEmpty, firstBalance, maxWidths, isWaiting, setMaxWidths, localizedPlainCurrencyText]
+        [balancesEmpty, firstBalance, maxWidths, loadingBalances, setMaxWidths, localizedPlainCurrencyText]
     );
 
     const renderRestOfBalances = useMemo(() => {
-        return !isWaiting && restOfBalances.length ? (
+        return !loadingBalances && restOfBalances.length ? (
             <>
                 {restOfBalances.map(balance => (
                     <div
@@ -75,16 +75,13 @@ export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }:
                 ))}
             </>
         ) : undefined;
-    }, [isWaiting, restOfBalances, maxWidths, setMaxWidths, localizedPlainCurrencyText]);
-
-    useEffect(() => {
-        onCurrenciesChange([...currencies], isWaiting);
-    }, [currencies, isWaiting, onCurrenciesChange]);
+    }, [loadingBalances, restOfBalances, maxWidths, setMaxWidths, localizedPlainCurrencyText]);
 
     return (
         <div className={BASE_CLASS}>
             <ExpandableCard
                 aria-label={balancesAriaLabel}
+                fullWidth={isNarrowContainer}
                 renderContent={({ collapsibleContent }) => (
                     <div role="list" aria-label={i18n.get('transactions.overview.balances.lists.default')}>
                         {renderFirstBalance}
@@ -92,7 +89,6 @@ export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }:
                     </div>
                 )}
                 filled
-                fullWidth={fullWidth}
             >
                 {renderRestOfBalances}
             </ExpandableCard>

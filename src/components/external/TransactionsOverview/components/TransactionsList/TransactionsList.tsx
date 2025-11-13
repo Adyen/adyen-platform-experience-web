@@ -6,13 +6,12 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { parseCursorPaginatedResponseData } from '../../../../internal/Pagination/hooks/usePaginatedRecords';
-import { ITransaction } from '../../../../../types';
+import { IBalance, ITransaction } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import { LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { Balances } from '../Balances/Balances';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from '../TransactionsOverview/constants';
-import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../../utils/customData/mergeRecords';
@@ -26,19 +25,25 @@ import { PaginationType } from '../../../../internal/Pagination/types';
 const TransactionsList = ({
     allowLimitSelection,
     availableCurrencies,
+    balances,
+    balancesEmpty,
     dataCustomization,
     filters,
+    hasMultipleCurrencies,
     loadingBalanceAccounts,
+    loadingBalances,
     onContactSupport,
-    onCurrenciesChange,
     onRecordSelection,
     preferredLimit,
     showDetails,
 }: ExternalUIComponentProps<TransactionOverviewComponentProps> & {
-    availableCurrencies?: string[];
+    availableCurrencies: readonly string[];
+    balances: Readonly<IBalance>[];
+    balancesEmpty: boolean;
     filters: Readonly<TransactionsOverviewFilters>;
+    hasMultipleCurrencies: boolean;
     loadingBalanceAccounts: boolean;
-    onCurrenciesChange: (currencies: string[] | undefined, isFetching: boolean) => void;
+    loadingBalances: boolean;
     preferredLimit: number;
 }) => {
     const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
@@ -46,8 +51,6 @@ const TransactionsList = ({
 
     const balanceAccount = filters.balanceAccount;
     const balanceAccountId = balanceAccount?.id;
-    const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
-
     const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
 
     const [preferredPageLimit, setPreferredPageLimit] = useState<number>(preferredLimit);
@@ -135,8 +138,6 @@ const TransactionsList = ({
         limit
     );
 
-    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
-
     const transactionDetails = useMemo(
         () => ({
             showDetails: showDetails ?? true,
@@ -188,7 +189,7 @@ const TransactionsList = ({
         <>
             <div className={SUMMARY_CLASS}>
                 <div className={SUMMARY_ITEM_CLASS}>
-                    <Balances balanceAccount={balanceAccount} onCurrenciesChange={onCurrenciesChange} fullWidth={isNarrowContainer} />
+                    <Balances balanceAccount={balanceAccount} balances={balances} balancesEmpty={balancesEmpty} loadingBalances={loadingBalances} />
                 </div>
             </div>
 
@@ -201,7 +202,7 @@ const TransactionsList = ({
             >
                 <TransactionsTable
                     activeBalanceAccount={balanceAccount}
-                    availableCurrencies={availableCurrencies}
+                    availableCurrencies={availableCurrencies as (typeof availableCurrencies)[number][]}
                     error={error as AdyenPlatformExperienceError}
                     hasMultipleCurrencies={hasMultipleCurrencies}
                     limit={limit}

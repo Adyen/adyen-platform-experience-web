@@ -1,23 +1,16 @@
 import cx from 'classnames';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
 import { Header } from '../../../../internal/Header';
 import { isFunction } from '../../../../../utils';
-import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { IBalanceAccountBase } from '../../../../../types';
 import { INITIAL_FILTERS } from '../TransactionsOverviewFilters/constants';
 import { DEFAULT_PAGE_LIMIT } from '../../../../internal/Pagination/constants';
-import {
-    BASE_CLASS,
-    BASE_XS_CLASS,
-    SUMMARY_CLASS,
-    SUMMARY_ITEM_CLASS,
-    TRANSACTIONS_VIEW_TABS,
-    TransactionsView,
-    VIEW_SWITCHER_CLASS,
-} from './constants';
+import { BASE_CLASS, BASE_XS_CLASS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS, TRANSACTIONS_VIEW_TABS, TransactionsView } from './constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
@@ -68,19 +61,16 @@ export const TransactionsOverview = ({
         }
     }, [_onFiltersChanged, filters]);
 
-    const [availableCurrencies, setAvailableCurrencies] = useState<string[] | undefined>([]);
-    const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
+    const balanceAccount = filters.balanceAccount;
+    const balanceAccountId = balanceAccount?.id;
 
-    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
-        setAvailableCurrencies(currencies);
-        setIsAvailableCurrenciesFetching(isFetching);
-    }, []);
-
-    const balanceAccountId = filters.balanceAccount?.id;
-
-    useEffect(() => {
-        setAvailableCurrencies([]);
-    }, [balanceAccountId]);
+    const {
+        balances,
+        currencies,
+        isEmpty: balancesEmpty,
+        isMultiCurrency: hasMultipleCurrencies,
+        isWaiting: loadingBalances,
+    } = useAccountBalances(balanceAccount);
 
     const filterBarState = useFilterBarState();
     const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
@@ -88,21 +78,18 @@ export const TransactionsOverview = ({
     const { i18n } = useCoreContext();
 
     const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
-    const onActiveViewChange = useCallback(({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id), []);
 
     const viewSwitcher = useMemo(
         () =>
             TRANSACTIONS_VIEW_TABS.length > 1 ? (
-                <div className={VIEW_SWITCHER_CLASS}>
-                    <SegmentedControl
-                        aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
-                        activeItem={activeView}
-                        items={TRANSACTIONS_VIEW_TABS}
-                        onChange={onActiveViewChange}
-                    />
-                </div>
+                <SegmentedControl
+                    aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
+                    activeItem={activeView}
+                    items={TRANSACTIONS_VIEW_TABS}
+                    onChange={({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id)}
+                />
             ) : null,
-        [activeView, onActiveViewChange, i18n]
+        [activeView, i18n]
     );
 
     return (
@@ -117,7 +104,7 @@ export const TransactionsOverview = ({
             <TransactionsOverviewFilters
                 {...filterBarState}
                 activeView={activeView}
-                availableCurrencies={availableCurrencies}
+                availableCurrencies={currencies}
                 balanceAccounts={balanceAccounts}
                 eventCategory="Transaction component"
                 onChange={setFilters}
@@ -127,8 +114,8 @@ export const TransactionsOverview = ({
                 <div className={SUMMARY_CLASS}>
                     <div className={SUMMARY_ITEM_CLASS}>
                         <TransactionTotals
-                            availableCurrencies={availableCurrencies}
-                            isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
+                            availableCurrencies={currencies as (typeof currencies)[number][]}
+                            isAvailableCurrenciesFetching={loadingBalances}
                             balanceAccountId={balanceAccountId}
                             statuses={filters.statuses as (typeof filters.statuses)[number][]}
                             categories={filters.categories as (typeof filters.categories)[number][]}
@@ -144,12 +131,15 @@ export const TransactionsOverview = ({
             ) : (
                 <TransactionsList
                     allowLimitSelection={allowLimitSelection}
-                    availableCurrencies={availableCurrencies}
+                    availableCurrencies={currencies}
+                    balances={balances}
+                    balancesEmpty={balancesEmpty}
                     dataCustomization={dataCustomization}
                     filters={filters}
+                    hasMultipleCurrencies={hasMultipleCurrencies}
                     loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}
+                    loadingBalances={loadingBalances}
                     onContactSupport={onContactSupport}
-                    onCurrenciesChange={handleCurrenciesChange}
                     onRecordSelection={onRecordSelection}
                     preferredLimit={preferredLimit}
                     showDetails={showDetails}

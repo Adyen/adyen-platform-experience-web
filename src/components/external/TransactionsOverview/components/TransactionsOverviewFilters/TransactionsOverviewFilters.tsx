@@ -29,7 +29,7 @@ export const getCustomRangeTimestamps = ([from, to]: [number, number]) => create
 
 export interface TransactionsOverviewFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
     activeView: TransactionsView;
-    availableCurrencies?: string[];
+    availableCurrencies: readonly string[];
     balanceAccounts?: IBalanceAccountBase[];
     eventCategory?: string;
     onChange?: (filters: Readonly<TransactionsOverviewFilters>) => void;

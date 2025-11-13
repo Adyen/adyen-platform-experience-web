@@ -7,7 +7,6 @@ export const BASE_CLASS_DETAILS = `${_BASE_CLASS}-details`;
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
 export const SUMMARY_CLASS = `${BASE_CLASS}__summary`;
 export const SUMMARY_ITEM_CLASS = `${SUMMARY_CLASS}-item`;
-export const VIEW_SWITCHER_CLASS = `${BASE_CLASS}__view-switcher`;
 
 export const enum TransactionsView {
     TRANSACTIONS = 'transactions',
