@@ -17,7 +17,11 @@ import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../utils';
 import './PayByLinkCreationForm.scss';
 
-export const PayByLinkCreationFormContainer = () => {
+type PayByLinkCreationFormContainerProps = {
+    onSubmitted?: (data: FormValues) => void;
+};
+
+export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreationFormContainerProps) => {
     const { i18n } = useCoreContext();
 
     const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall } = useConfigContext().endpoints;
@@ -180,13 +184,31 @@ export const PayByLinkCreationFormContainer = () => {
 
     const wizardForm = useWizardForm<FormValues>({
         steps: formSteps,
-        defaultValues: {},
+        defaultValues: {
+            amountValue: 1000000,
+            currency: 'USD',
+            shippingAddress: 'Address',
+            billingAddress: 'Billing Address',
+            emailAddress: 'german.mora@gmail.com',
+            linkValidity: '7',
+            deliveryDate: new Date().toString(),
+            merchantReference: 'Merchant',
+            fullName: 'Merchant',
+            shopperLocale: 'it-IT',
+            sendPaymentSuccessToShopper: true,
+            sendLinkToShopper: true,
+            description: 'Test',
+            store: 'New York Store',
+            linkType: 'singleUse',
+            shopperReference: 'Shop',
+            phoneNumber: 658903552,
+            countryCode: 'IT',
+        },
         mode: 'all',
         validateBeforeNext: true,
     });
 
-    const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep, currentStepConfig } =
-        wizardForm;
+    const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
 
     const handleNext = useCallback(
         async (index: number) => {
@@ -230,6 +252,7 @@ export const PayByLinkCreationFormContainer = () => {
     const onSubmit = async (data: FormValues) => {
         // TODO: Send data to API
         console.log(data);
+        onSubmitted?.(data);
     };
 
     const onError = (errors: any) => {
