@@ -20,6 +20,7 @@ const Select = <T extends SelectItem>({
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
     disableFocusTrap = false,
+    disableToggleFocusOnClose = false,
     multiSelect = false,
     readonly = false,
     onChange = noop,
@@ -37,6 +38,7 @@ const Select = <T extends SelectItem>({
     fitPosition,
     fixedPopoverPositioning,
     onResetAction,
+    buttonVariant,
     ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
@@ -94,9 +96,9 @@ const Select = <T extends SelectItem>({
         resetCommitAction();
 
         if (!pendingClickOutsideTriggeredHideList.current) {
-            toggleButtonRef.current?.focus();
+            if (!disableToggleFocusOnClose) toggleButtonRef.current?.focus();
         } else pendingClickOutsideTriggeredHideList.current = false;
-    }, [resetCommitAction, setShowList, setTextFilter]);
+    }, [disableToggleFocusOnClose, resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
         cachedSelectedItems.current = selection;
@@ -318,6 +320,7 @@ const Select = <T extends SelectItem>({
     return (
         <div className={dropdownClassName}>
             <SelectButton
+                buttonVariant={buttonVariant}
                 id={selectButtonId}
                 appliedFilterNumber={appliedFilterNumber}
                 active={selection}
