@@ -132,7 +132,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                         completed={stepIndex < activeIndex}
                         disabled={!canActivate(stepIndex)}
                         onClick={() => handleStepClick(stepIndex)}
-                        ref={(el: any) => {
+                        ref={(el: HTMLButtonElement | null) => {
                             if (el) {
                                 stepRefs.current[stepIndex] = el;
                             }

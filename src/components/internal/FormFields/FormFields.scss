@@ -34,32 +34,32 @@
 }
 
 .adyen-pe-field--col-70 {
-    width: calc(70% - 8px);
+    width: calc(70% - #{style.token(spacer-040)});
 }
 
 .adyen-pe-field--col-30 {
-    width: calc(30% - 8px);
+    width: calc(30% - #{style.token(spacer-040)});
 }
 
 .adyen-pe-field--col-50 {
-    width: calc(50% - 8px);
+    width: calc(50% - #{style.token(spacer-040)});
 }
 
 .adyen-pe-field-wrapper > .adyen-pe-field:first-child {
-    margin-right: 8px;
+    margin-right: style.token(spacer-040);
 
     [dir='rtl'] & {
-        margin-left: 8px;
+        margin-left: style.token(spacer-040);
         margin-right: 0;
     }
 }
 
 .adyen-pe-field-wrapper > .adyen-pe-field:nth-child(2) {
-    margin-left: 8px;
+    margin-left: style.token(spacer-040);
 
     [dir='rtl'] & {
         margin-left: 0;
-        margin-right: 8px;
+        margin-right: style.token(spacer-040);
     }
 }
 
@@ -77,7 +77,7 @@
     font-size: style.token(text-body-font-size);
     height: 40px;
     outline: none;
-    padding: 5px 8px;
+    padding: style.token(spacer-030) style.token(spacer-040);
     position: relative;
     transition:
         border 0.2s ease-out,
@@ -118,8 +118,7 @@
         box-shadow: none;
         flex: 1;
         height: auto;
-        outline: none;
-        padding: 5px 8px;
+        padding: style.token(spacer-030) style.token(spacer-040);
 
         &:hover {
             border: 0;
@@ -129,34 +128,22 @@
         &:active {
             background: transparent;
             border: 0;
-            outline: none !important;
+            outline: none;
+        }
+
+        &:active:hover {
+            outline: none;
         }
     }
 
-    &__icon-before {
-        color: style.token(color-icon-secondary);
+    &__slot-before {
         display: flex;
-        margin-left: 8px;
-        pointer-events: none;
-        transform: scale(1.2);
-
-        &--interactive {
-            cursor: pointer;
-            pointer-events: auto;
-        }
+        margin-left: style.token(spacer-040);
     }
 
-    &__icon-after {
-        color: style.token(color-icon-secondary);
+    &__slot-after {
         display: flex;
-        margin-right: 8px;
-        pointer-events: none;
-        transform: scale(1.2);
-
-        &--interactive {
-            cursor: pointer;
-            pointer-events: auto;
-        }
+        margin-right: style.token(spacer-040);
     }
 
     &__dropdown {
@@ -195,7 +182,7 @@
     }
 
     .adyen-pe-button--tertiary {
-        font-weight: 400;
+        font-weight: style.token(text-caption-font-weight);
         text-decoration: none;
     }
 }

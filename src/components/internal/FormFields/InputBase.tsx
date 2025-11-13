@@ -3,7 +3,7 @@ import { hasOwnProperty } from '../../../utils';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { InputBaseProps } from './types';
 import Select from './Select';
 import './FormFields.scss';
@@ -18,10 +18,8 @@ function InputBase(
         onBlur,
         onFocusHandler,
         errorMessage,
-        iconBefore,
-        iconAfter,
-        iconBeforeInteractive,
-        iconAfterInteractive,
+        iconBeforeSlot,
+        iconAfterSlot,
         dropdown,
         dropdownPosition = 'start',
         onDropdownInput,
@@ -108,7 +106,7 @@ function InputBase(
         ...newProps
     } = props as any;
 
-    const hasIcons = iconBefore || iconAfter;
+    const hasIcons = iconBeforeSlot || iconAfterSlot;
     const shouldShowDropdown = !!dropdown && dropdown.items.length > 0;
     const shouldDisplayDropdownAtStart = shouldShowDropdown && dropdownPosition === 'start';
     const shouldDisplayDropdownAtEnd = shouldShowDropdown && dropdownPosition === 'end';
@@ -135,70 +133,42 @@ function InputBase(
         />
     );
 
+    const renderDropdown = useCallback(
+        () =>
+            dropdown ? (
+                <Select
+                    buttonVariant={ButtonVariant.TERTIARY}
+                    items={dropdown.items}
+                    selected={dropdown.value}
+                    onChange={handleDropdownChange}
+                    readonly={isDropdownReadOnly}
+                    filterable={dropdown.dynamicFiltering}
+                    aria-label={dropdown['aria-label']}
+                    classNameModifiers={['input-field']}
+                    isInvalid={isInvalid}
+                    isValid={isValid}
+                    isCollatingErrors={isCollatingErrors}
+                    disableToggleFocusOnClose
+                />
+            ) : null,
+        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly, isInvalid, isValid]
+    );
+
     return (
         <>
             {hasDropdownOrIcons ? (
                 <div className="adyen-pe-input__container">
-                    {shouldDisplayDropdownAtStart && dropdown && (
+                    {shouldDisplayDropdownAtStart && (
                         <div role="presentation" className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start">
-                            <Select
-                                placeholder={dropdown.placeholder}
-                                buttonVariant={ButtonVariant.TERTIARY}
-                                items={dropdown.items}
-                                selected={dropdown.value}
-                                onChange={handleDropdownChange}
-                                readonly={isDropdownReadOnly}
-                                filterable={dropdown.dynamicFiltering}
-                                aria-label={dropdown['aria-label']}
-                                classNameModifiers={['input-field']}
-                                isInvalid={isInvalid}
-                                isValid={isValid}
-                                isCollatingErrors={isCollatingErrors}
-                                disableToggleFocusOnClose
-                            />
+                            {renderDropdown()}
                         </div>
                     )}
-                    {iconBefore && (
-                        <span
-                            className={classNames('adyen-pe-input__icon-before', {
-                                'adyen-pe-input__icon-before--interactive': iconBeforeInteractive,
-                            })}
-                            {...(!iconBeforeInteractive && { 'aria-hidden': 'true' })}
-                        >
-                            {iconBefore}
-                        </span>
-                    )}
+                    {iconBeforeSlot && <span className="adyen-pe-input__slot-before">{iconBeforeSlot}</span>}
                     {inputElement}
-                    {iconAfter && (
-                        <span
-                            className={classNames('adyen-pe-input__icon-after', {
-                                'adyen-pe-input__icon-after--interactive': iconAfterInteractive,
-                            })}
-                            {...(!iconAfterInteractive && { 'aria-hidden': 'true' })}
-                        >
-                            {iconAfter}
-                        </span>
-                    )}
-                    {shouldDisplayDropdownAtEnd && dropdown && (
-                        <div
-                            role="presentation"
-                            className="adyen-pe-input__dropdown adyen-pe-input__dropdown--end"
-                            onClickCapture={e => e.stopPropagation()}
-                            onMouseDownCapture={e => e.stopPropagation()}
-                        >
-                            <Select
-                                placeholder={dropdown.placeholder}
-                                items={dropdown.items}
-                                selected={dropdown.value}
-                                onChange={handleDropdownChange}
-                                readonly={isDropdownReadOnly}
-                                filterable={dropdown.dynamicFiltering}
-                                aria-label={dropdown['aria-label']}
-                                classNameModifiers={['input-field']}
-                                isInvalid={isInvalid}
-                                isValid={isValid}
-                                isCollatingErrors={isCollatingErrors}
-                            />
+                    {iconAfterSlot && <span className="adyen-pe-input__slot-after">{iconAfterSlot}</span>}
+                    {shouldDisplayDropdownAtEnd && (
+                        <div role="presentation" className="adyen-pe-input__dropdown adyen-pe-input__dropdown--end">
+                            {renderDropdown()}
                         </div>
                     )}
                 </div>

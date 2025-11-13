@@ -118,9 +118,8 @@ export const SearchBar = forwardRef<SearchBarRef, SearchBarProps>(
                 onFocusHandler: handleFocus,
                 onBlur: handleBlur,
                 className: classNames('adyen-pe-search-bar__input'),
-                iconBefore,
-                iconAfter: shouldShowClearButton ? iconAfter : undefined,
-                iconAfterInteractive: shouldShowClearButton,
+                iconBeforeSlot: iconBefore,
+                iconAfterSlot: shouldShowClearButton ? iconAfter : undefined,
                 ...(autoFocus ? { autoFocus: true } : {}),
             };
 
@@ -136,5 +135,3 @@ export const SearchBar = forwardRef<SearchBarRef, SearchBarProps>(
         );
     }
 );
-
-SearchBar.displayName = 'SearchBar';
