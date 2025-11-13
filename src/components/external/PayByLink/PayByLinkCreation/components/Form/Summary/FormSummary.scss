@@ -3,8 +3,8 @@
 .adyen-pe-pay-by-link-creation-form-summary {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-080);
     font-size: style.token(text-body-font-size);
+    gap: style.token(spacer-080);
 
     &__section-title {
         font-weight: style.token(text-title-font-weight);

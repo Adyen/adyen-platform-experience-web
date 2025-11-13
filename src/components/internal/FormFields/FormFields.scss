@@ -122,12 +122,17 @@
 
         &:hover {
             border: 0;
+            outline: none;
         }
 
         &:focus,
         &:active {
             background: transparent;
             border: 0;
+            outline: none;
+        }
+
+        &:focus:hover {
             outline: none;
         }
 
