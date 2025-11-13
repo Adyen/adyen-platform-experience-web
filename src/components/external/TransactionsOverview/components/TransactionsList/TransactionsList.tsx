@@ -6,7 +6,6 @@ import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetail
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { parseCursorPaginatedResponseData } from '../../../../internal/Pagination/hooks/usePaginatedRecords';
-import type { TransactionsOverviewFilters } from '../TransactionsOverviewFilters/TransactionsOverviewFilters';
 import { ITransaction } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
 import { LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
@@ -20,10 +19,11 @@ import mergeRecords from '../../../../utils/customData/mergeRecords';
 import usePageLimit from '../../../../internal/Pagination/hooks/usePageLimit';
 import useCursorPagination from '../../../../internal/Pagination/hooks/useCursorPagination';
 import { useFetch } from '../../../../../hooks/useFetch';
+import { TransactionsOverviewFilters } from '../TransactionsOverviewFilters/types';
 import { RequestPageCallback, RequestPageCallbackParams } from '../../../../internal/Pagination/hooks/types';
 import { PaginationType } from '../../../../internal/Pagination/types';
 
-export const TransactionsList = ({
+const TransactionsList = ({
     allowLimitSelection,
     availableCurrencies,
     dataCustomization,
@@ -219,3 +219,5 @@ export const TransactionsList = ({
         </>
     );
 };
+
+export default TransactionsList;

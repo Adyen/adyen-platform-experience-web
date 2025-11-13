@@ -1,4 +1,5 @@
 import { ITransaction } from '../../../../../types';
+import { TransactionsOverviewFilters } from './types';
 import { TranslationKey } from '../../../../../translations';
 import * as RangePreset from '../../../../internal/Calendar/calendar/timerange/presets';
 
@@ -32,3 +33,11 @@ export const TRANSACTION_CATEGORIES: readonly ITransaction['category'][] = [
     'Transfer',
     'Other',
 ] as const;
+
+export const INITIAL_FILTERS: Readonly<TransactionsOverviewFilters> = {
+    balanceAccount: undefined,
+    categories: [] as const,
+    createdDate: TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS,
+    currencies: [] as const,
+    statuses: ['Booked'] as const,
+} as const;

@@ -11,6 +11,7 @@
 
         @include mixins.adyen-pe-error-message-display-mobile-fix {
             .adyen-pe-data-grid__table-wrapper {
+                overflow: hidden;
                 position: relative;
             }
         }

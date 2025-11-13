@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { FilterBar } from '../../../../internal/FilterBar';
-import { FilterBarState } from '../../../../internal/FilterBar/types';
-import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { TransactionsOverviewSplitView } from '../TransactionsOverview/constants';
+import { TransactionsView } from '../TransactionsOverview/constants';
 import MultiSelectionFilter, { selectionOptionsFor } from '../MultiSelectionFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import useMultiSelectionFilterProps from '../../../../../hooks/useMultiSelectionFilterProps';
@@ -12,43 +10,30 @@ import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../inter
 import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
 import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
 import useFilterAnalyticsEvent from '../../../../../hooks/analytics/useFilterAnalyticsEvent';
+import type { TransactionsOverviewFilters } from './types';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import {
+    INITIAL_FILTERS,
     TRANSACTION_CATEGORIES,
     TRANSACTION_DATE_RANGE_CUSTOM,
     TRANSACTION_DATE_RANGE_DEFAULT,
-    TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS,
     TRANSACTION_DATE_RANGE_MAX_MONTHS,
     TRANSACTION_DATE_RANGES,
     TransactionDateRange,
     /*TRANSACTION_STATUSES,*/
 } from './constants';
+import { FilterBarState } from '../../../../internal/FilterBar/types';
+import { IBalanceAccountBase } from '../../../../../types';
 
-export interface TransactionsOverviewFilters {
-    balanceAccount?: Readonly<IBalanceAccountBase>;
-    categories: readonly ITransaction['category'][];
-    statuses: readonly ITransaction['status'][];
-    currencies: readonly string[];
-    createdDate: RangeTimestamps;
-}
+export const getCustomRangeTimestamps = ([from, to]: [number, number]) => createRangeTimestampsFactory({ from, to })();
 
 export interface TransactionsOverviewFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
-    activeView: TransactionsOverviewSplitView;
+    activeView: TransactionsView;
     availableCurrencies?: string[];
     balanceAccounts?: IBalanceAccountBase[];
     eventCategory?: string;
     onChange?: (filters: Readonly<TransactionsOverviewFilters>) => void;
 }
-
-export const INITIAL_FILTERS: Readonly<TransactionsOverviewFilters> = {
-    balanceAccount: undefined,
-    categories: [] as const,
-    createdDate: TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS,
-    currencies: [] as const,
-    statuses: ['Booked'] as const,
-} as const;
-
-export const getCustomRangeTimestamps = ([from, to]: [number, number]) => createRangeTimestampsFactory({ from, to })();
 
 const TransactionsOverviewFilters = ({
     activeView,
@@ -152,7 +137,7 @@ const TransactionsOverviewFilters = ({
     const categoriesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.category.label'), [i18n]);
     const currenciesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.currency.label'), [i18n]);
 
-    const isTransactionsListView = activeView === TransactionsOverviewSplitView.TRANSACTIONS;
+    const isTransactionsListView = activeView === TransactionsView.TRANSACTIONS;
 
     // const canResetFilters = useMemo(
     //     () =>

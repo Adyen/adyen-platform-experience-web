@@ -293,5 +293,8 @@
     "transactions.overview.totals.labels.outgoing": "Label for a button that toggles the visibility of all the total outgoing amounts (for various currencies) for the current set of transactions",
     "transactions.overview.totals.lists.default": "Label for a list of all the total incoming and outgoing amounts (for various currencies) for the current set of transactions",
     "transactions.overview.totals.lists.incoming": "Label for a list of all the total incoming amounts (for various currencies) for the current set of transactions",
-    "transactions.overview.totals.lists.outgoing": "Label for a list of all the total outgoing amounts (for various currencies) for the current set of transactions"
+    "transactions.overview.totals.lists.outgoing": "Label for a list of all the total outgoing amounts (for various currencies) for the current set of transactions",
+    "transactions.overview.views.insights": "Label text referring to a view that displays the detailed transactions summary for a specified period.",
+    "transactions.overview.views.transactions": "Label text referring to a view that displays a list of transaction records.",
+    "transactions.overview.viewSelect.a11y.label": "Label text referring to a group of interactive controls for navigating through several transactions views."
 }

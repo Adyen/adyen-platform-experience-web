@@ -1,17 +1,30 @@
+import cx from 'classnames';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { Header } from '../../../../internal/Header';
 import { isFunction } from '../../../../../utils';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { INITIAL_FILTERS } from '../TransactionsOverviewFilters/constants';
 import { DEFAULT_PAGE_LIMIT } from '../../../../internal/Pagination/constants';
-import { BASE_CLASS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS, TransactionsOverviewSplitView } from './constants';
+import {
+    BASE_CLASS,
+    BASE_XS_CLASS,
+    SUMMARY_CLASS,
+    SUMMARY_ITEM_CLASS,
+    TRANSACTIONS_VIEW_TABS,
+    TransactionsView,
+    VIEW_SWITCHER_CLASS,
+} from './constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import TransactionsOverviewFilters, { INITIAL_FILTERS } from '../TransactionsOverviewFilters/TransactionsOverviewFilters';
+import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
+import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
+import TransactionsOverviewFilters from '../TransactionsOverviewFilters/TransactionsOverviewFilters';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
+import TransactionsList from '../TransactionsList/TransactionsList';
 import './TransactionsOverview.scss';
-import { TransactionsList } from '../TransactionsList/TransactionsList';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -28,22 +41,16 @@ export const TransactionsOverview = ({
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const [filters, setFilters] = useState(INITIAL_FILTERS);
-    const [activeView, setActiveView] = useState(TransactionsOverviewSplitView.TRANSACTIONS);
-    const userEvents = useAnalyticsContext();
-
     const cachedFilters = useRef(filters);
-
-    const [availableCurrencies, setAvailableCurrencies] = useState<string[] | undefined>([]);
-    const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
-
-    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
-        setAvailableCurrencies(currencies);
-        setIsAvailableCurrenciesFetching(isFetching);
-    }, []);
-
-    // FILTERS
-    const filterBarState = useFilterBarState();
+    const userEvents = useAnalyticsContext();
     const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
+
+    useEffect(() => {
+        userEvents.addEvent?.('Landed on page', {
+            category: 'PIE components',
+            subCategory: 'Transactions overview',
+        });
+    }, [userEvents]);
 
     useEffect(() => {
         if (cachedFilters.current !== filters) {
@@ -61,26 +68,52 @@ export const TransactionsOverview = ({
         }
     }, [_onFiltersChanged, filters]);
 
-    const balanceAccountId = filters.balanceAccount?.id;
+    const [availableCurrencies, setAvailableCurrencies] = useState<string[] | undefined>([]);
+    const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
 
-    useEffect(() => {
-        userEvents.addEvent?.('Landed on page', {
-            category: 'PIE components',
-            subCategory: 'Transactions overview',
-        });
-    }, [userEvents]);
+    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
+        setAvailableCurrencies(currencies);
+        setIsAvailableCurrenciesFetching(isFetching);
+    }, []);
+
+    const balanceAccountId = filters.balanceAccount?.id;
 
     useEffect(() => {
         setAvailableCurrencies([]);
     }, [balanceAccountId]);
 
+    const filterBarState = useFilterBarState();
     const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
+    const { isMobileContainer } = filterBarState;
+    const { i18n } = useCoreContext();
+
+    const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
+    const onActiveViewChange = useCallback(({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id), []);
+
+    const viewSwitcher = useMemo(
+        () =>
+            TRANSACTIONS_VIEW_TABS.length > 1 ? (
+                <div className={VIEW_SWITCHER_CLASS}>
+                    <SegmentedControl
+                        aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
+                        activeItem={activeView}
+                        items={TRANSACTIONS_VIEW_TABS}
+                        onChange={onActiveViewChange}
+                    />
+                </div>
+            ) : null,
+        [activeView, onActiveViewChange, i18n]
+    );
 
     return (
-        <div className={BASE_CLASS}>
+        <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="transactions.overview.title">
                 <FilterBarMobileSwitch {...filterBarState} />
+                {!isMobileContainer && <>{viewSwitcher}</>}
             </Header>
+
+            {isMobileContainer && <>{viewSwitcher}</>}
+
             <TransactionsOverviewFilters
                 {...filterBarState}
                 activeView={activeView}
@@ -90,7 +123,7 @@ export const TransactionsOverview = ({
                 onChange={setFilters}
             />
 
-            {activeView === TransactionsOverviewSplitView.INSIGHTS ? (
+            {activeView === TransactionsView.INSIGHTS ? (
                 <div className={SUMMARY_CLASS}>
                     <div className={SUMMARY_ITEM_CLASS}>
                         <TransactionTotals

@@ -845,5 +845,8 @@
     "transactions.overview.totals.tags.incoming": "Total incoming",
     "transactions.overview.totals.tags.incoming.description": "All money received into your account based on the selected filters",
     "transactions.overview.totals.tags.outgoing": "Total outgoing",
-    "transactions.overview.totals.tags.outgoing.description": "All fees, refunds, payouts, and other charges based on the selected filters"
+    "transactions.overview.totals.tags.outgoing.description": "All fees, refunds, payouts, and other charges based on the selected filters",
+    "transactions.overview.views.insights": "Insights",
+    "transactions.overview.views.transactions": "Transactions",
+    "transactions.overview.viewSelect.a11y.label": "Transaction views"
 }
