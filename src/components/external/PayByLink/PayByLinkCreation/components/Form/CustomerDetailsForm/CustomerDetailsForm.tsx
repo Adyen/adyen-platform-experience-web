@@ -21,7 +21,7 @@ export const CustomerDetailsForm = ({
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
 }) => {
     return (
-        <div className="adyen-pe-pay-by-link-creation__form-fields-container">
+        <div className="adyen-pe-pay-by-link-creation-form__form-fields-container">
             <VisibleField name="shopperReference">
                 <ShopperReferenceField />
             </VisibleField>
@@ -35,7 +35,7 @@ export const CustomerDetailsForm = ({
                     <ShopperEmailField />
                 </VisibleField>
 
-                <div className="adyen-pe-pay-by-link-creation__form-email-checkbox-container">
+                <div className="adyen-pe-pay-by-link-creation-form__form-email-checkbox-container">
                     <VisibleField name="sendLinkToShopper">
                         <SendLinkToShopperField />
                     </VisibleField>

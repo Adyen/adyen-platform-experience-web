@@ -17,7 +17,7 @@ export const PaymentDetailsForm = ({
     isConfigLoading?: boolean;
 }) => {
     return (
-        <div className="adyen-pe-pay-by-link-creation__form-fields-container">
+        <div className="adyen-pe-pay-by-link-creation-form__form-fields-container">
             <VisibleField name="store">
                 <StoreField />
             </VisibleField>

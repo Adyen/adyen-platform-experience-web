@@ -29,7 +29,7 @@ export const BillingAndShippingCheckboxField = ({
     return (
         <div>
             <input type="checkbox" className="adyen-pe-visually-hidden" id={isSeparateAddressInputId} onInput={toggleBillingAndShippingAddress} />
-            <label className="adyen-pe-pay-by-link-creation__form-field-checkbox" htmlFor={isSeparateAddressInputId}>
+            <label className="adyen-pe-pay-by-link-creation-form__form-field-checkbox" htmlFor={isSeparateAddressInputId}>
                 {isSeparateAddress ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                     {i18n.get('payByLink.linkCreation.fields.billingAndShippingSeparateAddress.label')}

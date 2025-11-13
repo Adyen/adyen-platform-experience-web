@@ -39,13 +39,13 @@ export const EmailDependentCheckboxField = ({ name, label }: { name: 'sendLinkTo
         <div>
             <input type="checkbox" className="adyen-pe-visually-hidden" id={inputId} onInput={toggle} disabled={isEmailEmpty} />
             <label
-                className={cx('adyen-pe-pay-by-link-creation__form-field-checkbox', {
-                    ['adyen-pe-pay-by-link-creation__form-field-checkbox--disabled']: isEmailEmpty,
+                className={cx('adyen-pe-pay-by-link-creation-form__form-field-checkbox', {
+                    ['adyen-pe-pay-by-link-creation-form__form-field-checkbox--disabled']: isEmailEmpty,
                 })}
                 htmlFor={inputId}
             >
                 {isEmailEmpty ? (
-                    <Icon className="adyen-pe-pay-by-link-creation__form-field-checkbox--disabled" name="checkbox-disabled" />
+                    <Icon className="adyen-pe-pay-by-link-creation-form__form-field-checkbox--disabled" name="checkbox-disabled" />
                 ) : isChecked ? (
                     <Icon name="checkmark-square-fill" />
                 ) : (

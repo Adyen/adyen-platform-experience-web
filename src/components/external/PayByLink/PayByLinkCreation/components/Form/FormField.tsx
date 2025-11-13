@@ -5,13 +5,13 @@ import { PropsWithChildren } from 'preact/compat';
 
 const FormField = ({ label, optional, supportText, children }: PropsWithChildren<{ label: string; optional: boolean; supportText?: string }>) => {
     return (
-        <div className="adyen-pe-pay-by-link-creation__form-field-container">
-            <div className="adyen-pe-pay-by-link-creation__form-field-label-container">
+        <div className="adyen-pe-pay-by-link-creation-form__form-field-container">
+            <div className="adyen-pe-pay-by-link-creation-form__form-field-label-container">
                 <Typography
                     el={TypographyElement.SPAN}
                     variant={TypographyVariant.BODY}
                     stronger
-                    className="adyen-pe-pay-by-link-creation__form-field-label"
+                    className="adyen-pe-pay-by-link-creation-form-form__form-field-label"
                 >
                     {label}
                 </Typography>
@@ -19,7 +19,7 @@ const FormField = ({ label, optional, supportText, children }: PropsWithChildren
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation__form-field-label-optional"
+                        className="adyen-pe-pay-by-link-creation-form__form-field-label-optional"
                     >
                         {'(optional)'}
                     </Typography>
@@ -33,7 +33,7 @@ const FormField = ({ label, optional, supportText, children }: PropsWithChildren
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation__form-field-support-text"
+                        className="adyen-pe-pay-by-link-creation-form__form-field-support-text"
                     >
                         {supportText}
                     </Typography>
