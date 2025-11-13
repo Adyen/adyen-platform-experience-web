@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import { FilterBar } from '../../../../internal/FilterBar';
 import { FilterBarState } from '../../../../internal/FilterBar/types';
 import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { TransactionsOverviewSplitView } from '../TransactionsOverview/constants';
 import MultiSelectionFilter, { selectionOptionsFor } from '../MultiSelectionFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import useMultiSelectionFilterProps from '../../../../../hooks/useMultiSelectionFilterProps';
@@ -32,9 +33,10 @@ export interface TransactionsOverviewFilters {
 }
 
 export interface TransactionsOverviewFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
-    eventCategory?: string;
+    activeView: TransactionsOverviewSplitView;
     availableCurrencies?: string[];
     balanceAccounts?: IBalanceAccountBase[];
+    eventCategory?: string;
     onChange?: (filters: Readonly<TransactionsOverviewFilters>) => void;
 }
 
@@ -49,9 +51,10 @@ export const INITIAL_FILTERS: Readonly<TransactionsOverviewFilters> = {
 export const getCustomRangeTimestamps = ([from, to]: [number, number]) => createRangeTimestampsFactory({ from, to })();
 
 const TransactionsOverviewFilters = ({
-    eventCategory,
+    activeView,
     availableCurrencies,
     balanceAccounts,
+    eventCategory,
     onChange,
     ...filterBarProps
 }: TransactionsOverviewFiltersProps) => {
@@ -145,12 +148,11 @@ const TransactionsOverviewFilters = ({
         selectionOptions: useMemo(() => selectionOptionsFor(availableCurrencies ?? []), [availableCurrencies]),
     });
 
-    // [TODO]: Compute this value from active view
-    const isTransactionsListView = true;
-
     // const statusesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.status.label'), [i18n]);
     const categoriesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.category.label'), [i18n]);
     const currenciesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.currency.label'), [i18n]);
+
+    const isTransactionsListView = activeView === TransactionsOverviewSplitView.TRANSACTIONS;
 
     // const canResetFilters = useMemo(
     //     () =>

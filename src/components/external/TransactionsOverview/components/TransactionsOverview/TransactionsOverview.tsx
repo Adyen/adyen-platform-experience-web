@@ -14,7 +14,7 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Paginati
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
+import { BASE_CLASS, BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS, TransactionsOverviewSplitView } from './constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
 import hasCustomField from '../../../../utils/customData/hasCustomField';
@@ -42,6 +42,7 @@ export const TransactionsOverview = ({
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
     const [filters, setFilters] = useState(INITIAL_FILTERS);
+    const [activeView, setActiveView] = useState(TransactionsOverviewSplitView.TRANSACTIONS);
     const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
     const userEvents = useAnalyticsContext();
 
@@ -230,6 +231,7 @@ export const TransactionsOverview = ({
             </Header>
             <TransactionsOverviewFilters
                 {...filterBarState}
+                activeView={activeView}
                 availableCurrencies={availableCurrencies}
                 balanceAccounts={balanceAccounts}
                 eventCategory="Transaction component"
