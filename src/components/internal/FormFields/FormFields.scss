@@ -118,7 +118,6 @@
         box-shadow: none;
         flex: 1;
         height: auto;
-        outline: none;
         padding: style.token(spacer-030) style.token(spacer-040);
 
         &:hover {
@@ -129,7 +128,11 @@
         &:active {
             background: transparent;
             border: 0;
-            outline: none !important;
+            outline: none;
+        }
+
+        &:active:hover {
+            outline: none;
         }
     }
 
@@ -179,7 +182,7 @@
     }
 
     .adyen-pe-button--tertiary {
-        font-weight: 400;
+        font-weight: style.token(text-caption-font-weight);
         text-decoration: none;
     }
 }
