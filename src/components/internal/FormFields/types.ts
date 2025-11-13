@@ -43,8 +43,6 @@ export interface InputBaseProps {
     lang?: HTMLInputElement['lang'];
     iconBeforeSlot?: ComponentChildren;
     iconAfterSlot?: ComponentChildren;
-    iconBeforeInteractive?: boolean;
-    iconAfterInteractive?: boolean;
     dropdown?: InputFieldDropdownProps;
     dropdownPosition?: InputFieldElementPosition;
     onDropdownInput?: (selectedValue: any) => void;

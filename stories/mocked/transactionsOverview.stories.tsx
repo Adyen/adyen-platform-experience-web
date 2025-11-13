@@ -6,6 +6,8 @@ import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
+import { SearchBar } from '../../src/components/internal/SearchBar/SearchBar';
+import InputBase from '../../src/components/internal/FormFields/InputBase';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
 export const Default: ElementStory<typeof TransactionsOverview> = {
@@ -88,6 +90,28 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     },
     parameters: {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,
+    },
+};
+
+export const TestInternalComponent: ElementStory<typeof TransactionsOverview> = {
+    name: 'Test Internal Component',
+    decorators: () => {
+        return (
+            <InputBase
+                dropdown={{
+                    items: [
+                        { id: 'EUR', name: 'EUR' },
+                        { id: 'USD', name: 'USD' },
+                    ],
+                    value: 'EUR',
+                    'aria-label': 'Currency selector',
+                }}
+                onDropdownInput={(value: any) => console.log('Dropdown changed:', value)}
+                value="Entered Text"
+                type={'number'}
+                placeholder="Enter amount"
+            />
+        );
     },
 };
 
