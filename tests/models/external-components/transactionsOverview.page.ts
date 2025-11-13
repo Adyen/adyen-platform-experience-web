@@ -1,4 +1,4 @@
-import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import { TRANSACTION_DATE_RANGE_MAX_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverviewFilters/constants';
 import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
@@ -26,7 +26,7 @@ export class TransactionsOverviewPage {
         this._applyDateFilter = applyDateFilter(page, {
             earliestDate: now => {
                 const earliest = new Date(now);
-                earliest.setMonth(earliest.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
+                earliest.setMonth(earliest.getMonth() - TRANSACTION_DATE_RANGE_MAX_MONTHS);
                 return earliest;
             },
             latestDate: now => new Date(now),
