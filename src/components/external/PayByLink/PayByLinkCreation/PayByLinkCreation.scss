@@ -71,6 +71,18 @@
         cursor: pointer;
         display: flex;
         gap: style.token(spacer-050);
+
+        &--disabled {
+            cursor: default;
+        }
+    }
+
+    &__form-email-checkbox-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+        padding-left: style.token(spacer-060);
     }
 
     &__form-field-date-field-container {

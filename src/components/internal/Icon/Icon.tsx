@@ -8,6 +8,7 @@ const icons = {
     'checkmark-circle-fill': () => import('../../../images/icons/checkmark-circle-fill.svg?component'),
     'checkmark-square-fill': () => import('../../../images/icons/checkmark-square-fill.svg?component'),
     checkmark: () => import('../../../images/icons/checkmark.svg?component'),
+    'checkbox-disabled': () => import('../../../images/icons/checkbox-disabled.svg?component'),
     'chevron-down': () => import('../../../images/icons/chevron-down.svg?component'),
     'chevron-left': () => import('../../../images/icons/chevron-left.svg?component'),
     'chevron-right': () => import('../../../images/icons/chevron-right.svg?component'),

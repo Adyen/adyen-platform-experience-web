@@ -10,6 +10,8 @@ import { BillingAndShippingCheckboxField } from './Fields/BillingAndShippingChec
 import { StateUpdater } from 'preact/hooks';
 import { Dispatch } from 'preact/compat';
 import { VisibleField } from '../VisibleField';
+import { SendLinkToShopperField } from './Fields/SendLinkToShopperField';
+import { SendPaymentSuccessToShopperField } from './Fields/SendPaymentSuccessToShopperField';
 
 export const CustomerDetailsForm = ({
     isSeparateAddress,
@@ -23,23 +25,42 @@ export const CustomerDetailsForm = ({
             <VisibleField name="shopperReference">
                 <ShopperReferenceField />
             </VisibleField>
+
             <VisibleField name="fullName">
                 <ShopperNameField />
             </VisibleField>
-            <VisibleField name="emailAddress">
-                <ShopperEmailField />
-            </VisibleField>
+
+            <div>
+                <VisibleField name="emailAddress">
+                    <ShopperEmailField />
+                </VisibleField>
+
+                <div className="adyen-pe-pay-by-link-creation__form-email-checkbox-container">
+                    <VisibleField name="sendLinkToShopper">
+                        <SendLinkToShopperField />
+                    </VisibleField>
+                    <VisibleField name="sendPaymentSuccessToShopper">
+                        <SendPaymentSuccessToShopperField />
+                    </VisibleField>
+                </div>
+            </div>
+
             <VisibleField name="phoneNumber">
                 <ShopperPhoneField />
             </VisibleField>
+
             <VisibleField name="countryCode">
                 <CountryRegionField />
             </VisibleField>
+
             <VisibleField name="shippingAddress">
                 <ShippingAddressField isSeparateAddress={isSeparateAddress} />
             </VisibleField>
+
             <BillingAndShippingCheckboxField isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
+
             <VisibleField name="billingAddress">{isSeparateAddress && <BillingAddressField isSeparateAddress={isSeparateAddress} />}</VisibleField>
+
             <VisibleField name="shopperLocale">
                 <LanguageField />
             </VisibleField>

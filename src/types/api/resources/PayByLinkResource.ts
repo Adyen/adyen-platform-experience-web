@@ -191,6 +191,12 @@ export interface components {
             amountValue: {
                 required: boolean;
             };
+            sendLinkToShopper: {
+                required: boolean;
+            };
+            sendPaymentSuccessToShopper: {
+                required: boolean;
+            };
             billingAddress?: {
                 required: components['schemas']['FillMode'];
             };

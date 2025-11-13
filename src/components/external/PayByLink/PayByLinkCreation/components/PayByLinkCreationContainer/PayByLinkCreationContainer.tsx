@@ -63,17 +63,26 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                 id: 'customer',
                 title: i18n.get('payByLink.linkCreation.customerDetailsForm.title'),
                 description: i18n.get('payByLink.linkCreation.customerDetailsForm.description'),
-                fields: [
-                    { fieldName: 'shopperReference', required: true, visible: !!configurationQuery.data?.['shopperReference'] },
-                    { fieldName: 'fullName', required: true, visible: !!configurationQuery.data?.['fullName'] },
-                    { fieldName: 'emailAddress', required: true, visible: !!configurationQuery.data?.['emailAddress'] },
-                    { fieldName: 'emailSender', required: true, visible: !!configurationQuery.data?.['emailSender'] },
-                    { fieldName: 'phoneNumber', required: true, visible: !!configurationQuery.data?.['phoneNumber'] },
-                    { fieldName: 'countryCode', required: true, visible: !!configurationQuery.data?.['countryCode'] },
-                    { fieldName: 'shippingAddress', required: true, visible: !!configurationQuery.data?.['shippingAddress'] },
-                    { fieldName: 'billingAddress', required: true, visible: !!configurationQuery.data?.['billingAddress'] },
-                    { fieldName: 'shopperLocale', required: true, visible: !!configurationQuery.data?.['shopperLocale'] },
-                ],
+                fields: (
+                    [
+                        { fieldName: 'shopperReference', required: true, visible: !!configurationQuery.data?.['shopperReference'] },
+                        { fieldName: 'fullName', required: true, visible: !!configurationQuery.data?.['fullName'] },
+                        { fieldName: 'emailAddress', required: true, visible: !!configurationQuery.data?.['emailAddress'] },
+                        { fieldName: 'emailAddress', required: true, visible: !!configurationQuery.data?.['emailAddress'] },
+                        { fieldName: 'sendLinkToShopper', required: true, visible: !!configurationQuery.data?.['sendLinkToShopper'] },
+                        {
+                            fieldName: 'sendPaymentSuccessToShopper',
+                            required: true,
+                            visible: !!configurationQuery.data?.['sendPaymentSuccessToShopper'],
+                        },
+                        { fieldName: 'emailSender', required: true, visible: !!configurationQuery.data?.['emailSender'] },
+                        { fieldName: 'phoneNumber', required: true, visible: !!configurationQuery.data?.['phoneNumber'] },
+                        { fieldName: 'countryCode', required: true, visible: !!configurationQuery.data?.['countryCode'] },
+                        { fieldName: 'shippingAddress', required: true, visible: !!configurationQuery.data?.['shippingAddress'] },
+                        { fieldName: 'billingAddress', required: true, visible: !!configurationQuery.data?.['billingAddress'] },
+                        { fieldName: 'shopperLocale', required: true, visible: !!configurationQuery.data?.['shopperLocale'] },
+                    ] as const
+                ).filter(field => !!configurationQuery.data?.[field.fieldName]),
                 isOptional: false,
             },
             {

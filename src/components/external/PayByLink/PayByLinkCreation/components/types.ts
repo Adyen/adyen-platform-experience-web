@@ -25,6 +25,8 @@ const defaultFormValues = {
     shippingAddress: '',
     billingAddress: '',
     shopperLocale: '',
+    sendLinkToShopper: false,
+    sendPaymentSuccessToShopper: false,
 } satisfies Record<keyof PaymentLinkConfiguration, any>;
 
 export type FormValues = Partial<typeof defaultFormValues>;

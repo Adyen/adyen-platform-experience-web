@@ -176,6 +176,12 @@ export const PAY_BY_LINK_CONFIGURATION = {
     shippingAddress: {
         required: true,
     },
+    sendLinkToShopper: {
+        required: true,
+    },
+    sendPaymentSuccessToShopper: {
+        required: true,
+    },
     shopperLocale: {
         required: true,
         options: ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'nl-NL', 'pt-BR', 'ja-JP', 'zh-CN'],
