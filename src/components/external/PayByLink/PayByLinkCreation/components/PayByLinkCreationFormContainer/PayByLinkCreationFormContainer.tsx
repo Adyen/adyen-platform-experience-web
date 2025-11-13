@@ -17,9 +17,10 @@ import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../utils';
 import './PayByLinkCreationForm.scss';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
+import { SuccessResponse } from '../../../../../../types/api/endpoints';
 
 type PayByLinkCreationFormContainerProps = {
-    onSubmitted?: (data: FormValues) => void;
+    onSubmitted?: (result: SuccessResponse<'createPayByLinkConfiguration'>) => void;
 };
 
 export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreationFormContainerProps) => {
@@ -253,8 +254,8 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
     const submitMutation = useMutation({
         queryFn: createPayByLinkConfiguration,
         options: {
-            onSuccess: () => {
-                onSubmitted?.({});
+            onSuccess: data => {
+                onSubmitted?.(data);
             },
         },
     });

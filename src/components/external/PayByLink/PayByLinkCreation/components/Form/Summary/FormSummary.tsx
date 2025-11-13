@@ -32,7 +32,6 @@ export const FormSummary = () => {
             value,
             id: id,
             render: item => {
-                console.log(item.id);
                 switch (item.id) {
                     case 'amountValue':
                         return <>{i18n.amount(item.value, payment?.fields?.find(field => field.id === 'currency')?.value)}</>;
