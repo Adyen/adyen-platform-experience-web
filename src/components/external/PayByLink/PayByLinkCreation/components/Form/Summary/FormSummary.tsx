@@ -27,9 +27,9 @@ export const FormSummary = () => {
     const paymentListItems = useMemo<StructuredListItem[]>(() => {
         const { payment } = formValues;
         const visibleFields = payment?.fields.filter(({ id }) => !invisibleFields.includes(id));
-        const items: StructuredListItem[] | undefined = visibleFields?.map(({ label, value, id }) => ({
+        const items: StructuredListItem[] | undefined = visibleFields?.map(({ label, value, id, displayValue }) => ({
             key: (label || id) as TranslationKey,
-            value,
+            value: displayValue || value,
             id: id,
             render: item => {
                 switch (item.id) {
@@ -49,9 +49,9 @@ export const FormSummary = () => {
     const customerListItems = useMemo<StructuredListItem[]>(() => {
         const { customer } = formValues;
         const visibleFields = customer?.fields.filter(({ id }) => !invisibleFields.includes(id));
-        const items: StructuredListItem[] | undefined = visibleFields?.map(({ label, value, id }) => ({
+        const items: StructuredListItem[] | undefined = visibleFields?.map(({ label, value, id, displayValue }) => ({
             key: (label || id) as TranslationKey,
-            value,
+            value: displayValue || value,
             id,
             render: item => {
                 switch (item.id) {

@@ -62,7 +62,22 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
                 visitedSteps: new Set([0]),
                 stepValidation: new Map(),
                 isTransitioning: false,
+                displayValues: new Map(),
             };
+
+        case 'SET_DISPLAY_VALUE': {
+            const next = new Map(state.displayValues);
+            const { field, displayValue } = action.payload;
+            if (displayValue === undefined) {
+                next.delete(field);
+            } else {
+                next.set(field, displayValue);
+            }
+            return { ...state, displayValues: next };
+        }
+
+        case 'RESET_DISPLAY_VALUES':
+            return { ...state, displayValues: new Map() };
 
         default:
             return state;
@@ -78,6 +93,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         visitedSteps: new Set<number>([0]),
         stepValidation: new Map<number, boolean>(),
         isTransitioning: false,
+        displayValues: new Map<string, string>(),
     });
 
     const form = useForm<TFieldValues>({
@@ -239,6 +255,14 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         dispatch({ type: 'RESET_WIZARD' });
     }, []);
 
+    const setFieldDisplayValue = useCallback((name: FieldValues<TFieldValues>, displayValue?: string): void => {
+        dispatch({ type: 'SET_DISPLAY_VALUE', payload: { field: name, displayValue } });
+    }, []);
+
+    const resetFieldDisplayValues = useCallback((): void => {
+        dispatch({ type: 'RESET_DISPLAY_VALUES' });
+    }, []);
+
     const getSummaryData = useCallback((): WizardSummaryData<TFieldValues> => {
         const values = getValues();
         const summary: WizardSummaryData<TFieldValues> = {};
@@ -250,6 +274,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
                     label: field.label,
                     value: getNestedValue(values, field.fieldName as string),
                     id: field.fieldName,
+                    displayValue: wizardState.displayValues.get(field.fieldName as string),
                 }))
                 .filter(field => field.value !== undefined && field.value !== null && field.value !== '');
 
@@ -262,7 +287,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         });
 
         return summary;
-    }, [steps, getValues]);
+    }, [steps, getValues, wizardState.displayValues]);
 
     return {
         ...form,
@@ -288,5 +313,9 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
 
         // Summary data
         getSummaryData,
+
+        // Display values
+        setFieldDisplayValue,
+        resetFieldDisplayValues,
     };
 }

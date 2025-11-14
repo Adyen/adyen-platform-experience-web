@@ -12,7 +12,7 @@ import { EMPTY_OBJECT } from '../../../../../../../../utils';
 
 export const CountryRegionField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { control, fieldsConfig } = useWizardFormContext<FormValues>();
+    const { control, fieldsConfig, setFieldDisplayValue } = useWizardFormContext<FormValues>();
     const { getCountries } = useConfigContext().endpoints;
 
     const countriesQuery = useFetch({
@@ -51,6 +51,13 @@ export const CountryRegionField = () => {
 
     const isRequired = useMemo(() => fieldsConfig['countryCode']?.required, [fieldsConfig]);
 
+    const getCountryName = useCallback(
+        (value: string) => {
+            return datasetQuery.data?.find(country => country.id === value)?.name;
+        },
+        [datasetQuery.data]
+    );
+
     return (
         <FormField label={i18n.get('payByLink.linkCreation.fields.country.label')} optional={!isRequired}>
             <Controller<FormValues>
@@ -61,7 +68,8 @@ export const CountryRegionField = () => {
                 }}
                 render={({ field, fieldState }) => {
                     const onInput = (e: any) => {
-                        field.onInput(e.target.value);
+                        field.onInput(e);
+                        setFieldDisplayValue('countryCode', getCountryName(e.target.value));
                     };
                     return (
                         <div>

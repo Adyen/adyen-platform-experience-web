@@ -16,6 +16,7 @@ export interface WizardState {
     visitedSteps: Set<number>;
     stepValidation: Map<number, boolean>;
     isTransitioning: boolean;
+    displayValues: Map<string, string>;
 }
 
 export type WizardAction =
@@ -26,7 +27,9 @@ export type WizardAction =
     | { type: 'MARK_STEP_VISITED'; payload: { step: number } }
     | { type: 'SET_STEP_VALIDATION'; payload: { step: number; isValid: boolean } }
     | { type: 'SET_TRANSITIONING'; payload: boolean }
-    | { type: 'RESET_WIZARD' };
+    | { type: 'RESET_WIZARD' }
+    | { type: 'SET_DISPLAY_VALUE'; payload: { field: string; displayValue?: string } }
+    | { type: 'RESET_DISPLAY_VALUES' };
 
 export interface UseWizardFormOptions<TFieldValues> {
     steps: Readonly<WizardStep<TFieldValues>[]>;
@@ -59,6 +62,10 @@ export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldV
 
     // Summary data
     getSummaryData: () => WizardSummaryData<TFieldValues>;
+
+    // Display values
+    setFieldDisplayValue: (name: FieldValues<TFieldValues>, displayValue?: string) => void;
+    resetFieldDisplayValues: () => void;
 }
 
 export type WizardFormContextValue<TFieldValues> = UseWizardFormReturn<TFieldValues>;
