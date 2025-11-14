@@ -3,13 +3,12 @@ import { PayByLinkCreationFormContainer } from '../PayByLinkCreationFormContaine
 import '../../PayByLinkCreation.scss';
 import { useState } from 'preact/hooks';
 import { FormSuccess } from '../Form/FormSuccess/FormSuccess';
-import { SuccessResponse } from '../../../../../../types/api/endpoints';
 
 type PayByLinkCreationState = 'Creation' | 'Success' | 'Details';
 
 const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationComponentProps>) => {
     const [state, setState] = useState<PayByLinkCreationState>('Creation');
-    const [creationResult, setCreationResult] = useState<SuccessResponse<'createPayByLinkConfiguration'> | null>(null);
+    const [paymentLinkUrl, setPaymentLinkUrl] = useState<string>('');
 
     return (
         <div className="adyen-pe-pay-by-link-creation">
@@ -19,7 +18,7 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                         return (
                             <PayByLinkCreationFormContainer
                                 onSubmitted={result => {
-                                    setCreationResult(result);
+                                    setPaymentLinkUrl(result.url);
                                     setState('Success');
                                 }}
                             />
@@ -27,7 +26,7 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                     case 'Success':
                         return (
                             <div>
-                                <FormSuccess paymentLinkId={creationResult?.paymentLinkId || ''} onGoToDetails={() => setState('Details')} />
+                                <FormSuccess paymentLinkUrl={paymentLinkUrl} onGoToDetails={() => setState('Details')} />
                             </div>
                         );
                     case 'Details':

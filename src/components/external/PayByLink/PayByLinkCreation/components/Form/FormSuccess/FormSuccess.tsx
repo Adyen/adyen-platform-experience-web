@@ -11,18 +11,19 @@ import { useCallback } from 'preact/hooks';
 
 type FormSuccessProps = {
     onGoToDetails: () => void;
-    paymentLinkId: string;
+    paymentLinkUrl: string;
 };
-export const FormSuccess = ({ onGoToDetails, paymentLinkId }: FormSuccessProps) => {
+export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps) => {
     const { i18n } = useCoreContext();
     const onCopy = useCallback(async () => {
-        if (!paymentLinkId) return;
+        if (!paymentLinkUrl) return;
         try {
-            await navigator.clipboard.writeText(paymentLinkId);
+            await navigator.clipboard.writeText(paymentLinkUrl);
         } catch (e) {
             // no-op
         }
-    }, [paymentLinkId]);
+    }, [paymentLinkUrl]);
+
     return (
         <section className={cx('adyen-pe-pay-by-link-creation-form-success')}>
             <div className="adyen-pe-pay-by-link-creation-form-success__content">

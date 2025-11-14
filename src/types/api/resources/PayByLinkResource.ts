@@ -330,7 +330,10 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PaymentLinksItem'];
+                    'application/json': {
+                        url: string;
+                        expireAt: string;
+                    };
                 };
             };
         };

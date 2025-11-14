@@ -45,25 +45,19 @@ export const payByLinkMocks = [
     }),
 
     // POST /paybylink/paymentLinks/configuration
-    http.post(mockEndpointsPBL.configuration, async ({ request }) => {
+    http.post(mockEndpointsPBL.configuration, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        const body: any = await request.json().catch(() => ({}) as any);
         const now = new Date();
         const expiration = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const url = 'http://pay.adyen/links/12345';
 
         return HttpResponse.json({
-            amount: { currency: body?.currency || 'USD', value: Number(body?.amountValue) || 0 },
-            creationDate: now.toISOString(),
-            expirationDate: expiration.toISOString(),
-            linkType: body?.linkType === 'open' ? 'open' : 'singleUse',
-            merchantReference: body?.merchantReference || 'MR-REF',
-            paymentLinkId: `plink_${Math.random().toString(36).slice(2, 10)}`,
-            shopperEmail: body?.emailAddress,
-            status: 'active',
+            url,
+            expireAt: expiration.toISOString(),
         });
     }),
 
