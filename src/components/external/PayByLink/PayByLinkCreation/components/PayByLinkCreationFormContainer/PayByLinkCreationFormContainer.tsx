@@ -193,26 +193,7 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
 
     const wizardForm = useWizardForm<FormValues>({
         steps: formSteps,
-        defaultValues: {
-            amountValue: 1000000,
-            currency: 'USD',
-            shippingAddress: 'Address',
-            billingAddress: 'Billing Address',
-            emailAddress: 'german.mora@gmail.com',
-            linkValidity: '7',
-            deliveryDate: new Date().toString(),
-            merchantReference: 'Merchant',
-            fullName: 'Merchant',
-            shopperLocale: 'it-IT',
-            sendPaymentSuccessToShopper: true,
-            sendLinkToShopper: true,
-            description: 'Test',
-            store: 'New York Store',
-            linkType: 'singleUse',
-            shopperReference: 'Shop',
-            phoneNumber: 658903552,
-            countryCode: 'IT',
-        },
+        defaultValues: {},
         mode: 'all',
         validateBeforeNext: true,
     });
