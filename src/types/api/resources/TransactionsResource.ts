@@ -57,6 +57,8 @@ export interface components {
         };
         /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        /** @enum {string} */
+        Column: 'CreatedAt' | 'PaymentMethod' | 'Category' | 'NetAmount' | 'AmountBeforeDeductions';
         DownloadTransactionsResponseDTO: Uint8Array;
         ExistingRefund: {
             amount: components['schemas']['Amount'];
@@ -267,6 +269,7 @@ export interface operations {
                 createdUntil?: string;
                 categories?: components['schemas']['Category'][];
                 statuses?: components['schemas']['Status'][];
+                columns?: components['schemas']['Column'][];
                 currencies?: string[];
                 sortDirection?: components['schemas']['SortDirection'];
             };
