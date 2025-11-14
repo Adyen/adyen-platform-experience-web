@@ -42,8 +42,9 @@ export const getTimezoneOffsetFromFormattedDateString = (date?: string): number 
 };
 
 export const getTimezoneOffsetForTimestamp = (timestamp: number, timezoneFormatter: RestampContext['formatter'] = SYSTEM_TIMEZONE_FORMATTER) => {
-    const systemOffset = getTimezoneOffsetFromFormattedDateString(SYSTEM_TIMEZONE_FORMATTER?.format(timestamp));
-    const timezoneOffset = getTimezoneOffsetFromFormattedDateString(timezoneFormatter?.format(timestamp));
+    const date = new Date(timestamp);
+    const systemOffset = getTimezoneOffsetFromFormattedDateString(SYSTEM_TIMEZONE_FORMATTER?.format(date));
+    const timezoneOffset = getTimezoneOffsetFromFormattedDateString(timezoneFormatter?.format(date));
     return timezoneOffset - systemOffset;
 };
 

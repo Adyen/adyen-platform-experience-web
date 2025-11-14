@@ -101,6 +101,10 @@ export class AuthSession {
         this._setupContext.analyticsPayload = payload;
     }
 
+    set analyticsEnabled(analyticsEnabled: boolean) {
+        this._setupContext.analyticsEnabled = analyticsEnabled;
+    }
+
     set errorHandler(errorHandler: onErrorHandler | null) {
         this._specification.errorHandler = errorHandler;
     }

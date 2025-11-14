@@ -15,6 +15,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     public localization: Localization;
     public loadingContext: string;
+    public analyticsEnabled: boolean;
     public session = new AuthSession();
     public onError?: onErrorHandler;
     public getImageAsset: (props: AssetOptions) => string;
@@ -33,12 +34,14 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
         this.readyCustomTranslationsAnalytics = false;
+        this.analyticsEnabled = options?.analytics?.enabled ?? true;
+        this.session.analyticsEnabled = this.analyticsEnabled;
         this.setOptions(options);
     }
 
     async initialize(): Promise<this> {
         return Promise.all([this.localization.ready]).then(() => {
-            if (!this.readyCustomTranslationsAnalytics) {
+            if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
                 const analyticsPayload = this.setTranslationsPayload();
                 if (analyticsPayload.length > 0) {
                     this.session.analyticsPayload = analyticsPayload;
