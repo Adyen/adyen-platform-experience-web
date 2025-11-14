@@ -1,6 +1,6 @@
 import { _UIComponentProps, PayByLinkCreationComponentProps, ExternalComponentType } from '../../../types';
 import UIElement from '../../UIElement/UIElement';
-import PayByLinkCreationContainer from './components/PayByLinkCreationContainer';
+import PayByLinkCreationContainer from './components/PayByLinkCreationContainer/PayByLinkCreationContainer';
 
 export class PayByLinkCreationElement extends UIElement<PayByLinkCreationComponentProps> {
     public static type: ExternalComponentType = 'payByLinkCreation';

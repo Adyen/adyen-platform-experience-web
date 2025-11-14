@@ -6,8 +6,9 @@ export interface AssetOptions {
     type?: string;
 }
 
-const getLocalAsset = ({ name, extension, subFolder }: AssetOptions) => {
-    return `src/assets/${subFolder}/${name}.${extension}`;
+const getLocalAsset = ({ name, extension, subFolder, mainFolder }: AssetOptions) => {
+    const path = `${mainFolder ? `${mainFolder}/` : ''}${subFolder ? `${subFolder}/` : ''}${name}${extension ? `.${extension}` : ''}`;
+    return `src/assets/${path}`.replace(/\/+/, '/');
 };
 
 export class Assets {

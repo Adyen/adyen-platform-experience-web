@@ -17,6 +17,7 @@ function Button(props: RegularButtonProps, ref: Ref<HTMLButtonElement> | undefin
         DEFAULT_BUTTON_CLASSNAME,
         disabledValue,
         props,
+        props.type,
         props.onClick
     );
 

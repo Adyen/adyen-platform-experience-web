@@ -16,7 +16,7 @@ import {
 import Spinner from '../../Spinner';
 import Typography from '../../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../Typography/types';
-import { BaseButtonProps } from '../types';
+import { BaseButtonProps, RegularButtonProps } from '../types';
 import { PropsWithChildren } from 'preact/compat';
 
 const useButton = (
@@ -25,19 +25,24 @@ const useButton = (
     defaultClassName: string,
     disabled: boolean,
     props: PropsWithChildren<BaseButtonProps>,
+    type: RegularButtonProps['type'],
     onClick?: JSXInternal.MouseEventHandler<HTMLButtonElement> | JSXInternal.MouseEventHandler<HTMLAnchorElement>
 ) => {
     const { children, iconLeft, iconRight, iconButton = false, fullWidth, condensed, state = 'default' } = props;
 
     const click = useCallback(
         (e: any) => {
-            e.preventDefault();
+            // Only prevent default for non-submit buttons
+            // Submit buttons should trigger form submission naturally
+            if (type !== 'submit') {
+                e.preventDefault();
+            }
 
             if (!disabled) {
                 onClick?.(e);
             }
         },
-        [disabled, onClick]
+        [disabled, onClick, type]
     );
 
     const classes = useMemo(

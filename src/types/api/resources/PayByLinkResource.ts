@@ -51,7 +51,7 @@ export interface paths {
          */
         get: operations['getPayByLinkConfiguration'];
         put?: never;
-        post?: never;
+        post?: operations['createPayByLinkConfiguration'];
         delete?: never;
         options?: never;
         head?: never;
@@ -108,6 +108,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        PaymentLinkRequestDTO: Partial<Record<keyof components['schemas']['PaymentLinkConfiguration'], any>>;
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -179,9 +180,9 @@ export interface components {
             id?: string;
         };
         LinkValidity: {
-            durationUnit?: string;
-            quantity?: number;
-            type?: string;
+            durationUnit: 'hour' | 'minute' | 'day' | 'week';
+            quantity: number;
+            type?: 'fixed' | 'flexible';
         };
         Theme: {
             brandName?: string;
@@ -191,11 +192,17 @@ export interface components {
             amountValue: {
                 required: boolean;
             };
+            sendLinkToShopper: {
+                required: boolean;
+            };
+            sendPaymentSuccessToShopper: {
+                required: boolean;
+            };
             billingAddress?: {
                 required: components['schemas']['FillMode'];
             };
             countryCode?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options?: components['schemas']['Country'][];
             };
             currency: {
@@ -218,11 +225,11 @@ export interface components {
                 required: components['schemas']['FillMode'];
             };
             linkType?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options: string[];
             };
             linkValidity?: {
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
                 options: components['schemas']['LinkValidity'][];
             };
             merchantReference: {
@@ -243,7 +250,7 @@ export interface components {
             };
             store: {
                 /** @description will be always true, but let's have it for future compatibility */
-                fillMode: components['schemas']['FillMode'];
+                required: components['schemas']['FillMode'];
             };
         };
     };
@@ -300,6 +307,33 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['FiltersResponseDTO'];
+                };
+            };
+        };
+    };
+    createPayByLinkConfiguration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                'application/json': components['schemas']['PaymentLinkRequestDTO'];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        url: string;
+                        expireAt: string;
+                    };
                 };
             };
         };

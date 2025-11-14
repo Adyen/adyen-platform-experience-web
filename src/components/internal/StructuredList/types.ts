@@ -11,6 +11,7 @@ export type StructuredListItem = {
     key: TranslationKey;
     type?: ItemType;
     config?: any;
+    render?: (item: StructuredListItem) => ComponentChild;
 };
 
 export type ListValue = string | number | ComponentChild;
@@ -24,4 +25,5 @@ export interface StructuredListProps {
     grid?: boolean;
     classNames?: string;
     align?: 'start' | 'end';
+    condensed?: boolean;
 }

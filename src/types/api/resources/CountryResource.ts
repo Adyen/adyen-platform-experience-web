@@ -32,6 +32,12 @@ export interface components {
     requestBodies: never;
     headers: never;
     pathItems: never;
+    schemas: {
+        Country: {
+            countryCode: string;
+            countryName?: string;
+        };
+    };
 }
 export type $defs = Record<string, never>;
 export interface operations {
@@ -51,10 +57,7 @@ export interface operations {
                 };
                 content: {
                     'application/json': {
-                        data?: {
-                            countryCode?: string;
-                            countryName?: string;
-                        }[];
+                        data?: components['schemas']['Country'][];
                     };
                     'application/xml': Record<string, never>;
                 };

@@ -191,4 +191,8 @@
             background: style.token(color-background-secondary-hover);
         }
     }
+
+    &--invalid {
+        border: 1px solid style.token(color-outline-critical);
+    }
 }
