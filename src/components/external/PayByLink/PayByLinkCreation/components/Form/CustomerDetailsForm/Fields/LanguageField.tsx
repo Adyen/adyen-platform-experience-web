@@ -62,7 +62,8 @@ export const LanguageField = () => {
                                 onChange={onInput}
                                 items={localeListItems}
                                 readonly={languagesQuery.isFetching}
-                                isValid={!!fieldState.error}
+                                isValid={!fieldState.error}
+                                isInvalid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
                         </div>

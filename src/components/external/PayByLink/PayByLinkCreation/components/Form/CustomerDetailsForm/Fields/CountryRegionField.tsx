@@ -79,7 +79,8 @@ export const CountryRegionField = () => {
                                 onChange={onInput}
                                 items={countriesListItems}
                                 readonly={countriesQuery.isFetching || datasetQuery.isFetching}
-                                isValid={!!fieldState.error}
+                                isValid={!fieldState.error}
+                                isInvalid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
                         </div>

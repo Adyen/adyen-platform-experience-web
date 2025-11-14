@@ -3,7 +3,7 @@ import { hasOwnProperty } from '../../../utils';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
 import Select from './Select';
 import './FormFields.scss';
@@ -145,19 +145,21 @@ function InputBase(
                     filterable={dropdown.dynamicFiltering}
                     aria-label={dropdown['aria-label']}
                     classNameModifiers={['input-field']}
-                    isInvalid={isInvalid}
-                    isValid={isValid}
                     isCollatingErrors={isCollatingErrors}
                     disableToggleFocusOnClose
                 />
             ) : null,
-        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly, isInvalid, isValid]
+        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly]
     );
 
     return (
         <>
             {hasDropdownOrIcons ? (
-                <div className="adyen-pe-input__container">
+                <div
+                    className={classNames('adyen-pe-input__container', {
+                        ['adyen-pe-input--invalid']: isInvalid,
+                    })}
+                >
                     {shouldDisplayDropdownAtStart && (
                         <div role="presentation" className="adyen-pe-input__dropdown adyen-pe-input__dropdown--start">
                             {renderDropdown()}

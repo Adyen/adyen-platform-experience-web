@@ -68,7 +68,8 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                 onChange={onInput}
                                 items={selectItemsValidity}
                                 readonly={effectiveLoading}
-                                isValid={!!fieldState.error}
+                                isValid={!fieldState.error}
+                                isInvalid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
                         </div>

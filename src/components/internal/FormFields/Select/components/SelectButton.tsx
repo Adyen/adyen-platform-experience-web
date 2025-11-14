@@ -70,6 +70,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             aria-disabled={readonly}
             aria-expanded={showList}
             aria-haspopup="dialog"
+            aria-invalid={props.isInvalid}
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
@@ -97,6 +98,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}
+                    aria-invalid={props.isInvalid}
                     autoComplete="off"
                     className="adyen-pe-filter-input"
                     onInput={props.onInput}

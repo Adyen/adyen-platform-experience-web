@@ -53,6 +53,7 @@ const StoreField = () => {
                                 items={selectItems}
                                 readonly={storesQuery.isFetching}
                                 isValid={!fieldState.error}
+                                isInvalid={!!fieldState.error}
                             />
                             <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
                         </div>

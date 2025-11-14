@@ -16,6 +16,7 @@ import useTimezoneAwareDateFormatting from '../../../../../../../../hooks/useTim
 import { DEFAULT_FIRST_WEEK_DAY } from '../../../../../../../internal/Calendar/calendar/timerange/presets/shared/offsetWeek';
 import Popover from '../../../../../../../internal/Popover/Popover';
 import { DATE_FORMAT_DELIVERY_DATE } from '../../../../../../../../constants';
+import cx from 'classnames';
 
 const DeliveryDateSelector = ({
     value,
@@ -74,7 +75,9 @@ const DeliveryDateSelector = ({
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 aria-invalid={isInvalid ? 'true' : undefined}
-                className={'adyen-pe-button adyen-pe-dropdown__button'}
+                className={cx('adyen-pe-button adyen-pe-dropdown__button', {
+                    ['adyen-pe-button--invalid']: isInvalid,
+                })}
                 iconRight={<Icon className="adyen-pe-dropdown__button-collapse-indicator" name="chevron-down" />}
             >
                 <span>{label}</span>

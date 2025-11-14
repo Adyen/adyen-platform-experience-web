@@ -65,7 +65,7 @@ export const AmountField = () => {
                             {...field}
                             dropdown={{ items: currencyDropdown, value: defaultCurrency, readonly: currenciesQuery.isFetching }}
                             onDropdownInput={onCurrencySelect}
-                            isValid={false}
+                            isValid={!fieldState.error}
                             isInvalid={!!fieldState.error}
                             errorMessage={fieldState.error?.message}
                         />
