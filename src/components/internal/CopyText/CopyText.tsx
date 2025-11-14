@@ -11,7 +11,7 @@ import './CopyText.scss';
 
 type CopyTextProps = {
     copyButtonAriaLabelKey?: TranslationKey;
-    showUnderline?: boolean;
+    isUnderlineVisible?: boolean;
     showCopyTextTooltip?: boolean;
     type?: 'Trimmed' | 'Text' | 'Default';
     textToCopy: string;
@@ -32,7 +32,7 @@ const classes = {
 
 const CopyText = ({
     copyButtonAriaLabelKey,
-    showUnderline,
+    isUnderlineVisible,
     textToCopy,
     visibleText,
     onCopyText,
@@ -75,7 +75,7 @@ const CopyText = ({
     return (
         <span className={classes.container} {...restProps}>
             {showCopyTextTooltip ? (
-                <Tooltip content={textToCopy} showUnderline={showUnderline}>
+                <Tooltip content={textToCopy} isUnderlineVisible={isUnderlineVisible}>
                     {visibleTextToCopy}
                 </Tooltip>
             ) : (

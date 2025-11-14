@@ -32,7 +32,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
                 translationValues: {
                     [errorCodeMessage]: error.requestId ? (
-                        <CopyText showUnderline copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
+                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
                     ) : null,
                 },
                 onContactSupport,
@@ -44,7 +44,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 message: [COMMON_CAPITAL_ERROR_MESSAGE.couldNotLoadOffers, errorCodeMessage],
                 translationValues: {
                     [errorCodeMessage]: error.requestId ? (
-                        <CopyText showUnderline copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
+                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
                     ) : null,
                 },
                 onContactSupport,
@@ -56,7 +56,7 @@ export const getCapitalErrorMessage = (error: AdyenPlatformExperienceError | und
                 message: ['capital.offer.common.errors.cannotContinue', errorCodeMessage],
                 translationValues: {
                     [errorCodeMessage]: error.requestId ? (
-                        <CopyText showUnderline copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
+                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
                     ) : null,
                 },
                 onContactSupport,

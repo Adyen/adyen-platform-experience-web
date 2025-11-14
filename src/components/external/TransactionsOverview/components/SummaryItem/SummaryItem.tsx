@@ -56,7 +56,7 @@ export const SummaryItem = ({
                         {isHeader && (
                             <div role="presentation">
                                 {config.tooltipLabel ? (
-                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} showUnderline={showLabelUnderline}>
+                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isUnderlineVisible={showLabelUnderline}>
                                         <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
                                     </Tooltip>
                                 ) : (
