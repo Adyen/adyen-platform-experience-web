@@ -45,6 +45,13 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
 
     const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.linkCreation.steps.a11y.label'), [i18n]);
 
+    const getFieldConfig = useCallback(
+        (field: keyof FormValues) => {
+            return configurationQuery.data?.[field];
+        },
+        [configurationQuery.data]
+    );
+
     const formSteps = useMemo(() => {
         return [
             {
@@ -55,50 +62,50 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                     [
                         {
                             fieldName: 'store',
-                            required: true,
-                            visible: !!configurationQuery.data?.['store'],
+                            required: !!getFieldConfig('store')?.required,
+                            visible: !!getFieldConfig('store'),
                             label: 'payByLink.creation.summary.fields.store',
                         },
                         {
                             fieldName: 'linkValidity',
-                            required: true,
-                            visible: !!configurationQuery.data?.['linkValidity'],
+                            required: !!getFieldConfig('linkValidity')?.required,
+                            visible: !!getFieldConfig('linkValidity'),
                             label: 'payByLink.creation.summary.fields.linkValidity',
                         },
                         {
                             fieldName: 'amountValue',
-                            required: true,
-                            visible: !!configurationQuery.data?.['amountValue'],
+                            required: !!getFieldConfig('amountValue')?.required,
+                            visible: !!getFieldConfig('amountValue'),
                             label: 'payByLink.creation.summary.fields.amountValue',
                         },
                         {
                             fieldName: 'currency',
-                            required: true,
-                            visible: !!configurationQuery.data?.['currency'],
+                            required: !!getFieldConfig('currency')?.required,
+                            visible: !!getFieldConfig('currency'),
                             label: 'payByLink.creation.summary.fields.currency',
                         },
                         {
                             fieldName: 'merchantReference',
-                            required: true,
-                            visible: !!configurationQuery.data?.['merchantReference'],
+                            required: !!getFieldConfig('merchantReference')?.required,
+                            visible: !!getFieldConfig('merchantReference'),
                             label: 'payByLink.creation.summary.fields.merchantReference',
                         },
                         {
                             fieldName: 'linkType',
-                            required: true,
-                            visible: !!configurationQuery.data?.['linkType'],
+                            required: !!getFieldConfig('linkType')?.required,
+                            visible: !!getFieldConfig('linkType'),
                             label: 'payByLink.creation.summary.fields.linkType',
                         },
                         {
                             fieldName: 'description',
-                            required: true,
-                            visible: !!configurationQuery.data?.['description'],
+                            required: !!getFieldConfig('description')?.required,
+                            visible: !!getFieldConfig('description'),
                             label: 'payByLink.creation.summary.fields.description',
                         },
                         {
                             fieldName: 'deliveryDate',
-                            required: true,
-                            visible: !!configurationQuery.data?.['deliveryDate'],
+                            required: !!getFieldConfig('deliveryDate')?.required,
+                            visible: !!getFieldConfig('deliveryDate'),
                         },
                     ] as const
                 ).filter(field => !!configurationQuery.data?.[field.fieldName]),
@@ -110,66 +117,66 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                     [
                         {
                             fieldName: 'shopperReference',
-                            required: true,
-                            visible: !!configurationQuery.data?.['shopperReference'],
+                            required: !!getFieldConfig('shopperReference')?.required,
+                            visible: !!getFieldConfig('shopperReference'),
                             label: 'payByLink.creation.summary.fields.shopperReference',
                         },
                         {
                             fieldName: 'fullName',
-                            required: true,
-                            visible: !!configurationQuery.data?.['fullName'],
+                            required: !!getFieldConfig('fullName')?.required,
+                            visible: !!getFieldConfig('fullName'),
                             label: 'payByLink.creation.summary.fields.fullName',
                         },
                         {
                             fieldName: 'emailAddress',
-                            required: true,
-                            visible: !!configurationQuery.data?.['emailAddress'],
+                            required: !!getFieldConfig('emailAddress')?.required,
+                            visible: !!getFieldConfig('emailAddress'),
                             label: 'payByLink.creation.summary.fields.emailAddress',
                         },
                         {
                             fieldName: 'sendLinkToShopper',
-                            required: true,
-                            visible: !!configurationQuery.data?.['sendLinkToShopper'],
+                            required: !!getFieldConfig('sendLinkToShopper')?.required,
+                            visible: !!getFieldConfig('sendLinkToShopper'),
                         },
                         {
                             fieldName: 'sendPaymentSuccessToShopper',
-                            required: true,
-                            visible: !!configurationQuery.data?.['sendPaymentSuccessToShopper'],
+                            required: !!getFieldConfig('sendPaymentSuccessToShopper')?.required,
+                            visible: !!getFieldConfig('sendPaymentSuccessToShopper'),
                         },
                         {
                             fieldName: 'emailSender',
-                            required: true,
-                            visible: !!configurationQuery.data?.['emailSender'],
+                            required: !!getFieldConfig('emailSender')?.required,
+                            visible: !!getFieldConfig('emailSender'),
                             label: 'payByLink.creation.summary.fields.emailAddress',
                         },
                         {
                             fieldName: 'phoneNumber',
-                            required: true,
-                            visible: !!configurationQuery.data?.['phoneNumber'],
+                            required: !!getFieldConfig('phoneNumber')?.required,
+                            visible: !!getFieldConfig('phoneNumber'),
                             label: 'payByLink.creation.summary.fields.phoneNumber',
                         },
                         {
                             fieldName: 'countryCode',
-                            required: true,
-                            visible: !!configurationQuery.data?.['countryCode'],
+                            required: !!getFieldConfig('countryCode')?.required,
+                            visible: !!getFieldConfig('countryCode'),
                             label: 'payByLink.creation.summary.fields.countryCode',
                         },
                         {
                             fieldName: 'shippingAddress',
-                            required: true,
-                            visible: !!configurationQuery.data?.['shippingAddress'],
+                            required: !!getFieldConfig('shippingAddress')?.required,
+                            visible: !!getFieldConfig('shippingAddress'),
                             label: 'payByLink.creation.summary.fields.shippingAddress',
                         },
                         {
                             fieldName: 'billingAddress',
-                            required: true,
-                            visible: !!configurationQuery.data?.['billingAddress'],
+                            required: !!getFieldConfig('billingAddress')?.required,
+                            visible: !!getFieldConfig('billingAddress'),
                             label: 'payByLink.creation.summary.fields.billingAddress',
                         },
                         {
                             fieldName: 'shopperLocale',
-                            required: true,
-                            visible: !!configurationQuery.data?.['shopperLocale'],
+                            required: !!getFieldConfig('shopperLocale')?.required,
+                            visible: !!getFieldConfig('shopperLocale'),
                         },
                     ] as const
                 ).filter(field => !!configurationQuery.data?.[field.fieldName]),
@@ -182,11 +189,30 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                 isOptional: true,
             },
         ] as const;
-    }, [configurationQuery.data, i18n]);
+    }, [configurationQuery.data, getFieldConfig, i18n]);
 
     const wizardForm = useWizardForm<FormValues>({
         steps: formSteps,
-        defaultValues: {},
+        defaultValues: {
+            amountValue: 1000000,
+            currency: 'USD',
+            shippingAddress: 'Address',
+            billingAddress: 'Billing Address',
+            emailAddress: 'german.mora@gmail.com',
+            linkValidity: '7',
+            deliveryDate: new Date().toString(),
+            merchantReference: 'Merchant',
+            fullName: 'Merchant',
+            shopperLocale: 'it-IT',
+            sendPaymentSuccessToShopper: true,
+            sendLinkToShopper: true,
+            description: 'Test',
+            store: 'New York Store',
+            linkType: 'singleUse',
+            shopperReference: 'Shop',
+            phoneNumber: 658903552,
+            countryCode: 'IT',
+        },
         mode: 'all',
         validateBeforeNext: true,
     });

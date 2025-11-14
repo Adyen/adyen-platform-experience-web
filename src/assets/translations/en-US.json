@@ -733,6 +733,7 @@
     "payByLink.linkCreation.fields.language.label": "Language",
     "payByLink.linkCreation.fields.linkType.label": "Link type",
     "payByLink.linkCreation.fields.merchantReference.label": "Merchant Reference",
+    "payByLink.linkCreation.fields.optional.label": "Optional",
     "payByLink.linkCreation.fields.phoneNumber.errors.requiredPhoneCode": "You must select a phone prefix",
     "payByLink.linkCreation.fields.sendLinkToShopper.label": "Send the payment request to this email address",
     "payByLink.linkCreation.fields.sendPaymentSuccessToShopper.label": "Send payment confirmation to this email address.",

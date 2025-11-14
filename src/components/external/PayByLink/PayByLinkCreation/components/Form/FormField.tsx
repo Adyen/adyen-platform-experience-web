@@ -2,8 +2,11 @@ import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
 
 import { PropsWithChildren } from 'preact/compat';
+import useCoreContext from '../../../../../../core/Context/useCoreContext';
 
 const FormField = ({ label, optional, supportText, children }: PropsWithChildren<{ label: string; optional: boolean; supportText?: string }>) => {
+    const { i18n } = useCoreContext();
+
     return (
         <div className="adyen-pe-pay-by-link-creation-form__form-field-container">
             <div className="adyen-pe-pay-by-link-creation-form__form-field-label-container">
@@ -21,7 +24,7 @@ const FormField = ({ label, optional, supportText, children }: PropsWithChildren
                         variant={TypographyVariant.BODY}
                         className="adyen-pe-pay-by-link-creation-form__form-field-label-optional"
                     >
-                        {'(optional)'}
+                        {`(${i18n.get('payByLink.linkCreation.fields.optional.label')})`}
                     </Typography>
                 )}
             </div>
