@@ -6,8 +6,8 @@ export type IBalanceWithKey = IBalance & {
 };
 
 export type BalancesProps = {
-    balanceAccount?: IBalanceAccountBase;
-    balances: Readonly<IBalance>[];
+    balanceAccount?: Readonly<IBalanceAccountBase>;
+    balances: readonly Readonly<IBalance>[];
     balancesEmpty: boolean;
     loadingBalances: boolean;
 };

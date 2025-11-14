@@ -19,7 +19,7 @@ export const Balances = memo(({ balanceAccount, balances: balancesList, balances
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
 
     const balances = useMemo(() => {
-        return balancesList.sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
+        return [...balancesList].sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
             if (defaultCurrencyCode) {
                 if (firstCurrency === defaultCurrencyCode) return -1;
                 if (secondCurrency === defaultCurrencyCode) return 1;

@@ -1,168 +1,37 @@
+import { useCallback } from 'preact/hooks';
+import { TransactionsListProps } from './types';
+import { ITransaction } from '../../../../../types';
+import { BASE_CLASS_DETAILS } from '../TransactionsOverview/constants';
+import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { CustomDataRetrieved, ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
-import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { parseCursorPaginatedResponseData } from '../../../../internal/Pagination/hooks/usePaginatedRecords';
-import { IBalance, ITransaction } from '../../../../../types';
-import { isFunction } from '../../../../../utils';
-import { LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
-import { Balances } from '../Balances/Balances';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { BASE_CLASS_DETAILS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from '../TransactionsOverview/constants';
-import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
-import hasCustomField from '../../../../utils/customData/hasCustomField';
-import mergeRecords from '../../../../utils/customData/mergeRecords';
-import usePageLimit from '../../../../internal/Pagination/hooks/usePageLimit';
-import useCursorPagination from '../../../../internal/Pagination/hooks/useCursorPagination';
-import { useFetch } from '../../../../../hooks/useFetch';
-import { TransactionsOverviewFilters } from '../TransactionsOverviewFilters/types';
-import { RequestPageCallback, RequestPageCallbackParams } from '../../../../internal/Pagination/hooks/types';
-import { PaginationType } from '../../../../internal/Pagination/types';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 
 const TransactionsList = ({
-    allowLimitSelection,
     availableCurrencies,
-    balances,
-    balancesEmpty,
+    balanceAccount,
     dataCustomization,
-    filters,
     hasMultipleCurrencies,
     loadingBalanceAccounts,
-    loadingBalances,
+    loadingTransactions,
     onContactSupport,
+    onLimitSelection,
     onRecordSelection,
-    preferredLimit,
     showDetails,
-}: ExternalUIComponentProps<TransactionOverviewComponentProps> & {
-    availableCurrencies: readonly string[];
-    balances: Readonly<IBalance>[];
-    balancesEmpty: boolean;
-    filters: Readonly<TransactionsOverviewFilters>;
-    hasMultipleCurrencies: boolean;
-    loadingBalanceAccounts: boolean;
-    loadingBalances: boolean;
-    preferredLimit: number;
-}) => {
-    const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
+    transactionsError,
+    transactionsFields,
+    transactions,
+    ...paginationProps
+}: TransactionsListProps) => {
     const userEvents = useAnalyticsContext();
 
-    const balanceAccount = filters.balanceAccount;
-    const balanceAccountId = balanceAccount?.id;
-    const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
-
-    const [preferredPageLimit, setPreferredPageLimit] = useState<number>(preferredLimit);
-    const { limit, limitOptions } = usePageLimit({ preferredLimit: preferredPageLimit, preferredLimitOptions });
-    const updateLimit = useCallback((limit: number) => setPreferredPageLimit(limit), []);
-
-    useEffect(() => updateLimit(preferredLimit), [preferredLimit, updateLimit]);
-
-    const canFetchTransactions = isFunction(transactionsEndpointCall) && !!balanceAccountId;
-    const latestRequestTimestamp = useRef<DOMHighResTimeStamp>();
-    const latestRequestPromiseResolve = useRef<any>(() => {});
-
-    const latestRequestPromise = useRef(
-        new Promise<any>(resolve => {
-            latestRequestPromiseResolve.current = resolve;
-        })
-    );
-
-    const [pageRequestParams, setPageRequestParams] = useState<RequestPageCallbackParams<PaginationType.CURSOR>>();
-    const [records, setRecords] = useState<ITransaction[]>([]);
-
-    const {
-        data,
-        error,
-        isFetching: fetching,
-    } = useFetch({
-        queryFn: useMemo(() => {
-            const { cursor, signal } = pageRequestParams ?? {};
-            const requestOptions = { errorLevel: 'error', signal } as const;
-            const { categories, currencies, createdDate, statuses } = filters;
-
-            const requestQuery = {
-                limit,
-                cursor,
-                balanceAccountId: balanceAccountId ?? '',
-                maxAmount: undefined,
-                minAmount: undefined,
-                sortDirection: 'desc' as const,
-                statuses: statuses as (typeof statuses)[number][],
-                categories: categories as (typeof categories)[number][],
-                currencies: currencies as (typeof currencies)[number][],
-                createdSince: new Date(createdDate.from).toISOString(),
-                createdUntil: new Date(createdDate.to).toISOString(),
-            } as const;
-
-            return async () => {
-                if (canFetchTransactions) {
-                    const requestTimestamp = performance.now();
-                    latestRequestTimestamp.current = requestTimestamp;
-                    try {
-                        const json = await transactionsEndpointCall(requestOptions, { query: requestQuery });
-
-                        if (latestRequestTimestamp.current === requestTimestamp && !signal?.aborted) {
-                            return parseCursorPaginatedResponseData<ITransaction, 'data'>(json, 'data');
-                        }
-                    } catch (error) {
-                        if (latestRequestTimestamp.current === requestTimestamp && !signal?.aborted) {
-                            console.error(error);
-                            throw error;
-                        }
-                    }
-                }
-            };
-        }, [canFetchTransactions, transactionsEndpointCall, balanceAccountId, filters, limit, pageRequestParams]),
-        fetchOptions: { enabled: canFetchTransactions },
-    });
-
-    useEffect(() => {
-        if (data) {
-            const { records, paginationData } = data;
-            latestRequestPromiseResolve.current({ ...paginationData, size: records.length });
-            setRecords(records);
-        }
-    }, [data]);
-
-    const {
-        goto,
-        limit: _,
-        ...paginationProps
-    } = useCursorPagination(
-        useCallback<RequestPageCallback<PaginationType.CURSOR>>(async pageRequestParams => {
-            setPageRequestParams(pageRequestParams);
-            return latestRequestPromise.current;
-        }, []),
-        limit
-    );
-
-    const transactionDetails = useMemo(
-        () => ({
+    const { updateDetails, resetDetails, selectedDetail } = useModalDetails({
+        transaction: {
             showDetails: showDetails ?? true,
             callback: onRecordSelection,
-        }),
-        [showDetails, onRecordSelection]
-    );
-
-    const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
-
-    const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
-            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
-        []
-    );
-
-    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, TRANSACTION_FIELDS), [dataCustomization?.list?.fields]);
-
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
-        records,
-        hasCustomColumn,
-        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
-        mergeCustomData,
+        },
     });
-    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
         ({ id, category }: ITransaction) => {
@@ -175,8 +44,8 @@ const TransactionsList = ({
             }
             updateDetails({
                 selection: {
-                    type: 'transaction',
                     data: id,
+                    type: 'transaction',
                     balanceAccount,
                 },
                 modalSize: 'small',
@@ -186,38 +55,28 @@ const TransactionsList = ({
     );
 
     return (
-        <>
-            <div className={SUMMARY_CLASS}>
-                <div className={SUMMARY_ITEM_CLASS}>
-                    <Balances balanceAccount={balanceAccount} balances={balances} balancesEmpty={balancesEmpty} loadingBalances={loadingBalances} />
-                </div>
-            </div>
-
-            <DataDetailsModal
-                ariaLabelKey="transactions.details.title"
-                dataCustomization={dataCustomization?.details}
-                selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
-                resetDetails={resetDetails}
-                className={BASE_CLASS_DETAILS}
-            >
-                <TransactionsTable
-                    activeBalanceAccount={balanceAccount}
-                    availableCurrencies={availableCurrencies as (typeof availableCurrencies)[number][]}
-                    error={error as AdyenPlatformExperienceError}
-                    hasMultipleCurrencies={hasMultipleCurrencies}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    loading={fetching || loadingBalanceAccounts || loadingCustomRecords}
-                    onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
-                    onRowClick={onRowClick}
-                    showPagination={true}
-                    transactions={dataCustomization?.list?.onDataRetrieve ? transactions : records}
-                    customColumns={dataCustomization?.list?.fields}
-                    {...paginationProps}
-                />
-            </DataDetailsModal>
-        </>
+        <DataDetailsModal
+            ariaLabelKey="transactions.details.title"
+            dataCustomization={dataCustomization?.details}
+            selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
+            resetDetails={resetDetails}
+            className={BASE_CLASS_DETAILS}
+        >
+            <TransactionsTable
+                activeBalanceAccount={balanceAccount}
+                availableCurrencies={availableCurrencies as (typeof availableCurrencies)[number][]}
+                error={transactionsError as AdyenPlatformExperienceError}
+                hasMultipleCurrencies={hasMultipleCurrencies}
+                loading={loadingBalanceAccounts || loadingTransactions}
+                onContactSupport={onContactSupport}
+                onLimitSelection={onLimitSelection}
+                onRowClick={onRowClick}
+                showPagination={true}
+                transactions={transactions}
+                customColumns={transactionsFields}
+                {...paginationProps}
+            />
+        </DataDetailsModal>
     );
 };
 

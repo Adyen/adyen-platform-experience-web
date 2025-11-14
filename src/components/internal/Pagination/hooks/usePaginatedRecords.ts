@@ -27,14 +27,14 @@ import { ReactiveStateRecord } from '../../../../hooks/useReactiveState/types';
 
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 
-export const isCursorPaginatedResponseData = <T, DataField extends string>(
+const isCursorPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>
 ): data is PaginatedResponseDataWithLinks<T, DataField> => {
     const dataProperties = Object.getOwnPropertyNames(data as PaginatedResponseDataWithLinks<T, DataField>);
     return !offsetPaginatedResponseFields.some(prop => dataProperties.includes(prop));
 };
 
-export const parseCursorPaginatedResponseData = <T, DataField extends string>(
+const parseCursorPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>,
     dataField: PaginatedResponseDataField<DataField> = 'data' as PaginatedResponseDataField<DataField>
 ) => {
@@ -51,7 +51,7 @@ export const parseCursorPaginatedResponseData = <T, DataField extends string>(
     throw new TypeError('MALFORMED_PAGINATED_DATA');
 };
 
-export const parseOffsetPaginatedResponseData = <T, DataField extends string>(
+const parseOffsetPaginatedResponseData = <T, DataField extends string>(
     data: PaginatedResponseData<T, DataField>,
     dataField: PaginatedResponseDataField<DataField> = 'data' as PaginatedResponseDataField<DataField>
 ) => {
