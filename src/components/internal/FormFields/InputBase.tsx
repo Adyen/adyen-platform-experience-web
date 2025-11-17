@@ -67,6 +67,8 @@ function InputBase(
         classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
+    const handleKeyDown = useCallback((e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => filterDisallowedCharacters(e, type), [type]);
+
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
@@ -74,7 +76,7 @@ function InputBase(
         <>
             <input
                 id={uniqueId}
-                onKeyDown={e => filterDisallowedCharacters(e, type)}
+                onKeyDown={handleKeyDown}
                 {...newProps}
                 type={type}
                 className={inputClassNames}
