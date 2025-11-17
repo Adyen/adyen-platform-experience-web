@@ -1,27 +1,44 @@
 import { JSX } from 'preact/jsx-runtime';
+import { InteractionKeyCode } from '../../types';
 
-const convertFullToHalf = (str: string) => str.replace(/[！-～]/g, r => String.fromCharCode(r.charCodeAt(0) - 0xfee0));
+interface FilterDisallowedCharactersProps {
+    event: JSX.TargetedKeyboardEvent<HTMLInputElement>;
+    inputType?: string;
+    onValidInput: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+}
 
-const filterDisallowedCharacters = (e: JSX.TargetedKeyboardEvent<HTMLInputElement>, inputType?: string) => {
-    if (inputType !== 'number') {
-        return;
-    }
-    const input = e.currentTarget as HTMLInputElement;
-    const { key } = e;
+const filterDisallowedCharacters = ({ event, inputType, onValidInput }: FilterDisallowedCharactersProps) => {
+    const input = event.currentTarget as HTMLInputElement;
+    const { key } = event;
 
     // Allow navigation and editing keys
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab'];
-    if (allowedKeys.includes(key)) {
-        return;
-    }
+    const allowedKeys = [
+        InteractionKeyCode.BACKSPACE,
+        InteractionKeyCode.DELETE,
+        InteractionKeyCode.ARROW_LEFT,
+        InteractionKeyCode.ARROW_RIGHT,
+        InteractionKeyCode.ARROW_UP,
+        InteractionKeyCode.ARROW_DOWN,
+        InteractionKeyCode.TAB,
+    ];
 
     // Allow digits, period, comma, and minus
     const isAllowedChar = /^[0-9.,-]$/.test(key);
     const hasDecimal = /[.,]/.test(input.value);
     const isDecimalKey = key === '.' || key === ',';
-    if (!isAllowedChar || (hasDecimal && isDecimalKey)) {
-        e.preventDefault();
+
+    const isNavigationKey = allowedKeys.includes(key as InteractionKeyCode);
+    const isDuplicateDecimal = hasDecimal && isDecimalKey;
+    const isNumberInput = inputType === 'number';
+
+    const shouldBlockInput = isNumberInput && !isNavigationKey && (!isAllowedChar || isDuplicateDecimal);
+
+    if (shouldBlockInput) {
+        event.preventDefault();
+        return;
     }
+
+    onValidInput(event);
 };
 
-export { convertFullToHalf, filterDisallowedCharacters };
+export { filterDisallowedCharacters };

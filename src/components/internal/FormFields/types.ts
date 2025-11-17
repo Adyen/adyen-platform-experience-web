@@ -15,6 +15,7 @@ export interface InputBaseProps {
     disabled?: boolean;
     onClick?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
+    onKeyDown?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onKeyUp?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocusHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
