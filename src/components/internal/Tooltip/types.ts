@@ -8,5 +8,5 @@ export interface TooltipProps {
     children?: VNode<any>;
     showTooltip?: boolean;
     position?: PopoverContainerPosition;
-    isContainerHovered?: boolean;
+    isUnderlineVisible?: boolean;
 }
