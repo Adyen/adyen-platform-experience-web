@@ -7,4 +7,5 @@ export interface TransactionsOverviewFilters {
     statuses: readonly ITransaction['status'][];
     currencies: readonly string[];
     createdDate: RangeTimestamps;
+    pspReference?: string;
 }

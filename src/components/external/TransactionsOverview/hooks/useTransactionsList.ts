@@ -3,7 +3,7 @@ import { ITransaction } from '../../../../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
 import { TRANSACTION_FIELDS } from '../components/TransactionsTable/TransactionsTable';
 import { TransactionsOverviewFilters } from '../components/TransactionsOverviewFilters/types';
-import { CustomDataRetrieved, FilterParam, TransactionOverviewComponentProps } from '../../../types';
+import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
@@ -28,16 +28,16 @@ const useTransactionsList = ({
     const { getTransactions } = useConfigContext().endpoints;
 
     const filterParams = useMemo(
-        () => ({
-            balanceAccount: filters.balanceAccount?.id,
-            statuses: String(filters.statuses) || undefined,
-            categories: String(filters.categories) || undefined,
-            currencies: String(filters.currencies) || undefined,
-            createdSince: new Date(filters.createdDate.from).toISOString(),
-            createdUntil: new Date(filters.createdDate.to).toISOString(),
-            maxAmount: undefined,
-            minAmount: undefined,
-        }),
+        () =>
+            ({
+                balanceAccountId: filters.balanceAccount?.id,
+                pspReference: filters.pspReference,
+                statuses: String(filters.statuses) || undefined,
+                categories: String(filters.categories) || undefined,
+                currencies: String(filters.currencies) || undefined,
+                createdSince: new Date(filters.createdDate.from).toISOString(),
+                createdUntil: new Date(filters.createdDate.to).toISOString(),
+            }) as const,
         [filters]
     );
 
@@ -49,15 +49,14 @@ const useTransactionsList = ({
         async (requestParams: Pick<Parameters<NonNullable<typeof getTransactions>>[1]['query'], 'limit' | 'cursor'>, signal?: AbortSignal) => {
             const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
                 ...requestParams,
-                balanceAccountId: filters.balanceAccount?.id ?? '',
+                balanceAccountId: filters.balanceAccount?.id!,
+                // pspReference: filters.pspReference,
                 createdSince: new Date(filters.createdDate.from).toISOString(),
                 createdUntil: new Date(filters.createdDate.to).toISOString(),
                 categories: filters.categories as (typeof filters.categories)[number][],
                 currencies: filters.currencies as (typeof filters.currencies)[number][],
                 statuses: filters.statuses as (typeof filters.statuses)[number][],
                 sortDirection: 'desc' as const,
-                maxAmount: undefined,
-                minAmount: undefined,
             } as const;
 
             return getTransactions!({ signal }, { query });
@@ -77,7 +76,7 @@ const useTransactionsList = ({
         updateFilters,
         updateLimit,
         ...paginationProps
-    } = useCursorPaginatedRecords<ITransaction, 'data', string, FilterParam>({
+    } = useCursorPaginatedRecords<ITransaction, 'data', string, keyof typeof filterParams>({
         dataField: 'data',
         fetchRecords: fetchTransactions,
         enabled: canFetchTransactions,

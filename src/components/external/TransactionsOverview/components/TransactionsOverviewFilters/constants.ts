@@ -39,5 +39,6 @@ export const INITIAL_FILTERS: Readonly<TransactionsOverviewFilters> = {
     categories: [] as const,
     createdDate: TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS,
     currencies: [] as const,
+    pspReference: undefined,
     statuses: ['Booked'] as const,
 } as const;
