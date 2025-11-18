@@ -7,27 +7,26 @@ interface FilterDisallowedCharactersProps {
     onValidInput: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
 }
 
+const ALLOWED_NAVIGATION_KEYS = [
+    InteractionKeyCode.BACKSPACE,
+    InteractionKeyCode.DELETE,
+    InteractionKeyCode.ARROW_LEFT,
+    InteractionKeyCode.ARROW_RIGHT,
+    InteractionKeyCode.ARROW_UP,
+    InteractionKeyCode.ARROW_DOWN,
+    InteractionKeyCode.TAB,
+];
+
 const filterDisallowedCharacters = ({ event, inputType, onValidInput }: FilterDisallowedCharactersProps) => {
     const input = event.currentTarget as HTMLInputElement;
     const { key } = event;
-
-    // Allow navigation and editing keys
-    const allowedKeys = [
-        InteractionKeyCode.BACKSPACE,
-        InteractionKeyCode.DELETE,
-        InteractionKeyCode.ARROW_LEFT,
-        InteractionKeyCode.ARROW_RIGHT,
-        InteractionKeyCode.ARROW_UP,
-        InteractionKeyCode.ARROW_DOWN,
-        InteractionKeyCode.TAB,
-    ];
 
     // Allow digits, period, comma, and minus
     const isAllowedChar = /^[0-9.,-]$/.test(key);
     const hasDecimal = /[.,]/.test(input.value);
     const isDecimalKey = key === '.' || key === ',';
 
-    const isNavigationKey = allowedKeys.includes(key as InteractionKeyCode);
+    const isNavigationKey = ALLOWED_NAVIGATION_KEYS.includes(key as InteractionKeyCode);
     const isDuplicateDecimal = hasDecimal && isDecimalKey;
     const isNumberInput = inputType === 'number';
 
