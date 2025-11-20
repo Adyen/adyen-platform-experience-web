@@ -1,0 +1,77 @@
+/* stylelint-disable selector-no-qualifying-type */
+@use '../../../style';
+
+.adyen-pe-toggle-switch {
+    --switch-height: 20px;
+    --switch-width: calc(var(--switch-height) * 1.8);
+
+    $adyen-pe-toggle-switch: &;
+
+    display: inline-block;
+    height: var(--switch-height);
+    position: relative;
+    width: var(--switch-width);
+
+    &__slider {
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            transition: all 100ms ease-out;
+        }
+
+        &::before {
+            background: style.token(color-background-primary);
+            border: style.token(border-width-s) solid style.token(color-outline-tertiary);
+            border-radius: var(--switch-height);
+            height: 100%;
+            width: 100%;
+        }
+
+        &::after {
+            --slider-gap: #{style.token(spacer-020)};
+            --slider-size: calc(var(--switch-height) - var(--slider-gap) * 2);
+
+            background: style.token(color-background-inverse-primary);
+            border-radius: var(--slider-size);
+            height: var(--slider-size);
+            inset: var(--slider-gap);
+            transform: translateX(0);
+            transform-origin: center;
+            width: var(--slider-size);
+        }
+
+        #{$adyen-pe-toggle-switch}__mark {
+            color: style.token(color-label-primary);
+            inset: style.token(spacer-030);
+            left: auto;
+            opacity: 0;
+            position: absolute;
+            z-index: 1;
+
+            svg {
+                display: block;
+                height: 100%;
+            }
+        }
+
+        input[type='checkbox']:checked + &::before {
+            background: style.token(color-background-inverse-primary);
+            border-color: style.token(color-background-inverse-primary);
+        }
+
+        input[type='checkbox']:checked + &::after {
+            --slider-distance: calc(var(--switch-width) - var(--switch-height));
+            --slider-gap: #{style.token(spacer-010)};
+
+            background: style.token(color-background-primary);
+            transform: translateX(var(--slider-distance));
+        }
+
+        input[type='checkbox']:checked + & {
+            #{$adyen-pe-toggle-switch}__mark--checked {
+                opacity: 1;
+            }
+        }
+    }
+}
