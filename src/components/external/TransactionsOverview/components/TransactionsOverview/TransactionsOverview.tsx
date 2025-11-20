@@ -5,16 +5,17 @@ import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useTransactionsList from '../../hooks/useTransactionsList';
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
-import { Balances } from '../Balances/Balances';
-import { Header } from '../../../../internal/Header';
-import { IBalanceAccountBase } from '../../../../../types';
-import { INITIAL_FILTERS } from '../TransactionsOverviewFilters/constants';
-import { BASE_CLASS, BASE_XS_CLASS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS, TRANSACTIONS_VIEW_TABS, TransactionsView } from './constants';
+import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
+import { INITIAL_FILTERS } from '../TransactionsOverviewFilters/constants';
+import { IBalanceAccountBase } from '../../../../../types';
+import { Header } from '../../../../internal/Header';
+import { Balances } from '../Balances/Balances';
+import { BASE_CLASS, BASE_XS_CLASS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS, TOOLBAR_CLASS, TRANSACTIONS_VIEW_TABS, TransactionsView } from './constants';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import TransactionsOverviewFilters from '../TransactionsOverviewFilters/TransactionsOverviewFilters';
+import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import TransactionsList from '../TransactionsList/TransactionsList';
 import './TransactionsOverview.scss';
@@ -85,6 +86,11 @@ export const TransactionsOverview = ({
         fetchEnabled: canFetchTransactions,
     });
 
+    const exportButton = useMemo(
+        () => (activeView === TransactionsView.TRANSACTIONS ? <TransactionsExport filters={filters} /> : null),
+        [activeView, filters]
+    );
+
     const viewSwitcher = useMemo(
         () =>
             TRANSACTIONS_VIEW_TABS.length > 1 ? (
@@ -107,14 +113,17 @@ export const TransactionsOverview = ({
 
             {isMobileContainer && <>{viewSwitcher}</>}
 
-            <TransactionsOverviewFilters
-                {...filterBarState}
-                activeView={activeView}
-                availableCurrencies={currencies}
-                balanceAccounts={balanceAccounts}
-                eventCategory="Transaction component"
-                onChange={setFilters}
-            />
+            <div role="toolbar" className={TOOLBAR_CLASS}>
+                <TransactionsOverviewFilters
+                    {...filterBarState}
+                    activeView={activeView}
+                    availableCurrencies={currencies}
+                    balanceAccounts={balanceAccounts}
+                    eventCategory="Transaction component"
+                    onChange={setFilters}
+                />
+                {!isMobileContainer && <>{exportButton}</>}
+            </div>
 
             {activeView === TransactionsView.INSIGHTS ? (
                 <>

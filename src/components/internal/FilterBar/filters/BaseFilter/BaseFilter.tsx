@@ -81,9 +81,11 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
         onResetAction: props?.onResetAction,
     });
 
+    const editing = useRef(false);
+
     const [closeEditDialog, openEditDialog] = useMemo(() => {
         const updateEditMode = (mode: boolean) => () => {
-            if (mode === editMode) return;
+            if (mode === editMode || (mode && editing.current)) return;
 
             if (mode) {
                 resetCommitAction();
@@ -110,6 +112,10 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
     useEffect(() => {
         committing && closeEditDialog();
     }, [committing, closeEditDialog]);
+
+    useEffect(() => {
+        editing.current = editMode;
+    }, [editMode]);
 
     const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
     const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);

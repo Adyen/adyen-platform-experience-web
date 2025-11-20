@@ -7,6 +7,7 @@ export const BASE_CLASS_DETAILS = `${_BASE_CLASS}-details`;
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
 export const SUMMARY_CLASS = `${BASE_CLASS}__summary`;
 export const SUMMARY_ITEM_CLASS = `${SUMMARY_CLASS}-item`;
+export const TOOLBAR_CLASS = `${BASE_CLASS}__toolbar`;
 
 export const enum TransactionsView {
     TRANSACTIONS = 'transactions',

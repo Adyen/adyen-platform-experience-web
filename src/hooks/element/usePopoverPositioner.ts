@@ -107,15 +107,16 @@ const calculateOffset = ({
                 translateY += scrollY;
             }
             break;
-        case PopoverContainerPosition.BOTTOM_RIGHT:
+        case PopoverContainerPosition.BOTTOM_RIGHT: {
             translateX = -5;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
             if (!fixedPositioning) {
-                translateX += scrollX;
+                translateX = scrollX - (bodyPosition.width - targetPosition.right);
                 translateY += scrollY;
             }
             break;
+        }
         case PopoverContainerPosition.TOP_LEFT:
             translateX = POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
@@ -180,7 +181,6 @@ const calculateOffset = ({
         position: fixedPositioning ? 'fixed' : 'absolute',
         transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
         visibility: 'hidden',
-        right: isAlignedToRight ? 0 : 'auto',
         ...offsetStyle,
     };
 };

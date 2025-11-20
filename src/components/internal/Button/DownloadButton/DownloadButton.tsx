@@ -4,7 +4,7 @@ import { AriaAttributes } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { EndpointName } from '../../../../types/api/endpoints';
+import { DownloadEndpoints } from '../../../../types/api/endpoints';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import Spinner from '../../Spinner';
 import Icon from '../../Icon';
@@ -16,7 +16,7 @@ import './DownloadButton.scss';
 interface DownloadButtonProps {
     requestParams: any;
     iconButton?: boolean;
-    endpointName: EndpointName;
+    endpointName: DownloadEndpoints;
     className?: string;
     disabled?: boolean;
     onDownloadRequested?: () => void;
@@ -25,7 +25,7 @@ interface DownloadButtonProps {
     errorMessage?: (error: any) => VNode<any>;
 }
 
-function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
+export function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
     const a = document.createElement('a');
     const url = URL.createObjectURL(blob);
 
