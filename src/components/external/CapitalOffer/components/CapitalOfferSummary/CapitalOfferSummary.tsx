@@ -166,7 +166,7 @@ export const CapitalOfferSummary = ({
                     if (key === 'capital.common.fields.repaymentThreshold') {
                         return (
                             <Tooltip
-                                isContainerHovered
+                                isUnderlineVisible
                                 content={i18n.get('capital.common.fields.repaymentThreshold.description', {
                                     values: { days: CAPITAL_REPAYMENT_FREQUENCY },
                                 })}
@@ -186,7 +186,7 @@ export const CapitalOfferSummary = ({
 
                     if (key === 'capital.common.fields.annualPercentageRate') {
                         return (
-                            <Tooltip isContainerHovered content={i18n.get('capital.common.fields.annualPercentageRate.description')}>
+                            <Tooltip isUnderlineVisible content={i18n.get('capital.common.fields.annualPercentageRate.description')}>
                                 <span>
                                     <Typography
                                         className={'adyen-pe-capital-offer-summary__list-label'}
