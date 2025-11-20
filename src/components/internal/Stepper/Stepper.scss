@@ -1,0 +1,92 @@
+@use '../../../style';
+
+.adyen-pe-stepper {
+    &__list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-040);
+        list-style: none;
+
+        &:not(&--horizontal) {
+            flex-direction: column;
+        }
+    }
+}
+
+.adyen-pe-step {
+    $adyen-pe-step: &;
+
+    &__button {
+        appearance: none;
+        background: none;
+        border: 0;
+        border-radius: style.token(border-radius-m);
+        cursor: pointer;
+        display: flex;
+        font-family: inherit;
+        gap: style.token(spacer-040);
+        padding: style.token(spacer-030) style.token(spacer-040);
+
+        &:hover:not(:disabled),
+        &:focus-visible:not(:disabled) {
+            background-color: style.token(color-background-secondary);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+        }
+    }
+
+    &__number {
+        align-content: center;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    &__icon {
+        align-items: center;
+        background-color: style.token(color-background-quaternary);
+        border-radius: style.token(border-radius-l);
+        color: style.token(color-label-on-color);
+        display: flex;
+        font-weight: style.token(text-body-stronger-font-weight);
+        height: 20px;
+        justify-content: center;
+        width: 20px;
+    }
+
+    &__label {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+    }
+
+    // States
+    &--completed {
+        #{$adyen-pe-step}__icon {
+            background-color: style.token(color-background-primary);
+            color: style.token(color-background-success-strong);
+
+            .adyen-pe-icon {
+                font-size: 20px;
+            }
+        }
+
+        #{$adyen-pe-step}__label {
+            color: style.token(color-label-primary);
+            font-weight: style.token(text-body-stronger-font-weight);
+        }
+    }
+
+    &--active {
+        #{$adyen-pe-step}__icon {
+            background-color: style.token(color-background-inverse-primary);
+            color: style.token(color-label-on-color);
+        }
+
+        #{$adyen-pe-step}__label {
+            color: style.token(color-label-primary);
+            font-weight: style.token(text-body-stronger-font-weight);
+        }
+    }
+}

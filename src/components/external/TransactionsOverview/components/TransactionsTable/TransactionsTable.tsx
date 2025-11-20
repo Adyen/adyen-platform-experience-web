@@ -125,7 +125,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                                 </Typography>
                             );
                             return tooltip ? (
-                                <Tooltip content={tooltip} isContainerHovered={rowIndex === hoveredRow}>
+                                <Tooltip content={tooltip} isUnderlineVisible={rowIndex === hoveredRow}>
                                     <span>{renderCategory()}</span>
                                 </Tooltip>
                             ) : (
