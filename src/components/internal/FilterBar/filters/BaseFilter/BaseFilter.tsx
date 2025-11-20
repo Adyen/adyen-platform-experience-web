@@ -109,8 +109,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
 
     useEffect(() => {
         committing && closeEditDialog();
-        updateHasEmptyValue(hasEmptyValue);
-    }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
+    }, [committing, closeEditDialog]);
+
     const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
     const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 

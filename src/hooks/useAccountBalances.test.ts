@@ -42,7 +42,7 @@ describe('useAccountBalances', () => {
             endpoints: { getBalances: undefined },
         } as unknown as ReturnType<(typeof ConfigContext)['useConfigContext']>);
 
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
         expect(result.current).toStrictEqual(expectedResult);
 
         [undefined, null, '', 'ID'].forEach(id => {
@@ -64,7 +64,7 @@ describe('useAccountBalances', () => {
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         expect(result.current).toStrictEqual(expectedResult);
         expect(mockBalancesEndpoint).not.toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe('useAccountBalances', () => {
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         for (let i = 0; i < 3; i++) {
             rerender({ id: 'ID' } as IBalanceAccountBase);
@@ -110,7 +110,7 @@ describe('useAccountBalances', () => {
     test('should abort previous signal before initiating latest fetch request', async () => {
         const abortSignals: AbortSignal[] = [];
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         ['ID_1', 'ID_2', 'ID_1'].forEach((id, index) => {
             rerender({ id } as IBalanceAccountBase);
@@ -159,7 +159,7 @@ describe('useAccountBalances', () => {
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         // prettier-ignore
         mockBalancesEndpoint
@@ -183,7 +183,7 @@ describe('useAccountBalances', () => {
         ];
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         // prettier-ignore
         mockBalancesEndpoint
@@ -214,7 +214,7 @@ describe('useAccountBalances', () => {
 
     test('should return correct state with error response of latest fetch request', async () => {
         const mockBalancesEndpoint = getMockBalancesEndpoint();
-        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances(balanceAccount));
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         // prettier-ignore
         mockBalancesEndpoint

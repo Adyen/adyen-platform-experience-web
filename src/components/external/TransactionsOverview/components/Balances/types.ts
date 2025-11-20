@@ -1,4 +1,4 @@
-import { IBalance, IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { IBalance, IBalanceAccountBase } from '../../../../../types';
 
 export type IBalanceWithKey = IBalance & {
     balanceElemId: string;
@@ -6,7 +6,8 @@ export type IBalanceWithKey = IBalance & {
 };
 
 export type BalancesProps = {
-    balanceAccount?: IBalanceAccountBase;
-    onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
-    fullWidth?: boolean;
+    balanceAccount?: Readonly<IBalanceAccountBase>;
+    balances: readonly Readonly<IBalance>[];
+    balancesEmpty: boolean;
+    loadingBalances: boolean;
 };

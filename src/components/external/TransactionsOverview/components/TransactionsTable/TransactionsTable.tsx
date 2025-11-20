@@ -95,6 +95,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     return (
         <div className={BASE_CLASS}>
             <DataGrid
+                autoFitColumns={isXsAndDownContainer}
                 errorDisplay={errorDisplay}
                 error={error}
                 columns={columns}
