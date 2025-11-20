@@ -2,15 +2,18 @@ import { http, HttpResponse, PathParams } from 'msw';
 import {
     ITransaction,
     IRefundMode,
+    ITransactionColumn,
     ITransactionRefundPayload,
     ITransactionRefundResponse,
     ITransactionWithDetails,
     ITransactionRefundStatus,
 } from '../../src';
 import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, FAILED_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
+import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
 import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
+import Localization from '../../src/core/Localization';
 
 interface _ITransactionTotals {
     expenses: number;
@@ -233,6 +236,17 @@ const passThroughRefundLockDeadlineCheckpoint = () => {
     }
 };
 
+const i18n = new Localization().i18n;
+
+const DownloadFields: Record<ITransactionColumn, (transaction: ITransaction) => string> = {
+    CreatedAt: ({ createdAt }) => `"${createdAt}"`,
+    PaymentMethod: ({ paymentMethod, bankAccount }) =>
+        (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',
+    Category: ({ category }) => category,
+    NetAmount: ({ amount }) => i18n.amount(amount.value, amount.currency, { hideCurrency: false }),
+    AmountBeforeDeductions: ({ amount }) => i18n.amount(amount.value, amount.currency, { hideCurrency: false }),
+};
+
 export const transactionsMocks = [
     http.get(mockEndpoints.transactions, async ({ request }) => {
         if (networkError) return HttpResponse.error();
@@ -308,6 +322,35 @@ export const transactionsMocks = [
         }
 
         return HttpResponse.json({ data });
+    }),
+
+    http.get(mockEndpoints.downloadTransactions, async ({ request }) => {
+        const { transactions } = fetchTransactionsForRequest(request);
+        const columnsParam = new URLSearchParams(new URL(request.url).searchParams).getAll('columns');
+        const columns = Object.keys(DownloadFields).filter(column => columnsParam.includes(column));
+
+        return new HttpResponse(
+            new Blob(
+                columns.length
+                    ? [
+                          `${columns.join(',')}\r\n`,
+                          ...transactions
+                              .slice(0, 100)
+                              .map(
+                                  transaction =>
+                                      `${columns.map(column => DownloadFields[column as keyof typeof DownloadFields](transaction)).join(',')}\r\n`
+                              ),
+                      ]
+                    : []
+            ),
+            {
+                headers: {
+                    'Content-Disposition': `attachment; filename=transactions`,
+                    'Content-Type': 'text/csv',
+                },
+                status: 200,
+            }
+        );
     }),
 
     http.get(mockEndpoints.transaction, ({ params }) => fetchTransaction(params)),
