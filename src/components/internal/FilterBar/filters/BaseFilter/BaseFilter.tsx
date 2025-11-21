@@ -111,8 +111,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
 
     useEffect(() => {
         committing && closeEditDialog();
-        updateHasEmptyValue(hasEmptyValue);
-    }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
+    }, [committing, closeEditDialog]);
 
     useEffect(() => {
         editModeActive.current = editMode;
