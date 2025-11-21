@@ -296,6 +296,8 @@ const Select = <T extends SelectItem>({
         [setTextFilter]
     );
 
+    const showingList = useRef(false);
+
     /**
      * Toggles the selectList and focuses in either the filter input or in the selectList button
      * @param e - Event
@@ -303,7 +305,9 @@ const Select = <T extends SelectItem>({
     const toggleList = useCallback(
         (e: Event) => {
             e.preventDefault();
-            setShowList(showList => !showList);
+            if (!showingList.current) {
+                setShowList(showList => !showList);
+            }
             showList && resetSelection(cachedSelectedItems.current);
         },
         [setShowList, showList, resetSelection]
@@ -313,6 +317,7 @@ const Select = <T extends SelectItem>({
         if (showList && filterable) {
             filterInputRef.current?.focus();
         }
+        showingList.current = showList;
     }, [filterable, showList]);
 
     return (
