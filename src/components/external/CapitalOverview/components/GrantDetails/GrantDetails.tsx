@@ -12,6 +12,7 @@ import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
 import { Translation } from '../../../../internal/Translation';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import '@adyen/kyc-components/business-financing';
 
 export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) => {
     const { i18n } = useCoreContext();
@@ -111,6 +112,12 @@ export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) 
                     items={structuredListItems}
                 />
             </div>
+            <adyen-business-financing
+                locale={i18n.locale}
+                environment="test"
+                fetchToken={() => Promise.resolve({ token: 'token' })}
+                rootlegalentityid="myLegalEntityId"
+            ></adyen-business-financing>
         </div>
     );
 };
