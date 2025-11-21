@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/preact';
+import { render, screen } from '@testing-library/preact';
+import userEvent from '@testing-library/user-event';
 import ToggleSwitch from './ToggleSwitch';
 
 describe('ToggleSwitch', () => {
@@ -30,12 +31,10 @@ describe('ToggleSwitch', () => {
         expect(input).toBeInTheDocument();
     });
 
-    test('should call the onChange handler when clicked', () => {
-        const onChange = vi.fn();
-        render(<ToggleSwitch onChange={onChange} />);
-        const input = screen.getByRole('checkbox');
-        fireEvent.click(input);
-        expect(onChange).toHaveBeenCalledTimes(1);
+    test('should pass aria attributes to the input element', () => {
+        render(<ToggleSwitch aria-label="My Toggle" />);
+        const input = screen.getByLabelText('My Toggle');
+        expect(input).toBeInTheDocument();
     });
 
     test('should update the checked state when the prop changes', () => {
@@ -45,5 +44,49 @@ describe('ToggleSwitch', () => {
 
         rerender(<ToggleSwitch checked={true} />);
         expect(input).toBeChecked();
+    });
+
+    test('should call the onChange handler when clicked', async () => {
+        const onChange = vi.fn();
+        render(<ToggleSwitch onChange={onChange} />);
+
+        const input = screen.getByRole('checkbox');
+        const label = input.parentElement as HTMLLabelElement;
+
+        await userEvent.click(input);
+        expect(onChange).toHaveBeenCalledTimes(1);
+
+        await userEvent.click(label);
+        expect(onChange).toHaveBeenCalledTimes(2);
+    });
+
+    test('should not call the onChange handler when disabled', async () => {
+        const onChange = vi.fn();
+        render(<ToggleSwitch onChange={onChange} disabled />);
+
+        const input = screen.getByRole('checkbox');
+        const label = input.parentElement as HTMLLabelElement;
+        expect(input).toBeDisabled();
+
+        await userEvent.click(input);
+        expect(onChange).not.toHaveBeenCalled();
+
+        await userEvent.click(label);
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    test('should not call the onChange handler when readonly', async () => {
+        const onChange = vi.fn();
+        render(<ToggleSwitch onChange={onChange} readOnly />);
+
+        const input = screen.getByRole('checkbox');
+        const label = input.parentElement as HTMLLabelElement;
+        expect(input).toHaveAttribute('aria-readonly', 'true');
+
+        await userEvent.click(input);
+        expect(onChange).not.toHaveBeenCalled();
+
+        await userEvent.click(label);
+        expect(onChange).not.toHaveBeenCalled();
     });
 });

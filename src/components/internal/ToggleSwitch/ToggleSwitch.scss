@@ -12,6 +12,11 @@
     position: relative;
     width: var(--switch-width);
 
+    &--readonly,
+    input[type='checkbox'][aria-readonly='true'] {
+        pointer-events: none;
+    }
+
     &__slider {
         &::before,
         &::after {
