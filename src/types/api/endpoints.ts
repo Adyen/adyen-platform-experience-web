@@ -25,10 +25,11 @@ type CSVEndpoints = 'downloadReport';
 type JSONEndpoints = Exclude<EndpointName, DownloadStreamEndpoint>;
 
 export type DownloadStreamEndpoint = CSVEndpoints | 'downloadDefenseDocument';
+export type EndpointDownloadStreamData = { blob: Blob; filename?: string };
 export type EndpointJSONData<T extends JSONEndpoints> = EndpointsOperations[T]['responses'][200]['content']['application/json'];
 
 export type EndpointData<T extends EndpointName> = T extends DownloadStreamEndpoint
-    ? { blob: Blob; filename: string }
+    ? EndpointDownloadStreamData
     : T extends JSONEndpoints
       ? EndpointJSONData<T>
       : never;
