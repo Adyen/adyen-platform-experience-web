@@ -9,6 +9,7 @@ const BASE_CLASS = 'adyen-pe-toggle-switch';
 
 const classes = {
     root: BASE_CLASS,
+    disabled: BASE_CLASS + '--disabled',
     readonly: BASE_CLASS + '--readonly',
     mark: BASE_CLASS + '__mark',
     slider: BASE_CLASS + '__slider',
@@ -23,7 +24,7 @@ const ToggleSwitch = ({ readOnly, onClick, ...props }: Omit<HTMLProps<HTMLInputE
     );
 
     return (
-        <label className={cx(classes.root, { [classes.readonly]: readOnly })}>
+        <label className={cx(classes.root, { [classes.disabled]: props.disabled, [classes.readonly]: readOnly })}>
             <input {...props} type="checkbox" className="adyen-pe-visually-hidden" aria-readonly={readOnly} onClick={handleClick} />
             <span className={classes.slider}>
                 <Icon className={classes.mark} name="checkmark" />

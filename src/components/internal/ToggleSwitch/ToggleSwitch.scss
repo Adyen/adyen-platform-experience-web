@@ -2,22 +2,42 @@
 @use '../../../style';
 
 .adyen-pe-toggle-switch {
-    --switch-height: 20px;
-    --switch-width: calc(var(--switch-height) * 1.8);
-
     $adyen-pe-toggle-switch: &;
 
     display: inline-block;
-    height: var(--switch-height);
     position: relative;
-    width: var(--switch-width);
 
+    &--disabled,
     &--readonly,
+    input[type='checkbox']:disabled,
     input[type='checkbox'][aria-readonly='true'] {
+        cursor: not-allowed;
         pointer-events: none;
     }
 
     &__slider {
+        // track properties
+        --track-background: #{style.token(color-background-primary)};
+        --track-outline: #{style.token(color-outline-tertiary)};
+        --track-gutter: #{style.token(spacer-020)};
+        --track-height: 20px;
+        --track-width: calc(var(--track-height) * 1.8);
+
+        // knob properties
+        --knob-background: #{style.token(color-background-inverse-primary)};
+        --knob-size: calc(var(--track-height) - var(--track-gutter) * 2);
+        --knob-translate-x: 0;
+
+        // check mark properties
+        --mark-fill: #{style.token(color-label-primary)};
+        --mark-opacity: 0;
+
+        border-radius: var(--track-height);
+        display: block;
+        height: var(--track-height);
+        position: relative;
+        width: var(--track-width);
+
         &::before,
         &::after {
             content: '';
@@ -25,32 +45,32 @@
             transition: all 100ms ease-out;
         }
 
+        // track
         &::before {
-            background: style.token(color-background-primary);
-            border: style.token(border-width-s) solid style.token(color-outline-tertiary);
-            border-radius: var(--switch-height);
+            background: var(--track-background);
+            border: style.token(border-width-s) solid var(--track-outline);
+            border-radius: var(--track-height);
             height: 100%;
             width: 100%;
         }
 
+        // knob
         &::after {
-            --slider-gap: #{style.token(spacer-020)};
-            --slider-size: calc(var(--switch-height) - var(--slider-gap) * 2);
-
-            background: style.token(color-background-inverse-primary);
-            border-radius: var(--slider-size);
-            height: var(--slider-size);
-            inset: var(--slider-gap);
-            transform: translateX(0);
+            background: var(--knob-background);
+            border-radius: var(--knob-size);
+            height: var(--knob-size);
+            inset: var(--track-gutter);
+            transform: translateX(var(--knob-translate-x));
             transform-origin: center;
-            width: var(--slider-size);
+            width: var(--knob-size);
         }
 
+        // check mark
         #{$adyen-pe-toggle-switch}__mark {
-            color: style.token(color-label-primary);
+            color: var(--mark-fill);
             inset: style.token(spacer-030);
             left: auto;
-            opacity: 0;
+            opacity: var(--mark-opacity);
             position: absolute;
             z-index: 1;
 
@@ -60,23 +80,49 @@
             }
         }
 
-        input[type='checkbox']:checked + &::before {
-            background: style.token(color-background-inverse-primary);
-            border-color: style.token(color-background-inverse-primary);
-        }
-
-        input[type='checkbox']:checked + &::after {
-            --slider-distance: calc(var(--switch-width) - var(--switch-height));
-            --slider-gap: #{style.token(spacer-010)};
-
-            background: style.token(color-background-primary);
-            transform: translateX(var(--slider-distance));
+        input[type='checkbox']:focus-visible + & {
+            box-shadow:
+                0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+                0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
         }
 
         input[type='checkbox']:checked + & {
-            #{$adyen-pe-toggle-switch}__mark {
-                opacity: 1;
-            }
+            --knob-background: #{style.token(color-background-primary)};
+            --knob-translate-x: calc(var(--track-width) - var(--track-height));
+            --track-background: #{style.token(color-background-inverse-primary)};
+            --track-gutter: #{style.token(spacer-010)};
+            --track-outline: var(--track-background);
+            --mark-opacity: 1;
+        }
+
+        input[type='checkbox'] + &:hover {
+            --track-outline: #{style.token(color-outline-tertiary-hover)};
+        }
+
+        input[type='checkbox']:checked + &:hover {
+            --track-background: #{style.token(color-background-inverse-primary-hover)};
+        }
+
+        input[type='checkbox']:disabled + &,
+        input[type='checkbox'][aria-readonly='true'] + & {
+            --knob-background: var(--mark-fill);
+            --track-background: #{style.token(color-background-secondary)};
+            --track-outline: #{style.token(color-outline-disabled)};
+        }
+
+        input[type='checkbox']:disabled:checked + &,
+        input[type='checkbox'][aria-readonly='true']:checked + & {
+            --knob-background: #{style.token(color-background-disabled)};
+            --track-background: #{style.token(color-background-quaternary)};
+            --track-outline: var(--track-background);
+        }
+
+        input[type='checkbox']:disabled + & {
+            --mark-fill: #{style.token(color-label-disabled)};
+        }
+
+        input[type='checkbox'][aria-readonly='true'] + & {
+            --mark-fill: #{style.token(color-label-primary)};
         }
     }
 }
