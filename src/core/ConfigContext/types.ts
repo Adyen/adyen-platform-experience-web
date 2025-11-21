@@ -6,7 +6,7 @@ import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '
 import type { DeepReadonly, Promised } from '../../utils/types';
 
 export type _Params<T extends Record<string, any>> = T['parameters'];
-type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
+type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params' | 'apiVersion';
 type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 
 type IsEmptyParameters<T> = T extends {
