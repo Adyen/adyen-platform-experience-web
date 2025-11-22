@@ -70,7 +70,12 @@ export interface components {
             currency: string;
             /**
              * Format: int64
-             * @description Balance amount value in a given currency
+             * @description Reserved balance amount value in a given currency
+             */
+            reservedValue: number;
+            /**
+             * Format: int64
+             * @description Available balance amount value in a given currency
              */
             value: number;
         };

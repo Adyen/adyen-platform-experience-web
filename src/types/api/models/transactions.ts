@@ -8,6 +8,7 @@ export type IRefundMode = Schema<components, 'RefundMode'>;
 export type IRefundReason = Schema<components, 'RefundReason'>;
 export type IRefundStatus = Schema<components, 'RefundStatus'>;
 export type ITransaction = Schema<components, 'SingleTransaction'>;
+export type ITransactionColumn = Schema<components, 'Column'>;
 export type ITransactionTotal = Schema<components, 'TransactionTotal'>;
 export type ITransactionWithDetails = Schema<components, 'SingleTransaction'>;
 export type ITransactionRefundPayload = Schema<components, 'RefundRequest'>;

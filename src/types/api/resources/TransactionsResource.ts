@@ -18,6 +18,13 @@ export interface paths {
          */
         get: operations['getTransactionTotals'];
     };
+    '/v1/transactions/download': {
+        /**
+         * Download file containing transactions
+         * @description Given filters, downloads a file containing transactions matching the criteria
+         */
+        get: operations['downloadTransactions'];
+    };
     '/v1/transactions': {
         /**
          * Get transactions
@@ -50,6 +57,9 @@ export interface components {
         };
         /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        /** @enum {string} */
+        Column: 'CreatedAt' | 'PaymentMethod' | 'Category' | 'NetAmount' | 'AmountBeforeDeductions';
+        DownloadTransactionsResponseDTO: Uint8Array;
         ExistingRefund: {
             amount: components['schemas']['Amount'];
             status: components['schemas']['RefundStatus'];
@@ -243,6 +253,36 @@ export interface operations {
             200: {
                 content: {
                     'application/json': components['schemas']['TransactionsResponse'];
+                };
+            };
+        };
+    };
+    /**
+     * Get transactions
+     * @description Given filters, provides list of transactions for a balance account
+     */
+    downloadTransactions: {
+        parameters: {
+            query: {
+                balanceAccountId: string;
+                createdSince?: string;
+                createdUntil?: string;
+                categories?: components['schemas']['Category'][];
+                statuses?: components['schemas']['Status'][];
+                columns?: components['schemas']['Column'][];
+                currencies?: string[];
+                sortDirection?: components['schemas']['SortDirection'];
+            };
+            path?: never;
+            header?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                content: {
+                    "text/csv": components["schemas"]["DownloadTransactionsResponseDTO"];
                 };
             };
         };

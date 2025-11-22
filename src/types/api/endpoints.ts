@@ -21,7 +21,7 @@ export type EndpointsOperations = AnalyticsOps &
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
-type CSVEndpoints = 'downloadReport';
+type CSVEndpoints = 'downloadReport' | 'downloadTransactions';
 
 type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument'>;
 
