@@ -46,7 +46,7 @@ export const TransactionsOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection({ balanceAccounts });
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
     const userEvents = useAnalyticsContext();
 
