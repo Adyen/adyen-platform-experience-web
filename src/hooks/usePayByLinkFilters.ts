@@ -4,7 +4,7 @@ import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';
 
 const usePayByLinkFilters = (enabled?: boolean) => {
-    const { getPayByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
+    const { payByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
 
     // TODO: Add error case. Fallback can be static values or be received from CDN.
     const {

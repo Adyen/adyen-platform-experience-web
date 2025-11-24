@@ -9,7 +9,7 @@ import DataOverviewError from '../../../internal/DataOverviewError';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { PayByLinkTableProps } from './types';
-import { BASE_TABLE_GRID_CLASS } from './constants';
+import { BASE_TABLE_GRID_CLASS, PAY_BY_LINK_STATUSES } from './constants';
 import { Tag } from '../../../internal/Tag/Tag';
 import { TagVariant } from '../../../internal/Tag/types';
 import Typography from '../../../internal/Typography/Typography';
@@ -19,13 +19,13 @@ import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE } from '..
 
 const getTagVariantForStatus = (status: IPayByLinkStatus) => {
     switch (status) {
-        case 'COMPLETED':
+        case 'completed':
             return TagVariant.SUCCESS;
-        case 'EXPIRED':
+        case 'expired':
             return TagVariant.DEFAULT;
-        case 'PAYMENT_PENDING':
+        case 'paymentPending':
             return TagVariant.WARNING;
-        case 'ACTIVE':
+        case 'active':
             return TagVariant.BLUE;
         default:
             return TagVariant.DEFAULT;
@@ -33,33 +33,31 @@ const getTagVariantForStatus = (status: IPayByLinkStatus) => {
 };
 
 export const PAY_BY_LINK_TABLE_FIELDS = [
-    'id',
-    'amount',
+    'paymentLinkId',
+    'merchantReference',
     'currency',
+    'amount',
     'status',
     'expirationDate',
     'creationDate',
-    'reusable',
-    'merchantReference',
+    'linkType',
     'shopperEmail',
 ] as const;
 
 const FIELDS_KEYS = {
-    id: 'payByLink.overview.common.fields.id',
+    paymentLinkId: 'payByLink.overview.common.fields.id',
     amount: 'payByLink.overview.common.fields.amount',
     currency: 'payByLink.overview.common.fields.currency',
     status: 'payByLink.overview.common.fields.status',
     expirationDate: 'payByLink.overview.common.fields.expirationDate',
     creationDate: 'payByLink.overview.common.fields.createdAt',
-    reusable: 'payByLink.overview.common.fields.linkType',
+    linkType: 'payByLink.overview.common.fields.linkType',
     merchantReference: 'payByLink.overview.common.fields.merchantReference',
     shopperEmail: 'payByLink.overview.common.fields.shopperEmail',
 } as const satisfies Record<string, TranslationKey>;
 
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
-    availableCurrencies,
     error,
-    hasMultipleCurrencies,
     loading,
     onContactSupport,
     onRowClick,
@@ -80,8 +78,8 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                 position: 'right',
                 flex: isSmAndUpContainer ? 1.5 : undefined,
             },
-            reusable: {
-                label: i18n.get(FIELDS_KEYS.reusable),
+            linkType: {
+                label: i18n.get(FIELDS_KEYS.linkType),
             },
         },
     });
@@ -124,10 +122,10 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                     },
                     status: ({ value }) => {
                         if (!value) return;
-                        return <Tag label={i18n.get(`payByLink.common.status.${value}`)} variant={getTagVariantForStatus(value)} />;
+                        return <Tag label={i18n.get(`${PAY_BY_LINK_STATUSES[value]}`)} variant={getTagVariantForStatus(value)} />;
                     },
-                    reusable: ({ item }) => {
-                        const value = item?.reusable ? 'payByLink.common.linkType.open' : 'payByLink.common.linkType.singleUse';
+                    linkType: ({ item }) => {
+                        const value = item?.linkType === 'open' ? 'payByLink.common.linkType.open' : 'payByLink.common.linkType.singleUse';
                         if (!value) return;
                         return (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>

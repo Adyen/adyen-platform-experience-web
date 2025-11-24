@@ -18,7 +18,15 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | '
             [FilterParam.MIN_AMOUNT]: undefined,
             [FilterParam.MAX_AMOUNT]: undefined,
         }),
-        [FilterParam.BALANCE_ACCOUNT]: undefined,
+        ...(type !== 'payByLink' && {
+            [FilterParam.BALANCE_ACCOUNT]: undefined,
+        }),
+        ...(type === 'payByLink' && {
+            [FilterParam.MERCHANT_REFERENCE]: undefined,
+            [FilterParam.PAYMENT_LINK_ID]: undefined,
+            [FilterParam.MIN_AMOUNT]: undefined,
+            [FilterParam.MAX_AMOUNT]: undefined,
+        }),
         [FilterParam.CREATED_SINCE]: new Date(from).toISOString(),
         [FilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
     } as const;

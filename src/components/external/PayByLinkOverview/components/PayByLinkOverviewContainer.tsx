@@ -9,7 +9,7 @@ function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayBy
 
     return (
         <>
-            <PayByLinkOverview {...props} filters={filters} isFiltersLoading={isFetching} />
+            <PayByLinkOverview {...props} filterParams={filters} isFiltersLoading={isFetching} />
         </>
     );
 }

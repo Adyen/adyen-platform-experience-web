@@ -1,0 +1,37 @@
+@use '../../../mixins';
+@use '../../../../style';
+
+.adyen-pe-pay-by-link-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &--xs {
+        gap: style.token(spacer-080);
+
+        @include mixins.adyen-pe-error-message-display-mobile-fix {
+            .adyen-pe-data-grid__table-wrapper {
+                position: relative;
+            }
+        }
+
+        .adyen-pe-header {
+            align-items: center;
+        }
+
+        .adyen-pe-data-grid__cell {
+            padding-bottom: style.token(spacer-060);
+            padding-top: style.token(spacer-060);
+        }
+    }
+
+    &__tabs-container {
+        .adyen-pe-tabs {
+            margin-bottom: 0;
+        }
+
+        .adyen-pe-tabpanels {
+            display: none;
+        }
+    }
+}

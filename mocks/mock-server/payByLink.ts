@@ -2,7 +2,9 @@ import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS } from '../mock-data/payByLink';
-import { PAY_BY_LINK_FILTERS, PAYMENT_LINKS_LIST_RESPONSE } from '../mock-data';
+import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS, PAYMENT_LINKS_LIST_RESPONSE } from '../mock-data';
+import { IDisputeStatusGroup } from '../../src/types/api/models/disputes';
+import { IPayByLinkStatusGroup } from '../../src';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
@@ -89,22 +91,21 @@ export const payByLinkMocks = [
         const paymentLinkId = url.searchParams.get('paymentLinkId');
         const merchantReference = url.searchParams.get('merchantReference');
         const amount = url.searchParams.get('amount');
-        const currency = url.searchParams.get('currency');
-        const status = url.searchParams.get('statuses');
+        const statuses = url.searchParams.getAll('statuses');
         const creationSince = url.searchParams.get('creationSince');
         const createdUntil = url.searchParams.get('createdUntil');
-        const linkType = url.searchParams.get('linkType');
+        const linkTypes = url.searchParams.getAll('linkTypes');
         const cursor = url.searchParams.get('cursor');
         const limit = url.searchParams.get('limit');
+        const statusGroup = url.searchParams.get('statusGroup')! as IPayByLinkStatusGroup;
 
         // Filter payment links based on query parameters
-        const filteredLinks = [...PAYMENT_LINKS_LIST_RESPONSE.data].filter(
+        const filteredLinks = getPaymentLinksByStatusGroup(statusGroup).filter(
             link =>
-                (!paymentLinkId || link.id === paymentLinkId) &&
+                (!paymentLinkId || link.paymentLinkId === paymentLinkId) &&
                 (!merchantReference || link.merchantReference.toLowerCase().includes(merchantReference.toLowerCase())) &&
-                (!status || link.status === status) &&
-                (!currency || link.amount.currency === currency) &&
-                (!linkType || link.reusable === (linkType === 'open')) &&
+                (!statuses.length || statuses.includes(link.status)) &&
+                (!linkTypes.length || linkTypes.includes(link.linkType)) &&
                 (!amount || link.amount.value === Number(amount)) &&
                 (!creationSince || compareDates(link.creationDate, creationSince, 'ge')) &&
                 (!createdUntil || compareDates(link.creationDate, createdUntil, 'le'))

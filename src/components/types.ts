@@ -211,8 +211,9 @@ export const enum FilterParam {
     STATUSES = 'statuses',
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
-    LINK_TYPES = 'linkType',
-    merchantReference = 'merchantReference',
+    LINK_TYPES = 'linkTypes',
+    MERCHANT_REFERENCE = 'merchantReference',
+    PAYMENT_LINK_ID = 'paymentLinkId',
 }
 
 export type ExternalComponentType =

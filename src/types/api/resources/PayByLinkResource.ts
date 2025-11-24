@@ -12,7 +12,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getPayByLinkList'];
+        get: operations['getPaymentLinks'];
         put?: never;
         post?: never;
         delete?: never;
@@ -29,7 +29,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getPayByLinkFilters'];
+        get: operations['payByLinkFilters'];
         put?: never;
         post?: never;
         delete?: never;
@@ -128,41 +128,28 @@ export interface components {
             prev: components['schemas']['Link'];
         };
         /** @enum {string} */
-        PaymentLinkStatus: 'ACTIVE' | 'PAYMENT_PENDING' | 'EXPIRED' | 'COMPLETED';
+        PaymentLinkStatus: 'active' | 'paymentPending' | 'expired' | 'completed';
         /** @enum {string} */
         PaymentLinkType: 'open' | 'singleUse';
         PaymentLinksItem: {
-            id: string;
             /** @description Amount */
             amount: components['schemas']['Amount'];
-            /** @description Creator Email */
-            createdBy?: string;
             /**
              * Format: date-time
              * @description Creation Date
              */
             creationDate: string;
-            /** @description Source of creation for payment link */
-            creationSource: 'component'
-            description: string;
-            merchantAccount: string;
-            paymentLink: string;
-            reusable: boolean;
-            store?: {
-                value: string;
-            };
-            updatedAt: string;
             /**
              * Format: date-time
              * @description Expiration Date
              */
             expirationDate: string;
             /** @description Payment Link Type */
-            linkType?: components['schemas']['PaymentLinkType'];
+            linkType: components['schemas']['PaymentLinkType'];
             /** @description Merchant Reference */
             merchantReference: string;
             /** @description Payment Link ID */
-            paymentLinkId?: string;
+            paymentLinkId: string;
             /** @description Shopper Email */
             shopperEmail?: string;
             /** @description Status */
@@ -178,12 +165,15 @@ export interface components {
         };
         FiltersResponseDTO: {
             linkTypes: components['schemas']['PayByLinkLinkType'][];
-            statuses: components['schemas']['PayByLinkStatus'][];
+            statuses: {
+                ['active']: components['schemas']['PaymentLinkStatus'][];
+                ['inactive']: components['schemas']['PaymentLinkStatus'][];
+            };
         };
         /** @enum {string} */
         PayByLinkLinkType: 'singleUse' | 'open';
         /** @enum {string} */
-        PayByLinkStatus: 'COMPLETED' | 'EXPIRED' | 'ACTIVE' | 'PAYMENT_PENDING';
+        PayByLinkStatus: 'completed' | 'expired' | 'active' | 'paymentPending';
         FillMode: boolean;
         Country: {
             countryCode?: string;
@@ -270,7 +260,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getPayByLinkList: {
+    getPaymentLinks: {
         parameters: {
             query?: {
                 cursor?: string;
@@ -278,11 +268,13 @@ export interface operations {
                 createdSince?: string;
                 createdUntil?: string;
                 statuses?: string[];
-                currencies?: string[];
+                statusGroup?: string;
                 minAmount?: number;
                 maxAmount?: number;
                 merchantReference?: string;
+                paymentLinkId?: string;
                 linkTypes?: string[];
+                storeId?: string;
                 sortDirection?: 'asc' | 'desc';
             };
             header?: never;
@@ -302,7 +294,7 @@ export interface operations {
             };
         };
     };
-    getPayByLinkFilters: {
+    payByLinkFilters: {
         parameters: {
             query?: never;
             header?: never;
