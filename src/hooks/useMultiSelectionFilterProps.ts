@@ -23,19 +23,6 @@ const useMultiSelectionFilterProps = <T extends string>({
 }: UseMultiSelectionFilterPropsConfig<T>) => {
     const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: eventLabel });
 
-    const onResetSelection = useCallback(() => {
-        logEvent?.('reset');
-        onResetFilter?.();
-    }, [logEvent, onResetFilter]);
-
-    const onUpdateSelection = useCallback(
-        (selection: readonly T[]) => {
-            logEvent?.('update', String(selection));
-            onUpdateFilter?.(selection);
-        },
-        [logEvent, onUpdateFilter]
-    );
-
     const onResetAction = useCallback(() => {
         // The reset action clears every existing selection (deselects every option).
         // If there is no existing selection (nothing is selected), the reset action
@@ -43,9 +30,10 @@ const useMultiSelectionFilterProps = <T extends string>({
         if (selection.length > 0) {
             // Since there was at least one existing selection before this reset,
             // trigger the reset action callback (if available)
-            onResetSelection?.();
+            logEvent?.('reset');
+            onResetFilter?.();
         }
-    }, [selection, onResetSelection]);
+    }, [selection, logEvent, onResetFilter]);
 
     const updateSelection = useCallback(
         ({ target }: { target?: any }) => {
@@ -55,10 +43,11 @@ const useMultiSelectionFilterProps = <T extends string>({
 
             if (selectionChanged) {
                 const sortedSelection = Object.freeze([...nextSelection].sort((a, b) => a.localeCompare(b)));
-                onUpdateSelection?.(sortedSelection);
+                logEvent?.('update', String(sortedSelection));
+                onUpdateFilter?.(sortedSelection);
             }
         },
-        [selection, onUpdateSelection]
+        [selection, logEvent, onUpdateFilter]
     );
 
     return { selection, selectionOptions, onResetAction, updateSelection };
