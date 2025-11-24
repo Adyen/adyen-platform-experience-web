@@ -4,15 +4,11 @@ import { SuccessResponse } from '../../../src/types/api/endpoints';
 
 dotenv.config({ path: './envs/.env' });
 
-type RecursivePartial<T> = {
-    [P in keyof T]?: RecursivePartial<T[P]>;
-};
 interface TransactionsVariables {
     transactionId: string;
     refundTransactionId: string;
     transaction_details_response: SuccessResponse<'getTransaction'>;
-    // TODO - Remove the RecursivePartial type once we define how to handle this contract test
-    refund_details_response: RecursivePartial<SuccessResponse<'getTransaction'>>;
+    refund_details_response: SuccessResponse<'getTransaction'>;
 }
 
 const TEST: TransactionsVariables = {
@@ -74,6 +70,7 @@ const TEST: TransactionsVariables = {
         paymentPspReference: 'L9TRSQPRP472P4V5',
         refundMetadata: {
             refundPspReference: 'BXBZVHZH5S5H3275',
+            originalPaymentId: 'EVJN42CM7223223N5LQZCWQDZZ29MFEUR',
             refundReason: 'requested_by_customer',
             refundType: 'full',
         },
