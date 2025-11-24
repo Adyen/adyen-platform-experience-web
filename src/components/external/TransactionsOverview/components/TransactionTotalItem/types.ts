@@ -4,7 +4,7 @@ export type TransactionTotalItemProps = {
     total?: ITransactionTotalWithKey;
     hiddenField?: 'incomings' | 'expenses';
     isHeader?: boolean;
-    isHovered?: boolean;
+    showLabelUnderline?: boolean;
     isSkeleton?: boolean;
     isLoading?: boolean;
     widths?: number[];

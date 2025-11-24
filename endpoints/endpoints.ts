@@ -11,6 +11,7 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         transaction: `${baseUrl}/transactions/${matchVariable}`,
         initiateRefund: `${baseUrl}/transactions/${matchVariable}/refund`,
         transactionsTotals: `${baseUrl}/transactions/totals`,
+        downloadTransactions: `${baseUrl}/transactions/download`,
         sessions: `/api/authe/api/v1/sessions`,
         setup: `${baseUrl}/setup`,
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,

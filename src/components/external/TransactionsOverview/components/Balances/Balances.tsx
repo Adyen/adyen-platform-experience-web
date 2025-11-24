@@ -1,48 +1,32 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT, uniqueId } from '../../../../../utils';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import { useFetch } from '../../../../../hooks/useFetch';
 import { memo } from 'preact/compat';
 import { BASE_CLASS } from './constants';
+import { uniqueId } from '../../../../../utils';
+import { useEffect, useMemo } from 'preact/hooks';
+import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { BalanceItem } from '../BalanceItem/BalanceItem';
-import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import { BalancesProps, IBalanceWithKey } from './types';
 
-export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenciesChange, fullWidth }: BalancesProps) => {
+export const Balances = memo(({ balanceAccount, onCurrenciesChange, fullWidth }: BalancesProps) => {
     const { i18n } = useCoreContext();
-    const { getBalances: getAccountsBalance } = useConfigContext().endpoints;
+    const { balances: balancesList, currencies, isEmpty, isWaiting } = useAccountBalances(balanceAccount);
+    const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
+    const defaultCurrencyCode = balanceAccount?.defaultCurrencyCode;
     const balancesAriaLabel = useMemo(() => i18n.get('transactions.overview.balances.labels.default'), [i18n]);
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
 
-    const fetchCallback = useCallback(async () => {
-        return getAccountsBalance?.(EMPTY_OBJECT, {
-            path: { balanceAccountId: balanceAccountId! },
-        });
-    }, [balanceAccountId, getAccountsBalance]);
-
-    const { data, error, isFetching } = useFetch({
-        fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getAccountsBalance }), [balanceAccountId, getAccountsBalance]),
-        queryFn: fetchCallback,
-    });
-
-    const isLoading = !balanceAccountId || isFetching;
-    const isEmpty = !!error || !data?.data.length;
-
     const balances = useMemo(() => {
-        return (
-            data?.data &&
-            [...data.data].sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
-                if (defaultCurrencyCode) {
-                    if (firstCurrency === defaultCurrencyCode) return -1;
-                    if (secondCurrency === defaultCurrencyCode) return 1;
-                }
-                return firstCurrency.localeCompare(secondCurrency);
-            })
-        );
-    }, [data?.data, defaultCurrencyCode]);
+        return balancesList.sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
+            if (defaultCurrencyCode) {
+                if (firstCurrency === defaultCurrencyCode) return -1;
+                if (secondCurrency === defaultCurrencyCode) return 1;
+            }
+            return firstCurrency.localeCompare(secondCurrency);
+        });
+    }, [balancesList, defaultCurrencyCode]);
 
     const [firstBalance, ...restOfBalances] = useMemo(() => {
         return (
@@ -53,8 +37,6 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
             }) ?? []
         );
     }, [balances]);
-
-    const [maxWidths, setMaxWidths] = useMaxWidthsState();
 
     const renderFirstBalance = useMemo(
         () => (
@@ -68,18 +50,18 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
                     balance={firstBalance}
                     widths={maxWidths}
                     isHeader
-                    isSkeleton={isLoading}
-                    isLoading={isLoading}
+                    isSkeleton={isWaiting}
+                    isLoading={isWaiting}
                     onWidthsSet={setMaxWidths}
                     balanceElemId={firstBalance?.balanceElemId}
                 />
             </div>
         ),
-        [isEmpty, firstBalance, maxWidths, isLoading, setMaxWidths, localizedPlainCurrencyText]
+        [isEmpty, firstBalance, maxWidths, isWaiting, setMaxWidths, localizedPlainCurrencyText]
     );
 
     const renderRestOfBalances = useMemo(() => {
-        return !isLoading && restOfBalances.length ? (
+        return !isWaiting && restOfBalances.length ? (
             <>
                 {restOfBalances.map(balance => (
                     <div
@@ -93,12 +75,11 @@ export const Balances = memo(({ balanceAccountId, defaultCurrencyCode, onCurrenc
                 ))}
             </>
         ) : undefined;
-    }, [isLoading, restOfBalances, maxWidths, setMaxWidths, localizedPlainCurrencyText]);
+    }, [isWaiting, restOfBalances, maxWidths, setMaxWidths, localizedPlainCurrencyText]);
 
     useEffect(() => {
-        const currencies = new Set(balances?.map(({ currency }) => currency) || []);
-        onCurrenciesChange(Array.from(currencies), isFetching);
-    }, [balances, isFetching, onCurrenciesChange]);
+        onCurrenciesChange([...currencies], isWaiting);
+    }, [currencies, isWaiting, onCurrenciesChange]);
 
     return (
         <div className={BASE_CLASS}>
