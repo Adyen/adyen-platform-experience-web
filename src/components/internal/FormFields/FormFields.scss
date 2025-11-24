@@ -79,7 +79,9 @@
     outline: none;
     padding: 5px 8px;
     position: relative;
-    transition: border 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition:
+        border 0.2s ease-out,
+        box-shadow 0.2s ease-out;
     width: 100%;
 
     &__invalid-value {

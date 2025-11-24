@@ -52,7 +52,8 @@ export interface components {
             | 'capitalOffer'
             | 'disputes'
             | 'disputesManagement'
-            | 'payByLinkCreation';
+            | 'payByLinkCreation'
+            | 'payByLinkTheme';
     };
     responses: never;
     parameters: never;

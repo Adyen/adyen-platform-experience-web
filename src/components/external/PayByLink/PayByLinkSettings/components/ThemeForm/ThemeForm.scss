@@ -1,0 +1,20 @@
+@use '../../../../../../style';
+
+.adyen-pe-pay-by-link-theme-form {
+    width: 100%;
+
+    &__brand-input {
+        display: block;
+        margin-bottom: style.token(spacer-080);
+    }
+
+    &__file-input {
+        display: block;
+        margin-bottom: style.token(spacer-040);
+    }
+
+    &__file-info {
+        color: style.token(color-label-secondary);
+        padding-top: style.token(spacer-080);
+    }
+}

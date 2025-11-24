@@ -28,23 +28,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Add @Operation annotation to provide a description */
-        get: operations['payByLinkFilters'];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    '/v1/paybylink/paymentLinks/configuration': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
         /**
          * Pay by Link configuration
          * @description Dynamic fields from Link creation form
@@ -82,22 +65,14 @@ export interface paths {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                storeId: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        /**
-         * Theme: Get store theme
-         * @description Returns the theme for a given storeId
-         */
-        get: operations['getThemeByStore'];
+        /** @description Add @Operation annotation to provide a description */
+        get: operations['getPayByLinkTheme'];
         put?: never;
-        /**
-         * Theme: Create/Update store theme
-         * @description Update the theme for a given storeId. Note that request body is multipart/form-data
-         */
-        post: operations['createTheme'];
+        /** @description Add @Operation annotation to provide a description */
+        post: operations['updatePayByLinkTheme'];
         delete?: never;
         options?: never;
         head?: never;
@@ -108,6 +83,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ThemeDTO: {
+            brandName?: string;
+            logoUrl?: string;
+        };
+        ThemeResponseDTO: {
+            data?: components['schemas']['ThemeDTO'];
+        };
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
             currency: string;
@@ -255,17 +237,69 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getPayByLinkTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['ThemeResponseDTO'];
+                };
+            };
+        };
+    };
+    updatePayByLinkTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                'multipart/form-data': {
+                    brandName: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['ThemeResponseDTO'];
+                };
+            };
+        };
+    };
     getPaymentLinks: {
         parameters: {
             query?: {
+                paymentLinkId?: string;
                 cursor?: string;
                 limit?: number;
                 createdSince?: string;
                 createdUntil?: string;
-                status?: string;
+                statuses?: string[];
+                statusGroup?: string;
                 currency?: string;
                 amount?: number;
-                linkType?: string;
+                linkTypes?: string[];
             };
             header?: never;
             path?: never;

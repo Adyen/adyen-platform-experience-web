@@ -8,3 +8,4 @@ export * from './CapitalOverview';
 export * from './DisputesOverview';
 export * from './DisputeManagement';
 export * from './PayByLink/PayByLinkCreation';
+export * from './PayByLink/PayByLinkSettings';

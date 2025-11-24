@@ -125,10 +125,6 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/paymentLinks/configuration',
         },
-        getPayByLinkInstallments: {
-            method: 'GET',
-            url: 'paybylink/installments',
-        },
         getPaymentLinks: {
             method: 'GET',
             url: 'paybylink/paymentLinks',
@@ -136,6 +132,14 @@ export const setupBasicResponse = {
         payByLinkFilters: {
             method: 'GET',
             url: 'paybylink/filters',
+        },
+        getPayByLinkTheme: {
+            method: 'GET',
+            url: '/paybylink/themes/{storeId}',
+        },
+        updatePayByLinkTheme: {
+            method: 'POST',
+            url: '/paybylink/themes/{storeId}',
         },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
