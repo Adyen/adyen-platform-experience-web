@@ -43,6 +43,7 @@ export interface components {
         SetupEndpointResponse: {
             method?: string;
             url?: string;
+            versions?: number[];
         };
         SetupResponse: {
             /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
