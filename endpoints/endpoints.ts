@@ -40,6 +40,7 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         payByLink: {
             configuration: `${baseUrl}/paybylink/paymentLinks/configuration`,
             installments: `${baseUrl}/paybylink/installments`,
+            themes: `${baseUrl}/paybylink/themes/${matchVariable}`,
             paymentLinks: `${baseUrl}/paybylink/paymentLinks`,
             filters: `${baseUrl}/paybylink/filters`,
         },

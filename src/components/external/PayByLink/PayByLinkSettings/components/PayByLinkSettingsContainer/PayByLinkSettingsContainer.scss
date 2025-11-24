@@ -1,0 +1,16 @@
+@use '../../../../../../style';
+
+.adyen-pe-pay-by-link-settings {
+    &__title {
+        margin-bottom: style.token(spacer-070);
+    }
+
+    &__content {
+        display: flex;
+        gap: style.token(spacer-090);
+    }
+
+    &__secondary-nav {
+        min-width: 25%;
+    }
+}

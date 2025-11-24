@@ -1,14 +1,20 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS } from '../mock-data/payByLink';
 import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
+import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, STORE_THEME } from '../mock-data/payByLink';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
 const networkError = false;
 const defaultPaginationLimit = 10;
+
+const getStoreForRequestPathParams = (params: PathParams) => {
+    const store = STORES.find(store => store.storeCode === params.id);
+    if (!store) throw HttpResponse.json({ error: 'Cannot find store' }, { status: 404 });
+    return store;
+};
 
 export const payByLinkMocks = [
     // GET /stores
@@ -78,6 +84,29 @@ export const payByLinkMocks = [
         return HttpResponse.json({
             data: INSTALLMENTS,
         });
+    }),
+
+    // GET /paybylink/themes/{storeId}
+    http.get(mockEndpointsPBL.themes, async ({ params }) => {
+        const store = getStoreForRequestPathParams(params);
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json({
+            data: STORE_THEME[store.storeCode as keyof typeof STORE_THEME],
+        });
+    }),
+
+    // POST /paybylink/themes/{storeId}
+    http.post(mockEndpointsPBL.themes, async () => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json({});
     }),
     // GET /paybylink/paymentLinks - Payment links list
     http.get(mockEndpoints.payByLink.paymentLinks, async ({ request }) => {
