@@ -4,8 +4,9 @@
 .adyen-pe-toggle-switch {
     $adyen-pe-toggle-switch: &;
 
-    display: inline-block;
-    position: relative;
+    align-items: center;
+    display: inline-flex;
+    gap: style.token(spacer-070);
 
     &--disabled,
     &--readonly,
@@ -13,6 +14,17 @@
     input[type='checkbox'][aria-readonly='true'] {
         cursor: not-allowed;
         pointer-events: none;
+    }
+
+    &__label {
+        color: style.token(color-label-primary);
+    }
+
+    &__switch {
+        align-items: center;
+        display: inline-flex;
+        margin-bottom: style.token(spacer-010);
+        position: relative;
     }
 
     &__slider {

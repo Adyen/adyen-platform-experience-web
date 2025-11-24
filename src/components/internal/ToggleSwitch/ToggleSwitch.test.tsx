@@ -51,7 +51,7 @@ describe('ToggleSwitch', () => {
         render(<ToggleSwitch onChange={onChange} />);
 
         const input = screen.getByRole('checkbox');
-        const label = input.parentElement as HTMLLabelElement;
+        const label = screen.getByTestId('toggle-switch');
 
         await userEvent.click(input);
         expect(onChange).toHaveBeenCalledTimes(1);
@@ -65,7 +65,7 @@ describe('ToggleSwitch', () => {
         render(<ToggleSwitch onChange={onChange} disabled />);
 
         const input = screen.getByRole('checkbox');
-        const label = input.parentElement as HTMLLabelElement;
+        const label = screen.getByTestId('toggle-switch');
         expect(input).toBeDisabled();
 
         await userEvent.click(input);
@@ -80,7 +80,7 @@ describe('ToggleSwitch', () => {
         render(<ToggleSwitch onChange={onChange} readOnly />);
 
         const input = screen.getByRole('checkbox');
-        const label = input.parentElement as HTMLLabelElement;
+        const label = screen.getByTestId('toggle-switch');
         expect(input).toHaveAttribute('aria-readonly', 'true');
 
         await userEvent.click(input);
@@ -88,5 +88,36 @@ describe('ToggleSwitch', () => {
 
         await userEvent.click(label);
         expect(onChange).not.toHaveBeenCalled();
+    });
+
+    test('should render the label content after the switch by default', () => {
+        render(<ToggleSwitch>My Label</ToggleSwitch>);
+
+        const label = screen.getByText('My Label');
+        expect(label).toBeInTheDocument();
+
+        const switchEl = screen.getByTestId('toggle-switch-control');
+        expect(switchEl.nextElementSibling).toBe(label);
+    });
+
+    test('should render the label content before the switch when labelBeforeSwitch is true', () => {
+        render(<ToggleSwitch labelBeforeSwitch>My Label</ToggleSwitch>);
+
+        const label = screen.getByText('My Label');
+        expect(label).toBeInTheDocument();
+
+        const switchEl = screen.getByTestId('toggle-switch-control');
+        expect(switchEl.previousElementSibling).toBe(label);
+    });
+
+    test('should render JSX content as the label', () => {
+        render(
+            <ToggleSwitch>
+                <span>My custom label</span>
+            </ToggleSwitch>
+        );
+        const label = screen.getByText('My custom label');
+        expect(label).toBeInTheDocument();
+        expect(label.tagName).toBe('SPAN');
     });
 });
