@@ -15,17 +15,17 @@ export type ITransactionRefundPayload = Schema<components, 'RefundRequest'>;
 export type ITransactionRefundResponse = Schema<components, 'RefundResponse'>;
 export type ITransactionRefundDetails = Schema<components, 'RefundDetails'>;
 export type ITransactionRefundStatus = ITransactionRefundDetails['refundStatuses'];
-export type IPaymentMethod = components['schemas']['PaymentMethod'];
-export type IBankAccount = components['schemas']['BankAccount'];
-export type IAmount = components['schemas']['Amount'];
+export type IPaymentMethod = Schema<components, 'PaymentMethod'>;
+export type IBankAccount = Schema<components, 'BankAccount'>;
+export type IAmount = Schema<components, 'Amount'>;
 
 type TransactionLineItemRefundStatus = {
     quantity: number;
-    status: components['schemas']['RefundStatus'];
+    status: IRefundStatus;
 };
 
 type TransactionLineItem = {
-    amountIncludingTax: components['schemas']['Amount'];
+    amountIncludingTax: IAmount;
     availableQuantity: number;
     description: string;
     id: string;
