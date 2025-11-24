@@ -1,5 +1,5 @@
 import { capitalize, uniqueId } from '../utils';
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
 import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
 import type { FilterType } from '../core/Analytics/analytics/user-events';
@@ -44,7 +44,13 @@ const useBalanceAccountSelection = ({
         [allowAllSelection, balanceAccounts]
     );
 
-    const activeBalanceAccount = useMemo(() => allBalanceAccounts?.[selectedBalanceAccountIndex], [allBalanceAccounts, selectedBalanceAccountIndex]);
+    const activeBalanceAccount = useMemo(
+        () => allBalanceAccounts?.[selectedBalanceAccountIndex],
+        [allBalanceAccounts, selectedBalanceAccountIndex]
+    );
+
+    const activeBalanceAccountId = activeBalanceAccount?.id;
+    const cachedBalanceAccountIdRef = useRef<string | undefined>();
 
     const balanceAccountSelectionOptions = useMemo(
         () =>
@@ -71,23 +77,23 @@ const useBalanceAccountSelection = ({
 
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
 
-    const activeBalanceAccountId = activeBalanceAccount?.id;
-    const cachedBalanceAccountIdRef = useRef<string | undefined>();
-    const cachedBalanceAccountId = cachedBalanceAccountIdRef.current;
+    useEffect(() => {
+        const cachedBalanceAccountId = cachedBalanceAccountIdRef.current;
 
-    if (cachedBalanceAccountId !== activeBalanceAccountId) {
-        // Update the cached balance account id with the active one
-        cachedBalanceAccountIdRef.current = activeBalanceAccountId;
+        if (cachedBalanceAccountId !== activeBalanceAccountId) {
+            // Update the cached balance account id with the active one
+            cachedBalanceAccountIdRef.current = activeBalanceAccountId;
 
-        if (cachedBalanceAccountId && activeBalanceAccountId) {
-            // Balance account changed
-            // Log filter modification event
-            logEvent?.('update', activeBalanceAccountId);
+            if (cachedBalanceAccountId && activeBalanceAccountId) {
+                // Balance account changed
+                // Log filter modification event
+                logEvent?.('update', activeBalanceAccountId);
+            }
+
+            // Set active balance account in transactions overview context
+            onUpdateSelection?.(activeBalanceAccount);
         }
-
-        // Set active balance account in transactions overview context
-        onUpdateSelection?.(activeBalanceAccount);
-    }
+    }, [activeBalanceAccount, activeBalanceAccountId, logEvent, onUpdateSelection]);
 
     return { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection, resetBalanceAccountSelection } as const;
 };
