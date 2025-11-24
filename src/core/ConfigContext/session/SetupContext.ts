@@ -129,7 +129,7 @@ export class SetupContext {
                     }
 
                     const apiVersion = SETUP_ENDPOINTS_API_VERSIONS[endpoint];
-                    const overrideHttpOptions: Partial<HttpOptions> = { ...(apiVersion ? { apiVersion } : EMPTY_OBJECT) };
+                    const overrideHttpOptions: Partial<HttpOptions> = apiVersion ? { apiVersion } : EMPTY_OBJECT;
 
                     sessionAwareEndpoints[endpoint] ??= (() => {
                         const { method = 'GET', url } = endpoints[endpoint];

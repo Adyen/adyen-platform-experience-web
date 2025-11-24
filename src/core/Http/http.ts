@@ -26,7 +26,9 @@ export async function http<T>(options: HttpOptions): Promise<T> {
     const versionless = options.versionless || false;
     const apiVersion = getApiVersion(options);
     const request = getRequestObject(options);
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}${versionless ? '' : apiVersion}${normalizeUrl(path)}`);
+    const baseUrl = normalizeLoadingContext(loadingContext);
+    const versionPath = versionless ? '' : apiVersion;
+    const url = new URL(`${baseUrl}${versionPath}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
