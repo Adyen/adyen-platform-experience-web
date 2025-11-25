@@ -7,14 +7,14 @@ import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
-import { ITransaction } from '../../../../../types';
+import { IAmount } from '../../../../../types';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
     isAvailableCurrenciesFetching: boolean;
-    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+    availableCurrencies: IAmount['currency'][] | undefined;
     fullWidth?: boolean;
 };
 

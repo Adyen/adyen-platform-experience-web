@@ -1,7 +1,7 @@
 import { RefundMode } from '../../types';
 import { clamp } from '../../../../../../utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import type { ITransaction } from '../../../../../../types';
+import type { IAmount } from '../../../../../../types';
 import type { ITransactionRefundContext } from '../types';
 
 type _BaseUseRefundContextAmountProps = Pick<
@@ -33,7 +33,7 @@ export const useRefundContextAmount = <T extends _BaseUseRefundContextAmountProp
         }
     }, [availableAmount, items, refundMode, refundAmount]);
 
-    const amount = useMemo<Readonly<ITransaction['amount']>>(() => Object.freeze({ currency, value: _amount }), [_amount, currency]);
+    const amount = useMemo<Readonly<IAmount>>(() => Object.freeze({ currency, value: _amount }), [_amount, currency]);
     const canSetRefundAmount = useMemo(() => !interactionsDisabled && refundMode === RefundMode.PARTIAL_AMOUNT, [interactionsDisabled, refundMode]);
 
     const setAmount = useCallback<ITransactionRefundContext['setAmount']>(

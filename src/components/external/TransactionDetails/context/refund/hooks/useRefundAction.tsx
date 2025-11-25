@@ -4,12 +4,12 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import AuthSession from '../../../../../../core/ConfigContext/session/AuthSession';
 import { ActiveView } from '../../types';
 import type { ITransactionRefundContext, TransactionRefundProviderProps } from '../types';
-import { ITransaction, ITransactionRefundPayload, ITransactionWithDetails } from '../../../../../../types';
+import { IAmount, ITransactionRefundPayload, ITransactionWithDetails } from '../../../../../../types';
 
 type _BaseUseRefundActionProps = Pick<TransactionRefundProviderProps, 'refreshTransaction' | 'transactionId'> &
     Pick<ITransactionRefundContext, 'refundReason'> & {
         availableAmount: number;
-        refundAmount: ITransaction['amount'];
+        refundAmount: IAmount;
         refundInProgress: boolean;
         refundTransaction: AuthSession['context']['endpoints']['initiateRefund'];
         setActiveView: (activeView: ActiveView) => void;

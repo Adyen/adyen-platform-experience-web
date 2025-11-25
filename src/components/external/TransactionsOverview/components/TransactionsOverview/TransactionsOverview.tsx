@@ -13,7 +13,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
-import { IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '../../../../../types';
 import { hasOwnProperty, isFunction, isUndefined, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
@@ -60,9 +60,9 @@ export const TransactionsOverview = ({
             return transactionsEndpointCall!(requestOptions, {
                 query: {
                     ...pageRequestParams,
-                    statuses: listFrom<ITransaction['status']>(pageRequestParams[FilterParam.STATUSES]),
-                    categories: listFrom<ITransaction['category']>(pageRequestParams[FilterParam.CATEGORIES]),
-                    currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[FilterParam.CURRENCIES]),
+                    statuses: listFrom<ITransactionStatus>(pageRequestParams[FilterParam.STATUSES]),
+                    categories: listFrom<ITransactionCategory>(pageRequestParams[FilterParam.CATEGORIES]),
+                    currencies: listFrom<IAmount['currency']>(pageRequestParams[FilterParam.CURRENCIES]),
                     createdSince:
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
@@ -95,9 +95,9 @@ export const TransactionsOverview = ({
             enabled: !!activeBalanceAccount?.id && !!transactionsEndpointCall,
         });
 
-    const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
+    const [availableCurrencies, setAvailableCurrencies] = useState<IAmount['currency'][] | undefined>([]);
     const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
-    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
+    const handleCurrenciesChange = useCallback((currencies: IAmount['currency'][] | undefined, isFetching: boolean) => {
         setAvailableCurrencies(currencies);
         setIsAvailableCurrenciesFetching(isFetching);
     }, []);

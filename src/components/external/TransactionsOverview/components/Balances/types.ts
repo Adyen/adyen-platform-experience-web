@@ -1,12 +1,12 @@
-import { IBalance, IBalanceAccountBase, ITransaction } from '../../../../../types';
+import { IAmount, IBalance, IBalanceAccountBase } from '../../../../../types';
 
 export type IBalanceWithKey = IBalance & {
     balanceElemId: string;
     key: string;
 };
 
-export type BalancesProps = {
+export interface BalancesProps {
     balanceAccount?: IBalanceAccountBase;
-    onCurrenciesChange: (currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => any;
+    onCurrenciesChange: (currencies: IAmount['currency'][] | undefined, isFetching: boolean) => any;
     fullWidth?: boolean;
-};
+}

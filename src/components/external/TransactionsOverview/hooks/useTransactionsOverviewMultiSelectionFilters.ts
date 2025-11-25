@@ -1,4 +1,4 @@
-import { ITransaction } from '../../../../types';
+import { IAmount } from '../../../../types';
 import { FilterParam } from '../../../types';
 import {
     DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS as defaultFilters,
@@ -11,7 +11,7 @@ import {
 
 const useTransactionsOverviewMultiSelectionFilters = (
     filtersConfig: Pick<UseMultiSelectionFilterConfig<TransactionsOverviewMultiSelectionFilterParam>, 'filters' | 'updateFilters'>,
-    currencies: ITransaction['amount']['currency'][] | undefined
+    currencies: IAmount['currency'][] | undefined
 ) => {
     const categoriesFilter = useMultiSelectionFilter({
         filterParam: FilterParam.CATEGORIES,

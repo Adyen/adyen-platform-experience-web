@@ -1,7 +1,8 @@
 import { Schema } from '../utils';
 import { components } from '../resources/TransactionsResource';
 
-export type ICategory = ITransaction['category'];
+export type ITransactionCategory = Schema<components, 'Category'>;
+export type ITransactionStatus = Schema<components, 'Status'>;
 export type ILineItem = TransactionLineItem;
 export type ILineItemRefundStatus = TransactionLineItem['refundStatuses'];
 export type IRefundMode = Schema<components, 'RefundMode'>;

@@ -42,7 +42,7 @@ export type OperationParameters<Operation extends keyof EndpointsOperations> = E
     ? P
     : never;
 
-type ExtractResponseType<T> = T extends {
+export type ExtractResponseType<T> = T extends {
     responses: {
         200: {
             content: {

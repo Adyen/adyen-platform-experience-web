@@ -1,4 +1,4 @@
-import { ITransaction } from '../../../../types';
+import { IPaymentMethod } from '../../../../types';
 
 const PAYMENT_METHODS = Object.freeze({
     klarna: 'Klarna',
@@ -6,7 +6,7 @@ const PAYMENT_METHODS = Object.freeze({
     klarna_paynow: 'Klarna Pay Now',
 });
 
-export function parsePaymentMethodType(paymentMethod: NonNullable<ITransaction['paymentMethod']>, format?: 'detail' | 'fourDigit') {
+export function parsePaymentMethodType(paymentMethod: NonNullable<IPaymentMethod>, format?: 'detail' | 'fourDigit') {
     if (paymentMethod.lastFourDigits) return format === 'detail' ? '•••• •••• •••• ' + paymentMethod.lastFourDigits : paymentMethod.lastFourDigits;
 
     return paymentMethod.description || PAYMENT_METHODS[paymentMethod.type as keyof typeof PAYMENT_METHODS] || paymentMethod.type;

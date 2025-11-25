@@ -11,6 +11,7 @@ import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { TranslationKey } from '../../../../../translations';
 import { isNullish } from '../../../../../utils';
 import Link from '../../../../internal/Link/Link';
+import { IAmount } from '../../../../../types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import Icon from '../../../../internal/DataGrid/components/Icon';
@@ -35,7 +36,7 @@ const TransactionDataProperties = () => {
         const isRefundTransaction = category === 'Refund';
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
-        const getFormattedAmount = (amount?: (typeof transaction)['amount']) => {
+        const getFormattedAmount = (amount?: IAmount) => {
             if (isNullish(amount)) return null;
             const { value, currency } = amount;
             return i18n.amount(value, currency);
