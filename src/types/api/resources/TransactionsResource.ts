@@ -128,7 +128,17 @@ export interface components {
             status: components['schemas']['RefundStatus'];
         };
         /** @enum {string} */
-        ExportColumn: 'CreatedAt' | 'PaymentMethod' | 'Category' | 'NetAmount' | 'AmountBeforeDeductions';
+        ExportColumn:
+            'amountBeforeDeductions' |
+            'balanceAccountId' |
+            'category' |
+            'createdAt' |
+            'currency' |
+            'id' |
+            'netAmount' |
+            'paymentMethod' |
+            'paymentPspReference' |
+            'status';
         PaymentMethod: {
             /** @description Payment method name, such as PayPal, Mastercard etc. */
             description?: string;

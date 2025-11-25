@@ -239,12 +239,17 @@ const passThroughRefundLockDeadlineCheckpoint = () => {
 const i18n = new Localization().i18n;
 
 const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransaction) => string> = {
-    CreatedAt: ({ createdAt }) => `"${createdAt}"`,
-    PaymentMethod: ({ paymentMethod, bankAccount }) =>
+    id: ({ id }) => id,
+    balanceAccountId: ({ balanceAccountId }) => balanceAccountId,
+    createdAt: ({ createdAt }) => `"${new Date(createdAt).toISOString()}"`,
+    paymentMethod: ({ paymentMethod, bankAccount }) =>
         (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',
-    Category: ({ category }) => category,
-    NetAmount: ({ amount }) => i18n.amount(amount.value, amount.currency, { hideCurrency: false }),
-    AmountBeforeDeductions: ({ amount }) => i18n.amount(amount.value, amount.currency, { hideCurrency: false }),
+    paymentPspReference: ({ paymentPspReference }) => paymentPspReference ?? '',
+    category: ({ category }) => category,
+    status: ({ status }) => status,
+    currency: ({ amount }) => amount.currency,
+    amountBeforeDeductions: ({ amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
+    netAmount: ({ amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
 };
 
 export const transactionsMocks = [
@@ -327,7 +332,7 @@ export const transactionsMocks = [
     http.get(mockEndpoints.downloadTransactions, async ({ request }) => {
         const { transactions } = fetchTransactionsForRequest(request);
         const columnsParam = new URLSearchParams(new URL(request.url).searchParams).getAll('columns');
-        const columns = Object.keys(DownloadFields).filter(column => columnsParam.includes(column));
+        const columns = (Object.keys(DownloadFields) as ITransactionExportColumn[]).filter(column => columnsParam.includes(column));
 
         return new HttpResponse(
             new Blob(
@@ -336,10 +341,7 @@ export const transactionsMocks = [
                           `${columns.join(',')}\r\n`,
                           ...transactions
                               .slice(0, 100)
-                              .map(
-                                  transaction =>
-                                      `${columns.map(column => DownloadFields[column as keyof typeof DownloadFields](transaction)).join(',')}\r\n`
-                              ),
+                              .map(transaction => `${columns.map(column => DownloadFields[column](transaction)).join(',')}\r\n`),
                       ]
                     : []
             ),
