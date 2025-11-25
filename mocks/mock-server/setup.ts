@@ -32,12 +32,12 @@ export const setupBasicResponse = {
         getTransactions: {
             method: 'GET',
             url: 'transactions',
-            versions: [1],
+            versions: [1, 2],
         },
         getTransaction: {
             method: 'GET',
             url: 'transactions/{transactionId}',
-            versions: [1],
+            versions: [1, 2],
         },
         initiateRefund: {
             method: 'POST',
@@ -47,11 +47,12 @@ export const setupBasicResponse = {
         getTransactionTotals: {
             method: 'GET',
             url: 'transactions/totals',
-            versions: [1],
+            versions: [1, 2],
         },
         downloadTransactions: {
             method: 'GET',
             url: 'transactions/download',
+            versions: [1],
         },
         getPayout: {
             method: 'GET',
