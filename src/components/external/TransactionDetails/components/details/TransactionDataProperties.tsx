@@ -42,8 +42,15 @@ const TransactionDataProperties = () => {
             return i18n.amount(value, currency);
         };
 
-        const deductedAmount = getFormattedAmount(transaction.deductedAmount);
-        const originalAmount = getFormattedAmount(transaction.originalAmount);
+        const deductedAmount = getFormattedAmount({
+            currency: transaction.netAmount.currency,
+            value: transaction.amountBeforeDeductions.value - transaction.netAmount.value,
+        });
+
+        const originalAmount = getFormattedAmount({
+            currency: transaction.amountBeforeDeductions.currency,
+            value: transaction.originalAmount?.value ?? transaction.amountBeforeDeductions.value,
+        });
 
         const deductedAmountKey: TranslationKey = isRefundTransaction ? 'transactions.details.fields.refundFee' : 'transactions.details.fields.fee';
         const originalAmountKey: TranslationKey = isRefundTransaction

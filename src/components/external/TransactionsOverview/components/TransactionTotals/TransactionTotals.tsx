@@ -25,13 +25,8 @@ const TransactionTotals = memo(
         balanceAccountId,
         createdSince,
         createdUntil,
-        categories,
-        statuses,
-        maxAmount,
-        minAmount,
-        currencies,
         fullWidth,
-    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
+    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId'>) => {
         const { i18n } = useCoreContext();
         const { getTransactionTotals } = useConfigContext().endpoints;
 
@@ -40,15 +35,10 @@ const TransactionTotals = memo(
                 query: {
                     createdSince,
                     createdUntil,
-                    categories,
-                    statuses,
-                    maxAmount,
-                    minAmount,
-                    currencies,
                     balanceAccountId: balanceAccountId!,
                 },
             });
-        }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
+        }, [balanceAccountId, createdSince, createdUntil, getTransactionTotals]);
 
         const { data, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getTransactionTotals }), [balanceAccountId, getTransactionTotals]),

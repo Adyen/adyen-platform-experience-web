@@ -171,7 +171,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     const statusBoxProps = {
         timezone: transaction.balanceAccount?.timeZone,
         createdAt: transaction.createdAt,
-        amountData: transaction.amount,
+        amountData: transaction.netAmount,
         paymentMethodData: transaction.paymentMethod,
         bankAccount: transaction.bankAccount,
     } as const;

@@ -137,7 +137,7 @@ export interface components {
             'id' |
             'netAmount' |
             'paymentMethod' |
-            'paymentPspReference' |
+            'pspReference' |
             'status';
         PaymentMethod: {
             /** @description Payment method name, such as PayPal, Mastercard etc. */

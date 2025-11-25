@@ -13,7 +13,7 @@ export const TRANSACTION_CATEGORIES: readonly ITransactionCategory[] = [
     'Capital',
     'Chargeback',
     'Correction',
-    'Fee',
+    // 'Fee',
     'Payment',
     'Refund',
     'Transfer',

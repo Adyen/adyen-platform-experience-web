@@ -28,6 +28,7 @@ interface _ITransactionDetailsMetadata {
 const DEFAULT_PAGINATION_LIMIT = 10;
 const DEFAULT_SORT_DIRECTION = 'desc';
 const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
+const TRANSACTIONS_PERIOD_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
 const TRANSACTIONS_DETAILS_CACHE = new Map<string, ITransactionWithDetails>();
 const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<string>>();
@@ -44,15 +45,14 @@ const refundActionError = false;
 const getTransactionWithAmountDeduction = <T extends ITransaction>(
     transaction: T,
     amountDeduction = 0
-): T & Pick<ITransactionWithDetails, 'deductedAmount' | 'originalAmount'> => {
-    const { currency, value: originalAmount } = transaction.amount;
+): T & Pick<ITransactionWithDetails, 'originalAmount'> => {
+    const { currency, value: originalAmount } = transaction.amountBeforeDeductions;
     const deductedAmount = Math.max(0, amountDeduction ?? 0);
     const transactionAmount = originalAmount - deductedAmount;
 
     return {
         ...transaction,
-        amount: { currency, value: transactionAmount },
-        deductedAmount: { currency, value: deductedAmount },
+        netAmount: { currency, value: transactionAmount },
         originalAmount: { currency, value: originalAmount },
     };
 };
@@ -66,7 +66,7 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
             refundMode = 'partially_refundable_with_line_items_required';
             deductedAmount = 350;
         } else {
-            const amount = transaction.amount.value;
+            const amount = transaction.netAmount.value;
             const isLargeAmount = amount >= 100000;
             refundMode = isLargeAmount ? 'partially_refundable_any_amount' : 'fully_refundable_only';
             deductedAmount = clamp(0, Math.round(amount * (!transaction.paymentMethod?.lastFourDigits && isLargeAmount ? 0.025 : 0.034)), 10000);
@@ -88,7 +88,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
     transaction: T,
     metadata = getTransactionMetadata(transaction) as _ITransactionDetailsMetadata
 ): ITransactionWithDetails => {
-    const { currency, value: originalAmount } = transaction.amount;
+    const { currency, value: originalAmount } = transaction.netAmount;
     const { deductedAmount = 0, refundMode = 'fully_refundable_only' } = metadata;
 
     let refundStatuses = EMPTY_ARRAY as unknown as ITransactionRefundStatus;
@@ -124,16 +124,16 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
         }
         case 'Refund': {
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
-                const { value: amount, currency } = transaction.amount;
+                const { value: amount, currency } = transaction.netAmount;
                 let refundType: NonNullable<ITransactionWithDetails['refundMetadata']>['refundType'] = 'partial';
                 let paymentTx: ITransaction | undefined = undefined;
 
                 for (const tx of TRANSACTIONS) {
                     if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
                     if (tx.balanceAccountId !== transaction.balanceAccountId) continue;
-                    if (tx.amount.currency !== currency) continue;
+                    if (tx.netAmount.currency !== currency) continue;
 
-                    const txAmount = -tx.amount.value;
+                    const txAmount = -tx.netAmount.value;
 
                     if (txAmount < amount) paymentTx ??= tx;
                     if (txAmount === amount && (paymentTx = tx) && (refundType = 'full')) break;
@@ -143,7 +143,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                     const payment = getPaymentOrTransferWithDetails(paymentTx)!;
                     const tx = { ...transactionWithDetails };
 
-                    tx.originalAmount = { ...payment.amount };
+                    tx.originalAmount = { ...payment.netAmount };
                     tx.paymentPspReference = payment.paymentPspReference;
                     tx.refundMetadata = {
                         originalPaymentId: payment.id,
@@ -191,41 +191,54 @@ const fetchTransactionsForRequest = (req: Request) => {
     const createdSince = searchParams.get('createdSince');
     const createdUntil = searchParams.get('createdUntil');
     const currencies = searchParams.getAll('currencies');
-    const maxAmount = searchParams.get('maxAmount');
-    const minAmount = searchParams.get('minAmount');
     const sortDirection = searchParams.get('sortDirection') ?? DEFAULT_SORT_DIRECTION;
     const statuses = searchParams.getAll('statuses');
+    const pspReferenceValue = searchParams.get('pspReference');
 
-    const hash = computeHash(
-        [balanceAccount, String(categories), createdSince, createdUntil, String(currencies), maxAmount, minAmount, sortDirection, String(statuses)]
-            .filter(Boolean)
-            .join(':')
-    );
+    const hashArray = [
+        createdSince,
+        createdUntil,
+        balanceAccount,
+        pspReferenceValue,
+        String(categories),
+        String(currencies),
+        String(statuses),
+        sortDirection,
+    ];
+    const periodHash = computeHash(hashArray.slice(0, 3).filter(Boolean).join(':'));
+    const transactionsHash = computeHash(hashArray.filter(Boolean).join(':'));
 
-    let transactions = TRANSACTIONS_CACHE.get(hash);
+    let periodTransactions = TRANSACTIONS_PERIOD_CACHE.get(periodHash);
+    let transactions = TRANSACTIONS_CACHE.get(transactionsHash);
+
+    if (periodTransactions === undefined) {
+        periodTransactions = TRANSACTIONS.filter(
+            ({ balanceAccountId, createdAt }) =>
+                (!balanceAccount || balanceAccount === balanceAccountId) &&
+                (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
+                (!createdUntil || compareDates(createdAt, createdUntil, 'le'))
+        );
+
+        TRANSACTIONS_PERIOD_CACHE.set(periodHash, periodTransactions);
+    }
 
     if (transactions === undefined) {
         const direction = sortDirection === DEFAULT_SORT_DIRECTION ? -1 : 1;
 
-        transactions = [...TRANSACTIONS]
+        transactions = periodTransactions
             .filter(
-                ({ amount, balanceAccountId, category, createdAt, status }) =>
-                    balanceAccount &&
-                    balanceAccount === balanceAccountId &&
+                ({ netAmount: amount, category, status, pspReference }) =>
+                    (!pspReferenceValue || pspReferenceValue === pspReference) &&
                     (!categories.length || categories.includes(category)) &&
-                    (!createdSince || compareDates(createdAt, createdSince, 'ge')) &&
-                    (!createdUntil || compareDates(createdAt, createdUntil, 'le')) &&
                     (!currencies.length || currencies.includes(amount.currency)) &&
-                    (maxAmount === null || amount.value * 1000 <= Number(maxAmount)) &&
-                    (minAmount === null || amount.value * 1000 >= Number(minAmount)) &&
                     (!statuses.length || statuses!.includes(status))
             )
             .sort(({ createdAt: a }, { createdAt: b }) => (+new Date(a) - +new Date(b)) * direction);
 
-        TRANSACTIONS_CACHE.set(hash, transactions);
+        TRANSACTIONS_CACHE.set(transactionsHash, transactions);
     }
 
-    return { hash, transactions } as const;
+    return { periodHash, periodTransactions, transactions } as const;
 };
 
 const passThroughRefundLockDeadlineCheckpoint = () => {
@@ -244,12 +257,12 @@ const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransactio
     createdAt: ({ createdAt }) => `"${new Date(createdAt).toISOString()}"`,
     paymentMethod: ({ paymentMethod, bankAccount }) =>
         (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',
-    paymentPspReference: ({ paymentPspReference }) => paymentPspReference ?? '',
+    pspReference: ({ pspReference }) => pspReference ?? '',
     category: ({ category }) => category,
     status: ({ status }) => status,
-    currency: ({ amount }) => amount.currency,
-    amountBeforeDeductions: ({ amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
-    netAmount: ({ amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
+    currency: ({ netAmount: amount }) => amount.currency,
+    amountBeforeDeductions: ({ amountBeforeDeductions: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
+    netAmount: ({ netAmount: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
 };
 
 export const transactionsMocks = [
@@ -282,7 +295,7 @@ export const transactionsMocks = [
         return HttpResponse.json({
             data: transactions.slice(cursor, cursor + limit).map(tx => {
                 const { deductedAmount: deduction } = getTransactionMetadata(tx);
-                const { deductedAmount, originalAmount, ...transaction } = getTransactionWithAmountDeduction(tx, deduction);
+                const { originalAmount, ...transaction } = getTransactionWithAmountDeduction(tx, deduction);
                 return transaction;
             }),
             _links: getPaginationLinks(cursor, limit, transactions.length),
@@ -290,23 +303,12 @@ export const transactionsMocks = [
     }),
 
     http.get(mockEndpoints.transactionsTotals, ({ request }) => {
-        const url = new URL(request.url);
-        const searchParams = url.searchParams;
-
-        // Don't filter transactions within the same time window
-        searchParams.delete('categories');
-        searchParams.delete('currencies');
-        searchParams.delete('maxAmount');
-        searchParams.delete('minAmount');
-        searchParams.delete('sortDirection');
-        searchParams.delete('statuses');
-
-        const { hash, transactions } = fetchTransactionsForRequest(request);
-        let totals = TRANSACTIONS_TOTALS_CACHE.get(hash);
+        const { periodHash, periodTransactions } = fetchTransactionsForRequest(request);
+        let totals = TRANSACTIONS_TOTALS_CACHE.get(periodHash);
 
         if (totals === undefined) {
-            totals = transactions.reduce((currencyTotalsMap, transaction) => {
-                const { value: amount, currency } = transaction.amount;
+            totals = periodTransactions.reduce((currencyTotalsMap, transaction) => {
+                const { value: amount, currency } = transaction.netAmount;
                 let currencyTotals = currencyTotalsMap.get(currency);
 
                 if (currencyTotals === undefined) {
@@ -317,7 +319,7 @@ export const transactionsMocks = [
                 return currencyTotalsMap;
             }, new Map<string, _ITransactionTotals>());
 
-            TRANSACTIONS_TOTALS_CACHE.set(hash, totals);
+            TRANSACTIONS_TOTALS_CACHE.set(periodHash, totals);
         }
 
         const data: (_ITransactionTotals & { currency: string })[] = [];

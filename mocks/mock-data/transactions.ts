@@ -1,4 +1,31 @@
 import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
+import { BALANCE_ACCOUNTS } from './balanceAccounts';
+
+const getCreatedAt = (() => {
+    let index = 0;
+
+    const maxSize = 130;
+    const skewFactor = -4;
+    const fromDate = new Date();
+    const expBase = Math.exp(skewFactor);
+    const timeSpan = fromDate.getTime() - fromDate.setFullYear(fromDate.getFullYear() - 2);
+
+    return () => {
+        const normalizedIndex = Math.min(index++, maxSize) / maxSize;
+        const expTerm = Math.exp(skewFactor * normalizedIndex);
+        const nonLinearProgress = (expTerm - 1) / (expBase - 1);
+        return new Date(fromDate.getTime() + nonLinearProgress * timeSpan).toISOString();
+    };
+})();
+
+const getPspReference = (() => {
+    let index = 0;
+
+    return () => {
+        const incrementalSuffix = `${index++}`.padStart(3, '0');
+        return `PSP3WRM8KK5JT${incrementalSuffix}`;
+    };
+})();
 
 export const TRANSACTIONS: ITransaction[] = [
     {
@@ -6,14 +33,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'paypal',
         },
         id: '8W54BM75W7DYCIVK',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 4000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 4000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-01T12:10:02.831Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -21,28 +53,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '4SE184IJ3ZJ2J635',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 3000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 3000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-02T06:04:13.802Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '0176',
         },
         id: 'YVBUA4RGV6A14629',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 117500,
+        },
+        netAmount: {
             currency: 'USD',
             value: 117500,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-03T08:14:36.616Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -50,14 +92,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '5A0YPE123NT2B355',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -66350,
+        },
+        netAmount: {
             currency: 'USD',
             value: -66350,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-07T15:05:02.855Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -65,14 +112,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'TXS4W8421MG7B0GW',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 350000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 350000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-08T23:43:49.183Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -80,71 +132,96 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '32ZDT3P8VS886863',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: -1649,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'EUR',
+            value: -1649,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-09T15:53:26.957Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6947',
         },
         id: '8B97841HLQ8ZVHLY',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 133350,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 133350,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-09T22:16:00.288Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1059',
         },
         id: 'M88PDLTLZ8U24D31',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 20000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 20000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-01-11T07:25:05.548Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '8764',
             type: 'mc',
         },
-        id: '6GU893HK011VLX24',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: -47950,
         },
+        netAmount: {
+            currency: 'EUR',
+            value: -47950,
+        },
+        id: '6GU893HK011VLX24',
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-01-11T07:33:54.867Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: '6491IMWT9G323GJC',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 22000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 22000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-11T10:14:57.633Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -152,146 +229,196 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'DC9891Z6MR0R73FP',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -545,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -545,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-01-13T04:24:45.682Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '7069',
             type: 'mc',
         },
-        id: '78GH1B3T4MIS62QM',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: 7000,
         },
+        netAmount: {
+            currency: 'EUR',
+            value: 7000,
+        },
+        id: '78GH1B3T4MIS62QM',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-01-24T22:13:32.725Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2174',
         },
-        id: '959VR24Z1GEELFVM',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 185750,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 185750,
+        },
+        id: '959VR24Z1GEELFVM',
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-01-25T00:22:54.272Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '0557',
             type: 'visa',
         },
-        id: 'G867JX35T6C9D1G9',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 21000,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 21000,
+        },
+        id: 'G867JX35T6C9D1G9',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-01-27T07:24:39.295Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '2172',
             type: 'mc',
         },
-        id: '6P3H06SG5PZ8RYTE',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 700000,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 700000,
+        },
+        id: '6P3H06SG5PZ8RYTE',
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-01-29T13:03:11.358Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '3262',
             type: 'visa',
         },
-        id: 'E73R5HBNJWQZ1ENJ',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 3000,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 3000,
+        },
+        id: 'E73R5HBNJWQZ1ENJ',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-01-30T02:11:49.863Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
-        id: '3B7TMC3X3F4WVZ39',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: 6000,
         },
+        netAmount: {
+            currency: 'EUR',
+            value: 6000,
+        },
+        id: '3B7TMC3X3F4WVZ39',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
         status: 'Booked',
-        createdAt: '2024-02-05T21:21:10.777Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '7490',
             type: 'mc',
         },
-        id: 'R7D0C2N10B9IR24Y',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 16000,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 16000,
+        },
+        id: 'R7D0C2N10B9IR24Y',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-02-05T21:51:59.281Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '4023',
         },
-        id: '968J120W4ID73W15',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: 25500,
         },
+        netAmount: {
+            currency: 'EUR',
+            value: 25500,
+        },
+        id: '968J120W4ID73W15',
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-02-07T08:07:45.336Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             lastFourDigits: '1384',
             type: 'amex',
         },
-        id: '4163W9HG619A0X62',
-        amount: {
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
+        amountBeforeDeductions: {
             currency: 'USD',
             value: 9000,
         },
+        netAmount: {
+            currency: 'USD',
+            value: 9000,
+        },
+        id: '4163W9HG619A0X62',
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
         status: 'Booked',
-        createdAt: '2024-02-08T07:29:47.626Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -299,42 +426,57 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '85KP2S5L0W226QT5',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -1209,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -1209,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-08T10:09:55.028Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6351',
         },
         id: 'D0Y6297KK62029EK',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 650000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 650000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-09T18:09:19.346Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2060',
         },
         id: '690HVRH941S87IA4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 60900,
+        },
+        netAmount: {
             currency: 'USD',
             value: 60900,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-02-09T22:34:28.530Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -342,14 +484,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '4W7V7PR39L98370N',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 250000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 250000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-11T05:18:37.938Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -357,14 +504,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '25E6VV95UD674Q87',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 0,
+        },
+        netAmount: {
             currency: 'USD',
             value: 0,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-02-11T20:41:00.478Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -372,70 +524,95 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '553MGH7K68Y7V16P',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -849,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -849,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-12T15:53:36.458Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '4317',
         },
         id: '7XBSUV94C471VWE0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 132400,
+        },
+        netAmount: {
             currency: 'USD',
             value: 132400,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-12T18:04:17.708Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '9590',
         },
         id: '44BB58G56000G76Y',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 10000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 10000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-13T04:04:55.100Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '8176',
         },
         id: '30R94F75156N2IY4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 650000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 650000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-02-14T07:17:53.666Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3610',
         },
         id: '2GT3Z6AFEHXD3546',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 21000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 21000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-17T11:15:44.803Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -443,14 +620,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'TXB61Z1G0YH93SIG',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: -62700,
+        },
+        netAmount: {
             currency: 'EUR',
             value: -62700,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-17T15:24:27.132Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -458,14 +640,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '240WT8B31QF5N65W',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 18000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 18000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-19T15:05:56.315Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -473,56 +660,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'YYS56W2D1N4RW3B0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 14000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 14000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-02-20T14:22:36.626Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '7973',
         },
         id: '9N6706110AE41J83',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 98500,
+        },
+        netAmount: {
             currency: 'USD',
             value: 98500,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-20T15:44:03.984Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2376',
         },
         id: '8R7C2Q5M1312C2T2',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 194250,
+        },
+        netAmount: {
             currency: 'USD',
             value: 194250,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-20T22:17:58.778Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6438',
         },
         id: '1LC684XQ4CSZ706J',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 158250,
+        },
+        netAmount: {
             currency: 'USD',
             value: 158250,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-02-21T12:22:11.858Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -530,28 +737,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '7I77327R6XNLR724',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: -36325,
+        },
+        netAmount: {
             currency: 'EUR',
             value: -36325,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-22T13:23:46.404Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3723',
         },
         id: 'SMK4WBV3S7Y34YPT',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 176350,
+        },
+        netAmount: {
             currency: 'USD',
             value: 176350,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-22T17:24:53.889Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -559,14 +776,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '65KA4SLZ4PUC82K0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: -47375,
+        },
+        netAmount: {
             currency: 'EUR',
             value: -47375,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-26T14:11:34.409Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -574,14 +796,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'C3C9U591L10E8II3',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 13550,
+        },
+        netAmount: {
             currency: 'USD',
             value: 13550,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-02-28T22:26:05.420Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -589,42 +816,57 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'Q3PW6Y5QZ1I01Z3H',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 15000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 15000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-01T15:58:11.997Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: 'Y6U8NHA2VJY718PQ',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 9000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 9000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-02T10:09:58.774Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6902',
         },
         id: '5P6PZ8LB36P3095K',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 129200,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 129200,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-02T23:52:34.918Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -632,56 +874,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'S28LBLG15Y1168E5',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 600000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 600000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-03T16:53:25.365Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2280',
         },
         id: 'W81Z37K8081637B1',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -5875,
+        },
+        netAmount: {
             currency: 'USD',
             value: -5875,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-04T13:51:06.805Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2207',
         },
         id: '881QMP961VUGC710',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 137100,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 137100,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-05T00:04:02.658Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1428',
         },
         id: 'H06HQY56V6K81Q02',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 217400,
+        },
+        netAmount: {
             currency: 'USD',
             value: 217400,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-06T15:32:38.329Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -689,14 +951,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '1P47UV8XIGVK05L3',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -2189,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -2189,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-10T21:05:03.891Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -704,28 +971,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'ND36Z180S4G1T026',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 550000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 550000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-13T18:04:49.663Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: '271YMZI6MR54H26B',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 1000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 1000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-03-14T14:11:10.787Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -733,14 +1010,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'YUZZGK1T1643L307',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 10000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 10000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-14T23:19:10.020Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -748,42 +1030,57 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'S83Q81D583V95458',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 9000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 9000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-15T15:56:56.450Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '8786',
         },
         id: 'F6P1M9HH46U4VN28',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 147000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 147000,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-20T17:55:41.544Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6598',
         },
         id: '22LMB13652508I3Z',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 225850,
+        },
+        netAmount: {
             currency: 'USD',
             value: 225850,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-03-21T05:25:59.766Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -791,84 +1088,114 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'B6WPQ92INGWI7073',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -1429,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        netAmount: {
+            currency: 'USD',
+            value: -1429,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-03-22T04:06:07.859Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: 'XM7AZ9E2E94K799W',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 24000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 24000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-03-22T20:47:05.169Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: '31FN146193QCMV07',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 2000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 2000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-24T05:11:48.084Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1052',
         },
         id: '63F8X25N88RX3X5S',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 59150,
+        },
+        netAmount: {
             currency: 'USD',
             value: 59150,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-25T07:57:13.668Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '9988',
         },
         id: 'M4REQLL6547Y44M9',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 108700,
+        },
+        netAmount: {
             currency: 'USD',
             value: 108700,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-03-26T11:00:38.702Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '4658',
         },
         id: '4YA7V8Z821148RQM',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 850000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 850000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-03-31T21:40:00.568Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -876,84 +1203,114 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'I6ZVN8NDH9ZCL39R',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -1289,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -1289,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-01T17:23:23.117Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6632',
         },
         id: 'K5U6L41ZI4151B21',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 119550,
+        },
+        netAmount: {
             currency: 'USD',
             value: 119550,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-01T18:38:04.523Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2169',
         },
         id: '52L4P70Y674745N9',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 10000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 10000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-02T13:52:03.238Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5683',
         },
         id: '3I559571R96W4YZW',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 146250,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 146250,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-03T11:18:55.267Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1402',
         },
         id: 'D349H6E79C268S0G',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 58300,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 58300,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-04T17:32:13.892Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '0017',
         },
         id: 'XZUMQX4R4W06G5FP',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -3475,
+        },
+        netAmount: {
             currency: 'USD',
             value: -3475,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-06T17:43:08.120Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -961,14 +1318,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: '6N36X7I8U26XH63K',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 8000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 8000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-07T19:51:41.336Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -976,28 +1338,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'J06K883978B1Y781',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -73350,
+        },
+        netAmount: {
             currency: 'USD',
             value: -73350,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-08T03:34:57.787Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: '56XE2W3Q62N0P8H5',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 19000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 19000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-08T10:18:15.715Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1005,14 +1377,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'VQ69RV2L6CY66SKX',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 24000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 24000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-08T15:27:33.683Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1020,14 +1397,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: 'Y6T04913ID09DR1P',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 23000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 23000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-08T16:52:07.750Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1035,14 +1417,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '74687D7AS73P6B4E',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: -74700,
+        },
+        netAmount: {
             currency: 'EUR',
             value: -74700,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-09T11:06:14.659Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1050,14 +1437,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'V97KYWMW8WL64842',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'EUR',
             value: -2095,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        netAmount: {
+            currency: 'EUR',
+            value: -2095,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-13T00:31:14.033Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1065,42 +1457,57 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '81348R3LCL882826',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 550000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 550000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-16T09:56:31.722Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5156',
         },
         id: 'Y300HB4G3985Z2F4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 227350,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 227350,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-16T15:49:00.104Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1256',
         },
         id: '9U5ANNDE4N6AZ6RV',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 16000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 16000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-18T12:56:14.064Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1108,28 +1515,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'I1E70AI2P35H1X72',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 5000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 5000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-22T05:48:11.397Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '7739',
         },
         id: '7C038Y622ZD3KKBD',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 172400,
+        },
+        netAmount: {
             currency: 'USD',
             value: 172400,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-22T17:41:39.871Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1137,14 +1554,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '1J95VDQW7TIJ6C85',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 9000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 9000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-22T23:46:50.313Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1152,14 +1574,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '71RH41C42BWY5S6K',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -10800,
+        },
+        netAmount: {
             currency: 'USD',
             value: -10800,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-04-24T17:33:50.577Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1167,14 +1594,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '636G1TVBM55MUI7H',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 12000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 12000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-27T10:35:32.289Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1182,14 +1614,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'S3B3143S20L57HQQ',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 21000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 21000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-04-30T07:01:44.996Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1197,28 +1634,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '854620R8386U94F4',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -595,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -595,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-02T01:39:36.554Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '9668',
         },
         id: 'F2GTC1N429E666UM',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 15350,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 15350,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-05-02T10:34:20.607Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1226,42 +1673,57 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '8SS07TENT793M397',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -65375,
+        },
+        netAmount: {
             currency: 'USD',
             value: -65375,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-02T13:56:48.567Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '2726',
         },
         id: '8D5JZ4H4E89XFPA6',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 20000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 20000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-02T17:26:53.958Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3107',
         },
         id: '5D8D3BCZ5787H8K4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 18000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 18000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-03T18:38:31.299Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1269,28 +1731,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'E177W00BXTM6V255',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -13550,
+        },
+        netAmount: {
             currency: 'USD',
             value: -13550,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-05T10:56:39.354Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '0532',
         },
         id: '43C4XEEA37P5E318',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 0,
+        },
+        netAmount: {
             currency: 'USD',
             value: 0,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-08T10:57:13.266Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1298,14 +1770,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '8S95P7Z4R23GLLBE',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 16000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 16000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-10T13:33:52.502Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1313,28 +1790,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: '666CRVTJ6T1J8WHS',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 4000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 4000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-05-10T16:18:43.814Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6411',
         },
         id: '62V5XUW6YIDGZ5P2',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 0,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 0,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-14T22:55:40.567Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1342,28 +1829,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '2M5CGU2S60T3M70Z',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -50075,
+        },
+        netAmount: {
             currency: 'USD',
             value: -50075,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-18T07:59:17.010Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '7747',
         },
         id: '9TB87C718QXX71Z4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -27950,
+        },
+        netAmount: {
             currency: 'USD',
             value: -27950,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-05-19T03:18:21.461Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1371,14 +1868,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'P22WF9KY44PG7L1X',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 11000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 11000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-21T21:54:09.047Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1386,56 +1888,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '67K470ZD5NPP4SX7',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 300000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 300000,
         },
         category: 'Capital',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-23T14:22:57.132Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '9964',
         },
         id: 'Y896LT9J720LN800',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 10000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 10000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-24T15:44:32.223Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: 'N39BHJ2ZHUG3HDK0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 17000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 17000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-25T11:53:22.561Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5197',
         },
         id: '63JF4G4594081ZL0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 44900,
+        },
+        netAmount: {
             currency: 'USD',
             value: 44900,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-05-25T12:42:02.796Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1443,14 +1965,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'AWJE138YH21Y7F47',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 3000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 3000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-27T03:21:37.251Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1458,56 +1985,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: 'E4K2M2D1AS376F18',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -265,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -265,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-27T06:20:19.216Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '0172',
         },
         id: 'Y0RMAS0R613M740K',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 47900,
+        },
+        netAmount: {
             currency: 'USD',
             value: 47900,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-28T00:11:37.048Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1682',
         },
         id: '88860H986PH67J9S',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 94100,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 94100,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-28T10:06:44.680Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: '5880637SJNR3X91E',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 24000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 24000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-28T16:27:33.170Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1515,14 +2062,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '1AZNLR8QC3B55B35',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -139,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -139,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-05-30T13:32:57.755Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1530,14 +2082,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: 'N6P9XRPIVHZ3065N',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 3000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 3000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-05-30T14:09:51.936Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1545,28 +2102,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'R190HS56F319349X',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 23000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 23000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-01T06:09:14.369Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '9518',
         },
         id: 'P07K462PN8110396',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 57000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 57000,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-01T08:06:02.187Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1574,14 +2141,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: 'HKZEDJK3D86B68B3',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 150000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 150000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-01T15:25:07.719Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1589,14 +2161,19 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '679804580TI615BK',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -1365,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -1365,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-04T23:07:22.760Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1604,28 +2181,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: '8607Z382A5I805I8',
-        amount: {
+        amountBeforeDeductions: {
             currency: 'USD',
             value: -2099,
         },
-        category: 'Fee',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        netAmount: {
+            currency: 'USD',
+            value: -2099,
+        },
+        category: 'Other',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-12T13:03:01.249Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3313',
         },
         id: '8247LG526H31261M',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 24000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 24000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-12T23:54:27.430Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1633,28 +2220,38 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '80N53DBSH777617C',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 1000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 1000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-13T18:05:24.402Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5955',
         },
         id: '8V35KU6RYH09692U',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 9000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 9000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-14T17:26:50.802Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1662,56 +2259,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'amex',
         },
         id: '33NB50236047669K',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: -50550,
+        },
+        netAmount: {
             currency: 'EUR',
             value: -50550,
         },
         category: 'Chargeback',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-15T18:21:53.060Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '7492',
         },
         id: '9P4GH141S8UJB6W6',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 18000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 18000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-17T22:02:56.535Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5936',
         },
         id: '4V577NYH925V18Y4',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 110950,
+        },
+        netAmount: {
             currency: 'USD',
             value: 110950,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-19T00:56:59.883Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3989',
         },
         id: '744W4W50UC1P5608',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 227000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 227000,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-19T01:54:48.267Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1719,84 +2336,114 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'mc',
         },
         id: '7296S01PDM80A6J2',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -22600,
+        },
+        netAmount: {
             currency: 'USD',
             value: -22600,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-19T03:05:56.456Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '1994',
         },
         id: 'J268DIH2343N6B2T',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 8000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 8000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-19T03:51:15.171Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6316',
         },
         id: 'SRZ2J8AND6K2W3YF',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: -39050,
+        },
+        netAmount: {
             currency: 'USD',
             value: -39050,
         },
         category: 'Refund',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-19T23:36:51.534Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '5665',
         },
         id: '14UEJSP4KAN5Z407',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 127400,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 127400,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-21T06:43:53.146Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '3018',
         },
         id: 'D92L69449PJX0KMT',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 58700,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 58700,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-21T18:45:43.946Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '0990',
         },
         id: '3PKB9SU3920381Q9',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'EUR',
+            value: 202000,
+        },
+        netAmount: {
             currency: 'EUR',
             value: 202000,
         },
         category: 'Transfer',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-22T14:09:02.145Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1804,56 +2451,76 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'visa',
         },
         id: 'J21035G974F758U3',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 11000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 11000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-24T23:11:09.775Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '7386',
         },
         id: 'M02F0BRD4JP75RXI',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 10000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 10000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-27T06:46:48.678Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
             type: 'paypal',
         },
         id: 'B78I76Y77072H126',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 22000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 22000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
-        createdAt: '2024-06-30T05:16:44.764Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         bankAccount: {
             accountNumberLastFourDigits: '6890',
         },
         id: '254X7TAUWB140HW0',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 1400000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 1400000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2024-06-30T19:58:16.527Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1861,14 +2528,19 @@ export const TRANSACTIONS: ITransaction[] = [
             description: 'Klarna Pay Later',
         },
         id: 'B78I76Y77072H126',
-        amount: {
+        amountBeforeDeductions: {
+            currency: 'USD',
+            value: 22000,
+        },
+        netAmount: {
             currency: 'USD',
             value: 22000,
         },
         category: 'Payment',
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
-        createdAt: '2025-02-04T05:16:44.764Z',
+        createdAt: getCreatedAt(),
+        pspReference: getPspReference(),
     },
 ];
 
@@ -2029,10 +2701,12 @@ export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
 
 export const DEFAULT_TRANSACTION: ITransaction = {
     id: '1VVF0D5V3709DX6D',
-    amount: { currency: 'EUR', value: 100000 },
-    balanceAccountId: '',
+    amountBeforeDeductions: { currency: 'EUR', value: 100000 },
+    netAmount: { currency: 'EUR', value: 100000 },
+    balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
     status: 'Booked',
-    category: 'Fee',
+    category: 'Other',
     paymentMethod: { lastFourDigits: '1945', type: 'mc' },
     createdAt: '2022-08-29T14:47:03+02:00',
+    pspReference: 'PSP3WRM8KK5JT789',
 };

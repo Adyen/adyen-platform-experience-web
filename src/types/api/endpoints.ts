@@ -1,6 +1,7 @@
 import { operations as BalanceAccountOps } from './resources/BalanceAccountsResource';
 import { operations as PayoutsOps } from './resources/PayoutsResource';
 import { operations as TransactionsOps } from './resources/TransactionsResource';
+import { operations as TransactionsOpsV2 } from './resources/TransactionsResourceV2';
 import { operations as ReportsOps } from './resources/ReportsResource';
 import { operations as DisputesOps } from './resources/DisputesResource';
 import { operations as CapitalGrantOfferOps } from './resources/CapitalGrantOffersResource';
@@ -16,7 +17,8 @@ export type EndpointsOperations = AnalyticsOps &
     CapitalMissingActionsOps &
     PayoutsOps &
     ReportsOps &
-    TransactionsOps &
+    Omit<TransactionsOps, keyof TransactionsOpsV2> &
+    TransactionsOpsV2 &
     DisputesOps & {};
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;

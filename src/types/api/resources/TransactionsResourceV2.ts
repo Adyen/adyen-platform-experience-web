@@ -168,6 +168,8 @@ export interface components {
             paymentMethod?: components['schemas']['PaymentMethod'];
             /** @description When Category is payment, this is the PSP reference of the PSP payment */
             paymentPspReference?: string;
+            /** @description The PSP reference */
+            pspReference: string;
             /** @description Additional data related to refund operations */
             refundDetails?: components['schemas']['RefundDetails'];
             /** @description When Category is refund, additional information and references related to the refund */
@@ -195,8 +197,8 @@ export interface components {
             netAmount: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
-            /** @description When Category is payment, this is the PSP reference of the PSP payment */
-            paymentPspReference?: string;
+            /** @description PSP reference */
+            pspReference: string;
             /** @description Status */
             status: components['schemas']['Status'];
         };

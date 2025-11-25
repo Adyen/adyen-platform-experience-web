@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
 import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '../../../../../types';
-import { hasOwnProperty, isFunction, isUndefined, listFrom } from '../../../../../utils';
+import { hasOwnProperty, isFunction, listFrom } from '../../../../../utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import { Balances } from '../Balances/Balances';
@@ -22,7 +22,6 @@ import MultiSelectionFilter from '../MultiSelectionFilter';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
@@ -69,8 +68,6 @@ export const TransactionsOverview = ({
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
                     sortDirection: 'desc' as const,
                     balanceAccountId: activeBalanceAccount?.id ?? '',
-                    minAmount: !isUndefined(pageRequestParams.minAmount) ? parseFloat(pageRequestParams.minAmount) : undefined,
-                    maxAmount: !isUndefined(pageRequestParams.maxAmount) ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
@@ -214,7 +211,6 @@ export const TransactionsOverview = ({
         [userEvents]
     );
 
-    const onResetAmountFilter = useMemo(() => onResetAction.bind(null, 'Amount filter'), [onResetAction]);
     const onResetDateFilter = useMemo(() => onResetAction.bind(null, 'Date filter'), [onResetAction]);
     const onResetCurrencyFilter = useMemo(() => onResetAction.bind(null, 'Currency filter'), [onResetAction]);
     const onResetCategoryFilter = useMemo(() => onResetAction.bind(null, 'Category filter'), [onResetAction]);
@@ -264,28 +260,6 @@ export const TransactionsOverview = ({
                     onResetAction={onResetCategoryFilter}
                     placeholder={i18n.get('transactions.overview.filters.types.category.label')}
                 />
-                <AmountFilter
-                    availableCurrencies={availableCurrencies}
-                    selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
-                    name={i18n.get('transactions.overview.filters.types.amount.label')}
-                    label={i18n.get('transactions.overview.filters.types.amount.label')}
-                    minAmount={filters[FilterParam.MIN_AMOUNT]}
-                    maxAmount={filters[FilterParam.MAX_AMOUNT]}
-                    updateFilters={e => {
-                        const hasValue = e?.maxAmount || e?.minAmount;
-                        if (hasValue && (e?.maxAmount !== filters[FilterParam.MAX_AMOUNT] || e?.minAmount !== filters[FilterParam.MIN_AMOUNT])) {
-                            userEvents.addModifyFilterEvent?.({
-                                actionType: 'update',
-                                label: 'Amount filter',
-                                category: 'Transaction component',
-                                value: `${e[FilterParam.MIN_AMOUNT]},${e[FilterParam.MAX_AMOUNT]}`,
-                            });
-                        }
-                        updateFilters(e);
-                    }}
-                    onChange={updateFilters}
-                    onResetAction={onResetAmountFilter}
-                />
                 <MultiSelectionFilter
                     {...currenciesFilter}
                     onResetAction={onResetCurrencyFilter}
@@ -298,13 +272,8 @@ export const TransactionsOverview = ({
                         availableCurrencies={availableCurrencies}
                         isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
                         balanceAccountId={activeBalanceAccount?.id}
-                        statuses={statusesFilter.selection}
-                        categories={categoriesFilter.selection}
                         createdUntil={filters[FilterParam.CREATED_UNTIL]!}
                         createdSince={filters[FilterParam.CREATED_SINCE]!}
-                        currencies={currenciesFilter.selection}
-                        minAmount={filters[FilterParam.MIN_AMOUNT] ? parseFloat(filters[FilterParam.MIN_AMOUNT]) : undefined}
-                        maxAmount={filters[FilterParam.MAX_AMOUNT] ? parseFloat(filters[FilterParam.MAX_AMOUNT]) : undefined}
                         fullWidth={isNarrowContainer}
                     />
                 </div>
