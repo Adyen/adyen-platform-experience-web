@@ -223,7 +223,7 @@ const DisputeDataProperties = ({ dispute, dataCustomization, defenseReasonConfig
                                                       </div>
                                                   );
                                               }}
-                                              onDownloadRequested={() => console.warn('Download failed for', document)}
+                                              setError={() => console.warn('Download failed for', document)}
                                               aria-label={i18n.get('disputes.management.details.actions.downloadEvidence')}
                                           />
                                       </div>
