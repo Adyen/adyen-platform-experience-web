@@ -2,7 +2,7 @@ import { http, HttpResponse, PathParams } from 'msw';
 import {
     ITransaction,
     IRefundMode,
-    ITransactionColumn,
+    ITransactionExportColumn,
     ITransactionRefundPayload,
     ITransactionRefundResponse,
     ITransactionWithDetails,
@@ -238,7 +238,7 @@ const passThroughRefundLockDeadlineCheckpoint = () => {
 
 const i18n = new Localization().i18n;
 
-const DownloadFields: Record<ITransactionColumn, (transaction: ITransaction) => string> = {
+const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransaction) => string> = {
     CreatedAt: ({ createdAt }) => `"${createdAt}"`,
     PaymentMethod: ({ paymentMethod, bankAccount }) =>
         (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',

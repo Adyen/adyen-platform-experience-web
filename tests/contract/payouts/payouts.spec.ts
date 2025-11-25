@@ -14,10 +14,12 @@ const ENV = ENVS[environment] || ENVS.test;
 sessionAwareTest('/payouts endpoint should return consistent data', async ({ requestContext, headers }) => {
     const payoutsList = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/payouts',
             params: {
                 query: { balanceAccountId: ENV.balanceAccountId, createdSince: ENV.createdSince, createdUntil: ENV.createdUntil },
             },
+            version: 1,
         }),
         { headers }
     );
@@ -33,10 +35,12 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ req
 sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {
     const payoutsDetails = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/payouts/breakdown',
             params: {
                 query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.payoutCreationDate },
             },
+            version: 1,
         }),
         { headers }
     );
