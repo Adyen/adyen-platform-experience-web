@@ -1,24 +1,24 @@
 import type { IBalance, IBalanceAccountBase } from '../../src';
 
-export const BALANCE_ACCOUNTS = [
+export const BALANCE_ACCOUNTS: readonly [IBalanceAccountBase, IBalanceAccountBase, IBalanceAccountBase] = [
     {
         description: 'S. Hopper - Main Account',
         id: 'BA32272223222B5CTDQPM6W2H',
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'USD',
-    } as IBalanceAccountBase,
+    },
     {
         description: 'S. Hopper - Secondary Account',
         id: 'BA32272223222B5CTDQPM6W2G',
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'EUR',
-    } as IBalanceAccountBase,
+    },
     {
         // One more balance account (without description) for completeness
         id: 'BA32272223222B5CTDQPM6W2K',
         timeZone: 'America/Sao_Paulo',
         defaultCurrencyCode: 'USD',
-    } as IBalanceAccountBase,
+    },
 ] as const;
 
 export const BALANCES: Record<string, IBalance[]> = {

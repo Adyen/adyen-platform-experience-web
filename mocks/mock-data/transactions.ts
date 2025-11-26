@@ -2527,7 +2527,7 @@ export const TRANSACTIONS: ITransaction[] = [
             type: 'klarna',
             description: 'Klarna Pay Later',
         },
-        id: 'B78I76Y77072H126',
+        id: 'B78I76Y77072H127',
         amountBeforeDeductions: {
             currency: 'USD',
             value: 22000,
