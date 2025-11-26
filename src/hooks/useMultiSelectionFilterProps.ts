@@ -36,7 +36,7 @@ const useMultiSelectionFilterProps = <T extends string>({
     }, [selection, logEvent, onResetFilter]);
 
     const updateSelection = useCallback(
-        ({ target }: { target?: any }) => {
+        ({ target }: { target?: { value: string } }) => {
             const nextSelection = new Set<T>(listFrom(target?.value || ''));
             const hasDeletions = selection.some(option => !nextSelection.has(option));
             const selectionChanged = hasDeletions || selection.length !== nextSelection.size;

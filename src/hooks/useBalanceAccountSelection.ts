@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import useCoreContext from '../core/Context/useCoreContext';
 import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
 import type { FilterType } from '../core/Analytics/analytics/user-events';
-import type { SelectItem } from '../components/internal/FormFields/Select/types';
+import type { SelectItem, SelectProps } from '../components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '../types';
 
 export const ALL_BALANCE_ACCOUNTS_SELECTION_ID = uniqueId();
@@ -33,21 +33,18 @@ const useBalanceAccountSelection = ({
                 ...balanceAccounts,
                 ...(allowAllSelection && balanceAccounts.length > 1
                     ? [
-                        {
-                            ...(balanceAccounts[0] ?? {}),
-                            id: ALL_BALANCE_ACCOUNTS_SELECTION_ID,
-                            description: undefined,
-                        } as IBalanceAccountBase,
-                    ]
+                          {
+                              ...(balanceAccounts[0] ?? {}),
+                              id: ALL_BALANCE_ACCOUNTS_SELECTION_ID,
+                              description: undefined,
+                          } as IBalanceAccountBase,
+                      ]
                     : []),
             ],
         [allowAllSelection, balanceAccounts]
     );
 
-    const activeBalanceAccount = useMemo(
-        () => allBalanceAccounts?.[selectedBalanceAccountIndex],
-        [allBalanceAccounts, selectedBalanceAccountIndex]
-    );
+    const activeBalanceAccount = useMemo(() => allBalanceAccounts?.[selectedBalanceAccountIndex], [allBalanceAccounts, selectedBalanceAccountIndex]);
 
     const activeBalanceAccountId = activeBalanceAccount?.id;
     const cachedBalanceAccountIdRef = useRef<string | undefined>();
@@ -57,9 +54,7 @@ const useBalanceAccountSelection = ({
             Object.freeze(
                 allBalanceAccounts?.map(({ description, id }) => {
                     const name =
-                        id === ALL_BALANCE_ACCOUNTS_SELECTION_ID
-                            ? i18n.get('common.filters.types.account.options.all')
-                            : capitalize(description)!;
+                        id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? i18n.get('common.filters.types.account.options.all') : capitalize(description)!;
                     return { id, name } as SelectItem;
                 }) ?? []
             ),
@@ -67,10 +62,10 @@ const useBalanceAccountSelection = ({
     );
 
     const onBalanceAccountSelection = useCallback(
-        ({ target }: any) => {
+        ({ target }: { target?: { value: string } }) => {
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
-            if (index! >= 0) setSelectedBalanceAccountIndex(index!);
+            if (index !== undefined && index >= 0) setSelectedBalanceAccountIndex(index);
         },
         [allBalanceAccounts]
     );

@@ -46,7 +46,7 @@ describe('useMultiSelectionFilterProps', () => {
             })
         );
 
-        act(() => result.current.updateSelection({ target: { value: ['C', 'A'] } }));
+        act(() => result.current.updateSelection({ target: { value: 'C,A' } }));
 
         expect(mockOnUpdateFilter).toHaveBeenCalledOnce();
         expect(mockOnUpdateFilter).toHaveBeenCalledWith(['A', 'C']);
@@ -62,7 +62,7 @@ describe('useMultiSelectionFilterProps', () => {
             })
         );
 
-        act(() => result.current.updateSelection({ target: { value: ['A'] } }));
+        act(() => result.current.updateSelection({ target: { value: 'A' } }));
 
         expect(mockOnUpdateFilter).toHaveBeenCalledOnce();
         expect(mockOnUpdateFilter).toHaveBeenCalledWith(['A']);
@@ -78,7 +78,7 @@ describe('useMultiSelectionFilterProps', () => {
             })
         );
 
-        act(() => result.current.updateSelection({ target: { value: ['A', 'B'] } }));
+        act(() => result.current.updateSelection({ target: { value: 'A,B' } }));
 
         expect(mockOnUpdateFilter).not.toHaveBeenCalled();
         expect(mockLogEvent).not.toHaveBeenCalled();
