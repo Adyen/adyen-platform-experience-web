@@ -22,15 +22,14 @@ export type EndpointsOperations = AnalyticsOps &
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport' | 'downloadTransactions';
+type JSONEndpoints = Exclude<EndpointName, DownloadStreamEndpoint>;
 
-type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument'>;
-
+export type DownloadStreamEndpoint = CSVEndpoints | 'downloadDefenseDocument';
+export type EndpointDownloadStreamData = { blob: Blob; filename?: string };
 export type EndpointJSONData<T extends JSONEndpoints> = EndpointsOperations[T]['responses'][200]['content']['application/json'];
 
-export type EndpointCSVData<T extends CSVEndpoints> = EndpointsOperations[T]['responses'][200]['content']['text/csv'];
-
-export type EndpointData<T extends EndpointName> = T extends CSVEndpoints
-    ? EndpointCSVData<T>
+export type EndpointData<T extends EndpointName> = T extends DownloadStreamEndpoint
+    ? EndpointDownloadStreamData
     : T extends JSONEndpoints
       ? EndpointJSONData<T>
       : never;
