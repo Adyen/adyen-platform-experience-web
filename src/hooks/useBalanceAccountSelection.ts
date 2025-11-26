@@ -70,7 +70,7 @@ const useBalanceAccountSelection = ({
         ({ target }: any) => {
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
-            if (index! >= 0) setSelectedBalanceAccountIndex(index!);
+            if (index !== undefined && index >= 0) setSelectedBalanceAccountIndex(index);
         },
         [allBalanceAccounts]
     );
