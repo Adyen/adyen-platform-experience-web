@@ -225,8 +225,8 @@ export interface components {
              * Format: int64
              * @description Net of incomings and expenses of transactions
              */
-            total?: number;
-            breakdown?: {
+            total: number;
+            breakdown: {
                 expenses: components['schemas']['TransactionCategoryTotal'][];
                 incomings: components['schemas']['TransactionCategoryTotal'][];
             };

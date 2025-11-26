@@ -53,7 +53,7 @@ const TransactionTotals = memo(
 
             const partialTotals = availableCurrencies.map(currency => {
                 const totalOfCurrency = data.data.find(total => total.currency === currency);
-                return totalOfCurrency || { currency, incomings: 0, expenses: 0 };
+                return totalOfCurrency || { currency, incomings: 0, expenses: 0, total: 0, breakdown: { incomings: [], expenses: [] } };
             });
 
             return partialTotals.concat(data.data.filter(total => !partialTotals.includes(total)));

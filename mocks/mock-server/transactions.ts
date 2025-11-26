@@ -7,6 +7,7 @@ import {
     ITransactionRefundResponse,
     ITransactionWithDetails,
     ITransactionRefundStatus,
+    ITransactionTotal,
 } from '../../src';
 import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, FAILED_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
 import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
@@ -15,10 +16,7 @@ import { compareDates, computeHash, delay, getPaginationLinks } from './utils/ut
 import { endpoints } from '../../endpoints/endpoints';
 import Localization from '../../src/core/Localization';
 
-interface _ITransactionTotals {
-    expenses: number;
-    incomings: number;
-}
+type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
 
 interface _ITransactionDetailsMetadata {
     deductedAmount?: number;
@@ -205,6 +203,7 @@ const fetchTransactionsForRequest = (req: Request) => {
         String(statuses),
         sortDirection,
     ];
+
     const periodHash = computeHash(hashArray.slice(0, 3).filter(Boolean).join(':'));
     const transactionsHash = computeHash(hashArray.filter(Boolean).join(':'));
 
@@ -309,13 +308,33 @@ export const transactionsMocks = [
         if (totals === undefined) {
             totals = periodTransactions.reduce((currencyTotalsMap, transaction) => {
                 const { value: amount, currency } = transaction.netAmount;
+                const type = amount >= 0 ? 'incomings' : 'expenses';
                 let currencyTotals = currencyTotalsMap.get(currency);
 
                 if (currencyTotals === undefined) {
-                    currencyTotalsMap.set(currency, (currencyTotals = { expenses: 0, incomings: 0 }));
+                    currencyTotals = {
+                        expenses: 0,
+                        incomings: 0,
+                        total: 0,
+                        breakdown: {
+                            expenses: [],
+                            incomings: [],
+                        },
+                    };
+                    currencyTotalsMap.set(currency, currencyTotals);
                 }
 
-                currencyTotals[amount >= 0 ? 'incomings' : 'expenses'] += amount;
+                let categoryTotal = currencyTotals.breakdown[type].find(({ category }) => category === transaction.category);
+
+                if (categoryTotal === undefined) {
+                    categoryTotal = { category: transaction.category, value: 0 };
+                    currencyTotals.breakdown[type].push(categoryTotal);
+                }
+
+                categoryTotal.value += amount;
+                currencyTotals.total += amount;
+                currencyTotals[type] += amount;
+
                 return currencyTotalsMap;
             }, new Map<string, _ITransactionTotals>());
 
