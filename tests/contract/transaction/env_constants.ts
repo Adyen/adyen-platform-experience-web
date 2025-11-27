@@ -70,8 +70,8 @@ const TEST: TransactionsVariables = {
         paymentPspReference: 'L9TRSQPRP472P4V5',
         refundMetadata: {
             refundPspReference: 'BXBZVHZH5S5H3275',
+            originalPaymentId: 'EVJN42CM7223223N5LQZCWQDZZ29MFEUR',
             refundReason: 'requested_by_customer',
-            originalPaymentId: 'EVJN4296S223223N5LQZCW83BL63NREUR',
             refundType: 'full',
         },
     },
