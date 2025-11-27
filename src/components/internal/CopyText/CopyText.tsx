@@ -11,9 +11,9 @@ import './CopyText.scss';
 
 type CopyTextProps = {
     copyButtonAriaLabelKey?: TranslationKey;
-    isHovered?: boolean;
+    isUnderlineVisible?: boolean;
     showCopyTextTooltip?: boolean;
-    type?: 'Link' | 'Text' | 'Default';
+    type?: 'Trimmed' | 'Text' | 'Default';
     textToCopy: string;
     visibleText?: string;
     onCopyText?: () => void;
@@ -24,9 +24,7 @@ const BASE_CLASSNAME = 'adyen-pe-copy-text';
 const classes = {
     base: BASE_CLASSNAME,
     container: BASE_CLASSNAME + '__container',
-    containerInformation: BASE_CLASSNAME + '__container--information',
     icon: BASE_CLASSNAME + '__icon',
-    iconInformation: BASE_CLASSNAME + '__icon--information',
     information: BASE_CLASSNAME + '__information',
     label: BASE_CLASSNAME + '__label',
     text: BASE_CLASSNAME + '__text',
@@ -34,12 +32,12 @@ const classes = {
 
 const CopyText = ({
     copyButtonAriaLabelKey,
-    isHovered,
+    isUnderlineVisible,
     textToCopy,
     visibleText,
     onCopyText,
     showCopyTextTooltip = true,
-    type = 'Link',
+    type = 'Trimmed',
     ...restProps
 }: CopyTextProps) => {
     const { i18n } = useCoreContext();
@@ -64,7 +62,7 @@ const CopyText = ({
             <span
                 className={cx({
                     [classes.label]: type !== 'Default',
-                    [classes.information]: type === 'Link',
+                    [classes.information]: type === 'Trimmed',
                     [classes.text]: type === 'Text',
                 })}
             >
@@ -75,14 +73,9 @@ const CopyText = ({
     );
 
     return (
-        <span
-            className={cx(classes.container, {
-                [classes.containerInformation]: type === 'Link',
-            })}
-            {...restProps}
-        >
+        <span className={classes.container} {...restProps}>
             {showCopyTextTooltip ? (
-                <Tooltip content={textToCopy} isContainerHovered={isHovered}>
+                <Tooltip content={textToCopy} isUnderlineVisible={isUnderlineVisible}>
                     {visibleTextToCopy}
                 </Tooltip>
             ) : (
@@ -99,11 +92,7 @@ const CopyText = ({
                     aria-label={copyButtonLabel}
                     data-testid="copyText"
                 >
-                    <div
-                        className={cx(classes.icon, {
-                            [classes.iconInformation]: type === 'Link',
-                        })}
-                    >
+                    <div className={classes.icon}>
                         <Icon name={'copy'} data-testid={'copy-icon'} />
                     </div>
                 </Button>

@@ -15,18 +15,17 @@ export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
-    autoCorrect?: string;
     classNameModifiers?: string[];
     isInvalid?: boolean;
     isValid?: boolean;
     readonly?: boolean;
-    spellCheck?: boolean;
     type?: string;
     uniqueId?: string;
     isCollatingErrors?: boolean;
     disabled?: boolean;
     onClick?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
+    onKeyDown?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onKeyUp?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocusHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;

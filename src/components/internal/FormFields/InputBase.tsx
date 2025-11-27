@@ -6,12 +6,14 @@ import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
 import Select from './Select';
+import { filterDisallowedCharacters } from './utils';
 import './FormFields.scss';
 import { ButtonVariant } from '../Button/types';
 
 function InputBase(
     {
         onInput,
+        onKeyDown,
         onKeyUp,
         trimOnBlur,
         onBlurHandler,
@@ -94,6 +96,13 @@ function InputBase(
         classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
+    const handleKeyDown = useCallback(
+        (e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+            filterDisallowedCharacters({ event: e, inputType: type, onValidInput: () => onKeyDown?.(e) });
+        },
+        [type, onKeyDown]
+    );
+
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const {
         classNameModifiers: cnm,
@@ -126,6 +135,7 @@ function InputBase(
             onInput={handleInput}
             onBlurCapture={handleBlur}
             onFocus={handleFocus}
+            onKeyDown={handleKeyDown}
             onKeyUp={handleKeyUp}
             disabled={disabled}
             ref={ref}
