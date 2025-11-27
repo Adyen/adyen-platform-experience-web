@@ -1,24 +1,37 @@
-import useAnalyticsContext from '../core/Context/analytics/useAnalyticsContext';
 import { capitalize, uniqueId } from '../utils';
-import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
-import type { SelectItem } from '../components/internal/FormFields/Select/types';
+import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
+import type { FilterType } from '../core/Analytics/analytics/user-events';
+import type { SelectItem, SelectProps } from '../components/internal/FormFields/Select/types';
 import type { IBalanceAccountBase } from '../types';
 
 export const ALL_BALANCE_ACCOUNTS_SELECTION_ID = uniqueId();
 
-const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], allowAllSelection = false) => {
+export interface UseBalanceAccountSelectionProps {
+    allowAllSelection?: boolean;
+    balanceAccounts?: IBalanceAccountBase[];
+    eventCategory?: string;
+    eventLabel?: FilterType;
+    onUpdateSelection?: (balanceAccount?: IBalanceAccountBase) => void;
+}
+
+const useBalanceAccountSelection = ({
+    allowAllSelection = false,
+    balanceAccounts,
+    eventCategory,
+    eventLabel = 'Balance account filter',
+    onUpdateSelection,
+}: UseBalanceAccountSelectionProps) => {
     const { i18n } = useCoreContext();
-    const isDefaultValueSelected = useRef<boolean>(false);
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: eventLabel });
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
-    const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
-    const userEvents = useAnalyticsContext();
 
     const allBalanceAccounts = useMemo(
         () =>
             balanceAccounts && [
                 ...balanceAccounts,
-                ...(allowAllSelection
+                ...(allowAllSelection && balanceAccounts.length > 1
                     ? [
                           {
                               ...(balanceAccounts[0] ?? {}),
@@ -31,45 +44,51 @@ const useBalanceAccountSelection = (balanceAccounts?: IBalanceAccountBase[], all
         [allowAllSelection, balanceAccounts]
     );
 
-    const activeBalanceAccount = useMemo(() => {
-        return allBalanceAccounts?.[selectedBalanceAccountIndex];
-    }, [allBalanceAccounts, selectedBalanceAccountIndex]);
+    const activeBalanceAccount = useMemo(() => allBalanceAccounts?.[selectedBalanceAccountIndex], [allBalanceAccounts, selectedBalanceAccountIndex]);
+
+    const activeBalanceAccountId = activeBalanceAccount?.id;
+    const cachedBalanceAccountIdRef = useRef<string | undefined>();
 
     const balanceAccountSelectionOptions = useMemo(
         () =>
-            balanceAccounts && balanceAccounts.length > 1
-                ? Object.freeze(
-                      allBalanceAccounts?.map(({ description, id }) => {
-                          const name =
-                              id === ALL_BALANCE_ACCOUNTS_SELECTION_ID
-                                  ? i18n.get('common.filters.types.account.options.all')
-                                  : capitalize(description)!;
-                          return { id, name } as SelectItem;
-                      })
-                  )
-                : undefined,
-        [allBalanceAccounts, balanceAccounts, i18n]
+            Object.freeze(
+                allBalanceAccounts?.map(({ description, id }) => {
+                    const name =
+                        id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? i18n.get('common.filters.types.account.options.all') : capitalize(description)!;
+                    return { id, name } as SelectItem;
+                }) ?? []
+            ),
+        [allBalanceAccounts, i18n]
     );
 
     const onBalanceAccountSelection = useCallback(
-        ({ target }: any) => {
+        ({ target }: { target?: { value: string } }) => {
             const balanceAccountId = target?.value;
             const index = allBalanceAccounts?.findIndex(({ id }) => id === balanceAccountId);
-            if (index! >= 0) {
-                if (isDefaultValueSelected.current && index !== selectedBalanceAccountIndex) {
-                    userEvents.addModifyFilterEvent?.({
-                        actionType: 'update',
-                        label: 'Balance account filter',
-                        category: 'Transaction component',
-                        value: balanceAccountId,
-                    });
-                }
-                isDefaultValueSelected.current = true;
-                setSelectedBalanceAccountIndex(index!);
-            }
+            if (index !== undefined && index >= 0) setSelectedBalanceAccountIndex(index);
         },
-        [allBalanceAccounts, userEvents, selectedBalanceAccountIndex]
+        [allBalanceAccounts]
     );
+
+    const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
+
+    useEffect(() => {
+        const cachedBalanceAccountId = cachedBalanceAccountIdRef.current;
+
+        if (cachedBalanceAccountId !== activeBalanceAccountId) {
+            // Update the cached balance account id with the active one
+            cachedBalanceAccountIdRef.current = activeBalanceAccountId;
+
+            if (cachedBalanceAccountId && activeBalanceAccountId) {
+                // Balance account changed
+                // Log filter modification event
+                logEvent?.('update', activeBalanceAccountId);
+            }
+
+            // Set active balance account in transactions overview context
+            onUpdateSelection?.(activeBalanceAccount);
+        }
+    }, [activeBalanceAccount, activeBalanceAccountId, logEvent, onUpdateSelection]);
 
     return { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection, resetBalanceAccountSelection } as const;
 };

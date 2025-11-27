@@ -8,7 +8,7 @@ export const TransactionTotalItem = ({
     total,
     hiddenField,
     isHeader = false,
-    isHovered = false,
+    showLabelUnderline = false,
     isSkeleton = false,
     isLoading = false,
     widths,
@@ -60,7 +60,7 @@ export const TransactionTotalItem = ({
 
     return (
         <SummaryItem
-            isHovered={isHovered}
+            showLabelUnderline={showLabelUnderline}
             isEmpty={!total}
             columnConfigs={columnConfigs}
             isHeader={isHeader}
