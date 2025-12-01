@@ -23,7 +23,7 @@ const getPspReference = (() => {
 
     return () => {
         const incrementalSuffix = `${index++}`.padStart(3, '0');
-        return `PSP3WRM8KK5JT${incrementalSuffix}`;
+        return `PSP0000000000${incrementalSuffix}`;
     };
 })();
 
@@ -2708,5 +2708,5 @@ export const DEFAULT_TRANSACTION: ITransaction = {
     category: 'Other',
     paymentMethod: { lastFourDigits: '1945', type: 'mc' },
     createdAt: '2022-08-29T14:47:03+02:00',
-    pspReference: 'PSP3WRM8KK5JT789',
+    pspReference: 'PSP0000000000999',
 };

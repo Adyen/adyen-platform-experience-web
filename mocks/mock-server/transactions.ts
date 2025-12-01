@@ -254,14 +254,14 @@ const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransactio
     id: ({ id }) => id,
     balanceAccountId: ({ balanceAccountId }) => balanceAccountId,
     createdAt: ({ createdAt }) => `"${new Date(createdAt).toISOString()}"`,
+    status: ({ status }) => status,
     paymentMethod: ({ paymentMethod, bankAccount }) =>
         (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',
-    pspReference: ({ pspReference }) => pspReference ?? '',
     category: ({ category }) => category,
-    status: ({ status }) => status,
+    pspReference: ({ pspReference }) => pspReference ?? '',
     currency: ({ netAmount: amount }) => amount.currency,
-    amountBeforeDeductions: ({ amountBeforeDeductions: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
     netAmount: ({ netAmount: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
+    amountBeforeDeductions: ({ amountBeforeDeductions: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
 };
 
 export const transactionsMocks = [
@@ -324,16 +324,24 @@ export const transactionsMocks = [
                     currencyTotalsMap.set(currency, currencyTotals);
                 }
 
-                let categoryTotal = currencyTotals.breakdown[type].find(({ category }) => category === transaction.category);
+                const breakdown = currencyTotals.breakdown[type];
+                let categoryTotals = breakdown.find(({ category }) => category === transaction.category);
 
-                if (categoryTotal === undefined) {
-                    categoryTotal = { category: transaction.category, value: 0 };
-                    currencyTotals.breakdown[type].push(categoryTotal);
+                if (categoryTotals === undefined) {
+                    categoryTotals = { category: transaction.category, value: 0 };
+                    breakdown.push(categoryTotals);
                 }
 
-                categoryTotal.value += amount;
+                categoryTotals.value += amount;
                 currencyTotals.total += amount;
                 currencyTotals[type] += amount;
+
+                breakdown.sort(({ category: categoryA, value: valueA }, { category: categoryB, value: valueB }) => {
+                    if (categoryA === 'Other') return 1;
+                    if (categoryB === 'Other') return -1;
+                    if (type === 'expenses') return valueA - valueB;
+                    return valueB - valueA;
+                });
 
                 return currencyTotalsMap;
             }, new Map<string, _ITransactionTotals>());
@@ -354,6 +362,10 @@ export const transactionsMocks = [
         const { transactions } = fetchTransactionsForRequest(request);
         const columnsParam = new URLSearchParams(new URL(request.url).searchParams).getAll('columns');
         const columns = (Object.keys(DownloadFields) as ITransactionExportColumn[]).filter(column => columnsParam.includes(column));
+
+        if (columns.length === 0 || transactions.length === 0) {
+            return new HttpResponse(null, { status: 204 });
+        }
 
         return new HttpResponse(
             new Blob(
