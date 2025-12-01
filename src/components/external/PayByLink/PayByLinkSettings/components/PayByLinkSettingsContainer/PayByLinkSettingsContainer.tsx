@@ -1,12 +1,6 @@
 import { SecondaryNav } from '../../../../../internal/SecondaryNav';
 import { _UIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
-import {
-    BASE_CLASS_NAME,
-    CONTAINER_CLASS_NAME,
-    SIDEBAR_CONTAINER_CLASS_NAME,
-    SECONDARY_NAV_CLASS_NAME,
-    CONTENT_CONTAINER_CLASS_NAME,
-} from './constants';
+import { CONTAINER_CLASS_NAME, SIDEBAR_CONTAINER_CLASS_NAME, SECONDARY_NAV_CLASS_NAME, CONTENT_CONTAINER_CLASS_NAME } from './constants';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Divider } from '../../../../../internal/Divider/Divider';
 import './PayByLinkSettingsContainer.scss';
@@ -16,8 +10,6 @@ import { Header } from '../../../../../internal/Header';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../../../translations';
 import PayByLinkSettingsContent from './PayByLinkSettingsContent';
-import Button from '../../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../../internal/Button/types';
 
 export const ActiveMenuItem = {
     theme: 'theme',
