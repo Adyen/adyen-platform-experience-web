@@ -156,6 +156,20 @@
         display: flex;
         pointer-events: auto;
 
+        .adyen-pe-dropdown {
+            &__button {
+                background-color: transparent;
+                border: 0;
+                font-size: style.token(text-body-font-size);
+                letter-spacing: 0;
+                padding: 0;
+            }
+
+            :hover {
+                box-shadow: none;
+            }
+        }
+
         &--start {
             height: 100%;
             margin-left: 0;

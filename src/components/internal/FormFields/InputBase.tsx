@@ -152,7 +152,7 @@ function InputBase(
                     selected={dropdown.value}
                     onChange={handleDropdownChange}
                     readonly={isDropdownReadOnly}
-                    filterable={dropdown.dynamicFiltering}
+                    filterable={dropdown.filterable}
                     aria-label={dropdown['aria-label']}
                     classNameModifiers={['input-field']}
                     isCollatingErrors={isCollatingErrors}

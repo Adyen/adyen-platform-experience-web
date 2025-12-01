@@ -1,16 +1,11 @@
-import { Controller } from '../../../../../../../../hooks/form';
-import { FormValues } from '../../../types';
-import FormField from '../../FormField';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
-import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback, useMemo } from 'preact/hooks';
-import InputBase from '../../../../../../../internal/FormFields/InputBase';
+import { FormTextInput } from '../../../../../../../internal/FormWrappers/FormTextInput';
+import { PBL_CREATION_FIELD_LENGTHS } from '../../../../constants';
+import { PBLFormValues } from '../../../types';
 
 export const ShopperEmailField = () => {
     const { i18n } = useCoreContext();
-    const { control, fieldsConfig } = useWizardFormContext<FormValues>();
-
-    const isRequired = useMemo(() => fieldsConfig['emailAddress']?.required, [fieldsConfig]);
 
     const invalidEMailObject = useMemo(
         () => ({
@@ -58,20 +53,11 @@ export const ShopperEmailField = () => {
     );
 
     return (
-        <FormField label={i18n.get('payByLink.linkCreation.fields.shopperEmail.label')} optional={!isRequired}>
-            <Controller<FormValues>
-                name="emailAddress"
-                control={control}
-                rules={{
-                    required: isRequired,
-                    validate: validateEmail,
-                }}
-                render={({ field, fieldState }) => {
-                    return (
-                        <InputBase {...field} type="email" isValid={false} isInvalid={!!fieldState.error} errorMessage={fieldState.error?.message} />
-                    );
-                }}
-            />
-        </FormField>
+        <FormTextInput<PBLFormValues>
+            fieldName="shopperEmail"
+            label={i18n.get('payByLink.linkCreation.fields.shopperEmail.label')}
+            validate={validateEmail}
+            maxLength={PBL_CREATION_FIELD_LENGTHS.emailAddress.max}
+        />
     );
 };

@@ -2,8 +2,8 @@ import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { FormValues, LinkCreationFormStep } from '../types';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { PBLFormValues, LinkCreationFormStep } from '../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
@@ -18,185 +18,67 @@ import { EMPTY_OBJECT } from '../../../../../../utils';
 import './PayByLinkCreationForm.scss';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { SuccessResponse } from '../../../../../../types/api/endpoints';
+import { PaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
+import { getFormSteps } from '../../utils';
+import { StoreForm } from '../Form/StoreForm/StoreForm';
+import { TranslationKey } from '../../../../../../translations';
 
 type PayByLinkCreationFormContainerProps = {
-    onSubmitted?: (result: SuccessResponse<'createPayByLinkConfiguration'>) => void;
+    onSubmitted?: (result: SuccessResponse<'createPBLPaymentLink'>) => void;
 };
 
 export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreationFormContainerProps) => {
+    const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n } = useCoreContext();
 
-    const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall, createPayByLinkConfiguration } = useConfigContext().endpoints;
+    const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall, createPBLPaymentLink } = useConfigContext().endpoints;
 
-    const configurationQuery = useFetch({
-        fetchOptions: { enabled: !!payByLinkConfigurationEndpointCall },
-        queryFn: useCallback(async () => {
-            return payByLinkConfigurationEndpointCall?.(EMPTY_OBJECT);
-        }, [payByLinkConfigurationEndpointCall]),
-    });
-
-    const steps = useMemo(() => {
-        return [
-            { id: 'Payment', label: i18n.get('payByLink.linkCreation.form.steps.payment') },
-            { id: 'Customer', label: i18n.get('payByLink.linkCreation.form.steps.customer') },
-            { id: 'Summary', label: i18n.get('payByLink.linkCreation.form.steps.summary') },
-        ];
-    }, [i18n]);
-
-    const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.linkCreation.steps.a11y.label'), [i18n]);
+    const configurationQuery = selectedStore
+        ? useFetch({
+              fetchOptions: { enabled: !!payByLinkConfigurationEndpointCall },
+              queryFn: useCallback(async () => {
+                  return payByLinkConfigurationEndpointCall?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
+              }, [payByLinkConfigurationEndpointCall, selectedStore]),
+          })
+        : { data: undefined, isFetching: true };
 
     const getFieldConfig = useCallback(
-        (field: keyof FormValues) => {
+        (field: keyof PaymentLinkConfiguration) => {
             return configurationQuery.data?.[field];
         },
         [configurationQuery.data]
     );
 
     const formSteps = useMemo(() => {
-        return [
-            {
-                id: 'payment',
-                title: i18n.get('payByLink.linkCreation.paymentDetailsForm.title'),
-                description: i18n.get('payByLink.linkCreation.paymentDetailsForm.description'),
-                fields: (
-                    [
-                        {
-                            fieldName: 'store',
-                            required: !!getFieldConfig('store')?.required,
-                            visible: !!getFieldConfig('store'),
-                            label: 'payByLink.creation.summary.fields.store',
-                        },
-                        {
-                            fieldName: 'linkValidity',
-                            required: !!getFieldConfig('linkValidity')?.required,
-                            visible: !!getFieldConfig('linkValidity'),
-                            label: 'payByLink.creation.summary.fields.linkValidity',
-                        },
-                        {
-                            fieldName: 'amountValue',
-                            required: !!getFieldConfig('amountValue')?.required,
-                            visible: !!getFieldConfig('amountValue'),
-                            label: 'payByLink.creation.summary.fields.amountValue',
-                        },
-                        {
-                            fieldName: 'currency',
-                            required: !!getFieldConfig('currency')?.required,
-                            visible: !!getFieldConfig('currency'),
-                            label: 'payByLink.creation.summary.fields.currency',
-                        },
-                        {
-                            fieldName: 'merchantReference',
-                            required: !!getFieldConfig('merchantReference')?.required,
-                            visible: !!getFieldConfig('merchantReference'),
-                            label: 'payByLink.creation.summary.fields.merchantReference',
-                        },
-                        {
-                            fieldName: 'linkType',
-                            required: !!getFieldConfig('linkType')?.required,
-                            visible: !!getFieldConfig('linkType'),
-                            label: 'payByLink.creation.summary.fields.linkType',
-                        },
-                        {
-                            fieldName: 'description',
-                            required: !!getFieldConfig('description')?.required,
-                            visible: !!getFieldConfig('description'),
-                            label: 'payByLink.creation.summary.fields.description',
-                        },
-                        {
-                            fieldName: 'deliveryDate',
-                            required: !!getFieldConfig('deliveryDate')?.required,
-                            visible: !!getFieldConfig('deliveryDate'),
-                        },
-                    ] as const
-                ).filter(field => !!configurationQuery.data?.[field.fieldName]),
-                isOptional: false,
-            },
-            {
-                id: 'customer',
-                fields: (
-                    [
-                        {
-                            fieldName: 'shopperReference',
-                            required: !!getFieldConfig('shopperReference')?.required,
-                            visible: !!getFieldConfig('shopperReference'),
-                            label: 'payByLink.creation.summary.fields.shopperReference',
-                        },
-                        {
-                            fieldName: 'fullName',
-                            required: !!getFieldConfig('fullName')?.required,
-                            visible: !!getFieldConfig('fullName'),
-                            label: 'payByLink.creation.summary.fields.fullName',
-                        },
-                        {
-                            fieldName: 'emailAddress',
-                            required: !!getFieldConfig('emailAddress')?.required,
-                            visible: !!getFieldConfig('emailAddress'),
-                            label: 'payByLink.creation.summary.fields.emailAddress',
-                        },
-                        {
-                            fieldName: 'sendLinkToShopper',
-                            required: !!getFieldConfig('sendLinkToShopper')?.required,
-                            visible: !!getFieldConfig('sendLinkToShopper'),
-                        },
-                        {
-                            fieldName: 'sendPaymentSuccessToShopper',
-                            required: !!getFieldConfig('sendPaymentSuccessToShopper')?.required,
-                            visible: !!getFieldConfig('sendPaymentSuccessToShopper'),
-                        },
-                        {
-                            fieldName: 'emailSender',
-                            required: !!getFieldConfig('emailSender')?.required,
-                            visible: !!getFieldConfig('emailSender'),
-                            label: 'payByLink.creation.summary.fields.emailAddress',
-                        },
-                        {
-                            fieldName: 'phoneNumber',
-                            required: !!getFieldConfig('phoneNumber')?.required,
-                            visible: !!getFieldConfig('phoneNumber'),
-                            label: 'payByLink.creation.summary.fields.phoneNumber',
-                        },
-                        {
-                            fieldName: 'countryCode',
-                            required: !!getFieldConfig('countryCode')?.required,
-                            visible: !!getFieldConfig('countryCode'),
-                            label: 'payByLink.creation.summary.fields.countryCode',
-                        },
-                        {
-                            fieldName: 'shippingAddress',
-                            required: !!getFieldConfig('shippingAddress')?.required,
-                            visible: !!getFieldConfig('shippingAddress'),
-                            label: 'payByLink.creation.summary.fields.shippingAddress',
-                        },
-                        {
-                            fieldName: 'billingAddress',
-                            required: !!getFieldConfig('billingAddress')?.required,
-                            visible: !!getFieldConfig('billingAddress'),
-                            label: 'payByLink.creation.summary.fields.billingAddress',
-                        },
-                        {
-                            fieldName: 'shopperLocale',
-                            required: !!getFieldConfig('shopperLocale')?.required,
-                            visible: !!getFieldConfig('shopperLocale'),
-                        },
-                    ] as const
-                ).filter(field => !!configurationQuery.data?.[field.fieldName]),
-                isOptional: false,
-            },
-            {
-                id: 'summary',
-                title: i18n.get('payByLink.linkCreation.form.steps.customer'),
-                fields: [],
-                isOptional: true,
-            },
-        ] as const;
+        return getFormSteps({ i18n, getFieldConfig });
     }, [configurationQuery.data, getFieldConfig, i18n]);
 
-    const wizardForm = useWizardForm<FormValues>({
+    const steps = useMemo(() => {
+        return formSteps.map(step => ({
+            id: step.id,
+            label: i18n.get(`payByLink.linkCreation.form.steps.${step.id}` as TranslationKey),
+        }));
+    }, [formSteps, i18n]);
+
+    const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.linkCreation.steps.a11y.label'), [i18n]);
+
+    const wizardForm = useWizardForm<PBLFormValues>({
+        i18n,
         steps: formSteps,
-        defaultValues: {},
+        defaultValues: { store: selectedStore || '' },
         mode: 'all',
         validateBeforeNext: true,
     });
+
+    useEffect(() => {
+        const unsubscribe = wizardForm.control.subscribe(() => {
+            const storeValue = wizardForm.control.getValue('store');
+            if (storeValue && storeValue !== selectedStore) {
+                setSelectedStore(storeValue);
+            }
+        });
+        return unsubscribe;
+    }, [wizardForm.control, selectedStore]);
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
 
@@ -218,17 +100,9 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
     );
 
     const currentFormStep = useMemo<LinkCreationFormStep>(() => {
-        switch (currentStep) {
-            case 0:
-                return 'Payment';
-            case 1:
-                return 'Customer';
-            case 2:
-                return 'Summary';
-            default:
-                return 'Payment';
-        }
-    }, [currentStep]);
+        const step = formSteps?.[currentStep];
+        return step ? (step.id as LinkCreationFormStep) : 'store';
+    }, [currentStep, formSteps]);
 
     const handlePrevious = () => {
         previousStep();
@@ -240,7 +114,7 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
 
     // Only called when the form is actually submitted (final step)
     const submitMutation = useMutation({
-        queryFn: createPayByLinkConfiguration,
+        queryFn: createPBLPaymentLink,
         options: {
             onSuccess: data => {
                 onSubmitted?.(data);
@@ -248,8 +122,18 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
         },
     });
 
-    const onSubmit = async (data: FormValues) => {
-        await submitMutation.mutate({ body: data, contentType: 'application/json' });
+    const onSubmit = async (data: PBLFormValues) => {
+        if (!data.amount || !data.countryCode || !data.currencyCode || !data.reference || !data.shopperName) {
+            throw new Error('Missing required fields for payment link creation');
+        }
+
+        await submitMutation.mutate(
+            {
+                body: data,
+                contentType: 'application/json',
+            },
+            { path: { storeId: 'default' } }
+        );
     };
 
     const onError = (errors: any) => {
@@ -262,7 +146,7 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
     const timezone = undefined;
 
     return (
-        <div className="adyen-pe-pay-by-link-creation-form">
+        <div className="adyen-pe-pay-by-link-creation-form__component">
             <Typography variant={TypographyVariant.SUBTITLE} stronger>
                 {i18n.get('payByLink.linkCreation.form.title')}
             </Typography>
@@ -278,9 +162,9 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                 ))}
             </Stepper>
             <WizardFormProvider {...wizardForm}>
-                <div className="adyen-pe-pay-by-link-creation-form__form-container">
+                <div className="adyen-pe-pay-by-link-creation-form__container">
                     <form
-                        className="adyen-pe-pay-by-link-creation-form__form"
+                        className="adyen-pe-pay-by-link-creation-form"
                         onSubmit={e => {
                             e.preventDefault();
                             wizardForm.handleSubmit(onSubmit, onError)(e);
@@ -289,31 +173,22 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                         <div>
                             {(() => {
                                 switch (currentFormStep) {
-                                    case 'Payment':
-                                        return (
-                                            <PaymentDetailsForm
-                                                timezone={timezone}
-                                                configuration={configurationQuery.data}
-                                                isConfigLoading={configurationQuery.isFetching}
-                                            />
-                                        );
-                                    case 'Customer':
+                                    case 'store':
+                                        return <StoreForm />;
+                                    case 'payment':
+                                        return <PaymentDetailsForm timezone={timezone} configuration={configurationQuery.data} />;
+                                    case 'customer':
                                         return (
                                             <CustomerDetailsForm isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
                                         );
-                                    case 'Summary':
+                                    case 'summary':
                                         return <FormSummary />;
                                     default:
-                                        return (
-                                            <PaymentDetailsForm
-                                                configuration={configurationQuery.data}
-                                                isConfigLoading={configurationQuery.isFetching}
-                                            />
-                                        );
+                                        return <PaymentDetailsForm configuration={configurationQuery.data} />;
                                 }
                             })()}
                         </div>
-                        <div className="adyen-pe-pay-by-link-creation-form__form-buttons-container">
+                        <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
                             <div className="adyen-pe-pay-by-link-creation-form__buttons">
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
                                     {isFirstStep

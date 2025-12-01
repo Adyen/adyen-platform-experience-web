@@ -34,18 +34,25 @@ export const payByLinkMocks = [
         });
     }),
 
-    // GET /paybylink/paymentLinks/configuration
-    http.get(mockEndpointsPBL.configuration, async () => {
+    // GET /paybylink/paymentLinks/{storeId}/configuration
+    http.get(mockEndpointsPBL.configuration, async ({ params }) => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
-
-        return HttpResponse.json(PAY_BY_LINK_CONFIGURATION);
+        const { storeId } = params;
+        if (!storeId) {
+            return HttpResponse.json({ error: 'Store ID is required' }, { status: 400 });
+        }
+        const config = PAY_BY_LINK_CONFIGURATION[storeId as keyof typeof PAY_BY_LINK_CONFIGURATION];
+        if (!config) {
+            return HttpResponse.json({ error: 'Store not found' }, { status: 404 });
+        }
+        return HttpResponse.json(config);
     }),
 
-    // POST /paybylink/paymentLinks/configuration
-    http.post(mockEndpointsPBL.configuration, async () => {
+    // POST /paybylink/paymentLinks
+    http.post(mockEndpointsPBL.paymentLinks, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });

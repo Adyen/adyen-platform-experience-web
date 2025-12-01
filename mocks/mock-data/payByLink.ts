@@ -2,14 +2,27 @@ export const STORES = [
     {
         description: 'Main Store - New York',
         storeCode: 'New York Store',
+
+        setup: {
+            termsAndConditionsProvisioned: true,
+            themeFullyProvisioned: true,
+        },
     },
     {
         description: 'Main Store - London',
         storeCode: 'London Store',
+        setup: {
+            termsAndConditionsProvisioned: false,
+            themeFullyProvisioned: true,
+        },
     },
     {
         description: 'Main Store - Amsterdam',
         storeCode: 'Amsterdam Store',
+        setup: {
+            termsAndConditionsProvisioned: true,
+            themeFullyProvisioned: false,
+        },
     },
 ];
 
@@ -113,7 +126,7 @@ export const INSTALLMENTS = [
     },
 ];
 
-export const PAY_BY_LINK_CONFIGURATION = {
+const BASE_PAY_BY_LINK_CONFIGURATION = {
     amountValue: {
         required: true,
     },
@@ -140,7 +153,7 @@ export const PAY_BY_LINK_CONFIGURATION = {
     emailSender: {
         required: true,
     },
-    fullName: {
+    shopperName: {
         required: true,
     },
     linkType: {
@@ -151,18 +164,21 @@ export const PAY_BY_LINK_CONFIGURATION = {
         required: true,
         options: [
             {
-                durationUnit: 'day',
-                quantity: 7,
-                type: 'flexible',
+                durationUnit: 'hour',
+                quantity: 24,
+                type: 'fixed',
             },
             {
                 durationUnit: 'day',
                 quantity: 30,
-                type: 'flexible',
+                type: 'fixed',
             },
             {
                 durationUnit: 'week',
                 quantity: 1,
+                type: 'fixed',
+            },
+            {
                 type: 'flexible',
             },
         ],
@@ -173,7 +189,7 @@ export const PAY_BY_LINK_CONFIGURATION = {
     phoneNumber: {
         required: true,
     },
-    shippingAddress: {
+    deliveryAddress: {
         required: true,
     },
     sendLinkToShopper: {
@@ -189,7 +205,10 @@ export const PAY_BY_LINK_CONFIGURATION = {
     shopperReference: {
         required: true,
     },
-    store: {
-        required: true,
-    },
+};
+
+export const PAY_BY_LINK_CONFIGURATION = {
+    'New York Store': BASE_PAY_BY_LINK_CONFIGURATION,
+    'London Store': { ...BASE_PAY_BY_LINK_CONFIGURATION, linkValidity: undefined },
+    'Amsterdam Store': BASE_PAY_BY_LINK_CONFIGURATION,
 };

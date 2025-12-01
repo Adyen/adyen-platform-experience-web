@@ -62,6 +62,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     isValid?: boolean;
     multiSelect?: boolean;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
+    onFilterInputKeyDown?: (evt: KeyboardEvent) => any;
     onInput?: (evt: Event) => any;
     placeholder?: string;
     readonly?: boolean;
@@ -91,10 +92,13 @@ export interface SelectListProps<T extends SelectItem> {
     showOverlay?: boolean;
     fitPosition?: boolean;
     fixedPopoverPositioning?: boolean;
+    activeIndex?: number;
+    filterable?: boolean;
 }
 
 export interface SelectItemProps<T extends SelectItem> {
     item: T;
+    isKeyboardActive?: boolean;
     multiSelect: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;

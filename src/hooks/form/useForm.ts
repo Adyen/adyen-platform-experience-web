@@ -1,5 +1,6 @@
 import { useRef, useCallback } from 'preact/hooks';
 import { UseFormOptions, UseFormReturn, InternalFormControl, FormState, FieldValue, FieldError, ValidationRules, FieldValues } from './types';
+import Localization from '../../core/Localization';
 
 export function getNestedValue(obj: any, path: string): any {
     const keys = path.split('.');
@@ -57,13 +58,13 @@ function flattenObject(obj: any, prefix = ''): Record<string, any> {
     return result;
 }
 
-async function validateField(value: FieldValue, rules: ValidationRules | undefined): Promise<FieldError> {
+async function validateField(value: FieldValue, rules: ValidationRules | undefined, i18n: Localization['i18n']): Promise<FieldError> {
     if (!rules) return undefined;
 
     if (rules.required) {
         const isEmpty = value == null || value === '' || (Array.isArray(value) && value.length === 0);
         if (isEmpty) {
-            const message = typeof rules.required === 'string' ? rules.required : 'This field is required';
+            const message = typeof rules.required === 'string' ? rules.required : i18n.get('common.errors.fieldRequired');
             return { type: 'required', message };
         }
     }
@@ -83,8 +84,8 @@ async function validateField(value: FieldValue, rules: ValidationRules | undefin
     return undefined;
 }
 
-export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}): UseFormReturn<TFieldValues> {
-    const { defaultValues = {} as Partial<TFieldValues> } = options;
+export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues>): UseFormReturn<TFieldValues> {
+    const { defaultValues = {} as Partial<TFieldValues>, i18n } = options;
 
     const controlRef = useRef<InternalFormControl<TFieldValues>>();
 
@@ -136,7 +137,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
 
                 const modeToUse = control._options.mode || 'onBlur';
                 if (options?.shouldValidate !== false && (modeToUse === 'onInput' || modeToUse === 'all' || options?.shouldValidate)) {
-                    void validateFieldWithRaceConditionHandling(control, name, value, control._fieldRules.get(name));
+                    void validateFieldWithRaceConditionHandling({ control, name, value, rules: control._fieldRules.get(name), i18n });
                 }
 
                 control.notify();
@@ -165,6 +166,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
                 const isValid = !hasErrors && !control._isSubmitting;
                 return {
                     dirtyFields: control._computedDirtyFields,
+                    touchedFields: control._computedTouchedFields,
                     isSubmitting: control._isSubmitting,
                     isValid,
                     errors: control._computedErrors,
@@ -198,7 +200,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
                     const rules = control._fieldRules.get(fieldName);
 
                     if (rules) {
-                        await validateFieldWithRaceConditionHandling(control, fieldName, value, rules);
+                        await validateFieldWithRaceConditionHandling({ control, name: fieldName, value, rules, i18n });
                     }
 
                     return !control._errors.has(fieldName);
@@ -222,12 +224,14 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
 
     const errors = control._computedErrors;
     const dirtyFields = control._computedDirtyFields;
+    const touchedFields = control._computedTouchedFields;
 
     const hasErrors = Object.keys(errors).length > 0;
     const isValid = !hasErrors && !control._isSubmitting;
 
     const formState: FormState<TFieldValues> = {
         dirtyFields,
+        touchedFields,
         isSubmitting: control._isSubmitting,
         isValid,
         errors,
@@ -338,17 +342,24 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues> = {}
     };
 }
 
-export async function validateFieldWithRaceConditionHandling<TFieldValues>(
-    control: InternalFormControl<TFieldValues>,
-    name: FieldValues<TFieldValues>,
-    value: FieldValue,
-    rules?: ValidationRules
-): Promise<void> {
+export async function validateFieldWithRaceConditionHandling<TFieldValues>({
+    control,
+    i18n,
+    name,
+    value,
+    rules,
+}: {
+    control: InternalFormControl<TFieldValues>;
+    i18n: Localization['i18n'];
+    name: FieldValues<TFieldValues>;
+    value: FieldValue;
+    rules?: ValidationRules;
+}): Promise<void> {
     const currentCounter = (control._validationCounters.get(name) || 0) + 1;
     control._validationCounters.set(name, currentCounter);
 
     try {
-        const error = await validateField(value, rules);
+        const error = await validateField(value, rules, i18n);
 
         if (control._validationCounters.get(name) === currentCounter) {
             if (error) {

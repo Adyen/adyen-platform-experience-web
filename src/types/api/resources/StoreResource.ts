@@ -41,6 +41,10 @@ export interface components {
         StoreDTO: {
             description?: string;
             storeCode?: string;
+            setup?: {
+                termsAndConditionsProvisioned?: boolean;
+                themeFullyProvisioned?: boolean;
+            };
         };
         StoresResponseDTO: {
             data?: components["schemas"]["StoreDTO"][];

@@ -85,7 +85,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 }
 
 export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TFieldValues>): UseWizardFormReturn<TFieldValues> {
-    const { steps, defaultValues, mode = 'onBlur', onStepChange, validateBeforeNext = true } = options;
+    const { i18n, steps, defaultValues, mode = 'onBlur', onStepChange, validateBeforeNext = true } = options;
 
     const [wizardState, dispatch] = useReducer(wizardReducer, {
         currentStep: 0,
@@ -98,6 +98,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
 
     const form = useForm<TFieldValues>({
         defaultValues,
+        i18n,
         mode,
     });
 
@@ -134,18 +135,17 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
             }
 
             // Trigger validation for all fields in this step
-            const validationResults = await Promise.all(step.fields.map(({ fieldName }) => trigger(fieldName)));
-
-            const fieldsValid = validationResults.every(result => result);
+            const enabledFieldNames = step.fields.filter(({ visible }) => visible).map(({ fieldName }) => fieldName);
+            const validationResults = await trigger(enabledFieldNames);
 
             // Run custom step validation if provided
-            if (fieldsValid && step.validate) {
+            if (validationResults && step.validate) {
                 const values = getValues();
                 const customValid = await step.validate(values);
                 return customValid;
             }
 
-            return fieldsValid;
+            return validationResults;
         },
         [steps, getValues, trigger]
     );
@@ -289,6 +289,13 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         return summary;
     }, [steps, getValues, wizardState.displayValues]);
 
+    const getDisplayValue = useCallback(
+        (name: FieldValues<TFieldValues>): string | undefined => {
+            return wizardState.displayValues.get(name);
+        },
+        [wizardState.displayValues]
+    );
+
     return {
         ...form,
         // Wizard state
@@ -315,6 +322,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         getSummaryData,
 
         // Display values
+        getDisplayValue,
         setFieldDisplayValue,
         resetFieldDisplayValues,
     };

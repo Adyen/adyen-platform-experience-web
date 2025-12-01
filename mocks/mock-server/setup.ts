@@ -113,25 +113,9 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'stores',
         },
-        getCurrencies: {
-            method: 'GET',
-            url: 'currencies',
-        },
-        getCountries: {
-            method: 'GET',
-            url: 'countries',
-        },
         getPayByLinkConfiguration: {
             method: 'GET',
-            url: 'paybylink/paymentLinks/configuration',
-        },
-        createPayByLinkConfiguration: {
-            method: 'POST',
-            url: 'paybylink/paymentLinks/configuration',
-        },
-        getPayByLinkInstallments: {
-            method: 'GET',
-            url: 'paybylink/installments',
+            url: 'paybylink/paymentLinks/{storeId}/configuration',
         },
         getPaymentLinks: {
             method: 'GET',
@@ -140,6 +124,26 @@ export const setupBasicResponse = {
         payByLinkFilters: {
             method: 'GET',
             url: 'paybylink/filters',
+        },
+        createPBLPaymentLink: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks',
+        },
+        getPayByLinkTheme: {
+            method: 'GET',
+            url: 'paybylink/themes/{storeId}',
+        },
+        updatePayByLinkTheme: {
+            method: 'POST',
+            url: 'paybylink/themes/{storeId}',
+        },
+        getCurrencies: {
+            method: 'GET',
+            url: 'currencies',
+        },
+        getCountries: {
+            method: 'GET',
+            url: 'countries',
         },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };

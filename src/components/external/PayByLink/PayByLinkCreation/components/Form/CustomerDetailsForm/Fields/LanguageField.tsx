@@ -1,15 +1,16 @@
 import { Controller } from '../../../../../../../../hooks/form';
-import { FormValues } from '../../../types';
-import FormField from '../../FormField';
+import { PBLFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback, useMemo } from 'preact/hooks';
 import Select from '../../../../../../../internal/FormFields/Select';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
+import { VisibleField } from '../../../../../../../internal/FormWrappers/VisibleField';
+import FormField from '../../../../../../../internal/FormWrappers/FormField';
 
 export const LanguageField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { control, fieldsConfig } = useWizardFormContext<FormValues>();
+    const { control, fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
     const languagesQuery = useFetch({
         fetchOptions: { enabled: true },
@@ -43,33 +44,36 @@ export const LanguageField = () => {
     const isRequired = useMemo(() => fieldsConfig['shopperLocale']?.required, [fieldsConfig]);
 
     return (
-        <FormField label={i18n.get('payByLink.linkCreation.fields.language.label')} optional={!isRequired}>
-            <Controller<FormValues>
-                name="shopperLocale"
-                control={control}
-                rules={{
-                    required: isRequired,
-                }}
-                render={({ field, fieldState }) => {
-                    const onInput = (e: any) => {
-                        field.onInput(e.target.value);
-                    };
-                    return (
-                        <div>
-                            <Select
-                                {...field}
-                                selected={field.value as string}
-                                onChange={onInput}
-                                items={localeListItems}
-                                readonly={languagesQuery.isFetching}
-                                isValid={!fieldState.error}
-                                isInvalid={!!fieldState.error}
-                            />
-                            <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
-                        </div>
-                    );
-                }}
-            />
-        </FormField>
+        <VisibleField<PBLFormValues> name="shopperLocale">
+            <FormField label={i18n.get('payByLink.linkCreation.fields.language.label')} optional={!isRequired}>
+                <Controller<PBLFormValues>
+                    name="shopperLocale"
+                    control={control}
+                    rules={{
+                        required: isRequired,
+                    }}
+                    render={({ field, fieldState }) => {
+                        const onInput = (e: any) => {
+                            field.onInput(e.target.value);
+                        };
+                        return (
+                            <div>
+                                <Select
+                                    {...field}
+                                    selected={field.value as string}
+                                    onChange={onInput}
+                                    items={localeListItems}
+                                    readonly={languagesQuery.isFetching}
+                                    isValid={!fieldState.error}
+                                    isInvalid={!!fieldState.error && fieldState.isTouched}
+                                    filterable
+                                />
+                                <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
+                            </div>
+                        );
+                    }}
+                />
+            </FormField>
+        </VisibleField>
     );
 };

@@ -33,6 +33,7 @@
     $adyen-pe-self: &;
     $adyen-pe-self--active: #{$adyen-pe-self}--active;
 
+    font-size: style.token(text-body-font-size);
     isolation: isolate;
     overflow: hidden;
     position: relative;
@@ -136,14 +137,14 @@
     .adyen-pe-filter-input {
         background: transparent;
         border: 0;
-        border-radius: inherit;
+        border-radius: 0;
         caret-color: #0075ff;
         color: inherit;
+        flex: 1;
         font: inherit;
         inset: 0;
         letter-spacing: 0.025em;
-        padding: inherit;
-        position: absolute;
+        padding: 0;
 
         &::placeholder {
             color: style.token(color-label-tertiary);
@@ -161,8 +162,8 @@
     display: none;
     list-style: none;
     margin: 0;
-    //max-height: 375px;
-    //overflow-y: auto;
+    max-height: 375px;
+    overflow-y: auto;
     padding: 0;
 
     &--active {
@@ -213,6 +214,10 @@
         .adyen-pe-dropdown.adyen-pe-dropdown--multiselect & {
             display: none;
         }
+    }
+
+    &--keyboard-active {
+        background: style.token(color-background-primary-active);
     }
 
     &:first-child {

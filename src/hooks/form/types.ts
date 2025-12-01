@@ -1,5 +1,6 @@
 // Core form types
 import { ComponentChild } from 'preact';
+import Localization from '../../core/Localization';
 
 export type FieldValue = string | number | boolean | string[] | number[] | FileList | Date | null | undefined;
 export type FieldError = { message?: string; type: 'validation' | 'required' } | undefined;
@@ -9,7 +10,20 @@ export type ValidationValue = string | number | boolean;
 export type ValidationResult = { valid: boolean; message?: string };
 export type ValidateFn<TValue = any> = (value: TValue) => ValidationResult | Promise<ValidationResult>;
 
-export type FieldValues<TFieldValues> = Exclude<keyof TFieldValues, number | symbol>;
+type Primitive = string | number | boolean | Date | File | FileList | null | undefined;
+
+type NestedPaths<T, Prefix extends string = ''> = T extends Primitive | any[]
+    ? Prefix
+    : {
+          [K in keyof T & string]: K extends string
+              ? Prefix extends ''
+                  ? K | NestedPaths<T[K], K>
+                  : `${Prefix}.${K}` | NestedPaths<T[K], `${Prefix}.${K}`>
+              : never;
+      }[keyof T & string];
+
+// Replace the existing FieldValues type with this:
+export type FieldValues<TFieldValues> = NestedPaths<TFieldValues> | Exclude<keyof TFieldValues, number | symbol>;
 
 export interface ValidationRules {
     required?: boolean;
@@ -19,6 +33,7 @@ export interface ValidationRules {
 // Form state types
 export interface FormState<TFieldValues> {
     dirtyFields: Partial<Record<FieldValues<TFieldValues>, boolean>>;
+    touchedFields: Partial<Record<FieldValues<TFieldValues>, boolean>>;
     isSubmitting: boolean;
     isValid: boolean;
     errors: Partial<Record<FieldValues<TFieldValues>, FieldError>>;
@@ -39,6 +54,7 @@ export interface ControllerRenderProps<TFieldValues> {
         // Support both event-based and direct value updates for flexibility
         onInput: (value: any) => void;
         onBlur: () => void;
+        triggerValidation: () => void;
     };
     fieldState: ControllerFieldState;
     formState: FormState<TFieldValues>;
@@ -47,6 +63,7 @@ export interface ControllerRenderProps<TFieldValues> {
 // UseForm options
 export interface UseFormOptions<TFieldValues> {
     defaultValues?: Partial<TFieldValues>;
+    i18n: Localization['i18n'];
     mode?: 'onBlur' | 'onInput' | 'all';
 }
 

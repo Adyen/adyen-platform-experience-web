@@ -38,8 +38,9 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
         },
         payByLink: {
-            configuration: `${baseUrl}/paybylink/paymentLinks/configuration`,
+            configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
             installments: `${baseUrl}/paybylink/installments`,
+            paymentLinks: `${baseUrl}/paybylink/paymentLinks`,
         },
     } as const;
 };

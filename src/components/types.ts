@@ -9,6 +9,7 @@ import { PayoutsTableFields } from './external/PayoutsOverview/components/Payout
 import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
+import { PBLFormValues } from './external/PayByLink/PayByLinkCreation/components/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -195,7 +196,8 @@ export interface DisputeOverviewComponentProps
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayByLinkCreationComponentProps extends UIElementProps {
-    // Placeholder for component props
+    storeIds: string[] | string;
+    onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
 }
 
 export const enum FilterParam {

@@ -1,5 +1,6 @@
 import { FieldValues, UseFormReturn } from '../types';
 import { TranslationKey } from '../../../translations';
+import Localization from '../../../core/Localization';
 
 export interface WizardStep<TFieldValues> {
     id: string;
@@ -32,6 +33,7 @@ export type WizardAction =
     | { type: 'RESET_DISPLAY_VALUES' };
 
 export interface UseWizardFormOptions<TFieldValues> {
+    i18n: Localization['i18n'];
     steps: Readonly<WizardStep<TFieldValues>[]>;
     defaultValues?: Partial<TFieldValues>;
     mode?: 'onBlur' | 'onInput' | 'all';
@@ -64,6 +66,7 @@ export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldV
     getSummaryData: () => WizardSummaryData<TFieldValues>;
 
     // Display values
+    getDisplayValue: (name: FieldValues<TFieldValues>) => string | undefined;
     setFieldDisplayValue: (name: FieldValues<TFieldValues>, displayValue?: string) => void;
     resetFieldDisplayValues: () => void;
 }

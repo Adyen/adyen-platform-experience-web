@@ -1,10 +1,20 @@
-import { FormValues } from '../../types';
+import { PBLFormValues } from '../../types';
+import { FieldValues } from '../../../../../../../hooks/form/types';
 
-export const invisibleFields: (keyof FormValues)[] = [
-    'currency',
-    'deliveryDate',
-    'emailSender',
+export const SUMMARY_COPYABLE_FIELDS = new Set([
+    'shopperReference',
+    'shopperName.firstName',
+    'shopperName.lastName',
+    'emailAddress',
+    'phoneNumber',
+    'deliveryAddress.street',
+    'billingAddress.street',
+]);
+
+export const invisibleFields: FieldValues<PBLFormValues>[] = [
+    'currencyCode',
+    'deliverAt',
     'shopperLocale',
-    'sendPaymentSuccessToShopper',
+    'sendSuccessEmailToShopper',
     'sendLinkToShopper',
 ];

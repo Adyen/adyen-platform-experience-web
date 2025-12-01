@@ -102,6 +102,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                     autoComplete="off"
                     className="adyen-pe-filter-input"
                     onInput={props.onInput}
+                    onKeyDown={props.onFilterInputKeyDown}
                     placeholder={placeholderText}
                     ref={props.filterInputRef}
                     role="combobox"

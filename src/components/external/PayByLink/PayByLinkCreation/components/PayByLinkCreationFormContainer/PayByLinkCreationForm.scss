@@ -3,22 +3,22 @@
 .adyen-pe-pay-by-link-creation-form {
     display: flex;
     flex-direction: column;
-    gap: style.token(spacer-080);
+    gap: style.token(spacer-100);
 
-    &__form-container {
+    &__component {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__container {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-070);
         margin-top: style.token(spacer-060);
     }
 
-    &__form {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-100);
-    }
-
-    &__form-buttons-container {
+    &__buttons-container {
         display: flex;
     }
 
@@ -34,39 +34,39 @@
         gap: style.token(spacer-010);
     }
 
-    &__form-description {
+    &__description {
         color: style.token(color-label-secondary);
     }
 
-    &__form-fields-container {
+    &__fields-container {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-080);
     }
 
-    &__form-field-container {
+    &__field-container {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-030);
     }
 
-    &__form-field-label-container {
+    &__field-label-container {
         align-items: center;
         display: flex;
         gap: style.token(spacer-020);
     }
 
-    &__form-field-label-optional {
+    &__field-label-optional {
         color: style.token(color-label-secondary);
         font-weight: 400;
     }
 
-    &__form-field-support-text {
+    &__field-support-text {
         color: style.token(color-label-secondary);
         font-weight: 400;
     }
 
-    &__form-field-checkbox {
+    &__field-checkbox {
         align-items: center;
         cursor: pointer;
         display: flex;
@@ -77,7 +77,17 @@
         }
     }
 
-    &__form-email-checkbox-container {
+    &__shopper-name-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-060);
+
+        > * {
+            flex-grow: 1;
+        }
+    }
+
+    &__email-checkbox-container {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-040);
@@ -85,7 +95,7 @@
         padding-left: style.token(spacer-060);
     }
 
-    &__form-field-date-field-container {
+    &__field-date-field-container {
         padding: style.token(spacer-080);
     }
 }

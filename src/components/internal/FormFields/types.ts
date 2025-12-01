@@ -6,7 +6,8 @@ export type InputFieldElementPosition = 'start' | 'end';
 
 export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
     'aria-label'?: string;
-    dynamicFiltering?: boolean;
+    disabled?: boolean;
+    filterable?: boolean;
     items: readonly T[];
     readonly?: boolean;
     value?: T['id'] | readonly T['id'][];
@@ -36,6 +37,7 @@ export interface InputBaseProps {
     placeholder?: string;
     value?: any;
     maxLength?: number;
+    minLength?: number;
     required?: boolean;
     role?: JSX.HTMLAttributes<HTMLInputElement>['role'];
     min?: number;

@@ -1,20 +1,26 @@
-import Typography from '../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
-
 import { PropsWithChildren } from 'preact/compat';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import useCoreContext from '../../../core/Context/useCoreContext';
+import Typography from '../Typography/Typography';
+import { TypographyElement, TypographyVariant } from '../Typography/types';
+import cx from 'classnames';
 
-const FormField = ({ label, optional, supportText, children }: PropsWithChildren<{ label: string; optional: boolean; supportText?: string }>) => {
+const FormField = ({
+    label,
+    optional,
+    supportText,
+    children,
+    className,
+}: PropsWithChildren<{ label: string; optional: boolean; supportText?: string; className?: string }>) => {
     const { i18n } = useCoreContext();
 
     return (
-        <div className="adyen-pe-pay-by-link-creation-form__form-field-container">
-            <div className="adyen-pe-pay-by-link-creation-form__form-field-label-container">
+        <div className={cx('adyen-pe-pay-by-link-creation-form__field-container', className)}>
+            <div className="adyen-pe-pay-by-link-creation-form__field-label-container">
                 <Typography
                     el={TypographyElement.SPAN}
                     variant={TypographyVariant.BODY}
                     stronger
-                    className="adyen-pe-pay-by-link-creation-form-form__form-field-label"
+                    className="adyen-pe-pay-by-link-creation-form__field-label"
                 >
                     {label}
                 </Typography>
@@ -22,7 +28,7 @@ const FormField = ({ label, optional, supportText, children }: PropsWithChildren
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation-form__form-field-label-optional"
+                        className="adyen-pe-pay-by-link-creation-form__field-label-optional"
                     >
                         {`(${i18n.get('payByLink.linkCreation.fields.optional.label')})`}
                     </Typography>
@@ -36,7 +42,7 @@ const FormField = ({ label, optional, supportText, children }: PropsWithChildren
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation-form__form-field-support-text"
+                        className="adyen-pe-pay-by-link-creation-form__field-support-text"
                     >
                         {supportText}
                     </Typography>
