@@ -2,8 +2,7 @@ import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS } from '../mock-data/payByLink';
-import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS, PAYMENT_LINKS_LIST_RESPONSE } from '../mock-data';
-import { IDisputeStatusGroup } from '../../src/types/api/models/disputes';
+import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
 
 const mockEndpoints = endpoints('mock');

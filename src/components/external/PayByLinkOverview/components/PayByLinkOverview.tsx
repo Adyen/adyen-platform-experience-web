@@ -37,6 +37,8 @@ import { containerQueries, useResponsiveContainer } from '../../../../hooks/useR
 import Select from '../../../internal/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
+import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
+import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -220,7 +222,6 @@ export const PayByLinkOverview = ({
 
     const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IPayByLinkStatusGroup>['onChange']>>(
         ({ id: statusGroup }) => {
-            debugger;
             debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
 
             debounceTimeoutIdRef.current = setTimeout(() => {

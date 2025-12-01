@@ -1,5 +1,5 @@
 import { FC } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
@@ -15,7 +15,11 @@ import { TagVariant } from '../../../internal/Tag/types';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import { IPayByLinkStatus } from '../../../../types';
-import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE } from '../../../../constants/dateFormats';
+import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants/dateFormats';
+import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
+import { Tooltip } from '../../../internal/Tooltip/Tooltip';
+import Icon from '../../../internal/Icon';
+import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
 
 const getTagVariantForStatus = (status: IPayByLinkStatus) => {
     switch (status) {
@@ -69,6 +73,21 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
+
+    const getTimeToDeadline = useCallback(
+        (dueDate: string) => {
+            if (!dueDate) return '';
+            const deadline = new Date(dueDate).getTime();
+            const diffInMs = deadline - Date.now();
+            const diffInDays = Math.ceil(diffInMs / DAY_MS);
+            const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
+
+            return diffInDays <= 1
+                ? i18n.get('payByLink.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
+                : i18n.get('payByLink.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
+        },
+        [dateFormat, i18n]
+    );
 
     const columns = useTableColumns({
         fields: PAY_BY_LINK_TABLE_FIELDS,
@@ -143,7 +162,15 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                         );
                     },
                     expirationDate: ({ value }) => {
-                        return (
+                        const isUrgent = isActionNeededUrgently(value);
+
+                        return isUrgent ? (
+                            <Tooltip content={getTimeToDeadline(value!)}>
+                                <span>
+                                    <time dateTime={value!}>{dateFormat(value, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE)}</time>
+                                </span>
+                            </Tooltip>
+                        ) : (
                             <time dateTime={value}>
                                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                     {dateFormat(value, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE)}

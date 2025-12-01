@@ -5,10 +5,12 @@ import { useMemo } from 'preact/hooks';
 
 const usePayByLinkFilters = (enabled?: boolean) => {
     const { payByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
+    // const { getStores: getStoresEndpointCall } = useConfigContext().endpoints;
 
     // TODO: Add error case. Fallback can be static values or be received from CDN.
     const {
         data: filters,
+        // isFetching: isFetchingFilters,
         isFetching,
         error,
     } = useFetch(
@@ -21,7 +23,28 @@ const usePayByLinkFilters = (enabled?: boolean) => {
         )
     );
 
-    return { filters, isFetching, error } as const;
+    // const {
+    //     data: stores,
+    //     isFetching: isFetchingStores,
+    //     error: storeError,
+    // } = useFetch(
+    //     useMemo(
+    //         () => ({
+    //             fetchOptions: { enabled: !!getStoresEndpointCall && (enabled ?? true), keepPrevData: true },
+    //             queryFn: async () => getStoresEndpointCall?.(),
+    //         }),
+    //         [getStoresEndpointCall, enabled]
+    //     )
+    // );
+
+    // const isFetching = isFetchingStores || isFetchingFilters;
+
+    return {
+        filters,
+        // stores,
+        isFetching,
+        error,
+    } as const;
 };
 
 export default usePayByLinkFilters;
