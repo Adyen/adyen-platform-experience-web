@@ -26,7 +26,12 @@
     &-checkbox {
         display: flex;
         gap: style.token(spacer-060);
-        margin-bottom: style.token(spacer-110);
-        margin-top: style.token(spacer-080);
+
+        &__container {
+            display: flex;
+            gap: style.token(spacer-060);
+            margin-bottom: style.token(spacer-110);
+            margin-top: style.token(spacer-080);
+        }
     }
 }

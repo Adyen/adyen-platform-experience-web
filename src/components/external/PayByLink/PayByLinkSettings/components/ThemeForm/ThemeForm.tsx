@@ -14,6 +14,7 @@ import { ButtonVariant } from '../../../../../internal/Button/types';
 import { useConfigContext } from '../../../../../../core/ConfigContext';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { useCallback, useState } from 'preact/hooks';
+import { h } from 'preact';
 
 interface ThemeFormProps {
     theme?: {
@@ -46,7 +47,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
         );
     }, [brandName, updatePayByLinkTermsAndConditions, selectedStore]);
 
-    const onChange = e => setBrandName(e.target.value);
+    const onChange = (e: h.JSX.TargetedEvent<HTMLInputElement>) => setBrandName(e?.currentTarget?.value);
 
     return (
         <div className="adyen-pe-pay-by-link-theme-form">
@@ -56,7 +57,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                         {i18n.get('payByLink.settings.theme.brandName.input.label')}
                     </Typography>
                 </label>
-                <InputText type="text" lang={i18n.locale} uniqueId={brandInputId} value={brandName} onChange={onChange} />
+                <InputText type="text" lang={i18n.locale} uniqueId={brandInputId} value={brandName} onInput={onChange} />
             </div>
             <div className="adyen-pe-pay-by-link-settings__input-container">
                 <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
@@ -67,15 +68,35 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                 <FileInput maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE} allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES} />
                 <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}{' '}
+                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
                         {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
                     </Typography>
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}{' '}
+                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
                         {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
                     </Typography>
                 </div>
             </div>
+
+            <div className="adyen-pe-pay-by-link-settings__input-container">
+                <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                        {i18n.get('payByLink.settings.theme.brandWideLogo.input.label')}
+                    </Typography>
+                </label>
+                <FileInput maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE} allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES} />
+                <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
+                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                        {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
+                    </Typography>
+                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                        {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
+                    </Typography>
+                </div>
+            </div>
+
             <div className="adyen-pe-pay-by-link-settings__cta-container">
                 <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
                     {i18n.get('payByLink.settings.common.action.save')}

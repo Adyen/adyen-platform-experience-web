@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useEffect, useState, useRef } from 'preact/hooks';
+import { useEffect, useState, useRef, useCallback } from 'preact/hooks';
 
 import { CheckboxProps } from './types';
 import './Checkbox.scss';
@@ -7,25 +7,30 @@ import Icon from '../Icon';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { uniqueId } from '../../../utils';
+import { h } from 'preact';
 
-export const Checkbox = ({ checked, description, disabled, id, label, name, value, onInput, ...props }: CheckboxProps) => {
+export const Checkbox = ({ checked, description, disabled, id, label, name, value, onInput, className, ...props }: CheckboxProps) => {
     const [checkedInternal, setCheckedInternal] = useState(checked);
+    const inputRef = useRef(uniqueId());
 
-    const inputId = id || useRef(uniqueId()).current;
+    const inputId = id || inputRef.current;
 
-    const handleInput = event => {
-        onInput?.(event);
-        if (checked === undefined) {
-            setCheckedInternal(event?.currentTarget?.checked ?? false);
-        }
-    };
+    const handleInput = useCallback(
+        (event: h.JSX.TargetedEvent<HTMLInputElement>) => {
+            onInput?.(event);
+            if (checked === undefined) {
+                setCheckedInternal(event?.currentTarget?.checked ?? false);
+            }
+        },
+        [checked, onInput]
+    );
 
     useEffect(() => {
         setCheckedInternal(checked);
     }, [checked]);
 
     return (
-        <div className="adyen-pe-checkbox">
+        <div className={cx('adyen-pe-checkbox', className)}>
             <input
                 name={name}
                 type="checkbox"

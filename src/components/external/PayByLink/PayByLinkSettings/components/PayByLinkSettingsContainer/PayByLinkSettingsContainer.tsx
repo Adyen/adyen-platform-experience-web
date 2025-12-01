@@ -18,7 +18,6 @@ import { TranslationKey } from '../../../../../../translations';
 import PayByLinkSettingsContent from './PayByLinkSettingsContent';
 import Button from '../../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../../internal/Button/types';
-import { useSettingsMenu } from '../../hooks/useSettingsMenu';
 
 export const ActiveMenuItem = {
     theme: 'theme',

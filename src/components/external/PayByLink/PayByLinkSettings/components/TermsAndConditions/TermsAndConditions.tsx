@@ -1,18 +1,19 @@
 import { EMPTY_OBJECT, uniqueId } from '../../../../../../utils';
-import { Checkbox } from '../../../../../internal/Checkbox';
-import InputText from '../../../../../internal/FormFields/InputText';
-import { TypographyVariant } from '../../../../../internal/Typography/types';
-import Typography from '../../../../../internal/Typography/Typography';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../hooks/useFetch';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
-import Spinner from '../../../../../internal/Spinner';
 import { PayByLinkTermsAndConditionsContainerProps } from './TermsAndConditionsContainer';
-import Button from '../../../../../internal/Button/Button';
+import { h } from 'preact';
+import Button from '../../../../../internal/Button';
+import { Checkbox } from '../../../../../internal/Checkbox';
 import { ButtonVariant } from '../../../../../internal/Button/types';
+import InputText from '../../../../../internal/FormFields/InputText';
+import Typography from '../../../../../internal/Typography/Typography';
+import Spinner from '../../../../../internal/Spinner';
+import { TypographyVariant } from '../../../../../internal/Typography/types';
 
 export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndConditionsContainerProps) => {
     const { i18n } = useCoreContext();
@@ -59,12 +60,12 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
         }
     }, [data]);
 
-    const onTermsAndConditionsURLInput = useCallback(e => {
+    const onTermsAndConditionsURLInput = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
         e.preventDefault();
-        setTermsAndConditionsURL(e.target.value);
+        setTermsAndConditionsURL(e?.currentTarget?.value);
     }, []);
 
-    const onCheckboxInput = useCallback(e => {
+    const onCheckboxInput = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
         e.preventDefault();
         setIsRequirementsChecked(e.currentTarget?.checked);
     }, []);
@@ -77,7 +78,7 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
     });
 
     const onSave = useCallback(() => {
-        if (!termsAndConditionsURL) return;
+        if (!isRequirementsChecked) return;
         void updatePayByLinkTermsAndConditions.mutate(
             {
                 contentType: 'application/json',
@@ -87,7 +88,7 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
             },
             { path: { storeId: selectedStore! } }
         );
-    }, [termsAndConditionsURL, updatePayByLinkTermsAndConditions, selectedStore]);
+    }, [isRequirementsChecked, termsAndConditionsURL, updatePayByLinkTermsAndConditions, selectedStore]);
 
     const isLoading = isFetching;
 
@@ -110,23 +111,15 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
                             >
                                 {i18n.get('payByLink.settings.termsAndConditions.urlInput.label')}
                             </Typography>
-                            <Typography
-                                variant={TypographyVariant.BODY}
-                                className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--required"
-                            >
-                                {i18n.get('payByLink.settings.common.input.required')}
-                            </Typography>
                         </label>
                         <InputText uniqueId={checkboxIdentifier.current} value={termsAndConditionsURL} onInput={onTermsAndConditionsURLInput} />
                     </div>
-                    <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox">
-                        <Checkbox label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')} onInput={onCheckboxInput} />
-                        <Typography
-                            variant={TypographyVariant.BODY}
-                            className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--required"
-                        >
-                            {i18n.get('payByLink.settings.common.input.required')}
-                        </Typography>
+                    <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
+                        <Checkbox
+                            className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
+                            label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')}
+                            onInput={onCheckboxInput}
+                        />
                     </div>
                     <div className="adyen-pe-pay-by-link-settings__cta-container">
                         <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
