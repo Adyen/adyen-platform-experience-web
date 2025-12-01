@@ -5,7 +5,7 @@
 
     &__brand-input {
         display: block;
-        margin-bottom: style.token(spacer-080);
+        margin-bottom: style.token(spacer-040);
     }
 
     &__file-input {
@@ -15,6 +15,9 @@
 
     &__file-info {
         color: style.token(color-label-secondary);
-        padding-top: style.token(spacer-080);
+
+        &-container {
+            margin-top: style.token(spacer-040);
+        }
     }
 }

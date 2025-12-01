@@ -6,7 +6,7 @@ export interface StoreSelectorItemParams {
 }
 
 export interface StoreSelectorProps {
-    stores: StoreSelectorItemParams[];
+    stores?: StoreSelectorItemParams[];
     selectedStoreId?: string;
     setSelectedStoreId: (id: string) => void;
 }

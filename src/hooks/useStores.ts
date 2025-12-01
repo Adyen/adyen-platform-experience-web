@@ -7,7 +7,8 @@ export const useStores = () => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
     const { getStores } = useConfigContext().endpoints;
 
-    const { data } = useFetch(
+    //TODO: Add error cases and loading cases
+    const { data, error, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -33,8 +34,10 @@ export const useStores = () => {
     );
 
     useEffect(() => {
-        setSelectedStore(stores?.[0]?.id);
-    }, [stores]);
+        if (!selectedStore && stores && stores?.length > 0) {
+            setSelectedStore(stores?.[0]?.id);
+        }
+    }, [stores, selectedStore]);
 
     return { stores, selectedStore, setSelectedStore };
 };

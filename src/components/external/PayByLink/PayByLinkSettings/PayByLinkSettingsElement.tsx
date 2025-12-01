@@ -3,10 +3,7 @@ import UIElement from '../../UIElement/UIElement';
 import PayByLinkSettingsContainer from './components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
 
 export class PayByLinkSettingsElement extends UIElement<PayByLinkSettingsComponentProps> {
-    // TODO: CHANGE
-    // TODO: CHANGE
-    // TODO: CHANGE
-    public static type: ExternalComponentType = 'capitalOverview';
+    public static type: ExternalComponentType = 'payByLinkSettings';
 
     constructor(props: _UIComponentProps<PayByLinkSettingsComponentProps>) {
         super(props);

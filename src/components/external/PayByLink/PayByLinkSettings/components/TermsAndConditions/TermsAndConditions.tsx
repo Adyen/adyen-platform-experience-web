@@ -1,43 +1,140 @@
-import { uniqueId } from '../../../../../../utils';
+import { EMPTY_OBJECT, uniqueId } from '../../../../../../utils';
 import { Checkbox } from '../../../../../internal/Checkbox';
 import InputText from '../../../../../internal/FormFields/InputText';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import Typography from '../../../../../internal/Typography/Typography';
 import './TermsAndConditions.scss';
-import { useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useConfigContext } from '../../../../../../core/ConfigContext';
+import { useFetch } from '../../../../../../hooks/useFetch';
+import useMutation from '../../../../../../hooks/useMutation/useMutation';
+import Spinner from '../../../../../internal/Spinner';
+import { PayByLinkTermsAndConditionsContainerProps } from './TermsAndConditionsContainer';
+import Button from '../../../../../internal/Button/Button';
+import { ButtonVariant } from '../../../../../internal/Button/types';
 
-export const TermsAndConditions = () => {
+export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndConditionsContainerProps) => {
+    const { i18n } = useCoreContext();
+
+    const initialTermsAndConditionsURL = useRef<string | undefined>();
     const checkboxIdentifier = useRef(uniqueId());
+    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>();
+    const [isRequirementsChecked, setIsRequirementsChecked] = useState(false);
+
+    const { getPayByLinkSettings, updatePayByLinkSettings } = useConfigContext().endpoints;
+
+    //TODO: Add error cases and loading cases
+    const { data, isFetching } = useFetch(
+        useMemo(
+            () => ({
+                fetchOptions: {
+                    enabled: !!getPayByLinkSettings,
+                },
+                queryFn: async () => getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } }),
+            }),
+            [getPayByLinkSettings, selectedStore]
+        )
+    );
+
+    // const updatePayByLinkTermsAndConditions = useMutation({
+    //     queryFn: updatePayByLinkSettings,
+    //     options: {
+    //         onSuccess: data => console.log(data),
+    //     },
+    // });
+
+    // const onSave = useCallback(() => {
+    //     if(!isRequirementsChecked) return;
+    //    void updatePayByLinkTermsAndConditions.mutate(
+    //         { contentType: 'application/json', body: { data: {termsAndConditionsURL} } },
+    //         { path: { storeId: selectedStore! } }
+    //     );
+    // }, [isRequirementsChecked, selectedStore, termsAndConditionsURL, updatePayByLinkTermsAndConditions]);
+
+    useEffect(() => {
+        if (data?.data?.termsOfServiceUrl) {
+            initialTermsAndConditionsURL.current = data?.data?.termsOfServiceUrl;
+            setTermsAndConditionsURL(data?.data?.termsOfServiceUrl);
+        }
+    }, [data]);
+
+    const onTermsAndConditionsURLInput = useCallback(e => {
+        e.preventDefault();
+        setTermsAndConditionsURL(e.target.value);
+    }, []);
+
+    const onCheckboxInput = useCallback(e => {
+        e.preventDefault();
+        setIsRequirementsChecked(e.currentTarget?.checked);
+    }, []);
+
+    const updatePayByLinkTermsAndConditions = useMutation({
+        queryFn: updatePayByLinkSettings,
+        options: {
+            onSuccess: data => console.log(data),
+        },
+    });
+
+    const onSave = useCallback(() => {
+        if (!termsAndConditionsURL) return;
+        void updatePayByLinkTermsAndConditions.mutate(
+            {
+                contentType: 'application/json',
+                body: {
+                    termsAndConditionsURL: termsAndConditionsURL!,
+                },
+            },
+            { path: { storeId: selectedStore! } }
+        );
+    }, [termsAndConditionsURL, updatePayByLinkTermsAndConditions, selectedStore]);
+
+    const isLoading = isFetching;
+
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
-            <Typography variant={TypographyVariant.TITLE} medium>
-                Terms and conditions
-            </Typography>
-            <Typography variant={TypographyVariant.BODY} wide className="adyen-pe-pay-by-link-settings-terms-and-conditions-disclaimer">
-                In order to comply with the latest regulations, you'll need to complete the information below.
-            </Typography>
-            <label
-                htmlFor={checkboxIdentifier.current}
-                aria-labelledby={checkboxIdentifier.current}
-                className="adyen-pe-pay-by-link-settings-terms-and-conditions-input"
-            >
-                Your terms and conditions URL
-                <InputText uniqueId={checkboxIdentifier.current} onInput={() => {}} />
-            </label>
-
-            <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkboxes">
-                <Checkbox label="I confirm that these Terms and Conditions that I send out meet all requirements" onInput={() => {}} />
-                <Checkbox
-                    label="I confirm that I will use this payment link for the same business line (products/business model) previously approved by [Platform_name]"
-                    onInput={() => {}}
-                />
-            </div>
-            <div>
-                <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-settings-terms-and-conditions-disclaimer">
-                    If you're using this payment link to gather payments for a different line of business, then you will need to reach out to support
-                    for approval.
-                </Typography>
-            </div>
+            {isLoading ? (
+                <Spinner size={'x-small'} />
+            ) : (
+                <>
+                    <div className="adyen-pe-pay-by-link-settings__input-container">
+                        <label
+                            htmlFor={checkboxIdentifier.current}
+                            aria-labelledby={checkboxIdentifier.current}
+                            className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label"
+                        >
+                            <Typography
+                                variant={TypographyVariant.BODY}
+                                stronger
+                                className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--info-text"
+                            >
+                                {i18n.get('payByLink.settings.termsAndConditions.urlInput.label')}
+                            </Typography>
+                            <Typography
+                                variant={TypographyVariant.BODY}
+                                className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--required"
+                            >
+                                {i18n.get('payByLink.settings.common.input.required')}
+                            </Typography>
+                        </label>
+                        <InputText uniqueId={checkboxIdentifier.current} value={termsAndConditionsURL} onInput={onTermsAndConditionsURLInput} />
+                    </div>
+                    <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox">
+                        <Checkbox label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')} onInput={onCheckboxInput} />
+                        <Typography
+                            variant={TypographyVariant.BODY}
+                            className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--required"
+                        >
+                            {i18n.get('payByLink.settings.common.input.required')}
+                        </Typography>
+                    </div>
+                    <div className="adyen-pe-pay-by-link-settings__cta-container">
+                        <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
+                            {i18n.get('payByLink.settings.common.action.save')}
+                        </Button>
+                    </div>
+                </>
+            )}
         </section>
     );
 };

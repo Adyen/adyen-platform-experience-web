@@ -141,6 +141,14 @@ export const setupBasicResponse = {
             method: 'POST',
             url: '/paybylink/themes/{storeId}',
         },
+        getPayByLinkSettings: {
+            method: 'GET',
+            url: '/paybylink/settings/{storeId}',
+        },
+        updatePayByLinkSettings: {
+            method: 'POST',
+            url: '/paybylink/settings/{storeId}',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

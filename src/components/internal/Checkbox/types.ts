@@ -8,4 +8,5 @@ export interface CheckboxProps {
     name?: string;
     onInput?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     value?: boolean;
+    className?: string;
 }

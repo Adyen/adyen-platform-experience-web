@@ -3,7 +3,7 @@ import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, STORE_THEME } from '../mock-data/payByLink';
+import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, STORE_THEME, STORE_SETTINGS } from '../mock-data/payByLink';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
@@ -106,7 +106,30 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json({});
+        return HttpResponse.json(null, { status: 204 });
+    }),
+
+    // GET /paybylink/settings/{storeId}
+    http.get(mockEndpointsPBL.settings, async ({ params }) => {
+        const store = getStoreForRequestPathParams(params);
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json({
+            data: STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS],
+        });
+    }),
+
+    // POST /paybylink/settings/{storeId}
+    http.post(mockEndpointsPBL.settings, async () => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json(null, { status: 204 });
     }),
     // GET /paybylink/paymentLinks - Payment links list
     http.get(mockEndpoints.payByLink.paymentLinks, async ({ request }) => {

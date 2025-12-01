@@ -183,11 +183,7 @@ export const INSTALLMENTS = [
 ];
 
 export const STORE_THEME = {
-    STORE_NY_001: {
-        brandName: 'Adyen New York',
-        logoUrl:
-            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcLzFnV2VWYW1DNjdEQkhoNGVuZGM3LnN2ZyJ9:adyen:tM20TfkBOcMYtvmFW3SRmExH38gxsfViMDHixLhRbCU',
-    },
+    STORE_NY_001: {},
     STORE_LON_001: {
         brandName: 'Adyen London',
         logoUrl:
@@ -196,6 +192,18 @@ export const STORE_THEME = {
     STORE_AMS_001: {
         brandName: 'Adyen Amsterdam',
         logoUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
+    },
+};
+
+export const STORE_SETTINGS = {
+    STORE_NY_001: {},
+    STORE_LON_001: {
+        termsOfServiceUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcLzFGc1Z0alNLVnYzN3FpVTJVVkZ0LnN2ZyJ9:adyen:RAaShqweWtpB-wgUfoAAyM0i53H16yUEh3btcbNlZoI',
+    },
+    STORE_AMS_001: {
+        termsOfServiceUrl:
             'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
     },
 };

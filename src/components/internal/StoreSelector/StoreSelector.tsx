@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import Select from '../FormFields/Select';
 import { StoreSelectorButtonContent } from './StoreSelectorButton/StoreSelectorButton';
 import { StoreSelectorItem } from './StoreSelectorItem/StoreSelectorItem';
@@ -6,7 +6,7 @@ import { StoreSelectorItemParams, StoreSelectorProps } from './types';
 import { SelectChangeEvent } from '../FormFields/Select/types';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 
-export const StoreSelector = ({ stores, selectedStoreId, setSelectedStoreId }: StoreSelectorProps) => {
+export const StoreSelector = ({ stores = [], selectedStoreId, setSelectedStoreId }: StoreSelectorProps) => {
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
     const handleStoreChange = useCallback(
         ({ target }: SelectChangeEvent) => {

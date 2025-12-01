@@ -233,4 +233,5 @@ export type ExternalComponentType =
     | 'disputesManagement'
     | 'payByLinkCreation'
     | 'payByLinkTheme'
-    | 'payByLinkOverview';
+    | 'payByLinkOverview'
+    | 'payByLinkSettings';

@@ -12,3 +12,4 @@ export type IPayByLinkStatus = Schema<components, 'PayByLinkStatus'>;
 export type IPayByLinkType = Schema<components, 'PaymentLinkType'>;
 export type IPayByLinkStatusGroup = keyof Schema<components, 'PaymentLinkStatuses'>;
 export type IPayByLinkFilterStatusGroup = Schema<components, 'FiltersResponseDTO'>['statuses'];
+export type IStore = Schema<components, 'StoreDTO'>;

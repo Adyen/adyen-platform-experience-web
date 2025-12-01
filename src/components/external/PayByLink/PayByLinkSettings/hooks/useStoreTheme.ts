@@ -6,7 +6,8 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 export const useStoreTheme = (selectedStore: string) => {
     const { getPayByLinkTheme } = useConfigContext().endpoints;
 
-    const { data } = useFetch(
+    //TODO: Add error cases and loading cases
+    const { data, error, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -18,10 +19,10 @@ export const useStoreTheme = (selectedStore: string) => {
         )
     );
 
-    //Add IDs for Select component compatibility
+    //TODO: Add IDs for Select component compatibility
     const theme = useMemo(() => {
         return data?.data;
     }, [data]);
 
-    return { theme };
+    return { theme, isFetching };
 };
