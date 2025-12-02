@@ -156,7 +156,7 @@ export interface components {
             status: components['schemas']['PaymentLinkStatus'];
         };
         /** @enum {string} */
-        StatusGroup: 'ACTIVE' | 'INACTIVE';
+        StatusGroup: 'active' | 'inactive';
         PaymentLinksResponse: {
             /** @description Links */
             _links: components['schemas']['Links'];

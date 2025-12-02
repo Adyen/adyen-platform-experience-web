@@ -8,7 +8,7 @@ export const BASE_TABLE_GRID_CLASS = 'adyen-pe-pay-by-link-table';
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
 export const TABS_CONTAINER_CLASS = `${BASE_CLASS}__tabs-container`;
 
-export const DEFAULT_PAY_BY_LINK_STATUS_GROUP: IPayByLinkStatusGroup = 'ACTIVE';
+export const DEFAULT_PAY_BY_LINK_STATUS_GROUP: IPayByLinkStatusGroup = 'active';
 
 export const PAY_BY_LINK_STATUS_GROUPS = {
     active: 'payByLink.overview.common.statusGroups.active',
@@ -16,14 +16,14 @@ export const PAY_BY_LINK_STATUS_GROUPS = {
 } satisfies Record<keyof IPayByLinkFilterStatusGroup, TranslationKey>;
 
 export const PAY_BY_LINK_STATUS_GROUPS_TABS = Object.entries(PAY_BY_LINK_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({
-    id: statusGroup.toUpperCase() as IPayByLinkStatusGroup,
+    id: statusGroup as IPayByLinkStatusGroup,
     label: labelTranslationKey,
     content: null,
 })) satisfies TabComponentProps<IPayByLinkStatusGroup>['tabs'];
 
 export const PAY_BY_LINK_STATUS_GROUPS_FILTER_MAPPING = {
-    ACTIVE: 'active',
-    INACTIVE: 'inactive',
+    active: 'active',
+    inactive: 'inactive',
 } as const satisfies Record<IPayByLinkStatusGroup, keyof IPayByLinkFilterStatusGroup>;
 
 export const PAY_BY_LINK_STATUSES = {

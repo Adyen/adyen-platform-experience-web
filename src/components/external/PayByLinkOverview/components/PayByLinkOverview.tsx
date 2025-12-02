@@ -3,7 +3,6 @@ import {
     BASE_DETAILS_CLASS,
     BASE_XS_CLASS,
     DEFAULT_PAY_BY_LINK_STATUS_GROUP,
-    PAY_BY_LINK_STATUS_GROUPS,
     PAY_BY_LINK_STATUS_GROUPS_FILTER_MAPPING,
     PAY_BY_LINK_STATUS_GROUPS_TABS,
     PAY_BY_LINK_STATUSES,
@@ -37,8 +36,6 @@ import { containerQueries, useResponsiveContainer } from '../../../../hooks/useR
 import Select from '../../../internal/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
-import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
-import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -91,6 +88,8 @@ export const PayByLinkOverview = ({
     filterParams,
 }: ExternalUIComponentProps<PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; isFiltersLoading: boolean }>) => {
     const { i18n } = useCoreContext();
+
+    console.log(filterParams);
 
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payByLink');
@@ -284,17 +283,12 @@ export const PayByLinkOverview = ({
                         refreshNowTimestamp={refreshNowTimestamp}
                         updateFilters={updateFilters}
                     />
-                    <MultiSelectionFilter {...linkTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')} />
-                    <MultiSelectionFilter {...linkStatusFilter} placeholder={i18n.get('payByLink.overview.filters.types.status.label')} />
-                    <AmountFilter
-                        selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
-                        name={i18n.get('payByLink.overview.filters.types.amount.label')}
-                        label={i18n.get('payByLink.overview.filters.types.amount.label')}
-                        minAmount={filters[FilterParam.MIN_AMOUNT]}
-                        maxAmount={filters[FilterParam.MAX_AMOUNT]}
-                        updateFilters={updateFilters}
-                        onChange={updateFilters}
-                    />
+                    {filterParams?.linkTypes ?? (
+                        <MultiSelectionFilter {...linkTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')} />
+                    )}
+                    {filterParams?.statuses ?? (
+                        <MultiSelectionFilter {...linkStatusFilter} placeholder={i18n.get('payByLink.overview.filters.types.status.label')} />
+                    )}
                     <TextFilter
                         name={i18n.get('payByLink.overview.filters.types.merchantReference.label')}
                         label={

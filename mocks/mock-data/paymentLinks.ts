@@ -679,9 +679,9 @@ export const PAYMENT_LINKS_LIST_RESPONSE: IPaymentLinksListResponse = {
 
 export const getPaymentLinksByStatusGroup = (status: IPayByLinkStatusGroup) => {
     switch (status) {
-        case 'ACTIVE':
+        case 'active':
             return ACTIVE_PAYMENT_LINKS;
-        case 'INACTIVE':
+        case 'inactive':
             return INACTIVE_PAYMENT_LINKS;
         default:
             return ALL_PAYMENT_LINKS;
