@@ -91,6 +91,7 @@ export const payByLinkMocks = [
         const merchantReference = url.searchParams.get('merchantReference');
         const amount = url.searchParams.get('amount');
         const statuses = url.searchParams.getAll('statuses');
+        const storeIds = url.searchParams.getAll('storeIds');
         const creationSince = url.searchParams.get('creationSince');
         const createdUntil = url.searchParams.get('createdUntil');
         const linkTypes = url.searchParams.getAll('linkTypes');
@@ -105,6 +106,7 @@ export const payByLinkMocks = [
                 (!merchantReference || link.merchantReference.toLowerCase().includes(merchantReference.toLowerCase())) &&
                 (!statuses.length || statuses.includes(link.status)) &&
                 (!linkTypes.length || linkTypes.includes(link.linkType)) &&
+                (!storeIds.length || storeIds.includes(link.storeCode)) &&
                 (!amount || link.amount.value === Number(amount)) &&
                 (!creationSince || compareDates(link.creationDate, creationSince, 'ge')) &&
                 (!createdUntil || compareDates(link.creationDate, createdUntil, 'le'))

@@ -25,6 +25,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -38,6 +39,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -50,6 +52,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-003',
         linkType: 'singleUse',
         status: 'paymentPending',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -62,6 +65,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-004',
         linkType: 'open',
         status: 'paymentPending',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -75,6 +79,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -88,6 +93,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -100,6 +106,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-007',
         linkType: 'singleUse',
         status: 'paymentPending',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -113,6 +120,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -126,6 +134,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'paymentPending',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -139,6 +148,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -152,6 +162,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'paymentPending',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -165,6 +176,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -178,6 +190,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -191,6 +204,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -204,6 +218,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -217,6 +232,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'paymentPending',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -230,6 +246,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -243,6 +260,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -256,6 +274,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'paymentPending',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -269,6 +288,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -282,6 +302,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -295,6 +316,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -308,6 +330,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -321,6 +344,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -334,6 +358,7 @@ export const ACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'active',
+        storeCode: 'STORE_NY_001',
     },
 ];
 
@@ -350,6 +375,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -363,6 +389,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -375,6 +402,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-003',
         linkType: 'singleUse',
         status: 'expired',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -387,6 +415,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-004',
         linkType: 'open',
         status: 'completed',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -400,6 +429,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -413,6 +443,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -425,6 +456,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         merchantReference: 'REF-007',
         linkType: 'singleUse',
         status: 'expired',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -438,6 +470,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -451,6 +484,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -464,6 +498,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -477,6 +512,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -490,6 +526,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -503,6 +540,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -516,6 +554,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -529,6 +568,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -542,6 +582,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -555,6 +596,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -568,6 +610,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -581,6 +624,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -594,6 +638,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -607,6 +652,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -620,6 +666,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_LON_001',
     },
     {
         amount: {
@@ -633,6 +680,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_AMS_001',
     },
     {
         amount: {
@@ -646,6 +694,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'open',
         shopperEmail: 'shopper@example.com',
         status: 'completed',
+        storeCode: 'STORE_NY_001',
     },
     {
         amount: {
@@ -659,6 +708,7 @@ export const INACTIVE_PAYMENT_LINKS: IPaymentLinkItem[] = [
         linkType: 'singleUse',
         shopperEmail: 'shopper@example.com',
         status: 'expired',
+        storeCode: 'STORE_LON_001',
     },
 ];
 

@@ -57,6 +57,7 @@ export const FilterBarMobileSwitch = ({
 
 export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
     const { i18n } = useCoreContext();
+
     return props.showingFilters ? (
         <div
             role="group"

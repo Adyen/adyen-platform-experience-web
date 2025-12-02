@@ -154,6 +154,7 @@ export interface components {
             shopperEmail?: string;
             /** @description Status */
             status: components['schemas']['PaymentLinkStatus'];
+            storeCode: string;
         };
         /** @enum {string} */
         StatusGroup: 'active' | 'inactive';
@@ -274,7 +275,7 @@ export interface operations {
                 merchantReference?: string;
                 paymentLinkId?: string;
                 linkTypes?: string[];
-                storeId?: string;
+                storeIds?: string[];
                 sortDirection?: 'asc' | 'desc';
             };
             header?: never;

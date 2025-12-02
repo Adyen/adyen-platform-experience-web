@@ -214,6 +214,7 @@ export const enum FilterParam {
     LINK_TYPES = 'linkTypes',
     MERCHANT_REFERENCE = 'merchantReference',
     PAYMENT_LINK_ID = 'paymentLinkId',
+    STORE_IDS = 'storeIds',
 }
 
 export type ExternalComponentType =

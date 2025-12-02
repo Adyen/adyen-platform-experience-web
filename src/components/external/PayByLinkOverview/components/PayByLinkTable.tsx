@@ -18,7 +18,6 @@ import { IPayByLinkStatus } from '../../../../types';
 import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants/dateFormats';
 import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
 import { Tooltip } from '../../../internal/Tooltip/Tooltip';
-import Icon from '../../../internal/Icon';
 import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
 
 const getTagVariantForStatus = (status: IPayByLinkStatus) => {
@@ -39,6 +38,7 @@ const getTagVariantForStatus = (status: IPayByLinkStatus) => {
 export const PAY_BY_LINK_TABLE_FIELDS = [
     'paymentLinkId',
     'merchantReference',
+    'storeCode',
     'currency',
     'amount',
     'status',
@@ -58,6 +58,7 @@ const FIELDS_KEYS = {
     linkType: 'payByLink.overview.common.fields.linkType',
     merchantReference: 'payByLink.overview.common.fields.merchantReference',
     shopperEmail: 'payByLink.overview.common.fields.shopperEmail',
+    storeCode: 'payByLink.overview.common.fields.store',
 } as const satisfies Record<string, TranslationKey>;
 
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({

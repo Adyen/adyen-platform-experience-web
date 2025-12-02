@@ -16,7 +16,6 @@ import { FilterBar, FilterBarMobileSwitch, useFilterBarState } from '../../../in
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { Header } from '../../../internal/Header';
 import { DateFilter } from '../../../internal/FilterBar/filters/DateFilter';
-import { AmountFilter } from '../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../TransactionsOverview/components/MultiSelectionFilter';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
@@ -36,9 +35,11 @@ import { containerQueries, useResponsiveContainer } from '../../../../hooks/useR
 import Select from '../../../internal/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
+import { IStore, IStores } from '../../../../types/api/models/stores';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
+const PAY_BY_LINK_STORES_FILTER_PARAM = 'storeIds';
 
 const PAY_BY_LINK_STATUS_FILTER_VALUES = Object.keys(PAY_BY_LINK_STATUSES) as IPayByLinkStatus[];
 
@@ -86,10 +87,9 @@ export const PayByLinkOverview = ({
     hideTitle,
     isFiltersLoading,
     filterParams,
-}: ExternalUIComponentProps<PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; isFiltersLoading: boolean }>) => {
+    stores,
+}: ExternalUIComponentProps<PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; stores?: IStores; isFiltersLoading: boolean }>) => {
     const { i18n } = useCoreContext();
-
-    console.log(filterParams);
 
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payByLink');
@@ -104,6 +104,7 @@ export const PayByLinkOverview = ({
             return getPayByLinkListEndpoint!(requestOptions, {
                 query: {
                     ...pageRequestParams,
+                    storeIds: listFrom<string>(pageRequestParams[FilterParam.STORE_IDS]),
                     statuses: listFrom<IPaymentLinkItem['status']>(pageRequestParams[FilterParam.STATUSES]),
                     linkTypes: listFrom<IPaymentLinkItem['linkType']>(pageRequestParams[FilterParam.LINK_TYPES]),
                     createdSince:
@@ -133,6 +134,7 @@ export const PayByLinkOverview = ({
         [PAY_BY_LINK_TYPE_FILTER_PARAM]: undefined,
         [PAY_BY_LINK_STATUS_FILTER_PARAM]: undefined,
         statusGroup: DEFAULT_PAY_BY_LINK_STATUS_GROUP,
+        [PAY_BY_LINK_STORES_FILTER_PARAM]: undefined,
     });
 
     //TODO - Infer the return type of getPayByLinkListData instead of having to specify it
@@ -161,6 +163,15 @@ export const PayByLinkOverview = ({
         mapFilterOptionName: useCallback((linkType: IPayByLinkType) => i18n.get(PAY_BY_LINK_TYPES[linkType]), [i18n]),
         filterParam: PAY_BY_LINK_TYPE_FILTER_PARAM,
         filterValues: filterParams?.linkTypes,
+        defaultFilters,
+        updateFilters,
+        filters,
+    });
+
+    const storesTypesFilter = useMultiSelectionFilter({
+        mapFilterOptionName: useCallback((store: string) => store, []),
+        filterParam: PAY_BY_LINK_STORES_FILTER_PARAM,
+        filterValues: stores && stores?.length > 0 ? stores.map((store: IStore) => store.storeCode!) : undefined,
         defaultFilters,
         updateFilters,
         filters,
@@ -251,6 +262,11 @@ export const PayByLinkOverview = ({
 
     const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.common.filters.types.statusGroup'), [i18n]);
 
+    const showLinkTypesFilter = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0;
+    const showStatusesFilter = filterParams?.statuses && filterParams?.statuses?.[statusGroup]?.length > 0;
+    const showStoreFilter = stores && stores?.length > 0;
+    console.log(stores);
+
     //TODO: Add tabs
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
@@ -275,6 +291,9 @@ export const PayByLinkOverview = ({
             </div>
             {!isFiltersLoading && (
                 <FilterBar {...filterBarState} ariaLabelKey="payByLink.overview.filters.label">
+                    {showStoreFilter && (
+                        <MultiSelectionFilter {...storesTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.stores.label')} />
+                    )}
                     <DateFilter
                         canResetFilters={canResetFilters}
                         defaultParams={defaultParams}
@@ -283,10 +302,10 @@ export const PayByLinkOverview = ({
                         refreshNowTimestamp={refreshNowTimestamp}
                         updateFilters={updateFilters}
                     />
-                    {filterParams?.linkTypes ?? (
+                    {showLinkTypesFilter && (
                         <MultiSelectionFilter {...linkTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')} />
                     )}
-                    {filterParams?.statuses ?? (
+                    {showStatusesFilter && (
                         <MultiSelectionFilter {...linkStatusFilter} placeholder={i18n.get('payByLink.overview.filters.types.status.label')} />
                     )}
                     <TextFilter
