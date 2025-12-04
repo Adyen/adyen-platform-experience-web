@@ -37,6 +37,7 @@ import Select from '../../../internal/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
 import { IStore, IStores } from '../../../../types/api/models/stores';
+import * as RangePreset from '../../../internal/Calendar/calendar/timerange/presets';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -260,9 +261,8 @@ export const PayByLinkOverview = ({
     const showStoreFilter = stores && stores?.length > 1;
 
     const sinceDate = useMemo(() => {
-        const today = new Date(nowTimestamp);
-        return new Date(new Date().setDate(today.getDate() - EARLIEST_PAYMENT_LINK_DATE)).toString();
-    }, [nowTimestamp]);
+        return new Date(RangePreset.lastNDays(EARLIEST_PAYMENT_LINK_DATE).from).toString();
+    }, []);
 
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
