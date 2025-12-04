@@ -78,8 +78,10 @@ type UserEventCallback = (eventQueueItem: EventQueueItem) => void;
 
 export class UserEvents {
     private readonly queue: EventQueueItem[] = [];
-
     private readonly subscriptions: Set<UserEventCallback> = new Set();
+
+    /* function to be called when there is at least one subscriber */
+    private doneWaitingForSubscribers: (() => void) | undefined;
 
     /** payload of commmon props sent in every event */
     private baseTrackingPayload: BaseEventProperties;
@@ -104,11 +106,20 @@ export class UserEvents {
     }
 
     protected notifySubscribers() {
-        while (this.queue.length > 0) {
-            const lastEvent = this.queue.pop()!;
+        if (this.subscriptions.size > 0) {
+            while (this.queue.length > 0) {
+                const nextEvent = this.queue.shift()!;
 
-            this.subscriptions.forEach((callback: UserEventCallback) => {
-                return callback(lastEvent);
+                this.subscriptions.forEach((callback: UserEventCallback) => {
+                    return callback(nextEvent);
+                });
+            }
+        } else if (this.doneWaitingForSubscribers === undefined) {
+            new Promise<void>(resolve => {
+                this.doneWaitingForSubscribers = resolve;
+            }).then(() => {
+                this.doneWaitingForSubscribers = undefined;
+                this.notifySubscribers();
             });
         }
     }
@@ -178,6 +189,7 @@ export class UserEvents {
      * ```
      */
     public subscribe(callback: UserEventCallback) {
+        this.doneWaitingForSubscribers?.();
         this.subscriptions.add(callback);
     }
 
