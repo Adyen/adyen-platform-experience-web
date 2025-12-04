@@ -1,7 +1,8 @@
 import InfoBox from '../../../../internal/InfoBox';
+import useComponentTiming from '../../../../../hooks/useComponentTiming';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -10,6 +11,7 @@ import './CapitalOfferSummary.scss';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -19,12 +21,18 @@ import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import cx from 'classnames';
+import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
 import { Translation } from '../../../../internal/Translation';
 
 const errorMessageWithAlert = ['30_013'];
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOfferAnalyticsEventProperties,
+    subCategory: 'Business financing summary',
+} as const;
 
 export const CapitalOfferSummary = ({
     grantOffer,
@@ -38,6 +46,8 @@ export const CapitalOfferSummary = ({
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
+    const userEvents = useAnalyticsContext();
+
     const expectedRepaymentDate = useMemo(() => {
         const date = getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays);
         return date ? i18n.date(date, { month: 'long' }) : null;
@@ -60,8 +70,20 @@ export const CapitalOfferSummary = ({
     );
 
     const onRequestFundsHandler = useCallback(() => {
-        grantOffer.id && requestFundsCallback(grantOffer.id);
-    }, [grantOffer.id, requestFundsCallback]);
+        try {
+            grantOffer.id && requestFundsCallback(grantOffer.id);
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds' });
+        }
+    }, [grantOffer.id, requestFundsCallback, userEvents]);
+
+    const onBackWithTracking = useCallback<typeof onBack>(() => {
+        try {
+            return onBack();
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view' });
+        }
+    }, [onBack, userEvents]);
 
     const maximumRepaymentPeriod = useMemo(
         () => calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays),
@@ -135,8 +157,21 @@ export const CapitalOfferSummary = ({
         return summaryItems;
     }, [grantOffer, i18n, maximumRepaymentPeriod]);
 
+    const { duration } = useComponentTiming();
+
+    useEffect(() => {
+        return () => {
+            if (duration.current !== undefined) {
+                userEvents.addEvent?.('Duration', {
+                    ...sharedAnalyticsEventProperties,
+                    duration: Math.floor(duration.current satisfies number),
+                });
+            }
+        };
+    }, [duration, userEvents]);
+
     return !requestErrorAlert && requestFundsMutation.error ? (
-        <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBack} onContactSupport={onContactSupport} />
+        <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />
     ) : (
         <div className="adyen-pe-capital-offer-summary">
             <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
@@ -250,7 +285,7 @@ export const CapitalOfferSummary = ({
             <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
                 {requestFundsMutation.error && !requestErrorAlert ? null : (
-                    <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
+                    <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
                         {i18n.get('capital.common.actions.goBack')}
                     </Button>
                 )}
