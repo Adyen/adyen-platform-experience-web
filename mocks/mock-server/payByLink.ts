@@ -106,7 +106,7 @@ export const payByLinkMocks = [
                 (!merchantReference || link.merchantReference.toLowerCase().includes(merchantReference.toLowerCase())) &&
                 (!statuses.length || statuses.includes(link.status)) &&
                 (!linkTypes.length || linkTypes.includes(link.linkType)) &&
-                (!storeIds.length || storeIds.includes(link.storeCode)) &&
+                (!storeIds.length || !link.storeCode || storeIds.includes(link.storeCode)) &&
                 (!amount || link.amount.value === Number(amount)) &&
                 (!creationSince || compareDates(link.creationDate, creationSince, 'ge')) &&
                 (!createdUntil || compareDates(link.creationDate, createdUntil, 'le'))

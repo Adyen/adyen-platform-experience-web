@@ -41,6 +41,7 @@ export interface components {
         StoreDTO: {
             description?: string;
             storeCode?: string;
+            storeId?: string;
         };
         StoresResponseDTO: {
             data?: components["schemas"]["StoreDTO"][];

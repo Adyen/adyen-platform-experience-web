@@ -8,6 +8,8 @@ export const BASE_TABLE_GRID_CLASS = 'adyen-pe-pay-by-link-table';
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
 export const TABS_CONTAINER_CLASS = `${BASE_CLASS}__tabs-container`;
 
+export const EARLIEST_PAYMENT_LINK_DATE = 90;
+
 export const DEFAULT_PAY_BY_LINK_STATUS_GROUP: IPayByLinkStatusGroup = 'active';
 
 export const PAY_BY_LINK_STATUS_GROUPS = {

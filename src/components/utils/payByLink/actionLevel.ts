@@ -9,7 +9,7 @@ export const enum ActionNeededLevel {
     NOW = 7, // 3-bits (1 1 1)
 }
 
-export const getDisputeActionNeededLevel = (date: string): ActionNeededLevel => {
+export const getActionNeededLevel = (date: string): ActionNeededLevel => {
     const deadlineTimestamp = parseDate(date);
 
     if (deadlineTimestamp != undefined) {
@@ -32,13 +32,13 @@ export const getDisputeActionNeededLevel = (date: string): ActionNeededLevel => 
 };
 
 export const isDisputeActionNeeded = (date: string): boolean => {
-    return getDisputeActionNeededLevel(date) > ActionNeededLevel.NEVER;
+    return getActionNeededLevel(date) > ActionNeededLevel.NEVER;
 };
 
 export const isActionNeededUrgently = (date: string): boolean => {
-    return getDisputeActionNeededLevel(date) > ActionNeededLevel.SOON;
+    return getActionNeededLevel(date) > ActionNeededLevel.SOON;
 };
 
 export const isDisputeActionNeededNow = (date: string): boolean => {
-    return getDisputeActionNeededLevel(date) === ActionNeededLevel.NOW;
+    return getActionNeededLevel(date) === ActionNeededLevel.NOW;
 };

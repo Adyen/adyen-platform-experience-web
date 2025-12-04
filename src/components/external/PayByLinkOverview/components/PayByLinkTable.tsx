@@ -69,6 +69,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     showDetails,
     showPagination,
     paymentLinks,
+    stores,
     ...paginationProps
 }) => {
     const { i18n } = useCoreContext();
@@ -84,8 +85,8 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
             return diffInDays <= 1
-                ? i18n.get('payByLink.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
-                : i18n.get('payByLink.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
+                ? i18n.get('payByLink.overview.common.actionNeeded.expiresToday', { values: { date: formattedDate } })
+                : i18n.get('payByLink.overview.common.actionNeeded.expiresDays', { values: { days: diffInDays, date: formattedDate } });
         },
         [dateFormat, i18n]
     );
@@ -100,6 +101,9 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             },
             linkType: {
                 label: i18n.get(FIELDS_KEYS.linkType),
+            },
+            storeCode: {
+                visible: stores && stores?.length > 1,
             },
         },
     });

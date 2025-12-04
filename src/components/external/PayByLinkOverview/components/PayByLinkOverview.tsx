@@ -3,6 +3,7 @@ import {
     BASE_DETAILS_CLASS,
     BASE_XS_CLASS,
     DEFAULT_PAY_BY_LINK_STATUS_GROUP,
+    EARLIEST_PAYMENT_LINK_DATE,
     PAY_BY_LINK_STATUS_GROUPS_FILTER_MAPPING,
     PAY_BY_LINK_STATUS_GROUPS_TABS,
     PAY_BY_LINK_STATUSES,
@@ -19,7 +20,7 @@ import { DateFilter } from '../../../internal/FilterBar/filters/DateFilter';
 import MultiSelectionFilter, { useMultiSelectionFilter } from '../../TransactionsOverview/components/MultiSelectionFilter';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { isFunction, isUndefined, listFrom } from '../../../../utils';
+import { isFunction, listFrom } from '../../../../utils';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
@@ -117,8 +118,6 @@ export const PayByLinkOverview = ({
                         defaultParams.current.defaultFilterParams[FilterParam.MERCHANT_REFERENCE],
                     paymentLinkId:
                         pageRequestParams[FilterParam.PAYMENT_LINK_ID] ?? defaultParams.current.defaultFilterParams[FilterParam.PAYMENT_LINK_ID],
-                    minAmount: !isUndefined(pageRequestParams.minAmount) ? parseFloat(pageRequestParams.minAmount) : undefined,
-                    maxAmount: !isUndefined(pageRequestParams.maxAmount) ? parseFloat(pageRequestParams.maxAmount) : undefined,
                 },
             });
         },
@@ -253,21 +252,18 @@ export const PayByLinkOverview = ({
         },
         [updateFilters]
     );
-    //TODO: Check if there is a since date
-    // const sinceDate = useMemo(() => {
-    //     const date = new Date(nowTimestamp);
-    //     date.setMonth(date.getMonth());
-    //     return date.toString();
-    // }, [nowTimestamp]);
 
     const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.common.filters.types.statusGroup'), [i18n]);
 
     const showLinkTypesFilter = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0;
-    const showStatusesFilter = filterParams?.statuses && filterParams?.statuses?.[statusGroup]?.length > 0;
-    const showStoreFilter = stores && stores?.length > 0;
-    console.log(stores);
+    const showStatusesFilter = filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0;
+    const showStoreFilter = stores && stores?.length > 1;
 
-    //TODO: Add tabs
+    const sinceDate = useMemo(() => {
+        const today = new Date(nowTimestamp);
+        return new Date(new Date().setDate(today.getDate() - EARLIEST_PAYMENT_LINK_DATE)).toString();
+    }, [nowTimestamp]);
+
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="payByLink.overview.title">
@@ -298,6 +294,7 @@ export const PayByLinkOverview = ({
                         canResetFilters={canResetFilters}
                         defaultParams={defaultParams}
                         filters={filters}
+                        sinceDate={sinceDate}
                         nowTimestamp={nowTimestamp}
                         refreshNowTimestamp={refreshNowTimestamp}
                         updateFilters={updateFilters}
@@ -341,6 +338,7 @@ export const PayByLinkOverview = ({
                 className={BASE_DETAILS_CLASS}
             >
                 <PayByLinkTable
+                    stores={stores}
                     error={error as AdyenPlatformExperienceError}
                     limit={limit}
                     limitOptions={limitOptions}

@@ -4,7 +4,24 @@
  */
 
 export interface paths {
-    '/v1/paybylink/paymentLinks': {
+    "/v1/paybylink/paymentLinks/{storeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["createPBLPaymentLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/paybylink/paymentLinks/{storeId}/configuration": {
         parameters: {
             query?: never;
             header?: never;
@@ -12,7 +29,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations['getPaymentLinks'];
+        get: operations["getPayByLinkConfiguration"];
         put?: never;
         post?: never;
         delete?: never;
@@ -21,7 +38,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/v1/paybylink/filters': {
+    "/v1/paybylink/settings/{storeId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,47 +46,43 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations['payByLinkFilters'];
+        get: operations["getPayByLinkSettings"];
         put?: never;
-        post?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["savePayByLinkSettings"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/v1/paybylink/paymentLinks/configuration': {
+    "/v1/paybylink/themes/{storeId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Pay by Link configuration
-         * @description Dynamic fields from Link creation form
-         */
-        get: operations['getPayByLinkConfiguration'];
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["getPayByLinkTheme"];
         put?: never;
-        post?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["updatePayByLinkTheme"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    '/v1/paybylink/installments': {
+    "/v1/paybylink/paymentLinks": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Installments
-         * @description Installments configuration. Depends on selected country
-         */
-        get: operations['getPayByLinkInstallments'];
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["getPaymentLinks"];
         put?: never;
         post?: never;
         delete?: never;
@@ -78,26 +91,17 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/v1/paybylink/themes/{storeId}': {
+    "/v1/paybylink/filters": {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                storeId: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        /**
-         * Theme: Get store theme
-         * @description Returns the theme for a given storeId
-         */
-        get: operations['getThemeByStore'];
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["payByLinkFilters"];
         put?: never;
-        /**
-         * Theme: Create/Update store theme
-         * @description Update the theme for a given storeId. Note that request body is multipart/form-data
-         */
-        post: operations['createTheme'];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -108,14 +112,118 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        CreatePaymentLinkResponse: {
+            paymentLinkId?: string;
+            status?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            url?: string;
+        };
+        Address: {
+            city?: string;
+            country?: string;
+            houseNumberOrName?: string;
+            postalCode?: string;
+            street?: string;
+        };
         Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
             currency: string;
             /**
              * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
+             * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
+        };
+        CreatePaymentLinkRequestDTO: {
+            amount: components["schemas"]["Amount"];
+            billingAddress?: components["schemas"]["Address"];
+            countryCode: string;
+            /** Format: date-time */
+            deliverAt?: string;
+            deliveryAddress?: components["schemas"]["Address"];
+            description?: string;
+            linkType?: components["schemas"]["PaymentLinkType"];
+            linkValidity: components["schemas"]["CreatePaymentLinkValidity"];
+            reference: string;
+            sendLinkToShopper?: boolean;
+            sendSuccessEmailToShopper?: boolean;
+            /** Format: email */
+            shopperEmail?: string;
+            shopperLocale?: string;
+            shopperName?: components["schemas"]["ShopperName"];
+            shopperReference?: string;
+            telephoneNumber?: string;
+        };
+        CreatePaymentLinkValidity: {
+            durationUnit: components["schemas"]["DurationUnit"];
+            /** Format: int32 */
+            quantity: number;
+        };
+        /** @enum {string} */
+        DurationUnit: "minute" | "hour" | "day" | "week";
+        /** @enum {string} */
+        PaymentLinkType: "open" | "singleUse";
+        ShopperName: {
+            firstName?: string;
+            lastName?: string;
+        };
+        ConfigurationResponse: {
+            amountValue: components["schemas"]["FieldRequirementVoid"];
+            billingAddress?: components["schemas"]["FieldRequirementVoid"];
+            countryCode: components["schemas"]["FieldRequirementString"];
+            currency: components["schemas"]["FieldRequirementString"];
+            deliveryAddress?: components["schemas"]["FieldRequirementVoid"];
+            deliveryDate?: components["schemas"]["FieldRequirementVoid"];
+            description?: components["schemas"]["FieldRequirementVoid"];
+            emailAddress?: components["schemas"]["FieldRequirementVoid"];
+            linkType?: components["schemas"]["FieldRequirementLinkType"];
+            linkValidity?: components["schemas"]["FieldRequirementLinkValidity"];
+            merchantReference?: components["schemas"]["FieldRequirementVoid"];
+            phoneNumber?: components["schemas"]["FieldRequirementVoid"];
+            sendLinkToShopper?: components["schemas"]["FieldRequirementVoid"];
+            sendSuccessEmailToShopper?: components["schemas"]["FieldRequirementVoid"];
+            shopperLocale: components["schemas"]["FieldRequirementString"];
+            shopperName?: components["schemas"]["FieldRequirementVoid"];
+            shopperReference: components["schemas"]["FieldRequirementVoid"];
+        };
+        FieldRequirementLinkType: {
+            options?: components["schemas"]["LinkType"][];
+            required: boolean;
+        };
+        FieldRequirementLinkValidity: {
+            options?: components["schemas"]["LinkValidity"][];
+            required: boolean;
+        };
+        FieldRequirementString: {
+            options?: string[];
+            required: boolean;
+        };
+        FieldRequirementVoid: {
+            options?: Record<string, never>[];
+            required: boolean;
+        };
+        /** @enum {string} */
+        LinkType: "singleUse" | "open";
+        StatusGroup: 'active' | 'inactive';
+        /** @enum {string} */
+        SortDirection: 'asc' | 'desc';
+        LinkValidity: {
+            durationUnit: components["schemas"]["DurationUnit"];
+            /** Format: int32 */
+            quantity: number;
+            type: components["schemas"]["Type"];
+        };
+        /** @enum {string} */
+        Type: "fixed" | "flexible";
+        PayByLinkSettingsResponse: {
+            /** @description Terms of service url */
+            termsOfServiceUrl: string;
+        };
+        ThemeDTO: {
+            brandName?: string;
+            fullWidthLogoUrl?: string;
+            logoUrl?: string;
         };
         Link: {
             /** @description Cursor for a different page */
@@ -123,17 +231,15 @@ export interface components {
         };
         Links: {
             /** @description Link to a different page */
-            next: components['schemas']['Link'];
+            next?: components["schemas"]["Link"];
             /** @description Link to a different page */
-            prev: components['schemas']['Link'];
+            prev?: components["schemas"]["Link"];
         };
         /** @enum {string} */
-        PaymentLinkStatus: 'active' | 'paymentPending' | 'expired' | 'completed';
-        /** @enum {string} */
-        PaymentLinkType: 'open' | 'singleUse';
+        PaymentLinkStatus: "active" | "paymentPending" | "expired" | "completed";
         PaymentLinksItem: {
             /** @description Amount */
-            amount: components['schemas']['Amount'];
+            amount: components["schemas"]["Amount"];
             /**
              * Format: date-time
              * @description Creation Date
@@ -145,7 +251,7 @@ export interface components {
              */
             expirationDate: string;
             /** @description Payment Link Type */
-            linkType: components['schemas']['PaymentLinkType'];
+            linkType: components["schemas"]["PaymentLinkType"];
             /** @description Merchant Reference */
             merchantReference: string;
             /** @description Payment Link ID */
@@ -153,104 +259,30 @@ export interface components {
             /** @description Shopper Email */
             shopperEmail?: string;
             /** @description Status */
-            status: components['schemas']['PaymentLinkStatus'];
-            storeCode: string;
+            status: components["schemas"]["PaymentLinkStatus"];
+            /** @description Store Code */
+            storeCode?: string;
         };
-        /** @enum {string} */
-        StatusGroup: 'active' | 'inactive';
         PaymentLinksResponse: {
             /** @description Links */
-            _links: components['schemas']['Links'];
+            _links: components["schemas"]["Links"];
             /** @description Payment links made within the filters provided */
-            data: components['schemas']['PaymentLinksItem'][];
+            data: components["schemas"]["PaymentLinksItem"][];
         };
         FiltersResponseDTO: {
-            linkTypes: components['schemas']['PayByLinkLinkType'][];
-            statuses: {
-                ['active']: components['schemas']['PaymentLinkStatus'][];
-                ['inactive']: components['schemas']['PaymentLinkStatus'][];
-            };
+            linkTypes: components["schemas"]["PayByLinkLinkType"][];
+            statuses: components["schemas"]["PaymentLinkStatuses"];
         };
         /** @enum {string} */
-        PayByLinkLinkType: 'singleUse' | 'open';
+        PayByLinkLinkType: "singleUse" | "open";
         /** @enum {string} */
-        PayByLinkStatus: 'completed' | 'expired' | 'active' | 'paymentPending';
-        FillMode: boolean;
-        Country: {
-            countryCode?: string;
-            countryName?: string;
+        PayByLinkStatus: "completed" | "expired" | "active" | "paymentPending";
+        PaymentLinkStatuses: {
+            active?: components["schemas"]["PayByLinkStatus"][];
+            inactive?: components["schemas"]["PayByLinkStatus"][];
         };
-        /** Currency */
-        Currency: {
-            id?: string;
-        };
-        LinkValidity: {
-            durationUnit?: string;
-            quantity?: number;
-            type?: string;
-        };
-        Theme: {
-            brandName?: string;
-            logoUrl?: string;
-        };
-        PaymentLinkConfiguration: {
-            amountValue: {
-                required: boolean;
-            };
-            billingAddress?: {
-                required: components['schemas']['FillMode'];
-            };
-            countryCode?: {
-                fillMode: components['schemas']['FillMode'];
-                options?: components['schemas']['Country'][];
-            };
-            currency: {
-                required: components['schemas']['FillMode'];
-                options?: components['schemas']['Currency'][];
-            };
-            deliveryDate?: {
-                required: components['schemas']['FillMode'];
-            };
-            description?: {
-                required: components['schemas']['FillMode'];
-            };
-            emailAddress?: {
-                required: components['schemas']['FillMode'];
-            };
-            emailSender?: {
-                required: components['schemas']['FillMode'];
-            };
-            fullName?: {
-                required: components['schemas']['FillMode'];
-            };
-            linkType?: {
-                fillMode: components['schemas']['FillMode'];
-                options: string[];
-            };
-            linkValidity?: {
-                fillMode: components['schemas']['FillMode'];
-                options: components['schemas']['LinkValidity'][];
-            };
-            merchantReference: {
-                required: components['schemas']['FillMode'];
-            };
-            phoneNumber?: {
-                required: components['schemas']['FillMode'];
-            };
-            shippingAddress?: {
-                required: components['schemas']['FillMode'];
-            };
-            shopperLocale?: {
-                required: components['schemas']['FillMode'];
-                options?: string[];
-            };
-            shopperReference?: {
-                required: components['schemas']['FillMode'];
-            };
-            store: {
-                /** @description will be always true, but let's have it for future compatibility */
-                fillMode: components['schemas']['FillMode'];
-            };
+        SavePayByLinkSettingsRequest: {
+            termsOfServiceUrl: string;
         };
     };
     responses: never;
@@ -261,22 +293,168 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    createPBLPaymentLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreatePaymentLinkRequestDTO"];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatePaymentLinkResponse"];
+                };
+            };
+        };
+    };
+    getPayByLinkConfiguration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConfigurationResponse"];
+                };
+            };
+        };
+    };
+    getPayByLinkSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayByLinkSettingsResponse"];
+                };
+            };
+        };
+    };
+    savePayByLinkSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SavePayByLinkSettingsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayByLinkSettingsResponse"];
+                };
+            };
+        };
+    };
+    getPayByLinkTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ThemeDTO"];
+                };
+            };
+        };
+    };
+    updatePayByLinkTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                storeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": {
+                    brandName: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ThemeDTO"];
+                };
+            };
+        };
+    };
     getPaymentLinks: {
         parameters: {
             query?: {
+                paymentLinkId?: string;
                 cursor?: string;
                 limit?: number;
                 createdSince?: string;
                 createdUntil?: string;
                 statuses?: string[];
                 statusGroup?: string;
-                minAmount?: number;
-                maxAmount?: number;
-                merchantReference?: string;
-                paymentLinkId?: string;
+                currency?: string;
+                amount?: number;
                 linkTypes?: string[];
                 storeIds?: string[];
-                sortDirection?: 'asc' | 'desc';
+                merchantReference?: string;
+                sortDirection?: components['schemas']['SortDirection'];
             };
             header?: never;
             path?: never;
@@ -290,7 +468,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PaymentLinksResponse'];
+                    "application/json": components["schemas"]["PaymentLinksResponse"];
                 };
             };
         };
@@ -310,108 +488,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['FiltersResponseDTO'];
+                    "application/json": components["schemas"]["FiltersResponseDTO"];
                 };
-            };
-        };
-    };
-    getPayByLinkConfiguration: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['PaymentLinkConfiguration'];
-                };
-            };
-        };
-    };
-    getPayByLinkInstallments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': {
-                        /** @description key-value map, where key is one of country codes, and value is array of installments */
-                        data?: {
-                            installments?: number[];
-                            countryCode?: string;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    getThemeByStore: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                storeId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': {
-                        /** @description Optional, could be that no theme already exists */
-                        data?: components['schemas']['Theme'];
-                    };
-                    'application/xml': Record<string, never>;
-                    'multipart/form-data': Record<string, never>;
-                };
-            };
-        };
-    };
-    createTheme: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                storeId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                'multipart/form-data': {
-                    brandName?: string;
-                    /** @description Note: file upload (not string) */
-                    logo?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
