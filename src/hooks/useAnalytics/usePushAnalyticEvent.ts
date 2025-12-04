@@ -19,6 +19,7 @@ export const usePushAnalyticEvent = () => {
                 {
                     body: options.toString(),
                     contentType: 'application/x-www-form-urlencoded',
+                    keepalive: true,
                 },
                 {
                     ...(componentName

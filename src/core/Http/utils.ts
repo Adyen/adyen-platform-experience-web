@@ -74,6 +74,7 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
         },
         redirect: 'follow',
         signal: options.signal,
+        keepalive: options.keepalive,
         referrerPolicy: 'no-referrer-when-downgrade',
         ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType) }),
     };
