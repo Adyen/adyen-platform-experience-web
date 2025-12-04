@@ -7,9 +7,11 @@ import { GrantsProps } from './types';
 import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -30,6 +32,8 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
     const [selectedGrantDetail, setSelectedGrantDetail] = useState<GrantAdjustmentDetail>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
+
+    const userEvents = useAnalyticsContext();
 
     const [activeGrants, inactiveGrants] = useMemo(() => {
         const active: IGrant[] = [];
@@ -55,6 +59,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         return newOfferAvailable && !activeGrants.some(grant => grant.status === 'Pending');
     }, [activeGrants, newOfferAvailable]);
 
+    const onNewOfferRequestWithTracking = useCallback<typeof onNewOfferRequest>(() => {
+        try {
+            return onNewOfferRequest();
+        } finally {
+            userEvents.addEvent?.('Clicked button', {
+                ...sharedCapitalOverviewAnalyticsEventProperties,
+                subCategory: 'Grant Overview',
+                label: 'See new offer',
+            });
+        }
+    }, [onNewOfferRequest, userEvents]);
+
     const selectedGrantConfig = useMemo(() => selectedGrant && getGrantConfig(selectedGrant), [selectedGrant]);
 
     const hideGrantDetails = useCallback(() => setSelectedGrantDetail(undefined), []);
@@ -63,6 +79,29 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         setSelectedGrantDetail(detail);
         setSelectedGrant(grant);
     }, []);
+
+    const logPageEvent = useRef(true);
+
+    useEffect(() => {
+        if (logPageEvent.current) {
+            // Log page event only when the component is mounted
+            logPageEvent.current = false;
+
+            const grant = activeGrants[0];
+
+            userEvents.addEvent?.('Landed on page', {
+                ...sharedCapitalOverviewAnalyticsEventProperties,
+                ...(grant
+                    ? {
+                          grantId: grant.id,
+                          grants: grant.status,
+                      }
+                    : {}),
+                subCategory: 'Grants view',
+                label: 'Capital Overview',
+            });
+        }
+    }, [userEvents, activeGrants]);
 
     if (selectedGrant) {
         switch (selectedGrantDetail) {
@@ -90,7 +129,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
             <div className="adyen-pe-grant-list__header-container">
                 <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
                 {showNewOfferButton ? (
-                    <Button onClick={onNewOfferRequest} className={'adyen-pe-grant-list__offer-button'} variant={ButtonVariant.SECONDARY}>
+                    <Button onClick={onNewOfferRequestWithTracking} className={'adyen-pe-grant-list__offer-button'} variant={ButtonVariant.SECONDARY}>
                         {i18n.get('capital.overview.grants.list.actions.newOffer')}
                     </Button>
                 ) : null}

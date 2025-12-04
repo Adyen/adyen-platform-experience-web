@@ -2,6 +2,7 @@ import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -21,14 +22,28 @@ import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import ExpandableCard from '../../../../internal/ExpandableCard/ExpandableCard';
 import { GrantActions } from '../GrantActions/GrantActions';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import { uniqueId } from '../../../../../utils';
 import { Translation } from '../../../../internal/Translation';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
+    const userEvents = useAnalyticsContext();
+
     const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
-    const showUnscheduledRepaymentAccounts = useCallback(() => showDetails?.('unscheduledRepayment'), [showDetails]);
+
+    const showUnscheduledRepaymentAccounts = useCallback(() => {
+        try {
+            return showDetails?.('unscheduledRepayment');
+        } finally {
+            userEvents.addEvent?.('Clicked button', {
+                ...sharedCapitalOverviewAnalyticsEventProperties,
+                subCategory: 'Grant Active',
+                label: 'Send repayment',
+            });
+        }
+    }, [showDetails, userEvents]);
 
     const elementIds = useMemo(
         () =>

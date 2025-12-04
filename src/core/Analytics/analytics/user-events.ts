@@ -60,6 +60,7 @@ export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filt
 export type EventName =
     | 'Landed on page'
     | 'Clicked button'
+    | 'Clicked link'
     | 'Modified filter'
     | 'Encountered error'
     | (string & {})
