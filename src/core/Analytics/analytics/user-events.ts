@@ -74,6 +74,11 @@ export type EventQueueItem = {
     properties?: AnalyticsEventPayload;
 };
 
+export type EmbeddedEventItem = {
+    event: string;
+    properties: AnalyticsEventPayload | Record<string, MixpanelProperty>;
+};
+
 type UserEventCallback = (eventQueueItem: EventQueueItem) => void;
 
 export class UserEvents {

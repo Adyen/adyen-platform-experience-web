@@ -1,10 +1,10 @@
 import { useCallback } from 'preact/hooks';
 import { useConfigContext } from '../../core/ConfigContext';
 import useMutation from '../useMutation/useMutation';
-import { EmbeddedEventItem } from './useAnalytics';
+import { EmbeddedEventItem } from '../../core/Analytics/analytics/user-events';
+import { encodeAnalyticsEvent } from '../../core/Analytics/analytics/utils';
 import { ExternalComponentType } from '../../components/types';
 import { EMPTY_OBJECT } from '../../utils';
-import { encodeAnalyticsEvent } from '../../core/Analytics/analytics/utils';
 
 export const usePushAnalyticEvent = () => {
     const { sendTrackEvent } = useConfigContext().endpoints;
