@@ -5,10 +5,23 @@ import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
+import { filterDisallowedCharacters } from './utils';
 import './FormFields.scss';
 
 function InputBase(
-    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, iconBeforeSlot, iconAfterSlot, ...props }: InputBaseProps,
+    {
+        onInput,
+        onKeyUp,
+        trimOnBlur,
+        onBlurHandler,
+        onBlur,
+        onFocusHandler,
+        errorMessage,
+        iconBeforeSlot,
+        iconAfterSlot,
+        onKeyDown,
+        ...props
+    }: InputBaseProps,
     ref: ForwardedRef<HTMLInputElement | null>
 ) {
     const { classNameModifiers, isInvalid, isValid, readonly = false, type, uniqueId, isCollatingErrors, disabled } = props;
@@ -66,6 +79,13 @@ function InputBase(
         classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
+    const handleKeyDown = useCallback(
+        (e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+            filterDisallowedCharacters({ event: e, inputType: type, onValidInput: () => onKeyDown?.(e) });
+        },
+        [type, onKeyDown]
+    );
+
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
@@ -75,6 +95,7 @@ function InputBase(
         <input
             id={uniqueId}
             {...newProps}
+            onKeyDown={handleKeyDown}
             type={type}
             className={inputClassNames}
             readOnly={readonly}
