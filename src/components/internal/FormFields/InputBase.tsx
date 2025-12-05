@@ -3,8 +3,9 @@ import { hasOwnProperty } from '../../../utils';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
+import { filterDisallowedCharacters } from './utils';
 import Select from './Select';
 import './FormFields.scss';
 import { ButtonVariant } from '../Button/types';
@@ -18,6 +19,7 @@ function InputBase(
         onBlur,
         onFocusHandler,
         errorMessage,
+        onKeyDown,
         iconBeforeSlot,
         iconAfterSlot,
         dropdown,
@@ -94,6 +96,13 @@ function InputBase(
         classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
+    const handleKeyDown = useCallback(
+        (e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+            filterDisallowedCharacters({ event: e, inputType: type, onValidInput: () => onKeyDown?.(e) });
+        },
+        [type, onKeyDown]
+    );
+
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const {
         classNameModifiers: cnm,
@@ -118,6 +127,7 @@ function InputBase(
         <input
             id={uniqueId}
             {...newProps}
+            onKeyDown={handleKeyDown}
             type={type}
             className={inputClassNames}
             readOnly={readonly}
