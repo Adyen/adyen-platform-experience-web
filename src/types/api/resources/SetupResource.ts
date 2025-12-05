@@ -68,7 +68,8 @@ export interface components {
             | 'getPayByLinkTheme'
             | 'updatePayByLinkTheme'
             | 'createPBLPaymentLink'
-            | 'getPayByLinkConfiguration';
+            | 'getPayByLinkConfiguration'
+            | 'downloadTransactions';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];

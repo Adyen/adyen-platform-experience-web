@@ -12,7 +12,7 @@ export const SUMMARY_COPYABLE_FIELDS = new Set([
 ]);
 
 export const invisibleFields: FieldValues<PBLFormValues>[] = [
-    'currencyCode',
+    'amount.currency',
     'deliverAt',
     'shopperLocale',
     'sendSuccessEmailToShopper',

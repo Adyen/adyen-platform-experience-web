@@ -28,6 +28,12 @@
         margin-left: auto;
     }
 
+    &__submit-button {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+    }
+
     &__title-container {
         display: flex;
         flex-direction: column;

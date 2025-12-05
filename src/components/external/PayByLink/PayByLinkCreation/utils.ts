@@ -46,13 +46,13 @@ export const getFormSteps = ({
                 label: 'payByLink.linkCreation.summary.fields.linkValidity',
             },
             {
-                fieldName: 'amount',
+                fieldName: 'amount.value',
                 required: !!getFieldConfig('amountValue')?.required,
                 visible: !!getFieldConfig('amountValue'),
                 label: 'payByLink.linkCreation.summary.fields.amountValue',
             },
             {
-                fieldName: 'currencyCode',
+                fieldName: 'amount.currency',
                 required: !!getFieldConfig('currency')?.required,
                 visible: !!getFieldConfig('currency'),
                 label: 'payByLink.linkCreation.summary.fields.currency',

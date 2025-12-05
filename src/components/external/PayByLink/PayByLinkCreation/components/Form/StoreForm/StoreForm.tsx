@@ -3,18 +3,23 @@ import Alert from '../../../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../../../internal/Alert/types';
 import StoreField from './Fields/StoreField';
 
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { StoresDTO } from '../../../../../../../types/api/models/stores';
 import { useConfigContext } from '../../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../../../utils';
 import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { TranslationKey } from '../../../../../../../translations';
 
-export const StoreForm = () => {
+interface StoreFormProps {
+    storeIds?: string[] | string;
+    setNextButtonDisabled?: (disabled: boolean) => void;
+    settingsQuery: ReturnType<typeof useFetch>;
+}
+
+export const StoreForm = ({ storeIds, setNextButtonDisabled, settingsQuery }: StoreFormProps) => {
     const { i18n } = useCoreContext();
-    const { getStores, savePayByLinkSettings } = useConfigContext().endpoints;
+    const { getStores, savePayByLinkSettings, getPayByLinkSettings } = useConfigContext().endpoints;
     const { getValues } = useWizardFormContext<PBLFormValues>();
     const canModifySettings = !!savePayByLinkSettings;
 
@@ -27,33 +32,34 @@ export const StoreForm = () => {
 
     const selectedStoreId = getValues('store');
 
+    const termsAndConditionsProvisioned = useMemo(() => {
+        return !!settingsQuery.data?.data?.termsOfServiceUrl;
+    }, [settingsQuery.data?.data]);
+
+    useEffect(() => {
+        if (setNextButtonDisabled) {
+            setNextButtonDisabled(!termsAndConditionsProvisioned);
+        }
+    }, [termsAndConditionsProvisioned, setNextButtonDisabled]);
+
     const selectItems = useMemo(() => {
         const stores: StoresDTO[] = storesQuery.data?.data ?? [];
-        return stores.map(({ storeCode, description }) => ({
-            id: storeCode || description || '',
-            name: storeCode || description || '',
-        }));
-    }, [storesQuery.data]);
+        return stores
+            .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
+            .map(({ storeCode, description }) => ({
+                id: storeCode || '',
+                name: description || '',
+            }));
+    }, [storesQuery.data, storeIds]);
 
-    const termsAndConditionsProvisioned = useMemo(() => {
-        const selectedStore = storesQuery.data?.data?.find(store => store.storeCode === selectedStoreId);
-        return !!selectedStore?.setup?.termsAndConditionsProvisioned;
-    }, [storesQuery.data?.data, selectedStoreId]);
-
-    const themeFullyProvisioned = useMemo(() => {
-        const selectedStore = storesQuery.data?.data?.find(store => store.storeCode === selectedStoreId);
-        return !!selectedStore?.setup?.themeFullyProvisioned;
-    }, [storesQuery.data?.data, selectedStoreId]);
-
-    const alertLabel: TranslationKey = useMemo(() => {
-        if (!termsAndConditionsProvisioned && !themeFullyProvisioned) {
-            return 'payByLink.linkCreation.storeForm.alerts.absentTermsAndConditionsAndTheme';
-        }
+    const alertLabel = useMemo(() => {
         if (!termsAndConditionsProvisioned) {
-            return 'payByLink.linkCreation.storeForm.alerts.absentTermsAndConditions';
+            if (canModifySettings) {
+                return 'payByLink.linkCreation.storeForm.alerts.tcSetupRequired';
+            }
+            return 'payByLink.linkCreation.storeForm.alerts.tcSetupRequiredWithoutPermissions';
         }
-        return 'payByLink.linkCreation.storeForm.alerts.absentTheme';
-    }, [termsAndConditionsProvisioned, themeFullyProvisioned]);
+    }, [termsAndConditionsProvisioned, canModifySettings]);
 
     const alertActions = useMemo(() => {
         if (!canModifySettings) {
@@ -71,16 +77,12 @@ export const StoreForm = () => {
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
-            <StoreField
-                items={selectItems}
-                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
-                themeFullyProvisioned={themeFullyProvisioned}
-            />
-            {!storesQuery.isFetching && selectedStoreId && (!termsAndConditionsProvisioned || !themeFullyProvisioned) && (
+            <StoreField items={selectItems} termsAndConditionsProvisioned={termsAndConditionsProvisioned} />
+            {settingsQuery.data && storesQuery.data && selectedStoreId && !termsAndConditionsProvisioned && (
                 <Alert
-                    title="Terms and Conditions Setup Required"
+                    title={i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle')}
                     type={AlertTypeOption.WARNING}
-                    description={i18n.get(alertLabel)}
+                    description={alertLabel && i18n.get(alertLabel)}
                     actions={alertActions}
                 />
             )}

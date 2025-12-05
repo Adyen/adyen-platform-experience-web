@@ -8,10 +8,7 @@ import { CURRENCY_INPUT_BASE_CLASS } from './constants';
 import { useFetch } from '../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import { CurrencyDTO } from '../../../../types/api/models/currencies';
-
-// [TODO]: These utils are reusable and should be located in a shared module
-const formatAmount = (amount: number, currency: string) => getDecimalAmount(amount, currency).toFixed(getCurrencyExponent(currency));
-const getCurrencyExponent = (currency: string) => Math.log10(getDivider(currency));
+import { formatAmount, getCurrencyExponent } from '../../../../utils/currency/main';
 
 interface CurrencyInputProps {
     selectedCurrencyCode?: string;
@@ -74,8 +71,6 @@ export const CurrencyInput = ({
                 evt.currentTarget.value = value;
             }
         }
-
-        console.log(computedNumberAmount(value));
 
         setDisplayValue(value);
         onAmountChange(computedNumberAmount(value));

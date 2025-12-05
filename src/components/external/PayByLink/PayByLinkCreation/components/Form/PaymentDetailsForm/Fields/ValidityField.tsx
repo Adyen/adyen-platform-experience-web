@@ -11,10 +11,13 @@ import { Controller } from '../../../../../../../../hooks/form';
 import Select from '../../../../../../../internal/FormFields/Select';
 import { LINK_VALIDITY_DURATION_UNITS } from '../../../../constants';
 import InputBase from '../../../../../../../internal/FormFields/InputBase';
+import { transformToMS } from '../../../../../../../../utils';
 
 export type ValidityFieldProps = {
     configuration?: PaymentLinkConfiguration;
 };
+
+const MAX_VALIDITY_IN_MS = transformToMS('day', 70);
 
 export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configuration }) => {
     const [customDurationUnit, setCustomDurationUnit] = useState<string>('');
@@ -110,6 +113,46 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         [i18n]
     );
 
+    const validate = useCallback(
+        (value: string) => {
+            const [durationValue, durationUnit] = value.split(' ');
+
+            if (validityValue === 'flexible') {
+                if (!durationValue) {
+                    return {
+                        valid: false,
+                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationValue'),
+                    };
+                }
+                if (parseInt(durationValue) <= 0) {
+                    return {
+                        valid: false,
+                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.invalidDurationValue'),
+                    };
+                }
+                if (!durationUnit) {
+                    return {
+                        valid: false,
+                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationUnit'),
+                    };
+                }
+                if (durationUnit && durationValue) {
+                    const ms = transformToMS(durationUnit, parseInt(durationValue, 10));
+                    // TODO: Change to use config
+                    const maxMs = transformToMS('day', MAX_VALIDITY_IN_MS);
+                    if (ms > maxMs) {
+                        return {
+                            valid: false,
+                            message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong'),
+                        };
+                    }
+                }
+            }
+            return { valid: true };
+        },
+        [validityValue, i18n]
+    );
+
     return (
         <VisibleField<PBLFormValues> name="linkValidity">
             <Controller<PBLFormValues>
@@ -117,24 +160,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                 control={control}
                 rules={{
                     required: isRequired,
-                    validate: (value: string) => {
-                        const [durationValue, durationUnit] = value.split(' ');
-                        if (validityValue === 'flexible') {
-                            if (!durationValue) {
-                                return {
-                                    valid: false,
-                                    message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationValue'),
-                                };
-                            }
-                            if (!durationUnit) {
-                                return {
-                                    valid: false,
-                                    message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationUnit'),
-                                };
-                            }
-                        }
-                        return { valid: true };
-                    },
+                    validate,
                 }}
                 render={({ field, fieldState }) => {
                     const onSelectInput = (e: Event) => {
@@ -157,9 +183,13 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                     return (
                         <div>
                             <div className="adyen-pe-pay-by-link-creation-form__validity-container">
-                                <FormField label={i18n.get('payByLink.linkCreation.fields.validity.label')} optional={!isRequired}>
+                                <FormField
+                                    label={i18n.get('payByLink.linkCreation.fields.validity.label')}
+                                    supportText={i18n.get('payByLink.linkCreation.fields.validity.supportText')}
+                                    optional={!isRequired}
+                                >
                                     <Select
-                                        selected={validityValue as string}
+                                        selected={validityValue}
                                         onChange={onSelectInput}
                                         items={validitySelectItems}
                                         isValid={!fieldState.error}

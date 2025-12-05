@@ -9,12 +9,11 @@ import { CalendarInputPopover } from './components/CalendarInputPopover';
 interface CalendarInputProps {
     value?: string;
     onInput: (val: any) => void;
-    onBlur: () => void;
     isInvalid?: boolean;
     timezone?: string;
 }
 
-export function CalendarInput({ value, onInput, onBlur, isInvalid, timezone }: CalendarInputProps) {
+export function CalendarInput({ value, onInput, isInvalid, timezone }: CalendarInputProps) {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timezone);
     const [open, setOpen] = useState(false);
@@ -37,11 +36,10 @@ export function CalendarInput({ value, onInput, onBlur, isInvalid, timezone }: C
                 const iso = new Date(from).toISOString();
                 onInput(iso);
                 setLastUpdatedTimestamp(iso);
-                onBlur();
                 if (iso !== lastUpdatedTimestamp) setOpen(false);
             }
         },
-        [lastUpdatedTimestamp, onBlur, onInput]
+        [lastUpdatedTimestamp, onInput]
     );
 
     return (

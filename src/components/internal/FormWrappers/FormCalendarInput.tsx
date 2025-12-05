@@ -32,7 +32,6 @@ export function FormCalendarInput<TFieldValues>({ fieldName, label, timezone }: 
                                 <CalendarInput
                                     value={field.value as string}
                                     onInput={field.onInput}
-                                    onBlur={field.onBlur}
                                     isInvalid={!!fieldState.error && fieldState.isTouched}
                                     timezone={timezone}
                                 />

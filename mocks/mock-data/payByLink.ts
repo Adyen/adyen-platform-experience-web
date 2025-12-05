@@ -212,3 +212,13 @@ export const PAY_BY_LINK_CONFIGURATION = {
     'London Store': { ...BASE_PAY_BY_LINK_CONFIGURATION, linkValidity: undefined },
     'Amsterdam Store': BASE_PAY_BY_LINK_CONFIGURATION,
 };
+
+export const PAY_BY_LINK_SETTINGS = {
+    'New York Store': {
+        termsOfServiceUrl: 'https://example.com/terms-and-conditions',
+    },
+    'London Store': {},
+    'Amsterdam Store': {
+        termsOfServiceUrl: 'https://example.com/terms-and-conditions',
+    },
+};

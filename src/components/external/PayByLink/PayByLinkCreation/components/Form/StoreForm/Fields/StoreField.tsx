@@ -3,20 +3,20 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { useCallback } from 'preact/hooks';
+import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 
 interface StoreFieldProps {
     items: { id: string; name: string }[];
     termsAndConditionsProvisioned?: boolean;
-    themeFullyProvisioned?: boolean;
 }
 
-const StoreField = ({ items, termsAndConditionsProvisioned, themeFullyProvisioned }: StoreFieldProps) => {
+const StoreField = ({ items, termsAndConditionsProvisioned }: StoreFieldProps) => {
     const { i18n } = useCoreContext();
 
     const handleValidate = useCallback(() => {
-        const isValid = termsAndConditionsProvisioned && themeFullyProvisioned;
+        const isValid = termsAndConditionsProvisioned;
         return { valid: isValid ?? false };
-    }, [termsAndConditionsProvisioned, themeFullyProvisioned]);
+    }, [termsAndConditionsProvisioned]);
 
     return (
         <FormSelect<PBLFormValues>

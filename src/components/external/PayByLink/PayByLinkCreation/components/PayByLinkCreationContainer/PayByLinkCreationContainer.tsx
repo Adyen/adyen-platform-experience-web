@@ -17,8 +17,10 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                     case 'Creation':
                         return (
                             <PayByLinkCreationFormContainer
-                                onSubmitted={result => {
-                                    setPaymentLinkUrl(result.url ?? '');
+                                {...props}
+                                onPaymentLinkCreated={data => {
+                                    props.onPaymentLinkCreated?.(data);
+                                    setPaymentLinkUrl(data.paymentLink?.url ?? '');
                                     setState('Success');
                                 }}
                             />

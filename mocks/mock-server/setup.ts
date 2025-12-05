@@ -145,6 +145,14 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'countries',
         },
+        getPayByLinkSettings: {
+            method: 'GET',
+            url: 'paybylink/settings/{storeId}',
+        },
+        savePayByLinkSettings: {
+            method: 'POST',
+            url: 'paybylink/settings/{storeId}',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };
 

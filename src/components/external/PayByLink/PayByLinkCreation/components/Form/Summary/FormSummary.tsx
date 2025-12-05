@@ -38,8 +38,8 @@ export const FormSummary = () => {
             id: id,
             render: item => {
                 switch (item.id) {
-                    case 'amount':
-                        const currencyField = payment?.fields?.find(field => field.id === 'currencyCode');
+                    case 'amount.value':
+                        const currencyField = payment?.fields?.find(field => field.id === 'amount.currency');
                         return <>{i18n.amount(item.value, currencyField?.value)}</>;
                     case 'linkType':
                         return <>{i18n.get(`payByLink.linkCreation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`)}</>;

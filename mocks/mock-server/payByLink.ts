@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS } from '../mock-data/payByLink';
+import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, PAY_BY_LINK_SETTINGS } from '../mock-data/payByLink';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
@@ -101,6 +101,29 @@ export const payByLinkMocks = [
 
         return HttpResponse.json({
             data: INSTALLMENTS,
+        });
+    }),
+
+    // GET /paybylink/settings/{storeId}
+    http.get(mockEndpointsPBL.getPayByLinkSettings, async ({ params }) => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        const { storeId } = params;
+
+        if (!storeId) {
+            return HttpResponse.json({ error: 'Store ID is required' }, { status: 400 });
+        }
+        const settings = PAY_BY_LINK_SETTINGS[storeId as keyof typeof PAY_BY_LINK_SETTINGS];
+
+        if (!settings) {
+            return HttpResponse.json({ error: 'Store not found' }, { status: 404 });
+        }
+
+        return HttpResponse.json({
+            data: settings,
         });
     }),
 ];

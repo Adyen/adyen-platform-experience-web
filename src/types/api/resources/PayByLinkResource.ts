@@ -136,10 +136,10 @@ export interface components {
             value: number;
         };
         CreatePaymentLinkRequestDTO: {
-            amount: number;
+            amount: components['schemas']['Amount'];
             billingAddress?: components['schemas']['Address'];
             countryCode: string;
-            currencyCode: string;
+            /** Format: date-time */
             deliverAt?: string;
             deliveryAddress?: components['schemas']['Address'];
             description?: string;
@@ -159,7 +159,6 @@ export interface components {
             durationUnit: components['schemas']['DurationUnit'];
             /** Format: int32 */
             quantity: number;
-            type: 'fixed' | 'flexible';
         };
         /** @enum {string} */
         DurationUnit: 'minute' | 'hour' | 'day' | 'week';
@@ -214,9 +213,13 @@ export interface components {
         };
         /** @enum {string} */
         Type: 'fixed' | 'flexible';
-        PayByLinkSettingsResponse: {
+        PayByLinkSettingsDTO: {
             /** @description Terms of service url */
             termsOfServiceUrl: string;
+        };
+        PayByLinkSettingsResponseDTO: {
+            /** @description Pay by link settings */
+            data: components['schemas']['PayByLinkSettingsDTO'];
         };
         ThemeDTO: {
             brandName?: string;
@@ -261,6 +264,8 @@ export interface components {
             shopperEmail?: string;
             /** @description Status */
             status: components['schemas']['PaymentLinkStatus'];
+            /** @description Store Code */
+            storeCode?: string;
         };
         PaymentLinksResponse: {
             /** @description Links */
@@ -357,7 +362,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PayByLinkSettingsResponse'];
+                    'application/json': components['schemas']['PayByLinkSettingsResponseDTO'];
                 };
             };
         };
@@ -383,7 +388,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['PayByLinkSettingsResponse'];
+                    'application/json': components['schemas']['PayByLinkSettingsResponseDTO'];
                 };
             };
         };
@@ -451,7 +456,7 @@ export interface operations {
                 currency?: string;
                 amount?: number;
                 linkTypes?: string[];
-                storeId?: string;
+                storeIds?: string[];
                 merchantReference?: string;
             };
             header?: never;

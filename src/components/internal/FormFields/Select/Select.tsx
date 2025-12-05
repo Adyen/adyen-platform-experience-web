@@ -160,6 +160,12 @@ const Select = <T extends SelectItem>({
         if (committing) closeList();
     }, [committing, closeList]);
 
+    useEffect(() => {
+        if (!showList) {
+            cachedSelectedItems.current = selection;
+        }
+    }, [selection, showList]);
+
     /**
      * Handle keyDown events on the selectList button
      * Opens the selectList and focuses the first element if available

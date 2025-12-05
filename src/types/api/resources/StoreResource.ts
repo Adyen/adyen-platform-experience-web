@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v1/stores": {
+    '/v1/stores': {
         parameters: {
             query?: never;
             header?: never;
@@ -15,7 +15,7 @@ export interface paths {
          * Get list of psp stores available for resources in the session
          * @description Add @Operation annotation to provide a description
          */
-        get: operations["getStores"];
+        get: operations['getStores'];
         put?: never;
         post?: never;
         delete?: never;
@@ -34,21 +34,17 @@ export interface components {
         };
         Links: {
             /** @description Link to a different page */
-            next?: components["schemas"]["Link"];
+            next?: components['schemas']['Link'];
             /** @description Link to a different page */
-            prev?: components["schemas"]["Link"];
+            prev?: components['schemas']['Link'];
         };
         StoreDTO: {
             description?: string;
             storeCode?: string;
-            setup?: {
-                termsAndConditionsProvisioned?: boolean;
-                themeFullyProvisioned?: boolean;
-            };
         };
         StoresResponseDTO: {
-            data?: components["schemas"]["StoreDTO"][];
-            links?: components["schemas"]["Links"];
+            data?: components['schemas']['StoreDTO'][];
+            links?: components['schemas']['Links'];
         };
     };
     responses: never;
@@ -77,7 +73,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StoresResponseDTO"];
+                    'application/json': components['schemas']['StoresResponseDTO'];
                 };
             };
         };

@@ -22,25 +22,33 @@ import { PaymentLinkConfiguration } from '../../../../../../types/api/models/pay
 import { getFormSteps } from '../../utils';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
 import { TranslationKey } from '../../../../../../translations';
+import Icon from '../../../../../internal/Icon';
 
 type PayByLinkCreationFormContainerProps = {
-    onSubmitted?: (result: SuccessResponse<'createPBLPaymentLink'>) => void;
+    onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
+    storeIds?: string[] | string;
 };
 
-export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreationFormContainerProps) => {
+export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+    const [nextButtonDisabled, setNextButtonDisabled] = useState(false);
     const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n } = useCoreContext();
 
-    const { getPayByLinkConfiguration: payByLinkConfigurationEndpointCall, createPBLPaymentLink } = useConfigContext().endpoints;
+    const { getPayByLinkConfiguration, createPBLPaymentLink, getPayByLinkSettings } = useConfigContext().endpoints;
 
-    const configurationQuery = selectedStore
-        ? useFetch({
-              fetchOptions: { enabled: !!payByLinkConfigurationEndpointCall },
-              queryFn: useCallback(async () => {
-                  return payByLinkConfigurationEndpointCall?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
-              }, [payByLinkConfigurationEndpointCall, selectedStore]),
-          })
-        : { data: undefined, isFetching: true };
+    const configurationQuery = useFetch({
+        fetchOptions: { enabled: !!getPayByLinkConfiguration && !!selectedStore },
+        queryFn: useCallback(async () => {
+            return getPayByLinkConfiguration?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
+        }, [getPayByLinkConfiguration, selectedStore]),
+    });
+
+    const settingsQuery = useFetch({
+        fetchOptions: { enabled: !!getPayByLinkSettings && !!selectedStore },
+        queryFn: useCallback(async () => {
+            return getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
+        }, [getPayByLinkSettings, selectedStore]),
+    });
 
     const getFieldConfig = useCallback(
         (field: keyof PaymentLinkConfiguration) => {
@@ -115,25 +123,27 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
     // Only called when the form is actually submitted (final step)
     const submitMutation = useMutation({
         queryFn: createPBLPaymentLink,
-        options: {
-            onSuccess: data => {
-                onSubmitted?.(data);
-            },
-        },
     });
 
     const onSubmit = async (data: PBLFormValues) => {
-        if (!data.amount || !data.countryCode || !data.currencyCode || !data.reference || !data.shopperName) {
+        if (!data.countryCode || !data.amount?.currency || !data.amount?.value || !data.reference || !data.shopperName) {
             throw new Error('Missing required fields for payment link creation');
         }
 
-        await submitMutation.mutate(
-            {
-                body: data,
-                contentType: 'application/json',
-            },
-            { path: { storeId: 'default' } }
-        );
+        try {
+            const result = await submitMutation.mutate(
+                {
+                    body: data,
+                    contentType: 'application/json',
+                },
+                { path: { storeId: 'default' } }
+            );
+
+            onPaymentLinkCreated?.({ ...data, paymentLink: result });
+        } catch (error) {
+            console.error('Failed to create payment link:', error);
+            throw error;
+        }
     };
 
     const onError = (errors: any) => {
@@ -144,6 +154,8 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
 
     // TODO - Define where to get timezone
     const timezone = undefined;
+
+    const isNextStepLoading = submitMutation.isLoading || configurationQuery.isFetching || settingsQuery.isFetching;
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -174,7 +186,13 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                             {(() => {
                                 switch (currentFormStep) {
                                     case 'store':
-                                        return <StoreForm />;
+                                        return (
+                                            <StoreForm
+                                                settingsQuery={settingsQuery}
+                                                storeIds={storeIds}
+                                                setNextButtonDisabled={setNextButtonDisabled}
+                                            />
+                                        );
                                     case 'payment':
                                         return <PaymentDetailsForm timezone={timezone} configuration={configurationQuery.data} />;
                                     case 'customer':
@@ -200,7 +218,9 @@ export const PayByLinkCreationFormContainer = ({ onSubmitted }: PayByLinkCreatio
                                     type={isLastStep ? 'submit' : 'button'}
                                     variant={ButtonVariant.PRIMARY}
                                     onClick={!isLastStep ? handleContinue : undefined}
-                                    state={submitMutation.isLoading ? 'loading' : undefined}
+                                    state={isNextStepLoading ? 'loading' : undefined}
+                                    disabled={nextButtonDisabled}
+                                    iconRight={<Icon name="arrow-right" />}
                                 >
                                     {isLastStep
                                         ? i18n.get('payByLink.linkCreation.form.steps.submit')
