@@ -59,7 +59,7 @@ export interface components {
             | 'sendEngageEvent'
             | 'sendTrackEvent'
             | 'signToSActionDetails'
-            | 'getStores'
+            | 'getPayByLinkStores'
             | 'payByLinkFilters'
             | 'getCountries'
             | 'getCurrencies'

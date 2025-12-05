@@ -19,15 +19,15 @@ interface StoreFormProps {
 
 export const StoreForm = ({ storeIds, setNextButtonDisabled, settingsQuery }: StoreFormProps) => {
     const { i18n } = useCoreContext();
-    const { getStores, savePayByLinkSettings, getPayByLinkSettings } = useConfigContext().endpoints;
+    const { getPayByLinkStores, savePayByLinkSettings, getPayByLinkSettings } = useConfigContext().endpoints;
     const { getValues } = useWizardFormContext<PBLFormValues>();
     const canModifySettings = !!savePayByLinkSettings;
 
     const storesQuery = useFetch({
-        fetchOptions: { enabled: !!getStores },
+        fetchOptions: { enabled: !!getPayByLinkStores },
         queryFn: useCallback(async () => {
-            return getStores?.(EMPTY_OBJECT, {});
-        }, [getStores]),
+            return getPayByLinkStores?.(EMPTY_OBJECT, {});
+        }, [getPayByLinkStores]),
     });
 
     const selectedStoreId = getValues('store');
