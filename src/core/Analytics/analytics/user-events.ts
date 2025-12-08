@@ -134,7 +134,7 @@ export class UserEvents {
      * Adds an analytics event with all base event properties.
      */
     public addEvent(eventName: EventName, properties: AdditionalEventProperties) {
-        const completeEvent = { ...this.baseTrackingPayload, ...properties } as AnalyticsEventPayload;
+        const completeEvent = { ...this.baseTrackingPayload, $time: Date.now(), ...properties } as AnalyticsEventPayload;
         this.add({
             name: eventName,
             // type: 'add_event',
