@@ -1,8 +1,7 @@
 import InfoBox from '../../../../internal/InfoBox';
-import useComponentTiming from '../../../../../hooks/useComponentTiming';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -12,6 +11,7 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -157,18 +157,7 @@ export const CapitalOfferSummary = ({
         return summaryItems;
     }, [grantOffer, i18n, maximumRepaymentPeriod]);
 
-    const { duration } = useComponentTiming();
-
-    useEffect(() => {
-        return () => {
-            if (duration.current !== undefined) {
-                userEvents.addEvent?.('Duration', {
-                    ...sharedAnalyticsEventProperties,
-                    duration: Math.floor(duration.current satisfies number),
-                });
-            }
-        };
-    }, [duration, userEvents]);
+    useDurationEvent(sharedAnalyticsEventProperties);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />

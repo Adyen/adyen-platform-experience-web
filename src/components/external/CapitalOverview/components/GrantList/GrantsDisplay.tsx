@@ -8,13 +8,19 @@ import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOverviewAnalyticsEventProperties,
+    subCategory: 'Grants overview',
+} as const;
 
 const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdjustmentDetailCallback }) => {
     return (
@@ -63,11 +69,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         try {
             return onNewOfferRequest();
         } finally {
-            userEvents.addEvent?.('Clicked button', {
-                ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Grant overview',
-                label: 'See new offer',
-            });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'See new offer' });
         }
     }, [onNewOfferRequest, userEvents]);
 
@@ -80,28 +82,18 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         setSelectedGrant(grant);
     }, []);
 
-    const logPageEvent = useRef(true);
+    const grant = activeGrants[0];
 
-    useEffect(() => {
-        if (logPageEvent.current) {
-            // Log page event only when the component is mounted
-            logPageEvent.current = false;
-
-            const grant = activeGrants[0];
-
-            userEvents.addEvent?.('Landed on page', {
-                ...sharedCapitalOverviewAnalyticsEventProperties,
-                ...(grant
-                    ? {
-                          grantId: grant.id,
-                          grants: grant.status,
-                      }
-                    : {}),
-                subCategory: 'Grants overview',
-                label: 'Capital overview',
-            });
-        }
-    }, [userEvents, activeGrants]);
+    useLandedPageEvent({
+        ...sharedAnalyticsEventProperties,
+        ...(grant
+            ? {
+                  grantId: grant.id,
+                  grants: grant.status,
+              }
+            : {}),
+        label: 'Capital overview',
+    });
 
     if (selectedGrant) {
         switch (selectedGrantDetail) {

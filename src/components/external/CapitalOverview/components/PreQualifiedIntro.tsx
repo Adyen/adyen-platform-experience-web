@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
+import { useLandedPageEvent } from '../../../../hooks/useAnalytics/useLandedPageEvent';
 import InfoBox from '../../../internal/InfoBox';
 import Button from '../../../internal/Button/Button';
 import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
@@ -8,6 +9,11 @@ import { IDynamicOffersConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../internal/Typography/types';
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOverviewAnalyticsEventProperties,
+    subCategory: 'Prequalified',
+} as const;
 
 const PreQualifiedIntro = ({
     dynamicOfferConfig,
@@ -25,28 +31,11 @@ const PreQualifiedIntro = ({
         try {
             return onOfferOptionsRequest();
         } finally {
-            userEvents.addEvent?.('Clicked button', {
-                ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Prequalified',
-                label: 'See options',
-            });
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'See options' });
         }
     }, [onOfferOptionsRequest, userEvents]);
 
-    const logPageEvent = useRef(true);
-
-    useEffect(() => {
-        if (logPageEvent.current) {
-            // Log page event only when the component is mounted
-            logPageEvent.current = false;
-
-            userEvents.addEvent?.('Landed on page', {
-                ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Prequalified',
-                label: 'Capital overview',
-            });
-        }
-    }, [userEvents]);
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital overview' });
 
     return (
         <>

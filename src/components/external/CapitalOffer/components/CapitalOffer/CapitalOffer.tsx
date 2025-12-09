@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { isCapitalRegionSupported } from '../../../../internal/CapitalHeader/helpers';
 import { ExternalUIComponentProps } from '../../../../types';
 import { CapitalOfferProps } from '../../types';
@@ -12,8 +12,8 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import useComponentTiming from '../../../../../hooks/useComponentTiming';
+import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import './CapitalOffer.scss';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
@@ -71,32 +71,8 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         return selectedOffer ? 'OfferSummary' : 'OfferSelection';
     }, [selectedOffer]);
 
-    const { duration } = useComponentTiming();
-    const userEvents = useAnalyticsContext();
-    const logPageEvent = useRef(true);
-
-    useEffect(() => {
-        if (logPageEvent.current) {
-            // Log page event only when the component is mounted
-            logPageEvent.current = false;
-
-            userEvents.addEvent?.('Landed on page', {
-                ...sharedAnalyticsEventProperties,
-                label: 'Capital offer',
-            });
-        }
-    }, [userEvents]);
-
-    useEffect(() => {
-        return () => {
-            if (duration.current !== undefined) {
-                userEvents.addEvent?.('Duration', {
-                    ...sharedAnalyticsEventProperties,
-                    duration: Math.floor(duration.current satisfies number),
-                });
-            }
-        };
-    }, [duration, userEvents]);
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
+    useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>
