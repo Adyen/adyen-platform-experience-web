@@ -65,7 +65,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         } finally {
             userEvents.addEvent?.('Clicked button', {
                 ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Grant Overview',
+                subCategory: 'Grant overview',
                 label: 'See new offer',
             });
         }
@@ -97,8 +97,8 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
                           grants: grant.status,
                       }
                     : {}),
-                subCategory: 'Grants view',
-                label: 'Capital Overview',
+                subCategory: 'Grants overview',
+                label: 'Capital overview',
             });
         }
     }, [userEvents, activeGrants]);

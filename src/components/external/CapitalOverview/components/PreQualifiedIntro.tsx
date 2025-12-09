@@ -42,8 +42,8 @@ const PreQualifiedIntro = ({
 
             userEvents.addEvent?.('Landed on page', {
                 ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Prequalified view',
-                label: 'Capital Overview',
+                subCategory: 'Prequalified',
+                label: 'Capital overview',
             });
         }
     }, [userEvents]);

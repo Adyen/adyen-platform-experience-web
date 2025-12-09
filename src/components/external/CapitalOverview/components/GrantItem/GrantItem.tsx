@@ -39,7 +39,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
         } finally {
             userEvents.addEvent?.('Clicked button', {
                 ...sharedCapitalOverviewAnalyticsEventProperties,
-                subCategory: 'Grant Active',
+                subCategory: 'Grant active',
                 label: 'Send repayment',
             });
         }

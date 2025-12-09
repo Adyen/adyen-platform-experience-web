@@ -8,6 +8,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import useComponentTiming from '../../../../../hooks/useComponentTiming';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
@@ -197,6 +198,19 @@ export const CapitalOfferSelection = ({
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
+
+    const { duration } = useComponentTiming();
+
+    useEffect(() => {
+        return () => {
+            if (duration.current !== undefined) {
+                userEvents.addEvent?.('Duration', {
+                    ...sharedAnalyticsEventProperties,
+                    duration: Math.floor(duration.current satisfies number),
+                });
+            }
+        };
+    }, [duration, userEvents]);
 
     return (
         <div className="adyen-pe-capital-offer-selection">
