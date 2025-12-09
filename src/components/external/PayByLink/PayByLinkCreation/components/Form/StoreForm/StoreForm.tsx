@@ -1,56 +1,29 @@
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import Alert from '../../../../../../internal/Alert/Alert';
-import { AlertTypeOption, AlertVariantOption } from '../../../../../../internal/Alert/types';
+import { AlertTypeOption } from '../../../../../../internal/Alert/types';
 import StoreField from './Fields/StoreField';
 
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { StoresDTO } from '../../../../../../../types/api/models/stores';
+import { useEffect, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';
-import { EMPTY_OBJECT } from '../../../../../../../utils';
 import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 
 interface StoreFormProps {
     storeIds?: string[] | string;
-    setNextButtonDisabled?: (disabled: boolean) => void;
     settingsQuery: ReturnType<typeof useFetch>;
+    storesQuery: ReturnType<typeof useFetch>;
+    selectItems: { id: string; name: string }[];
+    termsAndConditionsProvisioned: boolean;
 }
 
-export const StoreForm = ({ storeIds, setNextButtonDisabled, settingsQuery }: StoreFormProps) => {
+export const StoreForm = ({ settingsQuery, storesQuery, selectItems, termsAndConditionsProvisioned }: StoreFormProps) => {
     const { i18n } = useCoreContext();
-    const { getPayByLinkStores, savePayByLinkSettings, getPayByLinkSettings } = useConfigContext().endpoints;
+    const { savePayByLinkSettings } = useConfigContext().endpoints;
     const { getValues } = useWizardFormContext<PBLFormValues>();
     const canModifySettings = !!savePayByLinkSettings;
 
-    const storesQuery = useFetch({
-        fetchOptions: { enabled: !!getPayByLinkStores },
-        queryFn: useCallback(async () => {
-            return getPayByLinkStores?.(EMPTY_OBJECT, {});
-        }, [getPayByLinkStores]),
-    });
-
     const selectedStoreId = getValues('store');
-
-    const termsAndConditionsProvisioned = useMemo(() => {
-        return !!settingsQuery.data?.data?.termsOfServiceUrl;
-    }, [settingsQuery.data?.data]);
-
-    useEffect(() => {
-        if (setNextButtonDisabled) {
-            setNextButtonDisabled(!termsAndConditionsProvisioned);
-        }
-    }, [termsAndConditionsProvisioned, setNextButtonDisabled]);
-
-    const selectItems = useMemo(() => {
-        const stores: StoresDTO[] = storesQuery.data?.data ?? [];
-        return stores
-            .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
-            .map(({ storeCode, description }) => ({
-                id: storeCode || '',
-                name: description || '',
-            }));
-    }, [storesQuery.data, storeIds]);
 
     const alertLabel = useMemo(() => {
         if (!termsAndConditionsProvisioned) {

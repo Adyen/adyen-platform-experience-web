@@ -10,7 +10,7 @@ interface FormFieldConfig {
     label?: TranslationKey;
 }
 
-interface FormStepConfig {
+export interface FormStepConfig {
     id: string;
     title?: string;
     fields: FormFieldConfig[];

@@ -20,7 +20,7 @@ import { SUMMARY_COPYABLE_FIELDS } from './constants';
 import './FormSummary.scss';
 
 export const FormSummary = () => {
-    const { getSummaryData } = useWizardFormContext<PBLFormValues>();
+    const { getSummaryData, getValues, getDisplayValue } = useWizardFormContext<PBLFormValues>();
     const formValues = getSummaryData();
     const { i18n } = useCoreContext();
     const isMobile = useResponsiveContainer(containerQueries.down.xs);
@@ -28,7 +28,15 @@ export const FormSummary = () => {
     const paymentListItems = useMemo<StructuredListItem[]>(() => {
         const { payment } = formValues;
         const visibleFields = payment?.fields.filter(({ id }) => !invisibleFields.includes(id));
-        const storeField = formValues.store?.fields.find(field => field.id === 'store');
+
+        // Store step does not exist when only one store is available, so we create it manually
+        // Also, we want to show it under the payment details section
+        const storeField = {
+            id: 'store',
+            label: 'payByLink.linkCreation.summary.fields.store',
+            value: getValues('store'),
+            displayValue: getDisplayValue('store'),
+        };
 
         const jointFields = [...(storeField ? [storeField] : []), ...(visibleFields || [])];
 

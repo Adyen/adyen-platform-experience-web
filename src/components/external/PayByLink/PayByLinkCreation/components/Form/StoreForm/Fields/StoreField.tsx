@@ -3,7 +3,6 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { useCallback } from 'preact/hooks';
-import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 
 interface StoreFieldProps {
     items: { id: string; name: string }[];

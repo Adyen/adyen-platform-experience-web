@@ -2,27 +2,21 @@ import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import { PBLFormValues, LinkCreationFormStep } from '../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
-import { useWizardForm } from '../../../../../../hooks/form/wizard/useWizardForm';
 import { WizardFormProvider } from '../../../../../../hooks/form/wizard/WizardFormContext';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import Button from '../../../../../internal/Button';
 import '../../PayByLinkCreation.scss';
-import { useFetch } from '../../../../../../hooks/useFetch';
-import { useConfigContext } from '../../../../../../core/ConfigContext';
-import { EMPTY_OBJECT } from '../../../../../../utils';
 import './PayByLinkCreationForm.scss';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { SuccessResponse } from '../../../../../../types/api/endpoints';
-import { PaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
-import { getFormSteps } from '../../utils';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
-import { TranslationKey } from '../../../../../../translations';
 import Icon from '../../../../../internal/Icon';
+import { usePayByLinkFormData } from './usePayByLinkFormData';
 
 type PayByLinkCreationFormContainerProps = {
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
@@ -30,63 +24,21 @@ type PayByLinkCreationFormContainerProps = {
 };
 
 export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
-    const [nextButtonDisabled, setNextButtonDisabled] = useState(false);
-    const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n } = useCoreContext();
 
-    const { getPayByLinkConfiguration, createPBLPaymentLink, getPayByLinkSettings } = useConfigContext().endpoints;
-
-    const configurationQuery = useFetch({
-        fetchOptions: { enabled: !!getPayByLinkConfiguration && !!selectedStore },
-        queryFn: useCallback(async () => {
-            return getPayByLinkConfiguration?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
-        }, [getPayByLinkConfiguration, selectedStore]),
-    });
-
-    const settingsQuery = useFetch({
-        fetchOptions: { enabled: !!getPayByLinkSettings && !!selectedStore },
-        queryFn: useCallback(async () => {
-            return getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
-        }, [getPayByLinkSettings, selectedStore]),
-    });
-
-    const getFieldConfig = useCallback(
-        (field: keyof PaymentLinkConfiguration) => {
-            return configurationQuery.data?.[field];
-        },
-        [configurationQuery.data]
-    );
-
-    const formSteps = useMemo(() => {
-        return getFormSteps({ i18n, getFieldConfig });
-    }, [configurationQuery.data, getFieldConfig, i18n]);
-
-    const steps = useMemo(() => {
-        return formSteps.map(step => ({
-            id: step.id,
-            label: i18n.get(`payByLink.linkCreation.form.steps.${step.id}` as TranslationKey),
-        }));
-    }, [formSteps, i18n]);
-
-    const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.linkCreation.steps.a11y.label'), [i18n]);
-
-    const wizardForm = useWizardForm<PBLFormValues>({
-        i18n,
-        steps: formSteps,
-        defaultValues: { store: selectedStore || '' },
-        mode: 'all',
-        validateBeforeNext: true,
-    });
-
-    useEffect(() => {
-        const unsubscribe = wizardForm.control.subscribe(() => {
-            const storeValue = wizardForm.control.getValue('store');
-            if (storeValue && storeValue !== selectedStore) {
-                setSelectedStore(storeValue);
-            }
-        });
-        return unsubscribe;
-    }, [wizardForm.control, selectedStore]);
+    const {
+        storesQuery,
+        configurationQuery,
+        settingsQuery,
+        storesSelectorItems,
+        termsAndConditionsProvisioned,
+        formSteps,
+        steps,
+        formStepsAriaLabel,
+        wizardForm,
+        createPBLPaymentLink,
+        isDataLoading,
+    } = usePayByLinkFormData({ storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
 
@@ -155,7 +107,7 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
     // TODO - Define where to get timezone
     const timezone = undefined;
 
-    const isNextStepLoading = submitMutation.isLoading || configurationQuery.isFetching || settingsQuery.isFetching;
+    const isNextStepLoading = submitMutation.isLoading || isDataLoading;
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -190,7 +142,9 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
                                             <StoreForm
                                                 settingsQuery={settingsQuery}
                                                 storeIds={storeIds}
-                                                setNextButtonDisabled={setNextButtonDisabled}
+                                                storesQuery={storesQuery}
+                                                selectItems={storesSelectorItems}
+                                                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
                                             />
                                         );
                                     case 'payment':
@@ -219,7 +173,7 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
                                     variant={ButtonVariant.PRIMARY}
                                     onClick={!isLastStep ? handleContinue : undefined}
                                     state={isNextStepLoading ? 'loading' : undefined}
-                                    disabled={nextButtonDisabled}
+                                    disabled={!termsAndConditionsProvisioned}
                                     iconRight={<Icon name="arrow-right" />}
                                 >
                                     {isLastStep

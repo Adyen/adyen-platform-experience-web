@@ -10,7 +10,7 @@ export const Default: ElementStory<typeof PayByLinkCreation> = {
     name: 'Default',
     args: {
         mockedApi: true,
-        storeIds: ['New York Store', 'London Store'],
+        storeIds: 'New York Store',
         onPaymentLinkCreated: action('Payment link created'),
     },
 };

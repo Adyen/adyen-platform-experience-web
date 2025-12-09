@@ -122,8 +122,6 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Store not found' }, { status: 404 });
         }
 
-        return HttpResponse.json({
-            data: settings,
-        });
+        return HttpResponse.json(settings);
     }),
 ];

@@ -17,7 +17,7 @@ export type ValidityFieldProps = {
     configuration?: PaymentLinkConfiguration;
 };
 
-const MAX_VALIDITY_IN_MS = transformToMS('day', 70);
+const MAX_VALIDITY_IN_MS = 70;
 
 export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configuration }) => {
     const [customDurationUnit, setCustomDurationUnit] = useState<string>('');
