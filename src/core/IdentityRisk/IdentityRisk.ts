@@ -32,7 +32,7 @@ export class RiskModule {
                 eventType: 'login',
                 deviceDetails,
             },
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token}`, 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
         });
     }
 }
