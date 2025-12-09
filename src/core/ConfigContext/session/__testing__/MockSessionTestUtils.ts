@@ -133,11 +133,7 @@ export async function createMockSessionContext<Ctx extends TestContext & MockSes
     session.onSessionCreate = onSessionCreate;
 
     const untilSessionRefreshed = createUntilSessionRefreshedFunc(session);
-
-    const expireSession = () => {
-        abortable.abort();
-        abortable.refresh();
-    };
+    const expireSession = (): void => void abortable.refresh(true);
 
     const refreshSession: MockSessionContext['refreshSession'] = async (...args) => {
         session.refresh(...args);
