@@ -5,11 +5,11 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import useCoreContext from '../../../core/Context/useCoreContext';
 import InputBase from '../FormFields/InputBase';
 import { InputBaseProps } from '../FormFields/types';
-import { debounce } from '../../external/CapitalOffer/components/utils/utils';
 import './SearchBar.scss';
 import Icon from '../Icon';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
+import { debounce } from '../../utils/utils';
 
 export type SearchBarProps = {
     value?: string;
@@ -120,7 +120,7 @@ export const SearchBar = forwardRef<SearchBarRef, SearchBarProps>(
                 className: classNames('adyen-pe-search-bar__input'),
                 iconBeforeSlot: iconBefore,
                 iconAfterSlot: shouldShowClearButton ? iconAfter : undefined,
-                ...(autoFocus ? { autoFocus: true } : {}),
+                autoFocus,
             };
 
             return props;
