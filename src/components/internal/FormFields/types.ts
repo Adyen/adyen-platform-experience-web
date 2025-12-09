@@ -44,6 +44,6 @@ export interface InputBaseProps {
     iconAfterSlot?: ComponentChildren;
     dropdown?: InputFieldDropdownProps;
     dropdownPosition?: InputFieldElementPosition;
-    onDropdownInput?: (selectedValue: any) => void;
+    onDropdownInput?: (selectedValue: string) => void;
     onUpdateDropdown?: (updatedDropdownProps: InputFieldDropdownProps) => void;
 }
