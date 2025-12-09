@@ -6,6 +6,7 @@ import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
+import { RiskModule } from './IdentityRisk/IdentityRisk';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -20,6 +21,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public onError?: onErrorHandler;
     public getImageAsset: (props: AssetOptions) => string;
     public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
+    public riskModule: RiskModule;
 
     private readyCustomTranslationsAnalytics: boolean;
 
@@ -37,9 +39,15 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.analyticsEnabled = options?.analytics?.enabled ?? true;
         this.session.analyticsEnabled = this.analyticsEnabled;
         this.setOptions(options);
+
+        this.riskModule = new RiskModule({
+            env: this.options.environment,
+            getToken: this.options.onSessionCreate,
+        });
     }
 
     async initialize(): Promise<this> {
+        void this.riskModule.sendLoginEvent();
         return Promise.all([this.localization.ready]).then(() => {
             if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
                 const analyticsPayload = this.setTranslationsPayload();
