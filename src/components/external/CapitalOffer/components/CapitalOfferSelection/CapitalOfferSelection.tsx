@@ -11,11 +11,12 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { debounce, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
+import { getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { debounce } from '../../../../utils/utils';
 
 type CapitalOfferSelectionProps = {
     dynamicOffersConfig: IDynamicOffersConfig | undefined;

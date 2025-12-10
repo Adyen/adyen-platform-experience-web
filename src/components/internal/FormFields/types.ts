@@ -1,4 +1,4 @@
-import { JSX } from 'preact';
+import { ComponentChildren, JSX } from 'preact';
 import { TargetedEvent } from 'preact/compat';
 import { JSXInternal } from 'preact/src/jsx';
 import AriaRole = JSXInternal.AriaRole;
@@ -31,4 +31,6 @@ export interface InputBaseProps {
     min?: number;
     errorMessage?: string;
     lang?: HTMLInputElement['lang'];
+    iconBeforeSlot?: ComponentChildren;
+    iconAfterSlot?: ComponentChildren;
 }
