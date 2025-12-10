@@ -7,14 +7,14 @@ import { OperationParameters } from '../../../../../types/api/endpoints';
 import { WithPartialField } from '../../../../../utils/types';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
-import { ITransaction } from '../../../../../types';
+import { IAmount } from '../../../../../types';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import './TransactionTotals.scss';
 import { TotalsCard } from './TotalsCard';
 
 type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
     isAvailableCurrenciesFetching: boolean;
-    availableCurrencies: ITransaction['amount']['currency'][] | undefined;
+    availableCurrencies: IAmount['currency'][] | undefined;
     fullWidth?: boolean;
 };
 
@@ -25,13 +25,8 @@ const TransactionTotals = memo(
         balanceAccountId,
         createdSince,
         createdUntil,
-        categories,
-        statuses,
-        maxAmount,
-        minAmount,
-        currencies,
         fullWidth,
-    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId' | 'minAmount' | 'maxAmount'>) => {
+    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId'>) => {
         const { i18n } = useCoreContext();
         const { getTransactionTotals } = useConfigContext().endpoints;
 
@@ -40,15 +35,10 @@ const TransactionTotals = memo(
                 query: {
                     createdSince,
                     createdUntil,
-                    categories,
-                    statuses,
-                    maxAmount,
-                    minAmount,
-                    currencies,
                     balanceAccountId: balanceAccountId!,
                 },
             });
-        }, [balanceAccountId, categories, createdSince, createdUntil, currencies, getTransactionTotals, maxAmount, minAmount, statuses]);
+        }, [balanceAccountId, createdSince, createdUntil, getTransactionTotals]);
 
         const { data, isFetching } = useFetch({
             fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getTransactionTotals }), [balanceAccountId, getTransactionTotals]),
@@ -63,7 +53,7 @@ const TransactionTotals = memo(
 
             const partialTotals = availableCurrencies.map(currency => {
                 const totalOfCurrency = data.data.find(total => total.currency === currency);
-                return totalOfCurrency || { currency, incomings: 0, expenses: 0 };
+                return totalOfCurrency || { currency, incomings: 0, expenses: 0, total: 0, breakdown: { incomings: [], expenses: [] } };
             });
 
             return partialTotals.concat(data.data.filter(total => !partialTotals.includes(total)));

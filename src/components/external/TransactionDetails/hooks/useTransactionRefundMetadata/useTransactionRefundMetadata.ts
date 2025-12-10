@@ -23,7 +23,7 @@ export const useTransactionRefundMetadata = (transaction: TransactionDataProps['
 
     const refundAuthorization = isFunction(useConfigContext().endpoints.initiateRefund);
     const refundAvailable = refundAuthorization && refundable && refundableAmount > 0;
-    const refundCurrency = details?.refundableAmount?.currency ?? transaction?.amount.currency ?? '';
+    const refundCurrency = details?.refundableAmount?.currency ?? transaction?.netAmount.currency ?? '';
     const refundDisabled = !refundAvailable || refundLocked;
 
     const statuses: Record<'in_progress' | 'completed' | 'failed', { amounts: number[]; currency: string }> = useMemo(() => {

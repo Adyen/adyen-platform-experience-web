@@ -5,25 +5,64 @@
 
 export interface paths {
     '/v2/transactions/{transactionId}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transaction details
          * @description Given a transaction ID, it retrieves its details
          */
         get: operations['getTransaction'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v2/transactions/totals': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transaction totals
          * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
          */
         get: operations['getTransactionTotals'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v2/transactions': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transactions
          * @description Given filters, provides list of transactions for a balance account
          */
         get: operations['getTransactions'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
 }
 
@@ -32,11 +71,22 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
             currency: string;
             /**
              * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+             * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
+             */
+            value: number;
+        };
+        AmountAdjustment: {
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
+            currency: string;
+            /** @description Amount adjustment type */
+            type: string;
+            /**
+             * Format: int64
+             * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
         };
@@ -45,20 +95,28 @@ export interface components {
             accountNumberLastFourDigits: string;
         };
         /** @enum {string} */
-        Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
-        /** @enum {string} */
-        Column: 'CreatedAt' | 'PaymentMethod' | 'Category' | 'NetAmount' | 'AmountBeforeDeductions';
+        Category: 'ATM' | 'Capital' | 'Correction' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        Event: {
+            amount: components['schemas']['Amount'];
+            /**
+             * Format: date-time
+             * @description Date created
+             */
+            createdAt: string;
+            status: string;
+            type: components['schemas']['Category'];
+        };
         ExistingRefund: {
             amount: components['schemas']['Amount'];
             status: components['schemas']['RefundStatus'];
         };
         PaymentMethod: {
-            /** @description Last four digits of the card */
-            lastFourDigits?: string;
-            /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
-            type: string;
-
+            /** @description Payment method name, such as PayPal, Mastercard etc. */
             description?: string;
+            /** @description Last four digits of the payment method used (e.g. a credit card, a debit card, an IBAN) */
+            lastFourDigits?: string;
+            /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
+            type: string;
         };
         RefundDetails: {
             refundLocked?: boolean;
@@ -81,8 +139,10 @@ export interface components {
         /** @enum {string} */
         RefundType: 'partial' | 'full';
         SingleTransaction: {
+            /** @description Additions */
+            additions?: components['schemas']['AmountAdjustment'][];
             /** @description Amount */
-            amount: components['schemas']['Amount'];
+            amountBeforeDeductions: components['schemas']['Amount'];
             /** @description BalanceAccount ID */
             balanceAccountId: string;
             /** @description Information about the bank account */
@@ -94,16 +154,22 @@ export interface components {
              * @description Date created
              */
             createdAt: string;
-            /** @description The remaining amount on the payment without this split */
-            deductedAmount?: components['schemas']['Amount'];
+            /** @description Deductions */
+            deductions?: components['schemas']['AmountAdjustment'][];
+            /** @description Events */
+            events?: components['schemas']['Event'][];
             /** @description ID */
             id: string;
+            /** @description Amount */
+            netAmount: components['schemas']['Amount'];
             /** @description Amount in original PSP payment */
             originalAmount?: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
             /** @description When Category is payment, this is the PSP reference of the PSP payment */
             paymentPspReference?: string;
+            /** @description The PSP reference */
+            pspReference: string;
             /** @description Additional data related to refund operations */
             refundDetails?: components['schemas']['RefundDetails'];
             /** @description When Category is refund, additional information and references related to the refund */
@@ -114,8 +180,6 @@ export interface components {
         TransactionsListItem: {
             /** @description Amount before deductions  */
             amountBeforeDeductions: components['schemas']['Amount'];
-            /** @description Net amount */
-            netAmount: components['schemas']['Amount'];
             /** @description BalanceAccount ID */
             balanceAccountId: string;
             /** @description Information about the bank account */
@@ -129,10 +193,12 @@ export interface components {
             createdAt: string;
             /** @description ID */
             id: string;
+            /** @description Net amount */
+            netAmount: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
-            /** @description When Category is payment, this is the PSP reference of the PSP payment */
-            paymentPspReference?: string;
+            /** @description PSP reference */
+            pspReference: string;
             /** @description Status */
             status: components['schemas']['Status'];
         };
@@ -175,9 +241,9 @@ export interface components {
         };
         Links: {
             /** @description Link to a different page */
-            next: components['schemas']['Link'];
+            next?: components['schemas']['Link'];
             /** @description Link to a different page */
-            prev: components['schemas']['Link'];
+            prev?: components['schemas']['Link'];
         };
         TransactionsResponse: {
             /** @description Links */
@@ -200,19 +266,22 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /**
-     * Get transaction details
-     * @description Given a transaction ID, it retrieves its details
-     */
     getTransaction: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 transactionId: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['SingleTransaction'];
                 };
@@ -230,10 +299,17 @@ export interface operations {
                 createdSince?: string;
                 createdUntil?: string;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['TransactionTotalsResponse'];
                 };
@@ -250,7 +326,7 @@ export interface operations {
                 balanceAccountId: string;
                 createdSince?: string;
                 createdUntil?: string;
-                categories?: string[];
+                categories?: components['schemas']['Category'][];
                 statuses?: components['schemas']['Status'][];
                 currencies?: string[];
                 pspReference?: string;
@@ -258,10 +334,17 @@ export interface operations {
                 sortDirection?: components['schemas']['SortDirection'];
                 limit?: number;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['TransactionsResponse'];
                 };

@@ -133,8 +133,8 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         }
                         return null;
                     },
-                    amount: ({ value }) => {
-                        const amount = i18n.amount(value.value, value.currency, { hideCurrency: !hasMultipleCurrencies });
+                    amount: ({ item }) => {
+                        const amount = i18n.amount(item.netAmount.value, item.netAmount.currency, { hideCurrency: !hasMultipleCurrencies });
                         return (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
                                 {amount}

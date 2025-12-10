@@ -11,6 +11,7 @@ import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { TranslationKey } from '../../../../../translations';
 import { isNullish } from '../../../../../utils';
 import Link from '../../../../internal/Link/Link';
+import { IAmount } from '../../../../../types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import Icon from '../../../../internal/DataGrid/components/Icon';
@@ -35,14 +36,21 @@ const TransactionDataProperties = () => {
         const isRefundTransaction = category === 'Refund';
         const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
-        const getFormattedAmount = (amount?: (typeof transaction)['amount']) => {
+        const getFormattedAmount = (amount?: IAmount) => {
             if (isNullish(amount)) return null;
             const { value, currency } = amount;
             return i18n.amount(value, currency);
         };
 
-        const deductedAmount = getFormattedAmount(transaction.deductedAmount);
-        const originalAmount = getFormattedAmount(transaction.originalAmount);
+        const deductedAmount = getFormattedAmount({
+            currency: transaction.netAmount.currency,
+            value: transaction.amountBeforeDeductions.value - transaction.netAmount.value,
+        });
+
+        const originalAmount = getFormattedAmount({
+            currency: transaction.amountBeforeDeductions.currency,
+            value: transaction.originalAmount?.value ?? transaction.amountBeforeDeductions.value,
+        });
 
         const deductedAmountKey: TranslationKey = isRefundTransaction ? 'transactions.details.fields.refundFee' : 'transactions.details.fields.fee';
         const originalAmountKey: TranslationKey = isRefundTransaction
