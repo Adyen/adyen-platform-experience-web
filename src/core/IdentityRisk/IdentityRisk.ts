@@ -1,11 +1,16 @@
+// eslint-disable-next-line import/no-extraneous-dependencies,@typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line import/no-extraneous-dependencies,import/extensions
 import * as identityRiskSdk from '@adyen/identityrisk-data-collection/devicefingerprint.js';
 import { RiskModuleProps } from './types';
 import { DevEnvironment } from '../types';
 import { httpPost } from '../Http/http';
+import { SessionRequest } from '../ConfigContext';
 
 export class RiskModule {
     public irclUrl = '';
-    private getToken: any;
+    private getToken: SessionRequest;
+    private version = 'v1';
 
     constructor(props: RiskModuleProps) {
         this.getIrcUrl(props.env);
@@ -13,7 +18,7 @@ export class RiskModule {
     }
 
     getIrcUrl(env: DevEnvironment = 'test') {
-        this.irclUrl = `https://ircl-${env}.adyen.com/ircl/jwtservices/v1`;
+        this.irclUrl = `https://ircl-${env}.adyen.com/ircl/jwtservices/${this.version}`;
     }
 
     async getFingerPrint() {
@@ -22,17 +27,24 @@ export class RiskModule {
 
     async sendLoginEvent() {
         const deviceDetails = await this.getFingerPrint();
-        const { token } = await this.getToken();
+        const controller = new AbortController();
+        const session = await this.getToken(controller.signal);
 
-        await httpPost<any>({
-            loadingContext: this.irclUrl,
-            path: 'fingerprint/submitLegalEntity',
-            versionless: true,
-            body: {
-                eventType: 'login',
-                deviceDetails,
-            },
-            headers: { Authorization: `Bearer ${token}`, 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
-        });
+        if (session && session.token) {
+            try {
+                await httpPost<any>({
+                    loadingContext: this.irclUrl,
+                    path: 'fingerprint/submitAccountHolder',
+                    versionless: true,
+                    body: {
+                        eventType: 'login',
+                        deviceDetails,
+                    },
+                    headers: { Authorization: `Bearer ${session.token}` },
+                });
+            } catch (error) {
+                if (process.env.NODE_ENV === 'development') console.warn(error);
+            }
+        }
     }
 }

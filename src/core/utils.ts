@@ -5,7 +5,7 @@ import { httpGet } from './Http/http';
 export const FALLBACK_ENV = 'test' satisfies DevEnvironment;
 export const FALLBACK_CDN_ENV = 'live' satisfies DevEnvironment;
 export const normalizeLoadingContext = (loadingContext: string) => loadingContext?.replace?.(/([^/])$/, '$1/');
-export const normalizeUrl = (url: string) => url?.replace(/^([^/])/, '/$1');
+export const normalizeUrl = (url: string, versionless: boolean) => url?.replace(/^([^/])/, versionless ? '$1' : '/$1');
 
 export const resolveEnvironment = (() => {
     const envs: Partial<Record<DevEnvironment, string>> = API_ENVIRONMENTS;

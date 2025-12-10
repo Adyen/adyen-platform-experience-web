@@ -47,7 +47,10 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     }
 
     async initialize(): Promise<this> {
-        void this.riskModule.sendLoginEvent();
+        if (process.env.VITE_MODE !== 'development') {
+            void this.riskModule.sendLoginEvent();
+        }
+
         return Promise.all([this.localization.ready]).then(() => {
             if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
                 const analyticsPayload = this.setTranslationsPayload();
