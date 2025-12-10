@@ -47,7 +47,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     }
 
     async initialize(): Promise<this> {
-        if (process.env.VITE_MODE !== 'development') {
+        if (process.env.VITE_MODE === 'development') {
             void this.riskModule.sendLoginEvent();
         }
 

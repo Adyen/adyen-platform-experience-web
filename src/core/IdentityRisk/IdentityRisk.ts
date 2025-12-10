@@ -13,7 +13,7 @@ export class RiskModule {
     private static readonly version = 'v1';
 
     constructor(props: RiskModuleProps) {
-        this.getIrcUrl(props.env);
+        this.setIrcUrl(props.env);
         this.getToken = props.getToken;
     }
 
