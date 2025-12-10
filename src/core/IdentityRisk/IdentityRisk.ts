@@ -8,9 +8,9 @@ import { httpPost } from '../Http/http';
 import { SessionRequest } from '../ConfigContext';
 
 export class RiskModule {
-    public irclUrl = '';
-    private getToken: SessionRequest;
-    private version = 'v1';
+    private irclUrl = '';
+    private readonly getToken: SessionRequest;
+    private static readonly version = 'v1';
 
     constructor(props: RiskModuleProps) {
         this.getIrcUrl(props.env);
