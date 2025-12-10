@@ -22,7 +22,7 @@ export class RiskModule {
     }
 
     async getFingerPrint() {
-        return await identityRiskSdk.adyenGetData();
+        return identityRiskSdk.adyenGetData();
     }
 
     async sendLoginEvent() {
