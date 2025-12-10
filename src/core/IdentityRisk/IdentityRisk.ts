@@ -17,7 +17,7 @@ export class RiskModule {
         this.getToken = props.getToken;
     }
 
-    getIrcUrl(env: DevEnvironment = 'test') {
+    setIrcUrl(env: DevEnvironment = 'test') {
         this.irclUrl = `https://ircl-${env}.adyen.com/ircl/jwtservices/${this.version}`;
     }
 
