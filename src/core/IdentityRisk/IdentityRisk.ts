@@ -18,7 +18,7 @@ export class RiskModule {
     }
 
     setIrcUrl(env: DevEnvironment = 'test') {
-        this.irclUrl = `https://ircl-${env}.adyen.com/ircl/jwtservices/${this.version}`;
+        this.irclUrl = `https://ircl-${env}.adyen.com/ircl/jwtservices/${RiskModule.version}`;
     }
 
     async getFingerPrint() {
