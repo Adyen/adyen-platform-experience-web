@@ -56,6 +56,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/paybylink/stores": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get list of psp stores with pbl sales channel available for resources in the session
+         * @description Add @Operation annotation to provide a description
+         */
+        get: operations["getPayByLinkStores"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/paybylink/themes/{storeId}": {
         parameters: {
             query?: never;
@@ -205,9 +225,6 @@ export interface components {
         };
         /** @enum {string} */
         LinkType: "singleUse" | "open";
-        StatusGroup: 'active' | 'inactive';
-        /** @enum {string} */
-        SortDirection: 'asc' | 'desc';
         LinkValidity: {
             durationUnit: components["schemas"]["DurationUnit"];
             /** Format: int32 */
@@ -220,11 +237,6 @@ export interface components {
             /** @description Terms of service url */
             termsOfServiceUrl: string;
         };
-        ThemeDTO: {
-            brandName?: string;
-            fullWidthLogoUrl?: string;
-            logoUrl?: string;
-        };
         Link: {
             /** @description Cursor for a different page */
             cursor: string;
@@ -234,6 +246,20 @@ export interface components {
             next?: components["schemas"]["Link"];
             /** @description Link to a different page */
             prev?: components["schemas"]["Link"];
+        };
+        PayByLinkStoreDTO: {
+            description?: string;
+            storeCode?: string;
+            storeId?: string;
+        };
+        PayByLinkStoresResponseDTO: {
+            data: components["schemas"]["PayByLinkStoreDTO"][];
+            links?: components["schemas"]["Links"];
+        };
+        ThemeDTO: {
+            brandName?: string;
+            fullWidthLogoUrl?: string;
+            logoUrl?: string;
         };
         /** @enum {string} */
         PaymentLinkStatus: "active" | "paymentPending" | "expired" | "completed";
@@ -389,6 +415,29 @@ export interface operations {
             };
         };
     };
+    getPayByLinkStores: {
+        parameters: {
+            query?: {
+                limit?: number;
+                cursor?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayByLinkStoresResponseDTO"];
+                };
+            };
+        };
+    };
     getPayByLinkTheme: {
         parameters: {
             query?: never;
@@ -454,7 +503,6 @@ export interface operations {
                 linkTypes?: string[];
                 storeIds?: string[];
                 merchantReference?: string;
-                sortDirection?: components['schemas']['SortDirection'];
             };
             header?: never;
             path?: never;

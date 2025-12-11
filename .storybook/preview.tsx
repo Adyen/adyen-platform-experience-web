@@ -23,7 +23,7 @@ const preview: Preview = {
                 disable: true,
             },
         },
-        // balanceAccountId: { type: 'string' },
+        balanceAccountId: { type: 'string' },
         locale: { control: 'select', options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'] },
         skipDecorators: {
             table: {

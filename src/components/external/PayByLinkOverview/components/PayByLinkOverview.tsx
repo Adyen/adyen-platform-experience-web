@@ -113,7 +113,6 @@ export const PayByLinkOverview = ({
                         pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
                     createdUntil:
                         pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
-                    sortDirection: 'desc' as const,
                     merchantReference:
                         pageRequestParams[FilterParam.MERCHANT_REFERENCE] ??
                         defaultParams.current.defaultFilterParams[FilterParam.MERCHANT_REFERENCE],
