@@ -59,7 +59,7 @@ const FIELDS_KEYS = {
     merchantReference: 'payByLink.overview.common.fields.merchantReference',
     shopperEmail: 'payByLink.overview.common.fields.shopperEmail',
     storeCode: 'payByLink.overview.common.fields.store',
-} as const satisfies Record<string, TranslationKey>;
+} as const satisfies Record<(typeof PAY_BY_LINK_TABLE_FIELDS)[number], TranslationKey>;
 
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     error,
@@ -149,6 +149,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                         return <Tag label={i18n.get(`${PAY_BY_LINK_STATUSES[value]}`)} variant={getTagVariantForStatus(value)} />;
                     },
                     linkType: ({ item }) => {
+                        if (!item?.linkType) return null;
                         const value = item?.linkType === 'open' ? 'payByLink.common.linkType.open' : 'payByLink.common.linkType.singleUse';
                         if (!value) return;
                         return (
@@ -170,9 +171,9 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                         const isUrgent = isActionNeededUrgently(value);
 
                         return isUrgent ? (
-                            <Tooltip content={getTimeToDeadline(value!)}>
+                            <Tooltip content={getTimeToDeadline(value)}>
                                 <span>
-                                    <time dateTime={value!}>{dateFormat(value, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE)}</time>
+                                    <time dateTime={value}>{dateFormat(value, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE)}</time>
                                 </span>
                             </Tooltip>
                         ) : (
