@@ -21,12 +21,12 @@ describe('useStores', () => {
         vi.clearAllMocks();
         mockUseConfigContext.mockReturnValue({
             endpoints: {
-                getStores: mockGetStores,
+                getPayByLinkStores: mockGetStores,
             },
         } as any);
     });
 
-    test('should fetch stores when getStores is available', () => {
+    test('should fetch stores when getPayByLinkStores is available', () => {
         mockUseFetch.mockReturnValue({ isFetching: false });
 
         renderHook(() => useStores());

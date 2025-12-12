@@ -5,18 +5,18 @@ import { EMPTY_OBJECT } from '../utils';
 
 export const useStores = () => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
-    const { getStores } = useConfigContext().endpoints;
+    const { getPayByLinkStores } = useConfigContext().endpoints;
 
     //TODO: Add error cases and loading cases
     const { data, error, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!getStores,
+                    enabled: !!getPayByLinkStores,
                 },
-                queryFn: async () => getStores?.(EMPTY_OBJECT, EMPTY_OBJECT),
+                queryFn: async () => getPayByLinkStores?.(EMPTY_OBJECT, EMPTY_OBJECT),
             }),
-            [getStores]
+            [getPayByLinkStores]
         )
     );
 
