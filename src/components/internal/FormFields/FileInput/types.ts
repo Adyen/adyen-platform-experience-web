@@ -19,6 +19,7 @@ export interface DropzoneProps extends PropsWithChildren<BaseFileInputProps> {
 export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
     onChange?: (files: File[]) => void;
     onDelete?: () => void;
+    renderDelete?: (onDeleteCallback: () => void) => void;
 }
 
 export interface UploadedFileProps {

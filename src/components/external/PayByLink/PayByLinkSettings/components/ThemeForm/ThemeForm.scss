@@ -28,6 +28,10 @@
         margin-top: style.token(spacer-040);
     }
 
+    &__preview--remove {
+        margin-top: style.token(spacer-060);
+    }
+
     &__error-icon {
         bottom: calc((1em - #{style.token(text-body-line-height)}) / 2);
         position: relative;

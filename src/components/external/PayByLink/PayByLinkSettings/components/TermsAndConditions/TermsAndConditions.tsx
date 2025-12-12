@@ -23,7 +23,7 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
 
     const initialTermsAndConditionsURL = useRef<string | undefined>();
     const checkboxIdentifier = useRef(uniqueId());
-    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>();
+    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>('');
     const [isRequirementsChecked, setIsRequirementsChecked] = useState(false);
     const [showNotCheckedRequirementsError, setShowNotCheckedRequirementsError] = useState(false);
     const [showInvalidURL, setShowInvalidURL] = useState(false);
@@ -46,8 +46,8 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
 
     useEffect(() => {
         if (data?.termsOfServiceUrl) {
-            initialTermsAndConditionsURL.current = data?.termsOfServiceUrl;
-            setTermsAndConditionsURL(data?.termsOfServiceUrl);
+            initialTermsAndConditionsURL.current = data?.termsOfServiceUrl ?? '';
+            setTermsAndConditionsURL(data?.termsOfServiceUrl ?? '');
         }
     }, [data]);
 
@@ -56,6 +56,9 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
         setShowInvalidURL(false);
         if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current !== e?.currentTarget?.value) {
             setIsTermsAndConditionsChanged(true);
+        }
+        if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current === e?.currentTarget?.value) {
+            setIsTermsAndConditionsChanged(false);
         }
         setTermsAndConditionsURL(e?.currentTarget?.value);
     }, []);
@@ -69,17 +72,28 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
     const updatePayByLinkTermsAndConditions = useMutation({
         queryFn: savePayByLinkSettings,
         options: {
-            onSuccess: data => console.log(data),
+            onSuccess: () => {
+                setIsTermsAndConditionsChanged(false);
+                setShowInvalidURL(false);
+                setShowNotCheckedRequirementsError(false);
+                setIsRequirementsChecked(false);
+                initialTermsAndConditionsURL.current = termsAndConditionsURL;
+            },
         },
     });
 
     const isInputsValid = useCallback(() => {
-        if (!isRequirementsChecked) {
+        if (!isRequirementsChecked || termsAndConditionsURL === initialTermsAndConditionsURL.current) {
             setShowNotCheckedRequirementsError(true);
         }
-        const isValidUrl = !termsAndConditionsURL
-            ? false
-            : termsAndConditionsURL.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+
+        const isValidUrl =
+            termsAndConditionsURL === ''
+                ? true
+                : !termsAndConditionsURL
+                  ? false
+                  : termsAndConditionsURL.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+
         if (!isValidUrl) {
             setShowInvalidURL(true);
         }
@@ -142,6 +156,7 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
                     )}
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
                         <Checkbox
+                            checked={isRequirementsChecked}
                             className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
                             label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')}
                             onInput={onCheckboxInput}
