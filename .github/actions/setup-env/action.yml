@@ -46,7 +46,6 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_PLATFORM_EXPERIENCE_TOKEN }}
         npm install
       env:
         HUSKY: "0"

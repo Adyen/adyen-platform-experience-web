@@ -1,7 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies,@typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line import/no-extraneous-dependencies,import/extensions
-import * as identityRiskSdk from '@adyen/identityrisk-data-collection/devicefingerprint.js';
 import { RiskModuleProps } from './types';
 import { DevEnvironment } from '../types';
 import { httpPost } from '../Http/http';
@@ -22,6 +18,9 @@ export class RiskModule {
     }
 
     async getFingerPrint() {
+        // @ts-expect-error - No type definitions for this package
+        // eslint-disable-next-line import/no-extraneous-dependencies,import/extensions
+        const identityRiskSdk = await import('@adyen/identityrisk-data-collection/devicefingerprint.js');
         return identityRiskSdk.adyenGetData();
     }
 
