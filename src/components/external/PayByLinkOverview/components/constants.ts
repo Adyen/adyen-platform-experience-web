@@ -7,6 +7,9 @@ export const BASE_DETAILS_CLASS = 'adyen-pe-pay-by-link-details';
 export const BASE_TABLE_GRID_CLASS = 'adyen-pe-pay-by-link-table';
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
 export const TABS_CONTAINER_CLASS = `${BASE_CLASS}__tabs-container`;
+export const MOBILE_TABLE_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-cell`;
+export const MOBILE_AMOUNT_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-amount-cell`;
+export const MOBILE_EXPIRE_DATE_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-expire-date-cell`;
 
 export const EARLIEST_PAYMENT_LINK_DATE = 90;
 

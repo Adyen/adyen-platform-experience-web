@@ -35,3 +35,19 @@
         }
     }
 }
+
+.adyen-pe-pay-by-link-table {
+    &__mobile-cell {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-050);
+    }
+
+    &__mobile-amount-cell {
+        align-items: end;
+    }
+
+    &__mobile-expire-date-cell {
+        color: style.token(color-label-secondary);
+    }
+}
