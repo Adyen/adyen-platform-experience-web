@@ -11,6 +11,9 @@ beforeEach(cleanup);
  * only when in a browser-like environment (e.g. jsdom)
  */
 beforeAll(() => {
+    vi.mock('@adyen/identityrisk-data-collection/devicefingerprint.js', () => ({
+        adyenGetData: vi.fn().mockResolvedValue({}),
+    }));
     if (globalThis.window) {
         window.matchMedia = vi.fn().mockImplementation(() => ({
             addEventListener: vi.fn(),

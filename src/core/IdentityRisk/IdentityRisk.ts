@@ -18,8 +18,9 @@ export class RiskModule {
     }
 
     async getFingerPrint() {
-        const modulePath = '@adyen/identityrisk-data-collection/devicefingerprint.js';
-        const identityRiskSdk = await import(/* @vite-ignore */ modulePath);
+        // @ts-expect-error - No type definitions for this package
+        // eslint-disable-next-line import/no-extraneous-dependencies,import/extensions
+        const identityRiskSdk = await import('@adyen/identityrisk-data-collection/devicefingerprint.js');
         return identityRiskSdk.adyenGetData();
     }
 
