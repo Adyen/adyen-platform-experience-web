@@ -21,7 +21,7 @@ export const useStoreTheme = (selectedStore: string) => {
 
     //TODO: Add IDs for Select component compatibility
     const theme = useMemo(() => {
-        return data?.data;
+        return data;
     }, [data]);
 
     return { theme, isFetching };

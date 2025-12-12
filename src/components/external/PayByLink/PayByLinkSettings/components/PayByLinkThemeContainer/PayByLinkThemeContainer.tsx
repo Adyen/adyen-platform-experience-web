@@ -5,7 +5,6 @@ import Spinner from '../../../../../internal/Spinner';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { useConfigContext } from '../../../../../../core/ConfigContext';
 
 interface PayByLinkThemeContainerProps {
     selectedStore: string;
@@ -30,7 +29,6 @@ const PayByLinkThemeContainer = ({ selectedStore }: PayByLinkThemeContainerProps
             ) : (
                 <>
                     <ThemeForm theme={theme} selectedStore={selectedStore} />
-                    <img src={theme?.logoUrl} alt="" />
                 </>
             )}
         </section>

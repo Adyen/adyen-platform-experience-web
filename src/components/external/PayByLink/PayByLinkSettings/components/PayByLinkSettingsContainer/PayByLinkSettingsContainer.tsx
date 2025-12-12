@@ -49,6 +49,11 @@ const PayByLinkSettingsContainer = (props: _UIComponentProps<PayByLinkSettingsCo
                 <Divider variant="vertical" />
                 {selectedStore && <PayByLinkSettingsContent activeMenuItem={activeMenuItem} selectedStoreID={selectedStore} />}
             </div>
+            {/*<div className="adyen-pe-pay-by-link-settings__cta-container">*/}
+            {/*    <Button variant={ButtonVariant.PRIMARY} onClick={noop}>*/}
+            {/*        {i18n.get('payByLink.settings.common.action.save')}*/}
+            {/*    </Button>*/}
+            {/*</div>*/}
         </section>
     );
 };

@@ -27,7 +27,7 @@ export type FileSize = {
  * Represents the maximum byte scale for file sizes.
  * Not expecting bytes beyond the GB (Scale 3) range.
  */
-const MAX_BYTE_SCALE = ByteScale.GB satisfies ByteScale;
+const MAX_BYTE_SCALE = ByteScale.BYTES satisfies ByteScale;
 
 /**
  * Given a number of bytes, will compute and return the corresponding {@link ByteScale byte scale}.
@@ -96,12 +96,12 @@ export const getHumanReadableFileSize = (bytes: number): string => {
      */
     switch (scale) {
         case ByteScale.BYTES:
-            return `${size} byte${size === 1 ? '' : 's'}`;
+            return `${size}byte${size === 1 ? '' : 's'}`;
         case ByteScale.KB:
-            return `${size} KB`;
+            return `${size}KB`;
         case ByteScale.MB:
-            return `${size} MB`;
+            return `${size}MB`;
         case ByteScale.GB:
-            return `${size} GB`;
+            return `${size}GB`;
     }
 };

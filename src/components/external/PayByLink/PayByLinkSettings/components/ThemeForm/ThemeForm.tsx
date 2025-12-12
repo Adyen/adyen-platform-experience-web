@@ -6,7 +6,7 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import FileInput from '../../../../../internal/FormFields/FileInput/FileInput';
 import { THEME_FORM_ALLOWED_FILE_TYPES } from './constants';
 import { THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from './constants';
-import { getHumanReadableFileSize } from '../../../../../../utils';
+import { getHumanReadableFileSize, noop } from '../../../../../../utils';
 import { getHumanReadableFileName } from '../../../../../../utils/file/naming';
 import './ThemeForm.scss';
 import Button from '../../../../../internal/Button/Button';
@@ -15,17 +15,33 @@ import { useConfigContext } from '../../../../../../core/ConfigContext';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { useCallback, useState } from 'preact/hooks';
 import { h } from 'preact';
+import Icon from '../../../../../internal/Icon';
 
 interface ThemeFormProps {
     theme?: {
-        brandName?: string | undefined;
-        logoUrl?: string | undefined;
+        brandName?: string;
+        logoUrl?: string;
+        fullWidthLogoUrl?: string;
     };
     selectedStore: string;
 }
 
+const cloneFormData = (formData: FormData) => {
+    const formDataClone = new FormData();
+    for (const [field, value] of formData.entries()) {
+        if (value instanceof File) {
+            formDataClone.set(field, value, value.name);
+        } else formDataClone.set(field, value);
+    }
+    return formDataClone;
+};
+
 export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
+    const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? undefined);
+    const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(theme?.fullWidthLogoUrl ?? undefined);
+    const [themePayload, setThemePayload] = useState<FormData | null>(null);
+    const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
     const brandInputId = useUniqueId();
     const { i18n } = useCoreContext();
@@ -40,14 +56,62 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     });
 
     const onSave = useCallback(() => {
-        if (!brandName) return;
+        if (!brandName) {
+            setShowMissingBrandName(true);
+            return;
+        }
         void updatePayByLinkTermsAndConditions.mutate(
-            { contentType: 'multipart/form-data', body: { brandName: brandName! } },
+            { contentType: 'multipart/form-data', body: themePayload },
             { path: { storeId: selectedStore! } }
         );
-    }, [brandName, updatePayByLinkTermsAndConditions, selectedStore]);
+    }, [brandName, updatePayByLinkTermsAndConditions, selectedStore, themePayload]);
 
-    const onChange = (e: h.JSX.TargetedEvent<HTMLInputElement>) => setBrandName(e?.currentTarget?.value);
+    const addFileToThemePayload = useCallback((field: string, file: File) => {
+        setThemePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set(field, file, file.name);
+            return nextFormData;
+        });
+    }, []);
+
+    const onBrandNameChange = (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
+        setShowMissingBrandName(false);
+        setBrandName(e?.currentTarget?.value);
+        setThemePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set('brandName', e?.currentTarget?.value);
+            return nextFormData;
+        });
+    };
+
+    const removeFieldFromThemePayload = useCallback((field: string) => {
+        setThemePayload(previousFormData => {
+            if (previousFormData && previousFormData.has(field)) {
+                const nextFormData = cloneFormData(previousFormData);
+                nextFormData.delete(field);
+                return nextFormData;
+            }
+            return previousFormData;
+        });
+    }, []);
+
+    const onLogoChange = (files: File[]) => {
+        files[0] ? addFileToThemePayload('logoUrl', files[0]) : noop();
+    };
+
+    const onFullWidthLogoChange = (files: File[]) => {
+        files[0] ? addFileToThemePayload('fullWidthLogoUrl', files[0]) : noop();
+    };
+
+    const onRemoveLogoUrl = useCallback(() => {
+        setLogoUrl(undefined);
+        removeFieldFromThemePayload('logoUrl');
+    }, [setLogoUrl, removeFieldFromThemePayload]);
+
+    const onRemoveFullWidthLogoUrl = useCallback(() => {
+        setFullWidthLogoUrl(undefined);
+        removeFieldFromThemePayload('fullWidthLogoUrl');
+    }, [setFullWidthLogoUrl, removeFieldFromThemePayload]);
 
     return (
         <div className="adyen-pe-pay-by-link-theme-form">
@@ -57,46 +121,88 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                         {i18n.get('payByLink.settings.theme.brandName.input.label')}
                     </Typography>
                 </label>
-                <InputText type="text" lang={i18n.locale} uniqueId={brandInputId} value={brandName} onInput={onChange} />
+                <InputText type="text" lang={i18n.locale} uniqueId={brandInputId} value={brandName} onInput={onBrandNameChange} />
+                {showMissingBrandName && (
+                    <div className="adyen-pe-pay-by-link-theme-form__error">
+                        <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
+                        <Typography
+                            className={'adyen-pe-pay-by-link-theme-form__error-text'}
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.BODY}
+                        >
+                            {i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing')}
+                        </Typography>
+                    </div>
+                )}
             </div>
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('payByLink.settings.theme.brandLogo.input.label')}
-                    </Typography>
-                </label>
-                <FileInput maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE} allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES} />
-                <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
-                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
-                        {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
-                    </Typography>
-                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
-                        {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
-                    </Typography>
+            {logoUrl ? (
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <img src={logoUrl} alt={'logo'} />
+                    <Button variant={ButtonVariant.PRIMARY} onClick={onRemoveLogoUrl}>
+                        {i18n.get('payByLink.settings.theme.action.logo.remove')}
+                    </Button>
                 </div>
-            </div>
-
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('payByLink.settings.theme.brandWideLogo.input.label')}
-                    </Typography>
-                </label>
-                <FileInput maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE} allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES} />
-                <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
-                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
-                        {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
-                    </Typography>
-                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                        {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
-                        {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
-                    </Typography>
+            ) : (
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                            {i18n.get('payByLink.settings.theme.brandLogo.input.label')}
+                        </Typography>
+                    </label>
+                    <FileInput
+                        maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
+                        allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
+                        onChange={onLogoChange}
+                    />
+                    <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                            {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
+                        </Typography>
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                            {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
+                        </Typography>
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.maxSize.logo.text')}
+                        </Typography>
+                    </div>
                 </div>
-            </div>
-
+            )}
+            {fullWidthLogoUrl ? (
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <img src={fullWidthLogoUrl} alt={'logo'} />
+                    <Button variant={ButtonVariant.PRIMARY} onClick={onRemoveFullWidthLogoUrl}>
+                        {i18n.get('payByLink.settings.theme.action.logo.remove')}
+                    </Button>
+                </div>
+            ) : (
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                            {i18n.get('payByLink.settings.theme.brandWideLogo.input.label')}
+                        </Typography>
+                    </label>
+                    <FileInput
+                        maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
+                        allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
+                        onChange={onFullWidthLogoChange}
+                    />
+                    <div className="adyen-pe-pay-by-link-theme-form__file-info-container">
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                            {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
+                        </Typography>
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.maxSize.text')}
+                            {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
+                        </Typography>
+                        <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
+                            {i18n.get('payByLink.settings.theme.limitations.file.input.maxSize.fullWidthLogo.text')}
+                        </Typography>
+                    </div>
+                </div>
+            )}
             <div className="adyen-pe-pay-by-link-settings__cta-container">
                 <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
                     {i18n.get('payByLink.settings.common.action.save')}

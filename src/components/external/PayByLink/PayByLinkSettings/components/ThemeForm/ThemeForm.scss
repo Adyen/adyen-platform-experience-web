@@ -17,7 +17,24 @@
         color: style.token(color-label-secondary);
 
         &-container {
-            margin-top: style.token(spacer-040);
+            margin-top: style.token(spacer-060);
         }
+    }
+
+    &__error {
+        align-items: flex-start;
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
+    &__error-icon {
+        bottom: calc((1em - #{style.token(text-body-line-height)}) / 2);
+        position: relative;
+    }
+
+    &__error-text,
+    &__error-icon svg {
+        color: style.token(color-label-critical);
     }
 }

@@ -145,7 +145,7 @@ export const setupBasicResponse = {
             method: 'GET',
             url: '/paybylink/settings/{storeId}',
         },
-        updatePayByLinkSettings: {
+        savePayByLinkSettings: {
             method: 'POST',
             url: '/paybylink/settings/{storeId}',
         },

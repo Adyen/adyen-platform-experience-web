@@ -23,13 +23,30 @@
         }
     }
 
+    &__error {
+        align-items: flex-start;
+        display: flex;
+        gap: style.token(spacer-040);
+    }
+
+    &__error-icon {
+        bottom: calc((1em - #{style.token(text-body-line-height)}) / 2);
+        position: relative;
+    }
+
+    &__error-text,
+    &__error-icon svg {
+        color: style.token(color-label-critical);
+    }
+
     &-checkbox {
         display: flex;
         gap: style.token(spacer-060);
 
         &__container {
             display: flex;
-            gap: style.token(spacer-060);
+            flex-direction: column;
+            gap: style.token(spacer-040);
             margin-bottom: style.token(spacer-110);
             margin-top: style.token(spacer-080);
         }

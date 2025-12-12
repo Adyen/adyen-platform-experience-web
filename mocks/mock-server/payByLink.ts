@@ -94,9 +94,7 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json({
-            data: STORE_THEME[store.storeCode as keyof typeof STORE_THEME],
-        });
+        return HttpResponse.json(STORE_THEME[store.storeCode as keyof typeof STORE_THEME]);
     }),
 
     // POST /paybylink/themes/{storeId}
@@ -117,9 +115,7 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json({
-            data: STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS],
-        });
+        return HttpResponse.json(STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS]);
     }),
 
     // POST /paybylink/settings/{storeId}
