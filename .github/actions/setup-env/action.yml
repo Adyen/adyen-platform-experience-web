@@ -46,6 +46,6 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        npm install --omit=optional
+        npm ci
       env:
         HUSKY: "0"
