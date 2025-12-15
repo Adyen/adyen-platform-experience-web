@@ -175,10 +175,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                                     </Typography>
                                     <span>
                                         {item.status && (
-                                            <Tag
-                                                label={i18n.get(`${PAY_BY_LINK_STATUSES[item.status]}`)}
-                                                variant={getTagVariantForStatus(item.status)}
-                                            />
+                                            <Tag label={i18n.get(PAY_BY_LINK_STATUSES[item.status])} variant={getTagVariantForStatus(item.status)} />
                                         )}
                                     </span>
                                 </div>
