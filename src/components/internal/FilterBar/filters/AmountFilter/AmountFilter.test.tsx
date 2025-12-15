@@ -3,11 +3,11 @@
  */
 import { FilterParam } from '../../../../types';
 import { AmountFilter } from './AmountFilter';
-import { beforeAll, expect, test, vi } from 'vitest';
-import { render, screen } from '@testing-library/preact';
+import { beforeEach, afterEach, expect, test, vi } from 'vitest';
+import { cleanup, render, screen } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
-beforeAll(() => {
+beforeEach(() => {
     window.matchMedia = vi.fn().mockImplementation(query => ({
         matches: false,
         media: query,
@@ -18,15 +18,16 @@ beforeAll(() => {
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
     }));
-    global.IntersectionObserver = vi.fn().mockImplementation((callback: IntersectionObserverCallback, options?: IntersectionObserverInit) => ({
-        root: options?.root || null,
-        rootMargin: options?.rootMargin || '',
-        thresholds: options?.threshold || [],
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn(),
-        takeRecords: vi.fn(),
-    }));
+    global.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
+        this.observe = vi.fn();
+        this.unobserve = vi.fn();
+        this.disconnect = vi.fn();
+        this.takeRecords = vi.fn(() => []);
+    }) as unknown as typeof IntersectionObserver;
+});
+
+afterEach(() => {
+    cleanup();
 });
 
 type AmountFilter = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };

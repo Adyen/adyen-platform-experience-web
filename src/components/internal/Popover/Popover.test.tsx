@@ -16,17 +16,14 @@ interface PopoverContext {
 
 describe('Popover component', () => {
     beforeEach<PopoverContext>(context => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
+        window.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
+            this.observe = vi.fn();
+            this.unobserve = vi.fn();
+            this.disconnect = vi.fn();
+        }) as unknown as typeof IntersectionObserver;
 
         context.dismiss = vi.fn();
         context.applyAction = vi.fn();
-
-        window.IntersectionObserver = mockIntersectionObserver;
 
         const buttonEl = createRef();
 
@@ -121,14 +118,11 @@ describe('Popover component', () => {
 
 describe('Popover component close', () => {
     beforeEach(() => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
-        window.IntersectionObserver = mockIntersectionObserver;
+        window.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
+            this.observe = vi.fn();
+            this.unobserve = vi.fn();
+            this.disconnect = vi.fn();
+        }) as unknown as typeof IntersectionObserver;
 
         const buttonEl = createRef();
 
