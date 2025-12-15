@@ -4,7 +4,7 @@ import { CountryRegionField } from './Fields/CountryRegionField';
 import { ShippingStreetField } from './Fields/Address/ShippingStreetField';
 import { LanguageField } from './Fields/LanguageField';
 import { BillingAndShippingCheckboxField } from './Fields/BillingAndShippingCheckboxField';
-import { StateUpdater, useCallback, useMemo } from 'preact/hooks';
+import { StateUpdater } from 'preact/hooks';
 import { FormTextInput } from '../../../../../../internal/FormWrappers/FormTextInput';
 import { PBLFormValues } from '../../types';
 // import { EmailDependentCheckboxField } from './Fields/EmailDependentCheckboxField';
@@ -29,7 +29,7 @@ interface CustomerDetailsFormProps {
 
 export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }: CustomerDetailsFormProps) => {
     const { i18n } = useCoreContext();
-    const { fieldsConfig, control, getValues } = useWizardFormContext<PBLFormValues>();
+    const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
     const isNameVisible = fieldsConfig['shopperName.firstName']?.visible || fieldsConfig['shopperName.lastName']?.visible;
     const isBillingAddressOptional = !fieldsConfig['billingAddress.street']?.required;
