@@ -59,3 +59,6 @@ export const DATE_FORMAT_RESPONSE_DEADLINE: Intl.DateTimeFormatOptions = {
     year: undefined,
     timeZoneName: SHORT_OFFSET,
 };
+
+export const DATE_FORMAT_PAY_BY_LINK: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;
+export const DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;

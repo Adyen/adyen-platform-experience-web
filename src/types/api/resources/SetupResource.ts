@@ -29,7 +29,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "createGrantOffer" | "createNetworkTokenActivationData" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPaymentLinks" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails" | "getStores" | "payByLinkFilters" | "getCountries" | "getCurrencies" | "getPayByLinkConfiguration" | "getPayByLinkInstallments";
+        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "createGrantOffer" | "createNetworkTokenActivationData" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPaymentLinks" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "registerSdk" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails" | "getStores" | "payByLinkFilters" | "getPayByLinkSettings" | "savePayByLinkSettings" | "getPayByLinkTheme" | "updatePayByLinkTheme" | "createPBLPaymentLink" | "getPayByLinkConfiguration" | "downloadTransactions";
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components["schemas"]["RegionDTO"][];
@@ -43,6 +43,7 @@ export interface components {
         SetupEndpointResponse: {
             method?: string;
             url?: string;
+            versions?: number[];
         };
         SetupResponse: {
             /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
