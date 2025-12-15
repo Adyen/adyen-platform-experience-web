@@ -22,7 +22,6 @@ import {
     DISPUTES,
     getAdditionalDisputeDetails,
     getApplicableDisputeDefenseDocuments,
-    getDate,
     getDisputesByStatusGroup,
     MAIN_BALANCE_ACCOUNT,
     NOTIFICATION_OF_FRAUD,
@@ -32,6 +31,7 @@ import {
     RFI_EXPIRED,
     RFI_UNRESPONDED,
 } from '../mock-data/disputes';
+import getDate from '../mock-data/utils/getDate';
 
 const mockEndpoints = endpoints('mock').disputes;
 const networkError = false;

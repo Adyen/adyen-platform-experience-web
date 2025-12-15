@@ -185,6 +185,10 @@ export interface TransactionOverviewComponentProps
         >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+export interface PayByLinkOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
         _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
@@ -218,6 +222,10 @@ export const enum FilterParam {
     STATUSES = 'statuses',
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
+    LINK_TYPES = 'linkTypes',
+    MERCHANT_REFERENCE = 'merchantReference',
+    PAYMENT_LINK_ID = 'paymentLinkId',
+    STORE_IDS = 'storeIds',
 }
 
 export type ExternalComponentType =
@@ -230,4 +238,5 @@ export type ExternalComponentType =
     | 'capitalOffer'
     | 'disputes'
     | 'disputesManagement'
-    | 'payByLinkCreation';
+    | 'payByLinkCreation'
+    | 'payByLinkOverview';

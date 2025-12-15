@@ -68,3 +68,6 @@ export const DATE_FORMAT_DELIVERY_DATE: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     timeZoneName: undefined,
 };
+
+export const DATE_FORMAT_PAY_BY_LINK: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;
+export const DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;

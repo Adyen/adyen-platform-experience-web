@@ -29,47 +29,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        EndpointName:
-            | 'acceptDispute'
-            | 'anaCreditActionDetails'
-            | 'createGrantOffer'
-            | 'createNetworkTokenActivationData'
-            | 'defendDispute'
-            | 'downloadDefenseDocument'
-            | 'downloadReport'
-            | 'getApplicableDefenseDocuments'
-            | 'getBalanceAccounts'
-            | 'getBalances'
-            | 'getDisputeDetail'
-            | 'getDisputeList'
-            | 'getDynamicGrantOffer'
-            | 'getDynamicGrantOffersConfiguration'
-            | 'getGrants'
-            | 'getNetworkTokenActivationData'
-            | 'getPaymentLinks'
-            | 'getPayout'
-            | 'getPayouts'
-            | 'getReports'
-            | 'getTransaction'
-            | 'getTransactionTotals'
-            | 'getTransactions'
-            | 'initiateRefund'
-            | 'requestFunds'
-            | 'registerSdk'
-            | 'sendEngageEvent'
-            | 'sendTrackEvent'
-            | 'signToSActionDetails'
-            | 'getPayByLinkStores'
-            | 'payByLinkFilters'
-            | 'getCountries'
-            | 'getCurrencies'
-            | 'getPayByLinkSettings'
-            | 'savePayByLinkSettings'
-            | 'getPayByLinkTheme'
-            | 'updatePayByLinkTheme'
-            | 'createPBLPaymentLink'
-            | 'getPayByLinkConfiguration'
-            | 'downloadTransactions';
+        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "createGrantOffer" | "createNetworkTokenActivationData" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPaymentLinks" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "registerSdk" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails" | "getPayByLinkStores" | "payByLinkFilters" | "getPayByLinkSettings" | "savePayByLinkSettings" | "getPayByLinkTheme" | "updatePayByLinkTheme" | "createPBLPaymentLink" | "getPayByLinkConfiguration" | "getPayByLinkPaymentLinkById" | "downloadTransactions" | "getCurrencies" | "getCountries";
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components['schemas']['RegionDTO'][];
