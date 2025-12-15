@@ -13,7 +13,6 @@ import { ButtonVariant } from '../Button/types';
 function InputBase(
     {
         onInput,
-        onKeyDown,
         onKeyUp,
         trimOnBlur,
         onBlurHandler,
@@ -25,6 +24,7 @@ function InputBase(
         dropdown,
         dropdownPosition = 'start',
         onDropdownInput,
+        onKeyDown,
         onUpdateDropdown,
         ...props
     }: InputBaseProps,

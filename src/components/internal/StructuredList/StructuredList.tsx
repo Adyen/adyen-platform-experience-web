@@ -38,6 +38,8 @@ export default function StructuredList({
 
     const formattedItems = useStructuredListItems(items);
 
+    const typographyVariant = condensed ? TypographyVariant.CAPTION : TypographyVariant.BODY;
+
     return (
         <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end', [SL_EXPANDED_CLASS]: !condensed })} aria-label={ariaLabel}>
             {formattedItems.map((item, index) => (
@@ -50,7 +52,7 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
-                        {renderLabel ? renderLabel(item.label, item.key) : <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>}
+                        {renderLabel ? renderLabel(item.label, item.key) : <Typography variant={typographyVariant}>{item.label}</Typography>}
                     </dt>
                     <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
                         {item.render ? (
@@ -58,7 +60,7 @@ export default function StructuredList({
                         ) : renderValue ? (
                             renderValue(item.value, item.key, item.type, item.config)
                         ) : (
-                            <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>
+                            <Typography variant={typographyVariant}>{item.value}</Typography>
                         )}
                     </dd>
                 </div>

@@ -26,6 +26,7 @@ const icons = {
     plus: () => import('../../../images/icons/plus.svg?component'),
     'plus-circle-outline': () => import('../../../images/icons/plus-circle-outline.svg?component'),
     square: () => import('../../../images/icons/square.svg?component'),
+    'square-small-fill': () => import('../../../images/icons/square-small-fill.svg?component'),
     'trash-can': () => import('../../../images/icons/trash-can.svg?component'),
     upload: () => import('../../../images/icons/upload.svg?component'),
     'warning-filled': () => import('../../../images/icons/warning-filled.svg?component'),
