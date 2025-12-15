@@ -34,4 +34,20 @@
             display: none;
         }
     }
+
+    &__filters-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    &__action-buttons-container {
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-left: auto;
+        padding: style.token(spacer-060) style.token(spacer-000);
+    }
+
+    &__action-button {
+        height: 100%;
+    }
 }

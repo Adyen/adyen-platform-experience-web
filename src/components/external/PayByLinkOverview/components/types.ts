@@ -18,3 +18,5 @@ export interface PayByLinkTableProps extends WithPaginationLimitSelection<Pagina
     paymentLinks: IPaymentLinkItem[] | undefined;
     stores?: IStore[];
 }
+
+export type PayByLinkOverviewModalType = 'LinkCreation' | 'Settings';

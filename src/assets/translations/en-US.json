@@ -718,6 +718,7 @@
     "payByLink.overview.filters.types.paymentLinkID.label": "Payment Link ID",
     "payByLink.overview.filters.types.status.label": "Status",
     "payByLink.overview.filters.types.stores.label": "Stores",
+    "payByLink.overview.list.actions.createPaymentLink": "Create payment link",
     "payByLink.overview.list.fields.amount": "Amount",
     "payByLink.overview.list.fields.createdAt": "Creation Date",
     "payByLink.overview.list.fields.currency": "Currency",

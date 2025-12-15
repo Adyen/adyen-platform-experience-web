@@ -242,6 +242,7 @@
     "disputes.overview.ongoingAndClosed.errors.listEmpty": "Message shown when no disputes match the current filters",
     "disputes.overview.ongoingAndClosed.errors.updateFilters": "Suggestion telling the user to adjust filters or check again later for new disputes",
     "disputes.overview.ongoingAndClosed.limitSelect.a11y.label": "Used as label for select widget with page limit options, allowing the user to select the maximum number of disputes that can be shown for each page.",
+    "payByLink.overview.list.actions.createPaymentLink": "Create payment link button label",
     "payouts.details.errors.unavailable": "Will be displayed as error message when the details of a payout cannot be shown to the user, probably due to insufficient permissions.",
     "payouts.details.title": "Will be displayed as title text (heading) for the payout details widget.",
     "payouts.overview.filters.label": "Used as label for a group of controls for filtering the list of payouts.",
