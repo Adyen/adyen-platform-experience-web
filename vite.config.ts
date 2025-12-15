@@ -124,12 +124,6 @@ export default defineConfig(({ mode }) => {
         test: {
             root: resolve(__dirname, './src'),
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
-            alias: {
-                '@adyen/identityrisk-data-collection/devicefingerprint.js': resolve(
-                    __dirname,
-                    './config/mocks/identityRiskMock.ts'
-                ),
-            },
             coverage: {
                 provider: 'v8',
                 all: true,

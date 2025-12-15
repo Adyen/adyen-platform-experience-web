@@ -2,10 +2,6 @@ import matchers from '@testing-library/jest-dom/matchers';
 import { beforeEach, beforeAll, expect, vi } from 'vitest';
 import { cleanup } from '@testing-library/preact';
 
-vi.mock('@adyen/identityrisk-data-collection/devicefingerprint.js', () => ({
-    adyenGetData: vi.fn().mockResolvedValue({}),
-}));
-
 expect.extend(matchers);
 
 beforeEach(cleanup);
