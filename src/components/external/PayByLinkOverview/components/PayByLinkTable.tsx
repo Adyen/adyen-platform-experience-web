@@ -49,16 +49,16 @@ export const PAY_BY_LINK_TABLE_FIELDS = [
 ] as const;
 
 const FIELDS_KEYS = {
-    paymentLinkId: 'payByLink.overview.common.fields.id',
-    amount: 'payByLink.overview.common.fields.amount',
-    currency: 'payByLink.overview.common.fields.currency',
-    status: 'payByLink.overview.common.fields.status',
-    expirationDate: 'payByLink.overview.common.fields.expirationDate',
-    creationDate: 'payByLink.overview.common.fields.createdAt',
-    linkType: 'payByLink.overview.common.fields.linkType',
-    merchantReference: 'payByLink.overview.common.fields.merchantReference',
-    shopperEmail: 'payByLink.overview.common.fields.shopperEmail',
-    storeCode: 'payByLink.overview.common.fields.store',
+    paymentLinkId: 'payByLink.overview.list.fields.id',
+    amount: 'payByLink.overview.list.fields.amount',
+    currency: 'payByLink.overview.list.fields.currency',
+    status: 'payByLink.overview.list.fields.status',
+    expirationDate: 'payByLink.overview.list.fields.expirationDate',
+    creationDate: 'payByLink.overview.list.fields.createdAt',
+    linkType: 'payByLink.overview.list.fields.linkType',
+    merchantReference: 'payByLink.overview.list.fields.merchantReference',
+    shopperEmail: 'payByLink.overview.list.fields.shopperEmail',
+    storeCode: 'payByLink.overview.list.fields.store',
 } as const satisfies Record<(typeof PAY_BY_LINK_TABLE_FIELDS)[number], TranslationKey>;
 
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
@@ -151,7 +151,6 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                     linkType: ({ item }) => {
                         if (!item?.linkType) return null;
                         const value = item?.linkType === 'open' ? 'payByLink.common.linkType.open' : 'payByLink.common.linkType.singleUse';
-                        if (!value) return;
                         return (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                 {i18n.get(value)}

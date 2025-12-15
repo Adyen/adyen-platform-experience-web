@@ -13,8 +13,8 @@ export const EARLIEST_PAYMENT_LINK_DATE = 90;
 export const DEFAULT_PAY_BY_LINK_STATUS_GROUP: IPayByLinkStatusGroup = 'active';
 
 export const PAY_BY_LINK_STATUS_GROUPS = {
-    active: 'payByLink.overview.common.statusGroups.active',
-    inactive: 'payByLink.overview.common.statusGroups.inactive',
+    active: 'payByLink.overview.list.statusGroups.active',
+    inactive: 'payByLink.overview.list.statusGroups.inactive',
 } satisfies Record<keyof IPayByLinkFilterStatusGroup, TranslationKey>;
 
 export const PAY_BY_LINK_STATUS_GROUPS_TABS = Object.entries(PAY_BY_LINK_STATUS_GROUPS).map(([statusGroup, labelTranslationKey]) => ({

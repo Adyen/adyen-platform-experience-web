@@ -253,7 +253,7 @@ export const PayByLinkOverview = ({
         [updateFilters]
     );
 
-    const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.common.filters.types.statusGroup'), [i18n]);
+    const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.list.filters.types.statusGroup'), [i18n]);
 
     const showLinkTypesFilter = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0;
     const showStatusesFilter = filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0;
