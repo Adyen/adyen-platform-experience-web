@@ -151,6 +151,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     return (
         <div className={BASE_TABLE_GRID_CLASS}>
             <DataGrid
+                narrowColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
                 error={error}
                 columns={columns}

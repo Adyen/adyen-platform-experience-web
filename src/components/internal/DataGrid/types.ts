@@ -18,12 +18,13 @@ export interface DataGridProps<
     Item extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Item[number], string>>>,
     ClickedField extends keyof Item[number],
-    CustomCells extends CustomCell<Item, Columns, Columns[number]>
+    CustomCells extends CustomCell<Item, Columns, Columns[number]>,
 > {
     autoFitColumns?: boolean;
     children?: ComponentChildren;
     columns: Columns;
     condensed: boolean;
+    narrowColumns?: boolean;
     data: Item | undefined;
     loading: boolean;
     outline: boolean;
@@ -49,7 +50,7 @@ export interface InteractiveBodyProps<
     Items extends any[],
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string & {}>>>,
     ClickedField extends keyof Items[number],
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 > {
     onRowClick?: DataGridProps<Items, Columns, ClickedField, CustomCells>['onRowClick'];
     data: DataGridProps<Items, Columns, ClickedField, CustomCells>['data'];

@@ -20,8 +20,7 @@
         }
 
         .adyen-pe-data-grid__cell {
-            padding-bottom: style.token(spacer-060);
-            padding-top: style.token(spacer-060);
+            padding: style.token(spacer-060) 0;
         }
     }
 
