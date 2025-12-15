@@ -1,4 +1,4 @@
-import { components } from '../resources/StoreResource';
+import { components } from '../resources/PayByLinkResource';
 
-export type IStores = components['schemas']['StoresResponseDTO']['data'];
-export type IStore = components['schemas']['StoreDTO'];
+export type IStores = components['schemas']['PayByLinkStoresResponseDTO']['data'];
+export type IStore = components['schemas']['PayByLinkStoreDTO'];
