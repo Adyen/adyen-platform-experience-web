@@ -195,7 +195,16 @@ export interface DisputeOverviewComponentProps
         _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+export type DeepPartial<T> = T extends object
+    ? {
+          [K in keyof T]?: DeepPartial<T[K]>;
+      }
+    : T;
+
 export interface PayByLinkCreationComponentProps extends UIElementProps {
+    fieldsConfig?: {
+        data: DeepPartial<PBLFormValues>;
+    };
     storeIds: string[] | string;
     onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
 }

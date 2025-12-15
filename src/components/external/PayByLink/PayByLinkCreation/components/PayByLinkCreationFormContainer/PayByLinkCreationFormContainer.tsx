@@ -17,13 +17,17 @@ import { SuccessResponse } from '../../../../../../types/api/endpoints';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
 import Icon from '../../../../../internal/Icon';
 import { usePayByLinkFormData } from './usePayByLinkFormData';
+import { PayByLinkCreationComponentProps } from '../../../../../types';
 
 type PayByLinkCreationFormContainerProps = {
+    fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: string[] | string;
 };
 
-export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+    const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
+    const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
     const { i18n } = useCoreContext();
 
     const {
@@ -38,7 +42,7 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
         wizardForm,
         createPBLPaymentLink,
         isDataLoading,
-    } = usePayByLinkFormData({ storeIds });
+    } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
 
@@ -78,17 +82,15 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
     });
 
     const onSubmit = async (data: PBLFormValues) => {
-        if (!data.countryCode || !data.amount?.currency || !data.amount?.value || !data.reference || !data.shopperName) {
-            throw new Error('Missing required fields for payment link creation');
-        }
+        const { store, ...dataWithoutStore } = data;
 
         try {
             const result = await submitMutation.mutate(
                 {
-                    body: data,
+                    body: dataWithoutStore,
                     contentType: 'application/json',
                 },
-                { path: { storeId: 'default' } }
+                { path: { storeId: store } }
             );
 
             onPaymentLinkCreated?.({ ...data, paymentLink: result });
@@ -99,10 +101,9 @@ export const PayByLinkCreationFormContainer = ({ storeIds, onPaymentLinkCreated 
     };
 
     const onError = (errors: any) => {
+        console.log(errors);
         // TODO - Define errorHandling
     };
-
-    const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(false);
 
     // TODO - Define where to get timezone
     const timezone = undefined;

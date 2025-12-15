@@ -31,6 +31,26 @@ export function setNestedValue(obj: any, path: string, value: any): void {
     current[lastKey] = value;
 }
 
+function purgeEmptyValues<T>(obj: T): T {
+    if (obj === null || obj === undefined) return obj;
+    if (typeof obj !== 'object') return obj;
+    if (Array.isArray(obj)) return obj.filter(item => item !== '' && item !== null) as T;
+
+    const result: Record<string, any> = {};
+    for (const [key, value] of Object.entries(obj)) {
+        if (value === '' || value === null || value === undefined) continue;
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            const cleaned = purgeEmptyValues(value);
+            if (Object.keys(cleaned as object).length > 0) {
+                result[key] = cleaned;
+            }
+        } else {
+            result[key] = value;
+        }
+    }
+    return result as T;
+}
+
 function flattenObject(obj: any, prefix = ''): Record<string, any> {
     const result: Record<string, any> = {};
 
@@ -317,7 +337,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues>): Us
                     const isValid = await trigger();
 
                     if (isValid) {
-                        const data = getValues();
+                        const data = purgeEmptyValues(getValues());
                         await onValid(data);
                     } else if (onInvalid) {
                         onInvalid(control._computedErrors);

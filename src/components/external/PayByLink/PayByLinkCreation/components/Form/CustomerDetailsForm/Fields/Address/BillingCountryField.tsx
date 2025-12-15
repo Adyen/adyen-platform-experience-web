@@ -53,6 +53,7 @@ export const BillingCountryField = () => {
             label={i18n.get('payByLink.linkCreation.fields.billingAddress.country.label')}
             items={countriesListItems}
             readonly={countriesQuery.isFetching || datasetQuery.isFetching}
+            hideOptionalLabel
         />
     );
 };

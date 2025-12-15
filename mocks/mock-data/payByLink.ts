@@ -2,27 +2,17 @@ export const STORES = [
     {
         description: 'Main Store - New York',
         storeCode: 'New York Store',
-
-        setup: {
-            termsAndConditionsProvisioned: true,
-            themeFullyProvisioned: true,
-        },
+        storeId: 'NY001',
     },
     {
         description: 'Main Store - London',
         storeCode: 'London Store',
-        setup: {
-            termsAndConditionsProvisioned: false,
-            themeFullyProvisioned: true,
-        },
+        storeId: 'LD001',
     },
     {
         description: 'Main Store - Amsterdam',
         storeCode: 'Amsterdam Store',
-        setup: {
-            termsAndConditionsProvisioned: true,
-            themeFullyProvisioned: false,
-        },
+        storeId: 'AM001',
     },
 ];
 
@@ -142,7 +132,7 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
         options: CURRENCIES.map(id => ({ id })),
     },
     deliveryDate: {
-        required: true,
+        required: false,
     },
     description: {
         required: true,
@@ -154,7 +144,7 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
         required: true,
     },
     shopperName: {
-        required: true,
+        required: false,
     },
     linkType: {
         required: true,
@@ -207,18 +197,18 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
     },
 };
 
+const { linkValidity, deliveryAddress, ...configWithoutLinkValidityAndAddress } = BASE_PAY_BY_LINK_CONFIGURATION;
+
 export const PAY_BY_LINK_CONFIGURATION = {
-    'New York Store': BASE_PAY_BY_LINK_CONFIGURATION,
-    'London Store': { ...BASE_PAY_BY_LINK_CONFIGURATION, linkValidity: undefined },
-    'Amsterdam Store': BASE_PAY_BY_LINK_CONFIGURATION,
+    NY001: BASE_PAY_BY_LINK_CONFIGURATION,
+    LD001: configWithoutLinkValidityAndAddress,
+    AM001: BASE_PAY_BY_LINK_CONFIGURATION,
 };
 
 export const PAY_BY_LINK_SETTINGS = {
-    'New York Store': {
+    NY001: {
         termsOfServiceUrl: 'https://example.com/terms-and-conditions',
     },
-    'London Store': {},
-    'Amsterdam Store': {
-        termsOfServiceUrl: 'https://example.com/terms-and-conditions',
-    },
+    LD001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
+    AM001: {},
 };

@@ -66,6 +66,7 @@ export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress:
             readonly={countriesQuery.isFetching || datasetQuery.isFetching}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             onChange={handleChange}
+            hideOptionalLabel
         />
     );
 };

@@ -50,7 +50,7 @@ export const StoreForm = ({ settingsQuery, storesQuery, selectItems, termsAndCon
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
-            <StoreField items={selectItems} termsAndConditionsProvisioned={termsAndConditionsProvisioned} />
+            <StoreField items={selectItems} />
             {settingsQuery.data && storesQuery.data && selectedStoreId && !termsAndConditionsProvisioned && (
                 <Alert
                     title={i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle')}

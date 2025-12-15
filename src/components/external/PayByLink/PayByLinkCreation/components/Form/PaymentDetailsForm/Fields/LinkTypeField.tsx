@@ -10,15 +10,17 @@ export type LinkTypeFieldProps = {
     configuration?: PaymentLinkConfiguration;
 };
 
+const LINK_TYPE_FALLBACK = ['open', 'singleUse'] satisfies PaymentLinkTypeDTO[];
+
 export const LinkTypeField: FunctionalComponent<LinkTypeFieldProps> = ({ configuration }) => {
     const { i18n } = useCoreContext();
 
     const linkTypes = useMemo(() => {
-        const options = configuration?.linkType?.options ?? [];
-        return options.map(type => {
+        const options = configuration?.linkType?.options?.length ? configuration?.linkType?.options : LINK_TYPE_FALLBACK;
+        return options.map((type: PaymentLinkTypeDTO) => {
             const key = `payByLink.linkCreation.form.linkTypes.${type}` as TranslationKey;
             return {
-                id: type as PaymentLinkTypeDTO,
+                id: type,
                 name: i18n.get(key),
             };
         });

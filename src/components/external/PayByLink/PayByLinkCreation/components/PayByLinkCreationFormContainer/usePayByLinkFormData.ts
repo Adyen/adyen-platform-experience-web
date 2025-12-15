@@ -2,19 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useFetch } from '../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../utils';
-import { PaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
-import { StoresDTO } from '../../../../../../types/api/models/stores';
+import { PayByLinkStoreDTO, PaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
 import { getFormSteps } from '../../utils';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../../../translations';
 import { useWizardForm } from '../../../../../../hooks/form/wizard/useWizardForm';
 import { PBLFormValues } from '../types';
+import { DeepPartial } from '../../../../../types';
 
 type UsePayByLinkFormDataProps = {
     storeIds?: string[] | string;
+    defaultValues?: DeepPartial<PBLFormValues>;
 };
 
-export const usePayByLinkFormData = ({ storeIds }: UsePayByLinkFormDataProps) => {
+export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFormDataProps) => {
     const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n } = useCoreContext();
     const { getPayByLinkConfiguration, createPBLPaymentLink, getPayByLinkSettings, getPayByLinkStores } = useConfigContext().endpoints;
@@ -28,12 +29,12 @@ export const usePayByLinkFormData = ({ storeIds }: UsePayByLinkFormDataProps) =>
     });
 
     const storesSelectorItems = useMemo(() => {
-        const stores: StoresDTO[] = storesQuery.data?.data ?? [];
+        const stores: PayByLinkStoreDTO[] = storesQuery.data?.data ?? [];
         return stores
             .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
-            .map(({ storeCode, description }) => ({
-                id: storeCode || '',
-                name: description || '',
+            .map(({ storeCode, storeId }) => ({
+                id: storeId || '',
+                name: storeCode || '',
             }));
     }, [storesQuery.data, storeIds]);
 
@@ -55,7 +56,7 @@ export const usePayByLinkFormData = ({ storeIds }: UsePayByLinkFormDataProps) =>
 
     const termsAndConditionsProvisioned = useMemo(() => {
         return !!settingsQuery.data?.termsOfServiceUrl;
-    }, [settingsQuery.data]);
+    }, [settingsQuery.data?.termsOfServiceUrl]);
 
     const getFieldConfig = useCallback(
         (field: keyof PaymentLinkConfiguration) => {
@@ -83,7 +84,11 @@ export const usePayByLinkFormData = ({ storeIds }: UsePayByLinkFormDataProps) =>
     const wizardForm = useWizardForm<PBLFormValues>({
         i18n,
         steps: formSteps,
-        defaultValues: { store: selectedStore || '' },
+        defaultValues: {
+            ...defaultValues,
+            billingAddress: defaultValues?.billingAddress || defaultValues?.deliveryAddress || {},
+            store: selectedStore || defaultValues?.store || '',
+        } as Partial<PBLFormValues>,
         mode: 'all',
         validateBeforeNext: true,
     });

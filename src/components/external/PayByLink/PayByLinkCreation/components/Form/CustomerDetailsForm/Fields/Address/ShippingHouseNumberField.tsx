@@ -24,6 +24,7 @@ export const ShippingHouseNumberField = ({ isSeparateAddress }: { isSeparateAddr
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.houseNumberOrName.label')}
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--small"
+            hideOptionalLabel
         />
     );
 };

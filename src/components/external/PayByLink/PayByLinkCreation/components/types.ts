@@ -2,5 +2,5 @@ import { CreatePaymentLinkRequestDTO } from '../../../../../types/api/models/pay
 export type LinkCreationFormStep = 'store' | 'payment' | 'customer' | 'summary';
 
 export type PBLFormValues = CreatePaymentLinkRequestDTO & {
-    store?: string;
+    store: string;
 };

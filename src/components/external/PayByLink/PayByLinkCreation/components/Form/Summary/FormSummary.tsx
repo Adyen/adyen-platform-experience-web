@@ -16,7 +16,6 @@ import { useMemo } from 'preact/hooks';
 import { Tag } from '../../../../../../internal/Tag/Tag';
 import { PaymentLinkTypeDTO } from '../../../../../../../types/api/models/payByLink';
 import type { TranslationKey } from '../../../../../../../translations';
-import { SUMMARY_COPYABLE_FIELDS } from './constants';
 import './FormSummary.scss';
 
 export const FormSummary = () => {
@@ -46,13 +45,19 @@ export const FormSummary = () => {
             id: id,
             render: item => {
                 switch (item.id) {
+                    case 'linkValidity.quantity':
+                        const durationUnit = payment?.fields?.find(field => field.id === 'linkValidity.durationUnit');
+                        return i18n.get(`payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit?.value}` as TranslationKey, {
+                            values: { quantity: item.value },
+                            count: Number(item.value),
+                        });
                     case 'amount.value':
                         const currencyField = payment?.fields?.find(field => field.id === 'amount.currency');
-                        return <>{i18n.amount(item.value, currencyField?.value)}</>;
+                        return i18n.amount(item.value, currencyField?.value);
                     case 'linkType':
-                        return <>{i18n.get(`payByLink.linkCreation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`)}</>;
+                        return i18n.get(`payByLink.linkCreation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`);
                     default:
-                        return <>{item.value}</>;
+                        return item.value;
                 }
             },
         }));
@@ -63,18 +68,6 @@ export const FormSummary = () => {
     const customerListItems = useMemo(() => {
         const { customer } = formValues;
         const visibleFields = customer?.fields.filter(({ id }) => !invisibleFields.includes(id));
-
-        const createCopyText = (value: string) => (
-            <CopyText
-                showCopyTextTooltip={false}
-                textToCopy={value}
-                className="adyen-pe-pay-by-link-creation-form-summary__field-value adyen-pe-pay-by-link-creation-form-summary__field-value-copy-container"
-                type="Text"
-            >
-                {value}
-            </CopyText>
-        );
-
         const createListItem = ({
             label,
             value,
@@ -89,7 +82,7 @@ export const FormSummary = () => {
             key: (label || id) as TranslationKey,
             value: displayValue || value,
             id,
-            render: item => (item.id && SUMMARY_COPYABLE_FIELDS.has(item.id) ? createCopyText(item.value) : <>{item.value}</>),
+            render: () => displayValue || value,
         });
 
         const deliveryAddressItems = visibleFields?.filter(field => field.id?.startsWith('deliveryAddress.'))?.map(createListItem);
@@ -139,31 +132,39 @@ export const FormSummary = () => {
                     <StructuredList layout={'5-7'} align={'start'} condensed={false} items={paymentListItems} />
                 </div>
             </section>
-            <Divider />
-            <section className="adyen-pe-pay-by-link-creation-form-summary__section">
-                <Typography variant={TypographyVariant.SUBTITLE} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                    {i18n.get('payByLink.linkCreation.summary.shopperInformation')}
-                </Typography>
-                <div>
-                    <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.nonAddressItems || []} />
-                </div>
-            </section>
-            <section className="adyen-pe-pay-by-link-creation-form-summary__section">
-                <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                    {i18n.get('payByLink.linkCreation.summary.deliveryAddress')}
-                </Typography>
-                <div>
-                    <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.deliveryAddressItems || []} />
-                </div>
-            </section>
-            <section className="adyen-pe-pay-by-link-creation-form-summary__section">
-                <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                    {i18n.get('payByLink.linkCreation.summary.billingAddress')}
-                </Typography>
-                <div>
-                    <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.billingAddressItems || []} />
-                </div>
-            </section>
+            {customerListItems.nonAddressItems?.length && (
+                <>
+                    <Divider />
+                    <section className="adyen-pe-pay-by-link-creation-form-summary__section">
+                        <Typography variant={TypographyVariant.SUBTITLE} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
+                            {i18n.get('payByLink.linkCreation.summary.shopperInformation')}
+                        </Typography>
+                        <div>
+                            <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.nonAddressItems} />
+                        </div>
+                    </section>
+                </>
+            )}
+            {!!customerListItems.deliveryAddressItems?.length && (
+                <section className="adyen-pe-pay-by-link-creation-form-summary__section">
+                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
+                        {i18n.get('payByLink.linkCreation.summary.deliveryAddress')}
+                    </Typography>
+                    <div>
+                        <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.deliveryAddressItems || []} />
+                    </div>
+                </section>
+            )}
+            {!!customerListItems.billingAddressItems?.length && (
+                <section className="adyen-pe-pay-by-link-creation-form-summary__section">
+                    <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
+                        {i18n.get('payByLink.linkCreation.summary.billingAddress')}
+                    </Typography>
+                    <div>
+                        <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.billingAddressItems || []} />
+                    </div>
+                </section>
+            )}
             <Alert
                 className="adyen-pe-pay-by-link-creation-form-summary__alert"
                 variant={AlertVariantOption.TIP}

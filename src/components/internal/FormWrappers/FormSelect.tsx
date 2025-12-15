@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { Controller } from '../../../hooks/form';
 import Select from '../FormFields/Select';
 import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormContext';
@@ -13,6 +13,7 @@ interface FormSelectProps<TFieldValues> {
     items: { id: string; name: string }[];
     readonly?: boolean;
     filterable?: boolean;
+    hideOptionalLabel?: boolean;
     className?: string;
     validate?: ValidationRules['validate'];
     onChange?: (e: TargetedEvent<HTMLSelectElement>) => void;
@@ -23,6 +24,7 @@ export function FormSelect<TFieldValues>({
     className,
     fieldName,
     filterable,
+    hideOptionalLabel,
     items,
     label,
     onChange,
@@ -30,12 +32,21 @@ export function FormSelect<TFieldValues>({
     readonly,
     validate,
 }: FormSelectProps<TFieldValues>) {
-    const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
+    const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
     const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
+
+    useEffect(() => {
+        if (!items.length) return;
+        const currentValue = getValues(fieldName);
+
+        if (currentValue && !items.some(item => item.id === currentValue)) {
+            setValue(fieldName, '');
+        }
+    }, [getValues, setValue, items]);
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired} className={className}>
+            <FormField label={label} optional={!isRequired && !hideOptionalLabel} className={className}>
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}
@@ -49,6 +60,7 @@ export function FormSelect<TFieldValues>({
                             field.onInput(value);
                             onChange?.(e);
                         };
+                        const isInvalid = !!fieldState.error && fieldState.isTouched;
                         return (
                             <div>
                                 <Select
@@ -58,10 +70,10 @@ export function FormSelect<TFieldValues>({
                                     items={items}
                                     readonly={readonly}
                                     isValid={!fieldState.error}
-                                    isInvalid={preventInvalidState ? false : !!fieldState.error && fieldState.isTouched}
+                                    isInvalid={preventInvalidState ? false : isInvalid}
                                     filterable={filterable}
                                 />
-                                <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
+                                {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
                             </div>
                         );
                     }}

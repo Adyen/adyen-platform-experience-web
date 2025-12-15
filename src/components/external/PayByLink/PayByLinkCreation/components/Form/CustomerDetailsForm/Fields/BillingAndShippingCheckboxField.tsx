@@ -8,13 +8,12 @@ import Typography from '../../../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../../../internal/Typography/types';
 import { uuid } from '../../../../../../../../utils';
 
-export const BillingAndShippingCheckboxField = ({
-    isSeparateAddress,
-    setIsSeparateAddress,
-}: {
+interface BillingAndShippingCheckboxFieldProps {
     isSeparateAddress: boolean;
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
-}) => {
+}
+
+export const BillingAndShippingCheckboxField = ({ isSeparateAddress, setIsSeparateAddress }: BillingAndShippingCheckboxFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, getValues } = useWizardFormContext<PBLFormValues>();
     const isSeparateAddressInputId = uuid();

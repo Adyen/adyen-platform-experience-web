@@ -4,3 +4,4 @@ export type PaymentLinkConfiguration = components['schemas']['ConfigurationRespo
 export type CreatePaymentLinkRequestDTO = components['schemas']['CreatePaymentLinkRequestDTO'];
 export type LinkValidityDTO = components['schemas']['LinkValidity'];
 export type PaymentLinkTypeDTO = components['schemas']['PaymentLinkType'];
+export type PayByLinkStoreDTO = components['schemas']['PayByLinkStoreDTO'];

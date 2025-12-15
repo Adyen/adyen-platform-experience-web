@@ -13,21 +13,33 @@ import { JSX } from 'preact/jsx-runtime';
 
 export const ShopperPhoneField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { control, fieldsConfig, setValue, setFieldDisplayValue, getDisplayValue, trigger, formState } = useWizardFormContext<PBLFormValues>();
+    const { control, fieldsConfig, getValues, setValue, setFieldDisplayValue, getDisplayValue, trigger, formState } =
+        useWizardFormContext<PBLFormValues>();
 
-    const phoneNumberWithoutPhoneCode = useMemo(() => {
-        const displayValue = getDisplayValue('telephoneNumber');
-        if (!displayValue) return '';
-        const parts = displayValue.split(' ');
-        return parts[1];
-    }, [getDisplayValue]);
+    const displayValue = useMemo(() => getDisplayValue('telephoneNumber'), [getDisplayValue]);
+    const currentValue = useMemo(() => getValues('telephoneNumber'), [getValues]);
 
-    const phoneCode = useMemo(() => {
-        const displayValue = getDisplayValue('telephoneNumber');
-        if (!displayValue) return '';
-        const parts = displayValue.split(' ');
-        return parts[0] || '';
-    }, [getDisplayValue]);
+    const [phoneCode, phoneNumberWithoutPhoneCode] = useMemo(() => {
+        if (displayValue) {
+            const [code, ...rest] = displayValue.split(' ');
+            return [code, rest.join(' ')] as const;
+        }
+        if (currentValue) {
+            const [code, ...rest] = currentValue.split(' ');
+            return [code, rest.join(' ')] as const;
+        }
+        return [undefined, undefined] as const;
+    }, [displayValue, currentValue]);
+
+    // Initialize display value from default value on first render
+    useEffect(() => {
+        if (!displayValue && currentValue) {
+            const [code, ...rest] = currentValue.split(' ');
+            const number = rest.join(' ');
+            setValue('telephoneNumber', `${code}${number}`);
+            setFieldDisplayValue('telephoneNumber', `${code} ${number}`);
+        }
+    }, [displayValue, currentValue, setValue, setFieldDisplayValue]);
 
     const phonesDatasetQuery = useFetch({
         fetchOptions: { enabled: true },
@@ -60,6 +72,7 @@ export const ShopperPhoneField = () => {
     const isRequired = useMemo(() => fieldsConfig['telephoneNumber']?.required, [fieldsConfig]);
 
     const validate = useCallback(() => {
+        if (!isRequired && !phoneCode && !phoneNumberWithoutPhoneCode) return { valid: true };
         if (!phoneCode) {
             return { valid: false, message: i18n.get('payByLink.linkCreation.fields.phoneNumber.errors.requiredPhoneCode') };
         }
@@ -93,9 +106,8 @@ export const ShopperPhoneField = () => {
                                 }}
                                 onInput={e => {
                                     const numberValue = (e.target as HTMLInputElement).value;
-                                    field.onInput(e);
-                                    setValue('telephoneNumber', `${phoneCode}${numberValue}`);
-                                    setFieldDisplayValue('telephoneNumber', `${phoneCode} ${numberValue}`);
+                                    setValue('telephoneNumber', `${phoneCode ?? ''}${numberValue}`);
+                                    setFieldDisplayValue('telephoneNumber', `${phoneCode ?? ''} ${numberValue}`);
                                 }}
                                 value={phoneNumberWithoutPhoneCode}
                                 type="text"

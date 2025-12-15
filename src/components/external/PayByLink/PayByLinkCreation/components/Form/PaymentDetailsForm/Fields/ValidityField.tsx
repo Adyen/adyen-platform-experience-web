@@ -1,6 +1,6 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback, useState, useEffect } from 'preact/hooks';
-import { FunctionalComponent, h } from 'preact';
+import { FunctionalComponent, JSX } from 'preact';
 import { LinkValidityDTO, PaymentLinkConfiguration } from '../../../../../../../../types/api/models/payByLink';
 import { TranslationKey } from '../../../../../../../../translations';
 import { PBLFormValues } from '../../../types';
@@ -17,91 +17,77 @@ export type ValidityFieldProps = {
     configuration?: PaymentLinkConfiguration;
 };
 
-const MAX_VALIDITY_IN_MS = 70;
+const MAX_VALIDITY_DAYS = 70;
+const FLEXIBLE_ID = 'flexible';
 
 export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configuration }) => {
-    const [customDurationUnit, setCustomDurationUnit] = useState<string>('');
-    const [customDurationValue, setCustomDurationValue] = useState<string>('');
-    const [validityValue, setValidityValue] = useState<string>('');
+    const [customDurationUnit, setCustomDurationUnit] = useState('');
+    const [customDurationQuantity, setCustomDurationQuantity] = useState<number | undefined>(undefined);
+    const [validityValue, setValidityValue] = useState('');
     const { i18n } = useCoreContext();
-    const { control, fieldsConfig, setValue, setFieldDisplayValue, getValues } = useWizardFormContext<PBLFormValues>();
+    const { control, fieldsConfig, setValue, getValues, trigger } = useWizardFormContext<PBLFormValues>();
 
-    const getValidityFromFormState = useCallback(() => {
-        const displayValue = getValues('linkValidity');
-        if (!displayValue) return '';
-        const parts = displayValue.split(' ');
+    const getValidityFromFormState = useCallback(
+        () => [getValues('linkValidity.durationUnit'), getValues('linkValidity.quantity')] as const,
+        [getValues]
+    );
 
-        return [parts[0], parts[1]];
-    }, [getValues]);
     const validitySelectItems = useMemo(() => {
         const options: LinkValidityDTO[] = configuration?.linkValidity?.options ?? [];
         return options.map(({ quantity, durationUnit, type }) => {
-            if (type === 'flexible') {
-                return {
-                    id: 'flexible',
-                    name: i18n.get('payByLink.linkCreation.fields.validity.linkValidityUnit.custom'),
-                };
+            if (type === FLEXIBLE_ID) {
+                return { id: FLEXIBLE_ID, name: i18n.get('payByLink.linkCreation.fields.validity.linkValidityUnit.custom') };
             }
             const key = `payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit}` as TranslationKey;
-            return {
-                id: `${quantity} ${durationUnit}` || '',
-                name: i18n.get(key, { values: { quantity }, count: quantity }),
-            };
+            return { id: `${quantity} ${durationUnit}` || '', name: i18n.get(key, { values: { quantity }, count: quantity }) };
         });
     }, [configuration, i18n]);
 
-    const lookUpExistingOption = useCallback(() => {
-        const [value, unit] = getValidityFromFormState();
-        if (!value || !unit) {
-            setValue('linkValidity', `${validitySelectItems[0]?.id}`);
-            return validitySelectItems[0];
+    const initializeDefaultValidity = useCallback(() => {
+        if (!validitySelectItems.length) return;
+        const [durationUnit, quantity] = getValidityFromFormState();
+        if (!quantity || !durationUnit) {
+            const [qty, unit] = `${validitySelectItems[0]?.id}`.split(' ');
+            setValue('linkValidity.quantity', qty);
+            setValue('linkValidity.durationUnit', unit);
         }
+    }, [validitySelectItems, setValue, getValidityFromFormState]);
 
-        return validitySelectItems.find(item => item.id === `${value} ${unit}`) || { id: 'flexible' };
-    }, [validitySelectItems, setValue]);
+    const findCurrentOption = useCallback(() => {
+        const [durationUnit, quantity] = getValidityFromFormState();
+        if (!quantity || !durationUnit) return validitySelectItems[0];
+        return validitySelectItems.find(item => item.id === `${quantity} ${durationUnit}`) || { id: FLEXIBLE_ID };
+    }, [validitySelectItems, getValidityFromFormState]);
 
     useEffect(() => {
-        const validityFromFormState = getValidityFromFormState();
-        setCustomDurationUnit(validityFromFormState[1] || '');
-        setCustomDurationValue(validityFromFormState[0] || '');
-        setValidityValue(lookUpExistingOption()?.id || '');
-    }, [getValidityFromFormState]);
+        const [durationUnit, quantity] = getValidityFromFormState();
+        setCustomDurationUnit(durationUnit || '');
+        setCustomDurationQuantity(quantity || '');
+        setValidityValue(findCurrentOption()?.id || '');
+        initializeDefaultValidity();
+    }, [getValidityFromFormState, validitySelectItems, findCurrentOption]);
 
-    const isRequired = useMemo(() => fieldsConfig['linkValidity']?.required, [fieldsConfig]);
+    const isDurationUnitRequired = fieldsConfig['linkValidity.durationUnit']?.required;
+    const isDurationQuantityRequired = fieldsConfig['linkValidity.quantity']?.required;
 
-    const handleDisplayValueChange = useCallback(
-        (value: string, unit: string) => {
-            const key = `payByLink.linkCreation.fields.validity.linkValidityUnit.${unit}` as TranslationKey;
-
-            setFieldDisplayValue(
-                'linkValidity',
-                i18n.get(key, {
-                    values: { quantity: value },
-                    count: Number(value),
-                })
-            );
+    const handleCustomDurationQuantityChange = useCallback(
+        (e: JSX.TargetedEvent<HTMLInputElement>) => {
+            const eventValue = (e.target as HTMLInputElement)?.value;
+            const newQuantity = parseInt(eventValue, 10);
+            setValue('linkValidity.quantity', newQuantity);
+            setCustomDurationQuantity(newQuantity);
+            trigger('linkValidity.durationUnit');
         },
-        [setFieldDisplayValue]
+        [setValue, trigger]
     );
 
     const handleCustomDurationUnitChange = useCallback(
-        (selectedValue: string, triggerValidation: () => void) => {
-            setValue('linkValidity', `${customDurationValue} ${selectedValue}`);
-            handleDisplayValueChange(customDurationValue, selectedValue);
+        (selectedValue: string) => {
+            setValue('linkValidity.durationUnit', selectedValue);
             setCustomDurationUnit(selectedValue);
-            triggerValidation();
+            trigger('linkValidity.quantity');
         },
-        [setValue, setCustomDurationUnit, customDurationValue, handleDisplayValueChange]
-    );
-
-    const handleCustomDurationValueChange = useCallback(
-        (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
-            const newValue = (e.target as HTMLInputElement)?.value;
-            setValue('linkValidity', `${newValue} ${customDurationUnit}`);
-            handleDisplayValueChange(newValue, customDurationUnit);
-            setCustomDurationValue(newValue);
-        },
-        [setValue, setCustomDurationValue, customDurationUnit, handleDisplayValueChange]
+        [setValue, trigger]
     );
 
     const dropdownItems = useMemo(
@@ -113,111 +99,105 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         [i18n]
     );
 
-    const validate = useCallback(
-        (value: string) => {
-            const [durationValue, durationUnit] = value.split(' ');
+    const validate = useCallback(() => {
+        if (validityValue !== FLEXIBLE_ID) return { valid: true };
 
-            if (validityValue === 'flexible') {
-                if (!durationValue) {
-                    return {
-                        valid: false,
-                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationValue'),
-                    };
-                }
-                if (parseInt(durationValue) <= 0) {
-                    return {
-                        valid: false,
-                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.invalidDurationValue'),
-                    };
-                }
-                if (!durationUnit) {
-                    return {
-                        valid: false,
-                        message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationUnit'),
-                    };
-                }
-                if (durationUnit && durationValue) {
-                    const ms = transformToMS(durationUnit, parseInt(durationValue, 10));
-                    // TODO: Change to use config
-                    const maxMs = transformToMS('day', MAX_VALIDITY_IN_MS);
-                    if (ms > maxMs) {
-                        return {
-                            valid: false,
-                            message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong'),
-                        };
-                    }
-                }
-            }
-            return { valid: true };
-        },
-        [validityValue, i18n]
-    );
+        const [durationUnit, durationQuantity] = getValidityFromFormState();
+        const qty = parseInt(durationQuantity, 10);
+
+        if (!durationQuantity) {
+            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationValue') };
+        }
+        if (qty <= 0) {
+            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.invalidDurationValue') };
+        }
+        if (!durationUnit) {
+            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationUnit') };
+        }
+        // TODO: Change to use config
+        if (transformToMS(durationUnit, qty) > transformToMS('day', MAX_VALIDITY_DAYS)) {
+            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong') };
+        }
+        return { valid: true };
+    }, [validityValue, i18n, getValidityFromFormState]);
 
     return (
-        <VisibleField<PBLFormValues> name="linkValidity">
+        <VisibleField<PBLFormValues> name="linkValidity.durationUnit">
             <Controller<PBLFormValues>
-                name="linkValidity"
+                name="linkValidity.durationUnit"
                 control={control}
                 rules={{
-                    required: isRequired,
+                    required: isDurationUnitRequired,
                     validate,
                 }}
-                render={({ field, fieldState }) => {
-                    const onSelectInput = (e: Event) => {
-                        const newValue = (e.target as HTMLSelectElement)?.value;
-                        if (newValue !== 'flexible') {
-                            field.onInput(newValue);
-                            const [value, unit] = (newValue as string)?.split(' ') || [];
-                            handleDisplayValueChange(value || '', unit || '');
-                        } else {
-                            field.onInput('');
-                            handleDisplayValueChange('', '');
-                            setCustomDurationValue('');
-                            setCustomDurationUnit('');
-                        }
-                        setValidityValue(newValue);
-                    };
+                render={({ field: durationUnitField, fieldState: durationUnitFieldState }) => (
+                    <Controller<PBLFormValues>
+                        name="linkValidity.quantity"
+                        control={control}
+                        rules={{ required: isDurationQuantityRequired, validate }}
+                        render={({ field: durationQuantityField, fieldState: durationQuantityFieldState }) => {
+                            const onSelectInput = (e: Event) => {
+                                const newValue = (e.target as HTMLSelectElement)?.value;
+                                if (newValue !== FLEXIBLE_ID) {
+                                    const [value, durationUnit] = newValue?.split(' ') || [];
+                                    durationQuantityField.onInput(value);
+                                    durationUnitField.onInput(durationUnit);
+                                } else {
+                                    durationUnitField.onInput('');
+                                    durationQuantityField.onInput('');
+                                    setCustomDurationQuantity(undefined);
+                                    setCustomDurationUnit('');
+                                }
+                                setValidityValue(newValue);
+                            };
 
-                    const isInvalid = !!fieldState.error && fieldState.isTouched;
+                            const isInvalid =
+                                (durationQuantityFieldState.error || durationUnitFieldState.error) &&
+                                durationQuantityFieldState.isTouched &&
+                                durationUnitFieldState.isTouched;
+                            const isValid = !durationQuantityFieldState.error || !durationUnitFieldState.error;
+                            const errorMessage = durationQuantityFieldState.error?.message || durationUnitFieldState.error?.message;
 
-                    return (
-                        <div>
-                            <div className="adyen-pe-pay-by-link-creation-form__validity-container">
-                                <FormField
-                                    label={i18n.get('payByLink.linkCreation.fields.validity.label')}
-                                    supportText={i18n.get('payByLink.linkCreation.fields.validity.supportText')}
-                                    optional={!isRequired}
-                                >
-                                    <Select
-                                        selected={validityValue}
-                                        onChange={onSelectInput}
-                                        items={validitySelectItems}
-                                        isValid={!fieldState.error}
-                                        isInvalid={isInvalid}
-                                    />
-                                </FormField>
-                                {validityValue === 'flexible' && (
-                                    <FormField label={i18n.get('payByLink.linkCreation.fields.validity.customDuration.label')} optional={!isRequired}>
-                                        <InputBase
-                                            dropdown={{
-                                                items: dropdownItems,
-                                                value: customDurationUnit || '',
-                                            }}
-                                            onDropdownInput={e => handleCustomDurationUnitChange(e, field.triggerValidation)}
-                                            dropdownPosition="end"
-                                            value={customDurationValue}
-                                            type="number"
-                                            onInput={handleCustomDurationValueChange}
-                                            isValid={!fieldState.error}
-                                            isInvalid={isInvalid}
-                                        />
-                                    </FormField>
-                                )}
-                            </div>
-                            {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
-                        </div>
-                    );
-                }}
+                            return (
+                                <div>
+                                    <div className="adyen-pe-pay-by-link-creation-form__validity-container">
+                                        <FormField
+                                            label={i18n.get('payByLink.linkCreation.fields.validity.label')}
+                                            supportText={i18n.get('payByLink.linkCreation.fields.validity.supportText')}
+                                            optional={!isDurationUnitRequired && !isDurationQuantityRequired}
+                                        >
+                                            <Select
+                                                selected={validityValue}
+                                                onChange={onSelectInput}
+                                                items={validitySelectItems}
+                                                isValid={isValid}
+                                                isInvalid={isInvalid}
+                                            />
+                                        </FormField>
+                                        {validityValue === FLEXIBLE_ID && (
+                                            <FormField
+                                                label={i18n.get('payByLink.linkCreation.fields.validity.customDuration.label')}
+                                                optional={false}
+                                            >
+                                                <InputBase
+                                                    dropdown={{ items: dropdownItems, value: customDurationUnit || '' }}
+                                                    onDropdownInput={handleCustomDurationUnitChange}
+                                                    dropdownPosition="end"
+                                                    value={customDurationQuantity}
+                                                    type="number"
+                                                    onInput={handleCustomDurationQuantityChange}
+                                                    isValid={isValid}
+                                                    isInvalid={isInvalid}
+                                                />
+                                            </FormField>
+                                        )}
+                                    </div>
+                                    {isInvalid && <span className="adyen-pe-input__invalid-value">{errorMessage}</span>}
+                                </div>
+                            );
+                        }}
+                    />
+                )}
             />
         </VisibleField>
     );

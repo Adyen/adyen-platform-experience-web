@@ -24,6 +24,7 @@ export const ShippingStreetField = ({ isSeparateAddress }: { isSeparateAddress: 
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.street.label')}
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--large"
+            hideOptionalLabel
         />
     );
 };

@@ -25,6 +25,7 @@ export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddre
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.postalCode.label')}
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--small"
+            hideOptionalLabel
         />
     );
 };

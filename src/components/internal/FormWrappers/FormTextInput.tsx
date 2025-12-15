@@ -24,6 +24,7 @@ interface FormTextInputProps<TFieldValues> {
     maxLength?: number;
     minLength?: number;
     dropdownPosition?: 'start' | 'end';
+    hideOptionalLabel?: boolean;
 }
 
 export function FormTextInput<TFieldValues>({
@@ -40,6 +41,7 @@ export function FormTextInput<TFieldValues>({
     maxLength,
     minLength,
     dropdownPosition,
+    hideOptionalLabel,
 }: FormTextInputProps<TFieldValues>) {
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
     const { i18n } = useCoreContext();
@@ -56,18 +58,20 @@ export function FormTextInput<TFieldValues>({
 
     const handleValidate: ValidationRules['validate'] = useCallback(
         (value: string) => {
-            const currentValue = control.getValue(fieldName);
-            if (minLength && currentValue.length < minLength) {
+            if (!value && !isRequired) {
+                return { valid: true };
+            }
+            if (minLength && value.length < minLength) {
                 return { valid: false, message: i18n.get('common.errors.minLength', { values: { minLength } }) };
             }
-            return validate?.(value) || { valid: true };
+            return validate?.(value) ?? { valid: true };
         },
-        [validate, minLength]
+        [i18n, isRequired, minLength, validate]
     );
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired} supportText={supportText} className={className}>
+            <FormField label={label} optional={!isRequired && !hideOptionalLabel} supportText={supportText} className={className}>
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}

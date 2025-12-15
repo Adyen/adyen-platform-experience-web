@@ -30,9 +30,9 @@ export const AmountField = () => {
     );
 
     const handleCurrencyChange = useCallback(
-        (value: string) => {
+        (value: string, isInvalid: boolean) => {
             setValue('amount.currency', value);
-            if (getValues('amount.value')) {
+            if (isInvalid) {
                 trigger('amount.value');
             }
         },
@@ -57,7 +57,7 @@ export const AmountField = () => {
                                 <CurrencyInput
                                     {...field}
                                     selectedCurrencyCode={getValues('amount.currency')}
-                                    onCurrencyChange={handleCurrencyChange}
+                                    onCurrencyChange={value => handleCurrencyChange(value, isInvalid)}
                                     currency={getValues('amount.currency')}
                                     isInvalid={isInvalid}
                                     amount={field.value ? Number(field.value) : undefined}

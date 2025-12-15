@@ -40,10 +40,15 @@ export const getFormSteps = ({
         id: 'payment',
         fields: [
             {
-                fieldName: 'linkValidity',
+                fieldName: 'linkValidity.quantity',
                 required: !!getFieldConfig('linkValidity')?.required,
                 visible: !!getFieldConfig('linkValidity'),
                 label: 'payByLink.linkCreation.summary.fields.linkValidity',
+            },
+            {
+                fieldName: 'linkValidity.durationUnit',
+                required: !!getFieldConfig('linkValidity')?.required,
+                visible: !!getFieldConfig('linkValidity'),
             },
             {
                 fieldName: 'amount.value',
