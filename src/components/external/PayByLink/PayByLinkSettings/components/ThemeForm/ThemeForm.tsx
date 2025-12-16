@@ -26,6 +26,12 @@ interface ThemeFormProps {
     selectedStore: string;
 }
 
+const ThemeFormDataRequest = {
+    BRAND: 'brand',
+    LOGO: 'logo',
+    FULL_WIDTH_LOGO: 'fullWidthLogo',
+};
+
 const cloneFormData = (formData: FormData) => {
     const formDataClone = new FormData();
     for (const [field, value] of formData.entries()) {
@@ -38,6 +44,9 @@ const cloneFormData = (formData: FormData) => {
 
 export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     const initialBrandName = useRef<string | undefined>(theme?.brandName);
+    const initialLogoUrl = useRef<string | undefined>(theme?.logoUrl);
+    const initialFullWidthLogoUrl = useRef<string | undefined>(theme?.fullWidthLogoUrl);
+
     const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
     const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? undefined);
     const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(theme?.fullWidthLogoUrl ?? undefined);
@@ -68,6 +77,24 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
             return nextFormData;
         });
     }, [initialBrandName]);
+
+    useEffect(() => {
+        if (!initialLogoUrl.current) return;
+        setThemePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set('logo', initialLogoUrl.current!);
+            return nextFormData;
+        });
+    }, [initialLogoUrl]);
+
+    useEffect(() => {
+        if (!initialFullWidthLogoUrl.current) return;
+        setThemePayload(previousFormData => {
+            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+            nextFormData.set('fullWidthLogo', initialFullWidthLogoUrl.current!);
+            return nextFormData;
+        });
+    }, [initialFullWidthLogoUrl]);
 
     const onSave = useCallback(() => {
         if (!brandName) {
@@ -114,7 +141,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
         const file = files[0];
         if (!file) return;
 
-        addFileToThemePayload('logoUrl', file);
+        addFileToThemePayload(ThemeFormDataRequest.LOGO, file);
         showPreview('logoPreview', file);
     };
 
@@ -154,22 +181,22 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     const onFullWidthLogoChange = (files: File[]) => {
         const file = files[0];
         if (!file) return;
-        addFileToThemePayload('fullWidthLogoUrl', file);
+        addFileToThemePayload(ThemeFormDataRequest.FULL_WIDTH_LOGO, file);
         showPreview('fullWidthLogoPreview', file);
     };
 
     const onRemoveLogoUrl = useCallback(() => {
         setLogoUrl(undefined);
-        removeFieldFromThemePayload('logoUrl');
+        removeFieldFromThemePayload(ThemeFormDataRequest.LOGO);
     }, [setLogoUrl, removeFieldFromThemePayload]);
 
     const onRemoveFullWidthLogoUrl = useCallback(() => {
         setFullWidthLogoUrl(undefined);
-        removeFieldFromThemePayload('fullWidthLogoUrl');
+        removeFieldFromThemePayload(ThemeFormDataRequest.FULL_WIDTH_LOGO);
     }, [setFullWidthLogoUrl, removeFieldFromThemePayload]);
 
     const onRemoveFullWidthLogoPreview = () => {
-        removeFieldFromThemePayload('fullWidthLogoUrl');
+        removeFieldFromThemePayload(ThemeFormDataRequest.FULL_WIDTH_LOGO);
         if (!fullWidthLogoPreviewAreaRef.current) return;
         const element = fullWidthLogoPreviewAreaRef.current;
         // const childrenCount = element.childElementCount; // 3
@@ -182,7 +209,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     };
 
     const onRemoveLogoPreview = () => {
-        removeFieldFromThemePayload('logoUrl');
+        removeFieldFromThemePayload(ThemeFormDataRequest.LOGO);
         if (!logoPreviewAreaRef.current) return;
         const element = logoPreviewAreaRef.current;
         // const childrenCount = element.childElementCount; // 3
@@ -216,8 +243,14 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                     </div>
                 )}
             </div>
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <img id="previewArea" ref={logoPreviewAreaRef} alt={'logo-preview'} style={{ display: 'none' }} />
+            <div className="adyen-pe-pay-by-link-settings__input-container adyen-pe-pay-by-link-theme-form__preview--conteiner">
+                <img
+                    id="previewArea"
+                    ref={logoPreviewAreaRef}
+                    alt={'logo-preview'}
+                    style={{ display: 'none' }}
+                    className={'adyen-pe-pay-by-link-theme-form__preview--image'}
+                />
                 {logoPreview && (
                     <Button
                         variant={ButtonVariant.PRIMARY}
@@ -230,9 +263,13 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
             </div>
             {!logoPreview &&
                 (logoUrl ? (
-                    <div className="adyen-pe-pay-by-link-settings__input-container">
-                        <img src={logoUrl} alt={'logo'} />
-                        <Button variant={ButtonVariant.PRIMARY} onClick={onRemoveLogoUrl}>
+                    <div className="adyen-pe-pay-by-link-settings__input-container adyen-pe-pay-by-link-theme-form__preview--conteiner">
+                        <img src={logoUrl} alt={'logo'} className={'adyen-pe-pay-by-link-theme-form__preview--image'} />
+                        <Button
+                            variant={ButtonVariant.PRIMARY}
+                            onClick={onRemoveLogoUrl}
+                            className="adyen-pe-pay-by-link-theme-form__preview--remove"
+                        >
                             {i18n.get('payByLink.settings.theme.action.logo.remove')}
                         </Button>
                     </div>
@@ -263,8 +300,14 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                         </div>
                     </div>
                 ))}
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <img id="previewArea" ref={fullWidthLogoPreviewAreaRef} alt={'logo-preview'} style={{ display: 'none' }} />
+            <div className="adyen-pe-pay-by-link-settings__input-container adyen-pe-pay-by-link-theme-form__preview--conteiner">
+                <img
+                    id="previewArea"
+                    ref={fullWidthLogoPreviewAreaRef}
+                    alt={'logo-preview'}
+                    style={{ display: 'none' }}
+                    className={'adyen-pe-pay-by-link-theme-form__preview--image'}
+                />
                 {fullWidthLogoPreview && (
                     <Button
                         variant={ButtonVariant.PRIMARY}
@@ -277,9 +320,13 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
             </div>
             {!fullWidthLogoPreview &&
                 (fullWidthLogoUrl ? (
-                    <div className="adyen-pe-pay-by-link-settings__input-container">
-                        <img src={fullWidthLogoUrl} alt={'logo'} />
-                        <Button variant={ButtonVariant.PRIMARY} onClick={onRemoveFullWidthLogoUrl}>
+                    <div className="adyen-pe-pay-by-link-settings__input-container adyen-pe-pay-by-link-theme-form__preview--conteiner">
+                        <img src={fullWidthLogoUrl} alt={'logo'} className={'adyen-pe-pay-by-link-theme-form__preview--image'} />
+                        <Button
+                            variant={ButtonVariant.PRIMARY}
+                            onClick={onRemoveFullWidthLogoUrl}
+                            className="adyen-pe-pay-by-link-theme-form__preview--remove"
+                        >
                             {i18n.get('payByLink.settings.theme.action.logo.remove')}
                         </Button>
                     </div>

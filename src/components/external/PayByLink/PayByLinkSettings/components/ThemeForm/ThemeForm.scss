@@ -29,7 +29,18 @@
     }
 
     &__preview--remove {
-        margin-top: style.token(spacer-060);
+        width: fit-content;
+    }
+
+    &__preview--image {
+        width: fit-content;
+    }
+
+    &__preview--conteiner {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        width: fit-content;
     }
 
     &__error-icon {
