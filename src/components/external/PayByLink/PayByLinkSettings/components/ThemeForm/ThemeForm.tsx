@@ -254,7 +254,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                                 {THEME_FORM_ALLOWED_FILE_TYPES.map(type => getHumanReadableFileName(type)).join(', ')}
                             </Typography>
                             <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
-                                {i18n.get('payByLink.settings.theme.limitations.file.input.supportedFile.text')}
+                                {i18n.get('payByLink.settings.theme.limitations.file.input.maxSize.text')}
                                 {getHumanReadableFileSize(THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE)}
                             </Typography>
                             <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-theme-form__file-info">
