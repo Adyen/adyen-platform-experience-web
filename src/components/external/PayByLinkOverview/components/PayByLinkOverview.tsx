@@ -71,7 +71,7 @@ const PayByLinkOverviewTabsDropdown = ({
             aria-label={ariaLabel}
             items={selectItems}
             selected={statusGroup}
-            onChange={({ target }) => setStatusGroup(target.value)}
+            onChange={({ target }) => setStatusGroup(target.value as IPayByLinkStatusGroup)}
             showOverlay={true}
             multiSelect={false}
             filterable={false}
