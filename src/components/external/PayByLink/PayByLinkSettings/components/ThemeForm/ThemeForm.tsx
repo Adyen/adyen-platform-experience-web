@@ -16,7 +16,6 @@ import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { h } from 'preact';
 import Icon from '../../../../../internal/Icon';
-import { ImgHTMLAttributes } from 'preact/compat';
 
 interface ThemeFormProps {
     theme?: {
@@ -46,8 +45,8 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
     const [logoPreview, setLogoPreview] = useState(false);
     const [fullWidthLogoPreview, setFullWidthLogoPreview] = useState(false);
-    const logoPreviewAreaRef = useRef<ImgHTMLAttributes<HTMLImageElement>>();
-    const fullWidthLogoPreviewAreaRef = useRef<ImgHTMLAttributes<HTMLImageElement>>();
+    const logoPreviewAreaRef = useRef<HTMLImageElement | null>(null);
+    const fullWidthLogoPreviewAreaRef = useRef<HTMLImageElement | null>(null);
 
     const brandInputId = useUniqueId();
     const { i18n } = useCoreContext();
@@ -119,7 +118,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     };
 
     const showPreview = (type: string, file: File) => {
-        let previewAreaRef: ImgHTMLAttributes<HTMLImageElement> | null = null;
+        let previewAreaRef: HTMLImageElement | null = null;
         if (type === 'logoPreview') {
             previewAreaRef = logoPreviewAreaRef?.current ? logoPreviewAreaRef.current : null;
         }
@@ -137,7 +136,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
 
             if (file.type.startsWith('image/') && result) {
                 const img = document.createElement('img');
-                previewAreaRef.src = result;
+                previewAreaRef.src = result as string;
                 previewAreaRef.style.display = 'block';
                 previewAreaRef.appendChild(img);
                 if (type === 'logoPreview') {
@@ -170,7 +169,9 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
 
     const onRemoveFullWidthLogoPreview = () => {
         removeFieldFromThemePayload('fullWidthLogoUrl');
-        const element = fullWidthLogoPreviewAreaRef.current.childElementCount; // 3
+        if (!fullWidthLogoPreviewAreaRef.current) return;
+        const element = fullWidthLogoPreviewAreaRef.current;
+        // const childrenCount = element.childElementCount; // 3
         // loop will continue until the "ele" has a child.
         while (element.lastChild) {
             element.lastChild.remove(); //remove the last child of "ele"
@@ -181,7 +182,9 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
 
     const onRemoveLogoPreview = () => {
         removeFieldFromThemePayload('logoUrl');
-        const element = logoPreviewAreaRef.current.childElementCount; // 3
+        if (!logoPreviewAreaRef.current) return;
+        const element = logoPreviewAreaRef.current;
+        // const childrenCount = element.childElementCount; // 3
         // loop will continue until the "ele" has a child.
         while (element.lastChild) {
             element.lastChild.remove(); //removee the last child of "ele"
