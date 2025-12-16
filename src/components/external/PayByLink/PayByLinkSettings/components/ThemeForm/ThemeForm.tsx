@@ -74,6 +74,7 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
             setShowMissingBrandName(true);
             return;
         }
+        if (!themePayload) return;
         void updatePayByLinkTermsAndConditions.mutate(
             { contentType: 'multipart/form-data', body: themePayload },
             { path: { storeId: selectedStore! } }

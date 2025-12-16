@@ -149,6 +149,135 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        BodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        ContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
+        };
+        FormDataBodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            formDataContentDisposition?: components['schemas']['FormDataContentDisposition'];
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            name?: string;
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+            simple?: boolean;
+            value?: string;
+        };
+        FormDataContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            name?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
+        };
+        FormDataMultiPart: {
+            bodyParts?: components['schemas']['BodyPart'][];
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            fields?: {
+                [key: string]: components['schemas']['FormDataBodyPart'][];
+            };
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        MediaType: {
+            parameters?: {
+                [key: string]: string;
+            };
+            subtype?: string;
+            type?: string;
+            wildcardSubtype?: boolean;
+            wildcardType?: boolean;
+        };
+        MessageBodyWorkers: Record<string, never>;
+        MultiPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        ParameterizedHeader: {
+            parameters?: {
+                [key: string]: string;
+            };
+            value?: string;
+        };
+        Providers: Record<string, never>;
+        StreamingOutput: Record<string, never>;
         CreatePaymentLinkResponse: {
             paymentLinkId?: string;
             status?: string;
@@ -580,9 +709,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": {
-                    brandName: string;
-                };
+                "multipart/form-data": components['schemas']['FormDataMultiPart'];
             };
         };
         responses: {
