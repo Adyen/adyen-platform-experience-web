@@ -52,15 +52,13 @@ const PaymentDetailsActions = ({
             return {
                 disabled: refundDisabled,
                 event: () => {
-                    if (refundDisabled) return;
-                    setActiveView(ActiveView.REFUND);
-                    userEvents.addEvent?.('Switched to refund view', sharedTransactionDetailsEventProperties);
+                    if (!refundDisabled) setActiveView(ActiveView.REFUND);
                 },
                 title: actionButtons.refund.title,
                 variant: ButtonVariant.PRIMARY,
             } as const;
         }
-    }, [actionButtons, refundAvailable, refundDisabled, setActiveView, userEvents]);
+    }, [actionButtons, refundAvailable, refundDisabled, setActiveView]);
 
     const secondaryAction = useMemo<Readonly<ButtonActionObject> | undefined>(() => {
         if (transactionNavigation) {

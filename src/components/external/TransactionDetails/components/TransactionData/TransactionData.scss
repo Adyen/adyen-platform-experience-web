@@ -15,6 +15,24 @@
         margin-top: style.token(spacer-060);
     }
 
+    .adyen-pe-timeline-item__content {
+        align-items: initial;
+
+        .adyen-pe-structured-list {
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-020);
+        }
+    }
+
+    &__timeline-label {
+        color: style.token(color-label-secondary);
+    }
+
+    &__timeline-value {
+        color: style.token(color-label-primary);
+    }
+
     &__action-bar {
         flex-direction: row;
         width: 100%;
