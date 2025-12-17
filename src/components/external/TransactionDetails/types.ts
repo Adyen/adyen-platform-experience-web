@@ -43,6 +43,7 @@ export type TransactionDetailsFields =
     | 'bankAccount'
     | 'category'
     | 'createdAt'
+    | 'currency'
     | 'deductedAmount'
     | 'grossAmount'
     | 'id'

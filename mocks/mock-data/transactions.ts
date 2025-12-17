@@ -1,4 +1,5 @@
 import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
+import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/TransactionsOverview/constants';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 const getCreatedAt = (() => {
@@ -8,7 +9,7 @@ const getCreatedAt = (() => {
     const skewFactor = -4;
     const fromDate = new Date();
     const expBase = Math.exp(skewFactor);
-    const timeSpan = fromDate.getTime() - fromDate.setFullYear(fromDate.getFullYear() - 2);
+    const timeSpan = fromDate.getTime() - fromDate.setFullYear(fromDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
 
     return () => {
         const normalizedIndex = Math.min(index++, maxSize) / maxSize;

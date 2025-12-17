@@ -1,101 +1,68 @@
-import { useCallback, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import { useFetch } from '../../../../../hooks/useFetch';
-import { OperationParameters } from '../../../../../types/api/endpoints';
-import { WithPartialField } from '../../../../../utils/types';
-import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { memo } from 'preact/compat';
-import { IAmount } from '../../../../../types';
-import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import './TransactionTotals.scss';
+import { useMemo } from 'preact/hooks';
 import { TotalsCard } from './TotalsCard';
+import { BASE_CLASS, ITEM_CLASS } from './constants';
+import { IBalanceAccountBase, ITransactionTotal } from '../../../../../types';
+import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import './TransactionTotals.scss';
 
-type TransactionTotalsProps = Required<OperationParameters<'getTransactionTotals'>['query']> & {
-    isAvailableCurrenciesFetching: boolean;
-    availableCurrencies: IAmount['currency'][] | undefined;
-    fullWidth?: boolean;
-};
+export interface TransactionTotalsProps {
+    balanceAccount?: Readonly<IBalanceAccountBase>;
+    loadingTotals: boolean;
+    totals: readonly Readonly<ITransactionTotal>[];
+}
 
-const TransactionTotals = memo(
-    ({
-        availableCurrencies,
-        isAvailableCurrenciesFetching,
-        balanceAccountId,
-        createdSince,
-        createdUntil,
-        fullWidth,
-    }: WithPartialField<TransactionTotalsProps, 'balanceAccountId'>) => {
-        const { i18n } = useCoreContext();
-        const { getTransactionTotals } = useConfigContext().endpoints;
+const TransactionTotals = memo(({ balanceAccount, loadingTotals, totals }: TransactionTotalsProps) => {
+    const { i18n } = useCoreContext();
 
-        const fetchCallback = useCallback(async () => {
-            return getTransactionTotals?.(EMPTY_OBJECT, {
-                query: {
-                    createdSince,
-                    createdUntil,
-                    balanceAccountId: balanceAccountId!,
-                },
-            });
-        }, [balanceAccountId, createdSince, createdUntil, getTransactionTotals]);
+    const defaultCurrencyCode = balanceAccount?.defaultCurrencyCode;
+    const isXsContainer = useResponsiveContainer(containerQueries.only.xs);
+    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
 
-        const { data, isFetching } = useFetch({
-            fetchOptions: useMemo(() => ({ enabled: !!balanceAccountId && !!getTransactionTotals }), [balanceAccountId, getTransactionTotals]),
-            queryFn: fetchCallback,
-        });
-        const isLoading = !balanceAccountId || isFetching || isAvailableCurrenciesFetching;
-
-        const getTotals = useCallback(() => {
-            if (!availableCurrencies || !data) {
-                return data?.data;
+    const sortedTotals = useMemo(() => {
+        return [...totals].sort(({ currency: firstCurrency }, { currency: secondCurrency }) => {
+            if (defaultCurrencyCode) {
+                if (firstCurrency === defaultCurrencyCode) return -1;
+                if (secondCurrency === defaultCurrencyCode) return 1;
             }
+            return firstCurrency.localeCompare(secondCurrency);
+        }) as typeof totals;
+    }, [defaultCurrencyCode, totals]);
 
-            const partialTotals = availableCurrencies.map(currency => {
-                const totalOfCurrency = data.data.find(total => total.currency === currency);
-                return totalOfCurrency || { currency, incomings: 0, expenses: 0, total: 0, breakdown: { incomings: [], expenses: [] } };
-            });
-
-            return partialTotals.concat(data.data.filter(total => !partialTotals.includes(total)));
-        }, [availableCurrencies, data]);
-
-        const totals = getTotals() ?? [];
-        const isXsContainer = useResponsiveContainer(containerQueries.only.xs);
-
-        return (
-            <div className={BASE_CLASS}>
-                {isXsContainer ? (
-                    <>
-                        <div className={ITEM_CLASS}>
-                            <TotalsCard
-                                aria-label={i18n.get('transactions.overview.totals.labels.incoming')}
-                                totals={totals}
-                                isLoading={isLoading}
-                                hiddenField="expenses"
-                                fullWidth={fullWidth}
-                            />
-                        </div>
-                        <div className={ITEM_CLASS}>
-                            <TotalsCard
-                                aria-label={i18n.get('transactions.overview.totals.labels.outgoing')}
-                                totals={totals}
-                                isLoading={isLoading}
-                                hiddenField="incomings"
-                                fullWidth={fullWidth}
-                            />
-                        </div>
-                    </>
-                ) : (
-                    <TotalsCard
-                        aria-label={i18n.get('transactions.overview.totals.labels.default')}
-                        totals={totals}
-                        isLoading={isLoading}
-                        fullWidth={fullWidth}
-                    />
-                )}
-            </div>
-        );
-    }
-);
+    return (
+        <div className={BASE_CLASS}>
+            {isXsContainer ? (
+                <>
+                    <div className={ITEM_CLASS}>
+                        <TotalsCard
+                            aria-label={i18n.get('transactions.overview.totals.labels.incoming')}
+                            totals={sortedTotals}
+                            isLoading={loadingTotals}
+                            hiddenField="expenses"
+                            fullWidth={isNarrowContainer}
+                        />
+                    </div>
+                    <div className={ITEM_CLASS}>
+                        <TotalsCard
+                            aria-label={i18n.get('transactions.overview.totals.labels.outgoing')}
+                            totals={sortedTotals}
+                            isLoading={loadingTotals}
+                            hiddenField="incomings"
+                            fullWidth={isNarrowContainer}
+                        />
+                    </div>
+                </>
+            ) : (
+                <TotalsCard
+                    aria-label={i18n.get('transactions.overview.totals.labels.default')}
+                    totals={sortedTotals}
+                    isLoading={loadingTotals}
+                    fullWidth={isNarrowContainer}
+                />
+            )}
+        </div>
+    );
+});
 
 export default TransactionTotals;

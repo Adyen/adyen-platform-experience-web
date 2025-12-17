@@ -19,6 +19,7 @@ const icons = {
     download: () => import('../../../images/icons/download.svg?component'),
     'external-link': () => import('../../../images/icons/external-link.svg?component'),
     filter: () => import('../../../images/icons/filter.svg?component'),
+    info: () => import('../../../images/icons/info.svg?component'),
     'info-filled': () => import('../../../images/icons/info-filled.svg?component'),
     'minus-circle-outline': () => import('../../../images/icons/minus-circle-outline.svg?component'),
     plus: () => import('../../../images/icons/plus.svg?component'),

@@ -1,8 +1,8 @@
-import { ITransactionTotal } from '../../../../../types';
 import { AriaAttributes } from 'preact/compat';
+import { ITransactionTotal } from '../../../../../types';
 
 export type TotalsCardProps = {
-    totals: ITransactionTotal[];
+    totals: readonly Readonly<ITransactionTotal>[];
     hiddenField?: 'incomings' | 'expenses';
     isLoading: boolean;
     fullWidth?: boolean;

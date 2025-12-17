@@ -139,12 +139,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                             tabIndex={0}
                         >
                             <div className="adyen-pe-filter-button__default-container">
-                                <Typography
-                                    el={TypographyElement.SPAN}
-                                    variant={TypographyVariant.BODY}
-                                    stronger={true}
-                                    className="adyen-pe-filter-button__label"
-                                >
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-pe-filter-button__label">
                                     {props.label}
                                 </Typography>
                                 {!!props.appliedFilterAmount && (

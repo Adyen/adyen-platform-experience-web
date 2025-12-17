@@ -5,6 +5,7 @@ import AriaRole = JSXInternal.AriaRole;
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
+    autoComplete?: 'off' | 'on';
     classNameModifiers?: string[];
     isInvalid?: boolean;
     isValid?: boolean;
