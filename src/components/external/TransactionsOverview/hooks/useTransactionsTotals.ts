@@ -2,6 +2,7 @@ import { useFetch } from '../../../../hooks/useFetch';
 import { useCallback, useMemo, useRef } from 'preact/hooks';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import { createAbortable } from '../../../../primitives/async/abortable';
+import { getTransactionsFilterQueryParams } from '../components/utils';
 import { EMPTY_ARRAY, isFunction } from '../../../../utils';
 import { ITransactionTotal } from '../../../../types';
 import { TransactionsFilters } from '../types';
@@ -33,13 +34,10 @@ const useTransactionsTotals = ({ currencies, fetchEnabled, filters, loadingBalan
         if (canFetchTransactionTotals) {
             const { signal } = abortable.refresh(true);
             try {
-                const query: Parameters<NonNullable<typeof getTransactionTotals>>[1]['query'] = {
-                    balanceAccountId: filters.balanceAccount?.id!,
-                    createdSince: new Date(filters.createdDate.from).toISOString(),
-                    createdUntil: new Date(filters.createdDate.to).toISOString(),
-                } as const;
-
+                const { balanceAccountId, createdSince, createdUntil } = getTransactionsFilterQueryParams(filters);
+                const query = { balanceAccountId, createdSince, createdUntil } as const;
                 const json = await getTransactionTotals({ signal }, { query });
+
                 if (!signal.aborted) return json?.data;
             } catch (error) {
                 if (!signal.aborted) throw error;

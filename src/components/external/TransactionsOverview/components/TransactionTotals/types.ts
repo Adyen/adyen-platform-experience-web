@@ -8,8 +8,14 @@ export type TotalsCardProps = {
     fullWidth?: boolean;
 } & Pick<AriaAttributes, 'aria-label'>;
 
-export type ITransactionTotalWithKey = ITransactionTotal & {
-    expensesElemId: string;
-    incomingsElemId: string;
-    key: string;
-};
+export type ITransactionTotalWithKey = ITransactionTotal &
+    Partial<{
+        expensesElemId: string;
+        incomingsElemId: string;
+        key: string;
+    }>;
+
+export interface TransactionTotalsProps {
+    loadingTotals: boolean;
+    totals: readonly Readonly<ITransactionTotal>[];
+}

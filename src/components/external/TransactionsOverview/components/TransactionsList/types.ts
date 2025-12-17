@@ -1,5 +1,6 @@
 import { IBalanceAccountBase } from '../../../../../types';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
+import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useTransactionsList from '../../hooks/useTransactionsList';
 
 type PropsFromTransactionComponent = Pick<
@@ -7,21 +8,9 @@ type PropsFromTransactionComponent = Pick<
     'dataCustomization' | 'onContactSupport' | 'onRecordSelection' | 'showDetails'
 >;
 
-type PropsFromUseTransactionsList = Omit<
-    UseTransactionsListPropsResult,
-    'error' | 'fetching' | 'fields' | 'hasCustomColumn' | 'records' | 'updateLimit'
->;
-
-type UseTransactionsListPropsResult = ReturnType<typeof useTransactionsList>;
-
-export interface TransactionsListProps extends PropsFromTransactionComponent, PropsFromUseTransactionsList {
-    availableCurrencies: readonly string[];
+export interface TransactionsListProps extends PropsFromTransactionComponent {
     balanceAccount?: IBalanceAccountBase;
-    hasMultipleCurrencies: boolean;
     loadingBalanceAccounts: boolean;
-    loadingTransactions: UseTransactionsListPropsResult['fetching'];
-    onLimitSelection: UseTransactionsListPropsResult['updateLimit'];
-    transactionsError: UseTransactionsListPropsResult['error'];
-    transactionsFields: UseTransactionsListPropsResult['fields'];
-    transactions: UseTransactionsListPropsResult['records'];
+    accountBalancesResult: ReturnType<typeof useAccountBalances>;
+    transactionsListResult: ReturnType<typeof useTransactionsList>;
 }
