@@ -6,10 +6,12 @@ import { useConfigContext } from '../../../../../../../../../core/ConfigContext'
 import { EMPTY_OBJECT } from '../../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../../types';
+import { useAddressChecker } from '../../useAddressChecker';
 
 export const BillingCountryField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
+    const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
         fetchOptions: { enabled: !!getCountries },
@@ -54,6 +56,7 @@ export const BillingCountryField = () => {
             items={countriesListItems}
             readonly={countriesQuery.isFetching || datasetQuery.isFetching}
             hideOptionalLabel
+            isRequired={isAddressFieldRequired('billingAddress.country')}
         />
     );
 };

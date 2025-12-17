@@ -8,11 +8,13 @@ import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSe
 import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { TargetedEvent } from 'preact/compat';
+import { useAddressChecker } from '../../useAddressChecker';
 
 export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
     const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
         fetchOptions: { enabled: !!getCountries },
@@ -67,6 +69,7 @@ export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress:
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             onChange={handleChange}
             hideOptionalLabel
+            isRequired={isAddressFieldRequired('deliveryAddress.country')}
         />
     );
 };

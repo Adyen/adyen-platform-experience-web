@@ -5,10 +5,12 @@ import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact/compat';
 import { FormTextInput } from '../../../../../../../../internal/FormWrappers/FormTextInput';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../../../constants';
+import { useAddressChecker } from '../../useAddressChecker';
 
 export const ShippingStreetField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n } = useCoreContext();
     const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { isAddressFieldRequired } = useAddressChecker();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
@@ -25,6 +27,7 @@ export const ShippingStreetField = ({ isSeparateAddress }: { isSeparateAddress: 
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--large"
             hideOptionalLabel
+            isRequired={isAddressFieldRequired('deliveryAddress.street')}
         />
     );
 };
