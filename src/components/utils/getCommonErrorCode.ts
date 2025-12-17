@@ -9,7 +9,7 @@ export type ErrorMessage = {
     onContactSupport?: () => void;
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
     images?: {
-        desktop: string;
+        desktop?: string;
         mobile?: string;
     };
 };
