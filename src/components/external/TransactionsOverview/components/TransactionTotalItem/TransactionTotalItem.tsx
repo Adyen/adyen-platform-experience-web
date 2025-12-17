@@ -1,6 +1,6 @@
-import { TransactionTotalItemProps } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useMemo, useRef } from 'preact/hooks';
+import { TransactionTotalItemProps } from './types';
 import { SummaryItemColumnConfig } from '../SummaryItem/types';
 import { SummaryItem } from '../SummaryItem/SummaryItem';
 
