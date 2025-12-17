@@ -105,7 +105,7 @@ describe('ErrorMessageDisplay', () => {
 
             const image = screen.getByRole('img');
             expect(image).toHaveAttribute('alt', '');
-            expect(mockGetImageAsset).toHaveBeenCalledWith({ name: 'no-results' });
+            expect(mockGetImageAsset).toHaveBeenCalledWith({ name: 'internal-error' });
         });
 
         test('should not render image section when no image props provided', () => {

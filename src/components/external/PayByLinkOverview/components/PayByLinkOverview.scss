@@ -9,12 +9,6 @@
     &--xs {
         gap: style.token(spacer-080);
 
-        @include mixins.adyen-pe-error-message-display-mobile-fix {
-            .adyen-pe-data-grid__table-wrapper {
-                position: relative;
-            }
-        }
-
         .adyen-pe-header {
             align-items: center;
         }
@@ -22,6 +16,10 @@
         .adyen-pe-data-grid__cell {
             padding-bottom: style.token(spacer-060);
             padding-top: style.token(spacer-060);
+        }
+
+        .adyen-pe-error-message-display {
+            top: 00px;
         }
     }
 

@@ -5,7 +5,6 @@ import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDa
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import { useTableColumns } from '../../../../hooks/useTableColumns';
 import { TranslationKey } from '../../../../translations';
-import DataOverviewError from '../../../internal/DataOverviewError';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { PayByLinkTableProps } from './types';
@@ -15,10 +14,12 @@ import { TagVariant } from '../../../internal/Tag/types';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import { IPayByLinkStatus } from '../../../../types';
-import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants/dateFormats';
+import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../constants';
 import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
 import { Tooltip } from '../../../internal/Tooltip/Tooltip';
 import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
+import { PaymentLinksErrors } from './PaymentLinksErrors';
+import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 
 const getTagVariantForStatus = (status: IPayByLinkStatus) => {
     switch (status) {
@@ -72,7 +73,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     stores,
     ...paginationProps
 }) => {
-    const { i18n } = useCoreContext();
+    const { i18n, getImageAsset } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const isSmAndUpContainer = useResponsiveContainer(containerQueries.up.sm);
 
@@ -110,21 +111,43 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
 
     const EMPTY_TABLE_MESSAGE = {
         title: 'payByLink.overview.errors.listEmpty',
-        message: ['common.errors.updateFilters'],
+        message: ['payByLink.overview.errors.listEmpty.message'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
+    const errorMessage = useMemo(() => {
+        return 'payByLink.overview.errors.couldNotLoadLinks' as const;
+    }, []);
+
+    const storeError: AdyenPlatformExperienceError | undefined = useMemo(() => {
+        if (stores?.length !== 0) return undefined;
+        return {
+            message: 'No stores configured',
+            name: 'Account misconfiguration',
+            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            type: 'error',
+            requestId: '',
+        };
+    }, [stores]);
+
     const errorDisplay = useMemo(
-        () => () => (
-            <DataOverviewError error={error} onContactSupport={onContactSupport} errorMessage={'payByLink.overview.errors.listUnavailable'} />
-        ),
-        [error, onContactSupport]
+        () => () => {
+            return (
+                <PaymentLinksErrors
+                    getImageAsset={getImageAsset}
+                    error={storeError || error}
+                    onContactSupport={onContactSupport}
+                    errorMessage={errorMessage}
+                />
+            );
+        },
+        [error, errorMessage, getImageAsset, onContactSupport, storeError]
     );
 
     return (
         <div className={BASE_TABLE_GRID_CLASS}>
             <DataGrid
                 errorDisplay={errorDisplay}
-                error={error}
+                error={storeError || error}
                 columns={columns}
                 data={paymentLinks}
                 loading={loading}
