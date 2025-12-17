@@ -355,7 +355,7 @@ export const PayByLinkOverview = ({
                             {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
                         </Button>
                         <Button variant={ButtonVariant.SECONDARY} className={ACTION_BUTTON_CLASS}>
-                            <Icon name="union" />
+                            <Icon name="cog" />
                         </Button>
                     </div>
                 </div>

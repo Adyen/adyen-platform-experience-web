@@ -19,15 +19,17 @@ export const PayByLinkOverviewModal = ({ isModalVisible, onCloseModal, modalType
     }, [onCloseModal]);
 
     useEffect(() => {
-        popoverUtil.closeAll();
-    }, []);
+        if (isModalVisible) {
+            popoverUtil.closeAll();
+        }
+    }, [isModalVisible]);
 
     return (
         <div>
             {isModalVisible && modalType && (
                 <Modal
                     isOpen={isModalVisible}
-                    aria-label={i18n.get('disputes.management.common.title')}
+                    aria-label={i18n.get('payByLink.overview.title')}
                     onClose={onCloseCallback}
                     isDismissible={true}
                     headerWithBorder={false}
