@@ -22,3 +22,8 @@ export interface TransactionsFilters {
     createdDate: RangeTimestamps;
     paymentPspReference?: string;
 }
+
+export const enum TransactionsView {
+    TRANSACTIONS = 'transactions',
+    INSIGHTS = 'insights',
+}
