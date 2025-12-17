@@ -52,6 +52,12 @@ export const enum ActiveView {
     REFUND = 'refund',
 }
 
+export const enum DetailsTab {
+    DETAILS = 'details',
+    SUMMARY = 'summary',
+    TIMELINE = 'timeline',
+}
+
 export const enum RefundedState {
     INDETERMINATE,
     PARTIAL,

@@ -1,9 +1,10 @@
 import { boolOrFalse } from '../../../../../utils';
 import { CustomColumn } from '../../../../types';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
+import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import normalizeCustomFields from '../../../../utils/customData/normalizeCustomFields';
 import TransactionDataContent from './TransactionDataContent';
-import { TransactionDetailsProps } from '../../types';
+import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
@@ -41,7 +42,11 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
             (async () => {
                 const customizedDetails = await dataCustomization?.details?.onDataRetrieve?.(transaction);
                 setExtraFields(
-                    dataCustomization?.details?.fields.reduce((extraFields, field) => {
+                    normalizeCustomFields(
+                        dataCustomization?.details?.fields,
+                        TX_DETAILS_FIELDS_REMAPS,
+                        customizedDetails as TransactionDetails
+                    )?.reduce((extraFields, field) => {
                         return !TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) && field?.visibility !== 'hidden'
                             ? {
                                   ...extraFields,
