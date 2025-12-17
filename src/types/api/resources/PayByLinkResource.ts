@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/paybylink/paymentLinks/{paymentLinkId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["getPayByLinkPaymentLinkById"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/paybylink/settings/{storeId}": {
         parameters: {
             query?: never;
@@ -139,13 +156,6 @@ export interface components {
             updatedAt?: string;
             url?: string;
         };
-        Address: {
-            city?: string;
-            country?: string;
-            houseNumberOrName?: string;
-            postalCode?: string;
-            street?: string;
-        };
         Amount: {
             /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
             currency: string;
@@ -155,13 +165,20 @@ export interface components {
              */
             value: number;
         };
+        CreateLinkAddressDTO: {
+            city?: string;
+            country?: string;
+            houseNumberOrName?: string;
+            postalCode?: string;
+            street?: string;
+        };
         CreatePaymentLinkRequestDTO: {
             amount: components["schemas"]["Amount"];
-            billingAddress?: components["schemas"]["Address"];
+            billingAddress?: components["schemas"]["CreateLinkAddressDTO"];
             countryCode: string;
             /** Format: date-time */
             deliverAt?: string;
-            deliveryAddress?: components["schemas"]["Address"];
+            deliveryAddress?: components["schemas"]["CreateLinkAddressDTO"];
             description?: string;
             linkType?: components["schemas"]["PaymentLinkType"];
             linkValidity: components["schemas"]["CreatePaymentLinkValidity"];
@@ -203,9 +220,9 @@ export interface components {
             phoneNumber?: components["schemas"]["FieldRequirementVoid"];
             sendLinkToShopper?: components["schemas"]["FieldRequirementVoid"];
             sendSuccessEmailToShopper?: components["schemas"]["FieldRequirementVoid"];
-            shopperLocale: components["schemas"]["FieldRequirementString"];
+            shopperLocale?: components["schemas"]["FieldRequirementString"];
             shopperName?: components["schemas"]["FieldRequirementVoid"];
-            shopperReference: components["schemas"]["FieldRequirementVoid"];
+            shopperReference?: components["schemas"]["FieldRequirementVoid"];
         };
         FieldRequirementLinkType: {
             options?: components["schemas"]["LinkType"][];
@@ -233,6 +250,78 @@ export interface components {
         };
         /** @enum {string} */
         Type: "fixed" | "flexible";
+        LinkInformation: {
+            amount: components["schemas"]["Amount"];
+            /** Format: date-time */
+            creationDate: string;
+            description: string;
+            /** Format: date-time */
+            expirationDate: string;
+            linkType: components["schemas"]["PaymentLinkType"];
+            merchantReference: string;
+            paymentLink: string;
+            paymentLinkId: string;
+            status: components["schemas"]["PaymentLinkStatus"];
+            storeCode?: string;
+        };
+        Name: {
+            /** @description The first name. */
+            firstName: string;
+            /**
+             * @description The gender.
+             *     >The following values are permitted: `MALE`, `FEMALE`, `UNKNOWN`.
+             * @enum {unknown}
+             */
+            gender?: "MALE" | "FEMALE" | "UNKNOWN";
+            /** @description The name's infix, if applicable.
+             *     >A maximum length of twenty (20) characters is imposed. */
+            infix?: string;
+            /** @description The last name. */
+            lastName: string;
+        };
+        PaymentLinkActivity: {
+            /** Format: date-time */
+            date: string;
+            expirationReason?: components["schemas"]["PaymentLinkExpirationReason"];
+            type: components["schemas"]["PaymentLinkActivityType"];
+        };
+        /** @enum {string} */
+        PaymentLinkActivityType: "createdAction" | "expiredAction" | "paymentAttempt";
+        PaymentLinkDetails: {
+            linkInformation: components["schemas"]["LinkInformation"];
+            paymentLinkActivities?: components["schemas"]["PaymentLinkActivity"][];
+            shopperInformation?: components["schemas"]["ShopperInformation"];
+        };
+        /** @enum {string} */
+        PaymentLinkExpirationReason: "maximumAttemptsReached" | "manuallyExpired" | "expirationDateReached";
+        /** @enum {string} */
+        PaymentLinkStatus: "active" | "paymentPending" | "expired" | "completed";
+        ShopperInformation: {
+            billingAddress?: components["schemas"]["address"];
+            shippingAddress?: components["schemas"]["address"];
+            shopperCountry?: string;
+            shopperEmail?: string;
+            shopperName?: components["schemas"]["Name"];
+            shopperReference?: string;
+            telephoneNumber?: string;
+        };
+        address: {
+            /** @description The name of the city. Maximum length: 3000 characters. */
+            city: string;
+            /** @description The two-character ISO-3166-1 alpha-2 country code. For example, **US**.
+             *     > If you don't know the country or are not collecting the country from the shopper, provide `country` as `ZZ`. */
+            country: string;
+            /** @description The number or name of the house. Maximum length: 3000 characters. */
+            houseNumberOrName: string;
+            /** @description A maximum of five digits for an address in the US, or a maximum of ten characters for an address in all other countries. */
+            postalCode: string;
+            /** @description The two-character ISO 3166-2 state or province code. For example, **CA** in the US or **ON** in Canada.
+             *     > Required for the US and Canada. */
+            stateOrProvince?: string;
+            /** @description The name of the street. Maximum length: 3000 characters.
+             *     > The house number should not be included in this field; it should be separately provided via `houseNumberOrName`. */
+            street: string;
+        };
         PayByLinkSettingsResponse: {
             /** @description Terms of service url */
             termsOfServiceUrl: string;
@@ -261,8 +350,6 @@ export interface components {
             fullWidthLogoUrl?: string;
             logoUrl?: string;
         };
-        /** @enum {string} */
-        PaymentLinkStatus: "active" | "paymentPending" | "expired" | "completed";
         PaymentLinksItem: {
             /** @description Amount */
             amount: components["schemas"]["Amount"];
@@ -363,6 +450,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConfigurationResponse"];
+                };
+            };
+        };
+    };
+    getPayByLinkPaymentLinkById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentLinkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentLinkDetails"];
                 };
             };
         };

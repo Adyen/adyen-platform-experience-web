@@ -109,7 +109,7 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'capital/grants/missingActions/anaCredit',
         },
-        getStores: {
+        getPayByLinkStores: {
             method: 'GET',
             url: 'stores',
         },

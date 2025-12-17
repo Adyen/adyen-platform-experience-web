@@ -9,7 +9,6 @@ import { operations as CapitalMissingActionsOps } from './resources/CapitalMissi
 import { components as SetupResource } from './resources/SetupResource';
 import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 import { operations as PayByLinkOps } from './resources/PayByLinkResource';
-import { operations as StoresOps } from './resources/StoreResource';
 import { operations as CurrenciesOps } from './resources/CurrencyResource';
 import { operations as CountriesOps } from './resources/CountryResource';
 
@@ -23,7 +22,6 @@ export type EndpointsOperations = AnalyticsOps &
     TransactionsOps &
     DisputesOps &
     PayByLinkOps &
-    StoresOps &
     CurrenciesOps &
     CountriesOps & {};
 
