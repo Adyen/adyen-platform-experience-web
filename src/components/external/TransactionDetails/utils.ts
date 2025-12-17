@@ -1,7 +1,6 @@
-import { EMPTY_OBJECT } from '../../../../utils';
-import { RefundType } from '../context/types';
-import { TagVariant } from '../../../internal/Tag/types';
-import type { TransactionDetailData } from '../types';
+import { EMPTY_OBJECT } from '../../../utils';
+import { RefundType, TransactionDetailData } from './types';
+import { TagVariant } from '../../internal/Tag/types';
 
 export const getAmountStyleForTransaction = (transaction: TransactionDetailData) => {
     switch (transaction?.status) {

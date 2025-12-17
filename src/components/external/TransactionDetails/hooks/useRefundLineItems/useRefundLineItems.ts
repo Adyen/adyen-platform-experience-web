@@ -1,12 +1,16 @@
-import { EMPTY_ARRAY } from '../../../../../../utils';
-import { updateRefundItems } from '../helpers';
+import { ILineItem } from '../../../../../types';
+import { EMPTY_ARRAY } from '../../../../../utils';
+import { RefundLineItem, RefundLineItemUpdates } from '../../types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import type { ITransactionRefundContext, TransactionRefundItem, TransactionRefundProviderProps } from '../types';
+import { updateRefundItems } from './helpers';
 
-type _BaseUseRefundContextLineItemsProps = Pick<TransactionRefundProviderProps, 'currency' | 'lineItems'>;
+export interface UseRefundLineItemsProps {
+    lineItems: readonly ILineItem[];
+    currency: string;
+}
 
-export const useRefundContextLineItems = <T extends _BaseUseRefundContextLineItemsProps>({ currency, lineItems }: T) => {
-    const [items, setItems] = useState(EMPTY_ARRAY as ITransactionRefundContext['items']);
+export const useRefundLineItems = <T extends UseRefundLineItemsProps>({ currency, lineItems }: T) => {
+    const [refundingItems, setRefundingItems] = useState(EMPTY_ARRAY as readonly RefundLineItem[]);
 
     const refundableItems = useMemo(() => {
         const items = lineItems
@@ -27,33 +31,35 @@ export const useRefundContextLineItems = <T extends _BaseUseRefundContextLineIte
                     ] as const
             );
 
-        return new Map<string, TransactionRefundItem>(items ?? EMPTY_ARRAY);
+        return new Map<string, RefundLineItem>(items ?? EMPTY_ARRAY);
     }, [currency, lineItems]);
 
-    const availableItems = useMemo<ITransactionRefundContext['availableItems']>(
+    const availableItems = useMemo<readonly ILineItem[]>(
         () => lineItems?.filter(({ id }) => refundableItems.has(id)) ?? EMPTY_ARRAY,
-        [items, lineItems, refundableItems]
+        [lineItems, refundableItems, refundingItems]
     );
 
-    const clearItems = useCallback<ITransactionRefundContext['clearItems']>(
-        function (ids) {
-            setItems(items => {
+    const clearItems = useCallback(
+        function (ids?: RefundLineItem['id'][]) {
+            setRefundingItems(items => {
                 // prettier-ignore
                 const _items = arguments.length === 0
                     ? new Map(items.map(({ id }) => [id, 0]))
                     : new Map(ids?.map(id => [id, 0]) ?? EMPTY_ARRAY);
 
-                const itemUpdates = [..._items].map(([id, quantity]) => ({ id, quantity } as const));
+                const itemUpdates = [..._items].map(([id, quantity]) => ({ id, quantity }) as const);
                 return updateRefundItems(refundableItems, items, itemUpdates);
             });
         },
         [refundableItems]
     );
 
-    const updateItems = useCallback<ITransactionRefundContext['updateItems']>(
-        itemUpdates => setItems(items => updateRefundItems(refundableItems, items, itemUpdates)),
+    const updateItems = useCallback(
+        (itemUpdates?: RefundLineItemUpdates) => setRefundingItems(items => updateRefundItems(refundableItems, items, itemUpdates)),
         [refundableItems]
     );
 
-    return { availableItems, clearItems, items, updateItems } as const;
+    return { availableItems, clearItems, refundingItems, updateItems } as const;
 };
+
+export default useRefundLineItems;

@@ -160,6 +160,8 @@ export interface components {
             events?: components['schemas']['Event'][];
             /** @description ID */
             id: string;
+            /** @description The merchant reference of the payment */
+            merchantReference?: string;
             /** @description Amount */
             netAmount: components['schemas']['Amount'];
             /** @description Amount in original PSP payment */

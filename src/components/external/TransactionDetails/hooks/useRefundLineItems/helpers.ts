@@ -1,9 +1,9 @@
 import { clamp, EMPTY_ARRAY, isUndefined } from '../../../../../utils';
-import type { ITransactionRefundContext, TransactionRefundItem, TransactionRefundItemUpdates } from './types';
+import { RefundLineItem, RefundLineItemUpdates } from '../../types';
 
 const _updateRefundItemQuantity = (
-    refundableItems: Map<string, TransactionRefundItem>,
-    nextRefundItems: ITransactionRefundContext['items'][number][],
+    refundableItems: Map<string, RefundLineItem>,
+    nextRefundItems: RefundLineItem[],
     refundItem: { id: string; quantity: number },
     refundQuantity = 0
 ) => {
@@ -17,10 +17,10 @@ const _updateRefundItemQuantity = (
 };
 
 export const updateRefundItems = (
-    refundableItems: Map<string, TransactionRefundItem>,
-    currentRefundItems: ITransactionRefundContext['items'],
-    refundItemUpdates = EMPTY_ARRAY as unknown as TransactionRefundItemUpdates
-): ITransactionRefundContext['items'] => {
+    refundableItems: Map<string, RefundLineItem>,
+    currentRefundItems: readonly RefundLineItem[],
+    refundItemUpdates = EMPTY_ARRAY as unknown as RefundLineItemUpdates
+): readonly RefundLineItem[] => {
     const refundQuantities = new Map(refundItemUpdates?.map(({ id, quantity }) => [id, quantity]) ?? EMPTY_ARRAY);
     const nextRefundItems = [] as (typeof currentRefundItems)[number][];
 

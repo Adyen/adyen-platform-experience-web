@@ -1,8 +1,8 @@
 import { createDynamicTranslationFactory, createKeyFactoryFromConfig, KeyFactoryFunction, TranslationFallbackFunction } from './factory';
-import { DISPUTE_REASON_CATEGORIES, DISPUTE_STATUSES, DISPUTE_TYPES } from '../disputes/constants';
-import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/context/constants';
 import { IDisputeReasonCategory, IDisputeStatus, IDisputeType } from '../../../types/api/models/disputes';
-import { RefundReason } from '../../external/TransactionDetails/context/types';
+import { DISPUTE_REASON_CATEGORIES, DISPUTE_STATUSES, DISPUTE_TYPES } from '../disputes/constants';
+import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/constants';
+import { RefundReason } from '../../external/TransactionDetails/types';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
 

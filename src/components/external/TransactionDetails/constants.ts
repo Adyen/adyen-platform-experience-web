@@ -1,5 +1,7 @@
-import { TRANSACTION_FIELDS } from '../../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import type { TransactionDetailData } from '../types';
+import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import { TransactionDetailData, TransactionDetailsFields } from './types';
+import { TranslationKey } from '../../../translations';
+import { IRefundStatus } from '../../../types';
 
 export const TX_DATA_CLASS = 'adyen-pe-transaction-data';
 export const TX_DATA_AMOUNT = `${TX_DATA_CLASS}__amount`;
@@ -28,7 +30,7 @@ export const TX_REFUND_RESPONSE_SUCCESS_ICON = `${TX_REFUND_RESPONSE_ICON}--succ
 export const TX_REFUND_RESPONSE_ERROR_ICON = `${TX_REFUND_RESPONSE_ICON}--error`;
 export const TX_REFUND_STATUSES_CONTAINER = `${TX_DATA_CLASS}__refund-statuses-container`;
 
-export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
+export const TX_DETAILS_RESERVED_FIELDS_SET = new Set<TransactionDetailsFields>([
     ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),
     ...TRANSACTION_FIELDS,
     'deductedAmount',
@@ -38,3 +40,21 @@ export const TX_DETAILS_RESERVED_FIELDS_SET = new Set([
     'refundDetails',
     'refundMetadata',
 ] as const);
+
+export const REFUND_STATUSES = ['completed', 'in_progress', 'failed'] as const satisfies readonly IRefundStatus[];
+export const REFUND_REASONS = ['requested_by_customer', 'issue_with_item_sold', 'fraudulent', 'duplicate', 'other'] as const;
+
+export const REFUND_REASONS_KEYS = Object.freeze({
+    requested_by_customer: 'transactions.details.common.refundReasons.requestedByCustomer',
+    issue_with_item_sold: 'transactions.details.common.refundReasons.issueWithItemSold',
+    fraudulent: 'transactions.details.common.refundReasons.fraudulent',
+    duplicate: 'transactions.details.common.refundReasons.duplicate',
+    other: 'transactions.details.common.refundReasons.other',
+} as const) satisfies Readonly<Record<(typeof REFUND_REASONS)[number], TranslationKey>>;
+
+export const REFUND_REFERENCE_CHAR_LIMIT = 80;
+
+export const sharedTransactionDetailsEventProperties = {
+    category: 'Transaction component',
+    subCategory: 'Transaction details',
+} as const;

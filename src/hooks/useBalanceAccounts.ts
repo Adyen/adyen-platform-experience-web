@@ -1,20 +1,15 @@
+import { useCallback, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
-import { useMemo } from 'preact/hooks';
 
 const useBalanceAccounts = (balanceAccountId?: string, enabled?: boolean) => {
-    const { getBalanceAccounts: balanceAccountEndpointCall } = useConfigContext().endpoints;
+    const { getBalanceAccounts } = useConfigContext().endpoints;
 
-    const { data, isFetching, error } = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!balanceAccountEndpointCall && (enabled ?? true), keepPrevData: true },
-                queryFn: async () => balanceAccountEndpointCall?.(EMPTY_OBJECT),
-            }),
-            [balanceAccountEndpointCall]
-        )
-    );
+    const { data, isFetching, error } = useFetch({
+        queryFn: useCallback(async () => getBalanceAccounts?.(EMPTY_OBJECT), [getBalanceAccounts]),
+        fetchOptions: { enabled: !!getBalanceAccounts && enabled !== false, keepPrevData: true },
+    });
 
     const balanceAccounts = useMemo(
         () => data?.data.filter(account => (balanceAccountId ? account.id === balanceAccountId : true)),
@@ -23,7 +18,7 @@ const useBalanceAccounts = (balanceAccountId?: string, enabled?: boolean) => {
 
     const isBalanceAccountIdWrong = useMemo(
         () => !!balanceAccountId && !!data?.data.length && balanceAccounts?.length === 0,
-        [balanceAccounts?.length, data?.data.length, balanceAccountId]
+        [data?.data, balanceAccountId, balanceAccounts]
     );
 
     // TODO: Consider unifying error with isBalanceAccountIdWrong

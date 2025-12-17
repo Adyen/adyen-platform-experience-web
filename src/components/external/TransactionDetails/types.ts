@@ -1,6 +1,5 @@
 import type { StrictUnion } from '../../../utils/types';
-import { IBalanceAccountBase, ILineItem, ITransactionWithDetails } from '../../../types';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from './components/constants';
+import { IBalanceAccountBase, ILineItem, IRefundReason, ITransactionWithDetails } from '../../../types';
 import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
 
 export interface DetailsWithoutIdProps {
@@ -36,8 +35,64 @@ export interface TransactionDataProps {
     extraFields: Record<string, any> | undefined;
 }
 
-const _fields = [...TX_DETAILS_RESERVED_FIELDS_SET];
-
-export type TransactionDetailsFields = (typeof _fields)[number];
+export type TransactionDetailsFields =
+    | 'amount'
+    | 'amountBeforeDeductions'
+    | 'balanceAccount'
+    | 'balanceAccountId'
+    | 'bankAccount'
+    | 'category'
+    | 'createdAt'
+    | 'deductedAmount'
+    | 'grossAmount'
+    | 'id'
+    | 'lineItems'
+    | 'netAmount'
+    | 'originalAmount'
+    | 'paymentMethod'
+    | 'paymentPspReference'
+    | 'pspReference'
+    | 'refundDetails'
+    | 'refundMetadata'
+    | 'status'
+    | 'transactionType';
 
 export type TransactionDetailsProps = DetailsComponentProps & DetailsWithExtraData<TransactionDetailsCustomization>;
+
+export const enum ActiveView {
+    DETAILS = 'details',
+    REFUND = 'refund',
+}
+
+export const enum RefundedState {
+    INDETERMINATE,
+    PARTIAL,
+    FULL,
+}
+
+export const enum RefundMode {
+    NON_REFUNDABLE = 'non_refundable',
+    PARTIAL_AMOUNT = 'partially_refundable_any_amount',
+    PARTIAL_LINE_ITEMS = 'partially_refundable_with_line_items_required',
+    FULL_AMOUNT = 'fully_refundable_only',
+}
+
+export const enum RefundType {
+    PARTIAL = 'partial',
+    FULL = 'full',
+}
+
+export type RefundReason = IRefundReason;
+export type RefundResult = 'done' | 'error';
+
+export type RefundLineItem = Readonly<{
+    id: ILineItem['id'];
+    amount: ILineItem['amountIncludingTax']['value'];
+    quantity: ILineItem['availableQuantity'];
+}>;
+
+export type RefundLineItemUpdates = Readonly<{
+    id: ILineItem['id'];
+    amount?: ILineItem['amountIncludingTax']['value'];
+    quantity: ILineItem['availableQuantity'];
+}>[];

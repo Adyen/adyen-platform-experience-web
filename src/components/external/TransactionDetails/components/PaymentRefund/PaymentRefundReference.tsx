@@ -1,4 +1,5 @@
 import {
+    REFUND_REFERENCE_CHAR_LIMIT,
     TX_DATA_CONTAINER,
     TX_DATA_INPUT,
     TX_DATA_INPUT_CHARS,
@@ -6,18 +7,17 @@ import {
     TX_DATA_INPUT_CONTAINER_TEXT,
     TX_DATA_INPUT_HEAD,
     TX_DATA_INPUT_TEXTAREA,
-} from '../constants';
+} from '../../constants';
 import { h } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 import { uniqueId } from '../../../../../utils';
 import { useInputNormalizer } from '../../hooks/useInputNormalizer';
-import { REFUND_REFERENCE_CHAR_LIMIT } from '../../context/constants';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import TextArea from '../../../../internal/FormFields/TextArea';
-import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import Typography from '../../../../internal/Typography/Typography';
+import TextArea from '../../../../internal/FormFields/TextArea';
 
-const TransactionRefundReference = () => {
+const PaymentRefundReference = () => {
     const { i18n } = useCoreContext();
     const [reference, setReference] = useState('');
     const [characters, setCharactersCount] = useState(reference.length);
@@ -69,4 +69,4 @@ const TransactionRefundReference = () => {
     );
 };
 
-export default TransactionRefundReference;
+export default PaymentRefundReference;

@@ -14,7 +14,7 @@ import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps, DetailsWithId, TransactionDetailData } from './types';
 import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/components/constants';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/constants';
 import { PAYOUT_TABLE_FIELDS } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsCustomization } from '../../external';
 import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
