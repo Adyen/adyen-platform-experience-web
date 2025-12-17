@@ -6,11 +6,13 @@ import { useConfigContext } from '../../../../../../../../../core/ConfigContext'
 import { EMPTY_OBJECT } from '../../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../../types';
+import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useAddressChecker } from '../../useAddressChecker';
 
 export const BillingCountryField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
+    const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
@@ -47,6 +49,8 @@ export const BillingCountryField = () => {
         return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
     }, [countriesQuery.data, datasetQuery.data]);
 
+    const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');
+
     return (
         <FormSelect<PBLFormValues>
             filterable
@@ -56,7 +60,7 @@ export const BillingCountryField = () => {
             items={countriesListItems}
             readonly={countriesQuery.isFetching || datasetQuery.isFetching}
             hideOptionalLabel
-            isRequired={isAddressFieldRequired('billingAddress.country')}
+            isRequired={isRequired}
         />
     );
 };

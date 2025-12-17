@@ -13,7 +13,7 @@ import { useAddressChecker } from '../../useAddressChecker';
 export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
-    const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
@@ -59,6 +59,8 @@ export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress:
         [isSeparateAddress, setValue]
     );
 
+    const isRequired = fieldsConfig['deliveryAddress.country']?.required || isAddressFieldRequired('deliveryAddress.country');
+
     return (
         <FormSelect<PBLFormValues>
             filterable
@@ -69,7 +71,7 @@ export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress:
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             onChange={handleChange}
             hideOptionalLabel
-            isRequired={isAddressFieldRequired('deliveryAddress.country')}
+            isRequired={isRequired}
         />
     );
 };

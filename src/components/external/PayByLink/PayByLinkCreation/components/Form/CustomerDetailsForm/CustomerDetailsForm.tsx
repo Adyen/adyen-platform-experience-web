@@ -137,7 +137,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             fieldName="billingAddress.street"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.street.label')}
                             hideOptionalLabel
-                            isRequired={isAddressFieldRequired('billingAddress.street')}
+                            isRequired={fieldsConfig['billingAddress.street']?.required || isAddressFieldRequired('billingAddress.street')}
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.houseNumberOrName.max}
@@ -145,7 +145,10 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             fieldName="billingAddress.houseNumberOrName"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.houseNumberOrName.label')}
                             hideOptionalLabel
-                            isRequired={isAddressFieldRequired('billingAddress.houseNumberOrName')}
+                            isRequired={
+                                fieldsConfig['billingAddress.houseNumberOrName']?.required ||
+                                isAddressFieldRequired('billingAddress.houseNumberOrName')
+                            }
                         />
                     </div>
                     <div>
@@ -156,7 +159,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             fieldName="billingAddress.city"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.city.label')}
                             hideOptionalLabel
-                            isRequired={isAddressFieldRequired('billingAddress.city')}
+                            isRequired={fieldsConfig['billingAddress.city']?.required || isAddressFieldRequired('billingAddress.city')}
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
@@ -165,7 +168,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             fieldName="billingAddress.postalCode"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.postalCode.label')}
                             hideOptionalLabel
-                            isRequired={isAddressFieldRequired('billingAddress.postalCode')}
+                            isRequired={fieldsConfig['billingAddress.postalCode']?.required || isAddressFieldRequired('billingAddress.postalCode')}
                         />
                     </div>
                 </div>

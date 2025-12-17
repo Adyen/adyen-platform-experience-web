@@ -9,7 +9,7 @@ import { useAddressChecker } from '../../useAddressChecker';
 
 export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n } = useCoreContext();
-    const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
 
     const onInput = useCallback(
@@ -18,6 +18,8 @@ export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddre
         },
         [isSeparateAddress, setValue]
     );
+
+    const isRequired = fieldsConfig['deliveryAddress.postalCode']?.required || isAddressFieldRequired('deliveryAddress.postalCode');
 
     return (
         <FormTextInput<PBLFormValues>
@@ -28,7 +30,7 @@ export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddre
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--small"
             hideOptionalLabel
-            isRequired={isAddressFieldRequired('deliveryAddress.postalCode')}
+            isRequired={isRequired}
         />
     );
 };

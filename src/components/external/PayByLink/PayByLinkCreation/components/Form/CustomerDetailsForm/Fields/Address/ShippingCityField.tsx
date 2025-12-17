@@ -9,7 +9,7 @@ import { useAddressChecker } from '../../useAddressChecker';
 
 export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n } = useCoreContext();
-    const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
 
     const onInput = useCallback(
@@ -19,6 +19,8 @@ export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: bo
         [isSeparateAddress, setValue]
     );
 
+    const isRequired = fieldsConfig['deliveryAddress.city']?.required || isAddressFieldRequired('deliveryAddress.city');
+
     return (
         <FormTextInput<PBLFormValues>
             maxLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.city.max}
@@ -27,7 +29,7 @@ export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: bo
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             hideOptionalLabel
-            isRequired={isAddressFieldRequired('deliveryAddress.city')}
+            isRequired={isRequired}
         />
     );
 };
