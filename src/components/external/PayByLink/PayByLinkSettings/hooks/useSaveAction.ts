@@ -3,6 +3,7 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { useCallback } from 'preact/hooks';
 import { ActiveMenuItem } from '../components/PayByLinkSettingsContainer/context/constants';
 import usePayByLinkSettingsContext from '../components/PayByLinkSettingsContainer/context/context';
+import { isUndefined } from '../../../../../utils';
 
 export const useSaveAction = () => {
     const { selectedStore, payload, activeMenuItem, getIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
@@ -17,7 +18,7 @@ export const useSaveAction = () => {
     });
 
     const onSaveTheme = useCallback(() => {
-        if (!payload || !getIsValid()) return;
+        if (isUndefined(payload) || !getIsValid()) return;
         savePayByLinkTheme.mutate({ contentType: 'multipart/form-data', body: payload }, { path: { storeId: selectedStore! } });
     }, [savePayByLinkTheme, selectedStore, payload, getIsValid]);
 
@@ -35,7 +36,8 @@ export const useSaveAction = () => {
     });
 
     const onSaveTermsAndConditions = useCallback(() => {
-        if (!payload || !getIsValid()) return;
+        if (isUndefined(payload) || !getIsValid()) return;
+
         updatePayByLinkTermsAndConditions.mutate(
             {
                 contentType: 'application/json',
