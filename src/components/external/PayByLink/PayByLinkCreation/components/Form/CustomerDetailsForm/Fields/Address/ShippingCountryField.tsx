@@ -1,6 +1,5 @@
 import useCoreContext from '../../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
-import { CountryDTO } from '../../../../../../../../../types/api/models/countries';
 import { useFetch } from '../../../../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../../../../utils';
@@ -9,10 +8,11 @@ import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { TargetedEvent } from 'preact/compat';
 import { useAddressChecker } from '../../useAddressChecker';
+import { PaymentLinkCountryDTO } from '../../../../../../../../../types';
 
 export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { getCountries } = useConfigContext().endpoints;
+    const { countries: getCountries } = useConfigContext().endpoints;
     const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
 
@@ -42,7 +42,7 @@ export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress:
     });
 
     const countriesListItems = useMemo(() => {
-        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: CountryDTO) => countryCode).filter(Boolean));
+        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: PaymentLinkCountryDTO) => countryCode).filter(Boolean));
         const store = datasetQuery.data ?? [];
 
         const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;

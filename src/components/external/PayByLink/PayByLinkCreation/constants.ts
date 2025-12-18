@@ -30,8 +30,7 @@ export const PBL_CREATION_FIELD_LENGTHS = {
             max: 3000,
         },
         postalCode: {
-            min: 5,
-            max: 5,
+            max: 10,
         },
         city: {
             max: 3000,
@@ -45,8 +44,7 @@ export const PBL_CREATION_FIELD_LENGTHS = {
             max: 3000,
         },
         postalCode: {
-            min: 5,
-            max: 5,
+            max: 10,
         },
         city: {
             max: 3000,

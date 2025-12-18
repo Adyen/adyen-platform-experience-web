@@ -1,18 +1,20 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
-import { CountryDTO } from '../../../../../../../../types/api/models/countries';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../types';
+import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
+import { PaymentLinkCountryDTO } from '../../../../../../../../types';
 
 export const CountryRegionField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { getCountries } = useConfigContext().endpoints;
+    const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
+    const { countries: getCountries } = useConfigContext().endpoints;
 
     const countriesQuery = useFetch({
-        fetchOptions: { enabled: !!getCountries },
+        fetchOptions: { enabled: !!getCountries && !fieldsConfig?.['countryCode']?.options?.length },
         queryFn: useCallback(async () => {
             return getCountries?.(EMPTY_OBJECT);
         }, [getCountries]),
@@ -37,13 +39,17 @@ export const CountryRegionField = () => {
     });
 
     const countriesListItems = useMemo(() => {
-        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: CountryDTO) => countryCode).filter(Boolean));
+        const configCountries = fieldsConfig?.['countryCode']?.options as PaymentLinkCountryDTO[] | undefined;
+        const countriesQueryData = countriesQuery.data?.data ?? [];
+        const subset = new Set(
+            [...(configCountries ?? countriesQueryData)].map(({ countryCode }: PaymentLinkCountryDTO) => countryCode).filter(Boolean)
+        );
         const store = datasetQuery.data ?? [];
 
         const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;
 
         return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
-    }, [countriesQuery.data, datasetQuery.data]);
+    }, [countriesQuery.data, datasetQuery.data, fieldsConfig]);
 
     return (
         <FormSelect<PBLFormValues>

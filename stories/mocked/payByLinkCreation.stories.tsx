@@ -54,6 +54,7 @@ export const Prefilled: ElementStory<typeof PayByLinkCreation> = {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
         fieldsConfig,
+        storeIds: ['London Store', 'Amsterdam Store'],
     },
 };
 

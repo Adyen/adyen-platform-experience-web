@@ -18,8 +18,6 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
         stores: `${baseUrl}/stores`,
-        currencies: `${baseUrl}/currencies`,
-        countries: `${baseUrl}/countries`,
         capital: {
             createOffer: `${baseUrl}/capital/grantOffers/create`,
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
@@ -43,6 +41,8 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             installments: `${baseUrl}/paybylink/installments`,
             paymentLinks: `${baseUrl}/paybylink/paymentLinks`,
             filters: `${baseUrl}/paybylink/filters`,
+            currencies: `${baseUrl}/paybylink/currencies`,
+            countries: `${baseUrl}/paybylink/countries`,
         },
     } as const;
 };

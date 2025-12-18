@@ -79,6 +79,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                 [DROPDOWN_BUTTON_VALID_CLASS]: props.isValid,
             })}
             filterable={filterable}
+            name={props.name}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
             role={!filterable || showList ? 'button' : undefined}

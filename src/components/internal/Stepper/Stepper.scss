@@ -3,9 +3,10 @@
 .adyen-pe-stepper {
     &__list {
         display: flex;
-        flex-wrap: wrap;
         gap: style.token(spacer-040);
         list-style: none;
+        overflow-y: scroll;
+        scrollbar-width: none;
 
         &:not(&--horizontal) {
             flex-direction: column;

@@ -97,6 +97,7 @@ export function FormTextInput<TFieldValues>({
                                 value={field.value}
                                 maxLength={maxLength}
                                 minLength={minLength}
+                                name={fieldName}
                                 isValid={!fieldState.error}
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}

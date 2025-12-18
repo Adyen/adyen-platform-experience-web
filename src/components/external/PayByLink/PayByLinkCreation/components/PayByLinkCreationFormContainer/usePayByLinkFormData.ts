@@ -113,6 +113,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     }, [wizardForm.control, selectedStore]);
 
     const isDataLoading = configurationQuery.isFetching || settingsQuery.isFetching;
+    const shouldSkipStoreSelection = storesSelectorItems.length === 1;
+    const isConfigReady = !isDataLoading && configurationQuery.data;
+    const isSettingReady = !isDataLoading && settingsQuery.data;
+
+    const isFirstLoadDone = !storesQuery.isFetching && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady));
 
     return {
         // Queries
@@ -133,5 +138,6 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         createPBLPaymentLink,
         // Loading state
         isDataLoading,
+        isFirstLoadDone,
     };
 };

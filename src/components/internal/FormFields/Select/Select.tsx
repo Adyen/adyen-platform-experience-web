@@ -425,6 +425,7 @@ const Select = <T extends SelectItem>({
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
+                name={name}
                 onButtonKeyDown={handleButtonKeyDown}
                 onFilterInputKeyDown={handleFilterInputKeyDown}
                 multiSelect={multiSelect}

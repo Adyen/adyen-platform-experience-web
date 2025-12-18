@@ -163,7 +163,6 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
-                            minLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.min}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--small"
                             fieldName="billingAddress.postalCode"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.postalCode.label')}

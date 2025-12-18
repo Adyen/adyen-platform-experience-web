@@ -24,7 +24,6 @@ export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddre
     return (
         <FormTextInput<PBLFormValues>
             maxLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.postalCode.max}
-            minLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.postalCode.min}
             fieldName="deliveryAddress.postalCode"
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.postalCode.label')}
             onInput={onInput}
