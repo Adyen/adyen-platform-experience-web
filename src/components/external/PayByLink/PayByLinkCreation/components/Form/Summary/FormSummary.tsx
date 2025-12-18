@@ -1,6 +1,5 @@
 import cx from 'classnames';
 import Alert from '../../../../../../internal/Alert/Alert';
-import CopyText from '../../../../../../internal/CopyText/CopyText';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import Typography from '../../../../../../internal/Typography/Typography';
 import StructuredList from '../../../../../../internal/StructuredList';
@@ -14,7 +13,7 @@ import { PBLFormValues } from '../../types';
 import { StructuredListItem } from '../../../../../../internal/StructuredList/types';
 import { useMemo } from 'preact/hooks';
 import { Tag } from '../../../../../../internal/Tag/Tag';
-import { PaymentLinkTypeDTO } from '../../../../../../../types/api/models/payByLink';
+import { PaymentLinkTypeDTO } from '../../../../../../../types';
 import type { TranslationKey } from '../../../../../../../translations';
 import './FormSummary.scss';
 
@@ -39,7 +38,7 @@ export const FormSummary = () => {
 
         const jointFields = [...(storeField ? [storeField] : []), ...(visibleFields || [])];
 
-        let items: StructuredListItem[] | undefined = jointFields?.map(({ label, value, id, displayValue }) => ({
+        const items: StructuredListItem[] | undefined = jointFields?.map(({ label, value, id, displayValue }) => ({
             key: (label || id) as TranslationKey,
             value: displayValue || value,
             id: id,
@@ -63,7 +62,7 @@ export const FormSummary = () => {
         }));
 
         return items || [];
-    }, [formValues, i18n]);
+    }, [formValues, getDisplayValue, getValues, i18n]);
 
     const customerListItems = useMemo(() => {
         const { customer } = formValues;

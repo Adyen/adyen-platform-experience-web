@@ -762,6 +762,7 @@
     "payByLink.linkCreation.fields.validity.linkValidityUnit.week": "%{quantity} week",
     "payByLink.linkCreation.fields.validity.linkValidityUnit.week__plural": "%{quantity} weeks",
     "payByLink.linkCreation.fields.validity.supportText": "Available time window for payment.",
+    "payByLink.linkCreation.form.alert.somethingWentWrong": "Something went wrong. Please try again, or contact support if you continue to have problems.",
     "payByLink.linkCreation.form.linkTypes.open": "Open",
     "payByLink.linkCreation.form.linkTypes.singleUse": "Single use",
     "payByLink.linkCreation.form.steps.back": "Back",

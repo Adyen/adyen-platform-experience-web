@@ -1,9 +1,9 @@
 import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { TypographyVariant } from '../../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { PBLFormValues, LinkCreationFormStep } from '../types';
+import { LinkCreationFormStep, PBLFormValues } from '../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
@@ -18,14 +18,22 @@ import { StoreForm } from '../Form/StoreForm/StoreForm';
 import Icon from '../../../../../internal/Icon';
 import { usePayByLinkFormData } from './usePayByLinkFormData';
 import { PayByLinkCreationComponentProps } from '../../../../../types';
+import { AlertTypeOption } from '../../../../../internal/Alert/types';
+import Alert from '../../../../../internal/Alert/Alert';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: string[] | string;
+    onContactSupport?: () => void;
 };
 
-export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+export const PayByLinkCreationFormContainer = ({
+    fieldsConfig,
+    storeIds,
+    onPaymentLinkCreated,
+    onContactSupport,
+}: PayByLinkCreationFormContainerProps) => {
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
     const { i18n } = useCoreContext();
@@ -68,10 +76,6 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
         return step ? (step.id as LinkCreationFormStep) : 'store';
     }, [currentStep, formSteps]);
 
-    const handlePrevious = () => {
-        previousStep();
-    };
-
     const handleContinue = async () => {
         await handleNext(currentStep);
     };
@@ -80,6 +84,11 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     const submitMutation = useMutation({
         queryFn: createPBLPaymentLink,
     });
+
+    const handlePrevious = () => {
+        submitMutation.reset();
+        previousStep();
+    };
 
     const onSubmit = async (data: PBLFormValues) => {
         const { store, ...dataWithoutStore } = data;
@@ -109,6 +118,10 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     const timezone = undefined;
 
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
+
+    const accountIsMisconfigured = useMemo(() => {
+        return storesQuery && (!storesQuery.data || storesQuery.data?.data.length === 0);
+    }, [storesQuery]);
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -161,6 +174,39 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
                                 }
                             })()}
                         </div>
+                        {accountIsMisconfigured && (
+                            <Alert
+                                type={AlertTypeOption.WARNING}
+                                title={i18n.get('payByLink.overview.errors.accountConfiguration')}
+                                description={
+                                    <div className="adyen-pe-pay-by-link-creation-form__warning-alert">
+                                        <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
+                                            {i18n.get('common.errors.contactSupport')}
+                                        </Typography>
+                                        {onContactSupport ? (
+                                            <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                                {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                            </Button>
+                                        ) : null}
+                                    </div>
+                                }
+                            />
+                        )}
+                        {submitMutation.isError && (
+                            <Alert
+                                type={AlertTypeOption.CRITICAL}
+                                title={i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong')}
+                                description={
+                                    onContactSupport ? (
+                                        <div>
+                                            <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                                {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                            </Button>
+                                        </div>
+                                    ) : undefined
+                                }
+                            />
+                        )}
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
                             <div className="adyen-pe-pay-by-link-creation-form__buttons">
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>

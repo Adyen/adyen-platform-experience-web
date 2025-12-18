@@ -54,6 +54,25 @@ export const PayByLinkOverviewMockedResponses = {
     },
 };
 
+export const PaymentLinkCreationMockedResponses = {
+    submitNetworkError: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.paymentLinks, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    submitInvalidFields: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.paymentLinks, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
 export const payByLinkMocks = [
     // GET /stores
     http.get(mockEndpoints.stores, async ({ request }) => {

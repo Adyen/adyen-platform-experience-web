@@ -104,4 +104,10 @@
     &__field-date-field-container {
         padding: style.token(spacer-080);
     }
+
+    &__warning-alert {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+    }
 }
