@@ -2,17 +2,17 @@ export const STORES = [
     {
         description: 'Main Store - New York',
         storeCode: 'New York Store',
-        storeId: 'NY001',
+        storeId: 'STORE_NY_001',
     },
     {
         description: 'Main Store - London',
         storeCode: 'London Store',
-        storeId: 'LD001',
+        storeId: 'STORE_LON_001',
     },
     {
         description: 'Main Store - Amsterdam',
         storeCode: 'Amsterdam Store',
-        storeId: 'AM001',
+        storeId: 'STORE_AMS_001',
     },
 ];
 
@@ -157,7 +157,7 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
     },
     currency: {
         required: true,
-        options: CURRENCIES.map(id => ({ id })),
+        options: CURRENCIES,
     },
     deliveryDate: {
         required: false,
@@ -225,15 +225,15 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
 const { linkValidity, deliveryAddress, ...configWithoutLinkValidityAndAddress } = BASE_PAY_BY_LINK_CONFIGURATION;
 
 export const PAY_BY_LINK_CONFIGURATION = {
-    NY001: BASE_PAY_BY_LINK_CONFIGURATION,
-    LD001: configWithoutLinkValidityAndAddress,
-    AM001: BASE_PAY_BY_LINK_CONFIGURATION,
+    STORE_NY_001: BASE_PAY_BY_LINK_CONFIGURATION,
+    STORE_LON_001: configWithoutLinkValidityAndAddress,
+    STORE_AMS_001: BASE_PAY_BY_LINK_CONFIGURATION,
 };
 
 export const PAY_BY_LINK_SETTINGS = {
-    NY001: {
+    STORE_NY_001: {
         termsOfServiceUrl: 'https://example.com/terms-and-conditions',
     },
-    LD001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
-    AM001: {},
+    STORE_LON_001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
+    STORE_AMS_001: {},
 };

@@ -20,7 +20,7 @@ const networkError = false;
 const defaultPaginationLimit = 10;
 
 const getStoreForRequestPathParams = (params: PathParams) => {
-    const store = STORES.find(store => store.storeCode === params.id);
+    const store = STORES.find(store => store.storeId === params.storeId);
     if (!store) throw HttpResponse.json({ error: 'Cannot find store' }, { status: 404 });
     return store;
 };
@@ -127,7 +127,7 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json(STORE_THEME[store.storeCode as keyof typeof STORE_THEME]);
+        return HttpResponse.json(STORE_THEME[store.storeId as keyof typeof STORE_THEME]);
     }),
 
     // POST /paybylink/themes/{storeId}
@@ -148,7 +148,7 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json(STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS]);
+        return HttpResponse.json(STORE_SETTINGS[store.storeId as keyof typeof STORE_SETTINGS]);
     }),
 
     // POST /paybylink/settings/{storeId}
