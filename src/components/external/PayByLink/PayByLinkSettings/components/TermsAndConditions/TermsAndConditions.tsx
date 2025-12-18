@@ -1,4 +1,4 @@
-import { uniqueId } from '../../../../../../utils';
+import { isUndefined, uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
@@ -27,15 +27,13 @@ export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTerms
 
     const initialTermsAndConditionsURL = useRef<string | undefined>();
     const checkboxIdentifier = useRef(uniqueId());
-    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>('');
+    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>(data?.termsOfServiceUrl);
     const [isRequirementsChecked, setIsRequirementsChecked] = useState(false);
-    const [isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault] = useState(true);
+    const [isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault] = useState(data?.termsOfServiceUrl && data?.termsOfServiceUrl !== '');
     const [showNotCheckedRequirementsError, setShowNotCheckedRequirementsError] = useState(false);
     const [showInvalidURL, setShowInvalidURL] = useState(false);
     const [isTermsAndConditionsChanged, setIsTermsAndConditionsChanged] = useState(false);
-    const { setPayload, saveActionCalled, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
-
-    console.log('TermsAndConditions');
+    const { setPayload, saveActionCalled, getIsValid, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
 
     useEffect(() => {
         if (data?.termsOfServiceUrl) {
@@ -45,17 +43,19 @@ export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTerms
     }, [data]);
 
     useEffect(() => {
-        if (saveActionCalled) {
-            if (!isTermsAndConditionsChanged && termsAndConditionsURL) {
+        if (saveActionCalled && getIsValid()) {
+            if (!isUndefined(termsAndConditionsURL) && termsAndConditionsURL !== '') {
                 setIsRequirementsCheckedByDefault(true);
                 setIsRequirementsChecked(true);
             } else {
                 setIsRequirementsCheckedByDefault(false);
                 setIsRequirementsChecked(false);
             }
+            initialTermsAndConditionsURL.current = termsAndConditionsURL;
+            setIsTermsAndConditionsChanged(false);
             setSaveActionCalled(false);
         }
-    }, [saveActionCalled, setSaveActionCalled, isTermsAndConditionsChanged, termsAndConditionsURL, setIsRequirementsChecked]);
+    }, [saveActionCalled, setSaveActionCalled, isTermsAndConditionsChanged, termsAndConditionsURL, setIsRequirementsChecked, getIsValid]);
 
     useEffect(() => {
         if (isRequirementsChecked || (termsAndConditionsURL && isValidURL(termsAndConditionsURL))) {
@@ -85,21 +85,25 @@ export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTerms
         (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
             e.preventDefault();
             setShowInvalidURL(false);
-            if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current !== e?.currentTarget?.value) {
+            if (!isUndefined(initialTermsAndConditionsURL.current) && initialTermsAndConditionsURL.current !== e?.currentTarget?.value) {
                 setIsTermsAndConditionsChanged(true);
+                if (isRequirementsCheckedByDefault) setIsRequirementsChecked(false);
                 setIsRequirementsCheckedByDefault(false);
             }
-            if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current === e?.currentTarget?.value) {
+            if (
+                !isUndefined(initialTermsAndConditionsURL.current) &&
+                initialTermsAndConditionsURL.current === e?.currentTarget?.value &&
+                initialTermsAndConditionsURL.current !== ''
+            ) {
                 setIsTermsAndConditionsChanged(false);
                 if (!isRequirementsCheckedByDefault) {
                     setIsRequirementsCheckedByDefault(true);
-                    setIsRequirementsChecked(true);
                 }
             }
             setTermsAndConditionsURL(e?.currentTarget?.value);
             setPayload(e?.currentTarget?.value);
         },
-        [setPayload, isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault]
+        [setPayload, isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault, setIsRequirementsChecked]
     );
 
     const onCheckboxInput = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
@@ -109,8 +113,6 @@ export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTerms
     }, []);
 
     const isLoading = isFetching;
-
-    console.log(isRequirementsCheckedByDefault);
 
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
@@ -151,8 +153,8 @@ export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTerms
                     )}
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
                         <Checkbox
-                            checked={isRequirementsChecked || isRequirementsCheckedByDefault}
-                            disabled={isRequirementsCheckedByDefault}
+                            checked={Boolean(isRequirementsChecked || isRequirementsCheckedByDefault)}
+                            disabled={Boolean(isRequirementsCheckedByDefault)}
                             className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
                             label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')}
                             onInput={onCheckboxInput}

@@ -197,8 +197,6 @@ export const ThemeForm = ({ theme }: ThemeFormProps) => {
     const [themePayload, setThemePayload] = useState<FormData | null>(null);
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
-    console.log('Theme Form');
-
     const brandInputId = useUniqueId();
     const { i18n } = useCoreContext();
 
