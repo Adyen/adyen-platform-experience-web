@@ -48,7 +48,8 @@ export interface paths {
         /** @description Add @Operation annotation to provide a description */
         get: operations["getPayByLinkPaymentLinkById"];
         put?: never;
-        post?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["savePayByLinkSettings"];
         delete?: never;
         options?: never;
         head?: never;

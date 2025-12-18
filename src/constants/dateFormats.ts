@@ -60,5 +60,14 @@ export const DATE_FORMAT_RESPONSE_DEADLINE: Intl.DateTimeFormatOptions = {
     timeZoneName: SHORT_OFFSET,
 };
 
+export const DATE_FORMAT_DELIVERY_DATE: Intl.DateTimeFormatOptions = {
+    month: SHORT,
+    weekday: LONG,
+    hour: undefined,
+    minute: undefined,
+    year: 'numeric',
+    timeZoneName: undefined,
+};
+
 export const DATE_FORMAT_PAY_BY_LINK: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;
 export const DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE: Intl.DateTimeFormatOptions = BASE_DATE_TIME_FORMAT;

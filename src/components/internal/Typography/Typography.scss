@@ -52,6 +52,10 @@
         font-weight: style.token(text-body-strongest-font-weight);
     }
 
+    &--subtitle-strongest {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
+
     // Title
     &--title {
         font-size: style.token(text-title-m-font-size);

@@ -38,7 +38,8 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
         },
         payByLink: {
-            configuration: `${baseUrl}/paybylink/paymentLinks/configuration`,
+            configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
+            getPayByLinkSettings: `${baseUrl}/paybylink/settings/:storeId`,
             installments: `${baseUrl}/paybylink/installments`,
             paymentLinks: `${baseUrl}/paybylink/paymentLinks`,
             filters: `${baseUrl}/paybylink/filters`,
