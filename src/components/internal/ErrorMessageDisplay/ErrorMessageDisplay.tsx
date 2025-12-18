@@ -96,9 +96,9 @@ export const ErrorMessageDisplay = ({
                         <source
                             type="image/svg+xml"
                             media={`(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`}
-                            srcSet={imageMobile ?? getImageAsset?.({ name: 'internal-error', subFolder: 'images/small' })}
+                            srcSet={imageMobile ?? getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' })}
                         />
-                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'internal-error' })} alt="" />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' })} alt="" />
                     </picture>
                 </div>
             )}
