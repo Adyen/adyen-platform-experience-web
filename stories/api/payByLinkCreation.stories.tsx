@@ -54,7 +54,7 @@ export const Default: ElementStory<typeof PayByLinkCreation, SessionControls> = 
     },
     args: {
         session: EMPTY_SESSION_OBJECT,
-        fieldsConfig,
+        // fieldsConfig,
     },
 };
 
