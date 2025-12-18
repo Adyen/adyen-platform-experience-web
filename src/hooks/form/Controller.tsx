@@ -57,11 +57,16 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
         void control.trigger(name);
     }, [control, name]);
 
+    const triggerValidation = useCallback(() => {
+        void control.trigger(name);
+    }, [control, name]);
+
     const field = {
         name,
         value,
         onInput: handleChange,
         onBlur: handleBlur,
+        triggerValidation,
     };
 
     return render({

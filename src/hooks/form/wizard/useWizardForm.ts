@@ -62,7 +62,22 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
                 visitedSteps: new Set([0]),
                 stepValidation: new Map(),
                 isTransitioning: false,
+                displayValues: new Map(),
             };
+
+        case 'SET_DISPLAY_VALUE': {
+            const next = new Map(state.displayValues);
+            const { field, displayValue } = action.payload;
+            if (displayValue === undefined) {
+                next.delete(field);
+            } else {
+                next.set(field, displayValue);
+            }
+            return { ...state, displayValues: next };
+        }
+
+        case 'RESET_DISPLAY_VALUES':
+            return { ...state, displayValues: new Map() };
 
         default:
             return state;
@@ -70,7 +85,7 @@ function wizardReducer(state: WizardState, action: WizardAction): WizardState {
 }
 
 export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TFieldValues>): UseWizardFormReturn<TFieldValues> {
-    const { steps, defaultValues, mode = 'onBlur', onStepChange, validateBeforeNext = true } = options;
+    const { i18n, steps, defaultValues, mode = 'onBlur', onStepChange, validateBeforeNext = true } = options;
 
     const [wizardState, dispatch] = useReducer(wizardReducer, {
         currentStep: 0,
@@ -78,10 +93,12 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         visitedSteps: new Set<number>([0]),
         stepValidation: new Map<number, boolean>(),
         isTransitioning: false,
+        displayValues: new Map<string, string>(),
     });
 
     const form = useForm<TFieldValues>({
         defaultValues,
+        i18n,
         mode,
     });
 
@@ -118,18 +135,17 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
             }
 
             // Trigger validation for all fields in this step
-            const validationResults = await Promise.all(step.fields.map(({ fieldName }) => trigger(fieldName)));
-
-            const fieldsValid = validationResults.every(result => result);
+            const enabledFieldNames = step.fields.filter(({ visible }) => visible).map(({ fieldName }) => fieldName);
+            const validationResults = await trigger(enabledFieldNames);
 
             // Run custom step validation if provided
-            if (fieldsValid && step.validate) {
+            if (validationResults && step.validate) {
                 const values = getValues();
                 const customValid = await step.validate(values);
                 return customValid;
             }
 
-            return fieldsValid;
+            return validationResults;
         },
         [steps, getValues, trigger]
     );
@@ -239,6 +255,14 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         dispatch({ type: 'RESET_WIZARD' });
     }, []);
 
+    const setFieldDisplayValue = useCallback((name: FieldValues<TFieldValues>, displayValue?: string): void => {
+        dispatch({ type: 'SET_DISPLAY_VALUE', payload: { field: name, displayValue } });
+    }, []);
+
+    const resetFieldDisplayValues = useCallback((): void => {
+        dispatch({ type: 'RESET_DISPLAY_VALUES' });
+    }, []);
+
     const getSummaryData = useCallback((): WizardSummaryData<TFieldValues> => {
         const values = getValues();
         const summary: WizardSummaryData<TFieldValues> = {};
@@ -247,8 +271,10 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
             const stepFields = step.fields
                 .filter(field => field.visible !== false)
                 .map(field => ({
-                    label: field.fieldName,
+                    label: field.label,
                     value: getNestedValue(values, field.fieldName as string),
+                    id: field.fieldName,
+                    displayValue: wizardState.displayValues.get(field.fieldName as string),
                 }))
                 .filter(field => field.value !== undefined && field.value !== null && field.value !== '');
 
@@ -261,7 +287,14 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         });
 
         return summary;
-    }, [steps, getValues]);
+    }, [steps, getValues, wizardState.displayValues]);
+
+    const getDisplayValue = useCallback(
+        (name: FieldValues<TFieldValues>): string | undefined => {
+            return wizardState.displayValues.get(name);
+        },
+        [wizardState.displayValues]
+    );
 
     return {
         ...form,
@@ -287,5 +320,10 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
 
         // Summary data
         getSummaryData,
+
+        // Display values
+        getDisplayValue,
+        setFieldDisplayValue,
+        resetFieldDisplayValues,
     };
 }
