@@ -3,9 +3,15 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 import { useCallback, useMemo } from 'preact/hooks';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
+import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 
 export const LanguageField = () => {
     const { i18n, getCdnDataset } = useCoreContext();
+    const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
+
+    const configCountryList = useMemo(() => {
+        return fieldsConfig?.['shopperLocale']?.options as string[] | undefined;
+    }, [fieldsConfig]);
 
     const languagesQuery = useFetch({
         fetchOptions: { enabled: true },
@@ -25,7 +31,11 @@ export const LanguageField = () => {
 
     const localeListItems = useMemo(() => {
         const langs = languagesQuery.data ?? [];
+
         return langs
+            .filter(({ value }) => {
+                return configCountryList?.length ? configCountryList?.includes(value as string) : true;
+            })
             .map(({ text, value }) => {
                 return {
                     // TODO - Handle 'auto detect' option when submitting information to the BE
@@ -34,7 +44,7 @@ export const LanguageField = () => {
                 };
             })
             .sort(({ name: a }, { name: b }) => a.localeCompare(b));
-    }, [languagesQuery.data]);
+    }, [languagesQuery.data, configCountryList]);
 
     return (
         <FormSelect<PBLFormValues>

@@ -217,6 +217,7 @@ export const getFormSteps = ({
                 fieldName: 'shopperLocale',
                 required: !!getFieldConfig('shopperLocale')?.required,
                 visible: !!getFieldConfig('shopperLocale'),
+                options: getFieldConfig('shopperLocale')?.options,
             },
         ],
         isOptional: false,
