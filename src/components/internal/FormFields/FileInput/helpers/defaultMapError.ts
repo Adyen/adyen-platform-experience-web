@@ -13,6 +13,7 @@ export const defaultMapErrors = (error: ValidationError): TranslationKey => {
         case validationErrors.VERY_LARGE_FILE:
             return 'common.inputs.file.errors.tooLarge';
     }
+    return 'common.inputs.file.errors.unknownError';
 };
 
 export default defaultMapErrors;

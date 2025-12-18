@@ -173,6 +173,7 @@
     "common.inputs.file.errors.required": "File required",
     "common.inputs.file.errors.tooLarge": "File size exceeds the maximum file size",
     "common.inputs.file.errors.tooMany": "Too many files",
+    "common.inputs.file.errors.unknownError": "Error",
     "common.inputs.file.labels.default": "Browse files",
     "common.inputs.search.clearSearch": "Clear search",
     "common.inputs.select.errors.noOptions": "No options match this search",

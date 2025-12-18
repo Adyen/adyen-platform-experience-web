@@ -3,14 +3,15 @@ import cx from 'classnames';
 import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import { useState } from 'preact/hooks';
+import { VNode } from 'preact';
 
 interface SecondaryNavProps {
     className?: string;
     items: { value: string; label: string }[];
     activeValue: string;
     onValueChange: (value: string) => void;
-    renderContent: (activeMenu: string) => JSX.Element;
-    renderHeader: () => JSX.Element;
+    renderContent: (activeMenu: string) => VNode<any>;
+    renderHeader: () => VNode<any>;
 }
 
 export const SecondaryNav = ({ renderHeader, className, items, activeValue, onValueChange, renderContent }: SecondaryNavProps) => {
