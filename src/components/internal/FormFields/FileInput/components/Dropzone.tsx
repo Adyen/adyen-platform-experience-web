@@ -33,6 +33,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         children,
         disabled = false,
         required = false,
+        maxDimensions,
         maxFileSize = DEFAULT_MAX_FILE_SIZE,
         allowedFileTypes = DEFAULT_FILE_TYPES,
         mapError,
@@ -107,8 +108,20 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         [inputRef]
     );
 
+    const getImageDimentions = async (file: File): Promise<{ width: number; height: number }> => {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const url = URL.createObjectURL(file);
+            image.src = url;
+            image.onerror = reject;
+            image.onload = function () {
+                resolve({ width: image.width, height: image.height });
+            };
+        });
+    };
+
     const updateFiles = useCallback(
-        <T extends UploadedFileSource>(source?: T | null): void => {
+        async <T extends UploadedFileSource>(source?: T | null): Promise<void> => {
             const uploadedFiles = getUploadedFilesFromSource(source);
 
             if (uploadedFiles.length > 1) {
@@ -116,7 +129,17 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
             }
 
             try {
-                const allowedFiles = uploadedFiles.filter(file => {
+                const dimensionFilteredFiles = await Promise.all(
+                    uploadedFiles.map(async file => {
+                        if (!maxDimensions) return file;
+                        const dimensions = await getImageDimentions(file);
+                        if (!(maxDimensions?.width === dimensions.width) || !(maxDimensions?.height === dimensions.height)) {
+                            throw validationErrors.MAX_DIMENSIONS;
+                        }
+                        return file;
+                    })
+                );
+                const allowedFiles = dimensionFilteredFiles.filter(file => {
                     if (!allowedFileTypes.includes(file.type)) {
                         throw validationErrors.DISALLOWED_FILE_TYPE;
                     }
@@ -137,11 +160,12 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 switch (ex) {
                     case validationErrors.DISALLOWED_FILE_TYPE:
                     case validationErrors.VERY_LARGE_FILE:
+                    case validationErrors.MAX_DIMENSIONS:
                         return updateInputValidationError(ex);
                 }
             }
         },
-        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles]
+        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles, maxDimensions]
     );
 
     return (

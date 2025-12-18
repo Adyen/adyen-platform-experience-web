@@ -1,15 +1,9 @@
-import { EMPTY_OBJECT, uniqueId } from '../../../../../../utils';
+import { uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { useConfigContext } from '../../../../../../core/ConfigContext';
-import { useFetch } from '../../../../../../hooks/useFetch';
-import useMutation from '../../../../../../hooks/useMutation/useMutation';
-import { PayByLinkTermsAndConditionsContainerProps } from './TermsAndConditionsContainer';
 import { h } from 'preact';
-import Button from '../../../../../internal/Button';
 import { Checkbox } from '../../../../../internal/Checkbox';
-import { ButtonVariant } from '../../../../../internal/Button/types';
 import InputText from '../../../../../internal/FormFields/InputText';
 import Typography from '../../../../../internal/Typography/Typography';
 import Spinner from '../../../../../internal/Spinner';
@@ -17,32 +11,31 @@ import { TypographyElement, TypographyVariant } from '../../../../../internal/Ty
 import { AlertTypeOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
 import Icon from '../../../../../internal/Icon';
+import { IPayByLinkTermsAndConditions } from '../../../../../../types';
+import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 
-export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndConditionsContainerProps) => {
+const isValidURL = (termsAndConditionsURL: string) => {
+    return termsAndConditionsURL === ''
+        ? true
+        : !termsAndConditionsURL
+          ? false
+          : termsAndConditionsURL.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+};
+
+export const TermsAndConditions = ({ data, isFetching }: { data: IPayByLinkTermsAndConditions; isFetching: boolean }) => {
     const { i18n } = useCoreContext();
 
     const initialTermsAndConditionsURL = useRef<string | undefined>();
     const checkboxIdentifier = useRef(uniqueId());
     const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>('');
     const [isRequirementsChecked, setIsRequirementsChecked] = useState(false);
+    const [isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault] = useState(true);
     const [showNotCheckedRequirementsError, setShowNotCheckedRequirementsError] = useState(false);
     const [showInvalidURL, setShowInvalidURL] = useState(false);
     const [isTermsAndConditionsChanged, setIsTermsAndConditionsChanged] = useState(false);
+    const { setPayload, saveActionCalled, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
 
-    const { getPayByLinkSettings, savePayByLinkSettings } = useConfigContext().endpoints;
-
-    //TODO: Add error cases and loading cases
-    const { data, isFetching } = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: {
-                    enabled: !!getPayByLinkSettings,
-                },
-                queryFn: async () => getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } }),
-            }),
-            [getPayByLinkSettings, selectedStore]
-        )
-    );
+    console.log('TermsAndConditions');
 
     useEffect(() => {
         if (data?.termsOfServiceUrl) {
@@ -51,17 +44,63 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
         }
     }, [data]);
 
-    const onTermsAndConditionsURLInput = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        setShowInvalidURL(false);
-        if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current !== e?.currentTarget?.value) {
-            setIsTermsAndConditionsChanged(true);
+    useEffect(() => {
+        if (saveActionCalled) {
+            if (!isTermsAndConditionsChanged && termsAndConditionsURL) {
+                setIsRequirementsCheckedByDefault(true);
+                setIsRequirementsChecked(true);
+            } else {
+                setIsRequirementsCheckedByDefault(false);
+                setIsRequirementsChecked(false);
+            }
+            setSaveActionCalled(false);
         }
-        if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current === e?.currentTarget?.value) {
-            setIsTermsAndConditionsChanged(false);
+    }, [saveActionCalled, setSaveActionCalled, isTermsAndConditionsChanged, termsAndConditionsURL, setIsRequirementsChecked]);
+
+    useEffect(() => {
+        if (isRequirementsChecked || (termsAndConditionsURL && isValidURL(termsAndConditionsURL))) {
+            setIsValid(true);
+        } else {
+            setIsValid(false);
         }
-        setTermsAndConditionsURL(e?.currentTarget?.value);
-    }, []);
+    }, [isRequirementsChecked, termsAndConditionsURL, setIsValid]);
+
+    useEffect(() => {
+        if (saveActionCalled) {
+            if (termsAndConditionsURL && !isValidURL(termsAndConditionsURL)) {
+                setShowInvalidURL(true);
+            } else {
+                setShowInvalidURL(false);
+            }
+            if (!isRequirementsChecked) {
+                setShowNotCheckedRequirementsError(true);
+            } else {
+                setShowNotCheckedRequirementsError(false);
+            }
+            setSaveActionCalled(false);
+        }
+    }, [termsAndConditionsURL, isRequirementsChecked, showNotCheckedRequirementsError, saveActionCalled, setSaveActionCalled]);
+
+    const onTermsAndConditionsURLInput = useCallback(
+        (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
+            e.preventDefault();
+            setShowInvalidURL(false);
+            if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current !== e?.currentTarget?.value) {
+                setIsTermsAndConditionsChanged(true);
+                setIsRequirementsCheckedByDefault(false);
+            }
+            if (initialTermsAndConditionsURL.current && initialTermsAndConditionsURL.current === e?.currentTarget?.value) {
+                setIsTermsAndConditionsChanged(false);
+                if (!isRequirementsCheckedByDefault) {
+                    setIsRequirementsCheckedByDefault(true);
+                    setIsRequirementsChecked(true);
+                }
+            }
+            setTermsAndConditionsURL(e?.currentTarget?.value);
+            setPayload(e?.currentTarget?.value);
+        },
+        [setPayload, isRequirementsCheckedByDefault, setIsRequirementsCheckedByDefault]
+    );
 
     const onCheckboxInput = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -69,53 +108,9 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
         setIsRequirementsChecked(e.currentTarget?.checked);
     }, []);
 
-    const updatePayByLinkTermsAndConditions = useMutation({
-        queryFn: savePayByLinkSettings,
-        options: {
-            onSuccess: () => {
-                setIsTermsAndConditionsChanged(false);
-                setShowInvalidURL(false);
-                setShowNotCheckedRequirementsError(false);
-                setIsRequirementsChecked(false);
-                initialTermsAndConditionsURL.current = termsAndConditionsURL;
-            },
-        },
-    });
-
-    const isInputsValid = useCallback(() => {
-        if (!isRequirementsChecked || termsAndConditionsURL === initialTermsAndConditionsURL.current) {
-            setShowNotCheckedRequirementsError(true);
-        }
-
-        const isValidUrl =
-            termsAndConditionsURL === ''
-                ? true
-                : !termsAndConditionsURL
-                  ? false
-                  : termsAndConditionsURL.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-
-        if (!isValidUrl) {
-            setShowInvalidURL(true);
-        }
-        return isRequirementsChecked && isValidUrl;
-    }, [isRequirementsChecked, termsAndConditionsURL, setShowInvalidURL]);
-
-    const onSave = useCallback(() => {
-        if (!isInputsValid()) {
-            return;
-        }
-        updatePayByLinkTermsAndConditions.mutate(
-            {
-                contentType: 'application/json',
-                body: {
-                    termsOfServiceUrl: termsAndConditionsURL!,
-                },
-            },
-            { path: { storeId: selectedStore! } }
-        );
-    }, [termsAndConditionsURL, updatePayByLinkTermsAndConditions, selectedStore, isInputsValid]);
-
     const isLoading = isFetching;
+
+    console.log(isRequirementsCheckedByDefault);
 
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
@@ -156,7 +151,8 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
                     )}
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
                         <Checkbox
-                            checked={isRequirementsChecked}
+                            checked={isRequirementsChecked || isRequirementsCheckedByDefault}
+                            disabled={isRequirementsCheckedByDefault}
                             className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
                             label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')}
                             onInput={onCheckboxInput}
@@ -173,11 +169,6 @@ export const TermsAndConditions = ({ selectedStore }: PayByLinkTermsAndCondition
                                 </Typography>
                             </div>
                         )}
-                    </div>
-                    <div className="adyen-pe-pay-by-link-settings__cta-container">
-                        <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
-                            {i18n.get('payByLink.settings.common.action.save')}
-                        </Button>
                     </div>
                 </>
             )}

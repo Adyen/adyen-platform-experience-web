@@ -4,32 +4,31 @@ import { TypographyElement, TypographyVariant } from '../../../../../internal/Ty
 import useUniqueId from '../../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import FileInput from '../../../../../internal/FormFields/FileInput/FileInput';
-import { THEME_FORM_ALLOWED_FILE_TYPES } from './constants';
-import { THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from './constants';
+import { THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from './constants';
 import { getHumanReadableFileSize } from '../../../../../../utils';
 import { getHumanReadableFileName } from '../../../../../../utils/file/naming';
 import './ThemeForm.scss';
 import Button from '../../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../../internal/Button/types';
-import { useConfigContext } from '../../../../../../core/ConfigContext';
-import useMutation from '../../../../../../hooks/useMutation/useMutation';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { h } from 'preact';
 import Icon from '../../../../../internal/Icon';
 import { FC } from 'preact/compat';
 import { TranslationKey } from '../../../../../../translations';
+import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
+import { MapErrorCallback } from '../../../../DisputeManagement/components/DefendDisputeFlow/types';
+import { validationErrors } from '../../../../../internal/FormFields/FileInput/constants';
 
 interface ThemeFormProps {
-    theme?: {
+    theme: {
         brandName?: string;
         logoUrl?: string;
         fullWidthLogoUrl?: string;
     };
-    selectedStore: string;
 }
 
 const ThemeFormDataRequest = {
-    BRAND: 'brand',
+    BRAND: 'brandName',
     LOGO: 'logo',
     FULL_WIDTH_LOGO: 'fullWidthLogo',
 };
@@ -58,11 +57,21 @@ const logoOptions: Record<string, LogoTypes> = {
 
 const logoOptionsList: LogoTypes[] = ['logo', 'fullWidthLogo'];
 
-const getImageSizeLimitation = (logoType: LogoTypes) => {
+const getImageDimensionLimitation = (logoType: LogoTypes) => {
     switch (logoType) {
         case logoOptions.LOGO:
-            return '300 x 30 px';
+            return { width: 200, height: 200 };
         case logoOptions.FULL_WIDTH_LOGO:
+        default:
+            return { width: 300, height: 30 };
+    }
+};
+
+const getImageSizeLimitation = (logoType: LogoTypes) => {
+    switch (logoType) {
+        case logoOptions.FULL_WIDTH_LOGO:
+            return '300 x 30 px';
+        case logoOptions.LOGO:
         default:
             return '200 x 200 px';
     }
@@ -108,6 +117,31 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
         [logoType, onFileInputChange]
     );
 
+    const dimensions: {
+        width: number;
+        height: number;
+    } = useMemo(() => getImageDimensionLimitation(logoType), [logoType]);
+
+    const dimensionError: TranslationKey = useMemo(
+        () =>
+            logoType === 'logo'
+                ? 'payByLink.themes.inputs.file.errors.logo.maxDimension'
+                : 'payByLink.themes.inputs.file.errors.fullWidthLogo.maxDimension',
+        [logoType]
+    );
+
+    const mapError: MapErrorCallback = useCallback(
+        error => {
+            switch (error) {
+                case validationErrors.MAX_DIMENSIONS:
+                    return i18n.get(dimensionError);
+                default:
+                    return i18n.get('disputes.management.defend.common.inputs.file.errors.default');
+            }
+        },
+        [i18n, dimensionError]
+    );
+
     return (
         <div className="adyen-pe-pay-by-link-settings__input-container">
             <label htmlFor={logoInputId} aria-labelledby={logoInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
@@ -116,10 +150,12 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
                 </Typography>
             </label>
             <FileInput
+                maxDimensions={dimensions}
                 maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
                 allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
                 onChange={onChange}
                 id={logoInputId}
+                mapError={mapError}
             />
             <LogoRequirements logoType={logoType} />
         </div>
@@ -149,10 +185,11 @@ const LogoPreview = ({ logoType, logoURL, onRemoveLogo }: { logoType: LogoTypes;
     );
 };
 
-export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
+export const ThemeForm = ({ theme }: ThemeFormProps) => {
     const initialBrandName = useRef<string | undefined>(theme?.brandName);
     const initialLogoUrl = useRef<string | undefined>(theme?.logoUrl);
     const initialFullWidthLogoUrl = useRef<string | undefined>(theme?.fullWidthLogoUrl);
+    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid } = usePayByLinkSettingsContext();
 
     const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
     const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? null);
@@ -160,17 +197,31 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     const [themePayload, setThemePayload] = useState<FormData | null>(null);
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
+    console.log('Theme Form');
+
     const brandInputId = useUniqueId();
     const { i18n } = useCoreContext();
 
-    const { updatePayByLinkTheme } = useConfigContext().endpoints;
+    useEffect(() => {
+        setPayload(themePayload);
+    }, [themePayload, setPayload]);
 
-    const updatePayByLinkTermsAndConditions = useMutation({
-        queryFn: updatePayByLinkTheme,
-        options: {
-            onSuccess: data => console.log(data),
-        },
-    });
+    useEffect(() => {
+        if (!brandName) {
+            setIsValid(false);
+        } else {
+            setIsValid(true);
+        }
+    }, [brandName, setIsValid]);
+
+    useEffect(() => {
+        if (saveActionCalled) {
+            if (!brandName) {
+                setShowMissingBrandName(true);
+            }
+            setSaveActionCalled(false);
+        }
+    }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName]);
 
     useEffect(() => {
         if (!initialBrandName.current) return;
@@ -199,18 +250,6 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
         });
     }, [initialFullWidthLogoUrl]);
 
-    const onSave = useCallback(() => {
-        if (!brandName) {
-            setShowMissingBrandName(true);
-            return;
-        }
-        if (!themePayload) return;
-        void updatePayByLinkTermsAndConditions.mutate(
-            { contentType: 'multipart/form-data', body: themePayload },
-            { path: { storeId: selectedStore! } }
-        );
-    }, [brandName, updatePayByLinkTermsAndConditions, selectedStore, themePayload]);
-
     const addFileToThemePayload = useCallback((field: string, file: File) => {
         setThemePayload(previousFormData => {
             const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
@@ -220,11 +259,12 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
     }, []);
 
     const onBrandNameChange = (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
+        const value = e?.currentTarget?.value;
         setShowMissingBrandName(false);
-        setBrandName(e?.currentTarget?.value);
+        setBrandName(value);
         setThemePayload(previousFormData => {
             const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
-            nextFormData.set(ThemeFormDataRequest.BRAND, e?.currentTarget?.value);
+            nextFormData.set(ThemeFormDataRequest.BRAND, value);
             return nextFormData;
         });
     };
@@ -245,7 +285,6 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
 
         reader.onload = function (e) {
             const result = e?.target?.result as string;
-
             if (type === logoOptions.LOGO) {
                 setLogoUrl(result);
             }
@@ -311,11 +350,6 @@ export const ThemeForm = ({ theme, selectedStore }: ThemeFormProps) => {
                     </div>
                 );
             })}
-            <div className="adyen-pe-pay-by-link-settings__cta-container">
-                <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
-                    {i18n.get('payByLink.settings.common.action.save')}
-                </Button>
-            </div>
         </div>
     );
 };

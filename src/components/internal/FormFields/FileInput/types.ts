@@ -9,6 +9,7 @@ export interface BaseFileInputProps {
     required?: boolean;
     maxFileSize?: number | ((type: string) => number | undefined);
     allowedFileTypes?: readonly string[];
+    maxDimensions?: { width: number; height: number };
     mapError?: (error: ValidationError, fileInfo?: { size: number; type: string }) => string;
 }
 

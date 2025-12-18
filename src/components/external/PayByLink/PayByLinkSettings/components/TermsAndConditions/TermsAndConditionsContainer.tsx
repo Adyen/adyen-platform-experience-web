@@ -3,13 +3,30 @@ import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
+import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
+import { useState, useEffect } from 'preact/hooks';
+import useMenuItemState from '../../hooks/useMenuItemState';
+import { IPayByLinkTermsAndConditions } from '../../../../../../types';
+import { ActiveMenuItem } from '../PayByLinkSettingsContainer/context/constants';
 
-export interface PayByLinkTermsAndConditionsContainerProps {
-    selectedStore: string;
-}
+const isTermAndConditions = (activeMenuItem: string, data: any): data is IPayByLinkTermsAndConditions => {
+    return activeMenuItem === ActiveMenuItem.termsAndConditions;
+};
 
-const TermsAndConditionsContainer = (props: PayByLinkTermsAndConditionsContainerProps) => {
+const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
+    const { activeMenuItem, selectedStore } = usePayByLinkSettingsContext();
+    const [enabled, setEnabled] = useState(true);
+
+    useEffect(() => {
+        setEnabled(true);
+    }, [activeMenuItem, selectedStore]);
+
+    console.log('TermsAndConditionsContainer');
+
+    const { data, isFetching } = useMenuItemState({ activeMenuItem, selectedStore, refreshData: enabled, setRefreshData: setEnabled });
+
+    if (!data || !selectedStore || !isTermAndConditions(activeMenuItem, data)) return null;
 
     return (
         <section className="adyen-pe-pay-by-link-settings">
@@ -23,12 +40,7 @@ const TermsAndConditionsContainer = (props: PayByLinkTermsAndConditionsContainer
                     </Typography>
                 </div>
             </div>
-            <TermsAndConditions {...props} />
-            {/*{false ? (<Spinner size={'x-small'} />) : (*/}
-            {/*    <>*/}
-            {/*        <TermsAndConditions {...props} />*/}
-            {/*    </>*/}
-            {/*)}*/}
+            <TermsAndConditions data={data} isFetching={isFetching} />
         </section>
     );
 };

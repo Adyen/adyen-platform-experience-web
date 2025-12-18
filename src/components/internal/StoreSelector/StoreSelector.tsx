@@ -22,11 +22,8 @@ export const StoreSelector = ({ stores = [], selectedStoreId, setSelectedStoreId
         return <StoreSelectorButtonContent name={data.item.storeCode} description={data.item.description} />;
     };
 
-    if (!stores || !stores.length) {
+    if (!stores || !stores.length || stores.length === 1) {
         return null;
-    }
-    if (stores.length === 1) {
-        return <StoreSelectorItem name={stores[0]?.storeCode} description={stores[0]?.description} />;
     }
 
     return (

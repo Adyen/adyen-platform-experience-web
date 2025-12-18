@@ -1,9 +1,11 @@
-import { useMemo } from 'preact/hooks';
+import { StateUpdater, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { Dispatch } from 'preact/compat';
+import { useCallback } from 'preact/hooks';
 
-export const useStoreTheme = (selectedStore: string) => {
+export const useStoreTheme = (selectedStore: string | undefined, enabled: boolean, setEnabled: Dispatch<StateUpdater<boolean>>) => {
     const { getPayByLinkTheme } = useConfigContext().endpoints;
 
     //TODO: Add error cases and loading cases
@@ -11,11 +13,14 @@ export const useStoreTheme = (selectedStore: string) => {
         useMemo(
             () => ({
                 fetchOptions: {
-                    enabled: !!getPayByLinkTheme,
+                    enabled: !!getPayByLinkTheme && enabled && !!selectedStore,
+                    onSuccess: () => {
+                        setEnabled(false);
+                    },
                 },
-                queryFn: async () => getPayByLinkTheme?.(EMPTY_OBJECT, { path: { storeId: selectedStore } }),
+                queryFn: async () => getPayByLinkTheme?.(EMPTY_OBJECT, { path: { storeId: selectedStore! } }),
             }),
-            [getPayByLinkTheme, selectedStore]
+            [getPayByLinkTheme, selectedStore, enabled, setEnabled]
         )
     );
 

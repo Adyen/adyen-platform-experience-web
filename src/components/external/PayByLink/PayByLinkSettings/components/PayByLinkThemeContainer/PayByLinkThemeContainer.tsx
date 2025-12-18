@@ -1,18 +1,31 @@
-import { useStoreTheme } from '../../hooks/useStoreTheme';
 import { ThemeForm } from '../ThemeForm';
 import './PayByLinkThemeContainer.scss';
 import Spinner from '../../../../../internal/Spinner';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
+import useMenuItemState from '../../hooks/useMenuItemState';
+import { useEffect, useState } from 'preact/hooks';
+import { IPayByLinkTheme } from '../../../../../../types';
+import { ActiveMenuItem } from '../PayByLinkSettingsContainer/context/constants';
 
-interface PayByLinkThemeContainerProps {
-    selectedStore: string;
-}
+const isTheme = (activeMenuItem: string, data: any): data is IPayByLinkTheme => {
+    return activeMenuItem === ActiveMenuItem.theme;
+};
 
-const PayByLinkThemeContainer = ({ selectedStore }: PayByLinkThemeContainerProps) => {
+const PayByLinkThemeContainer = () => {
     const { i18n } = useCoreContext();
-    const { theme, isFetching } = useStoreTheme(selectedStore);
+    const { activeMenuItem, selectedStore } = usePayByLinkSettingsContext();
+    const [enabled, setEnabled] = useState(true);
+
+    useEffect(() => {
+        setEnabled(true);
+    }, [activeMenuItem, selectedStore]);
+
+    const { data, isFetching } = useMenuItemState({ activeMenuItem, selectedStore, refreshData: enabled, setRefreshData: setEnabled });
+
+    if (!data || !selectedStore || !isTheme(activeMenuItem, data)) return null;
 
     return (
         <section className="adyen-pe-pay-by-link-theme">
@@ -24,13 +37,7 @@ const PayByLinkThemeContainer = ({ selectedStore }: PayByLinkThemeContainerProps
                     {i18n.get('payByLink.settings.theme.subtitle')}
                 </Typography>
             </div>
-            {isFetching ? (
-                <Spinner size={'x-small'} />
-            ) : (
-                <>
-                    <ThemeForm theme={theme} selectedStore={selectedStore} />
-                </>
-            )}
+            {isFetching ? <Spinner size={'x-small'} /> : <ThemeForm theme={data} />}
         </section>
     );
 };

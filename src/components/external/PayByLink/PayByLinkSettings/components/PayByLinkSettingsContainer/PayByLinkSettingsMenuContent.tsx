@@ -1,21 +1,20 @@
-import { ActiveMenuItem } from './PayByLinkSettingsContainer';
 import TermsAndConditionsContainer from '../TermsAndConditions/TermsAndConditionsContainer';
 import PayByLinkThemeContainer from '../PayByLinkThemeContainer/PayByLinkThemeContainer';
+import { ActiveMenuItem } from './context/constants';
 
 type PayByLinkSettingsContentProps = {
     activeMenuItem: string;
-    selectedStoreID: string;
 };
 
-const PayByLinkSettingsContent = ({ activeMenuItem, selectedStoreID }: PayByLinkSettingsContentProps) => {
+const PayByLinkSettingsMenuContent = ({ activeMenuItem }: PayByLinkSettingsContentProps) => {
     switch (activeMenuItem) {
         case ActiveMenuItem.theme:
-            return <PayByLinkThemeContainer selectedStore={selectedStoreID} />;
+            return <PayByLinkThemeContainer />;
         case ActiveMenuItem.termsAndConditions:
-            return <TermsAndConditionsContainer selectedStore={selectedStoreID} />;
+            return <TermsAndConditionsContainer />;
         default:
             return null;
     }
 };
 
-export default PayByLinkSettingsContent;
+export default PayByLinkSettingsMenuContent;

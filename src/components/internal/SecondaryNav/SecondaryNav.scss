@@ -2,8 +2,9 @@
 
 .adyen-pe-secondary-nav {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: style.token(spacer-090);
+    width: 100%;
 
     &__list {
         display: flex;
