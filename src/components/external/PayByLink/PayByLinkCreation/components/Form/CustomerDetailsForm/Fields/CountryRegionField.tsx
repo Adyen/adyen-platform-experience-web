@@ -39,16 +39,14 @@ export const CountryRegionField = () => {
     });
 
     const countriesListItems = useMemo(() => {
-        const configCountries = fieldsConfig?.['countryCode']?.options as PaymentLinkCountryDTO[] | undefined;
-        const countriesQueryData = countriesQuery.data?.data ?? [];
-        const subset = new Set(
-            [...(configCountries ?? countriesQueryData)].map(({ countryCode }: PaymentLinkCountryDTO) => countryCode).filter(Boolean)
-        );
+        const countriesFromConfig = fieldsConfig?.['countryCode']?.options as string[] | undefined;
+        const countriesQueryData = (countriesQuery.data?.data ?? []).map(({ countryCode }) => countryCode);
+
+        const allowedCodes = new Set(countriesFromConfig ?? countriesQueryData);
         const store = datasetQuery.data ?? [];
+        const available = allowedCodes.size ? store.filter(({ id }) => allowedCodes.has(id)) : store;
 
-        const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;
-
-        return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
+        return available.sort((a, b) => a.name.localeCompare(b.name));
     }, [countriesQuery.data, datasetQuery.data, fieldsConfig]);
 
     return (
