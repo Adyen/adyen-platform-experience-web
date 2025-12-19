@@ -108,7 +108,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         [inputRef]
     );
 
-    const getImageDimentions = async (file: File): Promise<{ width: number; height: number }> => {
+    const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
         return new Promise((resolve, reject) => {
             const image = new Image();
             const url = URL.createObjectURL(file);
@@ -131,8 +131,8 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
             try {
                 const dimensionFilteredFiles = await Promise.all(
                     uploadedFiles.map(async file => {
-                        if (!maxDimensions) return file;
-                        const dimensions = await getImageDimentions(file);
+                        if (!maxDimensions || !maxDimensions?.width || !maxDimensions?.height) return file;
+                        const dimensions = await getImageDimensions(file);
                         if (!(maxDimensions?.width === dimensions.width) || !(maxDimensions?.height === dimensions.height)) {
                             throw validationErrors.MAX_DIMENSIONS;
                         }
@@ -146,7 +146,6 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
 
                     // Determine the current max file size for the file type
                     const currentMaxFileSize = isFunction(maxFileSize) ? (maxFileSize(file.type) ?? DEFAULT_MAX_FILE_SIZE) : maxFileSize;
-
                     if (file.size > currentMaxFileSize) {
                         setLargeFileErrorContext({ type: file.type, limit: currentMaxFileSize });
                         throw validationErrors.VERY_LARGE_FILE;

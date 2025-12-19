@@ -29,7 +29,6 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
                 case validationErrors.MAX_DIMENSIONS:
                     return i18n.get('common.inputs.file.errors.maxDimensions');
             }
-            return '';
         },
         [i18n]
     );

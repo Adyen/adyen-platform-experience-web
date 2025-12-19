@@ -18,6 +18,7 @@ import { TranslationKey } from '../../../../../../translations';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { MapErrorCallback } from '../../../../DisputeManagement/components/DefendDisputeFlow/types';
 import { validationErrors } from '../../../../../internal/FormFields/FileInput/constants';
+import defaultMapError from '../../../../../internal/FormFields/FileInput/helpers/defaultMapError';
 
 interface ThemeFormProps {
     theme: {
@@ -136,7 +137,7 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
                 case validationErrors.MAX_DIMENSIONS:
                     return i18n.get(dimensionError);
                 default:
-                    return i18n.get('disputes.management.defend.common.inputs.file.errors.default');
+                    return i18n.get(defaultMapError(error));
             }
         },
         [i18n, dimensionError]
@@ -151,7 +152,7 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
             </label>
             <FileInput
                 maxDimensions={dimensions}
-                maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
+                maxFileSize={1}
                 allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
                 onChange={onChange}
                 id={logoInputId}

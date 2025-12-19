@@ -6,7 +6,12 @@ import { beforeEach, describe, test, expect, vi } from 'vitest';
 import { StoreSelector } from './StoreSelector';
 import { STORES } from '../../../../mocks/mock-data';
 
-const mockStores = STORES.map(({ storeCode, description }) => ({ id: storeCode, name: storeCode, storeCode, description }));
+const mockStores = STORES.map(({ storeCode, description }: { storeCode: string; description: string }) => ({
+    id: storeCode,
+    name: storeCode,
+    storeCode,
+    description,
+}));
 
 describe('StoreSelector', () => {
     const mockSetSelectedStoreId = vi.fn();
