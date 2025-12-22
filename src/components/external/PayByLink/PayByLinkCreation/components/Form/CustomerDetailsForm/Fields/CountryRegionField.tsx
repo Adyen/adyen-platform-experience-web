@@ -1,22 +1,19 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
-import { CountryDTO } from '../../../../../../../../types/api/models/countries';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../types';
+import { PayByLinkCountryDTO } from '../../../../../../../../types';
 
-export const CountryRegionField = () => {
+interface CountryRegionFieldProps {
+    countriesData?: { data?: PayByLinkCountryDTO[] };
+    isFetchingCountries: boolean;
+}
+
+export const CountryRegionField = ({ countriesData, isFetchingCountries }: CountryRegionFieldProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { getCountries } = useConfigContext().endpoints;
-
-    const countriesQuery = useFetch({
-        fetchOptions: { enabled: !!getCountries },
-        queryFn: useCallback(async () => {
-            return getCountries?.(EMPTY_OBJECT);
-        }, [getCountries]),
-    });
 
     const datasetQuery = useFetch({
         fetchOptions: { enabled: !!i18n?.locale },
@@ -37,13 +34,13 @@ export const CountryRegionField = () => {
     });
 
     const countriesListItems = useMemo(() => {
-        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: CountryDTO) => countryCode).filter(Boolean));
-        const store = datasetQuery.data ?? [];
+        const countryCodes = new Set((countriesData?.data ?? []).map(({ countryCode }: PayByLinkCountryDTO) => countryCode).filter(Boolean));
+        const countriesTranslationDataset = datasetQuery.data ?? [];
 
-        const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;
+        const available = countryCodes.size ? countriesTranslationDataset.filter(({ id }) => countryCodes.has(id)) : countriesTranslationDataset;
 
         return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
-    }, [countriesQuery.data, datasetQuery.data]);
+    }, [countriesData, isFetchingCountries, datasetQuery.data]);
 
     return (
         <FormSelect<PBLFormValues>
@@ -51,7 +48,7 @@ export const CountryRegionField = () => {
             fieldName="countryCode"
             label={i18n.get('payByLink.linkCreation.fields.country.label')}
             items={countriesListItems}
-            readonly={countriesQuery.isFetching || datasetQuery.isFetching}
+            readonly={isFetchingCountries || datasetQuery.isFetching}
         />
     );
 };

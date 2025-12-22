@@ -140,9 +140,6 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
     emailAddress: {
         required: true,
     },
-    emailSender: {
-        required: true,
-    },
     shopperName: {
         required: false,
     },

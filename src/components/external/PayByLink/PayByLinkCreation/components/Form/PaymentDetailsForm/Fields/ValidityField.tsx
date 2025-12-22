@@ -116,7 +116,12 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         }
         // TODO: Change to use config
         if (transformToMS(durationUnit, qty) > transformToMS('day', MAX_VALIDITY_DAYS)) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong') };
+            return {
+                valid: false,
+                message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong', {
+                    values: { maxDays: MAX_VALIDITY_DAYS },
+                }),
+            };
         }
         return { valid: true };
     }, [validityValue, i18n, getValidityFromFormState]);

@@ -81,7 +81,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /countries
-    http.get(mockEndpoints.countries, async () => {
+    http.get(mockEndpointsPBL.countries, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });

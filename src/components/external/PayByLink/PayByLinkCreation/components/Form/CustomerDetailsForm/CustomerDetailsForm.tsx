@@ -19,23 +19,25 @@ import Typography from '../../../../../../internal/Typography/Typography';
 import './CustomerDetailsForm.scss';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../constants';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { useWatch } from '../../../../../../../hooks/form';
 import { Dispatch } from 'preact/compat';
+import { PayByLinkCountryDTO } from '../../../../../../../types';
 
 interface CustomerDetailsFormProps {
     isSeparateAddress: boolean;
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    countriesData?: { data?: PayByLinkCountryDTO[] };
+    isFetchingCountries: boolean;
 }
 
-export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }: CustomerDetailsFormProps) => {
+export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, countriesData, isFetchingCountries }: CustomerDetailsFormProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
     const isNameVisible = fieldsConfig['shopperName.firstName']?.visible || fieldsConfig['shopperName.lastName']?.visible;
     const isBillingAddressOptional = !fieldsConfig['billingAddress.street']?.required;
     const isDeliveryAddressOptional = !fieldsConfig['deliveryAddress.street']?.required;
-    const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
     const isBillingAddressVisible = fieldsConfig['billingAddress.street']?.visible;
+    const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
@@ -70,7 +72,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                 </div> */}
 
             <ShopperPhoneField />
-            <CountryRegionField />
+            <CountryRegionField countriesData={countriesData} isFetchingCountries={isFetchingCountries} />
             {isDeliveryAddressVisible && (
                 <>
                     <div className="adyen-pe-pay-by-link-creation-form__shipping-address-container">
@@ -98,7 +100,11 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} />
                         </div>
                         <div>
-                            <ShippingCountryField isSeparateAddress={isSeparateAddress} />
+                            <ShippingCountryField
+                                countriesData={countriesData}
+                                isFetchingCountries={isFetchingCountries}
+                                isSeparateAddress={isSeparateAddress}
+                            />
                             <ShippingCityField isSeparateAddress={isSeparateAddress} />
                             <ShippingPostalCodeField isSeparateAddress={isSeparateAddress} />
                         </div>
@@ -146,7 +152,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                         />
                     </div>
                     <div>
-                        <BillingCountryField />
+                        <BillingCountryField countriesData={countriesData} isFetchingCountries={isFetchingCountries} />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
