@@ -41,7 +41,7 @@ export const StoreForm = ({ settingsData, storesData, selectItems, termsAndCondi
         }
         return [
             {
-                label: 'Set up Terms and Conditions',
+                label: i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction'),
                 onClick: () => {
                     console.log('TODO: Open terms and conditions');
                 },

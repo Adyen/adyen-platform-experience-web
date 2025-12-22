@@ -774,6 +774,7 @@
     "payByLink.linkCreation.sections.deliveryAddress.label": "Shipping address",
     "payByLink.linkCreation.steps.a11y.label": "Link creation steps",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequired": "Before you can generate links, please complete the setup for your terms and conditions. This ensures your payments are compliant.",
+    "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction": "Set up Terms and Conditions",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle": "Terms and Conditions Setup Required",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredWithoutPermissions": "You don't have the necessary permissions to complete this setup. Please request your organization to set up terms and conditions for payment links. If the issue persists, contact support for assistance.",
     "payByLink.linkCreation.success.copyLink": "Copy payment link",
