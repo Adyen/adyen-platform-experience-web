@@ -37,7 +37,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
 
     useEffect(() => {
         setIsValid(!!brandName);
-        if (!brandName) {
+        if (brandName) {
             setIsValid(true);
             setPayload(themePayload);
         }
