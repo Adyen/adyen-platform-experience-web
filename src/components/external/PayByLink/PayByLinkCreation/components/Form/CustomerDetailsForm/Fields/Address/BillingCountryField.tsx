@@ -7,13 +7,12 @@ import { EMPTY_OBJECT } from '../../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
-import { useAddressChecker } from '../../useAddressChecker';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const BillingCountryField = () => {
+export const BillingCountryField = ({ isAddressFieldRequired }: { isAddressFieldRequired: AddressFieldRequiredChecker }) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
-    const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
         fetchOptions: { enabled: !!getCountries },

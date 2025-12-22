@@ -57,6 +57,7 @@ export function FormTextInput<TFieldValues>({
         },
         [onInput]
     );
+
     const handleValidate: ValidationRules['validate'] = useCallback(
         (value: string) => {
             const isBelowMinLength = minLength && value?.length < minLength;
@@ -69,7 +70,7 @@ export function FormTextInput<TFieldValues>({
             }
             return validate?.(value) ?? { valid: true };
         },
-        [i18n, minLength, validate]
+        [i18n, isRequired, minLength, validate]
     );
 
     return (
@@ -89,7 +90,7 @@ export function FormTextInput<TFieldValues>({
                             if (isInvalid) {
                                 control.trigger(fieldName);
                             }
-                        }, [isRequired]);
+                        }, [isRequired, isInvalid]);
 
                         return (
                             <InputBase

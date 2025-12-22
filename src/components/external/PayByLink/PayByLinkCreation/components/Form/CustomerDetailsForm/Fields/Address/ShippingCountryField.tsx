@@ -8,13 +8,18 @@ import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSe
 import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { TargetedEvent } from 'preact/compat';
-import { useAddressChecker } from '../../useAddressChecker';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingCountryField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
+export const ShippingCountryField = ({
+    isSeparateAddress,
+    isAddressFieldRequired,
+}: {
+    isSeparateAddress: boolean;
+    isAddressFieldRequired: AddressFieldRequiredChecker;
+}) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getCountries } = useConfigContext().endpoints;
     const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
-    const { isAddressFieldRequired } = useAddressChecker();
 
     const countriesQuery = useFetch({
         fetchOptions: { enabled: !!getCountries },

@@ -95,13 +95,13 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             )}
                         </div>
                         <div>
-                            <ShippingStreetField isSeparateAddress={isSeparateAddress} />
-                            <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} />
+                            <ShippingStreetField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                            <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
                         </div>
                         <div>
-                            <ShippingCountryField isSeparateAddress={isSeparateAddress} />
-                            <ShippingCityField isSeparateAddress={isSeparateAddress} />
-                            <ShippingPostalCodeField isSeparateAddress={isSeparateAddress} />
+                            <ShippingCountryField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                            <ShippingCityField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                            <ShippingPostalCodeField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
                         </div>
                     </div>
                     {isBillingAddressVisible && (
@@ -152,7 +152,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                         />
                     </div>
                     <div>
-                        <BillingCountryField />
+                        <BillingCountryField isAddressFieldRequired={isAddressFieldRequired} />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"

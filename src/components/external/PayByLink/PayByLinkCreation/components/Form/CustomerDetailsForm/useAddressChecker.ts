@@ -20,6 +20,8 @@ const BILLING_ADDRESS_FIELDS = [
     'billingAddress.postalCode',
 ] as const;
 
+export type AddressFieldRequiredChecker = (fieldName: FieldValues<PBLFormValues>) => boolean;
+
 export const useAddressChecker = () => {
     const { control } = useWizardFormContext<PBLFormValues>();
 
@@ -54,35 +56,22 @@ export const useAddressChecker = () => {
     const isAddressFieldRequired = useCallback(
         (fieldName: FieldValues<PBLFormValues>) => {
             const isDeliveryField = DELIVERY_ADDRESS_FIELDS.includes(fieldName as (typeof DELIVERY_ADDRESS_FIELDS)[number]);
-            const isBillingField = BILLING_ADDRESS_FIELDS.includes(fieldName as (typeof BILLING_ADDRESS_FIELDS)[number]);
-
             if (isDeliveryField) {
-                const fieldValue = deliveryValues[fieldName as keyof typeof deliveryValues];
-                const hasValue = fieldValue !== undefined && fieldValue !== '';
-
-                if (hasValue) return true;
-
-                const hasAnyDeliveryField = DELIVERY_ADDRESS_FIELDS.some(field => {
+                return DELIVERY_ADDRESS_FIELDS.some(field => {
                     const value = deliveryValues[field];
                     return value !== undefined && value !== '';
                 });
-                return hasAnyDeliveryField;
             }
 
+            const isBillingField = BILLING_ADDRESS_FIELDS.includes(fieldName as (typeof BILLING_ADDRESS_FIELDS)[number]);
             if (isBillingField) {
-                const fieldValue = billingValues[fieldName as keyof typeof billingValues];
-                const hasValue = fieldValue !== undefined && fieldValue !== '';
-
-                if (hasValue) return true;
-
-                const hasAnyBillingField = BILLING_ADDRESS_FIELDS.some(field => {
+                return BILLING_ADDRESS_FIELDS.some(field => {
                     const value = billingValues[field];
                     return value !== undefined && value !== '';
                 });
-                return hasAnyBillingField;
             }
 
-            return true;
+            return false;
         },
         [deliveryValues, billingValues]
     );
