@@ -30,7 +30,7 @@ const FormField = ({
                         variant={TypographyVariant.BODY}
                         className="adyen-pe-pay-by-link-creation-form__field-label-optional"
                     >
-                        {`(${i18n.get('payByLink.linkCreation.fields.optional.label')})`}
+                        {`(${i18n.get('payByLink.common.fields.optional.label')})`}
                     </Typography>
                 )}
             </div>

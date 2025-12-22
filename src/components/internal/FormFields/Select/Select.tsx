@@ -154,7 +154,7 @@ const Select = <T extends SelectItem>({
             }
         }
         clearSelectionInProgress.current = false;
-    }, [closeList, commitSelection, multiSelect, selection]);
+    }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
         if (committing) closeList();
