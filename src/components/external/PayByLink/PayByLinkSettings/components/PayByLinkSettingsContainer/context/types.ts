@@ -9,7 +9,7 @@ export type PayByLinkSettingsData = IPayByLinkTermsAndConditions | IPayByLinkThe
 export interface IPayByLinkSettingsContext {
     payload: PayByLinkSettingsPayload;
     activeMenuItem: string;
-    setPayload: (payload: any) => void;
+    setPayload: (payload: PayByLinkSettingsPayload) => void;
     saveActionCalled: boolean | undefined;
     setActiveMenuItem: Dispatch<StateUpdater<string>>;
     selectedStore: string | undefined;
