@@ -18,19 +18,22 @@ beforeEach(() => {
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
     }));
-    global.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
-        this.observe = vi.fn();
-        this.unobserve = vi.fn();
-        this.disconnect = vi.fn();
-        this.takeRecords = vi.fn(() => []);
-    }) as unknown as typeof IntersectionObserver;
+    global.IntersectionObserver = vi.fn((callback: IntersectionObserverCallback, options?: IntersectionObserverInit) => ({
+        root: options?.root ?? null,
+        rootMargin: options?.rootMargin ?? '',
+        thresholds: Array.isArray(options?.threshold) ? options.threshold : [options?.threshold ?? 0],
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn(),
+        takeRecords: vi.fn(() => []),
+    })) as unknown as typeof IntersectionObserver;
 });
 
 afterEach(() => {
     cleanup();
 });
 
-type AmountFilter = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };
+type AmountFilterState = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };
 
 test.each([
     ['4.9', '490000'],
@@ -40,7 +43,7 @@ test.each([
     ['4.5677', '456770'],
     ['39.59987', '3959987'],
 ])('handles floating point precision correctly when updating filter', async (input, expected) => {
-    let filters: AmountFilter = {
+    let filters: AmountFilterState = {
         [FilterParam.MIN_AMOUNT]: undefined,
         [FilterParam.MAX_AMOUNT]: undefined,
     };

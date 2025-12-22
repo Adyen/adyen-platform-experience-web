@@ -20,6 +20,7 @@ describe('Popover component', () => {
             this.observe = vi.fn();
             this.unobserve = vi.fn();
             this.disconnect = vi.fn();
+            this.takeRecords = vi.fn(() => []);
         }) as unknown as typeof IntersectionObserver;
 
         context.dismiss = vi.fn();
@@ -122,6 +123,7 @@ describe('Popover component close', () => {
             this.observe = vi.fn();
             this.unobserve = vi.fn();
             this.disconnect = vi.fn();
+            this.takeRecords = vi.fn(() => []);
         }) as unknown as typeof IntersectionObserver;
 
         const buttonEl = createRef();
