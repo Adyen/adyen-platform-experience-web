@@ -2,7 +2,7 @@ import { memo, PropsWithChildren } from 'preact/compat';
 import { createContext } from 'preact';
 import { useCallback, useContext, useRef, useState, useEffect } from 'preact/hooks';
 import { noop } from '../../../../../../../utils';
-import { IPayByLinkSettingsContext, PayByLinkSettingsData } from './types';
+import { IPayByLinkSettingsContext, PayByLinkSettingsData, PayByLinkSettingsPayload } from './types';
 import { ActiveMenuItem, DEFAULT_MENU_ITEM } from './constants';
 import { useStores } from '../../../../../../../hooks/useStores';
 
@@ -24,7 +24,7 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
 
 export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) => {
     const [activeMenuItem, setActiveMenuItem] = useState<string>(DEFAULT_MENU_ITEM);
-    const [payload, setPayload] = useState(undefined);
+    const [payload, setPayload] = useState<PayByLinkSettingsPayload>(undefined);
     const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
     const isValid = useRef(false);
     const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
@@ -34,8 +34,10 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
         if (!selectedStore) setSelectedStore(stores?.[0]?.id);
     }, [stores, selectedStore, setSelectedStore]);
 
-    const onPayloadChange = useCallback((payload: any) => {
-        setPayload(payload);
+    const onPayloadChange = useCallback((payload: PayByLinkSettingsPayload) => {
+        if (payload) {
+            setPayload(payload);
+        }
     }, []);
 
     const onDataSave = useCallback(
