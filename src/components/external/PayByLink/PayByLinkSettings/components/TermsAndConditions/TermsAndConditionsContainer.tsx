@@ -5,28 +5,34 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { useState, useEffect } from 'preact/hooks';
-import useMenuItemState from '../../hooks/useMenuItemState';
+import { useStoreTermsAndConditions } from '../../hooks/useStoreTermsAndConditions';
+import Spinner from '../../../../../internal/Spinner';
+import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
-import { ActiveMenuItem } from '../PayByLinkSettingsContainer/context/constants';
-
-const isTermAndConditions = (activeMenuItem: string, data: any): data is IPayByLinkTermsAndConditions => {
-    return activeMenuItem === ActiveMenuItem.termsAndConditions;
-};
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { activeMenuItem, selectedStore } = usePayByLinkSettingsContext();
+    const { activeMenuItem, selectedStore, setPayload, setSavedData } = usePayByLinkSettingsContext();
     const [enabled, setEnabled] = useState(true);
+    const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
         setEnabled(true);
     }, [activeMenuItem, selectedStore]);
 
-    console.log('TermsAndConditionsContainer');
+    const { data, isFetching } = useStoreTermsAndConditions(selectedStore, enabled, setEnabled);
 
-    const { data, isFetching } = useMenuItemState({ activeMenuItem, selectedStore, refreshData: enabled, setRefreshData: setEnabled });
+    useEffect(() => {
+        if (data && !initialData) {
+            setPayload(data);
+            setSavedData(data);
+            setInitialData(data);
+        }
+    }, [data, setPayload, setSavedData, initialData]);
 
-    if (!data || !selectedStore || !isTermAndConditions(activeMenuItem, data)) return null;
+    if (!data || !selectedStore || !isTermsAndConditionsData(data) || !initialData) return null;
+
+    if (isFetching) return <Spinner size={'x-small'} />;
 
     return (
         <section className="adyen-pe-pay-by-link-settings">
@@ -40,7 +46,7 @@ const TermsAndConditionsContainer = () => {
                     </Typography>
                 </div>
             </div>
-            <TermsAndConditions data={data} isFetching={isFetching} />
+            <TermsAndConditions data={data} initialData={initialData} />
         </section>
     );
 };

@@ -9,7 +9,7 @@ export const useStoreTermsAndConditions = (selectedStore: string | undefined, en
     const { getPayByLinkSettings } = useConfigContext().endpoints;
 
     //TODO: Add error cases and loading cases
-    const { data: termsOfService, isFetching } = useFetch(
+    const { data, isFetching } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -24,5 +24,5 @@ export const useStoreTermsAndConditions = (selectedStore: string | undefined, en
         )
     );
 
-    return { termsOfService, isFetching };
+    return { data, isFetching };
 };

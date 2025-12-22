@@ -135,19 +135,19 @@ export const setupBasicResponse = {
         },
         getPayByLinkTheme: {
             method: 'GET',
-            url: '/paybylink/themes/{storeId}',
+            url: 'paybylink/themes/{storeId}',
         },
         updatePayByLinkTheme: {
             method: 'POST',
-            url: '/paybylink/themes/{storeId}',
+            url: 'paybylink/themes/{storeId}',
         },
         getPayByLinkSettings: {
             method: 'GET',
-            url: '/paybylink/settings/{storeId}',
+            url: 'paybylink/settings/{storeId}',
         },
         savePayByLinkSettings: {
             method: 'POST',
-            url: '/paybylink/settings/{storeId}',
+            url: 'paybylink/settings/{storeId}',
         },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string }>,
 };

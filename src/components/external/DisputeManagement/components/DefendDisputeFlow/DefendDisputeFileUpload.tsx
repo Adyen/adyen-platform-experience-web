@@ -88,7 +88,6 @@ export const DefendDisputeFileUpload = () => {
             const name = getDefenseDocumentContent(defenseDocumentConfig, i18n, documentTypeCode)?.title || documentTypeCode;
             switch (requirementLevel) {
                 case 'REQUIRED':
-                    console.log(documentTypeCode);
                     docs.requiredDocuments.push(documentTypeCode);
                     break;
                 case 'OPTIONAL':

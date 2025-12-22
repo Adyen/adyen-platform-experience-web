@@ -2,7 +2,7 @@ import { memo, PropsWithChildren } from 'preact/compat';
 import { createContext } from 'preact';
 import { useCallback, useContext, useRef, useState, useEffect } from 'preact/hooks';
 import { noop } from '../../../../../../../utils';
-import { IPayByLinkSettingsContext } from './types';
+import { IPayByLinkSettingsContext, PayByLinkSettingsData } from './types';
 import { ActiveMenuItem, DEFAULT_MENU_ITEM } from './constants';
 import { useStores } from '../../../../../../../hooks/useStores';
 
@@ -18,16 +18,17 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     setSaveActionCalled: noop,
     stores: undefined,
     setSelectedStore: noop,
+    savedData: undefined,
+    setSavedData: () => undefined,
 });
 
 export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) => {
     const [activeMenuItem, setActiveMenuItem] = useState<string>(DEFAULT_MENU_ITEM);
-    const [payload, setPayload] = useState(null);
+    const [payload, setPayload] = useState(undefined);
+    const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
     const isValid = useRef(false);
     const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
     const { stores, selectedStore, setSelectedStore } = useStores();
-
-    console.log('context');
 
     useEffect(() => {
         if (!selectedStore) setSelectedStore(stores?.[0]?.id);
@@ -36,6 +37,13 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
     const onPayloadChange = useCallback((payload: any) => {
         setPayload(payload);
     }, []);
+
+    const onDataSave = useCallback(
+        (data: PayByLinkSettingsData) => {
+            setSavedData(data);
+        },
+        [setSavedData]
+    );
 
     const setIsValid = (validity: boolean) => {
         if (isValid.current !== validity) {
@@ -61,6 +69,8 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
                 setSaveActionCalled: setSaveActionCalled,
                 stores,
                 setSelectedStore,
+                savedData,
+                setSavedData: onDataSave,
             }}
         >
             {!selectedStore || !activeMenuItem || !stores || stores?.length === 0 ? null : children}

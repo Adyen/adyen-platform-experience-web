@@ -1,18 +1,13 @@
-import type { Dispatch, PropsWithChildren } from 'preact/compat';
+import type { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { StoreSelectorItemParams } from '../../../../../../internal/StoreSelector/types';
+import { IPayByLinkTermsAndConditions, IPayByLinkTheme } from '../../../../../../../types';
 
-export const enum SettingErrors {
-    MISSING_BRAND_NAME,
-    MISSING_URL,
-    REQUIREMENTS_NOT_ACCEPTED,
-    INVALID_URL,
-}
-
-export type SettingErrorType = SettingErrors | null;
+export type PayByLinkSettingsPayload = FormData | IPayByLinkTermsAndConditions | undefined;
+export type PayByLinkSettingsData = IPayByLinkTermsAndConditions | IPayByLinkTheme | undefined;
 
 export interface IPayByLinkSettingsContext {
-    payload: any;
+    payload: PayByLinkSettingsPayload;
     activeMenuItem: string;
     setPayload: (payload: any) => void;
     saveActionCalled: boolean | undefined;
@@ -23,4 +18,6 @@ export interface IPayByLinkSettingsContext {
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>;
     stores: StoreSelectorItemParams[] | undefined;
     setSelectedStore: Dispatch<StateUpdater<string | undefined>>;
+    setSavedData: (data: PayByLinkSettingsData) => void;
+    savedData: PayByLinkSettingsData;
 }

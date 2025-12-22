@@ -1,31 +1,39 @@
-import { ThemeForm } from '../ThemeForm';
 import './PayByLinkThemeContainer.scss';
 import Spinner from '../../../../../internal/Spinner';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
-import useMenuItemState from '../../hooks/useMenuItemState';
 import { useEffect, useState } from 'preact/hooks';
-import { IPayByLinkTheme } from '../../../../../../types';
-import { ActiveMenuItem } from '../PayByLinkSettingsContainer/context/constants';
-
-const isTheme = (activeMenuItem: string, data: any): data is IPayByLinkTheme => {
-    return activeMenuItem === ActiveMenuItem.theme;
-};
+import { getThemePayload } from '../PayByLinkSettingsContainer/utils/getThemePayload';
+import { useStoreTheme } from '../../hooks/useStoreTheme';
+import { ThemeForm } from './components/ThemeForm';
 
 const PayByLinkThemeContainer = () => {
     const { i18n } = useCoreContext();
-    const { activeMenuItem, selectedStore } = usePayByLinkSettingsContext();
+    const { activeMenuItem, selectedStore, setPayload, setSavedData } = usePayByLinkSettingsContext();
     const [enabled, setEnabled] = useState(true);
+    const [initialPayload, setInitialPayload] = useState<FormData>();
 
     useEffect(() => {
         setEnabled(true);
     }, [activeMenuItem, selectedStore]);
 
-    const { data, isFetching } = useMenuItemState({ activeMenuItem, selectedStore, refreshData: enabled, setRefreshData: setEnabled });
+    const { theme, isFetching } = useStoreTheme(selectedStore, enabled, setEnabled);
 
-    if (!data || !selectedStore || !isTheme(activeMenuItem, data)) return null;
+    useEffect(() => {
+        if (theme && !initialPayload) {
+            const themeData = { brandName: theme.brandName, logo: theme.logoUrl, fullWidthLogo: theme.fullWidthLogoUrl };
+            const initialThemePayload = getThemePayload(themeData);
+            setPayload(initialThemePayload);
+            setSavedData(theme);
+            setInitialPayload(initialThemePayload);
+        }
+    }, [theme, setPayload, setSavedData, setInitialPayload, initialPayload]);
+
+    if (!theme || !selectedStore || !initialPayload) return null;
+
+    if (isFetching) return <Spinner size={'x-small'} />;
 
     return (
         <section className="adyen-pe-pay-by-link-theme">
@@ -37,7 +45,7 @@ const PayByLinkThemeContainer = () => {
                     {i18n.get('payByLink.settings.theme.subtitle')}
                 </Typography>
             </div>
-            {isFetching ? <Spinner size={'x-small'} /> : <ThemeForm theme={data} />}
+            <ThemeForm theme={theme} initialPayload={initialPayload} />
         </section>
     );
 };

@@ -3,7 +3,6 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Dispatch } from 'preact/compat';
-import { useCallback } from 'preact/hooks';
 
 export const useStoreTheme = (selectedStore: string | undefined, enabled: boolean, setEnabled: Dispatch<StateUpdater<boolean>>) => {
     const { getPayByLinkTheme } = useConfigContext().endpoints;

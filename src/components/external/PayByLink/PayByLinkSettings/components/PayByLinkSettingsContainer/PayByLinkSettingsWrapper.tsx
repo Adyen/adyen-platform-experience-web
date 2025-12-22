@@ -2,29 +2,14 @@ import { SecondaryNav } from '../../../../../internal/SecondaryNav';
 import { _UIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import { CONTAINER_CLASS_NAME, SIDEBAR_CONTAINER_CLASS_NAME, SECONDARY_NAV_CLASS_NAME, CONTENT_CONTAINER_CLASS_NAME } from './constants';
 import { useMemo } from 'preact/hooks';
-import { Divider } from '../../../../../internal/Divider/Divider';
 import './PayByLinkSettingsContainer.scss';
 import { StoreSelector } from '../../../../../internal/StoreSelector';
 import { Header } from '../../../../../internal/Header';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import PayByLinkSettingsMenuContent from './PayByLinkSettingsMenuContent';
 import { usePayByLinkSettingsContext } from './context/context';
-import { ButtonVariant } from '../../../../../internal/Button/types';
-import Button from '../../../../../internal/Button';
 import { MENU_ITEMS } from './context/constants';
-import { useSaveAction } from '../../hooks/useSaveAction';
-
-const SaveAction = () => {
-    const { i18n } = useCoreContext();
-    const { onSave } = useSaveAction();
-    return (
-        <div className="adyen-pe-pay-by-link-settings__cta-container">
-            <Button variant={ButtonVariant.PRIMARY} onClick={onSave}>
-                {i18n.get('payByLink.settings.common.action.save')}
-            </Button>
-        </div>
-    );
-};
+import PayByLinkSettingsContent from './components/PayByLinkSettingsContent/PayByLinkSettingsContent';
+import SaveAction from './components/SaveAction';
 
 const PayByLinkSettingsWrapper = ({ ...props }: _UIComponentProps<PayByLinkSettingsComponentProps>) => {
     const { i18n } = useCoreContext();
@@ -35,7 +20,7 @@ const PayByLinkSettingsWrapper = ({ ...props }: _UIComponentProps<PayByLinkSetti
     if (!activeMenuItem || !selectedStore) return null;
 
     return (
-        <section className={CONTAINER_CLASS_NAME}>
+        <div className={CONTAINER_CLASS_NAME}>
             <Header hideTitle={props.hideTitle} titleKey="payByLink.settings.title" />
             <div className={CONTENT_CONTAINER_CLASS_NAME}>
                 <div className={SIDEBAR_CONTAINER_CLASS_NAME}>
@@ -45,12 +30,12 @@ const PayByLinkSettingsWrapper = ({ ...props }: _UIComponentProps<PayByLinkSetti
                         items={PAY_BY_LINK_SETTINGS_MENU_ITEMS}
                         activeValue={activeMenuItem}
                         onValueChange={setActiveMenuItem}
-                        renderContent={(activeMenuItem: string) => <PayByLinkSettingsMenuContent activeMenuItem={activeMenuItem} />}
+                        renderContent={(activeMenuItem: string) => <PayByLinkSettingsContent activeMenuItem={activeMenuItem} />}
                     />
                 </div>
             </div>
             <SaveAction />
-        </section>
+        </div>
     );
 };
 
