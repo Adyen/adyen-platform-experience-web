@@ -14,6 +14,10 @@ import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { Translation } from '../../../../../internal/Translation';
+import { ButtonVariant } from '../../../../../internal/Button/types';
+import Button from '../../../../../internal/Button';
+import Modal from '../../../../../internal/Modal';
+import { Requirements } from './Requirements/Requirements';
 
 const isValidURL = (termsAndConditionsURL: string) => {
     return termsAndConditionsURL === ''
@@ -92,16 +96,34 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         [userRequirementsInput]
     );
 
+    const [requirementsAreOpened, setRequirementsAreOpened] = useState(false);
+
+    const openRequirements = useCallback(() => {
+        setRequirementsAreOpened(true);
+    }, []);
+
     const checkboxLabel = useMemo(() => {
         return (
             <Translation
                 translationKey={'payByLink.settings.termsAndConditions.requirement.checkbox.part1'}
                 fills={{
-                    requirements: <strong>{i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2')}</strong>,
+                    requirements: (
+                        <Button
+                            className="adyen-pe-pay-by-link-settings-terms-and-conditions__requirements-link"
+                            variant={ButtonVariant.TERTIARY}
+                            onClick={openRequirements}
+                        >
+                            {i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2')}
+                        </Button>
+                    ),
                 }}
             />
         );
-    }, [i18n]);
+    }, [i18n, openRequirements]);
+
+    const closeModal = useCallback(() => setRequirementsAreOpened(false), []);
+
+    const acceptRequirements = useCallback(() => setIsRequirementsChecked(true), []);
 
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
@@ -157,6 +179,17 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                     </div>
                 )}
             </div>
+            {requirementsAreOpened && (
+                <Modal
+                    headerWithBorder={false}
+                    isDismissible={false}
+                    size={'full-screen'}
+                    isOpen={requirementsAreOpened}
+                    onClose={() => setRequirementsAreOpened(false)}
+                >
+                    <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
+                </Modal>
+            )}
         </section>
     );
 };
