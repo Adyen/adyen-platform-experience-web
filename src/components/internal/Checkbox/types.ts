@@ -1,12 +1,14 @@
+import { VNode } from 'preact';
+
 export interface CheckboxProps {
     checked?: boolean;
     classNameModifiers?: string[];
     description?: string;
     disabled?: boolean;
     id?: string;
-    label?: string;
+    label?: string | VNode;
     name?: string;
-    onInput?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onInput?: (event: any) => void;
     value?: boolean;
     className?: string;
 }

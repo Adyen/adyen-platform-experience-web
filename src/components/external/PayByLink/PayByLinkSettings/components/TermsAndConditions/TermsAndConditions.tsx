@@ -1,6 +1,6 @@
 import { uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
-import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { h } from 'preact';
 import { Checkbox } from '../../../../../internal/Checkbox';
@@ -13,6 +13,7 @@ import Icon from '../../../../../internal/Icon';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
+import { Translation } from '../../../../../internal/Translation';
 
 const isValidURL = (termsAndConditionsURL: string) => {
     return termsAndConditionsURL === ''
@@ -91,6 +92,17 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         [userRequirementsInput]
     );
 
+    const checkboxLabel = useMemo(() => {
+        return (
+            <Translation
+                translationKey={'payByLink.settings.termsAndConditions.requirement.checkbox.part1'}
+                fills={{
+                    requirements: <strong>{i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.part2')}</strong>,
+                }}
+            />
+        );
+    }, [i18n]);
+
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
             <div className="adyen-pe-pay-by-link-settings__input-container">
@@ -129,7 +141,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                     checked={isRequirementsChecked}
                     disabled={disabled}
                     className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
-                    label={i18n.get('payByLink.settings.termsAndConditions.requirement.checkbox.text')}
+                    label={checkboxLabel}
                     onInput={onCheckboxInput}
                 />
                 {showNotCheckedRequirementsError && (
