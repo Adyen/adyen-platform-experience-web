@@ -19,7 +19,6 @@ export const setFormData = (previousPaylod: FormData | null, fieldName: ThemeFor
 
 export const getThemePayload = (theme: IPayByLinkTheme) => {
     const initialKeys = Object.keys(theme) as ThemeFormDataFields[];
-    console.log(theme);
     if (initialKeys.length === 0) return;
     const initialPayload: FormData = initialKeys?.reduce((prevPayload: FormData | null, currentValue) => {
         const field = currentValue as ThemeFormDataFields;
