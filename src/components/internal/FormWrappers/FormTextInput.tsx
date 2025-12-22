@@ -86,12 +86,6 @@ export function FormTextInput<TFieldValues>({
                     render={({ field, fieldState }) => {
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
 
-                        useEffect(() => {
-                            if (isInvalid) {
-                                control.trigger(fieldName);
-                            }
-                        }, [isRequired, isInvalid]);
-
                         return (
                             <InputBase
                                 {...field}
