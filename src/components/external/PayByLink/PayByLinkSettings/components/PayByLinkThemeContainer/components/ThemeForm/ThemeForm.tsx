@@ -29,7 +29,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
     const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? null);
     const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(theme?.fullWidthLogoUrl ?? null);
-    const [themePayload, setThemePayload] = useState<FormData | null>(initialPayload ?? null);
+    const [themePayload, setThemePayload] = useState<FormData | undefined>(initialPayload ?? undefined);
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
     const brandInputId = useUniqueId();
