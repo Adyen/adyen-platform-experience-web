@@ -116,7 +116,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                             el={TypographyElement.SPAN}
                             variant={TypographyVariant.BODY}
                         >
-                            {i18n.get('payByLink.settings.termsAndConditions.error.url.validation')}
+                            {i18n.get('payByLink.settings.termsAndConditions.error.urlValidation')}
                         </Typography>
                     </div>
                 )}
@@ -140,7 +140,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                             el={TypographyElement.SPAN}
                             variant={TypographyVariant.BODY}
                         >
-                            {i18n.get('payByLink.settings.termsAndConditions.error.requirements.not.checked')}
+                            {i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')}
                         </Typography>
                     </div>
                 )}

@@ -15,7 +15,7 @@ export const defaultMapErrors = (error: ValidationError): TranslationKey => {
         case validationErrors.MAX_DIMENSIONS:
             return 'common.inputs.file.errors.maxDimensions';
     }
-    return 'common.inputs.file.errors.unknownError';
+    return 'common.inputs.file.errors.default';
 };
 
 export default defaultMapErrors;

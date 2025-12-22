@@ -36,9 +36,8 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     const { i18n } = useCoreContext();
 
     useEffect(() => {
+        setIsValid(!!brandName);
         if (!brandName) {
-            setIsValid(false);
-        } else {
             setIsValid(true);
             setPayload(themePayload);
         }
@@ -127,7 +126,14 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                         {i18n.get('payByLink.settings.theme.brandName.input.label')}
                     </Typography>
                 </label>
-                <InputText type="text" lang={i18n.locale} uniqueId={brandInputId} value={brandName} onInput={onBrandNameChange} />
+                <InputText
+                    type="text"
+                    lang={i18n.locale}
+                    uniqueId={brandInputId}
+                    value={brandName}
+                    onInput={onBrandNameChange}
+                    placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
+                />
                 {showMissingBrandName && (
                     <div className="adyen-pe-pay-by-link-theme-form__error">
                         <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
