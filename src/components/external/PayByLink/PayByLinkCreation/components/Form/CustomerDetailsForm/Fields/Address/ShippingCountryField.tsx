@@ -1,34 +1,30 @@
 import useCoreContext from '../../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
-import { CountryDTO } from '../../../../../../../../../types/api/models/countries';
 import { useFetch } from '../../../../../../../../../hooks/useFetch';
-import { useConfigContext } from '../../../../../../../../../core/ConfigContext';
-import { EMPTY_OBJECT } from '../../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { TargetedEvent } from 'preact/compat';
+import { PayByLinkCountryDTO } from '../../../../../../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingCountryField = ({
-    isSeparateAddress,
-    isAddressFieldRequired,
-}: {
-    isSeparateAddress: boolean;
+interface ShippingCountryFieldProps {
+    countriesData?: { data?: PayByLinkCountryDTO[] };
     isAddressFieldRequired: AddressFieldRequiredChecker;
-}) => {
+    isFetchingCountries: boolean;
+    isSeparateAddress: boolean;
+}
+
+export const ShippingCountryField = ({
+    countriesData,
+    isAddressFieldRequired,
+    isFetchingCountries,
+    isSeparateAddress,
+}: ShippingCountryFieldProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { getCountries } = useConfigContext().endpoints;
     const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
-    const countriesQuery = useFetch({
-        fetchOptions: { enabled: !!getCountries },
-        queryFn: useCallback(async () => {
-            return getCountries?.(EMPTY_OBJECT);
-        }, [getCountries]),
-    });
-
-    const datasetQuery = useFetch({
+    const countryDatasetQuery = useFetch({
         fetchOptions: { enabled: !!i18n?.locale },
         queryFn: useCallback(async () => {
             const fileName = `${i18n.locale}`;
@@ -47,13 +43,15 @@ export const ShippingCountryField = ({
     });
 
     const countriesListItems = useMemo(() => {
-        const subset = new Set((countriesQuery.data?.data ?? []).map(({ countryCode }: CountryDTO) => countryCode).filter(Boolean));
-        const store = datasetQuery.data ?? [];
+        const countryCodeSubset = new Set((countriesData?.data ?? []).map(({ countryCode }: PayByLinkCountryDTO) => countryCode).filter(Boolean));
+        const countriesTranslationDataset = countryDatasetQuery.data ?? [];
 
-        const available = subset.size ? store.filter(({ id }) => subset.has(id)) : store;
+        const available = countryCodeSubset.size
+            ? countriesTranslationDataset.filter(({ id }) => countryCodeSubset.has(id))
+            : countriesTranslationDataset;
 
         return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
-    }, [countriesQuery.data, datasetQuery.data]);
+    }, [countriesData?.data, countryDatasetQuery.data]);
 
     const handleChange = useCallback(
         (e: TargetedEvent<HTMLSelectElement>) => {
@@ -72,7 +70,7 @@ export const ShippingCountryField = ({
             fieldName="deliveryAddress.country"
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.country.label')}
             items={countriesListItems}
-            readonly={countriesQuery.isFetching || datasetQuery.isFetching}
+            readonly={isFetchingCountries || countryDatasetQuery.isFetching}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             onChange={handleChange}
             hideOptionalLabel

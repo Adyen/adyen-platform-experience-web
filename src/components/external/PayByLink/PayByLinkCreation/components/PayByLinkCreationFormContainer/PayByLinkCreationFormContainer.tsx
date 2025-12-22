@@ -4,9 +4,6 @@ import { TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { PBLFormValues, LinkCreationFormStep } from '../types';
-import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
-import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
-import { FormSummary } from '../Form/Summary/FormSummary';
 import { WizardFormProvider } from '../../../../../../hooks/form/wizard/WizardFormContext';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import Button from '../../../../../internal/Button';
@@ -14,10 +11,10 @@ import '../../PayByLinkCreation.scss';
 import './PayByLinkCreationForm.scss';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { SuccessResponse } from '../../../../../../types/api/endpoints';
-import { StoreForm } from '../Form/StoreForm/StoreForm';
 import Icon from '../../../../../internal/Icon';
 import { usePayByLinkFormData } from './usePayByLinkFormData';
 import { PayByLinkCreationComponentProps } from '../../../../../types';
+import { FormStepRenderer } from './FormStepRenderer';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
@@ -31,13 +28,15 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     const { i18n } = useCoreContext();
 
     const {
-        storesQuery,
-        configurationQuery,
-        settingsQuery,
+        storesData,
+        configurationData,
+        countriesData,
+        isFetchingCountries,
+        settingsData,
         storesSelectorItems,
         termsAndConditionsProvisioned,
         formSteps,
-        steps,
+        stepperItems,
         formStepsAriaLabel,
         wizardForm,
         createPBLPaymentLink,
@@ -122,8 +121,8 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
                 ariaLabel={formStepsAriaLabel}
                 onChange={onClickStep}
             >
-                {steps.map(step => (
-                    <>{step.label}</>
+                {stepperItems.map(item => (
+                    <>{item.label}</>
                 ))}
             </Stepper>
             <WizardFormProvider {...wizardForm}>
@@ -136,30 +135,20 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
                         }}
                     >
                         <div>
-                            {(() => {
-                                switch (currentFormStep) {
-                                    case 'store':
-                                        return (
-                                            <StoreForm
-                                                settingsQuery={settingsQuery}
-                                                storeIds={storeIds}
-                                                storesQuery={storesQuery}
-                                                selectItems={storesSelectorItems}
-                                                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
-                                            />
-                                        );
-                                    case 'payment':
-                                        return <PaymentDetailsForm timezone={timezone} configuration={configurationQuery.data} />;
-                                    case 'customer':
-                                        return (
-                                            <CustomerDetailsForm isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
-                                        );
-                                    case 'summary':
-                                        return <FormSummary />;
-                                    default:
-                                        return <PaymentDetailsForm configuration={configurationQuery.data} />;
-                                }
-                            })()}
+                            <FormStepRenderer
+                                currentFormStep={currentFormStep}
+                                settingsData={settingsData}
+                                storeIds={storeIds}
+                                storesData={storesData}
+                                selectItems={storesSelectorItems}
+                                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
+                                timezone={timezone}
+                                configurationData={configurationData}
+                                isSeparateAddress={isSeparateAddress}
+                                setIsSeparateAddress={setIsSeparateAddress}
+                                countriesData={countriesData}
+                                isFetchingCountries={isFetchingCountries}
+                            />
                         </div>
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
                             <div className="adyen-pe-pay-by-link-creation-form__buttons">

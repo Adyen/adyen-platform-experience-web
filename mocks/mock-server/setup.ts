@@ -141,9 +141,9 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'currencies',
         },
-        getCountries: {
+        countries: {
             method: 'GET',
-            url: 'countries',
+            url: 'paybylink/countries',
         },
         getPayByLinkSettings: {
             method: 'GET',

@@ -20,14 +20,17 @@ import './CustomerDetailsForm.scss';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../constants';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { Dispatch } from 'preact/compat';
+import { PayByLinkCountryDTO } from '../../../../../../../types';
 import { useAddressChecker } from './useAddressChecker';
 
 interface CustomerDetailsFormProps {
     isSeparateAddress: boolean;
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    countriesData?: { data?: PayByLinkCountryDTO[] };
+    isFetchingCountries: boolean;
 }
 
-export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }: CustomerDetailsFormProps) => {
+export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, countriesData, isFetchingCountries }: CustomerDetailsFormProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
@@ -35,8 +38,8 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
     const isNameVisible = fieldsConfig['shopperName.firstName']?.visible || fieldsConfig['shopperName.lastName']?.visible;
     const isBillingAddressOptional = !fieldsConfig['billingAddress.street']?.required;
     const isDeliveryAddressOptional = !fieldsConfig['deliveryAddress.street']?.required;
-    const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
     const isBillingAddressVisible = fieldsConfig['billingAddress.street']?.visible;
+    const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
@@ -71,7 +74,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                 </div> */}
 
             <ShopperPhoneField />
-            <CountryRegionField />
+            <CountryRegionField countriesData={countriesData} isFetchingCountries={isFetchingCountries} />
             {isDeliveryAddressVisible && (
                 <>
                     <div className="adyen-pe-pay-by-link-creation-form__shipping-address-container">
@@ -99,9 +102,14 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                             <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
                         </div>
                         <div>
-                            <ShippingCountryField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
-                            <ShippingCityField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
-                            <ShippingPostalCodeField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                            <ShippingCountryField
+                                countriesData={countriesData}
+                                isAddressFieldRequired={isAddressFieldRequired}
+                                isFetchingCountries={isFetchingCountries}
+                                isSeparateAddress={isSeparateAddress}
+                            />
+                            <ShippingCityField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
+                            <ShippingPostalCodeField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
                         </div>
                     </div>
                     {isBillingAddressVisible && (
@@ -152,7 +160,11 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress }:
                         />
                     </div>
                     <div>
-                        <BillingCountryField isAddressFieldRequired={isAddressFieldRequired} />
+                        <BillingCountryField
+                            countriesData={countriesData}
+                            isAddressFieldRequired={isAddressFieldRequired}
+                            isFetchingCountries={isFetchingCountries}
+                        />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
