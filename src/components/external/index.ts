@@ -10,3 +10,4 @@ export * from './DisputeManagement';
 export * from './PayByLinkOverview';
 export * from './PayByLink/PayByLinkCreation';
 export * from './PayByLink/PayByLinkSettings';
+export * from './PaymentLinkDetails';

@@ -26,7 +26,8 @@ export type EndpointsOperations = AnalyticsOps &
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport';
-type JSONEndpoints = Exclude<EndpointName, DownloadStreamEndpoint>;
+// TODO: Remove exception for expirePayByLinkPaymentLink after BE changes the response from 200 to 204
+type JSONEndpoints = Exclude<EndpointName, DownloadStreamEndpoint | 'expirePayByLinkPaymentLink'>;
 
 export type DownloadStreamEndpoint = CSVEndpoints | 'downloadDefenseDocument';
 export type EndpointDownloadStreamData = { blob: Blob; filename?: string };

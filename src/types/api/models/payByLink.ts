@@ -18,3 +18,6 @@ export type PayByLinkCountryDTO = Schema<components, 'CountryDTO'>;
 export type IPayByLinkTermsAndConditions = Schema<components, 'PayByLinkSettingsResponse'>;
 export type IPayByLinkTheme = Schema<components, 'ThemeDTO'>;
 export type IStore = Schema<components, 'PayByLinkStoreDTO'>;
+
+export type IPaymentLinkDetails = Schema<components, 'PaymentLinkDetails'>;
+export type IPaymentLinkActivity = Schema<components, 'PaymentLinkActivity'>;

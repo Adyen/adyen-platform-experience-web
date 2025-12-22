@@ -245,4 +245,5 @@ export type ExternalComponentType =
     | 'payByLinkCreation'
     | 'payByLinkTheme'
     | 'payByLinkOverview'
-    | 'payByLinkSettings';
+    | 'payByLinkSettings'
+    | 'paymentLinkDetails';

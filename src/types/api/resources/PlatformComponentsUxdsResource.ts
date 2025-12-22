@@ -55,7 +55,8 @@ export interface components {
             | 'payByLinkCreation'
             | 'payByLinkOverview'
             | 'payByLinkSettings'
-            | 'payByLinkTheme';
+            | 'payByLinkTheme'
+            | 'paymentLinkDetails';
     };
     responses: never;
     parameters: never;
