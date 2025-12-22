@@ -706,6 +706,7 @@
     "payByLink.common.status.expired": "Expired",
     "payByLink.common.status.paymentPending": "Payment pending",
     "payByLink.details.title": "Pay By Link details",
+    "payByLink.overview.common.actionNeeded.expiresAt": "Expires: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} days to expire (%{date})",
     "payByLink.overview.common.actionNeeded.expiresToday": "Expires today (%{date})",
     "payByLink.overview.errors.listEmpty": "No payment links found",
