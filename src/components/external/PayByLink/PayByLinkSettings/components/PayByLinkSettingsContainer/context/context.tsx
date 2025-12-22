@@ -30,6 +30,8 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
     const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
     const { stores, selectedStore, setSelectedStore } = useStores();
 
+    console.log(isValid);
+
     useEffect(() => {
         if (!selectedStore) setSelectedStore(stores?.[0]?.id);
     }, [stores, selectedStore, setSelectedStore]);

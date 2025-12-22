@@ -1,4 +1,4 @@
-import { noop, uniqueId } from '../../../../../../utils';
+import { uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
@@ -35,7 +35,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
     const { savedData, setPayload, saveActionCalled, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
 
     useEffect(() => {
-        if (isRequirementsChecked || (termsAndConditionsURL && isValidURL(termsAndConditionsURL))) {
+        if (isRequirementsChecked && termsAndConditionsURL && isValidURL(termsAndConditionsURL)) {
             setIsValid(true);
         } else {
             setIsValid(false);
