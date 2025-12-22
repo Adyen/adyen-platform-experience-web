@@ -44,7 +44,7 @@ describe('AbortSignal.prototype.throwIfAborted', () => {
         controller.abort();
 
         expect(signal.aborted).toBe(true);
-        expect(signal.reason).toBeInstanceOf(DOMException);
+        expect(signal.reason?.constructor?.name).toBe('DOMException');
         expect(() => signal.throwIfAborted()).toThrowError();
     });
 });

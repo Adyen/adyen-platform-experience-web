@@ -4,7 +4,7 @@
 import { FilterParam } from '../../../../types';
 import { AmountFilter } from './AmountFilter';
 import { beforeEach, afterEach, expect, test, vi } from 'vitest';
-import { cleanup, render, screen } from '@testing-library/preact';
+import { cleanup, render, screen, within } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
@@ -18,15 +18,20 @@ beforeEach(() => {
         removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
     }));
-    global.IntersectionObserver = vi.fn((callback: IntersectionObserverCallback, options?: IntersectionObserverInit) => ({
-        root: options?.root ?? null,
-        rootMargin: options?.rootMargin ?? '',
-        thresholds: Array.isArray(options?.threshold) ? options.threshold : [options?.threshold ?? 0],
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn(),
-        takeRecords: vi.fn(() => []),
-    })) as unknown as typeof IntersectionObserver;
+    window.IntersectionObserver = vi.fn(function (
+        this: IntersectionObserver,
+        callback: IntersectionObserverCallback,
+        options?: IntersectionObserverInit
+    ) {
+        const self = this as unknown as Record<string, unknown>;
+        self.root = options?.root ?? null;
+        self.rootMargin = options?.rootMargin ?? '';
+        self.thresholds = Array.isArray(options?.threshold) ? options.threshold : [options?.threshold ?? 0];
+        self.observe = vi.fn();
+        self.unobserve = vi.fn();
+        self.disconnect = vi.fn();
+        self.takeRecords = vi.fn(() => []);
+    }) as unknown as typeof IntersectionObserver;
 });
 
 afterEach(() => {
@@ -35,7 +40,7 @@ afterEach(() => {
 
 type AmountFilterState = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };
 
-test.each([
+test.sequential.each([
     ['4.9', '490000'],
     ['5.1', '510000'],
     ['39.59', '3959000'],
@@ -50,7 +55,7 @@ test.each([
     const updateFilters = (filter: any) => {
         filters = filter;
     };
-    const { rerender } = render(
+    const { rerender, container } = render(
         <AmountFilter
             availableCurrencies={['usd']}
             selectedCurrencies={['usd']}
@@ -62,9 +67,11 @@ test.each([
             onChange={updateFilters}
         />
     );
-    const amountButton = screen.getByRole('button', { name: 'Amount' });
+    const scope = within(container as HTMLElement);
+    const amountButton = scope.getByRole('button', { name: 'Amount' });
     amountButton.click();
 
+    // Popover content is rendered in a portal outside container, so use screen
     const inputElement = await screen.findByTestId('minValueFilter');
     await userEvent.type(inputElement, input);
 
