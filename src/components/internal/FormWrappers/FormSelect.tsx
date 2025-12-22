@@ -64,12 +64,6 @@ export function FormSelect<TFieldValues>({
                         };
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
 
-                        useEffect(() => {
-                            if (isInvalid) {
-                                control.trigger(fieldName);
-                            }
-                        }, [isRequired]);
-
                         return (
                             <div>
                                 <Select
