@@ -129,7 +129,7 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
     },
     currency: {
         required: true,
-        options: CURRENCIES.map(id => ({ id })),
+        options: CURRENCIES,
     },
     deliveryDate: {
         required: false,

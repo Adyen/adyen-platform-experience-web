@@ -24,6 +24,7 @@ import { containerQueries } from '../../../../../../hooks/useResponsiveContainer
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
+    onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: string[] | string;
 };
@@ -36,7 +37,12 @@ const LoadingSkeleton = () => (
     </div>
 );
 
-export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+export const PayByLinkCreationFormContainer = ({
+    fieldsConfig,
+    storeIds,
+    onCreationDismiss,
+    onPaymentLinkCreated,
+}: PayByLinkCreationFormContainerProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
@@ -94,6 +100,10 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     }, [currentStep, formSteps]);
 
     const handlePrevious = () => {
+        if (isFirstStep) {
+            onCreationDismiss?.();
+            return;
+        }
         previousStep();
     };
 
@@ -203,11 +213,11 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
                         </div>
 
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
-                            <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
-                                {isFirstStep
-                                    ? i18n.get('payByLink.linkCreation.form.steps.cancel')
-                                    : i18n.get('payByLink.linkCreation.form.steps.back')}
-                            </Button>
+                            {(!isFirstStep || onCreationDismiss) && (
+                                <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
+                                    {i18n.get('payByLink.linkCreation.form.steps.back')}
+                                </Button>
+                            )}
                             <Button
                                 className="adyen-pe-pay-by-link-creation-form__submit-button"
                                 type={isLastStep ? 'submit' : 'button'}

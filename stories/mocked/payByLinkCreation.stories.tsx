@@ -45,15 +45,17 @@ export const Default: ElementStory<typeof PayByLinkCreation> = {
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
+        onCreationDismiss: action('Creation dismissed'),
     },
 };
 
 export const Prefilled: ElementStory<typeof PayByLinkCreation> = {
     name: 'Prefilled',
     args: {
+        fieldsConfig,
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
-        fieldsConfig,
+        onCreationDismiss: action('Creation dismissed'),
         storeIds: ['London Store', 'Amsterdam Store'],
     },
 };
