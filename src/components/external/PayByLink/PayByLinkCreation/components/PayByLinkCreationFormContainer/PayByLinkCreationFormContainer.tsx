@@ -20,6 +20,7 @@ import { usePayByLinkFormData } from './usePayByLinkFormData';
 import { PayByLinkCreationComponentProps } from '../../../../../types';
 import { AlertTypeOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
+import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
@@ -120,8 +121,16 @@ export const PayByLinkCreationFormContainer = ({
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
 
     const accountIsMisconfigured = useMemo(() => {
-        return storesQuery && (!storesQuery.data || storesQuery.data?.data.length === 0);
+        return storesQuery && storesQuery.data && storesQuery.data?.data.length === 0;
     }, [storesQuery]);
+
+    const displayConfigurationError = useMemo(() => {
+        return currentFormStep !== 'store' && !!configurationQuery.error;
+    }, [configurationQuery.error, currentFormStep]);
+
+    const nextButtonIsDisabled = useMemo(() => {
+        return !termsAndConditionsProvisioned || accountIsMisconfigured || displayConfigurationError;
+    }, [accountIsMisconfigured, displayConfigurationError, termsAndConditionsProvisioned]);
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -174,6 +183,17 @@ export const PayByLinkCreationFormContainer = ({
                                 }
                             })()}
                         </div>
+                        {displayConfigurationError && (
+                            <ErrorMessageDisplay
+                                condensed
+                                title={'common.errors.somethingWentWrong'}
+                                withImage
+                                absolutePosition={false}
+                                outlined={false}
+                                withBackground={false}
+                                message={['payByLink.linkCreation.errors.unavailable', 'common.errors.retry']}
+                            />
+                        )}
                         {accountIsMisconfigured && (
                             <Alert
                                 type={AlertTypeOption.WARNING}
@@ -220,7 +240,7 @@ export const PayByLinkCreationFormContainer = ({
                                     variant={ButtonVariant.PRIMARY}
                                     onClick={!isLastStep ? handleContinue : undefined}
                                     state={isNextStepLoading ? 'loading' : undefined}
-                                    disabled={!termsAndConditionsProvisioned}
+                                    disabled={nextButtonIsDisabled}
                                     iconRight={<Icon name="arrow-right" />}
                                 >
                                     {isLastStep

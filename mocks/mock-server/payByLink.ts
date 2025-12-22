@@ -71,6 +71,14 @@ export const PaymentLinkCreationMockedResponses = {
             }),
         ],
     },
+    configError: {
+        handlers: [
+            http.get(mockEndpointsPBL.configuration, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
 };
 
 export const payByLinkMocks = [

@@ -85,4 +85,18 @@ export const SubmitNetworkError: ElementStory<typeof PayByLinkCreation> = {
     },
 };
 
+export const ConfigurationError: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Error -Configuration Error',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.configError,
+        },
+    },
+};
+
 export default meta;

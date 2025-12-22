@@ -44,10 +44,18 @@
         top: 60px;
     }
 
+    &--condensed {
+        padding: style.token(spacer-040);
+    }
+
     /* stylelint-disable order/order */
     @include adyen-pe-screen-sm-and-up {
         max-width: 550px;
         min-width: 400px;
         padding: style.token(spacer-120);
+
+        &--condensed {
+            padding: style.token(spacer-040);
+        }
     }
 }
