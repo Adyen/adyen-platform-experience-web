@@ -51,6 +51,8 @@ export const PayByLinkCreationFormContainer = ({
         configurationData,
         countriesData,
         isFetchingCountries,
+        countryDatasetData,
+        isFetchingCountryDataset,
         settingsData,
         storesSelectorItems,
         termsAndConditionsProvisioned,
@@ -198,6 +200,8 @@ export const PayByLinkCreationFormContainer = ({
                                 setIsSeparateAddress={setIsSeparateAddress}
                                 countriesData={countriesData}
                                 isFetchingCountries={isFetchingCountries}
+                                countryDatasetData={countryDatasetData}
+                                isFetchingCountryDataset={isFetchingCountryDataset}
                             />
                         </div>
 
