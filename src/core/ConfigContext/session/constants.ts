@@ -3,6 +3,7 @@ import { EndpointName } from '../../../types/api/endpoints';
 import { HttpOptions } from '../../Http/types';
 
 export const SETUP_ENDPOINTS_API_VERSIONS: Partial<Record<EndpointName, HttpOptions['apiVersion']>> = {
+    downloadTransactions: 2,
     getTransaction: 2,
     getTransactions: 2,
     getTransactionTotals: 2,

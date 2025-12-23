@@ -1,4 +1,3 @@
-import { http, HttpResponse, PathParams } from 'msw';
 import {
     ITransaction,
     IRefundMode,
@@ -9,12 +8,13 @@ import {
     ITransactionRefundStatus,
     ITransactionTotal,
 } from '../../src';
-import { COMPLETED_REFUND_STATUSES, DEFAULT_REFUND_STATUSES, DEFAULT_TRANSACTION, FAILED_REFUND_STATUSES, TRANSACTIONS } from '../mock-data';
-import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
-import { clamp, EMPTY_ARRAY, getMappedValue, uuid } from '../../src/utils';
-import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
-import { endpoints } from '../../endpoints/endpoints';
 import Localization from '../../src/core/Localization';
+import { http, HttpResponse, PathParams } from 'msw';
+import { endpoints } from '../../endpoints/endpoints';
+import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
+import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
+import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
+import { clamp, getMappedValue } from '../../src/utils';
 
 type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
 
@@ -32,6 +32,7 @@ const TRANSACTIONS_DETAILS_CACHE = new Map<string, ITransactionWithDetails>();
 const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<string>>();
 const TRANSACTIONS_REFUND_LOCKED = new Set<string>();
 
+const ALL_TRANSACTIONS: ITransactionWithDetails[] = [];
 const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
 const PAYMENT_OR_TRANSFER = ['Payment', 'Transfer'];
 
@@ -40,10 +41,7 @@ const networkError = false;
 const serverError = false;
 const refundActionError = false;
 
-const getTransactionWithAmountDeduction = <T extends ITransaction>(
-    transaction: T,
-    amountDeduction = 0
-): T & Pick<ITransactionWithDetails, 'originalAmount'> => {
+const getTransactionWithAmountDeduction = <T extends ITransaction>(transaction: T, amountDeduction = 0): T => {
     const { currency, value: originalAmount } = transaction.amountBeforeDeductions;
     const deductedAmount = Math.max(0, amountDeduction ?? 0);
     const transactionAmount = originalAmount - deductedAmount;
@@ -51,7 +49,6 @@ const getTransactionWithAmountDeduction = <T extends ITransaction>(
     return {
         ...transaction,
         netAmount: { currency, value: transactionAmount },
-        originalAmount: { currency, value: originalAmount },
     };
 };
 
@@ -76,9 +73,80 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
 
 const getPaymentOrTransferWithDetails = <T extends ITransaction>(transaction: T, deductedAmount = 0) => {
     return getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
-        const tx = getTransactionWithAmountDeduction(transaction, deductedAmount) as unknown as ITransactionWithDetails;
-        tx.paymentPspReference = uuid();
-        return tx;
+        const tx = getTransactionWithAmountDeduction(transaction, deductedAmount);
+        let { currency, value: originalAmount } = tx.amountBeforeDeductions;
+        let deductionsAmount = Math.abs(deductedAmount);
+
+        const index = Number(tx.pspReference.slice(-3));
+        const additions = [];
+        const deductions = [];
+
+        if (deductionsAmount > 0) {
+            if (deductionsAmount >= 350) {
+                if (tx.category === 'Payment' && (index % 2 === 0 || index % 3 === 1)) {
+                    const tip = Math.min(150, Math.floor((deductionsAmount * 4) / 1000) * 100);
+                    deductions.push({ currency, value: -tip, type: 'tip' });
+                    additions.push({ currency, value: tip, type: 'tip' });
+
+                    deductionsAmount -= tip;
+                    originalAmount -= tip;
+                }
+
+                if (index % 7 === 0 || index % 3 === 1) {
+                    const surcharge = Math.min(1500, Math.floor(deductionsAmount / 100) * 100);
+                    deductions.push({ currency, value: -surcharge, type: 'surcharge' });
+                    additions.push({ currency, value: surcharge, type: 'surcharge' });
+
+                    deductionsAmount -= surcharge;
+                    originalAmount -= surcharge;
+                }
+            }
+
+            if (deductionsAmount > 500) {
+                const split = Math.floor((deductionsAmount * 8) / 5000) * 500;
+                deductions.push({ currency, value: -split, type: 'split' });
+                deductionsAmount -= split;
+            }
+
+            if (deductionsAmount) {
+                deductions.unshift({ currency, value: -deductionsAmount, type: 'fee' });
+            }
+        }
+
+        return {
+            ...tx,
+            ...(additions.length > 0 && {
+                originalAmount: { currency, value: originalAmount },
+                additions,
+            }),
+            ...(deductions.length > 0 && { deductions }),
+            ...(tx.category === 'Payment' && {
+                events: [
+                    {
+                        amount: tx.netAmount,
+                        createdAt: tx.createdAt,
+                        status: 'received',
+                        type: 'payment',
+                    },
+                    ...(deductionsAmount
+                        ? [
+                              {
+                                  amount: { currency, value: deductionsAmount },
+                                  createdAt: tx.createdAt,
+                                  status: 'fee',
+                                  type: 'capture',
+                              },
+                          ]
+                        : []),
+                    {
+                        amount: tx.netAmount,
+                        createdAt: tx.createdAt,
+                        status: 'settled',
+                        type: 'capture',
+                    },
+                ],
+            }),
+        } as ITransactionWithDetails;
     });
 };
 
@@ -86,10 +154,10 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
     transaction: T,
     metadata = getTransactionMetadata(transaction) as _ITransactionDetailsMetadata
 ): ITransactionWithDetails => {
-    const { currency, value: originalAmount } = transaction.netAmount;
+    const { currency } = transaction.netAmount;
     const { deductedAmount = 0, refundMode = 'fully_refundable_only' } = metadata;
 
-    let refundStatuses = EMPTY_ARRAY as unknown as ITransactionRefundStatus;
+    let refundStatuses = [] as ITransactionRefundStatus;
     let refundLocked = TRANSACTIONS_REFUND_LOCKED.has(transaction.id);
     let refundableAmount: number | undefined;
 
@@ -98,60 +166,97 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
             refundableAmount = 0;
             refundLocked = false;
             break;
-        case 'partially_refundable_any_amount':
-        case 'partially_refundable_with_line_items_required':
-            if (transaction.id === 'YVBUA4RGV6A14629') {
-                refundStatuses = FAILED_REFUND_STATUSES?.map(status => ({ ...status, amount: { value: -117500, currency } }));
-            } else if (transaction.id === '254X7TAUWB140HW0') {
-                refundStatuses = COMPLETED_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
-            } else {
-                refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
-            }
-            break;
     }
 
-    let transactionWithDetails = { ...transaction } as unknown as ITransactionWithDetails;
+    let transactionWithDetails = { ...transaction } as ITransactionWithDetails;
 
     switch (transaction.category) {
         case 'Payment':
-        case 'Transfer': {
+        case 'Transfer':
             transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
-            const refundedAmount = refundStatuses?.reduce((sum, refund) => sum + refund.amount.value, 0) || 0;
-            refundableAmount = originalAmount + refundedAmount;
+            refundableAmount = transactionWithDetails.netAmount.value;
             break;
-        }
+
         case 'Refund': {
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
                 const { value: amount, currency } = transaction.netAmount;
                 let refundType: NonNullable<ITransactionWithDetails['refundMetadata']>['refundType'] = 'partial';
-                let paymentTx: ITransaction | undefined = undefined;
+                let paymentTx: ITransactionWithDetails | undefined = undefined;
 
-                for (const tx of TRANSACTIONS) {
+                for (const tx of ALL_TRANSACTIONS) {
                     if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
                     if (tx.balanceAccountId !== transaction.balanceAccountId) continue;
                     if (tx.netAmount.currency !== currency) continue;
 
                     const txAmount = -tx.netAmount.value;
+                    const refundMode = tx.refundDetails?.refundMode;
+                    const completedRefunds = tx.refundDetails?.refundStatuses?.filter(({ status }) => status === 'completed').length ?? 0;
 
-                    if (txAmount < amount) paymentTx ??= tx;
-                    if (txAmount === amount && (paymentTx = tx) && (refundType = 'full')) break;
+                    const isFullRefund = refundMode === 'fully_refundable_only' && txAmount === amount;
+                    const isPartialRefund = refundMode === 'partially_refundable_any_amount' && txAmount < amount && completedRefunds < 2;
+
+                    if (isFullRefund) refundType = 'full';
+
+                    if (isFullRefund || isPartialRefund) {
+                        paymentTx = tx;
+                        break;
+                    }
                 }
 
                 if (paymentTx) {
-                    const payment = getPaymentOrTransferWithDetails(paymentTx)!;
                     const tx = { ...transactionWithDetails };
 
-                    tx.originalAmount = { ...payment.netAmount };
-                    tx.paymentPspReference = payment.paymentPspReference;
+                    tx.paymentPspReference = paymentTx.pspReference;
                     tx.refundMetadata = {
-                        originalPaymentId: payment.id,
-                        refundPspReference: uuid(),
+                        originalPaymentId: paymentTx.id,
+                        refundPspReference: tx.pspReference,
                         refundReason: 'requested_by_customer',
                         refundType,
                     };
 
+                    if (paymentTx.refundDetails) {
+                        paymentTx.refundDetails.refundStatuses ??= [];
+
+                        if (paymentTx.refundDetails.refundableAmount) {
+                            paymentTx.refundDetails.refundableAmount.value += amount;
+                        }
+
+                        const refundAmount = { currency, value: amount };
+                        const refundStatuses = paymentTx.refundDetails.refundStatuses;
+                        const nextInsertPoint = refundStatuses.length;
+
+                        if (Math.round(Math.random()) % 2) {
+                            const extraRecords = Math.floor(Math.random() * 2);
+
+                            for (let i = 0; i <= extraRecords; i++) {
+                                if (refundType === 'full') {
+                                    refundStatuses.push({ amount: refundAmount, status: 'failed' });
+                                } else if (paymentTx.refundDetails.refundableAmount) {
+                                    const refundableAmount = paymentTx.refundDetails.refundableAmount.value;
+                                    const status = Math.round(Math.random()) % 2 ? 'failed' : 'in_progress';
+                                    const nextAmount = Math.floor((refundableAmount * Math.random()) / 500) * 500;
+
+                                    if (status === 'in_progress') {
+                                        paymentTx.refundDetails.refundableAmount.value -= nextAmount;
+                                    }
+
+                                    refundStatuses.push({
+                                        amount: { currency, value: -nextAmount },
+                                        status,
+                                    });
+                                }
+                            }
+                        }
+
+                        const refundEntry: NonNullable<ITransactionRefundStatus>[number] = { amount: refundAmount, status: 'completed' };
+
+                        refundType === 'full' ? refundStatuses.push(refundEntry) : refundStatuses.splice(nextInsertPoint, 0, refundEntry);
+                    }
+
                     return tx;
                 }
+
+                return transactionWithDetails;
             })!;
 
             break;
@@ -162,22 +267,37 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
         ...transactionWithDetails,
         // lineItems: DEFAULT_LINE_ITEMS.map(item => ({ ...item, amountIncludingTax: { ...item.amountIncludingTax, currency } })),
         refundDetails: {
-            refundLocked: false,
+            refundLocked,
             refundMode,
             refundStatuses,
-            refundableAmount: { currency, value: refundableAmount ?? originalAmount },
+            refundableAmount: { currency, value: refundableAmount ?? transactionWithDetails.netAmount.value },
         },
     };
 };
 
 const fetchTransaction = async (params: PathParams) => {
-    const matchingMock = [...TRANSACTIONS, DEFAULT_TRANSACTION].find(mock => mock.id === params.id);
+    let responseDelay = 1000;
 
+    if (ALL_TRANSACTIONS.length === 0) {
+        responseDelay = 2500;
+
+        [...TRANSACTIONS, DEFAULT_TRANSACTION]
+            .sort(({ category: a }, { category: b }) => {
+                if (PAYMENT_OR_TRANSFER.includes(a)) return -1;
+                if (PAYMENT_OR_TRANSFER.includes(b)) return 1;
+                return 0;
+            })
+            .forEach(transaction => {
+                ALL_TRANSACTIONS.push(enrichTransactionDataWithDetails(transaction));
+            });
+    }
+
+    const matchingMock = ALL_TRANSACTIONS.find(mock => mock.id === params.id);
     if (!matchingMock) return HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
 
-    await delay(1000);
+    await delay(responseDelay);
     passThroughRefundLockDeadlineCheckpoint();
-    return HttpResponse.json(enrichTransactionDataWithDetails(matchingMock));
+    return HttpResponse.json(matchingMock);
 };
 
 const fetchTransactionsForRequest = (req: Request) => {
@@ -294,8 +414,7 @@ export const transactionsMocks = [
         return HttpResponse.json({
             data: transactions.slice(cursor, cursor + limit).map(tx => {
                 const { deductedAmount: deduction } = getTransactionMetadata(tx);
-                const { originalAmount, ...transaction } = getTransactionWithAmountDeduction(tx, deduction);
-                return transaction;
+                return getTransactionWithAmountDeduction(tx, deduction);
             }),
             _links: getPaginationLinks(cursor, limit, transactions.length),
         });

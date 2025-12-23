@@ -44,6 +44,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    '/v2/transactions/download': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download transactions
+         * @description Given filters, downloads a file containing transactions matching the criteria
+         */
+        get: operations['downloadTransactions'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     '/v2/transactions': {
         parameters: {
             query?: never;
@@ -96,6 +116,7 @@ export interface components {
         };
         /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        DownloadTransactionsResponseDTO: Uint8Array;
         Event: {
             amount: components['schemas']['Amount'];
             /**
@@ -104,12 +125,24 @@ export interface components {
              */
             createdAt: string;
             status: string;
-            type: components['schemas']['Category'];
+            type: string;
         };
         ExistingRefund: {
             amount: components['schemas']['Amount'];
             status: components['schemas']['RefundStatus'];
         };
+        /** @enum {string} */
+        ExportColumn:
+            | 'amountBeforeDeductions'
+            | 'balanceAccountId'
+            | 'category'
+            | 'createdAt'
+            | 'currency'
+            | 'id'
+            | 'netAmount'
+            | 'paymentMethod'
+            | 'pspReference'
+            | 'status';
         PaymentMethod: {
             /** @description Payment method name, such as PayPal, Mastercard etc. */
             description?: string;
@@ -349,6 +382,35 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['TransactionsResponse'];
+                };
+            };
+        };
+    };
+    downloadTransactions: {
+        parameters: {
+            query: {
+                balanceAccountId: string;
+                createdSince?: string;
+                createdUntil?: string;
+                categories?: components['schemas']['Category'][];
+                statuses?: components['schemas']['Status'][];
+                columns?: components['schemas']['ExportColumn'][];
+                currencies?: string[];
+                sortDirection?: components['schemas']['SortDirection'];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'text/csv': components['schemas']['DownloadTransactionsResponseDTO'];
                 };
             };
         };

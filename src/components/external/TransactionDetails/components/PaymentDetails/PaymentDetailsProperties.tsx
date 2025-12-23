@@ -1,6 +1,4 @@
 import { memo } from 'preact/compat';
-import { IAmount } from '../../../../../types';
-import { isNullish } from '../../../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TransactionDataProps } from '../../types';
 import { TranslationKey } from '../../../../../translations';
@@ -25,19 +23,18 @@ const copyButtonAnalyticsEventProperties = {
 
 const paymentDataKeys = {
     account: 'transactions.details.fields.account',
-    fee: 'transactions.details.fields.fee',
     id: 'transactions.details.fields.referenceID',
-    originalAmount: 'transactions.details.fields.originalAmount',
-    originalPayment: 'transactions.details.fields.originalPayment',
+    merchantReference: 'transactions.details.fields.merchantReference',
     paymentPspReference: 'transactions.details.fields.paymentPspReference',
     pspReference: 'transactions.details.fields.pspReference',
-    refundFee: 'transactions.details.fields.refundFee',
-    refundPspReference: 'transactions.details.fields.refundPspReference',
     refundReason: 'transactions.details.fields.refundReason',
 } satisfies Record<string, TranslationKey>;
 
 const paymentDataCopyButtonKeys = {
     id: 'transactions.details.actions.copyReferenceID',
+    merchantReference: 'transactions.details.actions.copyMerchantReference',
+    paymentPspReference: 'transactions.details.actions.copyPaymentPspReference',
+    pspReference: 'transactions.details.actions.copyPspReference',
 } satisfies Record<string, TranslationKey>;
 
 const SKIP_ITEM: StructuredListProps['items'][number] = null!;
@@ -56,33 +53,9 @@ const PaymentDetailsProperties = ({ dataCustomization, extraFields, transaction 
         const customizedFields = dataCustomization?.details?.fields;
         const isRefundTransaction = category === 'Refund';
 
-        const getFormattedAmount = (amount?: IAmount) => {
-            if (isNullish(amount)) return null;
-            const { value, currency } = amount;
-            return i18n.amount(value, currency);
-        };
-
-        const deductedAmount = getFormattedAmount({
-            currency: transaction.netAmount.currency,
-            value: transaction.amountBeforeDeductions.value - transaction.netAmount.value,
-        });
-
-        const originalAmount = getFormattedAmount({
-            currency: transaction.amountBeforeDeductions.currency,
-            value: transaction.originalAmount?.value ?? transaction.amountBeforeDeductions.value,
-        });
-
-        const deductedAmountKey: TranslationKey = paymentDataKeys[isRefundTransaction ? 'refundFee' : 'fee'];
-        const originalAmountKey: TranslationKey = paymentDataKeys[isRefundTransaction ? 'originalPayment' : 'originalAmount'];
-        const paymentReferenceKey = paymentDataKeys[isRefundTransaction ? 'paymentPspReference' : 'pspReference'];
-
         const listItems: StructuredListProps['items'] = [
-            // amounts
-            originalAmount ? { key: originalAmountKey, value: originalAmount, id: 'originalAmount' } : SKIP_ITEM,
-            deductedAmount ? { key: deductedAmountKey, value: deductedAmount, id: 'deductedAmount' } : SKIP_ITEM,
-
             // balance account
-            balanceAccount?.description ? { id: 'description', key: paymentDataKeys.account, value: balanceAccount.description } : SKIP_ITEM,
+            balanceAccount?.description ? { id: 'account', key: paymentDataKeys.account, value: balanceAccount.description } : SKIP_ITEM,
 
             // refund reason
             isRefundTransaction && refundMetadata?.refundReason
@@ -106,20 +79,46 @@ const PaymentDetailsProperties = ({ dataCustomization, extraFields, transaction 
                 ),
             },
 
-            isRefundTransaction && refundMetadata?.refundPspReference
+            // merchant reference
+            merchantReference
                 ? {
-                      id: 'refundPspReference',
-                      key: paymentDataKeys.refundPspReference,
-                      value: refundMetadata.refundPspReference,
+                      id: 'merchantReference',
+                      key: paymentDataKeys.merchantReference,
+                      value: (
+                          <PaymentDetailsProperties.CopyText
+                              copyButtonAriaLabelKey={paymentDataCopyButtonKeys.merchantReference}
+                              trackingValue="merchantReference"
+                              textToCopy={merchantReference}
+                          />
+                      ),
                   }
                 : SKIP_ITEM,
+
+            // psp reference
+            {
+                id: 'pspReference',
+                key: paymentDataKeys.pspReference,
+                value: (
+                    <PaymentDetailsProperties.CopyText
+                        copyButtonAriaLabelKey={paymentDataCopyButtonKeys.pspReference}
+                        trackingValue="pspReference"
+                        textToCopy={pspReference}
+                    />
+                ),
+            },
 
             // payment psp reference
             paymentPspReference
                 ? {
                       id: 'paymentPspReference',
-                      key: paymentReferenceKey,
-                      value: paymentPspReference,
+                      key: paymentDataKeys.paymentPspReference,
+                      value: (
+                          <PaymentDetailsProperties.CopyText
+                              copyButtonAriaLabelKey={paymentDataCopyButtonKeys.paymentPspReference}
+                              trackingValue="paymentPspReference"
+                              textToCopy={paymentPspReference}
+                          />
+                      ),
                   }
                 : SKIP_ITEM,
         ] as const;
