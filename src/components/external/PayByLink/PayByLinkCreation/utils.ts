@@ -1,6 +1,6 @@
 import Localization, { TranslationKey } from '../../../../core/Localization';
 import { FieldValues } from '../../../../hooks/form/types';
-import { PaymentLinkConfiguration } from '../../../../types/api/models/payByLink';
+import { PaymentLinkConfiguration, PaymentLinkConfigurationElement } from '../../../../types/api/models/payByLink';
 import { PBLFormValues } from './components/types';
 
 interface FormFieldConfig {
@@ -8,6 +8,7 @@ interface FormFieldConfig {
     required: boolean;
     visible: boolean;
     label?: TranslationKey;
+    options?: PaymentLinkConfigurationElement['options'];
 }
 
 export interface FormStepConfig {
@@ -17,12 +18,24 @@ export interface FormStepConfig {
     isOptional?: boolean;
 }
 
+export const scrollToFirstErrorField = (errorFields: string[]): void => {
+    const errorElements = errorFields.map(field => document.querySelector(`[name="${field}"]`)).filter((el): el is Element => el !== null);
+
+    const firstElement = errorElements.sort((a, b) => {
+        const rectA = a.getBoundingClientRect();
+        const rectB = b.getBoundingClientRect();
+        return rectA.top - rectB.top;
+    })[0];
+
+    firstElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
 export const getFormSteps = ({
     i18n,
     getFieldConfig,
 }: {
     i18n: Localization['i18n'];
-    getFieldConfig: (field: keyof PaymentLinkConfiguration) => { required?: boolean } | undefined;
+    getFieldConfig: (field: keyof PaymentLinkConfiguration) => PaymentLinkConfigurationElement | undefined;
 }): ReadonlyArray<FormStepConfig> => [
     {
         id: 'store',
@@ -61,6 +74,7 @@ export const getFormSteps = ({
                 required: !!getFieldConfig('currency')?.required,
                 visible: !!getFieldConfig('currency'),
                 label: 'payByLink.linkCreation.summary.fields.currency',
+                options: getFieldConfig('currency')?.options,
             },
             {
                 fieldName: 'reference',
@@ -137,6 +151,7 @@ export const getFormSteps = ({
                 required: !!getFieldConfig('countryCode')?.required,
                 visible: !!getFieldConfig('countryCode'),
                 label: 'payByLink.linkCreation.summary.fields.countryCode',
+                options: getFieldConfig('countryCode')?.options,
             },
             {
                 fieldName: 'deliveryAddress.street',
@@ -202,6 +217,7 @@ export const getFormSteps = ({
                 fieldName: 'shopperLocale',
                 required: !!getFieldConfig('shopperLocale')?.required,
                 visible: !!getFieldConfig('shopperLocale'),
+                options: getFieldConfig('shopperLocale')?.options,
             },
         ],
         isOptional: false,

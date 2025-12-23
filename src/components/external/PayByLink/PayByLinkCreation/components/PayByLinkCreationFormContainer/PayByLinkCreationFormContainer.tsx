@@ -2,7 +2,7 @@ import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { PBLFormValues, LinkCreationFormStep } from '../types';
 import { WizardFormProvider } from '../../../../../../hooks/form/wizard/WizardFormContext';
 import { ButtonVariant } from '../../../../../internal/Button/types';
@@ -14,24 +14,45 @@ import { SuccessResponse } from '../../../../../../types/api/endpoints';
 import Icon from '../../../../../internal/Icon';
 import { usePayByLinkFormData } from './usePayByLinkFormData';
 import { PayByLinkCreationComponentProps } from '../../../../../types';
+import { scrollToFirstErrorField } from '../../utils';
+import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
+    onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: string[] | string;
 };
 
-export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPaymentLinkCreated }: PayByLinkCreationFormContainerProps) => {
+const LoadingSkeleton = () => (
+    <div className="adyen-pe-pay-by-link-creation-form__skeleton">
+        {[...Array(4)].map((_, index) => (
+            <div key={index} className="adyen-pe-pay-by-link-creation-form__skeleton-item"></div>
+        ))}
+    </div>
+);
+
+export const PayByLinkCreationFormContainer = ({
+    fieldsConfig,
+    storeIds,
+    onCreationDismiss,
+    onPaymentLinkCreated,
+}: PayByLinkCreationFormContainerProps) => {
+    const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
     const { i18n } = useCoreContext();
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const {
         storesData,
         configurationData,
         countriesData,
         isFetchingCountries,
+        countryDatasetData,
+        isFetchingCountryDataset,
         settingsData,
         storesSelectorItems,
         termsAndConditionsProvisioned,
@@ -41,6 +62,7 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
         wizardForm,
         createPBLPaymentLink,
         isDataLoading,
+        isFirstLoadDone,
     } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
@@ -48,12 +70,23 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     const handleNext = useCallback(
         async (index: number) => {
             if (!isLastStep) {
-                await validateStep(index);
+                const isValid = await validateStep(index);
+                if (!isValid && isXsAndDownContainer) {
+                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors));
+                    return;
+                }
                 await nextStep();
             }
         },
-        [isLastStep, nextStep, validateStep]
+        [isLastStep, nextStep, validateStep, wizardForm.formState.errors, isXsAndDownContainer]
     );
+
+    useEffect(() => {
+        // Scroll to top of the form on each step change
+        if (isXsAndDownContainer) {
+            containerRef.current?.scrollIntoView({ block: 'start' });
+        }
+    }, [currentStep, isXsAndDownContainer]);
 
     const onClickStep = useCallback(
         (index: number) => {
@@ -68,6 +101,10 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
     }, [currentStep, formSteps]);
 
     const handlePrevious = () => {
+        if (isFirstStep) {
+            onCreationDismiss?.();
+            return;
+        }
         previousStep();
     };
 
@@ -109,22 +146,37 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
 
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
 
+    if (!isFirstLoadDone) {
+        return (
+            <div className="adyen-pe-pay-by-link-creation-form__component">
+                <div className="adyen-pe-pay-by-link-creation-form__header">
+                    <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                        {i18n.get('payByLink.linkCreation.form.title')}
+                    </Typography>
+                    <LoadingSkeleton />
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="adyen-pe-pay-by-link-creation-form__component">
-            <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                {i18n.get('payByLink.linkCreation.form.title')}
-            </Typography>
-            <Stepper
-                nextStepDisabled={!canGoNext || !isStepComplete(currentStep)}
-                variant="horizontal"
-                activeIndex={currentStep}
-                ariaLabel={formStepsAriaLabel}
-                onChange={onClickStep}
-            >
-                {stepperItems.map(item => (
-                    <>{item.label}</>
-                ))}
-            </Stepper>
+        <div className="adyen-pe-pay-by-link-creation-form__component" ref={containerRef}>
+            <div className="adyen-pe-pay-by-link-creation-form__header">
+                <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                    {i18n.get('payByLink.linkCreation.form.title')}
+                </Typography>
+                <Stepper
+                    nextStepDisabled={!canGoNext || !isStepComplete(currentStep)}
+                    variant="horizontal"
+                    activeIndex={currentStep}
+                    ariaLabel={formStepsAriaLabel}
+                    onChange={onClickStep}
+                >
+                    {stepperItems.map(item => (
+                        <>{item.label}</>
+                    ))}
+                </Stepper>
+            </div>
             <WizardFormProvider {...wizardForm}>
                 <div className="adyen-pe-pay-by-link-creation-form__container">
                     <form
@@ -148,29 +200,30 @@ export const PayByLinkCreationFormContainer = ({ fieldsConfig, storeIds, onPayme
                                 setIsSeparateAddress={setIsSeparateAddress}
                                 countriesData={countriesData}
                                 isFetchingCountries={isFetchingCountries}
+                                countryDatasetData={countryDatasetData}
+                                isFetchingCountryDataset={isFetchingCountryDataset}
                             />
                         </div>
+
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
-                            <div className="adyen-pe-pay-by-link-creation-form__buttons">
+                            {(!isFirstStep || onCreationDismiss) && (
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
-                                    {isFirstStep
-                                        ? i18n.get('payByLink.linkCreation.form.steps.cancel')
-                                        : i18n.get('payByLink.linkCreation.form.steps.back')}
+                                    {i18n.get('payByLink.linkCreation.form.steps.back')}
                                 </Button>
-                                <Button
-                                    className="adyen-pe-pay-by-link-creation-form__submit-button"
-                                    type={isLastStep ? 'submit' : 'button'}
-                                    variant={ButtonVariant.PRIMARY}
-                                    onClick={!isLastStep ? handleContinue : undefined}
-                                    state={isNextStepLoading ? 'loading' : undefined}
-                                    disabled={!termsAndConditionsProvisioned}
-                                    iconRight={<Icon name="arrow-right" />}
-                                >
-                                    {isLastStep
-                                        ? i18n.get('payByLink.linkCreation.form.steps.submit')
-                                        : i18n.get('payByLink.linkCreation.form.steps.continue')}
-                                </Button>
-                            </div>
+                            )}
+                            <Button
+                                className="adyen-pe-pay-by-link-creation-form__submit-button"
+                                type={isLastStep ? 'submit' : 'button'}
+                                variant={ButtonVariant.PRIMARY}
+                                onClick={!isLastStep ? handleContinue : undefined}
+                                state={isNextStepLoading ? 'loading' : undefined}
+                                disabled={!termsAndConditionsProvisioned}
+                                iconRight={<Icon name="arrow-right" />}
+                            >
+                                {isLastStep
+                                    ? i18n.get('payByLink.linkCreation.form.steps.submit')
+                                    : i18n.get('payByLink.linkCreation.form.steps.continue')}
+                            </Button>
                         </div>
                     </form>
                 </div>

@@ -1,39 +1,42 @@
 import { h } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import InputBase from '../InputBase';
-import { getDecimalAmount, getDivider } from '../../../../core/Localization/amount/amount-util';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { boolOrFalse, EMPTY_OBJECT, uniqueId } from '../../../../utils';
+import { EMPTY_OBJECT, uniqueId } from '../../../../utils';
 import { CURRENCY_INPUT_BASE_CLASS } from './constants';
 import { useFetch } from '../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../core/ConfigContext';
-import { CurrencyDTO } from '../../../../types/api/models/currencies';
+import { PaymentLinkCurrencyDTO } from '../../../../types';
 import { formatAmount, getCurrencyExponent } from '../../../../utils/currency/main';
 
 interface CurrencyInputProps {
-    selectedCurrencyCode?: string;
-    hideCurrencySelector?: boolean;
-    onCurrencyChange: (value: string) => void;
-    currency: string;
-    interactionsDisabled?: boolean;
     amount?: number;
-    onAmountChange: (amount: number) => void;
+    currency: string;
+    currencyItems?: { id: string; name: string }[];
+    hideCurrencySelector?: boolean;
+    interactionsDisabled?: boolean;
     isInvalid?: boolean;
+    name?: string;
+    onAmountChange: (amount: number) => void;
+    onCurrencyChange: (value: string) => void;
+    selectedCurrencyCode?: string;
 }
 
 export const CurrencyInput = ({
-    currency,
-    interactionsDisabled,
     amount,
-    onAmountChange,
-    isInvalid = false,
+    currency,
+    currencyItems,
     hideCurrencySelector,
-    selectedCurrencyCode,
+    interactionsDisabled,
+    isInvalid = false,
+    name,
+    onAmountChange,
     onCurrencyChange,
+    selectedCurrencyCode,
 }: CurrencyInputProps) => {
     const prevCurrency = useRef(currency);
     const { i18n } = useCoreContext();
-    const { getCurrencies } = useConfigContext().endpoints;
+    const { currencies: getCurrencies } = useConfigContext().endpoints;
     const [displayValue, setDisplayValue] = useState(amount ? `${formatAmount(amount, currency)}` : '');
 
     const computedNumberAmount = useCallback(
@@ -77,14 +80,14 @@ export const CurrencyInput = ({
     };
 
     const currenciesQuery = useFetch({
-        fetchOptions: { enabled: !!getCurrencies },
+        fetchOptions: { enabled: !!getCurrencies && !currencyItems?.length },
         queryFn: useCallback(async () => {
             return getCurrencies?.(EMPTY_OBJECT);
         }, [getCurrencies]),
     });
 
     const currencyDropdownItems = useMemo(() => {
-        const currencies: CurrencyDTO[] = currenciesQuery.data?.data ?? [];
+        const currencies: PaymentLinkCurrencyDTO = currenciesQuery.data?.data ?? [];
         return currencies.map(currency => {
             return {
                 id: currency,
@@ -103,9 +106,13 @@ export const CurrencyInput = ({
 
         return {
             onDropdownInput: onCurrencyChange,
-            dropdown: { items: currencyDropdownItems, value: selectedCurrencyCode, readonly: currenciesQuery.isFetching },
+            dropdown: {
+                items: currencyItems?.length ? currencyItems : currencyDropdownItems,
+                value: selectedCurrencyCode,
+                readonly: currenciesQuery.isFetching,
+            },
         };
-    }, [hideCurrencySelector, currencyDropdownItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
+    }, [hideCurrencySelector, currencyDropdownItems, currencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
 
     return (
         <div className="adyen-pe-currency-input__container">
@@ -113,15 +120,16 @@ export const CurrencyInput = ({
                 {/* {currency && <Tag label={currency} variant={TagVariant.DEFAULT} />} */}
                 <InputBase
                     {...dropdownProps}
-                    min={0}
                     type="number"
                     className={CURRENCY_INPUT_BASE_CLASS}
                     disabled={interactionsDisabled || currenciesQuery.isFetching}
                     isInvalid={isInvalid}
                     lang={i18n.locale}
+                    min={0}
+                    name={name}
                     onInput={onInput}
-                    value={displayValue}
                     uniqueId={inputIdentifier.current}
+                    value={displayValue}
                 />
             </label>
         </div>

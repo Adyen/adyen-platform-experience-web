@@ -17,7 +17,7 @@ type UsePayByLinkFormDataProps = {
 
 export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFormDataProps) => {
     const [selectedStore, setSelectedStore] = useState<string>('');
-    const { i18n } = useCoreContext();
+    const { i18n, getCdnDataset } = useCoreContext();
     const {
         countries: getCountries,
         getPayByLinkConfiguration,
@@ -45,7 +45,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     }, [storesData, storeIds]);
 
     // Configuration query (depends on selected store)
-    const { data: configurationData, isFetching: isFetchingConfiguration } = useFetch({
+    const {
+        data: configurationData,
+        isFetching: isFetchingConfiguration,
+        error: configurationError,
+    } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkConfiguration && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkConfiguration?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -53,7 +57,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     });
 
     // Settings query (depends on selected store)
-    const { data: settingsData, isFetching: isFetchingSettings } = useFetch({
+    const {
+        data: settingsData,
+        isFetching: isFetchingSettings,
+        error: settingsError,
+    } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkSettings && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -80,6 +88,24 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         queryFn: useCallback(async () => {
             return getCountries?.(EMPTY_OBJECT);
         }, [getCountries]),
+    });
+
+    const { data: countryDatasetData, isFetching: isFetchingCountryDataset } = useFetch({
+        fetchOptions: { enabled: isCountriesQueryEnabled },
+        queryFn: useCallback(async () => {
+            const fileName = `${i18n.locale ?? 'en-US'}`;
+            if (getCdnDataset) {
+                return (
+                    (await getCdnDataset<Array<{ id: string; name: string }>>({
+                        name: fileName,
+                        extension: 'json',
+                        subFolder: 'countries',
+                        fallback: [] as Array<{ id: string; name: string }>,
+                    })) ?? []
+                );
+            }
+            return [] as Array<{ id: string; name: string }>;
+        }, [getCdnDataset, i18n.locale, isCountriesQueryEnabled]),
     });
 
     // Form steps configuration
@@ -130,6 +156,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     }, [wizardForm.control, selectedStore]);
 
     const isDataLoading = isFetchingConfiguration || isFetchingSettings || isFetchingStores;
+    const shouldSkipStoreSelection = storesSelectorItems.length === 1;
+    const isConfigReady = !isDataLoading && (configurationData || configurationError);
+    const isSettingReady = !isDataLoading && (settingsData || settingsError);
+
+    const isFirstLoadDone = Boolean(!isFetchingStores && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady)));
 
     return {
         // Query data
@@ -143,6 +174,9 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         // Countries data
         countriesData,
         isFetchingCountries,
+        // Countries dataset
+        countryDatasetData,
+        isFetchingCountryDataset,
         // Form steps
         formSteps,
         stepperItems,
@@ -153,5 +187,6 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         createPBLPaymentLink,
         // Loading state
         isDataLoading,
+        isFirstLoadDone,
     };
 };

@@ -121,6 +121,14 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/paymentLinks',
         },
+        getPayByLinkPaymentLinkById: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks/{paymentLinkId}',
+        },
+        expirePayByLinkPaymentLink: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks/{paymentLinkId}/expire',
+        },
         payByLinkFilters: {
             method: 'GET',
             url: 'paybylink/filters',
@@ -137,9 +145,9 @@ export const setupBasicResponse = {
             method: 'POST',
             url: 'paybylink/themes/{storeId}',
         },
-        getCurrencies: {
+        currencies: {
             method: 'GET',
-            url: 'currencies',
+            url: 'paybylink/currencies',
         },
         countries: {
             method: 'GET',

@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/paybylink/paymentLinks/{paymentLinkId}/expire": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["expirePayByLinkPaymentLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/paybylink/paymentLinks/{storeId}/configuration": {
         parameters: {
             query?: never;
@@ -645,6 +662,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CurrenciesResponseDTO"];
+                };
+            };
+        };
+    };
+    expirePayByLinkPaymentLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentLinkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content - the request has been successfully processed, but there is no additional content. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };

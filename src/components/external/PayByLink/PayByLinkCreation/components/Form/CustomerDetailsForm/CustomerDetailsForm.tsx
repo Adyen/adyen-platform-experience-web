@@ -28,9 +28,18 @@ interface CustomerDetailsFormProps {
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
     countriesData?: { data?: PayByLinkCountryDTO[] };
     isFetchingCountries: boolean;
+    countryDatasetData?: Array<{ id: string; name: string }>;
+    isFetchingCountryDataset: boolean;
 }
 
-export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, countriesData, isFetchingCountries }: CustomerDetailsFormProps) => {
+export const CustomerDetailsForm = ({
+    isSeparateAddress,
+    setIsSeparateAddress,
+    countriesData,
+    isFetchingCountries,
+    countryDatasetData,
+    isFetchingCountryDataset,
+}: CustomerDetailsFormProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
@@ -74,7 +83,12 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                 </div> */}
 
             <ShopperPhoneField />
-            <CountryRegionField countriesData={countriesData} isFetchingCountries={isFetchingCountries} />
+            <CountryRegionField
+                countriesData={countriesData}
+                isFetchingCountries={isFetchingCountries}
+                countryDatasetData={countryDatasetData}
+                isFetchingCountryDataset={isFetchingCountryDataset}
+            />
             {isDeliveryAddressVisible && (
                 <>
                     <div className="adyen-pe-pay-by-link-creation-form__shipping-address-container">
@@ -107,6 +121,8 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                                 isAddressFieldRequired={isAddressFieldRequired}
                                 isFetchingCountries={isFetchingCountries}
                                 isSeparateAddress={isSeparateAddress}
+                                countryDatasetData={countryDatasetData}
+                                isFetchingCountryDataset={isFetchingCountryDataset}
                             />
                             <ShippingCityField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
                             <ShippingPostalCodeField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
@@ -164,6 +180,8 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                             countriesData={countriesData}
                             isAddressFieldRequired={isAddressFieldRequired}
                             isFetchingCountries={isFetchingCountries}
+                            countryDatasetData={countryDatasetData}
+                            isFetchingCountryDataset={isFetchingCountryDataset}
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
@@ -175,7 +193,6 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
-                            minLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.min}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--small"
                             fieldName="billingAddress.postalCode"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.postalCode.label')}
