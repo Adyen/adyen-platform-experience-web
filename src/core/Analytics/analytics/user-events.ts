@@ -51,7 +51,14 @@ export interface AdditionalEventProperties {
  * Name of the tracked event
  * Can be either a custom name or one of the pre-defined values
  */
-export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filter' | 'Category filter' | 'Currency filter' | 'Status filter';
+export type FilterType =
+    | 'Date filter'
+    | 'Amount filter'
+    | 'Balance account filter'
+    | 'Category filter'
+    | 'Currency filter'
+    | 'PSP reference filter'
+    | 'Status filter';
 
 /**
  * Name of the tracked event
