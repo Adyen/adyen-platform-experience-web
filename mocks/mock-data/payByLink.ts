@@ -131,6 +131,9 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
         required: true,
         options: CURRENCIES,
     },
+    deliveryAddress: {
+        required: false,
+    },
     deliveryDate: {
         required: false,
     },
@@ -174,9 +177,6 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
         required: true,
     },
     phoneNumber: {
-        required: true,
-    },
-    deliveryAddress: {
         required: true,
     },
     sendLinkToShopper: {

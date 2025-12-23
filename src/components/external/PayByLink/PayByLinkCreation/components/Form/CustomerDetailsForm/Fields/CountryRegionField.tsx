@@ -1,24 +1,19 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
 import { useFetch } from '../../../../../../../../hooks/useFetch';
-import { useConfigContext } from '../../../../../../../../core/ConfigContext';
-import { EMPTY_OBJECT } from '../../../../../../../../utils';
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
-import { PaymentLinkCountryDTO } from '../../../../../../../../types';
+import { PayByLinkCountryDTO } from '../../../../../../../../types';
 
-export const CountryRegionField = () => {
+interface CountryRegionFieldProps {
+    countriesData?: { data?: PayByLinkCountryDTO[] };
+    isFetchingCountries: boolean;
+}
+
+export const CountryRegionField = ({ countriesData, isFetchingCountries }: CountryRegionFieldProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
-    const { countries: getCountries } = useConfigContext().endpoints;
-
-    const countriesQuery = useFetch({
-        fetchOptions: { enabled: !!getCountries && !fieldsConfig?.['countryCode']?.options?.length },
-        queryFn: useCallback(async () => {
-            return getCountries?.(EMPTY_OBJECT);
-        }, [getCountries]),
-    });
 
     const datasetQuery = useFetch({
         fetchOptions: { enabled: !!i18n?.locale },
@@ -40,14 +35,14 @@ export const CountryRegionField = () => {
 
     const countriesListItems = useMemo(() => {
         const countriesFromConfig = fieldsConfig?.['countryCode']?.options as string[] | undefined;
-        const countriesQueryData = (countriesQuery.data?.data ?? []).map(({ countryCode }) => countryCode);
+        const countriesQueryData = (countriesData?.data ?? []).map(({ countryCode }) => countryCode);
 
         const allowedCodes = new Set(countriesFromConfig ?? countriesQueryData);
-        const store = datasetQuery.data ?? [];
-        const available = allowedCodes.size ? store.filter(({ id }) => allowedCodes.has(id)) : store;
+        const countriesTranslationDataset = datasetQuery.data ?? [];
+        const available = allowedCodes.size ? countriesTranslationDataset.filter(({ id }) => allowedCodes.has(id)) : countriesTranslationDataset;
 
         return available.sort((a, b) => a.name.localeCompare(b.name));
-    }, [countriesQuery.data, datasetQuery.data, fieldsConfig]);
+    }, [countriesData?.data, datasetQuery.data, fieldsConfig]);
 
     return (
         <FormSelect<PBLFormValues>
@@ -55,7 +50,7 @@ export const CountryRegionField = () => {
             fieldName="countryCode"
             label={i18n.get('payByLink.linkCreation.fields.country.label')}
             items={countriesListItems}
-            readonly={countriesQuery.isFetching || datasetQuery.isFetching}
+            readonly={isFetchingCountries || datasetQuery.isFetching}
         />
     );
 };

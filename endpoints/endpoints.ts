@@ -37,12 +37,12 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         },
         payByLink: {
             configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
+            countries: `${baseUrl}/paybylink/countries`,
+            currencies: `${baseUrl}/paybylink/currencies`,
             getPayByLinkSettings: `${baseUrl}/paybylink/settings/:storeId`,
             installments: `${baseUrl}/paybylink/installments`,
             paymentLinks: `${baseUrl}/paybylink/paymentLinks`,
             filters: `${baseUrl}/paybylink/filters`,
-            currencies: `${baseUrl}/paybylink/currencies`,
-            countries: `${baseUrl}/paybylink/countries`,
         },
     } as const;
 };

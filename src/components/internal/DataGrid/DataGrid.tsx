@@ -61,7 +61,7 @@ function DataGridTable<
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
 
-    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
+    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + (props.narrowColumns ? 0 : 40)}px, ${col.flex || 1}fr)`).join(' ');
 
     return (
         <div

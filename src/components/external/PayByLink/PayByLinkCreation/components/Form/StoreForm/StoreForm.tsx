@@ -8,16 +8,17 @@ import { useConfigContext } from '../../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';
 import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
+import { PayByLinkSettingsDTO, PayByLinkStoreDTO } from '../../../../../../../types';
 
 interface StoreFormProps {
     storeIds?: string[] | string;
-    settingsQuery: ReturnType<typeof useFetch>;
-    storesQuery: ReturnType<typeof useFetch>;
+    settingsData?: PayByLinkSettingsDTO;
+    storesData?: PayByLinkStoreDTO[];
     selectItems: { id: string; name: string }[];
     termsAndConditionsProvisioned: boolean;
 }
 
-export const StoreForm = ({ settingsQuery, storesQuery, selectItems, termsAndConditionsProvisioned }: StoreFormProps) => {
+export const StoreForm = ({ settingsData, storesData, selectItems, termsAndConditionsProvisioned }: StoreFormProps) => {
     const { i18n } = useCoreContext();
     const { savePayByLinkSettings } = useConfigContext().endpoints;
     const { getValues } = useWizardFormContext<PBLFormValues>();
@@ -40,7 +41,7 @@ export const StoreForm = ({ settingsQuery, storesQuery, selectItems, termsAndCon
         }
         return [
             {
-                label: 'Set up Terms and Conditions',
+                label: i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction'),
                 onClick: () => {
                     console.log('TODO: Open terms and conditions');
                 },
@@ -51,7 +52,7 @@ export const StoreForm = ({ settingsQuery, storesQuery, selectItems, termsAndCon
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
             <StoreField items={selectItems} />
-            {settingsQuery.data && storesQuery.data && selectedStoreId && !termsAndConditionsProvisioned && (
+            {settingsData && storesData && selectedStoreId && !termsAndConditionsProvisioned && (
                 <Alert
                     title={i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle')}
                     type={AlertTypeOption.WARNING}

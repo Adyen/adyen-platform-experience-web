@@ -18,10 +18,16 @@ type UsePayByLinkFormDataProps = {
 export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFormDataProps) => {
     const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n } = useCoreContext();
-    const { getPayByLinkConfiguration, createPBLPaymentLink, getPayByLinkSettings, getPayByLinkStores } = useConfigContext().endpoints;
+    const {
+        countries: getCountries,
+        getPayByLinkConfiguration,
+        createPBLPaymentLink,
+        getPayByLinkSettings,
+        getPayByLinkStores,
+    } = useConfigContext().endpoints;
 
     // Stores query
-    const storesQuery = useFetch({
+    const { data: storesData, isFetching: isFetchingStores } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkStores },
         queryFn: useCallback(async () => {
             return getPayByLinkStores?.(EMPTY_OBJECT, {});
@@ -29,17 +35,17 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     });
 
     const storesSelectorItems = useMemo(() => {
-        const stores: PayByLinkStoreDTO[] = storesQuery.data?.data ?? [];
+        const stores: PayByLinkStoreDTO[] = storesData?.data ?? [];
         return stores
             .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
             .map(({ storeCode, storeId }) => ({
                 id: storeId || '',
                 name: storeCode || '',
             }));
-    }, [storesQuery.data, storeIds]);
+    }, [storesData, storeIds]);
 
     // Configuration query (depends on selected store)
-    const configurationQuery = useFetch({
+    const { data: configurationData, isFetching: isFetchingConfiguration } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkConfiguration && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkConfiguration?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -47,7 +53,7 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     });
 
     // Settings query (depends on selected store)
-    const settingsQuery = useFetch({
+    const { data: settingsData, isFetching: isFetchingSettings } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkSettings && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -55,23 +61,34 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     });
 
     const termsAndConditionsProvisioned = useMemo(() => {
-        return !!settingsQuery.data?.termsOfServiceUrl;
-    }, [settingsQuery.data?.termsOfServiceUrl]);
+        return !!settingsData?.termsOfServiceUrl;
+    }, [settingsData?.termsOfServiceUrl]);
 
     const getFieldConfig = useCallback(
         (field: keyof PaymentLinkConfiguration) => {
-            return configurationQuery.data?.[field];
+            return configurationData?.[field];
         },
-        [configurationQuery.data]
+        [configurationData]
     );
+
+    const isCountriesQueryEnabled = useMemo(() => {
+        return Boolean(getFieldConfig('deliveryAddress') || getFieldConfig('billingAddress') || getFieldConfig('countryCode'));
+    }, [getFieldConfig('deliveryAddress'), getFieldConfig('billingAddress'), getFieldConfig('countryCode')]);
+
+    const { data: countriesData, isFetching: isFetchingCountries } = useFetch({
+        fetchOptions: { enabled: isCountriesQueryEnabled && !!getCountries },
+        queryFn: useCallback(async () => {
+            return getCountries?.(EMPTY_OBJECT);
+        }, [getCountries]),
+    });
 
     // Form steps configuration
     const formSteps = useMemo(() => {
         const skipStoreStep = storesSelectorItems.length === 1 && termsAndConditionsProvisioned;
         return getFormSteps({ i18n, getFieldConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
-    }, [configurationQuery.data, getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned]);
+    }, [configurationData, getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned]);
 
-    const steps = useMemo(() => {
+    const stepperItems = useMemo(() => {
         return formSteps.map(step => ({
             id: step.id,
             label: i18n.get(`payByLink.linkCreation.form.steps.${step.id}` as TranslationKey),
@@ -112,25 +129,28 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         return unsubscribe;
     }, [wizardForm.control, selectedStore]);
 
-    const isDataLoading = configurationQuery.isFetching || settingsQuery.isFetching;
+    const isDataLoading = isFetchingConfiguration || isFetchingSettings || isFetchingStores;
     const shouldSkipStoreSelection = storesSelectorItems.length === 1;
-    const isConfigReady = !isDataLoading && configurationQuery.data;
-    const isSettingReady = !isDataLoading && settingsQuery.data;
+    const isConfigReady = !isDataLoading && configurationData;
+    const isSettingReady = !isDataLoading && settingsData;
 
-    const isFirstLoadDone = !storesQuery.isFetching && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady));
+    const isFirstLoadDone = !isFetchingStores && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady));
 
     return {
-        // Queries
-        storesQuery,
-        configurationQuery,
-        settingsQuery,
+        // Query data
+        storesData,
+        configurationData,
+        settingsData,
         // Store data
         selectedStore,
         storesSelectorItems,
         termsAndConditionsProvisioned,
+        // Countries data
+        countriesData,
+        isFetchingCountries,
         // Form steps
         formSteps,
-        steps,
+        stepperItems,
         formStepsAriaLabel,
         // Wizard form
         wizardForm,

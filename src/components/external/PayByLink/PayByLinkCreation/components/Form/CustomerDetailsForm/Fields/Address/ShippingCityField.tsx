@@ -5,12 +5,17 @@ import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact/compat';
 import { FormTextInput } from '../../../../../../../../internal/FormWrappers/FormTextInput';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../../../constants';
-import { useAddressChecker } from '../../useAddressChecker';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
+export const ShippingCityField = ({
+    isSeparateAddress,
+    isAddressFieldRequired,
+}: {
+    isSeparateAddress: boolean;
+    isAddressFieldRequired: AddressFieldRequiredChecker;
+}) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
-    const { isAddressFieldRequired } = useAddressChecker();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
