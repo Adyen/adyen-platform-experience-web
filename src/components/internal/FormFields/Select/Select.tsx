@@ -31,6 +31,7 @@ const Select = <T extends SelectItem>({
     placeholder,
     uniqueId,
     renderListItem,
+    renderButtonContent,
     isCollatingErrors,
     setToTargetWidth,
     withoutCollapseIndicator = false,
@@ -430,6 +431,7 @@ const Select = <T extends SelectItem>({
                 multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
+                renderButtonContent={renderButtonContent}
                 selectListId={selectListId}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}

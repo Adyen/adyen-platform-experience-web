@@ -53,7 +53,9 @@ export interface components {
             | 'disputes'
             | 'disputesManagement'
             | 'payByLinkCreation'
-            | 'payByLinkOverview';
+            | 'payByLinkOverview'
+            | 'payByLinkSettings'
+            | 'payByLinkTheme';
     };
     responses: never;
     parameters: never;

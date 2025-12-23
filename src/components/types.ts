@@ -213,6 +213,10 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
     onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
 }
 
+export interface PayByLinkSettingsComponentProps extends UIElementProps {
+    // Placeholder for component props
+}
+
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
@@ -239,4 +243,6 @@ export type ExternalComponentType =
     | 'disputes'
     | 'disputesManagement'
     | 'payByLinkCreation'
-    | 'payByLinkOverview';
+    | 'payByLinkTheme'
+    | 'payByLinkOverview'
+    | 'payByLinkSettings';

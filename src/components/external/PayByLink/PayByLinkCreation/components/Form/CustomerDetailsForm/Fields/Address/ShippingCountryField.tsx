@@ -4,9 +4,9 @@ import { useFetch } from '../../../../../../../../../hooks/useFetch';
 import { FormSelect } from '../../../../../../../../internal/FormWrappers/FormSelect';
 import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
-import { TargetedEvent } from 'preact/compat';
 import { PayByLinkCountryDTO } from '../../../../../../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
+import { SelectChangeEvent } from '../../../../../../../../internal/FormFields/Select/types';
 
 interface ShippingCountryFieldProps {
     countriesData?: { data?: PayByLinkCountryDTO[] };
@@ -54,7 +54,7 @@ export const ShippingCountryField = ({
     }, [countriesData?.data, countryDatasetQuery.data]);
 
     const handleChange = useCallback(
-        (e: TargetedEvent<HTMLSelectElement>) => {
+        (e: SelectChangeEvent) => {
             if (!isSeparateAddress) {
                 setValue('billingAddress.country', (e.target as HTMLSelectElement).value);
             }
