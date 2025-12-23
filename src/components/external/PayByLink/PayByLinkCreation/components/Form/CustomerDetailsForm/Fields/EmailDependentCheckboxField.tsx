@@ -11,6 +11,7 @@ import { VisibleField } from '../../../../../../../internal/FormWrappers/Visible
 import { Tooltip } from '../../../../../../../internal/Tooltip/Tooltip';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 
+// TODO: CURRENTLY NOT USED - Enable this feature if we decide to implement the email-dependent checkboxes
 interface EmailDependentCheckboxFieldProps {
     name: 'sendLinkToShopper' | 'sendSuccessEmailToShopper';
     label: string;
@@ -69,13 +70,5 @@ export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheck
         );
     }, []);
 
-    return (
-        <VisibleField<PBLFormValues> name={name}>
-            {isEmailEmpty ? (
-                renderField()
-            ) : (
-                <Tooltip content={i18n.get('capital.common.fields.repaymentThreshold.description')}>{renderField()}</Tooltip>
-            )}
-        </VisibleField>
-    );
+    return <VisibleField<PBLFormValues> name={name}>{isEmailEmpty ? renderField() : <Tooltip content={''}>{renderField()}</Tooltip>}</VisibleField>;
 };

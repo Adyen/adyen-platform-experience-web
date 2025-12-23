@@ -308,6 +308,7 @@
     "payByLink.linkCreation.sections.deliveryAddress.label": "Section heading for the shipping/delivery address fields in the customer details form.",
     "payByLink.linkCreation.steps.a11y.label": "Accessibility label for the step indicator showing progress through the payment link creation wizard.",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequired": "Alert message informing the user that terms and conditions must be configured before creating payment links.",
+    "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction": "Action label for the button that redirects to terms and conditions setup.",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle": "Title for the alert about required terms and conditions setup.",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredWithoutPermissions": "Alert message displayed when the user lacks permissions to set up terms and conditions, advising them to contact their organization.",
     "payByLink.linkCreation.success.copyLink": "Label for the button that copies the generated payment link to the clipboard.",

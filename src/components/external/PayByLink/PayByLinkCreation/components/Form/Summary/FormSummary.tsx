@@ -39,21 +39,23 @@ export const FormSummary = () => {
 
         const jointFields = [...(storeField ? [storeField] : []), ...(visibleFields || [])];
 
-        let items: StructuredListItem[] | undefined = jointFields?.map(({ label, value, id, displayValue }) => ({
+        const items: StructuredListItem[] | undefined = jointFields?.map(({ label, value, id, displayValue }) => ({
             key: (label || id) as TranslationKey,
             value: displayValue || value,
             id: id,
             render: item => {
                 switch (item.id) {
-                    case 'linkValidity.quantity':
+                    case 'linkValidity.quantity': {
                         const durationUnit = payment?.fields?.find(field => field.id === 'linkValidity.durationUnit');
                         return i18n.get(`payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit?.value}` as TranslationKey, {
                             values: { quantity: item.value },
                             count: Number(item.value),
                         });
-                    case 'amount.value':
+                    }
+                    case 'amount.value': {
                         const currencyField = payment?.fields?.find(field => field.id === 'amount.currency');
                         return i18n.amount(item.value, currencyField?.value);
+                    }
                     case 'linkType':
                         return i18n.get(`payByLink.linkCreation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`);
                     default:

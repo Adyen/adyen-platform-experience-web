@@ -82,8 +82,6 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         }, [getCountries]),
     });
 
-    console.log('getCountries', getCountries);
-
     // Form steps configuration
     const formSteps = useMemo(() => {
         const skipStoreStep = storesSelectorItems.length === 1 && termsAndConditionsProvisioned;
