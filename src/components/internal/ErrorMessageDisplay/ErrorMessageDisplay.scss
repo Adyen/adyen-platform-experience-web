@@ -45,7 +45,7 @@
     }
 
     /* stylelint-disable order/order */
-    @include adyen-pe-screen-sm-and-up {
+    @include breakpoints.adyen-pe-screen-sm-and-up {
         max-width: 550px;
         min-width: 400px;
         padding: style.token(spacer-120);
