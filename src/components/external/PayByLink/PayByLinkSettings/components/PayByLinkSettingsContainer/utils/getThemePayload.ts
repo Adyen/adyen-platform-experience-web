@@ -1,7 +1,6 @@
-import { ThemeFormDataFields } from '../../PayByLinkThemeContainer/types';
 import { IPayByLinkTheme } from '../../../../../../../types';
 
-const cloneFormData = (formData: FormData) => {
+export const cloneFormData = (formData: FormData) => {
     const formDataClone = new FormData();
     for (const [field, value] of formData.entries()) {
         if (value instanceof File) {
@@ -11,22 +10,12 @@ const cloneFormData = (formData: FormData) => {
     return formDataClone;
 };
 
-export const setFormData = (previousPaylod: FormData | null, fieldName: ThemeFormDataFields, data: string) => {
-    const nextFormData = previousPaylod ? cloneFormData(previousPaylod) : new FormData();
-    nextFormData.set(fieldName, data!);
-    return nextFormData;
-};
-
-export const getThemePayload = (theme: IPayByLinkTheme) => {
-    const initialKeys = Object.keys(theme) as ThemeFormDataFields[];
-    if (initialKeys.length === 0) return;
-    const initialPayload: FormData = initialKeys?.reduce((prevPayload: FormData | null, currentValue) => {
-        const field = currentValue as ThemeFormDataFields;
-        const fieldValue = theme?.[field];
-        if (fieldValue) {
-            return setFormData(prevPayload, field, fieldValue);
+export const getThemePayload = (theme: IPayByLinkTheme): FormData => {
+    const formData = new FormData();
+    for (const [key, value] of Object.entries(theme)) {
+        if (value) {
+            formData.set(key, value);
         }
-        return prevPayload;
-    }, null) as unknown as FormData;
-    return initialPayload;
+    }
+    return formData;
 };

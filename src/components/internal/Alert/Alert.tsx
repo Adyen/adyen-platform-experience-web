@@ -9,28 +9,37 @@ import { AlertIcon } from './AlertIcon';
 import { AlertProps, AlertVariantOption } from './types';
 import './Alert.scss';
 
-export const Alert = ({ className, description, title, type, children, onClose, variant = AlertVariantOption.DEFAULT }: AlertProps) => {
+export const Alert = ({ className, description, title, type, children, onClose, actions, variant = AlertVariantOption.DEFAULT }: AlertProps) => {
     const { i18n } = useCoreContext();
     return (
         <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
             <AlertIcon type={type} className="adyen-pe-alert__icon" />
-            <div className={'adyen-pe-alert__content'}>
-                {title && variant !== AlertVariantOption.TIP && (
-                    <Typography className={'adyen-pe-alert__title'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide strongest>
-                        {title}
-                    </Typography>
-                )}
-                {description && (
-                    <Typography
-                        className={'adyen-pe-alert__description'}
-                        el={TypographyElement.DIV}
-                        variant={variant !== AlertVariantOption.TIP ? TypographyVariant.CAPTION : TypographyVariant.BODY}
-                        wide
-                    >
-                        {description}
-                    </Typography>
-                )}
-                {children}
+            <div>
+                <div className="adyen-pe-alert__content">
+                    {title && variant !== AlertVariantOption.TIP && (
+                        <Typography className={'adyen-pe-alert__title'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide strongest>
+                            {title}
+                        </Typography>
+                    )}
+                    {description && (
+                        <Typography
+                            className={'adyen-pe-alert__description'}
+                            el={TypographyElement.DIV}
+                            variant={variant !== AlertVariantOption.TIP ? TypographyVariant.CAPTION : TypographyVariant.BODY}
+                            wide
+                        >
+                            {description}
+                        </Typography>
+                    )}
+                    {children}
+                </div>
+                <div className="adyen-pe-alert__actions">
+                    {actions?.map((action, index) => (
+                        <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>
+                            {action.label}
+                        </Button>
+                    ))}
+                </div>
             </div>
             {onClose && variant !== AlertVariantOption.TIP && (
                 <div className="adyen-pe-alert__close-button">

@@ -42,14 +42,14 @@ describe('StoreSelector', () => {
         const button = screen.getByRole('button');
         expect(button).toBeInTheDocument();
 
-        expect(button).toHaveTextContent('STORE_LON_001');
+        expect(button).toHaveTextContent('LN001');
         expect(button).toHaveTextContent('Main Store - London');
     });
 
     test('should render button content correctly when data.item exists', () => {
         render(<StoreSelector stores={mockStores} selectedStoreId={mockStores[0]?.id} setSelectedStoreId={mockSetSelectedStoreId} />);
 
-        expect(screen.getByText('STORE_NY_001')).toBeInTheDocument();
+        expect(screen.getByText('NY001')).toBeInTheDocument();
         expect(screen.getByText('Main Store - New York')).toBeInTheDocument();
     });
 });

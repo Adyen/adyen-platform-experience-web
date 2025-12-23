@@ -1,0 +1,966 @@
+[
+    {
+        "id": "AF",
+        "prefix": "+93"
+    },
+    {
+        "id": "AL",
+        "prefix": "+355"
+    },
+    {
+        "id": "DZ",
+        "prefix": "+213"
+    },
+    {
+        "id": "AS",
+        "prefix": "+1684"
+    },
+    {
+        "id": "AD",
+        "prefix": "+376"
+    },
+    {
+        "id": "AO",
+        "prefix": "+244"
+    },
+    {
+        "id": "AI",
+        "prefix": "+1264"
+    },
+    {
+        "id": "AG",
+        "prefix": "+1268"
+    },
+    {
+        "id": "AR",
+        "prefix": "+54"
+    },
+    {
+        "id": "AM",
+        "prefix": "+374"
+    },
+    {
+        "id": "AW",
+        "prefix": "+297"
+    },
+    {
+        "id": "AU",
+        "prefix": "+61"
+    },
+    {
+        "id": "AT",
+        "prefix": "+43"
+    },
+    {
+        "id": "AZ",
+        "prefix": "+994"
+    },
+    {
+        "id": "BS",
+        "prefix": "+1242"
+    },
+    {
+        "id": "BH",
+        "prefix": "+973"
+    },
+    {
+        "id": "BD",
+        "prefix": "+880"
+    },
+    {
+        "id": "BB",
+        "prefix": "+1246"
+    },
+    {
+        "id": "BY",
+        "prefix": "+375"
+    },
+    {
+        "id": "BE",
+        "prefix": "+32"
+    },
+    {
+        "id": "BZ",
+        "prefix": "+501"
+    },
+    {
+        "id": "BJ",
+        "prefix": "+229"
+    },
+    {
+        "id": "BM",
+        "prefix": "+1441"
+    },
+    {
+        "id": "BT",
+        "prefix": "+975"
+    },
+    {
+        "id": "BA",
+        "prefix": "+387"
+    },
+    {
+        "id": "BW",
+        "prefix": "+267"
+    },
+    {
+        "id": "BR",
+        "prefix": "+55"
+    },
+    {
+        "id": "IO",
+        "prefix": "+246"
+    },
+    {
+        "id": "BG",
+        "prefix": "+359"
+    },
+    {
+        "id": "BF",
+        "prefix": "+226"
+    },
+    {
+        "id": "BI",
+        "prefix": "+257"
+    },
+    {
+        "id": "KH",
+        "prefix": "+855"
+    },
+    {
+        "id": "CM",
+        "prefix": "+237"
+    },
+    {
+        "id": "CA",
+        "prefix": "+1"
+    },
+    {
+        "id": "CV",
+        "prefix": "+238"
+    },
+    {
+        "id": "KY",
+        "prefix": "+345"
+    },
+    {
+        "id": "CF",
+        "prefix": "+236"
+    },
+    {
+        "id": "TD",
+        "prefix": "+235"
+    },
+    {
+        "id": "CL",
+        "prefix": "+56"
+    },
+    {
+        "id": "CN",
+        "prefix": "+86"
+    },
+    {
+        "id": "CX",
+        "prefix": "+61"
+    },
+    {
+        "id": "CO",
+        "prefix": "+57"
+    },
+    {
+        "id": "KM",
+        "prefix": "+269"
+    },
+    {
+        "id": "CG",
+        "prefix": "+242"
+    },
+    {
+        "id": "CK",
+        "prefix": "+682"
+    },
+    {
+        "id": "CR",
+        "prefix": "+506"
+    },
+    {
+        "id": "HR",
+        "prefix": "+385"
+    },
+    {
+        "id": "CU",
+        "prefix": "+53"
+    },
+    {
+        "id": "CY",
+        "prefix": "+537"
+    },
+    {
+        "id": "CZ",
+        "prefix": "+420"
+    },
+    {
+        "id": "DK",
+        "prefix": "+45"
+    },
+    {
+        "id": "DJ",
+        "prefix": "+253"
+    },
+    {
+        "id": "DM",
+        "prefix": "+1767"
+    },
+    {
+        "id": "DO",
+        "prefix": "+1849"
+    },
+    {
+        "id": "EC",
+        "prefix": "+593"
+    },
+    {
+        "id": "EG",
+        "prefix": "+20"
+    },
+    {
+        "id": "SV",
+        "prefix": "+503"
+    },
+    {
+        "id": "GQ",
+        "prefix": "+240"
+    },
+    {
+        "id": "ER",
+        "prefix": "+291"
+    },
+    {
+        "id": "EE",
+        "prefix": "+372"
+    },
+    {
+        "id": "ET",
+        "prefix": "+251"
+    },
+    {
+        "id": "FO",
+        "prefix": "+298"
+    },
+    {
+        "id": "FJ",
+        "prefix": "+679"
+    },
+    {
+        "id": "FI",
+        "prefix": "+358"
+    },
+    {
+        "id": "FR",
+        "prefix": "+33"
+    },
+    {
+        "id": "GF",
+        "prefix": "+594"
+    },
+    {
+        "id": "PF",
+        "prefix": "+689"
+    },
+    {
+        "id": "GA",
+        "prefix": "+241"
+    },
+    {
+        "id": "GM",
+        "prefix": "+220"
+    },
+    {
+        "id": "GE",
+        "prefix": "+995"
+    },
+    {
+        "id": "DE",
+        "prefix": "+49"
+    },
+    {
+        "id": "GH",
+        "prefix": "+233"
+    },
+    {
+        "id": "GI",
+        "prefix": "+350"
+    },
+    {
+        "id": "GR",
+        "prefix": "+30"
+    },
+    {
+        "id": "GL",
+        "prefix": "+299"
+    },
+    {
+        "id": "GD",
+        "prefix": "+1473"
+    },
+    {
+        "id": "GP",
+        "prefix": "+590"
+    },
+    {
+        "id": "GU",
+        "prefix": "+1671"
+    },
+    {
+        "id": "GT",
+        "prefix": "+502"
+    },
+    {
+        "id": "GN",
+        "prefix": "+224"
+    },
+    {
+        "id": "GW",
+        "prefix": "+245"
+    },
+    {
+        "id": "GY",
+        "prefix": "+595"
+    },
+    {
+        "id": "HT",
+        "prefix": "+509"
+    },
+    {
+        "id": "HN",
+        "prefix": "+504"
+    },
+    {
+        "id": "HU",
+        "prefix": "+36"
+    },
+    {
+        "id": "IS",
+        "prefix": "+354"
+    },
+    {
+        "id": "IN",
+        "prefix": "+91"
+    },
+    {
+        "id": "ID",
+        "prefix": "+62"
+    },
+    {
+        "id": "IQ",
+        "prefix": "+964"
+    },
+    {
+        "id": "IE",
+        "prefix": "+353"
+    },
+    {
+        "id": "IL",
+        "prefix": "+972"
+    },
+    {
+        "id": "IT",
+        "prefix": "+39"
+    },
+    {
+        "id": "JM",
+        "prefix": "+1876"
+    },
+    {
+        "id": "JP",
+        "prefix": "+81"
+    },
+    {
+        "id": "JO",
+        "prefix": "+962"
+    },
+    {
+        "id": "KZ",
+        "prefix": "+7 7"
+    },
+    {
+        "id": "KE",
+        "prefix": "+254"
+    },
+    {
+        "id": "KI",
+        "prefix": "+686"
+    },
+    {
+        "id": "KW",
+        "prefix": "+965"
+    },
+    {
+        "id": "KG",
+        "prefix": "+996"
+    },
+    {
+        "id": "LV",
+        "prefix": "+371"
+    },
+    {
+        "id": "LB",
+        "prefix": "+961"
+    },
+    {
+        "id": "LS",
+        "prefix": "+266"
+    },
+    {
+        "id": "LR",
+        "prefix": "+231"
+    },
+    {
+        "id": "LI",
+        "prefix": "+423"
+    },
+    {
+        "id": "LT",
+        "prefix": "+370"
+    },
+    {
+        "id": "LU",
+        "prefix": "+352"
+    },
+    {
+        "id": "MG",
+        "prefix": "+261"
+    },
+    {
+        "id": "MW",
+        "prefix": "+265"
+    },
+    {
+        "id": "MY",
+        "prefix": "+60"
+    },
+    {
+        "id": "MV",
+        "prefix": "+960"
+    },
+    {
+        "id": "ML",
+        "prefix": "+223"
+    },
+    {
+        "id": "MT",
+        "prefix": "+356"
+    },
+    {
+        "id": "MH",
+        "prefix": "+692"
+    },
+    {
+        "id": "MQ",
+        "prefix": "+596"
+    },
+    {
+        "id": "MR",
+        "prefix": "+222"
+    },
+    {
+        "id": "MU",
+        "prefix": "+230"
+    },
+    {
+        "id": "YT",
+        "prefix": "+262"
+    },
+    {
+        "id": "MX",
+        "prefix": "+52"
+    },
+    {
+        "id": "MC",
+        "prefix": "+377"
+    },
+    {
+        "id": "MN",
+        "prefix": "+976"
+    },
+    {
+        "id": "ME",
+        "prefix": "+382"
+    },
+    {
+        "id": "MS",
+        "prefix": "+1664"
+    },
+    {
+        "id": "MA",
+        "prefix": "+212"
+    },
+    {
+        "id": "MM",
+        "prefix": "+95"
+    },
+    {
+        "id": "NA",
+        "prefix": "+264"
+    },
+    {
+        "id": "NR",
+        "prefix": "+674"
+    },
+    {
+        "id": "NP",
+        "prefix": "+977"
+    },
+    {
+        "id": "NL",
+        "prefix": "+31"
+    },
+    {
+        "id": "AN",
+        "prefix": "+599"
+    },
+    {
+        "id": "NC",
+        "prefix": "+687"
+    },
+    {
+        "id": "NZ",
+        "prefix": "+64"
+    },
+    {
+        "id": "NI",
+        "prefix": "+505"
+    },
+    {
+        "id": "NE",
+        "prefix": "+227"
+    },
+    {
+        "id": "NG",
+        "prefix": "+234"
+    },
+    {
+        "id": "NU",
+        "prefix": "+683"
+    },
+    {
+        "id": "NF",
+        "prefix": "+672"
+    },
+    {
+        "id": "MP",
+        "prefix": "+1670"
+    },
+    {
+        "id": "NO",
+        "prefix": "+47"
+    },
+    {
+        "id": "OM",
+        "prefix": "+968"
+    },
+    {
+        "id": "PK",
+        "prefix": "+92"
+    },
+    {
+        "id": "PW",
+        "prefix": "+680"
+    },
+    {
+        "id": "PA",
+        "prefix": "+507"
+    },
+    {
+        "id": "PG",
+        "prefix": "+675"
+    },
+    {
+        "id": "PY",
+        "prefix": "+595"
+    },
+    {
+        "id": "PE",
+        "prefix": "+51"
+    },
+    {
+        "id": "PH",
+        "prefix": "+63"
+    },
+    {
+        "id": "PL",
+        "prefix": "+48"
+    },
+    {
+        "id": "PT",
+        "prefix": "+351"
+    },
+    {
+        "id": "PR",
+        "prefix": "+1939"
+    },
+    {
+        "id": "QA",
+        "prefix": "+974"
+    },
+    {
+        "id": "RO",
+        "prefix": "+40"
+    },
+    {
+        "id": "RW",
+        "prefix": "+250"
+    },
+    {
+        "id": "WS",
+        "prefix": "+685"
+    },
+    {
+        "id": "SM",
+        "prefix": "+378"
+    },
+    {
+        "id": "SA",
+        "prefix": "+966"
+    },
+    {
+        "id": "SN",
+        "prefix": "+221"
+    },
+    {
+        "id": "RS",
+        "prefix": "+381"
+    },
+    {
+        "id": "SC",
+        "prefix": "+248"
+    },
+    {
+        "id": "SL",
+        "prefix": "+232"
+    },
+    {
+        "id": "SG",
+        "prefix": "+65"
+    },
+    {
+        "id": "SK",
+        "prefix": "+421"
+    },
+    {
+        "id": "SI",
+        "prefix": "+386"
+    },
+    {
+        "id": "SB",
+        "prefix": "+677"
+    },
+    {
+        "id": "ZA",
+        "prefix": "+27"
+    },
+    {
+        "id": "GS",
+        "prefix": "+500"
+    },
+    {
+        "id": "ES",
+        "prefix": "+34"
+    },
+    {
+        "id": "LK",
+        "prefix": "+94"
+    },
+    {
+        "id": "SD",
+        "prefix": "+249"
+    },
+    {
+        "id": "SR",
+        "prefix": "+597"
+    },
+    {
+        "id": "SZ",
+        "prefix": "+268"
+    },
+    {
+        "id": "SE",
+        "prefix": "+46"
+    },
+    {
+        "id": "CH",
+        "prefix": "+41"
+    },
+    {
+        "id": "TJ",
+        "prefix": "+992"
+    },
+    {
+        "id": "TH",
+        "prefix": "+66"
+    },
+    {
+        "id": "TG",
+        "prefix": "+228"
+    },
+    {
+        "id": "TK",
+        "prefix": "+690"
+    },
+    {
+        "id": "TO",
+        "prefix": "+676"
+    },
+    {
+        "id": "TT",
+        "prefix": "+1868"
+    },
+    {
+        "id": "TN",
+        "prefix": "+216"
+    },
+    {
+        "id": "TR",
+        "prefix": "+90"
+    },
+    {
+        "id": "TM",
+        "prefix": "+993"
+    },
+    {
+        "id": "TC",
+        "prefix": "+1649"
+    },
+    {
+        "id": "TV",
+        "prefix": "+688"
+    },
+    {
+        "id": "UG",
+        "prefix": "+256"
+    },
+    {
+        "id": "UA",
+        "prefix": "+380"
+    },
+    {
+        "id": "AE",
+        "prefix": "+971"
+    },
+    {
+        "id": "GB",
+        "prefix": "+44"
+    },
+    {
+        "id": "US",
+        "prefix": "+1"
+    },
+    {
+        "id": "UY",
+        "prefix": "+598"
+    },
+    {
+        "id": "UZ",
+        "prefix": "+998"
+    },
+    {
+        "id": "VU",
+        "prefix": "+678"
+    },
+    {
+        "id": "WF",
+        "prefix": "+681"
+    },
+    {
+        "id": "YE",
+        "prefix": "+967"
+    },
+    {
+        "id": "ZM",
+        "prefix": "+260"
+    },
+    {
+        "id": "ZW",
+        "prefix": "+263"
+    },
+    {
+        "id": "AX",
+        "prefix": "+358"
+    },
+    {
+        "id": "AQ",
+        "prefix": "+672"
+    },
+    {
+        "id": "BO",
+        "prefix": "+591"
+    },
+    {
+        "id": "BN",
+        "prefix": "+673"
+    },
+    {
+        "id": "CC",
+        "prefix": "+61"
+    },
+    {
+        "id": "CD",
+        "prefix": "+243"
+    },
+    {
+        "id": "CI",
+        "prefix": "+225"
+    },
+    {
+        "id": "FK",
+        "prefix": "+500"
+    },
+    {
+        "id": "GG",
+        "prefix": "+44"
+    },
+    {
+        "id": "VA",
+        "prefix": "+379"
+    },
+    {
+        "id": "HK",
+        "prefix": "+852"
+    },
+    {
+        "id": "IR",
+        "prefix": "+98"
+    },
+    {
+        "id": "IM",
+        "prefix": "+44"
+    },
+    {
+        "id": "JE",
+        "prefix": "+44"
+    },
+    {
+        "id": "KP",
+        "prefix": "+850"
+    },
+    {
+        "id": "KR",
+        "prefix": "+82"
+    },
+    {
+        "id": "LA",
+        "prefix": "+856"
+    },
+    {
+        "id": "LY",
+        "prefix": "+218"
+    },
+    {
+        "id": "MO",
+        "prefix": "+853"
+    },
+    {
+        "id": "MK",
+        "prefix": "+389"
+    },
+    {
+        "id": "FM",
+        "prefix": "+691"
+    },
+    {
+        "id": "MD",
+        "prefix": "+373"
+    },
+    {
+        "id": "MZ",
+        "prefix": "+258"
+    },
+    {
+        "id": "PS",
+        "prefix": "+970"
+    },
+    {
+        "id": "PN",
+        "prefix": "+872"
+    },
+    {
+        "id": "RE",
+        "prefix": "+262"
+    },
+    {
+        "id": "RU",
+        "prefix": "+7"
+    },
+    {
+        "id": "BL",
+        "prefix": "+590"
+    },
+    {
+        "id": "SH",
+        "prefix": "+290"
+    },
+    {
+        "id": "KN",
+        "prefix": "+1869"
+    },
+    {
+        "id": "LC",
+        "prefix": "+1758"
+    },
+    {
+        "id": "MF",
+        "prefix": "+590"
+    },
+    {
+        "id": "PM",
+        "prefix": "+508"
+    },
+    {
+        "id": "VC",
+        "prefix": "+1784"
+    },
+    {
+        "id": "ST",
+        "prefix": "+239"
+    },
+    {
+        "id": "SO",
+        "prefix": "+252"
+    },
+    {
+        "id": "SJ",
+        "prefix": "+47"
+    },
+    {
+        "id": "SY",
+        "prefix": "+963"
+    },
+    {
+        "id": "TW",
+        "prefix": "+886"
+    },
+    {
+        "id": "TZ",
+        "prefix": "+255"
+    },
+    {
+        "id": "TL",
+        "prefix": "+670"
+    },
+    {
+        "id": "VE",
+        "prefix": "+58"
+    },
+    {
+        "id": "VN",
+        "prefix": "+84"
+    },
+    {
+        "id": "VG",
+        "prefix": "+1284"
+    },
+    {
+        "id": "VI",
+        "prefix": "+1340"
+    }
+]

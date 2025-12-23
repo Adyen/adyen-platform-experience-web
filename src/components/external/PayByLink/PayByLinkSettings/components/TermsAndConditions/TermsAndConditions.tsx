@@ -14,18 +14,11 @@ import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { Translation } from '../../../../../internal/Translation';
+import { isValidURL } from '../PayByLinkSettingsContainer/utils/validateTermsAndConditionsURL';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import Button from '../../../../../internal/Button';
 import Modal from '../../../../../internal/Modal';
 import { Requirements } from './Requirements/Requirements';
-
-const isValidURL = (termsAndConditionsURL: string) => {
-    return termsAndConditionsURL === ''
-        ? true
-        : !termsAndConditionsURL
-          ? false
-          : termsAndConditionsURL.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-};
 
 export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTermsAndConditions; initialData: IPayByLinkTermsAndConditions }) => {
     const { i18n } = useCoreContext();

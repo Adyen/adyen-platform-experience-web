@@ -1,10 +1,12 @@
 import { FieldValues, UseFormReturn } from '../types';
+import { TranslationKey } from '../../../translations';
+import Localization from '../../../core/Localization';
 
 export interface WizardStep<TFieldValues> {
     id: string;
-    title: string;
+    title?: string;
     description?: string;
-    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean }[]>;
+    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean; label?: TranslationKey }[]>;
     validate?: (values: Partial<TFieldValues>) => boolean | Promise<boolean>;
     isOptional?: boolean;
 }
@@ -15,6 +17,7 @@ export interface WizardState {
     visitedSteps: Set<number>;
     stepValidation: Map<number, boolean>;
     isTransitioning: boolean;
+    displayValues: Map<string, string>;
 }
 
 export type WizardAction =
@@ -25,9 +28,12 @@ export type WizardAction =
     | { type: 'MARK_STEP_VISITED'; payload: { step: number } }
     | { type: 'SET_STEP_VALIDATION'; payload: { step: number; isValid: boolean } }
     | { type: 'SET_TRANSITIONING'; payload: boolean }
-    | { type: 'RESET_WIZARD' };
+    | { type: 'RESET_WIZARD' }
+    | { type: 'SET_DISPLAY_VALUE'; payload: { field: string; displayValue?: string } }
+    | { type: 'RESET_DISPLAY_VALUES' };
 
 export interface UseWizardFormOptions<TFieldValues> {
+    i18n: Localization['i18n'];
     steps: Readonly<WizardStep<TFieldValues>[]>;
     defaultValues?: Partial<TFieldValues>;
     mode?: 'onBlur' | 'onInput' | 'all';
@@ -58,15 +64,21 @@ export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldV
 
     // Summary data
     getSummaryData: () => WizardSummaryData<TFieldValues>;
+
+    // Display values
+    getDisplayValue: (name: FieldValues<TFieldValues>) => string | undefined;
+    setFieldDisplayValue: (name: FieldValues<TFieldValues>, displayValue?: string) => void;
+    resetFieldDisplayValues: () => void;
 }
 
 export type WizardFormContextValue<TFieldValues> = UseWizardFormReturn<TFieldValues>;
 
 export interface WizardSummaryData<TFieldValues> {
     [stepId: string]: {
-        title: string;
+        title?: string;
         fields: {
-            label: FieldValues<TFieldValues>;
+            id: FieldValues<TFieldValues>;
+            label?: TranslationKey;
             value: any;
             displayValue?: string;
         }[];

@@ -1,86 +1,20 @@
 export const STORES = [
     {
         description: 'Main Store - New York',
-        storeCode: 'STORE_NY_001',
+        storeCode: 'NY001',
+        storeId: 'STORE_NY_001',
     },
     {
         description: 'Main Store - London',
-        storeCode: 'STORE_LON_001',
+        storeCode: 'LN001',
+        storeId: 'STORE_LON_001',
     },
     {
         description: 'Main Store - Amsterdam',
-        storeCode: 'STORE_AMS_001',
+        storeCode: 'AM001',
+        storeId: 'STORE_AMS_001',
     },
 ];
-
-export const PAY_BY_LINK_CONFIGURATION = {
-    amountValue: {
-        fillMode: 'optional',
-    },
-    billingAddress: {
-        fillMode: 'employeeOptional',
-    },
-    countryCode: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    currency: {
-        fillMode: 'USD',
-        optionsMode: 'all',
-    },
-    deliveryDate: {
-        fillMode: 'optional',
-    },
-    description: {
-        fillMode: 'optional',
-    },
-    emailAddress: {
-        fillMode: 'employeeOptional',
-    },
-    emailSender: {
-        fillMode: 'optional',
-    },
-    fullName: {
-        fillMode: 'employeeOptional',
-    },
-    linkType: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    linkValidity: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-        subset: [
-            {
-                durationUnit: 'days',
-                quantity: 7,
-            },
-            {
-                durationUnit: 'days',
-                quantity: 30,
-            },
-        ],
-    },
-    merchantReference: {
-        fillMode: 'optional',
-    },
-    phoneNumber: {
-        fillMode: 'employeeOptional',
-    },
-    shippingAddress: {
-        fillMode: 'employeeOptional',
-    },
-    shopperLocale: {
-        fillMode: 'optional',
-        optionsMode: 'all',
-    },
-    shopperReference: {
-        fillMode: 'optional',
-    },
-    stores: {
-        fillMode: 'optional',
-    },
-};
 
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'AUD', 'CAD', 'CHF', 'CNY', 'SEK', 'NZD'];
 
@@ -181,6 +115,100 @@ export const INSTALLMENTS = [
         installments: [2, 3, 6, 9],
     },
 ];
+
+const BASE_PAY_BY_LINK_CONFIGURATION = {
+    amountValue: {
+        required: true,
+    },
+    billingAddress: {
+        required: true,
+    },
+    countryCode: {
+        required: true,
+        options: COUNTRIES,
+    },
+    currency: {
+        required: true,
+        options: CURRENCIES.map(id => ({ id })),
+    },
+    deliveryAddress: {
+        required: false,
+    },
+    deliveryDate: {
+        required: false,
+    },
+    description: {
+        required: true,
+    },
+    emailAddress: {
+        required: true,
+    },
+    shopperName: {
+        required: false,
+    },
+    linkType: {
+        required: true,
+        options: ['singleUse', 'open'],
+    },
+    linkValidity: {
+        required: true,
+        options: [
+            {
+                durationUnit: 'hour',
+                quantity: 24,
+                type: 'fixed',
+            },
+            {
+                durationUnit: 'day',
+                quantity: 30,
+                type: 'fixed',
+            },
+            {
+                durationUnit: 'week',
+                quantity: 1,
+                type: 'fixed',
+            },
+            {
+                type: 'flexible',
+            },
+        ],
+    },
+    merchantReference: {
+        required: true,
+    },
+    phoneNumber: {
+        required: true,
+    },
+    sendLinkToShopper: {
+        required: true,
+    },
+    sendPaymentSuccessToShopper: {
+        required: true,
+    },
+    shopperLocale: {
+        required: true,
+        options: ['en-US', 'en-GB', 'es-ES', 'fr-FR', 'de-DE', 'nl-NL', 'pt-BR', 'ja-JP', 'zh-CN'],
+    },
+    shopperReference: {
+        required: true,
+    },
+};
+
+const { linkValidity, deliveryAddress, ...configWithoutLinkValidityAndAddress } = BASE_PAY_BY_LINK_CONFIGURATION;
+
+export const PAY_BY_LINK_CONFIGURATION = {
+    STORE_NY_001: BASE_PAY_BY_LINK_CONFIGURATION,
+    STORE_LON_001: configWithoutLinkValidityAndAddress,
+    STORE_AMS_001: BASE_PAY_BY_LINK_CONFIGURATION,
+};
+
+export const PAY_BY_LINK_SETTINGS = {
+    STORE_NY_001: {
+        termsOfServiceUrl: 'https://example.com/terms-and-conditions',
+    },
+    STORE_LON_001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
+    STORE_AMS_001: {},
+};
 
 export const STORE_THEME = {
     STORE_NY_001: {},

@@ -1,6 +1,7 @@
 export { useForm } from './useForm';
 export { Controller } from './Controller';
 export { FormProvider, useFormContext } from './FormContext';
+export { useWatch } from './useWatch';
 
 export type {
     // Core types

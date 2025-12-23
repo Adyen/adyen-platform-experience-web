@@ -83,7 +83,7 @@ describe('useStores', () => {
         const { result } = renderHook(() => useStores());
 
         await waitFor(() => {
-            expect(result.current.selectedStore).toBe('STORE_NY_001');
+            expect(result.current.selectedStore).toBe('NY001');
         });
     });
 
@@ -97,14 +97,14 @@ describe('useStores', () => {
         const { result } = renderHook(() => useStores());
 
         await waitFor(() => {
-            expect(result.current.selectedStore).toBe('STORE_NY_001');
+            expect(result.current.selectedStore).toBe('NY001');
         });
 
         act(() => {
-            result.current.setSelectedStore('STORE_NY_002');
+            result.current.setSelectedStore('LN001');
         });
 
-        expect(result.current.selectedStore).toBe('STORE_NY_002');
+        expect(result.current.selectedStore).toBe('LN001');
     });
 
     test('should handle undefined data gracefully', () => {
