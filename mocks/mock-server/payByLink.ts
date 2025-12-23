@@ -1,9 +1,21 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, STORE_THEME, STORE_SETTINGS } from '../mock-data/payByLink';
+import {
+    PAY_BY_LINK_FILTERS,
+    STORES,
+    PAY_BY_LINK_CONFIGURATION,
+    CURRENCIES,
+    COUNTRIES,
+    INSTALLMENTS,
+    PAY_BY_LINK_SETTINGS,
+    STORE_THEME,
+    STORE_SETTINGS,
+    getPaymentLinkDetails,
+    getPaymentLinkItemsByStatusGroup,
+    expirePaymentLink,
+} from '../mock-data';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
@@ -172,6 +184,41 @@ export const payByLinkMocks = [
 
         return HttpResponse.json(null, { status: 204 });
     }),
+
+    // GET /paybylink/paymentLinks/{paymentLinkId} - Single payment link details (returns full PaymentLinkDetails)
+    http.get(mockEndpointsPBL.details, async ({ params }) => {
+        if (networkError) {
+            return HttpResponse.error();
+        }
+        await delay(200);
+
+        const paymentLinkDetails = getPaymentLinkDetails(params.id as string);
+
+        if (!paymentLinkDetails) {
+            return HttpResponse.json({ error: 'Payment link not found' }, { status: 404 });
+        }
+
+        return HttpResponse.json(paymentLinkDetails);
+    }),
+
+    // POST /paybylink/paymentLinks/{paymentLinkId}/expire - Expire a payment link
+    http.post(mockEndpointsPBL.expire, async ({ params }) => {
+        if (networkError) {
+            return HttpResponse.error();
+        }
+        await delay(200);
+
+        try {
+            expirePaymentLink(params.id as string);
+        } catch (error) {
+            return HttpResponse.json({ error: 'Payment link not found' }, { status: 404 });
+        }
+
+        // BE returns 200 instead of 204. Once this is fixed replace the following line with `return new HttpResponse(null, { status: 204 });`
+        return HttpResponse.json(undefined, { status: 200 });
+        // return new HttpResponse(null, { status: 204 });
+    }),
+
     // GET /paybylink/paymentLinks - Payment links list
     http.get(mockEndpointsPBL.paymentLinks, async ({ request }) => {
         if (networkError) {
@@ -193,7 +240,7 @@ export const payByLinkMocks = [
         const statusGroup = url.searchParams.get('statusGroup')! as IPayByLinkStatusGroup;
 
         // Filter payment links based on query parameters
-        const filteredLinks = getPaymentLinksByStatusGroup(statusGroup).filter(
+        const filteredLinks = getPaymentLinkItemsByStatusGroup(statusGroup).filter(
             link =>
                 (!paymentLinkId || link.paymentLinkId === paymentLinkId) &&
                 (!merchantReference || link.merchantReference.toLowerCase().includes(merchantReference.toLowerCase())) &&
