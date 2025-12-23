@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'preact/hooks';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../../../../../translations';
 import Typography from '../../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../../internal/Typography/types';
 import { useTermsRequirementsConfig } from './useTermsRequirementsConfig';
@@ -32,22 +31,22 @@ export const Requirements = ({
     return (
         <div className="adyen-pe-pay-by-link-requirements">
             <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                {i18n.get(termsRequirementsConfig.titleKey as TranslationKey)}
+                {i18n.get(termsRequirementsConfig.titleKey)}
             </Typography>
             <div className="adyen-pe-pay-by-link-requirements__sections-container">
                 {termsRequirementsConfig.sections.map(section => (
                     <div key={section.id} className="adyen-pe-pay-by-link-requirements__section">
                         <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                            {i18n.get(section.titleKey as TranslationKey)}
+                            {i18n.get(section.titleKey)}
                         </Typography>
                         <div className="adyen-pe-pay-by-link-requirements__section-content">
                             <Typography className="adyen-pe-pay-by-link-requirements__description" variant={TypographyVariant.BODY}>
-                                {i18n.get(section.descriptionKey as TranslationKey)}
+                                {i18n.get(section.descriptionKey)}
                             </Typography>
                             <ul className="adyen-pe-pay-by-link-requirements__list">
                                 {section.items.map(item => (
                                     <li key={item.key}>
-                                        <Typography variant={TypographyVariant.BODY}>{i18n.get(item.key as TranslationKey)}</Typography>
+                                        <Typography variant={TypographyVariant.BODY}>{i18n.get(item.key)}</Typography>
                                     </li>
                                 ))}
                             </ul>

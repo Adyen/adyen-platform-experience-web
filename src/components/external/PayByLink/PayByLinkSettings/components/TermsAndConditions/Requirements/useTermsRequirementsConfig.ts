@@ -1,37 +1,39 @@
 import { useCallback, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import localTermsRequirementsConfig from '../../../../../../../config/payByLink/termsRequirementsConfig.json';
+import { TranslationKey } from '../../../../../../../translations';
 
 export interface TermsRequirementItem {
-    key: string;
+    key: TranslationKey;
 }
 
 export interface TermsRequirementSection {
     id: string;
-    titleKey: string;
-    descriptionKey: string;
+    titleKey: TranslationKey;
+    descriptionKey: TranslationKey;
     items: TermsRequirementItem[];
 }
 
 export interface TermsRequirementsConfig {
-    titleKey: string;
+    titleKey: TranslationKey;
     sections: TermsRequirementSection[];
 }
 
 export const useTermsRequirementsConfig = () => {
     const { getCdnConfig } = useCoreContext();
 
-    const [termsRequirementsConfig, setTermsRequirementsConfig] = useState<TermsRequirementsConfig>(localTermsRequirementsConfig);
+    const localTerms = localTermsRequirementsConfig as unknown as TermsRequirementsConfig;
+    const [termsRequirementsConfig, setTermsRequirementsConfig] = useState<TermsRequirementsConfig>(localTerms);
 
     const getTermsRequirementsConfig = useCallback(async () => {
         const config = await getCdnConfig?.<TermsRequirementsConfig>({
             subFolder: 'payByLink',
             name: 'termsRequirementsConfig',
-            fallback: localTermsRequirementsConfig,
+            fallback: localTerms,
         });
 
-        setTermsRequirementsConfig(config ?? localTermsRequirementsConfig);
-    }, [getCdnConfig]);
+        setTermsRequirementsConfig(config ?? localTerms);
+    }, [getCdnConfig, localTerms]);
 
     return {
         termsRequirementsConfig,

@@ -173,13 +173,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 )}
             </div>
             {requirementsAreOpened && (
-                <Modal
-                    headerWithBorder={false}
-                    isDismissible={false}
-                    size={'full-screen'}
-                    isOpen={requirementsAreOpened}
-                    onClose={() => setRequirementsAreOpened(false)}
-                >
+                <Modal headerWithBorder={false} isDismissible={false} size={'full-screen'} isOpen={requirementsAreOpened} onClose={closeModal}>
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
             )}
