@@ -69,6 +69,8 @@ const FIELDS_KEYS = {
     storeCode: 'payByLink.overview.list.fields.store',
 } as const satisfies Record<(typeof PAY_BY_LINK_TABLE_FIELDS)[number], TranslationKey>;
 
+const errorMessage = 'payByLink.overview.errors.couldNotLoadLinks' as const;
+
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     error,
     loading,
@@ -142,11 +144,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
         message: ['payByLink.overview.errors.listEmpty.message'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorMessage = useMemo(() => {
-        return 'payByLink.overview.errors.couldNotLoadLinks' as const;
-    }, []);
-
-    const storeError: AdyenPlatformExperienceError | undefined = useMemo(() => {
+    const noStoresError = useMemo(() => {
         if (stores?.length !== 0) return undefined;
         return {
             message: 'No stores configured',
@@ -154,7 +152,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             errorCode: 'ACCOUNT_MISCONFIGURATION',
             type: 'error',
             requestId: '',
-        };
+        } as AdyenPlatformExperienceError;
     }, [stores]);
 
     const errorDisplay = useMemo(
@@ -162,13 +160,13 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             return (
                 <PaymentLinksErrors
                     getImageAsset={getImageAsset}
-                    error={storeError || error}
+                    error={noStoresError || error}
                     onContactSupport={onContactSupport}
                     errorMessage={errorMessage}
                 />
             );
         },
-        [error, errorMessage, getImageAsset, onContactSupport, storeError]
+        [error, getImageAsset, onContactSupport, noStoresError]
     );
 
     return (
@@ -176,7 +174,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             <DataGrid
                 narrowColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
-                error={storeError || error}
+                error={noStoresError || error}
                 columns={columns}
                 data={paymentLinks}
                 loading={loading}
