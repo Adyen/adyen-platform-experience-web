@@ -145,7 +145,6 @@ export const payByLinkMocks = [
     // GET /paybylink/themes/{storeId}
     http.get(mockEndpointsPBL.themes, async ({ params }) => {
         const store = getStoreForRequestPathParams(params);
-        console.log(store);
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
