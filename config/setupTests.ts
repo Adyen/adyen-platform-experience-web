@@ -16,5 +16,9 @@ beforeAll(() => {
             addEventListener: vi.fn(),
             removeEventListener: vi.fn(),
         }));
+
+        if (!HTMLElement.prototype.scrollIntoView) {
+            HTMLElement.prototype.scrollIntoView = vi.fn();
+        }
     }
 });

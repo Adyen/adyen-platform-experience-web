@@ -5,13 +5,16 @@ import { useState, useEffect } from 'preact/hooks';
 
 const icons = {
     'angle-right': () => import('../../../images/icons/angle-right.svg?component'),
+    'arrow-right': () => import('../../../images/icons/arrow-right.svg?component'),
     'checkmark-circle-fill': () => import('../../../images/icons/checkmark-circle-fill.svg?component'),
     'checkmark-square-fill': () => import('../../../images/icons/checkmark-square-fill.svg?component'),
     checkmark: () => import('../../../images/icons/checkmark.svg?component'),
+    'checkbox-disabled': () => import('../../../images/icons/checkbox-disabled.svg?component'),
     'chevron-down': () => import('../../../images/icons/chevron-down.svg?component'),
     'chevron-left': () => import('../../../images/icons/chevron-left.svg?component'),
     'chevron-right': () => import('../../../images/icons/chevron-right.svg?component'),
     'chevron-up': () => import('../../../images/icons/chevron-up.svg?component'),
+    'chevron-up-down': () => import('../../../images/icons/chevron-up-down.svg?component'),
     copy: () => import('../../../images/icons/copy.svg?component'),
     'cross-circle-fill': () => import('../../../images/icons/cross-circle-fill.svg?component'),
     search: () => import('../../../images/icons/search.svg?component'),

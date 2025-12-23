@@ -20,6 +20,7 @@ const Select = <T extends SelectItem>({
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
     disableFocusTrap = false,
+    disableToggleFocusOnClose = false,
     multiSelect = false,
     readonly = false,
     onChange = noop,
@@ -30,6 +31,7 @@ const Select = <T extends SelectItem>({
     placeholder,
     uniqueId,
     renderListItem,
+    renderButtonContent,
     isCollatingErrors,
     setToTargetWidth,
     withoutCollapseIndicator = false,
@@ -37,11 +39,13 @@ const Select = <T extends SelectItem>({
     fitPosition,
     fixedPopoverPositioning,
     onResetAction,
+    buttonVariant,
     ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
     const [textFilter, setTextFilter] = useState<string>('');
+    const [activeIndex, setActiveIndex] = useState<number>(-1);
     const filterInputRef = useRef<HTMLInputElement>(null);
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
@@ -61,6 +65,7 @@ const Select = <T extends SelectItem>({
     const dismissPopover = useCallback(() => {
         setTextFilter('');
         setShowList(false);
+        setActiveIndex(-1);
         if (showList) {
             resetSelection(cachedSelectedItems.current);
             pendingClickOutsideTriggeredHideList.current = true;
@@ -91,12 +96,13 @@ const Select = <T extends SelectItem>({
     const closeList = useCallback(() => {
         setTextFilter('');
         setShowList(false);
+        setActiveIndex(-1);
         resetCommitAction();
 
         if (!pendingClickOutsideTriggeredHideList.current) {
-            toggleButtonRef.current?.focus();
+            if (!disableToggleFocusOnClose) toggleButtonRef.current?.focus();
         } else pendingClickOutsideTriggeredHideList.current = false;
-    }, [resetCommitAction, setShowList, setTextFilter]);
+    }, [disableToggleFocusOnClose, resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
         cachedSelectedItems.current = selection;
@@ -142,17 +148,24 @@ const Select = <T extends SelectItem>({
     useEffect(() => {
         if (selectedItems.current !== selection) {
             selectedItems.current = selection;
-            if (!multiSelect || clearSelectionInProgress.current) {
+            // showList check added to prevent commitSelection from being executed on initial value assignment
+            if ((!multiSelect || clearSelectionInProgress.current) && showList) {
                 commitSelection();
                 closeList();
             }
         }
         clearSelectionInProgress.current = false;
-    }, [closeList, commitSelection, multiSelect, selection]);
+    }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
         if (committing) closeList();
     }, [committing, closeList]);
+
+    useEffect(() => {
+        if (!showList) {
+            cachedSelectedItems.current = selection;
+        }
+    }, [selection, showList]);
 
     /**
      * Handle keyDown events on the selectList button
@@ -184,6 +197,10 @@ const Select = <T extends SelectItem>({
                     break;
                 case InteractionKeyCode.ARROW_DOWN:
                 case InteractionKeyCode.ARROW_UP:
+                    if (filterable && showList) {
+                        // When filterable and list is open, arrow keys are handled by input
+                        return;
+                    }
                     break;
                 default:
                     return;
@@ -203,27 +220,29 @@ const Select = <T extends SelectItem>({
                 focus: {
                     let item = selectListRef.current?.firstElementChild as HTMLLIElement;
                     let firstAvailableItem: typeof item | undefined;
+                    let activeIndex = 0;
 
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
                                 item.tabIndex = 0;
-                                item.focus();
+                                filterable ? setActiveIndex(activeIndex) : item.focus();
                                 break focus;
                             }
                             firstAvailableItem = firstAvailableItem || item;
+                            activeIndex++;
                         }
                         item = item.nextElementSibling as HTMLLIElement;
                     }
 
-                    if (firstAvailableItem) {
+                    if (firstAvailableItem && !filterable) {
                         firstAvailableItem.tabIndex = 0;
                         firstAvailableItem.focus();
                     }
                 }
             });
         }
-    }, [showList]);
+    }, [filterable, showList]);
 
     /**
      * Handle keyDown events on the list elements
@@ -285,6 +304,80 @@ const Select = <T extends SelectItem>({
     );
 
     /**
+     * Handle keyDown events on the filter input
+     * Navigates through filtered items using arrow keys
+     * @param evt - KeyboardEvent
+     */
+    const handleFilterInputKeyDown = useCallback(
+        (evt: KeyboardEvent) => {
+            if (!filterable || !showList) return;
+
+            const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
+            const availableItems = filteredItems.filter(item => !item.disabled);
+
+            switch (evt.code) {
+                case InteractionKeyCode.ESCAPE:
+                    evt.preventDefault();
+                    closeList();
+                    break;
+                case InteractionKeyCode.ENTER:
+                    evt.preventDefault();
+                    if (activeIndex >= 0 && activeIndex < filteredItems.length) {
+                        const item = filteredItems[activeIndex];
+                        if (item && !item?.disabled) {
+                            select(item);
+                        }
+                    }
+                    break;
+                case InteractionKeyCode.ARROW_DOWN: {
+                    evt.preventDefault();
+                    if (availableItems.length === 0) break;
+
+                    let nextIndex = activeIndex + 1;
+                    while (nextIndex < filteredItems.length) {
+                        if (!filteredItems[nextIndex]?.disabled) {
+                            setActiveIndex(nextIndex);
+                            break;
+                        }
+                        nextIndex++;
+                    }
+                    // If we reached the end, wrap to first available
+                    if (nextIndex >= filteredItems.length) {
+                        for (let i = 0; i < filteredItems.length; i++) {
+                            if (!filteredItems[i]?.disabled) {
+                                setActiveIndex(i);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case InteractionKeyCode.ARROW_UP: {
+                    evt.preventDefault();
+                    if (availableItems.length === 0) break;
+
+                    let prevIndex = activeIndex - 1;
+                    while (prevIndex >= 0) {
+                        if (!filteredItems[prevIndex]?.disabled) {
+                            setActiveIndex(prevIndex);
+                            break;
+                        }
+                        prevIndex--;
+                    }
+                    // If we reached the start or activeIndex was -1, don't wrap
+                    if (prevIndex < 0) {
+                        setActiveIndex(-1);
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        },
+        [filterable, showList, items, textFilter, activeIndex, closeList, select]
+    );
+
+    /**
      * Updates the state with the current text filter value
      * @param e - KeyboardEvent
      */
@@ -292,6 +385,7 @@ const Select = <T extends SelectItem>({
         (e: Event) => {
             const value: string = (e.target as HTMLInputElement).value;
             setTextFilter(value.toLowerCase());
+            setActiveIndex(-1); // Reset active index when filter changes
         },
         [setTextFilter]
     );
@@ -316,6 +410,7 @@ const Select = <T extends SelectItem>({
     useEffect(() => {
         if (showList && filterable) {
             filterInputRef.current?.focus();
+            setActiveIndex(-1);
         }
         showingList.current = showList;
     }, [filterable, showList]);
@@ -323,6 +418,7 @@ const Select = <T extends SelectItem>({
     return (
         <div className={dropdownClassName}>
             <SelectButton
+                buttonVariant={buttonVariant}
                 id={selectButtonId}
                 appliedFilterNumber={appliedFilterNumber}
                 active={selection}
@@ -330,11 +426,13 @@ const Select = <T extends SelectItem>({
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
+                name={name}
                 onButtonKeyDown={handleButtonKeyDown}
-                onInput={handleTextFilter}
+                onFilterInputKeyDown={handleFilterInputKeyDown}
                 multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
+                renderButtonContent={renderButtonContent}
                 selectListId={selectListId}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
@@ -342,6 +440,7 @@ const Select = <T extends SelectItem>({
                 withoutCollapseIndicator={withoutCollapseIndicator}
                 ariaDescribedBy={!isCollatingErrors && selectButtonId ? `${selectButtonId}${ARIA_ERROR_SUFFIX}` : undefined}
                 {...ariaAttributeProps}
+                onInput={handleTextFilter}
             />
             <SelectList
                 popoverClassNameModifiers={popoverClassNameModifiers}
@@ -351,7 +450,7 @@ const Select = <T extends SelectItem>({
                 commitActions={commitActionButtons}
                 items={items}
                 multiSelect={multiSelect}
-                disableFocusTrap={disableFocusTrap}
+                disableFocusTrap={disableFocusTrap || filterable}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
                 selectListId={selectListId}
@@ -361,6 +460,8 @@ const Select = <T extends SelectItem>({
                 showList={showList}
                 showOverlay={showOverlay}
                 textFilter={textFilter}
+                activeIndex={filterable ? activeIndex : undefined}
+                filterable={filterable}
                 fitPosition={fitPosition}
                 fixedPopoverPositioning={fixedPopoverPositioning}
             />

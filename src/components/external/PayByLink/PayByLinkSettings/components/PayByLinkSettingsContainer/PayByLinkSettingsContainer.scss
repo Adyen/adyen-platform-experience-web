@@ -1,0 +1,47 @@
+@use '../../../../../../style';
+
+.adyen-pe-pay-by-link-settings {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
+
+    &__title {
+        margin-bottom: style.token(spacer-070);
+    }
+
+    &__content-header {
+        margin-bottom: style.token(spacer-080);
+    }
+
+    &__input-container {
+        margin-bottom: style.token(spacer-080);
+    }
+
+    &__content-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+        margin-top: style.token(spacer-070);
+    }
+
+    &__sidebar-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-090);
+    }
+
+    &__secondary-nav {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+        min-width: 25%;
+    }
+
+    &__cta-container {
+        display: flex;
+        gap: style.token(spacer-040);
+        justify-content: flex-end;
+    }
+}
