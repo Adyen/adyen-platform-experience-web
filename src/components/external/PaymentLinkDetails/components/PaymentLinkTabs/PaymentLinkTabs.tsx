@@ -68,7 +68,9 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                 },
                 {
                     key: 'paymentLinks.details.fields.shopper.fullName',
-                    value: `${paymentLink.shopperInformation?.shopperName?.firstName} ${paymentLink.shopperInformation?.shopperName?.lastName}`,
+                    value: [paymentLink.shopperInformation?.shopperName?.firstName, paymentLink.shopperInformation?.shopperName?.lastName]
+                        .filter(Boolean)
+                        .join(' '),
                 },
                 {
                     key: 'paymentLinks.details.fields.shopper.email',

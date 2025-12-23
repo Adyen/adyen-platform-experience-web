@@ -65,10 +65,8 @@ export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSucce
             <Typography el={titleEl} variant={TypographyVariant.SUBTITLE} stronger>
                 {i18n.get('paymentLinks.details.expiration.title')}
             </Typography>
-
-            <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expiration.description' as any)}</Typography>
-
-            {actionButtons.length > 0 && <ButtonActions actions={actionButtons} />}
+            <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expiration.description')}</Typography>
+            <ButtonActions actions={actionButtons} />
         </div>
     );
 };

@@ -22,6 +22,7 @@ type PaymentLinkSummaryProps = {
 export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const status = paymentLink?.linkInformation.status;
     const getStatusVariant = (status: IPayByLinkStatus): TagVariant => {
         switch (status) {
             case 'active':
@@ -40,15 +41,17 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
     return (
         <Card classNameModifiers={[CLASSNAMES.root]}>
             <div className={CLASSNAMES.content}>
-                <Tag variant={getStatusVariant(paymentLink?.linkInformation.status)}>
-                    {i18n.get(`payByLink.common.status.${paymentLink?.linkInformation.status}` as any) || paymentLink?.linkInformation.status}
+                <Tag variant={getStatusVariant(status)}>
+                    {i18n.has(`payByLink.common.status.${status}`)
+                        ? i18n.get(`payByLink.common.status.${status}`)
+                        : paymentLink?.linkInformation.status}
                 </Tag>
                 <Typography variant={TypographyVariant.TITLE} large>
                     {`${i18n.amount(paymentLink?.linkInformation.amount.value, paymentLink?.linkInformation.amount.currency)} ${paymentLink?.linkInformation.amount.currency}`}
                 </Typography>
                 <div>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={CLASSNAMES.expiresLabel}>
-                        {`${i18n.get('paymentLinks.details.fields.expiresOn' as any)}: `}
+                        {`${i18n.get('paymentLinks.details.fields.expiresOn')}: `}
                     </Typography>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                         {dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_SUMMARY)}

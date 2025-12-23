@@ -1204,8 +1204,10 @@ export const getPaymentLinkItemsByStatusGroup = (status: IPayByLinkStatusGroup):
     switch (status) {
         case 'active':
             allPaymentLinks = PAYMENT_LINKS.filter(link => ['active', 'paymentPending'].includes(link.linkInformation.status));
+            break;
         case 'inactive':
             allPaymentLinks = PAYMENT_LINKS.filter(link => ['completed', 'expired'].includes(link.linkInformation.status));
+            break;
         default:
             allPaymentLinks = PAYMENT_LINKS;
     }
@@ -1232,7 +1234,7 @@ export const getPaymentLinkDetails = (paymentLinkId: string): IPaymentLinkDetail
 export const expirePaymentLink = (paymentLinkId: string): void => {
     const paymentLink = PAYMENT_LINKS.find(link => link.linkInformation.paymentLinkId === paymentLinkId);
     if (!paymentLink) {
-        throw 'Payment link not found';
+        throw Error('Payment link not found');
     }
 
     paymentLink.linkInformation.status = 'expired';

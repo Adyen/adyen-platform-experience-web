@@ -27,7 +27,7 @@ describe('useStores', () => {
     });
 
     test('should fetch stores when getPayByLinkStores is available', () => {
-        mockUseFetch.mockReturnValue({ isFetching: false });
+        mockUseFetch.mockReturnValue({ isFetching: false, refetch: vi.fn() });
 
         renderHook(() => useStores());
 
@@ -53,7 +53,7 @@ describe('useStores', () => {
             ],
         };
 
-        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false });
+        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
 
@@ -78,7 +78,7 @@ describe('useStores', () => {
             data: STORES,
         };
 
-        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false });
+        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
 
@@ -92,7 +92,7 @@ describe('useStores', () => {
             data: STORES,
         };
 
-        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false });
+        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
 
@@ -108,7 +108,7 @@ describe('useStores', () => {
     });
 
     test('should handle undefined data gracefully', () => {
-        mockUseFetch.mockReturnValue({ data: undefined, isFetching: false });
+        mockUseFetch.mockReturnValue({ data: undefined, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
 
@@ -117,7 +117,7 @@ describe('useStores', () => {
     });
 
     test('should handle data without data property', () => {
-        mockUseFetch.mockReturnValue({ data: {}, isFetching: false });
+        mockUseFetch.mockReturnValue({ data: {}, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
 

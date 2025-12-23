@@ -53,7 +53,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle }: ExternalUICompon
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout> | undefined;
         if (isCopiedIndicatorVisible) {
-            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 2000);
+            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 1000);
         }
 
         return () => clearTimeout(timeout);

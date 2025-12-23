@@ -271,7 +271,7 @@ export const PayByLinkOverview = ({
 
     const refreshPaymentLinkList = useCallback(() => {
         updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
-    }, [statusGroup, updateFilters]);
+    }, [updateFilters]);
 
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>

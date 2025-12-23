@@ -13,7 +13,7 @@ export const Default: ElementStory<typeof PaymentLinkDetails, SessionControls> =
     },
     args: {
         session: EMPTY_SESSION_OBJECT,
-        id: 'PLTEST001',
+        id: 'PL45F0733C99EAE0BCA6AC210',
     },
 };
 
