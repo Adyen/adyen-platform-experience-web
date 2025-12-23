@@ -5,13 +5,26 @@ import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
 import { useCallback } from 'preact/hooks';
 import { InputBaseProps } from './types';
+import { filterDisallowedCharacters } from './utils';
 import './FormFields.scss';
 
 function InputBase(
-    { onInput, onKeyUp, trimOnBlur, onBlurHandler, onBlur, onFocusHandler, errorMessage, ...props }: InputBaseProps,
+    {
+        onInput,
+        onKeyUp,
+        trimOnBlur,
+        onBlurHandler,
+        onBlur,
+        onFocusHandler,
+        errorMessage,
+        iconBeforeSlot,
+        iconAfterSlot,
+        onKeyDown,
+        ...props
+    }: InputBaseProps,
     ref: ForwardedRef<HTMLInputElement | null>
 ) {
-    const { autoCorrect, classNameModifiers, isInvalid, isValid, readonly = false, spellCheck, type, uniqueId, isCollatingErrors, disabled } = props;
+    const { classNameModifiers, isInvalid, isValid, readonly = false, type, uniqueId, isCollatingErrors, disabled } = props;
 
     /**
      * To avoid confusion with misplaced/misdirected onChange handlers - InputBase only accepts onInput, onBlur & onFocus handlers.
@@ -66,26 +79,48 @@ function InputBase(
         classNameModifiers?.map(m => `adyen-pe-input--${m}`)
     );
 
+    const handleKeyDown = useCallback(
+        (e: h.JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+            filterDisallowedCharacters({ event: e, inputType: type, onValidInput: () => onKeyDown?.(e) });
+        },
+        [type, onKeyDown]
+    );
+
     // Don't spread classNameModifiers etc to input element (it ends up as an attribute on the element itself)
     const { classNameModifiers: cnm, uniqueId: uid, isInvalid: iiv, isValid: iv, isCollatingErrors: ce, ...newProps } = props;
 
+    const hasIcons = iconBeforeSlot || iconAfterSlot;
+
+    const inputElement = (
+        <input
+            id={uniqueId}
+            {...newProps}
+            onKeyDown={handleKeyDown}
+            type={type}
+            className={inputClassNames}
+            readOnly={readonly}
+            aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
+            aria-invalid={isInvalid}
+            onInput={handleInput}
+            onBlurCapture={handleBlur}
+            onFocus={handleFocus}
+            onKeyUp={handleKeyUp}
+            disabled={disabled}
+            ref={ref}
+        />
+    );
+
     return (
         <>
-            <input
-                id={uniqueId}
-                {...newProps}
-                type={type}
-                className={inputClassNames}
-                readOnly={readonly}
-                aria-describedby={isCollatingErrors ? undefined : `${uniqueId}${ARIA_ERROR_SUFFIX}`}
-                aria-invalid={isInvalid}
-                onInput={handleInput}
-                onBlurCapture={handleBlur}
-                onFocus={handleFocus}
-                onKeyUp={handleKeyUp}
-                disabled={disabled}
-                ref={ref}
-            />
+            {hasIcons ? (
+                <div className="adyen-pe-input__container">
+                    {iconBeforeSlot && <span className="adyen-pe-input__slot-before">{iconBeforeSlot}</span>}
+                    {inputElement}
+                    {iconAfterSlot && <span className="adyen-pe-input__slot-after">{iconAfterSlot}</span>}
+                </div>
+            ) : (
+                inputElement
+            )}
             {isInvalid && errorMessage && (
                 <span className="adyen-pe-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
                     {errorMessage}

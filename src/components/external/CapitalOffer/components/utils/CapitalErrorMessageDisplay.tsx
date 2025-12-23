@@ -28,7 +28,7 @@ export const CapitalErrorMessageDisplay = ({
             <>
                 {onBack && (
                     <Button variant={ButtonVariant.SECONDARY} onClick={onBack}>
-                        {i18n.get('back')}
+                        {i18n.get('capital.common.actions.goBack')}
                     </Button>
                 )}
             </>

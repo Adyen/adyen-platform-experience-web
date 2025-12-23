@@ -7,7 +7,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
-import { isFunction, listFrom } from '../../../../../utils';
+import { isFunction, listFrom, noop } from '../../../../../utils';
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
@@ -106,8 +106,11 @@ export const DisputesOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection({
+        balanceAccounts,
+        allowAllSelection: true,
+    });
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount, 'last90Days');
 
     const [modalVisible, setModalVisible] = useState(false);
     const [mobileStyleOverrides, setMobileStyleOverrides] = useState<h.JSX.CSSProperties | undefined>();
@@ -120,7 +123,7 @@ export const DisputesOverview = ({
     // (will not cause the active status group tab to change).
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
 
-    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.filters.statusGroup.label'), [i18n]);
+    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.overview.common.filters.types.statusGroup'), [i18n]);
 
     const disputeDetails = useMemo(
         () => ({
@@ -277,74 +280,85 @@ export const DisputesOverview = ({
 
     return (
         <div style={mobileStyleOverrides} className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
-            <Header hideTitle={hideTitle} titleKey="disputes.title">
+            <Header hideTitle={hideTitle} titleKey="disputes.overview.common.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
             <div>
-                <div className={TABS_CONTAINER_CLASS}>
-                    {isMobileContainer ? (
-                        <DisputesOverviewTabsDropdown
-                            aria-label={statusGroupAriaLabel}
-                            activeTab={statusGroupActiveTab ?? statusGroup}
-                            onChange={onStatusGroupChange}
+                <div>
+                    <div className={TABS_CONTAINER_CLASS}>
+                        {isMobileContainer ? (
+                            <DisputesOverviewTabsDropdown
+                                aria-label={statusGroupAriaLabel}
+                                activeTab={statusGroupActiveTab ?? statusGroup}
+                                onChange={onStatusGroupChange}
+                            />
+                        ) : (
+                            <Tabs
+                                aria-label={statusGroupAriaLabel}
+                                tabs={DISPUTE_STATUS_GROUPS_TABS}
+                                activeTab={statusGroupActiveTab}
+                                onChange={onStatusGroupChange}
+                            />
+                        )}
+                    </div>
+
+                    <FilterBar {...filterBarState} ariaLabelKey="disputes.overview.common.filters.a11y.label">
+                        <BalanceAccountSelector
+                            activeBalanceAccount={activeBalanceAccount}
+                            balanceAccountSelectionOptions={balanceAccountSelectionOptions}
+                            onBalanceAccountSelection={onBalanceAccountSelection}
                         />
-                    ) : (
-                        <Tabs
-                            aria-label={statusGroupAriaLabel}
-                            tabs={DISPUTE_STATUS_GROUPS_TABS}
-                            activeTab={statusGroupActiveTab}
-                            onChange={onStatusGroupChange}
+                        <DateFilter
+                            canResetFilters={canResetFilters}
+                            defaultParams={defaultParams}
+                            filters={filters}
+                            nowTimestamp={nowTimestamp}
+                            refreshNowTimestamp={refreshNowTimestamp}
+                            sinceDate={sinceDate}
+                            timezone={activeBalanceAccount?.timeZone}
+                            updateFilters={updateFilters}
                         />
-                    )}
+                        <MultiSelectionFilter
+                            {...disputeSchemesFilter}
+                            placeholder={i18n.get('disputes.overview.common.filters.types.paymentMethod')}
+                            onResetAction={noop}
+                        />
+                        {statusGroup !== 'FRAUD_ALERTS' && (
+                            <MultiSelectionFilter
+                                {...disputeReasonsFilter}
+                                placeholder={i18n.get('disputes.overview.common.filters.types.disputeReason')}
+                                onResetAction={noop}
+                            />
+                        )}
+                    </FilterBar>
                 </div>
 
-                <FilterBar {...filterBarState} ariaLabelKey="disputes.filters">
-                    <BalanceAccountSelector
-                        activeBalanceAccount={activeBalanceAccount}
-                        balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                        onBalanceAccountSelection={onBalanceAccountSelection}
-                    />
-                    <DateFilter
-                        canResetFilters={canResetFilters}
-                        defaultParams={defaultParams}
-                        filters={filters}
-                        nowTimestamp={nowTimestamp}
-                        refreshNowTimestamp={refreshNowTimestamp}
-                        sinceDate={sinceDate}
-                        timezone={activeBalanceAccount?.timeZone}
-                        updateFilters={updateFilters}
-                    />
-                    <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
-                    {statusGroup !== 'FRAUD_ALERTS' && (
-                        <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
-                    )}
-                </FilterBar>
-            </div>
-            <DisputeManagementModal
-                dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
-                selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
-                resetDetails={resetDetails}
-                onContactSupport={onContactSupport}
-                refreshDisputesList={refreshDisputesList}
-                setModalVisible={setModalVisible}
-            >
-                <DisputesTable
-                    activeBalanceAccount={activeBalanceAccount}
-                    balanceAccountId={activeBalanceAccount?.id}
-                    loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
-                    data={records}
-                    showPagination={true}
-                    limit={limit}
-                    limitOptions={limitOptions}
+                <DisputeManagementModal
+                    dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
+                    selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
+                    resetDetails={resetDetails}
                     onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
-                    error={error as AdyenPlatformExperienceError}
-                    onRowClick={onRowClick}
-                    statusGroup={statusGroup}
-                    {...paginationProps}
-                />
-            </DisputeManagementModal>
+                    refreshDisputesList={refreshDisputesList}
+                    setModalVisible={setModalVisible}
+                >
+                    <DisputesTable
+                        activeBalanceAccount={activeBalanceAccount}
+                        balanceAccountId={activeBalanceAccount?.id}
+                        loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
+                        data={records}
+                        showPagination={true}
+                        limit={limit}
+                        limitOptions={limitOptions}
+                        onContactSupport={onContactSupport}
+                        onLimitSelection={updateLimit}
+                        error={error as AdyenPlatformExperienceError}
+                        onRowClick={onRowClick}
+                        statusGroup={statusGroup}
+                        {...paginationProps}
+                    />
+                </DisputeManagementModal>
+            </div>
         </div>
     );
 };

@@ -1,4 +1,12 @@
 import { boolOrFalse } from '../../../utils';
+import { EndpointName } from '../../../types/api/endpoints';
+import { HttpOptions } from '../../Http/types';
+
+export const SETUP_ENDPOINTS_API_VERSIONS: Partial<Record<EndpointName, HttpOptions['apiVersion']>> = {
+    getTransaction: 2,
+    getTransactions: 2,
+    getTransactionTotals: 2,
+} as const;
 
 export const SETUP_ENDPOINT_PATH = '/setup';
 export const AUTO_REFRESH = boolOrFalse(process.env.SESSION_AUTO_REFRESH);

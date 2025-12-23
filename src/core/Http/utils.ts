@@ -1,4 +1,5 @@
 import { isNullish } from '../../utils';
+import { API_VERSION } from './constants';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
 
@@ -33,6 +34,11 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
     }
 };
 
+export const getApiVersion = (options: HttpOptions) => {
+    const [, version] = String(options.apiVersion).match(/^v?([1-9]\d*)$/i) ?? [];
+    return version ? `v${version}` : API_VERSION;
+};
+
 export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];
 
 export const getResponseDownloadFilename = (response: Response): string | undefined => {
@@ -41,7 +47,7 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
-export const getRequestBodyForContentType = (body: any, contentType: string) => {
+export const getRequestBodyForContentType = (body: any, contentType?: string) => {
     switch (contentType) {
         case 'application/json':
             return JSON.stringify(body);
@@ -54,8 +60,8 @@ export const getRequestBodyForContentType = (body: any, contentType: string) => 
 
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
-    const SDKVersion = process.env.VITE_VERSION;
-    const contentType = options.contentType?.toLowerCase() ?? 'application/json';
+    const SDKVersion = !options.versionless && process.env.VITE_VERSION;
+    const contentType = options.skipContentType ? undefined : (options.contentType?.toLowerCase() ?? 'application/json');
 
     return {
         method,

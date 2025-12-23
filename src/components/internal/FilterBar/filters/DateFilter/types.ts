@@ -14,6 +14,7 @@ export interface DateFilterProps extends BaseFilterProps {
     selectedPresetOption?: string;
     showTimezoneInfo?: boolean;
     timeRangePresetOptions: UseTimeRangeSelectionConfig['options'];
+    timeRangeSelectorLabel?: string;
     timezone?: UseTimeRangeSelectionConfig['timezone'];
     [DateRangeFilterParam.FROM]?: string;
     [DateRangeFilterParam.TO]?: string;

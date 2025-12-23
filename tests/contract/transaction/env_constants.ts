@@ -1,14 +1,15 @@
 import process from 'node:process';
 import dotenv from 'dotenv';
-import { SuccessResponse } from '../../../src/types/api/endpoints';
+import { operations } from '../../../src/types/api/resources/TransactionsResource';
+import { ExtractResponseType } from '../../../src/types/api/endpoints';
 
 dotenv.config({ path: './envs/.env' });
 
 interface TransactionsVariables {
     transactionId: string;
     refundTransactionId: string;
-    transaction_details_response: SuccessResponse<'getTransaction'>;
-    refund_details_response: SuccessResponse<'getTransaction'>;
+    transaction_details_response: ExtractResponseType<operations['getTransaction']>;
+    refund_details_response: ExtractResponseType<operations['getTransaction']>;
 }
 
 const TEST: TransactionsVariables = {
@@ -70,8 +71,8 @@ const TEST: TransactionsVariables = {
         paymentPspReference: 'L9TRSQPRP472P4V5',
         refundMetadata: {
             refundPspReference: 'BXBZVHZH5S5H3275',
+            originalPaymentId: 'EVJN42CM7223223N5LQZCWQDZZ29MFEUR',
             refundReason: 'requested_by_customer',
-            originalPaymentId: 'EVJN4296S223223N5LQZCW83BL63NREUR',
             refundType: 'full',
         },
     },

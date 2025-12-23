@@ -106,7 +106,7 @@ export default function Modal({
                                         iconButton
                                         classNameModifiers={['circle']}
                                         className={`adyen-pe-modal__dismiss-button`}
-                                        aria-label={i18n.get('modal.dismissButton.label')}
+                                        aria-label={i18n.get('common.modal.controls.dismiss.label')}
                                     >
                                         <Icon name="cross" />
                                     </Button>

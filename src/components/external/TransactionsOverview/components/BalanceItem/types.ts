@@ -8,4 +8,5 @@ export type BalanceItemProps = {
     widths?: number[];
     onWidthsSet: (widths: number[]) => void;
     isEmpty?: boolean;
+    balanceElemId?: string;
 };

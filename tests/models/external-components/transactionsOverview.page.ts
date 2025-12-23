@@ -1,4 +1,4 @@
-import { MAX_TRANSACTIONS_DATE_RANGE_MONTHS } from '../../../src/components/external/TransactionsOverview/components/TransactionsOverview/constants';
+import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../../src/components/external/TransactionsOverview/constants';
 import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
@@ -20,13 +20,13 @@ export class TransactionsOverviewPage {
 
         const filterBar = new FilterBarPage(page, rootElementSelector);
         this.filterBar = filterBar.rootElement;
-        this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('balanceAccount'));
-        this.dateFilter = filterBar.getFilter(getTranslatedKey('rangePreset.last30Days'));
+        this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('common.filters.types.account.label'));
+        this.dateFilter = filterBar.getFilter(getTranslatedKey('common.filters.types.date.rangeSelect.options.last30Days'));
 
         this._applyDateFilter = applyDateFilter(page, {
             earliestDate: now => {
                 const earliest = new Date(now);
-                earliest.setMonth(earliest.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
+                earliest.setFullYear(earliest.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
                 return earliest;
             },
             latestDate: now => new Date(now),

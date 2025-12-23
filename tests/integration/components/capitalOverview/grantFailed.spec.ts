@@ -20,6 +20,8 @@ test.describe('Grant: Failed', () => {
 
     test('should render a tooltip when the status tag is hovered', async ({ page }) => {
         await page.getByRole('button', { name: 'Failed' }).hover();
-        await expect(page.getByText("We couldn't process this request. Try again with a new offer.")).toBeVisible();
+        const tooltip = page.getByText("We couldn't process this request. Try again with a new offer.");
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 });

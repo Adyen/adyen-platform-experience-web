@@ -16,6 +16,7 @@ import {
     PENDING_GRANT_WITH_ANACREDIT,
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
+    GRANT_NL_ACCOUNT,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -235,7 +236,16 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
     ],
-    grantActiveWithGBRepaymentAccount: [
+    repaymentNL: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT] }],
+            },
+        },
+    ],
+    repaymentGB: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         {
             endpoint: mockEndpoints.grants,
@@ -244,12 +254,21 @@ export const CapitalOverviewMockedResponses = capitalFactory({
             },
         },
     ],
-    grantActiveWithUSRepaymentAccount: [
+    repaymentUS: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         {
             endpoint: mockEndpoints.grants,
             response: {
                 data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_US_ACCOUNT] }],
+            },
+        },
+    ],
+    repaymentNoTransferInstruments: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        {
+            endpoint: mockEndpoints.grants,
+            response: {
+                data: [{ ...ACTIVE_GRANT, unscheduledRepaymentAccounts: [GRANT_NL_ACCOUNT], transferInstruments: [] }],
             },
         },
     ],

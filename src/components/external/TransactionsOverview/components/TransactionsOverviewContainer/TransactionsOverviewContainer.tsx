@@ -11,7 +11,7 @@ function TransactionsOverviewContainer({ ...props }: ExternalUIComponentProps<Tr
         <DataOverviewContainer
             balanceAccountsError={error}
             className={BASE_CLASS}
-            errorMessage={'weCouldNotLoadTheTransactionsOverview'}
+            errorMessage={'transactions.overview.errors.unavailable'}
             isBalanceAccountIdWrong={isBalanceAccountIdWrong}
             onContactSupport={props.onContactSupport}
         >

@@ -20,8 +20,9 @@ export const DefendDocumentUpload = ({
     mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
-    const { title, primaryDescriptionItems } = useMemo(() => getDefenseDocumentContent(i18n, document), [i18n, document]) || {};
-    const { removeFieldFromDefendPayload, addFileToDefendPayload } = useDisputeFlow();
+    const { removeFieldFromDefendPayload, addFileToDefendPayload, defenseDocumentConfig } = useDisputeFlow();
+    const { title, primaryDescriptionItems } =
+        useMemo(() => getDefenseDocumentContent(defenseDocumentConfig, i18n, document), [defenseDocumentConfig, i18n, document]) || {};
     return (
         <div className="adyen-pe-defend-dispute-document-upload">
             <div>

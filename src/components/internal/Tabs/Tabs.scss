@@ -3,7 +3,7 @@
 .adyen-pe-tabs {
     display: flex;
     gap: style.token(spacer-090);
-    margin: style.token(spacer-070) 0 style.token(spacer-030);
+    margin: 0 0 style.token(spacer-030);
 
     &__tab {
         appearance: none;
@@ -42,7 +42,8 @@
         }
 
         &:focus-visible::after {
-            box-shadow: 0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+            box-shadow:
+                0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
                 0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
         }
 

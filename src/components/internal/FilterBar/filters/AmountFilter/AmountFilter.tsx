@@ -78,21 +78,21 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
 
         switch (amountFormat) {
             case AmountFormat.BETWEEN:
-                formattedValue = i18n.get('filters.amount.between', {
+                formattedValue = i18n.get('common.filters.types.amount.range.between', {
                     values: { minAmount: formattedMinAmount, maxAmount: formattedMaxAmount },
                 });
                 break;
 
             case AmountFormat.EXACT:
-                formattedValue = i18n.get('filters.amount.only', { values: { amount: formattedMaxAmount } });
+                formattedValue = i18n.get('common.filters.types.amount.range.only', { values: { amount: formattedMaxAmount } });
                 break;
 
             case AmountFormat.MAX:
-                formattedValue = i18n.get('filters.amount.max', { values: { amount: formattedMaxAmount } });
+                formattedValue = i18n.get('common.filters.types.amount.range.max', { values: { amount: formattedMaxAmount } });
                 break;
 
             case AmountFormat.MIN:
-                formattedValue = i18n.get('filters.amount.min', { values: { amount: formattedMinAmount } });
+                formattedValue = i18n.get('common.filters.types.amount.range.min', { values: { amount: formattedMinAmount } });
                 break;
 
             case AmountFormat.ALL:

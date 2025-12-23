@@ -18,13 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm i
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
 
       - name: Run contract tests
         run: npm run test:contract
@@ -43,13 +38,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Notify Mattermost
+      - name: Notify Slack
         env:
-          MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           if [[ "${{ needs.contract-tests.result }}" == "success" ]]; then
             STATUS="✅ Contract tests succeeded"
           else
             STATUS="@here Contract tests failed ❌❌"
           fi
-          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS\n\nWorkflow: ${{ github.workflow }}\n\nSee [details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" $MATTERMOST_WEBHOOK_URL
+          curl -X POST -H 'Content-Type: application/json' --data "{\"text\":\"$STATUS\n\nWorkflow: ${{ github.workflow }}\n\nSee <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|details>\"}" $SLACK_WEBHOOK_URL

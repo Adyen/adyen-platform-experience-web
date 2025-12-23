@@ -78,7 +78,7 @@ const SelectList = fixedForwardRef(
                             );
                         })
                     ) : (
-                        <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
+                        <div className={noOptionsClassName}>{i18n.get('common.inputs.select.errors.noOptions')}</div>
                     )}
                 </ul>
             </PopoverContainer>

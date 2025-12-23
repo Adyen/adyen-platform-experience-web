@@ -11,15 +11,7 @@ export class ReportsElement extends UIElement<ReportsOverviewComponentProps> {
     }
 
     public componentToRender = () => {
-        return (
-            <Reports
-                {...this.props}
-                balanceAccountId={this.props.balanceAccountId}
-                ref={(ref: UIElement<ReportsOverviewComponentProps>) => {
-                    this.componentRef = ref;
-                }}
-            ></Reports>
-        );
+        return <Reports {...this.props} />;
     };
 }
 

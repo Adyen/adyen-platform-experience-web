@@ -1,5 +1,5 @@
 import { asPlainObject, isPlainObject } from '../../../src/utils';
-import { AvailableVersions, EndpointsUrl, RequestArgs } from './types';
+import { AllowedHttpMethods, AvailableVersions, EndpointUrl, RequestArgs } from './types';
 import dotenv from 'dotenv';
 dotenv.config({ path: './envs/.env' });
 
@@ -28,7 +28,9 @@ const buildUrl = (baseUrl: string, queryParams: Record<any, any>) => {
     return queryString ? `${baseUrl}?${queryString}` : baseUrl;
 };
 
-export const getRequestURL = <Endpoint extends EndpointsUrl, Version extends AvailableVersions = 'v1'>(request: RequestArgs<Endpoint, Version>) => {
+export const getRequestURL = <Endpoint extends EndpointUrl, Method extends AllowedHttpMethods, Version extends AvailableVersions = 1>(
+    request: RequestArgs<Endpoint, Method, Version>
+) => {
     let path = request.endpoint as string;
 
     if (requestHasParams(request)) {
@@ -43,5 +45,5 @@ export const getRequestURL = <Endpoint extends EndpointsUrl, Version extends Ava
             path = buildUrl(path, searchParams);
         }
     }
-    return `${request.version || 'v1'}${path}`;
+    return `v${request.version}${path}`;
 };

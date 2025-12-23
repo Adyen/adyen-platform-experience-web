@@ -10,7 +10,7 @@ const getCapitalRegion = (legalEntity?: ILegalEntity) => {
 const getSubtitleByRegion = (region?: string) => {
     switch (region) {
         case SupportedLocation.EU:
-            return 'capital.legalSubtitleEU';
+            return 'capital.common.loanProviderInfo.EU' satisfies TranslationKey;
         default:
             return null;
     }
@@ -19,13 +19,13 @@ const getSubtitleByRegion = (region?: string) => {
 const getSubtitleByCountry = (countryCode?: string) => {
     switch (countryCode) {
         case SupportedLocation.AU:
-            return 'capital.legalSubtitleAU';
+            return 'capital.common.loanProviderInfo.AU' satisfies TranslationKey;
         case SupportedLocation.GB:
-            return 'capital.legalSubtitleGB';
+            return 'capital.common.loanProviderInfo.GB' satisfies TranslationKey;
         case SupportedLocation.US:
-            return 'capital.legalSubtitleUS';
+            return 'capital.common.loanProviderInfo.US' satisfies TranslationKey;
         case SupportedLocation.CA:
-            return 'capital.legalSubtitleCA';
+            return 'capital.common.loanProviderInfo.CA' satisfies TranslationKey;
         default:
             return null;
     }

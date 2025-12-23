@@ -9,13 +9,13 @@ import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSe
 
 describe('BalanceAccountSelector', () => {
     type BalanceAccountSelectorWrapperProps = {
-        balanceAccounts: NonNullable<Parameters<typeof useBalanceAccountSelection>[0]>;
+        balanceAccounts: NonNullable<Parameters<typeof useBalanceAccountSelection>[0]['balanceAccounts']>;
     };
 
     const BALANCE_ACCOUNTS_WITHOUT_DESCRIPTION = BALANCE_ACCOUNTS.map(({ description, ...account }) => account);
 
     const BalanceAccountSelectorWrapper = ({ balanceAccounts }: BalanceAccountSelectorWrapperProps) => {
-        const { balanceAccountSelectionOptions } = useBalanceAccountSelection(balanceAccounts);
+        const { balanceAccountSelectionOptions } = useBalanceAccountSelection({ balanceAccounts });
         return (
             <BalanceAccountSelector
                 balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -26,7 +26,7 @@ describe('BalanceAccountSelector', () => {
     };
 
     test('should render selected balance account with description (if available)', () => {
-        render(<BalanceAccountSelectorWrapper balanceAccounts={BALANCE_ACCOUNTS} />);
+        render(<BalanceAccountSelectorWrapper balanceAccounts={[...BALANCE_ACCOUNTS]} />);
 
         const activeBalanceAccountDescription = BALANCE_ACCOUNTS[0]?.description!;
         const buttonTextElement = within(screen.getByRole('button')).getByText(activeBalanceAccountDescription);

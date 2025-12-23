@@ -1,38 +1,25 @@
-import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
-import { TransactionsTable, TRANSACTION_FIELDS } from '../TransactionsTable/TransactionsTable';
-import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
-import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
-import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
-import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { TransactionOverviewComponentProps, ExternalUIComponentProps, FilterParam, CustomDataRetrieved } from '../../../../types';
-import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
+import cx from 'classnames';
+import { useEffect, useState } from 'preact/hooks';
+import useAccountBalances from '../../../../../hooks/useAccountBalances';
+import useTransactionsList from '../../hooks/useTransactionsList';
+import useTransactionsTotals from '../../hooks/useTransactionsTotals';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
+import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
+import { classes, INITIAL_FILTERS } from '../../constants';
 import { Header } from '../../../../internal/Header';
-import { IBalanceAccountBase, ITransaction } from '../../../../../types';
-import { isFunction, isUndefined, listFrom } from '../../../../../utils';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
+import { IBalanceAccountBase } from '../../../../../types';
+import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
+import TransactionsList from '../TransactionsList/TransactionsList';
 import { Balances } from '../Balances/Balances';
-import MultiSelectionFilter from '../MultiSelectionFilter';
-import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
-import useTransactionsOverviewMultiSelectionFilters from '../../hooks/useTransactionsOverviewMultiSelectionFilters';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { AmountFilter } from '../../../../internal/FilterBar/filters/AmountFilter/AmountFilter';
-import { BASE_CLASS, BASE_CLASS_DETAILS, MAX_TRANSACTIONS_DATE_RANGE_MONTHS, SUMMARY_CLASS, SUMMARY_ITEM_CLASS } from './constants';
-import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
-import hasCustomField from '../../../../utils/customData/hasCustomField';
-import mergeRecords from '../../../../utils/customData/mergeRecords';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection = true,
-    preferredLimit = DEFAULT_PAGE_LIMIT,
+    allowLimitSelection,
+    preferredLimit,
     onRecordSelection,
     showDetails,
     isLoadingBalanceAccount,
@@ -42,219 +29,108 @@ export const TransactionsOverview = ({
 }: ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { i18n } = useCoreContext();
-    const { getTransactions: transactionsEndpointCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('transactions', activeBalanceAccount);
-
-    const getTransactions = useCallback(
-        async ({ balanceAccount, ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
-            const requestOptions = { signal, errorLevel: 'error' } as const;
-
-            return transactionsEndpointCall!(requestOptions, {
-                query: {
-                    ...pageRequestParams,
-                    statuses: listFrom<ITransaction['status']>(pageRequestParams[FilterParam.STATUSES]),
-                    categories: listFrom<ITransaction['category']>(pageRequestParams[FilterParam.CATEGORIES]),
-                    currencies: listFrom<ITransaction['amount']['currency']>(pageRequestParams[FilterParam.CURRENCIES]),
-                    createdSince:
-                        pageRequestParams[FilterParam.CREATED_SINCE] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_SINCE],
-                    createdUntil:
-                        pageRequestParams[FilterParam.CREATED_UNTIL] ?? defaultParams.current.defaultFilterParams[FilterParam.CREATED_UNTIL],
-                    sortDirection: 'desc' as const,
-                    balanceAccountId: activeBalanceAccount?.id ?? '',
-                    minAmount: !isUndefined(pageRequestParams.minAmount) ? parseFloat(pageRequestParams.minAmount) : undefined,
-                    maxAmount: !isUndefined(pageRequestParams.maxAmount) ? parseFloat(pageRequestParams.maxAmount) : undefined,
-                },
-            });
-        },
-        [activeBalanceAccount?.id, defaultParams, transactionsEndpointCall]
-    );
-
-    // FILTERS
+    const [filters, setFilters] = useState(INITIAL_FILTERS);
     const filterBarState = useFilterBarState();
-    const _onFiltersChanged = useMemo(() => (isFunction(onFiltersChanged) ? onFiltersChanged : void 0), [onFiltersChanged]);
-    const preferredLimitOptions = useMemo(() => (allowLimitSelection ? LIMIT_OPTIONS : undefined), [allowLimitSelection]);
+    const userEvents = useAnalyticsContext();
 
-    //TODO - Infer the return type of getTransactions instead of having to specify it
-    const { canResetFilters, error, fetching, filters, limit, limitOptions, records, resetFilters, updateFilters, updateLimit, ...paginationProps } =
-        useCursorPaginatedRecords<ITransaction, 'data', string, FilterParam>({
-            fetchRecords: getTransactions,
-            dataField: 'data',
-            filterParams: defaultParams.current.defaultFilterParams,
-            initialFiltersSameAsDefault: true,
-            onFiltersChanged: _onFiltersChanged,
-            preferredLimit,
-            preferredLimitOptions,
-            enabled: !!activeBalanceAccount?.id && !!transactionsEndpointCall,
+    useEffect(() => {
+        userEvents.addEvent?.('Landed on page', {
+            category: 'PIE components',
+            subCategory: 'Transactions overview',
         });
+    }, [userEvents]);
 
-    const [availableCurrencies, setAvailableCurrencies] = useState<ITransaction['amount']['currency'][] | undefined>([]);
-    const [isAvailableCurrenciesFetching, setIsAvailableCurrenciesFetching] = useState(false);
-    const handleCurrenciesChange = useCallback((currencies: ITransaction['amount']['currency'][] | undefined, isFetching: boolean) => {
-        setAvailableCurrencies(currencies);
-        setIsAvailableCurrenciesFetching(isFetching);
-    }, []);
-    const { categoriesFilter, currenciesFilter, statusesFilter } = useTransactionsOverviewMultiSelectionFilters(
-        {
-            filters,
-            updateFilters,
-        },
-        availableCurrencies
-    );
+    const { balanceAccount } = filters;
+    const { isMobileContainer } = filterBarState;
 
-    useEffect(() => {
-        setAvailableCurrencies(undefined);
-        updateFilters({
-            [FilterParam.BALANCE_ACCOUNT]: activeBalanceAccount?.id,
-            [FilterParam.CURRENCIES]: undefined,
-        });
-    }, [updateFilters, activeBalanceAccount?.id]);
+    const canFetchTransactions = !!balanceAccount?.id;
+    const canFetchTransactionsTotals = !!balanceAccount?.id;
 
-    useEffect(() => {
-        refreshNowTimestamp();
-    }, [filters, refreshNowTimestamp]);
+    const {
+        balances,
+        currencies,
+        isEmpty: balancesEmpty,
+        isMultiCurrency: hasMultipleCurrencies,
+        isWaiting: loadingBalances,
+    } = useAccountBalances({ balanceAccount });
 
-    // Set status filter's value fixed as "Booked" temporarily
-    useEffect(() => {
-        statusesFilter.updateSelection({ target: { value: 'Booked', name: 'status' } });
-    }, [statusesFilter]);
-
-    const isNarrowContainer = useResponsiveContainer(containerQueries.down.sm);
-
-    const hasMultipleCurrencies = !!availableCurrencies && availableCurrencies.length > 1;
-
-    const transactionDetails = useMemo(
-        () => ({
-            showDetails: showDetails ?? true,
-            callback: onRecordSelection,
-        }),
-        [showDetails, onRecordSelection]
-    );
-
-    const modalOptions = useMemo(() => ({ transaction: transactionDetails }), [transactionDetails]);
-
-    const mergeCustomData = useCallback(
-        ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
-            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
-        []
-    );
-
-    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, TRANSACTION_FIELDS), [dataCustomization?.list?.fields]);
-
-    const { customRecords: transactions, loadingCustomRecords } = useCustomColumnsData<ITransaction>({
-        records,
-        hasCustomColumn,
-        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
-        mergeCustomData,
+    const { totals, isWaiting: loadingTotals } = useTransactionsTotals({
+        currencies,
+        filters,
+        loadingBalances,
+        fetchEnabled: canFetchTransactionsTotals,
     });
-    const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
-    const onRowClick = useCallback(
-        ({ id }: ITransaction) => {
-            updateDetails({
-                selection: {
-                    type: 'transaction',
-                    data: id,
-                    balanceAccount: activeBalanceAccount || '',
-                },
-                modalSize: 'small',
-            }).callback({ id });
-        },
-        [activeBalanceAccount, updateDetails]
-    );
-
-    const sinceDate = useMemo(() => {
-        const date = new Date(nowTimestamp);
-        date.setMonth(date.getMonth() - MAX_TRANSACTIONS_DATE_RANGE_MONTHS);
-        return date.toString();
-    }, [nowTimestamp]);
+    const {
+        error: transactionsError,
+        fetching: loadingTransactions,
+        fields: transactionsFields,
+        records: transactions,
+        updateLimit: onLimitSelection,
+        hasCustomColumn,
+        ...paginationProps
+    } = useTransactionsList({
+        allowLimitSelection,
+        dataCustomization,
+        filters,
+        onFiltersChanged,
+        preferredLimit,
+        fetchEnabled: canFetchTransactions,
+    });
 
     return (
-        <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="transactionsOverviewTitle">
+        <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
+            <Header hideTitle={hideTitle} titleKey="transactions.overview.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState} ariaLabelKey="transactions.filters">
-                <BalanceAccountSelector
-                    activeBalanceAccount={activeBalanceAccount}
-                    balanceAccountSelectionOptions={balanceAccountSelectionOptions}
-                    onBalanceAccountSelection={onBalanceAccountSelection}
-                />
-                <DateFilter
-                    canResetFilters={canResetFilters}
-                    defaultParams={defaultParams}
-                    filters={filters}
-                    nowTimestamp={nowTimestamp}
-                    refreshNowTimestamp={refreshNowTimestamp}
-                    sinceDate={sinceDate}
-                    timezone={activeBalanceAccount?.timeZone}
-                    updateFilters={updateFilters}
-                />
-                {/* Remove status filter temporarily */}
-                {/* <MultiSelectionFilter {...statusesFilter} placeholder={i18n.get('filterPlaceholder.status')} /> */}
-                <MultiSelectionFilter {...categoriesFilter} placeholder={i18n.get('filterPlaceholder.category')} />
-                <AmountFilter
-                    availableCurrencies={availableCurrencies}
-                    selectedCurrencies={listFrom(filters[FilterParam.CURRENCIES])}
-                    name={'range'}
-                    label={i18n.get('amount')}
-                    minAmount={filters[FilterParam.MIN_AMOUNT]}
-                    maxAmount={filters[FilterParam.MAX_AMOUNT]}
-                    updateFilters={updateFilters}
-                    onChange={updateFilters}
-                />
-                <MultiSelectionFilter {...currenciesFilter} placeholder={i18n.get('filterPlaceholder.currency')} />
-            </FilterBar>
-            <div className={SUMMARY_CLASS}>
-                <div className={SUMMARY_ITEM_CLASS}>
-                    <TransactionTotals
-                        availableCurrencies={availableCurrencies}
-                        isAvailableCurrenciesFetching={isAvailableCurrenciesFetching}
-                        balanceAccountId={activeBalanceAccount?.id}
-                        statuses={statusesFilter.selection}
-                        categories={categoriesFilter.selection}
-                        createdUntil={filters[FilterParam.CREATED_UNTIL]!}
-                        createdSince={filters[FilterParam.CREATED_SINCE]!}
-                        currencies={currenciesFilter.selection}
-                        minAmount={filters[FilterParam.MIN_AMOUNT] ? parseFloat(filters[FilterParam.MIN_AMOUNT]) : undefined}
-                        maxAmount={filters[FilterParam.MAX_AMOUNT] ? parseFloat(filters[FilterParam.MAX_AMOUNT]) : undefined}
-                        fullWidth={isNarrowContainer}
-                    />
-                </div>
-                <div className={SUMMARY_ITEM_CLASS}>
-                    <Balances
-                        balanceAccountId={activeBalanceAccount?.id}
-                        onCurrenciesChange={handleCurrenciesChange}
-                        defaultCurrencyCode={activeBalanceAccount?.defaultCurrencyCode}
-                        fullWidth={isNarrowContainer}
-                    />
-                </div>
-            </div>
 
-            <DataDetailsModal
-                dataCustomization={dataCustomization?.details}
-                selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
-                resetDetails={resetDetails}
-                className={BASE_CLASS_DETAILS}
-            >
-                <TransactionsTable
-                    activeBalanceAccount={activeBalanceAccount}
-                    availableCurrencies={availableCurrencies}
-                    error={error as AdyenPlatformExperienceError}
+            <TransactionsFilters
+                {...filterBarState}
+                availableCurrencies={currencies}
+                balanceAccounts={balanceAccounts}
+                eventCategory="Transaction component"
+                onChange={setFilters}
+            />
+
+            <>
+                {/*<Balances*/}
+                {/*    availableCurrencies={availableCurrencies}*/}
+                {/*    currency={activeCurrency}*/}
+                {/*    onCurrencyChange={onCurrencyChange}*/}
+                {/*    balancesLookup={balancesLookup}*/}
+                {/*/>*/}
+
+                <div className={classes.summary}>
+                    <div className={classes.summaryItem}>
+                        <TransactionTotals balanceAccount={balanceAccount} loadingTotals={loadingTotals} totals={totals} />
+                    </div>
+                    <div className={classes.summaryItem}>
+                        <Balances
+                            balanceAccount={balanceAccount}
+                            balances={balances}
+                            balancesEmpty={balancesEmpty}
+                            loadingBalances={loadingBalances}
+                        />
+                    </div>
+                </div>
+
+                <TransactionsList
+                    availableCurrencies={currencies}
+                    balanceAccount={balanceAccount}
+                    dataCustomization={dataCustomization}
                     hasMultipleCurrencies={hasMultipleCurrencies}
-                    limit={limit}
-                    limitOptions={limitOptions}
-                    loading={fetching || isLoadingBalanceAccount || !balanceAccounts || loadingCustomRecords}
+                    loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}
+                    loadingTransactions={loadingTransactions}
                     onContactSupport={onContactSupport}
-                    onLimitSelection={updateLimit}
-                    onRowClick={onRowClick}
-                    showPagination={true}
-                    transactions={dataCustomization?.list?.onDataRetrieve ? transactions : records}
-                    customColumns={dataCustomization?.list?.fields}
+                    onLimitSelection={onLimitSelection}
+                    onRecordSelection={onRecordSelection}
+                    showDetails={showDetails}
+                    transactionsError={transactionsError}
+                    transactionsFields={transactionsFields}
+                    transactions={transactions}
                     {...paginationProps}
                 />
-            </DataDetailsModal>
+            </>
         </div>
     );
 };

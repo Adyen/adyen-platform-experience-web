@@ -20,6 +20,8 @@ test.describe('Grant: Revoked', () => {
 
     test('should render tooltip when status tag is hovered', async ({ page }) => {
         await page.getByText('Revoked').hover();
-        await expect(page.getByText('You accepted but then returned these funds')).toBeVisible();
+        const tooltip = page.getByText('You accepted but then returned these funds');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 });

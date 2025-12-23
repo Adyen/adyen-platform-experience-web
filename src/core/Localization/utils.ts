@@ -1,7 +1,8 @@
 import { JSX } from 'preact';
-import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE } from './constants/localization';
+import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '../../utils';
-import type { CustomTranslations, Locale, TranslationOptions, Translations, TranslationSource } from '../../translations';
+import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../../translations';
+import { SupportedLocales } from './types';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
 const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;
@@ -61,7 +62,6 @@ export function formatLocale(locale: string): Locale | null {
  */
 export function parseLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     const trimmedLocale = locale.trim();
-
     if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
 
     const formattedLocale = formatLocale(trimmedLocale);
@@ -81,6 +81,7 @@ export function formatCustomTranslations(customTranslations: CustomTranslations 
 
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
         const formattedLocale = formatLocale(locale) || parseLocale(locale, supportedLocales);
+
         if (formattedLocale && customTranslations[locale]) {
             translations[formattedLocale] = customTranslations[locale]!;
         }
@@ -139,21 +140,22 @@ export const getTranslation = (translations: Record<string, string>, key: string
 /**
  * Returns an array with all the locales
  * @param locale - The locale the user wants to use
- * @param translations -
+ * @param fetchTranslationFromCdnPromise -
  * @param customTranslations -
  */
 export const loadTranslations = async (
     locale: string,
-    translations: { [locale: Locale]: TranslationSource } = EMPTY_OBJECT,
+    fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
     customTranslations: CustomTranslations = EMPTY_OBJECT
 ): Promise<Translations> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
-    const localeToLoad = parseLocale(locale, Object.keys(translations) as Locale[]) || FALLBACK_LOCALE;
-    const loadedLocale = translations[localeToLoad as keyof typeof translations];
+    const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;
+
+    const loadedLocale = fetchTranslationFromCdnPromise(localeToLoad as SupportedLocales);
 
     return {
         ...DEFAULT_TRANSLATIONS, // Default en-US translations (in case any other translation file is missing any key)
-        ...((await (isFunction(loadedLocale) ? loadedLocale() : loadedLocale)) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
+        ...((await loadedLocale) ?? EMPTY_OBJECT), // Merge with our locale file of the locale they are loading
         ...asPlainObject(customTranslations?.[locale]), // Merge with their custom locales if available
     };
 };

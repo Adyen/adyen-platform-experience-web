@@ -39,7 +39,7 @@ export function UploadedFile({ file, deleteFile, disabled }: UploadedFileProps) 
                 {/* The content of this span is used as accessible name for the delete (icon) button. */}
                 {/* However, it is visually hidden (not visible), but available to assistive technology. */}
                 <span className="adyen-pe-visually-hidden">
-                    <Translation translationKey="uploadedFile.remove" fills={{ filename: file.name }} />
+                    <Translation translationKey="common.inputs.file.actions.delete" fills={{ filename: file.name }} />
                 </span>
             </Button>
         </div>

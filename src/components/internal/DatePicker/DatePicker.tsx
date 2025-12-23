@@ -15,8 +15,8 @@ import useCalendarControlsRendering from '../Calendar/hooks/useCalendarControlsR
 import { CalendarHandle, CalendarProps } from '../Calendar/types';
 import './DatePicker.scss';
 
-export type DatePickerProps = CalendarProps &
-    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timezone'> & {
+export type DatePickerProps = Omit<CalendarProps, 'getGridLabel'> &
+    Pick<DateFilterProps, 'now' | 'selectedPresetOption' | 'showTimezoneInfo' | 'timeRangePresetOptions' | 'timeRangeSelectorLabel' | 'timezone'> & {
         onPresetOptionSelected?: (option: string) => any;
     };
 
@@ -30,8 +30,12 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
 
     const datePickerClassName = useMemo(() => cx([{ 'adyen-pe-datepicker--with-timezone': withTimezone }, 'adyen-pe-datepicker']), [withTimezone]);
     const timezoneI18nOptions = useMemo(() => (withTimezone ? { values: { offset, time } } : EMPTY_OBJECT), [offset, time, withTimezone]);
-
     const calendarRef = useReflex<CalendarHandle>(noop, ref as Ref<CalendarHandle>);
+
+    const getCalendarGridLabel = useCallback<CalendarProps['getGridLabel']>(
+        block => i18n.get('common.filters.types.date.calendar.label', { values: { monthOfYear: block.label } }),
+        [i18n]
+    );
 
     const onHighlight = useCallback(() => {
         setLastUpdatedTimestamp(performance.now());
@@ -52,9 +56,15 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                     selectedOption={props.selectedPresetOption}
                     timestamp={lastUpdatedTimestamp}
                     timezone={props.timezone}
+                    aria-label={props.timeRangeSelectorLabel}
                 />
             </div>
-            <div ref={controlsContainerRef} role="group" className={'adyen-pe-datepicker__controls'} aria-label={i18n.get('calendar.controls')} />
+            <div
+                ref={controlsContainerRef}
+                role="group"
+                className={'adyen-pe-datepicker__controls'}
+                aria-label={i18n.get('common.filters.types.date.calendar.navigation.label')}
+            />
             <Calendar
                 {...props}
                 ref={calendarRef}
@@ -63,11 +73,14 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 onlyCellsWithin={true}
                 controls={props.controls ?? calendar.controls.MINIMAL}
                 highlight={props.highlight ?? calendar.highlight.MANY}
+                getGridLabel={getCalendarGridLabel}
                 onHighlight={onHighlight}
                 renderControl={controlsRenderer}
                 trackCurrentDay={true}
             />
-            {withTimezone && <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('calendar.timezone', timezoneI18nOptions)}</div>}
+            {withTimezone && (
+                <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('common.filters.types.date.timezoneInfo', timezoneI18nOptions)}</div>
+            )}
         </div>
     );
 });

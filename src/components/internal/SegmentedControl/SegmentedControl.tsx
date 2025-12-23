@@ -1,16 +1,22 @@
 import { SegmentedControlProps } from './types';
+import { AriaAttributes } from 'preact/compat';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './SegmentedControl.scss';
 
-function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }: SegmentedControlProps<ItemId>) {
+function SegmentedControl<ItemId extends string>({
+    ['aria-label']: ariaLabel,
+    activeItem,
+    items,
+    onChange,
+}: SegmentedControlProps<ItemId> & Pick<AriaAttributes, 'aria-label'>) {
     const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: items, activeOption: activeItem });
     const { i18n } = useCoreContext();
     return (
         <div>
-            <div role="radiogroup" className="adyen-pe-segmented-control">
+            <div role="radiogroup" className="adyen-pe-segmented-control" aria-label={ariaLabel}>
                 {items.map((item, index) => {
                     const isActive = activeIndex === index;
                     return (
@@ -42,7 +48,7 @@ function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }
             </div>
             <div className="adyen-pe-segmented-content-container">
                 {items.map((item, index) => (
-                    <section
+                    <div
                         key={`segment:${uniqueId}-${item.id}`}
                         id={`segment:${uniqueId}-${item.id}`}
                         className="adyen-pe-segmented-content"
@@ -50,7 +56,7 @@ function SegmentedControl<ItemId extends string>({ activeItem, items, onChange }
                         hidden={activeIndex !== index}
                     >
                         {item.content}
-                    </section>
+                    </div>
                 ))}
             </div>
         </div>

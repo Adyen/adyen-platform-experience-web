@@ -15,13 +15,13 @@ test.describe('Error - Request funds - Generic with code', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
         await expect(
-            page.getByText("We couldn't continue with the offer.Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93")
+            page.getByText("We couldn't continue with the offer. Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93")
         ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
     test('should go back to offer selection screen when "Back" button is clicked', async ({ page }) => {
-        await page.getByRole('button', { name: 'Back' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
         await expect(page.getByText('Business financing offer')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('How much money do you need?')).toBeVisible();

@@ -6,21 +6,25 @@ import { describe, expect, test } from 'vitest';
 import { ExpandableContainer } from './ExpandableContainer';
 
 describe('ExpandableContainer', () => {
-    test('should render toggle button with the appropriate label', async () => {
-        render(<ExpandableContainer>{'Content'}</ExpandableContainer>);
-        const button = screen.getByLabelText('Expand');
+    test('should render toggle button with the right attributes', async () => {
+        const label = 'Expand content';
+
+        render(<ExpandableContainer aria-label={label}>{'Content'}</ExpandableContainer>);
+        const button = screen.getByLabelText(label);
 
         expect(button).toBeInTheDocument();
 
         fireEvent.click(button);
-        expect(button).toHaveAttribute('aria-label', 'Collapse');
+        expect(button).toHaveAttribute('aria-label', label);
+        expect(button).toHaveAttribute('aria-expanded', 'true');
     });
 
     test('should toggle content on toggle button click', async () => {
         const contentText = 'Content';
-        render(<ExpandableContainer>{contentText}</ExpandableContainer>);
+        const label = 'Expand content';
 
-        const button = screen.getByLabelText('Expand');
+        render(<ExpandableContainer aria-label={label}>{contentText}</ExpandableContainer>);
+        const button = screen.getByLabelText(label);
         let content;
 
         content = screen.queryByText(contentText);

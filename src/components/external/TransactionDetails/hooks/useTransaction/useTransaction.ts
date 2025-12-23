@@ -21,26 +21,22 @@ export const useTransaction = (initialTransaction: TransactionDataContentProps['
 
     const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId && navigationAction.current, [fetchTransactionId, getTransaction]);
 
-    const queryFn = useCallback(
-        () =>
-            getTransaction!(EMPTY_OBJECT, {
-                path: { transactionId: fetchTransactionId },
-            }),
-        [fetchTransactionId, getTransaction]
-    );
-
     const {
         data,
         error,
         isFetching: fetchingTransaction,
     } = useFetch({
+        queryFn: useCallback(
+            () =>
+                getTransaction!(EMPTY_OBJECT, {
+                    path: { transactionId: fetchTransactionId },
+                }),
+            [fetchTransactionId, getTransaction]
+        ),
         fetchOptions: { enabled: fetchEnabled },
-        queryFn,
     });
 
-    const refreshTransaction = useCallback(() => {
-        return setFetchTransactionId(undefined!);
-    }, []);
+    const refreshTransaction = useCallback(() => setFetchTransactionId(undefined!), []);
 
     useEffect(() => {
         if (!fetchTransactionId) setFetchTransactionId(transaction.id);

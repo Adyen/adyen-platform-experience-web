@@ -1,7 +1,7 @@
 @use '../../../style';
 
 .adyen-pe-tooltip-target {
-    &--hovered {
+    &--underlined {
         text-decoration: underline;
         text-decoration-color: style.token(color-outline-tertiary);
         text-decoration-style: dashed;

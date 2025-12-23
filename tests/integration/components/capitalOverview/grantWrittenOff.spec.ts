@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
+import { waitFor } from '@testing-library/preact';
 
 const STORY_ID = 'mocked-capital-overview--grant-written-off';
 
@@ -18,6 +19,8 @@ test.describe('Grant: Written off', () => {
 
     test('should render tooltip when status tag is hovered', async ({ page }) => {
         await page.getByText('Written off').hover();
-        await expect(page.getByText('You accepted these funds but did not repay them')).toBeVisible();
+        const tooltip = page.getByText('You accepted these funds but did not repay them');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 });

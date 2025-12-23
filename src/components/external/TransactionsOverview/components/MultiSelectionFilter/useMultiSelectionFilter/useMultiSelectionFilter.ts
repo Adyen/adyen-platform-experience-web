@@ -35,6 +35,7 @@ export const useMultiSelectionFilterWithoutValues = <FilterParam extends string 
 ) => {
     const [filterValues, updateFilterValues] = useState<SelectionOptionsList<FilterValue>>();
     const useMultiSelectionFilterProperties = useMultiSelectionFilter({ ...config, filterValues });
+
     return { ...useMultiSelectionFilterProperties, filterValues, updateFilterValues } as const;
 };
 

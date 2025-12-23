@@ -14,10 +14,12 @@ const ENV = ENVS[environment] || ENVS.test;
 sessionAwareTest('/payouts endpoint should return consistent data', async ({ requestContext, headers }) => {
     const payoutsList = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/payouts',
             params: {
                 query: { balanceAccountId: ENV.balanceAccountId, createdSince: ENV.createdSince, createdUntil: ENV.createdUntil },
             },
+            version: 1,
         }),
         { headers }
     );
@@ -27,16 +29,18 @@ sessionAwareTest('/payouts endpoint should return consistent data', async ({ req
     const responseData = await payoutsList.json();
 
     expect(responseData).toHaveProperty('data');
-    expect(responseData.data[0]).toStrictEqual(ENV.payouts_list_response[0]);
+    expect(responseData.data).toStrictEqual(ENV.payouts_list_response);
 });
 
 sessionAwareTest('/payouts/breakdown endpoint should return consistent data', async ({ requestContext, headers }) => {
     const payoutsDetails = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/payouts/breakdown',
             params: {
                 query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.payoutCreationDate },
             },
+            version: 1,
         }),
         { headers }
     );

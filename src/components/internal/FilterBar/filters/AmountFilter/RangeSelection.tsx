@@ -60,7 +60,7 @@ export const RangeSelection = ({
     return (
         <div className="adyen-pe-range-selection-filter">
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="minValue">{`${i18n.get('from')}:`}</label>
+                <label htmlFor="minValue">{`${i18n.get('common.filters.types.amount.inputs.min.label')}:`}</label>
                 <InputBase
                     ref={firstInputElementRef}
                     data-testid={'minValueFilter'}
@@ -73,11 +73,11 @@ export const RangeSelection = ({
                     }}
                     min={0}
                     isInvalid={minAmount ? minAmount < 0 : false}
-                    errorMessage={i18n.get('noNegativeNumbersAllowed')}
+                    errorMessage={i18n.get('common.filters.types.amount.errors.negative')}
                 />
             </div>
             <div className="adyen-pe-range-selection-filter__input">
-                <label htmlFor="maxValue">{`${i18n.get('to')}:`}</label>
+                <label htmlFor="maxValue">{`${i18n.get('common.filters.types.amount.inputs.max.label')}:`}</label>
                 <InputBase
                     data-testid={'maxValueFilter'}
                     lang={i18n.locale}
@@ -88,8 +88,8 @@ export const RangeSelection = ({
                         e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
                     }}
                     min={minAmount}
-                    isInvalid={!isUndefined(maxAmount) && !isUndefined(minAmount) && maxAmount < minAmount}
-                    errorMessage={i18n.get('toValueShouldBeGreaterThanTheFromValue')}
+                    isInvalid={!isUndefined(maxAmount) && maxAmount < (minAmount ?? 0)}
+                    errorMessage={i18n.get('common.filters.types.amount.errors.smallerMax')}
                 />
             </div>
         </div>

@@ -1,30 +1,33 @@
 import { Schema } from '../utils';
 import { components } from '../resources/TransactionsResource';
+import { components as componentsV2 } from '../resources/TransactionsResourceV2';
 
-export type ICategory = ITransaction['category'];
+export type ITransactionCategory = Schema<componentsV2, 'Category'>;
+export type ITransactionStatus = Schema<componentsV2, 'Status'>;
 export type ILineItem = TransactionLineItem;
 export type ILineItemRefundStatus = TransactionLineItem['refundStatuses'];
-export type IRefundMode = Schema<components, 'RefundMode'>;
-export type IRefundReason = Schema<components, 'RefundReason'>;
-export type IRefundStatus = Schema<components, 'RefundStatus'>;
-export type ITransaction = Schema<components, 'SingleTransaction'>;
-export type ITransactionTotal = Schema<components, 'TransactionTotal'>;
-export type ITransactionWithDetails = Schema<components, 'SingleTransaction'>;
+export type IRefundMode = Schema<componentsV2, 'RefundMode'>;
+export type IRefundReason = Schema<componentsV2, 'RefundReason'>;
+export type IRefundStatus = Schema<componentsV2, 'RefundStatus'>;
+export type ITransaction = Schema<componentsV2, 'TransactionsListItem'>;
+export type ITransactionExportColumn = Schema<components, 'ExportColumn'>;
+export type ITransactionTotal = Schema<componentsV2, 'TransactionTotal'>;
+export type ITransactionWithDetails = Schema<componentsV2, 'SingleTransaction'>;
 export type ITransactionRefundPayload = Schema<components, 'RefundRequest'>;
 export type ITransactionRefundResponse = Schema<components, 'RefundResponse'>;
-export type ITransactionRefundDetails = Schema<components, 'RefundDetails'>;
+export type ITransactionRefundDetails = Schema<componentsV2, 'RefundDetails'>;
 export type ITransactionRefundStatus = ITransactionRefundDetails['refundStatuses'];
-export type IPaymentMethod = components['schemas']['PaymentMethod'];
-export type IBankAccount = components['schemas']['BankAccount'];
-export type IAmount = components['schemas']['Amount'];
+export type IPaymentMethod = Schema<componentsV2, 'PaymentMethod'>;
+export type IBankAccount = Schema<componentsV2, 'BankAccount'>;
+export type IAmount = Schema<componentsV2, 'Amount'>;
 
 type TransactionLineItemRefundStatus = {
     quantity: number;
-    status: components['schemas']['RefundStatus'];
+    status: IRefundStatus;
 };
 
 type TransactionLineItem = {
-    amountIncludingTax: components['schemas']['Amount'];
+    amountIncludingTax: IAmount;
     availableQuantity: number;
     description: string;
     id: string;

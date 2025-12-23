@@ -27,8 +27,16 @@ const classes = {
 
 export const DefendDisputeReason = () => {
     const { i18n } = useCoreContext();
-    const { applicableDocuments, dispute, goBack, setFlowState, setSelectedDefenseReason, selectedDefenseReason, setApplicableDocuments } =
-        useDisputeFlow();
+    const {
+        applicableDocuments,
+        dispute,
+        goBack,
+        setFlowState,
+        setSelectedDefenseReason,
+        selectedDefenseReason,
+        setApplicableDocuments,
+        defenseReasonConfig,
+    } = useDisputeFlow();
 
     const allowedDefenseReasons = dispute?.dispute?.allowedDefenseReasons;
     const disputePspReference = dispute?.dispute?.pspReference;
@@ -42,14 +50,14 @@ export const DefendDisputeReason = () => {
                 allowedDefenseReasons?.map(reason => ({
                     id: reason,
                     disabled: allowedDefenseReasons.length === 1,
-                    name: getDefenseReasonContent(i18n, reason)?.title ?? reason,
+                    name: getDefenseReasonContent(defenseReasonConfig, i18n, reason)?.title ?? reason,
                 }))
             ) ?? [],
-        [i18n, allowedDefenseReasons]
+        [i18n, allowedDefenseReasons, defenseReasonConfig]
     );
 
     const selected = useMemo(
-        () => (selectedDefenseReason ? defenseReasons.find(reason => reason.id === selectedDefenseReason)?.id : defenseReasons?.[0]?.id ?? null),
+        () => (selectedDefenseReason ? defenseReasons.find(reason => reason.id === selectedDefenseReason)?.id : (defenseReasons?.[0]?.id ?? null)),
         [selectedDefenseReason, defenseReasons]
     );
 
@@ -102,24 +110,37 @@ export const DefendDisputeReason = () => {
     const actionButtons = useMemo(() => {
         return [
             {
-                title: i18n.get('disputes.defend.continue'),
+                title: i18n.get('disputes.management.defend.common.actions.continue'),
                 disabled: isReasonSubmitted || isFetching,
                 event: onDefenseReasonSubmit,
             },
             {
-                title: i18n.get('disputes.goBack'),
+                title: i18n.get('disputes.management.common.actions.goBack'),
                 disabled: isReasonSubmitted || isFetching,
                 event: goBack,
             },
         ];
     }, [isFetching, isReasonSubmitted, i18n, goBack, onDefenseReasonSubmit]);
 
-    const [showAlert, setShowAlert] = useState(true);
+    const isRequestForInformation = useMemo(() => dispute?.dispute.type === 'REQUEST_FOR_INFORMATION', [dispute?.dispute.type]);
+
+    const [showAlert, setShowAlert] = useState(!isRequestForInformation);
     const closeAlert = useCallback(() => {
         setShowAlert(false);
     }, []);
 
-    const defenseReasonContent = useMemo(() => (selected ? getDefenseReasonContent(i18n, selected) : undefined), [i18n, selected]);
+    const defenseReasonContent = useMemo(
+        () => (selected ? getDefenseReasonContent(defenseReasonConfig, i18n, selected) : undefined),
+        [defenseReasonConfig, i18n, selected]
+    );
+
+    const defendDisputeLabel = useMemo(
+        () =>
+            isRequestForInformation
+                ? i18n.get('disputes.management.defend.requestForInformation.selectDefenseReason')
+                : i18n.get('disputes.management.defend.chargeback.selectDefenseReason'),
+        [i18n, isRequestForInformation]
+    );
 
     if (!defenseReasons || !selected) {
         return null;
@@ -129,12 +150,13 @@ export const DefendDisputeReason = () => {
         <>
             <div className={classes.selector}>
                 <Typography className="adyen-pe-defend-dispute__reason-description" variant={TypographyVariant.BODY}>
-                    {i18n.get('disputes.defend.selectDefenseReason')}
+                    {defendDisputeLabel}
                 </Typography>
                 <Select
                     items={defenseReasons}
                     onChange={onChange}
                     selected={selected}
+                    aria-label={i18n.get('disputes.management.defend.common.inputs.reasonSelect.a11y.label')}
                     popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
                     fixedPopoverPositioning
                 />
@@ -167,7 +189,7 @@ export const DefendDisputeReason = () => {
             {showAlert && (
                 <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
                     <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
-                        {i18n.get('disputes.defend.chargebackFeeInformation')}
+                        {i18n.get('disputes.management.defend.chargeback.feeInfo')}
                     </Typography>
                 </Alert>
             )}

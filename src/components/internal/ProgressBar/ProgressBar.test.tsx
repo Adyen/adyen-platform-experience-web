@@ -38,7 +38,7 @@ describe('ProgressBar', () => {
 
         render(<ProgressBar value={value} max={max} labels={labels} />);
 
-        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        const fillElement = within(screen.getByRole('progressbar')).getByLabelText(labels.current);
 
         expect(fillElement).toHaveStyle(`width: ${(value / max) * 100}%`);
     });
@@ -71,7 +71,7 @@ describe('ProgressBar', () => {
         const labels = { current: 'Current Value' };
         render(<ProgressBar value={value} max={max} labels={labels} />);
 
-        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        const fillElement = within(screen.getByRole('progressbar')).getByLabelText(labels.current);
         expect(fillElement).toHaveStyle(`width: 100%`);
     });
 
@@ -81,7 +81,7 @@ describe('ProgressBar', () => {
         const labels = { current: 'Negative Value' };
         render(<ProgressBar value={value} max={max} labels={labels} />);
 
-        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        const fillElement = within(screen.getByRole('progressbar')).getByLabelText(labels.current);
         expect(fillElement).toHaveStyle(`width: 0%`);
     });
 
@@ -91,7 +91,7 @@ describe('ProgressBar', () => {
         const labels = { current: 'Negative Value' };
         render(<ProgressBar value={value} max={max} labels={labels} />);
 
-        const fillElement = within(screen.getByRole('progressbar')).getByTitle(labels.current);
+        const fillElement = within(screen.getByRole('progressbar')).getByLabelText(labels.current);
         expect(fillElement).toHaveStyle(`width: 29%`);
     });
 });

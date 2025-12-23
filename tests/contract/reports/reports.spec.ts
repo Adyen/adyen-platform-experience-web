@@ -14,6 +14,7 @@ const ENV = ENVS[environment] || ENVS.test;
 sessionAwareTest('/reports endpoint should return consistent data', async ({ requestContext, headers }) => {
     const reportsList = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/reports',
             params: {
                 query: {
@@ -23,6 +24,7 @@ sessionAwareTest('/reports endpoint should return consistent data', async ({ req
                     type: ENV.reportType,
                 },
             },
+            version: 1,
         }),
         { headers }
     );
@@ -38,10 +40,12 @@ sessionAwareTest('/reports endpoint should return consistent data', async ({ req
 sessionAwareTest('/reports/download endpoint should return consistent data', async ({ requestContext, headers }) => {
     const reportDownload = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/reports/download',
             params: {
                 query: { balanceAccountId: ENV.balanceAccountId, createdAt: ENV.reportCreationDate, type: ENV.reportType },
             },
+            version: 1,
         }),
         { headers }
     );

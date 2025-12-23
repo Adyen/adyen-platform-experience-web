@@ -70,7 +70,7 @@ const TEST: PayoutsVariables = {
     balanceAccountId: process.env.BALANCE_ACCOUNT || '',
     createdSince: '2024-12-03T23:00:00.000Z',
     createdUntil: '2025-01-02T12:19:23.000Z',
-    payoutCreationDate: '2024-12-10T00:00:00.000Z',
+    payoutCreationDate: '2025-08-13T00:00:00.000Z',
     payouts_list_response: [
         {
             fundsCapturedAmount: {
@@ -114,35 +114,35 @@ const TEST: PayoutsVariables = {
     payout_details_response: {
         payout: {
             fundsCapturedAmount: {
-                value: 7750,
+                value: 2539,
                 currency: 'EUR',
             },
             adjustmentAmount: {
-                value: -14071,
+                value: -1394,
                 currency: 'EUR',
             },
             payoutAmount: {
-                value: 3875,
+                value: 1145,
                 currency: 'EUR',
             },
             unpaidAmount: {
-                value: -10196,
+                value: 0,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-10T00:00:00.000+00:00',
+            createdAt: '2025-08-13T00:00:00.000+00:00',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
                 {
                     amount: {
-                        value: 8800,
+                        value: 5382,
                         currency: 'EUR',
                     },
                     category: 'capture',
                 },
                 {
                     amount: {
-                        value: -1050,
+                        value: -2843,
                         currency: 'EUR',
                     },
                     category: 'refund',
@@ -151,7 +151,7 @@ const TEST: PayoutsVariables = {
             adjustmentBreakdown: [
                 {
                     amount: {
-                        value: -14071,
+                        value: -1394,
                         currency: 'EUR',
                     },
                     category: 'grantRepayment',

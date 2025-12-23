@@ -24,6 +24,7 @@ export const enum InteractionKeyCode {
     PAGE_UP = 'PageUp',
     SPACE = 'Space',
     TAB = 'Tab',
+    DELETE = 'Delete',
 }
 
 export interface BaseElementProps {

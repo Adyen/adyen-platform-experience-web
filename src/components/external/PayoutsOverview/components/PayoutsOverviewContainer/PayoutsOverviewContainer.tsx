@@ -11,7 +11,7 @@ function PayoutsOverviewContainer({ ...props }: ExternalUIComponentProps<Payouts
         <DataOverviewContainer
             balanceAccountsError={error}
             className={BASE_CLASS}
-            errorMessage={'weCouldNotLoadThePayoutsOverview'}
+            errorMessage={'payouts.overview.errors.unavailable'}
             isBalanceAccountIdWrong={isBalanceAccountIdWrong}
             onContactSupport={props.onContactSupport}
         >

@@ -169,6 +169,18 @@ export const RFIAccepted: ElementStory<typeof DisputeManagement> = {
     },
 };
 
+export const RFIDefendable: ElementStory<typeof DisputeManagement> = {
+    name: 'RFI - Defendable',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...DISPUTE_DETAILS_HANDLERS.rfiDefendable,
+        },
+    },
+};
+
 export const NotificationOfFraud: ElementStory<typeof DisputeManagement> = {
     name: 'Notification of fraud',
     args: {

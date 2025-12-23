@@ -29,7 +29,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -71,14 +71,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'grantIssued',
+                    category: 'capture',
                 },
                 {
                     amount: {
                         value: 1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'correction',
                 },
             ],
             adjustmentBreakdown: [
@@ -87,7 +87,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'Fee',
+                    category: 'fee',
                 },
                 {
                     amount: {
@@ -127,14 +127,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'Fee',
+                    category: 'capture',
                 },
                 {
                     amount: {
                         value: 1000,
                         currency: 'EUR',
                     },
-                    category: 'grantIssued',
+                    category: 'correction',
                 },
             ],
             adjustmentBreakdown: [
@@ -190,14 +190,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -80000,
                         currency: 'USD',
                     },
-                    category: 'refund',
+                    category: 'chargeback',
                 },
                 {
                     amount: {
                         value: 20000,
                         currency: 'USD',
                     },
-                    category: 'chargeback',
+                    category: 'refund',
                 },
                 {
                     amount: {
@@ -288,7 +288,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -330,7 +330,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -372,7 +372,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -414,7 +414,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -456,7 +456,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -498,7 +498,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -540,7 +540,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -582,7 +582,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
                 {
                     amount: {
@@ -632,7 +632,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
                 {
                     amount: {

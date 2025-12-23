@@ -9,6 +9,6 @@ export class TransactionDetailsPage {
     }
 
     get referenceId(): Locator {
-        return this.root.getByTestId(`${getTranslatedKey('referenceID')}`).locator('dd');
+        return this.root.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
     }
 }
