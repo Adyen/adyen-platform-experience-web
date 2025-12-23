@@ -24,7 +24,6 @@ export const useStores = () => {
     const stores = useMemo(
         () =>
             data?.data?.map(store => ({
-                ...store,
                 id: store.storeId || '',
                 name: store.storeCode || '',
                 storeCode: store.storeCode || '',
