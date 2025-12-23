@@ -45,7 +45,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     }, [storesData, storeIds]);
 
     // Configuration query (depends on selected store)
-    const { data: configurationData, isFetching: isFetchingConfiguration } = useFetch({
+    const {
+        data: configurationData,
+        isFetching: isFetchingConfiguration,
+        error: configurationError,
+    } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkConfiguration && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkConfiguration?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -53,7 +57,11 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     });
 
     // Settings query (depends on selected store)
-    const { data: settingsData, isFetching: isFetchingSettings } = useFetch({
+    const {
+        data: settingsData,
+        isFetching: isFetchingSettings,
+        error: settingsError,
+    } = useFetch({
         fetchOptions: { enabled: !!getPayByLinkSettings && !!selectedStore },
         queryFn: useCallback(async () => {
             return getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore } });
@@ -149,10 +157,10 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
 
     const isDataLoading = isFetchingConfiguration || isFetchingSettings || isFetchingStores;
     const shouldSkipStoreSelection = storesSelectorItems.length === 1;
-    const isConfigReady = !isDataLoading && configurationData;
-    const isSettingReady = !isDataLoading && settingsData;
+    const isConfigReady = !isDataLoading && (configurationData || configurationError);
+    const isSettingReady = !isDataLoading && (settingsData || settingsError);
 
-    const isFirstLoadDone = !isFetchingStores && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady));
+    const isFirstLoadDone = Boolean(!isFetchingStores && (!shouldSkipStoreSelection || (isConfigReady && isSettingReady)));
 
     return {
         // Query data
