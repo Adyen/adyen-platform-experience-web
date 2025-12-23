@@ -5,7 +5,7 @@
         display: flex;
         gap: style.token(spacer-040);
         list-style: none;
-        overflow-y: scroll;
+        overflow: auto;
         scrollbar-width: none;
 
         &:not(&--horizontal) {
