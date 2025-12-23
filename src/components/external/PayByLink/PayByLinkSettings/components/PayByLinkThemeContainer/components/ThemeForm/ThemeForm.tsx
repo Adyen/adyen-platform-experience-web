@@ -50,16 +50,19 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
         });
     }, []);
 
-    const onBrandNameChange = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
-        const value = e?.currentTarget?.value;
-        setShowMissingBrandName(false);
-        setBrandName(value);
-        setThemePayload(previousFormData => {
-            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
-            nextFormData.set(ThemeFormDataRequest.BRAND, value);
-            return nextFormData;
-        });
-    }, []);
+    const onBrandNameChange = useCallback(
+        (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
+            const value = e?.currentTarget?.value;
+            setShowMissingBrandName(false);
+            setBrandName(value);
+            setThemePayload(previousFormData => {
+                const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+                nextFormData.set(ThemeFormDataRequest.BRAND, value);
+                return nextFormData;
+            });
+        },
+        [setShowMissingBrandName, setBrandName, setThemePayload]
+    );
 
     const removeFieldFromThemePayload = useCallback((field: string) => {
         setThemePayload(previousFormData => {
@@ -72,41 +75,53 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
         });
     }, []);
 
-    const logoPreview = (type: LogoTypes, file: File) => {
-        const reader = new FileReader();
+    const logoPreview = useCallback(
+        (type: LogoTypes, file: File) => {
+            const reader = new FileReader();
 
-        reader.onload = function (e) {
-            const result = e?.target?.result as string;
-            if (type === logoOptions.LOGO) {
-                setLogoUrl(result);
+            reader.onload = function (e) {
+                const result = e?.target?.result as string;
+                if (type === logoOptions.LOGO) {
+                    setLogoUrl(result);
+                }
+                if (type === logoOptions.FULL_WIDTH_LOGO) {
+                    setFullWidthLogoUrl(result);
+                }
+            };
+            reader.readAsDataURL(file);
+        },
+        [setLogoUrl, setFullWidthLogoUrl]
+    );
+
+    const onLogoChange = useCallback(
+        (type: LogoTypes, files: File[]) => {
+            const file = files[0];
+            if (!file) return;
+            addFileToThemePayload(type, file);
+            logoPreview(type, file);
+        },
+        [addFileToThemePayload, logoPreview]
+    );
+
+    const onRemoveLogoUrl = useCallback(
+        (logoType: LogoTypes) => {
+            removeFieldFromThemePayload(logoType);
+            if (logoType === logoOptions.LOGO) {
+                setLogoUrl(null);
             }
-            if (type === logoOptions.FULL_WIDTH_LOGO) {
-                setFullWidthLogoUrl(result);
+            if (logoType === logoOptions.FULL_WIDTH_LOGO) {
+                setFullWidthLogoUrl(null);
             }
-        };
-        reader.readAsDataURL(file);
-    };
+        },
+        [removeFieldFromThemePayload, setLogoUrl, setFullWidthLogoUrl]
+    );
 
-    const onLogoChange = (type: LogoTypes, files: File[]) => {
-        const file = files[0];
-        if (!file) return;
-        addFileToThemePayload(type, file);
-        logoPreview(type, file);
-    };
-
-    const onRemoveLogoUrl = (logoType: LogoTypes) => {
-        removeFieldFromThemePayload(logoType);
-        if (logoType === logoOptions.LOGO) {
-            setLogoUrl(null);
-        }
-        if (logoType === logoOptions.FULL_WIDTH_LOGO) {
-            setFullWidthLogoUrl(null);
-        }
-    };
-
-    const getLogoUrl = (logoType: LogoTypes) => {
-        return logoType === logoOptions.LOGO ? logoUrl : fullWidthLogoUrl;
-    };
+    const getLogoUrl = useCallback(
+        (logoType: LogoTypes) => {
+            return logoType === logoOptions.LOGO ? logoUrl : fullWidthLogoUrl;
+        },
+        [fullWidthLogoUrl, logoUrl]
+    );
 
     return (
         <div className="adyen-pe-pay-by-link-theme-form">

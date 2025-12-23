@@ -47,11 +47,11 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
         [setSavedData]
     );
 
-    const setIsValid = (validity: boolean) => {
+    const setIsValid = useCallback((validity: boolean) => {
         if (isValid.current !== validity) {
             isValid.current = validity;
         }
-    };
+    }, []);
 
     const getIsValid = useCallback(() => {
         return isValid.current;
