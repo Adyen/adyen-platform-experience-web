@@ -25,7 +25,7 @@ export const useStores = () => {
         () =>
             data?.data?.map(store => ({
                 ...store,
-                id: store.storeCode || '',
+                id: store.storeId || '',
                 name: store.storeCode || '',
                 storeCode: store.storeCode || '',
                 description: store.description || '',
