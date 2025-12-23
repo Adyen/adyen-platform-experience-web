@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { Controller } from '../../../hooks/form';
 import Select from '../FormFields/Select';
 import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormContext';
@@ -15,6 +15,7 @@ interface FormSelectProps<TFieldValues> {
     filterable?: boolean;
     hideOptionalLabel?: boolean;
     className?: string;
+    isRequired?: boolean;
     validate?: ValidationRules['validate'];
     onChange?: (e: TargetedEvent<HTMLSelectElement>) => void;
     preventInvalidState?: boolean;
@@ -25,6 +26,7 @@ export function FormSelect<TFieldValues>({
     fieldName,
     filterable,
     hideOptionalLabel,
+    isRequired: isRequiredProp,
     items,
     label,
     onChange,
@@ -33,7 +35,7 @@ export function FormSelect<TFieldValues>({
     validate,
 }: FormSelectProps<TFieldValues>) {
     const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
-    const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
+    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, isRequiredProp]);
 
     useEffect(() => {
         if (!items.length) return;
@@ -61,6 +63,7 @@ export function FormSelect<TFieldValues>({
                             onChange?.(e);
                         };
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
+
                         return (
                             <div>
                                 <Select

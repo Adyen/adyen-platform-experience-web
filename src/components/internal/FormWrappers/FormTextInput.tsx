@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormContext';
 import FormField from './FormField';
 import { Controller } from '../../../hooks/form';
@@ -15,6 +15,7 @@ interface FormTextInputProps<TFieldValues> {
     label: string;
     dropdown?: InputFieldDropdownProps;
     className?: string;
+    isRequired?: boolean;
     min?: number;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>) => void;
     onDropdownInput?: (value: string) => void;
@@ -31,6 +32,7 @@ export function FormTextInput<TFieldValues>({
     className,
     dropdown,
     fieldName,
+    isRequired: isRequiredProp,
     label,
     onDropdownInput,
     onInput,
@@ -46,7 +48,7 @@ export function FormTextInput<TFieldValues>({
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
     const { i18n } = useCoreContext();
 
-    const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
+    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, isRequiredProp]);
 
     const handleInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>, onInputHandler: (value: string) => void) => {
@@ -58,10 +60,12 @@ export function FormTextInput<TFieldValues>({
 
     const handleValidate: ValidationRules['validate'] = useCallback(
         (value: string) => {
+            const isBelowMinLength = minLength && value?.length < minLength;
+
             if (!value && !isRequired) {
                 return { valid: true };
             }
-            if (minLength && value.length < minLength) {
+            if (isBelowMinLength) {
                 return { valid: false, message: i18n.get('common.errors.minLength', { values: { minLength } }) };
             }
             return validate?.(value) ?? { valid: true };
@@ -81,6 +85,7 @@ export function FormTextInput<TFieldValues>({
                     }}
                     render={({ field, fieldState }) => {
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
+
                         return (
                             <InputBase
                                 {...field}

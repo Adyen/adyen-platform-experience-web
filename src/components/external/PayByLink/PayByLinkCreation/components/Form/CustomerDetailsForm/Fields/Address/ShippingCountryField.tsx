@@ -6,16 +6,23 @@ import { PBLFormValues } from '../../../../types';
 import { useWizardFormContext } from '../../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { TargetedEvent } from 'preact/compat';
 import { PayByLinkCountryDTO } from '../../../../../../../../../types';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
 interface ShippingCountryFieldProps {
     countriesData?: { data?: PayByLinkCountryDTO[] };
+    isAddressFieldRequired: AddressFieldRequiredChecker;
     isFetchingCountries: boolean;
     isSeparateAddress: boolean;
 }
 
-export const ShippingCountryField = ({ countriesData, isFetchingCountries, isSeparateAddress }: ShippingCountryFieldProps) => {
+export const ShippingCountryField = ({
+    countriesData,
+    isAddressFieldRequired,
+    isFetchingCountries,
+    isSeparateAddress,
+}: ShippingCountryFieldProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
-    const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
     const countryDatasetQuery = useFetch({
         fetchOptions: { enabled: !!i18n?.locale },
@@ -55,6 +62,8 @@ export const ShippingCountryField = ({ countriesData, isFetchingCountries, isSep
         [isSeparateAddress, setValue]
     );
 
+    const isRequired = fieldsConfig['deliveryAddress.country']?.required || isAddressFieldRequired('deliveryAddress.country');
+
     return (
         <FormSelect<PBLFormValues>
             filterable
@@ -65,6 +74,7 @@ export const ShippingCountryField = ({ countriesData, isFetchingCountries, isSep
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             onChange={handleChange}
             hideOptionalLabel
+            isRequired={isRequired}
         />
     );
 };

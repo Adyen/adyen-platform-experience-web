@@ -21,6 +21,7 @@ import { PBL_CREATION_FIELD_LENGTHS } from '../../../constants';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { Dispatch } from 'preact/compat';
 import { PayByLinkCountryDTO } from '../../../../../../../types';
+import { useAddressChecker } from './useAddressChecker';
 
 interface CustomerDetailsFormProps {
     isSeparateAddress: boolean;
@@ -32,6 +33,7 @@ interface CustomerDetailsFormProps {
 export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, countriesData, isFetchingCountries }: CustomerDetailsFormProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PBLFormValues>();
+    const { isAddressFieldRequired } = useAddressChecker();
 
     const isNameVisible = fieldsConfig['shopperName.firstName']?.visible || fieldsConfig['shopperName.lastName']?.visible;
     const isBillingAddressOptional = !fieldsConfig['billingAddress.street']?.required;
@@ -96,17 +98,18 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                             )}
                         </div>
                         <div>
-                            <ShippingStreetField isSeparateAddress={isSeparateAddress} />
-                            <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} />
+                            <ShippingStreetField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                            <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
                         </div>
                         <div>
                             <ShippingCountryField
                                 countriesData={countriesData}
+                                isAddressFieldRequired={isAddressFieldRequired}
                                 isFetchingCountries={isFetchingCountries}
                                 isSeparateAddress={isSeparateAddress}
                             />
-                            <ShippingCityField isSeparateAddress={isSeparateAddress} />
-                            <ShippingPostalCodeField isSeparateAddress={isSeparateAddress} />
+                            <ShippingCityField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
+                            <ShippingPostalCodeField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
                         </div>
                     </div>
                     {isBillingAddressVisible && (
@@ -142,6 +145,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                             fieldName="billingAddress.street"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.street.label')}
                             hideOptionalLabel
+                            isRequired={fieldsConfig['billingAddress.street']?.required || isAddressFieldRequired('billingAddress.street')}
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.houseNumberOrName.max}
@@ -149,16 +153,25 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                             fieldName="billingAddress.houseNumberOrName"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.houseNumberOrName.label')}
                             hideOptionalLabel
+                            isRequired={
+                                fieldsConfig['billingAddress.houseNumberOrName']?.required ||
+                                isAddressFieldRequired('billingAddress.houseNumberOrName')
+                            }
                         />
                     </div>
                     <div>
-                        <BillingCountryField countriesData={countriesData} isFetchingCountries={isFetchingCountries} />
+                        <BillingCountryField
+                            countriesData={countriesData}
+                            isAddressFieldRequired={isAddressFieldRequired}
+                            isFetchingCountries={isFetchingCountries}
+                        />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
                             fieldName="billingAddress.city"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.city.label')}
                             hideOptionalLabel
+                            isRequired={fieldsConfig['billingAddress.city']?.required || isAddressFieldRequired('billingAddress.city')}
                         />
                         <FormTextInput<PBLFormValues>
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
@@ -167,6 +180,7 @@ export const CustomerDetailsForm = ({ isSeparateAddress, setIsSeparateAddress, c
                             fieldName="billingAddress.postalCode"
                             label={i18n.get('payByLink.linkCreation.fields.billingAddress.postalCode.label')}
                             hideOptionalLabel
+                            isRequired={fieldsConfig['billingAddress.postalCode']?.required || isAddressFieldRequired('billingAddress.postalCode')}
                         />
                     </div>
                 </div>

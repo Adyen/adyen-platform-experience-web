@@ -5,10 +5,17 @@ import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact/compat';
 import { FormTextInput } from '../../../../../../../../internal/FormWrappers/FormTextInput';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../../../constants';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
+export const ShippingCityField = ({
+    isSeparateAddress,
+    isAddressFieldRequired,
+}: {
+    isSeparateAddress: boolean;
+    isAddressFieldRequired: AddressFieldRequiredChecker;
+}) => {
     const { i18n } = useCoreContext();
-    const { setValue } = useWizardFormContext<PBLFormValues>();
+    const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
@@ -16,6 +23,8 @@ export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: bo
         },
         [isSeparateAddress, setValue]
     );
+
+    const isRequired = fieldsConfig['deliveryAddress.city']?.required || isAddressFieldRequired('deliveryAddress.city');
 
     return (
         <FormTextInput<PBLFormValues>
@@ -25,6 +34,7 @@ export const ShippingCityField = ({ isSeparateAddress }: { isSeparateAddress: bo
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"
             hideOptionalLabel
+            isRequired={isRequired}
         />
     );
 };
