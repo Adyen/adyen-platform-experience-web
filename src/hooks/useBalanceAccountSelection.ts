@@ -44,10 +44,7 @@ const useBalanceAccountSelection = ({
         [allowAllSelection, balanceAccounts]
     );
 
-    const activeBalanceAccount = useMemo(
-        () => allBalanceAccounts?.[selectedBalanceAccountIndex],
-        [allBalanceAccounts, selectedBalanceAccountIndex]
-    );
+    const activeBalanceAccount = useMemo(() => allBalanceAccounts?.[selectedBalanceAccountIndex], [allBalanceAccounts, selectedBalanceAccountIndex]);
 
     const activeBalanceAccountId = activeBalanceAccount?.id;
     const cachedBalanceAccountIdRef = useRef<string | undefined>();
@@ -57,9 +54,7 @@ const useBalanceAccountSelection = ({
             Object.freeze(
                 allBalanceAccounts?.map(({ description, id }) => {
                     const name =
-                        id === ALL_BALANCE_ACCOUNTS_SELECTION_ID
-                            ? i18n.get('common.filters.types.account.options.all')
-                            : capitalize(description)!;
+                        id === ALL_BALANCE_ACCOUNTS_SELECTION_ID ? i18n.get('common.filters.types.account.options.all') : capitalize(description)!;
                     return { id, name } as SelectItem;
                 }) ?? []
             ),
