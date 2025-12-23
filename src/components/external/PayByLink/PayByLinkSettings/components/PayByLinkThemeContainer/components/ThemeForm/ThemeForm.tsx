@@ -59,7 +59,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
         });
     }, []);
 
-    const onBrandNameChange = (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
+    const onBrandNameChange = useCallback((e: h.JSX.TargetedEvent<HTMLInputElement>) => {
         const value = e?.currentTarget?.value;
         setShowMissingBrandName(false);
         setBrandName(value);
@@ -68,7 +68,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
             nextFormData.set(ThemeFormDataRequest.BRAND, value);
             return nextFormData;
         });
-    };
+    }, []);
 
     const removeFieldFromThemePayload = useCallback((field: string) => {
         setThemePayload(previousFormData => {

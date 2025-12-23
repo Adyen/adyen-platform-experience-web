@@ -53,9 +53,9 @@ export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) 
         }
     };
 
-    const getIsValid = () => {
+    const getIsValid = useCallback(() => {
         return isValid.current;
-    };
+    }, []);
 
     return (
         <PayByLinkSettingsContext.Provider
