@@ -15,7 +15,7 @@ const PayByLinkSettingsWrapper = ({ ...props }: _UIComponentProps<PayByLinkSetti
     const { i18n } = useCoreContext();
     const { activeMenuItem, setActiveMenuItem, selectedStore, setSelectedStore, stores } = usePayByLinkSettingsContext();
 
-    const PAY_BY_LINK_SETTINGS_MENU_ITEMS = useMemo(() => MENU_ITEMS.map(item => ({ ...item, label: i18n.get(item.label) })), []);
+    const PAY_BY_LINK_SETTINGS_MENU_ITEMS = useMemo(() => MENU_ITEMS.map(item => ({ ...item, label: i18n.get(item.label) })), [i18n]);
 
     if (!activeMenuItem || !selectedStore) return null;
 
