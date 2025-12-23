@@ -104,7 +104,7 @@ export interface components {
              */
             createdAt: string;
             status: string;
-            type: components['schemas']['Category'];
+            type: string;
         };
         ExistingRefund: {
             amount: components['schemas']['Amount'];

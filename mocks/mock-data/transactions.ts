@@ -1,4 +1,4 @@
-import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
+import type { ILineItem, ILineItemRefundStatus, ITransaction } from '../../src';
 import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/TransactionsOverview/constants';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
@@ -2641,62 +2641,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
         availableQuantity: 2,
         originalQuantity: 6,
         refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-];
-
-export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -1500 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -100 },
-        status: 'failed',
-    },
-    {
-        amount: { currency: 'USD', value: -200 },
-        status: 'failed',
-    },
-    {
-        amount: { currency: 'USD', value: -200 },
-        status: 'failed',
-    },
-];
-
-export const FAILED_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -117500 },
-        status: 'failed',
-    },
-];
-
-export const IN_PROGRESS_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -1000000 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -400000 },
-        status: 'in_progress',
-    },
-];
-
-export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
     },
 ];
 
