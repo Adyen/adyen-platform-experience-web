@@ -1,5 +1,5 @@
 import { SecondaryNav } from '../../../../../internal/SecondaryNav';
-import { _UIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
+import { type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import { CONTAINER_CLASS_NAME, SIDEBAR_CONTAINER_CLASS_NAME, SECONDARY_NAV_CLASS_NAME, CONTENT_CONTAINER_CLASS_NAME } from './constants';
 import { useMemo } from 'preact/hooks';
 import './PayByLinkSettingsContainer.scss';
@@ -11,7 +11,7 @@ import { MENU_ITEMS } from './context/constants';
 import PayByLinkSettingsContent from './components/PayByLinkSettingsContent/PayByLinkSettingsContent';
 import SaveAction from './components/SaveAction';
 
-const PayByLinkSettingsWrapper = ({ ...props }: _UIComponentProps<PayByLinkSettingsComponentProps>) => {
+const PayByLinkSettingsWrapper = ({ ...props }: ExternalUIComponentProps<PayByLinkSettingsComponentProps>) => {
     const { i18n } = useCoreContext();
     const { activeMenuItem, setActiveMenuItem, selectedStore, setSelectedStore, stores } = usePayByLinkSettingsContext();
 

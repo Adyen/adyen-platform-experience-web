@@ -1,9 +1,9 @@
-import { _UIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
+import { type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import './PayByLinkSettingsContainer.scss';
 import { PayByLinkSettingsProvider } from './context/context';
 import PayByLinkWrapper from './PayByLinkSettingsWrapper';
 
-const PayByLinkSettingsContainer = (props: _UIComponentProps<PayByLinkSettingsComponentProps>) => {
+const PayByLinkSettingsContainer = (props: ExternalUIComponentProps<PayByLinkSettingsComponentProps>) => {
     return (
         <PayByLinkSettingsProvider>
             <PayByLinkWrapper {...props} />

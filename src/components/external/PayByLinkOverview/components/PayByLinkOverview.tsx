@@ -283,6 +283,11 @@ export const PayByLinkOverview = ({
         setModalVisible(true);
     }, []);
 
+    const openSettingsModal = useCallback(() => {
+        setModalType('Settings');
+        setModalVisible(true);
+    }, []);
+
     const onCloseModal = useCallback(() => {
         setModalVisible(false);
     }, []);
@@ -290,6 +295,10 @@ export const PayByLinkOverview = ({
     const refreshPaymentLinkList = useCallback(() => {
         updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
     }, [updateFilters]);
+
+    const storeIds = useMemo(() => {
+        return stores?.map(store => store.storeId).filter(store => store !== undefined);
+    }, [stores]);
 
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
@@ -362,7 +371,7 @@ export const PayByLinkOverview = ({
                         <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
                             {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
                         </Button>
-                        <Button variant={ButtonVariant.SECONDARY} className={ACTION_BUTTON_CLASS}>
+                        <Button variant={ButtonVariant.SECONDARY} className={ACTION_BUTTON_CLASS} onClick={openSettingsModal}>
                             <Icon name="cog" />
                         </Button>
                     </div>
@@ -387,7 +396,7 @@ export const PayByLinkOverview = ({
                     {...paginationProps}
                 />
             </PaymentLinkDetailsModal>
-            <PayByLinkOverviewModal modalType={modalType} isModalVisible={isModalVisible} onCloseModal={onCloseModal} />
+            <PayByLinkOverviewModal modalType={modalType} isModalVisible={isModalVisible} onCloseModal={onCloseModal} storeIds={storeIds} />
         </div>
     );
 };

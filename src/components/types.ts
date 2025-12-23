@@ -209,7 +209,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
     fieldsConfig?: {
         data: DeepPartial<PBLFormValues>;
     };
-    storeIds: string[] | string;
+    storeIds?: string[] | string;
     onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
     onCreationDismiss?: () => void;
 }
