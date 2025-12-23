@@ -31,6 +31,7 @@ const SelectButtonElement = <T extends SelectItem>({
     className,
     filterable,
     toggleButtonRef,
+    buttonVariant,
     ...props
 }: PropsWithChildren<
     SelectButtonProps<T> &
@@ -46,7 +47,7 @@ const SelectButtonElement = <T extends SelectItem>({
             {...props}
             className={baseClassName}
             disabled={disabled}
-            variant={ButtonVariant.SECONDARY}
+            variant={buttonVariant ?? ButtonVariant.SECONDARY}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
             aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
@@ -63,11 +64,13 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
 
     return (
         <SelectButtonElement
+            buttonVariant={props.buttonVariant}
             active={active}
             disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
             aria-haspopup="dialog"
+            aria-invalid={props.isInvalid}
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
@@ -97,9 +100,11 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                     aria-controls={props.selectListId}
                     aria-expanded={showList}
                     aria-owns={props.selectListId}
+                    aria-invalid={props.isInvalid}
                     autoComplete="off"
                     className="adyen-pe-filter-input"
                     onInput={props.onInput}
+                    onKeyDown={props.onFilterInputKeyDown}
                     placeholder={placeholderText}
                     ref={props.filterInputRef}
                     role="combobox"

@@ -1,8 +1,10 @@
-import { useEffect, useReducer, useCallback } from 'preact/hooks';
+import { useEffect, useReducer, useCallback, useRef } from 'preact/hooks';
 import { ControllerProps, ControllerFieldState, FormState } from './types';
 
 export function Controller<TFieldValues>({ name, control, rules, render }: ControllerProps<TFieldValues>) {
     const [, rerender] = useReducer<number, void>(x => x + 1, 0);
+    const { required } = rules ?? {};
+    const prevRequiredRef = useRef(required);
 
     useEffect(() => {
         const unsubscribe = control.subscribe(() => {
@@ -15,11 +17,20 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
             unregister = control.register(name, rules);
         }
 
+        // Re-validate if `required` changed and field was touched
+        if (prevRequiredRef.current !== required) {
+            prevRequiredRef.current = required;
+            const fieldState = control.getFieldState(name);
+            if (fieldState.isTouched && fieldState.error) {
+                control.trigger(name);
+            }
+        }
+
         return () => {
             unsubscribe();
             unregister();
         };
-    }, [control, name, rules]);
+    }, [control, name, rules, required]);
 
     const value = control.getValue(name);
 
@@ -57,11 +68,16 @@ export function Controller<TFieldValues>({ name, control, rules, render }: Contr
         void control.trigger(name);
     }, [control, name]);
 
+    const triggerValidation = useCallback(() => {
+        void control.trigger(name);
+    }, [control, name]);
+
     const field = {
         name,
         value,
         onInput: handleChange,
         onBlur: handleBlur,
+        triggerValidation,
     };
 
     return render({

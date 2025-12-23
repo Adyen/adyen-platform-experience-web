@@ -113,17 +113,9 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'stores',
         },
-        getCurrencies: {
-            method: 'GET',
-            url: 'currencies',
-        },
-        getCountries: {
-            method: 'GET',
-            url: 'countries',
-        },
         getPayByLinkConfiguration: {
             method: 'GET',
-            url: 'paybylink/paymentLinks/configuration',
+            url: 'paybylink/paymentLinks/{storeId}/configuration',
         },
         getPaymentLinks: {
             method: 'GET',
@@ -133,6 +125,10 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/filters',
         },
+        createPBLPaymentLink: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks',
+        },
         getPayByLinkTheme: {
             method: 'GET',
             url: 'paybylink/themes/{storeId}',
@@ -140,6 +136,14 @@ export const setupBasicResponse = {
         updatePayByLinkTheme: {
             method: 'POST',
             url: 'paybylink/themes/{storeId}',
+        },
+        getCurrencies: {
+            method: 'GET',
+            url: 'currencies',
+        },
+        countries: {
+            method: 'GET',
+            url: 'paybylink/countries',
         },
         getPayByLinkSettings: {
             method: 'GET',

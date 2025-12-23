@@ -32,6 +32,8 @@ const SelectList = fixedForwardRef(
             showOverlay,
             fitPosition,
             fixedPopoverPositioning,
+            activeIndex,
+            filterable,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -64,7 +66,7 @@ const SelectList = fixedForwardRef(
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
-                        filteredItems.map(item => {
+                        filteredItems.map((item, index) => {
                             return (
                                 <SelectListItem
                                     item={item}
@@ -74,6 +76,7 @@ const SelectList = fixedForwardRef(
                                     onSelect={onSelect}
                                     renderListItem={renderSelectOption}
                                     selected={active.includes(item)}
+                                    isKeyboardActive={filterable && activeIndex === index}
                                 />
                             );
                         })

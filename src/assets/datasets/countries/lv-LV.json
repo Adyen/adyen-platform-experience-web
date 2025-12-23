@@ -1,0 +1,982 @@
+[
+    {
+        "id": "AF",
+        "name": "Afganistāna"
+    },
+    {
+        "id": "AL",
+        "name": "Albānija"
+    },
+    {
+        "id": "DZ",
+        "name": "Alžīrija"
+    },
+    {
+        "id": "US",
+        "name": "Amerikas Savienotās Valstis"
+    },
+    {
+        "id": "AD",
+        "name": "Andora"
+    },
+    {
+        "id": "AI",
+        "name": "Angilja"
+    },
+    {
+        "id": "AO",
+        "name": "Angola"
+    },
+    {
+        "id": "AQ",
+        "name": "Antarktika"
+    },
+    {
+        "id": "AG",
+        "name": "Antigva un Barbuda"
+    },
+    {
+        "id": "GB",
+        "name": "Apvienotā Karaliste"
+    },
+    {
+        "id": "AE",
+        "name": "Apvienotie Arābu Emirāti"
+    },
+    {
+        "id": "AR",
+        "name": "Argentīna"
+    },
+    {
+        "id": "AM",
+        "name": "Armēnija"
+    },
+    {
+        "id": "AW",
+        "name": "Aruba"
+    },
+    {
+        "id": "UM",
+        "name": "ASV Mazās Aizjūras salas"
+    },
+    {
+        "id": "AS",
+        "name": "ASV Samoa"
+    },
+    {
+        "id": "VI",
+        "name": "ASV Virdžīnas"
+    },
+    {
+        "id": "AU",
+        "name": "Austrālija"
+    },
+    {
+        "id": "AT",
+        "name": "Austrija"
+    },
+    {
+        "id": "TL",
+        "name": "Austrumtimora"
+    },
+    {
+        "id": "AZ",
+        "name": "Azerbaidžāna"
+    },
+    {
+        "id": "BS",
+        "name": "Bahamu salas"
+    },
+    {
+        "id": "BH",
+        "name": "Bahreina"
+    },
+    {
+        "id": "BY",
+        "name": "Baltkrievija"
+    },
+    {
+        "id": "BD",
+        "name": "Bangladeša"
+    },
+    {
+        "id": "BB",
+        "name": "Barbadosa"
+    },
+    {
+        "id": "BZ",
+        "name": "Beliza"
+    },
+    {
+        "id": "BE",
+        "name": "Beļģija"
+    },
+    {
+        "id": "BJ",
+        "name": "Benina"
+    },
+    {
+        "id": "BM",
+        "name": "Bermudu salas"
+    },
+    {
+        "id": "BO",
+        "name": "Bolīvija"
+    },
+    {
+        "id": "BA",
+        "name": "Bosnija un Hercegovina"
+    },
+    {
+        "id": "BW",
+        "name": "Botsvāna"
+    },
+    {
+        "id": "BR",
+        "name": "Brazīlija"
+    },
+    {
+        "id": "VG",
+        "name": "Britu Virdžīnas"
+    },
+    {
+        "id": "BN",
+        "name": "Bruneja"
+    },
+    {
+        "id": "BG",
+        "name": "Bulgārija"
+    },
+    {
+        "id": "BF",
+        "name": "Burkinafaso"
+    },
+    {
+        "id": "BI",
+        "name": "Burundija"
+    },
+    {
+        "id": "BT",
+        "name": "Butāna"
+    },
+    {
+        "id": "BV",
+        "name": "Buvē sala"
+    },
+    {
+        "id": "CF",
+        "name": "Centrālāfrikas Republika"
+    },
+    {
+        "id": "TD",
+        "name": "Čada"
+    },
+    {
+        "id": "CZ",
+        "name": "Čehija"
+    },
+    {
+        "id": "CL",
+        "name": "Čīle"
+    },
+    {
+        "id": "DK",
+        "name": "Dānija"
+    },
+    {
+        "id": "ZA",
+        "name": "Dienvidāfrikas Republika"
+    },
+    {
+        "id": "GS",
+        "name": "Dienviddžordžija un Dienvidsendviču salas"
+    },
+    {
+        "id": "KR",
+        "name": "Dienvidkoreja"
+    },
+    {
+        "id": "DM",
+        "name": "Dominika"
+    },
+    {
+        "id": "DO",
+        "name": "Dominikāna"
+    },
+    {
+        "id": "JE",
+        "name": "Džērsija"
+    },
+    {
+        "id": "DJ",
+        "name": "Džibutija"
+    },
+    {
+        "id": "EG",
+        "name": "Ēģipte"
+    },
+    {
+        "id": "EC",
+        "name": "Ekvadora"
+    },
+    {
+        "id": "GQ",
+        "name": "Ekvatoriālā Gvineja"
+    },
+    {
+        "id": "ER",
+        "name": "Eritreja"
+    },
+    {
+        "id": "ET",
+        "name": "Etiopija"
+    },
+    {
+        "id": "FO",
+        "name": "Fēru salas"
+    },
+    {
+        "id": "FJ",
+        "name": "Fidži"
+    },
+    {
+        "id": "PH",
+        "name": "Filipīnas"
+    },
+    {
+        "id": "FK",
+        "name": "Folklenda salas"
+    },
+    {
+        "id": "FR",
+        "name": "Francija"
+    },
+    {
+        "id": "TF",
+        "name": "Francijas Dienvidjūru teritorija"
+    },
+    {
+        "id": "GF",
+        "name": "Francijas Gviāna"
+    },
+    {
+        "id": "PF",
+        "name": "Francijas Polinēzija"
+    },
+    {
+        "id": "GA",
+        "name": "Gabona"
+    },
+    {
+        "id": "GY",
+        "name": "Gajāna"
+    },
+    {
+        "id": "GM",
+        "name": "Gambija"
+    },
+    {
+        "id": "GH",
+        "name": "Gana"
+    },
+    {
+        "id": "GG",
+        "name": "Gērnsija"
+    },
+    {
+        "id": "GI",
+        "name": "Gibraltārs"
+    },
+    {
+        "id": "GD",
+        "name": "Grenāda"
+    },
+    {
+        "id": "GL",
+        "name": "Grenlande"
+    },
+    {
+        "id": "GR",
+        "name": "Grieķija"
+    },
+    {
+        "id": "GE",
+        "name": "Gruzija"
+    },
+    {
+        "id": "GU",
+        "name": "Guama"
+    },
+    {
+        "id": "GP",
+        "name": "Gvadelupa"
+    },
+    {
+        "id": "GT",
+        "name": "Gvatemala"
+    },
+    {
+        "id": "GN",
+        "name": "Gvineja"
+    },
+    {
+        "id": "GW",
+        "name": "Gvineja-Bisava"
+    },
+    {
+        "id": "HT",
+        "name": "Haiti"
+    },
+    {
+        "id": "HM",
+        "name": "Hērda sala un Makdonalda salas"
+    },
+    {
+        "id": "HN",
+        "name": "Hondurasa"
+    },
+    {
+        "id": "HR",
+        "name": "Horvātija"
+    },
+    {
+        "id": "EE",
+        "name": "Igaunija"
+    },
+    {
+        "id": "IN",
+        "name": "Indija"
+    },
+    {
+        "id": "IO",
+        "name": "Indijas okeāna Britu teritorija"
+    },
+    {
+        "id": "ID",
+        "name": "Indonēzija"
+    },
+    {
+        "id": "IQ",
+        "name": "Irāka"
+    },
+    {
+        "id": "IR",
+        "name": "Irāna"
+    },
+    {
+        "id": "IE",
+        "name": "Īrija"
+    },
+    {
+        "id": "IS",
+        "name": "Islande"
+    },
+    {
+        "id": "IT",
+        "name": "Itālija"
+    },
+    {
+        "id": "IL",
+        "name": "Izraēla"
+    },
+    {
+        "id": "JM",
+        "name": "Jamaika"
+    },
+    {
+        "id": "JP",
+        "name": "Japāna"
+    },
+    {
+        "id": "NC",
+        "name": "Jaunkaledonija"
+    },
+    {
+        "id": "NZ",
+        "name": "Jaunzēlande"
+    },
+    {
+        "id": "YE",
+        "name": "Jemena"
+    },
+    {
+        "id": "JO",
+        "name": "Jordānija"
+    },
+    {
+        "id": "CV",
+        "name": "Kaboverde"
+    },
+    {
+        "id": "KY",
+        "name": "Kaimanu salas"
+    },
+    {
+        "id": "KH",
+        "name": "Kambodža"
+    },
+    {
+        "id": "CM",
+        "name": "Kamerūna"
+    },
+    {
+        "id": "CA",
+        "name": "Kanāda"
+    },
+    {
+        "id": "QA",
+        "name": "Katara"
+    },
+    {
+        "id": "KZ",
+        "name": "Kazahstāna"
+    },
+    {
+        "id": "KE",
+        "name": "Kenija"
+    },
+    {
+        "id": "CY",
+        "name": "Kipra"
+    },
+    {
+        "id": "KG",
+        "name": "Kirgizstāna"
+    },
+    {
+        "id": "KI",
+        "name": "Kiribati"
+    },
+    {
+        "id": "CC",
+        "name": "Kokosu (Kīlinga) salas"
+    },
+    {
+        "id": "CO",
+        "name": "Kolumbija"
+    },
+    {
+        "id": "KM",
+        "name": "Komoru salas"
+    },
+    {
+        "id": "CG",
+        "name": "Kongo (Brazavila)"
+    },
+    {
+        "id": "CD",
+        "name": "Kongo (Kinšasa)"
+    },
+    {
+        "id": "XK",
+        "name": "Kosova"
+    },
+    {
+        "id": "CR",
+        "name": "Kostarika"
+    },
+    {
+        "id": "CI",
+        "name": "Kotdivuāra"
+    },
+    {
+        "id": "RU",
+        "name": "Krievija"
+    },
+    {
+        "id": "CU",
+        "name": "Kuba"
+    },
+    {
+        "id": "CK",
+        "name": "Kuka salas"
+    },
+    {
+        "id": "KW",
+        "name": "Kuveita"
+    },
+    {
+        "id": "CN",
+        "name": "Ķīna"
+    },
+    {
+        "id": "HK",
+        "name": "Ķīnas īpašās pārvaldes apgabals Honkonga"
+    },
+    {
+        "id": "MO",
+        "name": "ĶTR īpašais administratīvais reģions Makao"
+    },
+    {
+        "id": "LA",
+        "name": "Laosa"
+    },
+    {
+        "id": "LV",
+        "name": "Latvija"
+    },
+    {
+        "id": "LS",
+        "name": "Lesoto"
+    },
+    {
+        "id": "LB",
+        "name": "Libāna"
+    },
+    {
+        "id": "LR",
+        "name": "Libērija"
+    },
+    {
+        "id": "LY",
+        "name": "Lībija"
+    },
+    {
+        "id": "LT",
+        "name": "Lietuva"
+    },
+    {
+        "id": "LI",
+        "name": "Lihtenšteina"
+    },
+    {
+        "id": "LU",
+        "name": "Luksemburga"
+    },
+    {
+        "id": "MG",
+        "name": "Madagaskara"
+    },
+    {
+        "id": "YT",
+        "name": "Majota"
+    },
+    {
+        "id": "MY",
+        "name": "Malaizija"
+    },
+    {
+        "id": "MW",
+        "name": "Malāvija"
+    },
+    {
+        "id": "MV",
+        "name": "Maldīvija"
+    },
+    {
+        "id": "ML",
+        "name": "Mali"
+    },
+    {
+        "id": "MT",
+        "name": "Malta"
+    },
+    {
+        "id": "MA",
+        "name": "Maroka"
+    },
+    {
+        "id": "MH",
+        "name": "Māršala salas"
+    },
+    {
+        "id": "MQ",
+        "name": "Martinika"
+    },
+    {
+        "id": "MU",
+        "name": "Maurīcija"
+    },
+    {
+        "id": "MR",
+        "name": "Mauritānija"
+    },
+    {
+        "id": "MX",
+        "name": "Meksika"
+    },
+    {
+        "id": "ME",
+        "name": "Melnkalne"
+    },
+    {
+        "id": "IM",
+        "name": "Menas sala"
+    },
+    {
+        "id": "FM",
+        "name": "Mikronēzija"
+    },
+    {
+        "id": "MM",
+        "name": "Mjanma (Birma)"
+    },
+    {
+        "id": "MD",
+        "name": "Moldova"
+    },
+    {
+        "id": "MC",
+        "name": "Monako"
+    },
+    {
+        "id": "MN",
+        "name": "Mongolija"
+    },
+    {
+        "id": "MS",
+        "name": "Montserrata"
+    },
+    {
+        "id": "MZ",
+        "name": "Mozambika"
+    },
+    {
+        "id": "NA",
+        "name": "Namībija"
+    },
+    {
+        "id": "NR",
+        "name": "Nauru"
+    },
+    {
+        "id": "NP",
+        "name": "Nepāla"
+    },
+    {
+        "id": "AN",
+        "name": "Netherlands Antilles"
+    },
+    {
+        "id": "NL",
+        "name": "Nīderlande"
+    },
+    {
+        "id": "NE",
+        "name": "Nigēra"
+    },
+    {
+        "id": "NG",
+        "name": "Nigērija"
+    },
+    {
+        "id": "NI",
+        "name": "Nikaragva"
+    },
+    {
+        "id": "NU",
+        "name": "Niue"
+    },
+    {
+        "id": "NF",
+        "name": "Norfolkas sala"
+    },
+    {
+        "id": "NO",
+        "name": "Norvēģija"
+    },
+    {
+        "id": "AX",
+        "name": "Olandes salas"
+    },
+    {
+        "id": "OM",
+        "name": "Omāna"
+    },
+    {
+        "id": "PK",
+        "name": "Pakistāna"
+    },
+    {
+        "id": "PW",
+        "name": "Palau"
+    },
+    {
+        "id": "PS",
+        "name": "Palestīnas teritorijas"
+    },
+    {
+        "id": "PA",
+        "name": "Panama"
+    },
+    {
+        "id": "PG",
+        "name": "Papua-Jaungvineja"
+    },
+    {
+        "id": "PY",
+        "name": "Paragvaja"
+    },
+    {
+        "id": "PE",
+        "name": "Peru"
+    },
+    {
+        "id": "PN",
+        "name": "Pitkērnas salas"
+    },
+    {
+        "id": "PL",
+        "name": "Polija"
+    },
+    {
+        "id": "PT",
+        "name": "Portugāle"
+    },
+    {
+        "id": "PR",
+        "name": "Puertoriko"
+    },
+    {
+        "id": "RE",
+        "name": "Reinjona"
+    },
+    {
+        "id": "EH",
+        "name": "Rietumsahāra"
+    },
+    {
+        "id": "RW",
+        "name": "Ruanda"
+    },
+    {
+        "id": "RO",
+        "name": "Rumānija"
+    },
+    {
+        "id": "SV",
+        "name": "Salvadora"
+    },
+    {
+        "id": "WS",
+        "name": "Samoa"
+    },
+    {
+        "id": "SM",
+        "name": "Sanmarīno"
+    },
+    {
+        "id": "ST",
+        "name": "Santome un Prinsipi"
+    },
+    {
+        "id": "SA",
+        "name": "Saūda Arābija"
+    },
+    {
+        "id": "SC",
+        "name": "Seišelu salas"
+    },
+    {
+        "id": "SN",
+        "name": "Senegāla"
+    },
+    {
+        "id": "PM",
+        "name": "Senpjēra un Mikelona"
+    },
+    {
+        "id": "KN",
+        "name": "Sentkitsa un Nevisa"
+    },
+    {
+        "id": "LC",
+        "name": "Sentlūsija"
+    },
+    {
+        "id": "VC",
+        "name": "Sentvinsenta un Grenadīnas"
+    },
+    {
+        "id": "RS",
+        "name": "Serbija"
+    },
+    {
+        "id": "SG",
+        "name": "Singapūra"
+    },
+    {
+        "id": "SY",
+        "name": "Sīrija"
+    },
+    {
+        "id": "SL",
+        "name": "Sjerraleone"
+    },
+    {
+        "id": "SK",
+        "name": "Slovākija"
+    },
+    {
+        "id": "SI",
+        "name": "Slovēnija"
+    },
+    {
+        "id": "SO",
+        "name": "Somālija"
+    },
+    {
+        "id": "FI",
+        "name": "Somija"
+    },
+    {
+        "id": "ES",
+        "name": "Spānija"
+    },
+    {
+        "id": "SD",
+        "name": "Sudāna"
+    },
+    {
+        "id": "SR",
+        "name": "Surinama"
+    },
+    {
+        "id": "SH",
+        "name": "Sv.Helēnas sala"
+    },
+    {
+        "id": "SJ",
+        "name": "Svalbāra un Jana Majena sala"
+    },
+    {
+        "id": "SZ",
+        "name": "Svatini"
+    },
+    {
+        "id": "LK",
+        "name": "Šrilanka"
+    },
+    {
+        "id": "CH",
+        "name": "Šveice"
+    },
+    {
+        "id": "TJ",
+        "name": "Tadžikistāna"
+    },
+    {
+        "id": "TW",
+        "name": "Taivāna"
+    },
+    {
+        "id": "TH",
+        "name": "Taizeme"
+    },
+    {
+        "id": "TZ",
+        "name": "Tanzānija"
+    },
+    {
+        "id": "TC",
+        "name": "Tērksas un Kaikosas salas"
+    },
+    {
+        "id": "TG",
+        "name": "Togo"
+    },
+    {
+        "id": "TK",
+        "name": "Tokelau"
+    },
+    {
+        "id": "TO",
+        "name": "Tonga"
+    },
+    {
+        "id": "TT",
+        "name": "Trinidāda un Tobāgo"
+    },
+    {
+        "id": "TN",
+        "name": "Tunisija"
+    },
+    {
+        "id": "TR",
+        "name": "Turcija"
+    },
+    {
+        "id": "TM",
+        "name": "Turkmenistāna"
+    },
+    {
+        "id": "TV",
+        "name": "Tuvalu"
+    },
+    {
+        "id": "UG",
+        "name": "Uganda"
+    },
+    {
+        "id": "UA",
+        "name": "Ukraina"
+    },
+    {
+        "id": "HU",
+        "name": "Ungārija"
+    },
+    {
+        "id": "UY",
+        "name": "Urugvaja"
+    },
+    {
+        "id": "UZ",
+        "name": "Uzbekistāna"
+    },
+    {
+        "id": "DE",
+        "name": "Vācija"
+    },
+    {
+        "id": "VU",
+        "name": "Vanuatu"
+    },
+    {
+        "id": "VA",
+        "name": "Vatikāns"
+    },
+    {
+        "id": "VE",
+        "name": "Venecuēla"
+    },
+    {
+        "id": "VN",
+        "name": "Vjetnama"
+    },
+    {
+        "id": "WF",
+        "name": "Volisa un Futunas salas"
+    },
+    {
+        "id": "SB",
+        "name": "Zālamana salas"
+    },
+    {
+        "id": "ZM",
+        "name": "Zambija"
+    },
+    {
+        "id": "KP",
+        "name": "Ziemeļkoreja"
+    },
+    {
+        "id": "MK",
+        "name": "Ziemeļmaķedonija"
+    },
+    {
+        "id": "MP",
+        "name": "Ziemeļu Marianas salas"
+    },
+    {
+        "id": "CX",
+        "name": "Ziemsvētku sala"
+    },
+    {
+        "id": "ZW",
+        "name": "Zimbabve"
+    },
+    {
+        "id": "SE",
+        "name": "Zviedrija"
+    }
+]
