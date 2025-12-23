@@ -18,7 +18,6 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         reports: `${baseUrl}/reports`,
         downloadReport: `${baseUrl}/reports/download`,
         stores: `${baseUrl}/stores`,
-        currencies: `${baseUrl}/currencies`,
         capital: {
             createOffer: `${baseUrl}/capital/grantOffers/create`,
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
@@ -39,6 +38,7 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
         payByLink: {
             configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
             countries: `${baseUrl}/paybylink/countries`,
+            currencies: `${baseUrl}/paybylink/currencies`,
             getPayByLinkSettings: `${baseUrl}/paybylink/settings/:storeId`,
             installments: `${baseUrl}/paybylink/installments`,
             themes: `${baseUrl}/paybylink/themes/${matchVariable}`,

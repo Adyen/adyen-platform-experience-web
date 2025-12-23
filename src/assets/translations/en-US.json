@@ -764,7 +764,6 @@
     "payByLink.linkCreation.form.linkTypes.open": "Open",
     "payByLink.linkCreation.form.linkTypes.singleUse": "Single use",
     "payByLink.linkCreation.form.steps.back": "Back",
-    "payByLink.linkCreation.form.steps.cancel": "Cancel",
     "payByLink.linkCreation.form.steps.continue": "Continue",
     "payByLink.linkCreation.form.steps.customer": "Customer",
     "payByLink.linkCreation.form.steps.payment": "Payment",

@@ -3,7 +3,7 @@ import Alert from '../../../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../../../internal/Alert/types';
 import StoreField from './Fields/StoreField';
 
-import { useEffect, useMemo } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';
 import { PBLFormValues } from '../../types';

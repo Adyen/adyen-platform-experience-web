@@ -6,7 +6,7 @@ export interface WizardStep<TFieldValues> {
     id: string;
     title?: string;
     description?: string;
-    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean; label?: TranslationKey }[]>;
+    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean; label?: TranslationKey; options?: any }[]>;
     validate?: (values: Partial<TFieldValues>) => boolean | Promise<boolean>;
     isOptional?: boolean;
 }

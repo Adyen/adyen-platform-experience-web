@@ -1,6 +1,22 @@
 @use '../../../../../../../style/index' as style;
+@use '../../../../../../../style/breakpoints' as *;
 
 .adyen-pe-pay-by-link-creation-form {
+    &__shopper-name-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-060);
+
+        @include adyen-pe-screen-sm-and-down {
+            flex-direction: column;
+            gap: style.token(spacer-060);
+        }
+
+        > * {
+            flex-grow: 1;
+        }
+    }
+
     &__billing-address-container,
     &__shipping-address-container {
         display: flex;
@@ -11,6 +27,11 @@
             display: flex;
             flex-direction: row;
             gap: style.token(spacer-060);
+
+            @include adyen-pe-screen-sm-and-down {
+                flex-direction: column;
+                gap: style.token(spacer-060);
+            }
         }
     }
 
@@ -18,6 +39,11 @@
     &__billing-address-title-container {
         align-items: center;
         gap: style.token(spacer-020);
+
+        @include adyen-pe-screen-sm-and-down {
+            flex-direction: row;
+            gap: style.token(spacer-060);
+        }
     }
 
     &__billing-address-field,
@@ -25,11 +51,11 @@
         flex-grow: 1;
 
         &--large {
-            flex: 4 0 0;
+            flex: 3 0 0;
         }
 
         &--medium {
-            flex: 2 0 0;
+            flex: 1.5 0 0;
         }
 
         &--small {

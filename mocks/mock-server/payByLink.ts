@@ -87,7 +87,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /currencies
-    http.get(mockEndpoints.currencies, async () => {
+    http.get(mockEndpointsPBL.currencies, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -220,7 +220,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks - Payment links list
-    http.get(mockEndpoints.payByLink.paymentLinks, async ({ request }) => {
+    http.get(mockEndpointsPBL.paymentLinks, async ({ request }) => {
         if (networkError) {
             return HttpResponse.error();
         }
@@ -263,7 +263,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks - Payment links list
-    http.get(mockEndpoints.payByLink.filters, async () => {
+    http.get(mockEndpointsPBL.filters, async () => {
         if (networkError) {
             return HttpResponse.error();
         }

@@ -145,9 +145,9 @@ export const setupBasicResponse = {
             method: 'POST',
             url: 'paybylink/themes/{storeId}',
         },
-        getCurrencies: {
+        currencies: {
             method: 'GET',
-            url: 'currencies',
+            url: 'paybylink/currencies',
         },
         countries: {
             method: 'GET',
