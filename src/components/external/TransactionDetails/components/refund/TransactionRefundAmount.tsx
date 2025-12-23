@@ -17,15 +17,11 @@ import Icon from '../../../../internal/Icon';
 import InputBase from '../../../../internal/FormFields/InputBase';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { getDecimalAmount, getDivider } from '../../../../../core/Localization/amount/amount-util';
 import { TranslationKey } from '../../../../../translations';
 import { ARIA_ERROR_SUFFIX } from '../../../../../core/Errors/constants';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { Tag } from '../../../../internal/Tag/Tag';
-
-// [TODO]: These utils are reusable and should be located in a shared module
-const formatAmount = (amount: number, currency: string) => getDecimalAmount(amount, currency).toFixed(getCurrencyExponent(currency));
-const getCurrencyExponent = (currency: string) => Math.log10(getDivider(currency));
+import { formatAmount, getCurrencyExponent } from '../../../../../utils/currency/main';
 
 const _BaseRefundAmountInput = ({
     currency,

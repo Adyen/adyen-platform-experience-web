@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS } from '../mock-data/payByLink';
+import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, PAY_BY_LINK_SETTINGS } from '../mock-data/payByLink';
 import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
 
@@ -34,14 +34,38 @@ export const payByLinkMocks = [
         });
     }),
 
-    // GET /paybylink/paymentLinks/configuration
-    http.get(mockEndpointsPBL.configuration, async () => {
+    // GET /paybylink/paymentLinks/{storeId}/configuration
+    http.get(mockEndpointsPBL.configuration, async ({ params }) => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+        const { storeId } = params;
+        if (!storeId) {
+            return HttpResponse.json({ error: 'Store ID is required' }, { status: 400 });
+        }
+        const config = PAY_BY_LINK_CONFIGURATION[storeId as keyof typeof PAY_BY_LINK_CONFIGURATION];
+        if (!config) {
+            return HttpResponse.json({ error: 'Store not found' }, { status: 404 });
+        }
+        return HttpResponse.json(config);
+    }),
+
+    // POST /paybylink/paymentLinks
+    http.post(mockEndpointsPBL.paymentLinks, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json(PAY_BY_LINK_CONFIGURATION);
+        const now = new Date();
+        const expiration = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const url = 'http://pay.adyen/links/12345';
+
+        return HttpResponse.json({
+            url,
+            expireAt: expiration.toISOString(),
+        });
     }),
 
     // GET /currencies
@@ -57,7 +81,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /countries
-    http.get(mockEndpoints.countries, async () => {
+    http.get(mockEndpointsPBL.countries, async () => {
         await delay();
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -79,6 +103,28 @@ export const payByLinkMocks = [
             data: INSTALLMENTS,
         });
     }),
+
+    // GET /paybylink/settings/{storeId}
+    http.get(mockEndpointsPBL.getPayByLinkSettings, async ({ params }) => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        const { storeId } = params;
+
+        if (!storeId) {
+            return HttpResponse.json({ error: 'Store ID is required' }, { status: 400 });
+        }
+        const settings = PAY_BY_LINK_SETTINGS[storeId as keyof typeof PAY_BY_LINK_SETTINGS];
+
+        if (!settings) {
+            return HttpResponse.json({ error: 'Store not found' }, { status: 404 });
+        }
+
+        return HttpResponse.json(settings);
+    }),
+
     // GET /paybylink/paymentLinks - Payment links list
     http.get(mockEndpoints.payByLink.paymentLinks, async ({ request }) => {
         if (networkError) {

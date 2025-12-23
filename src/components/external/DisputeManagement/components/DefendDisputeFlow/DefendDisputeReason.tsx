@@ -61,6 +61,12 @@ export const DefendDisputeReason = () => {
         [selectedDefenseReason, defenseReasons]
     );
 
+    useEffect(() => {
+        if (selected) {
+            setSelectedDefenseReason(selected);
+        }
+    }, [selected, isReasonSubmitted]);
+
     const { getApplicableDefenseDocuments } = useConfigContext().endpoints;
 
     const fetchCallback = useCallback(async () => {
