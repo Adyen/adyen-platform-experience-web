@@ -1,0 +1,13 @@
+@use '../../../../../style';
+
+.adyen-pe-payment-link-details {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+}

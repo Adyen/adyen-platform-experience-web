@@ -85,7 +85,7 @@ describe('CurrencyInput', () => {
 
         mockUseConfigContext.mockReturnValue({
             endpoints: {
-                getCurrencies: mockGetCurrencies,
+                currencies: mockGetCurrencies,
             },
         } as any);
 
@@ -427,10 +427,10 @@ describe('CurrencyInput', () => {
             expect(dropdown).toBeDisabled();
         });
 
-        test('should handle currencies fetch with no getCurrencies endpoint', () => {
+        test('should handle currencies fetch with no currencies endpoint', () => {
             mockUseConfigContext.mockReturnValue({
                 endpoints: {
-                    getCurrencies: undefined,
+                    currencies: undefined,
                 },
             } as any);
 

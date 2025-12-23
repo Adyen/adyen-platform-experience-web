@@ -30,7 +30,7 @@ const TransactionRefundReason = () => {
     const onReasonChanged = useCallback<SelectProps<{ id: RefundReason; name: string }>['onChange']>(
         evt => {
             const reason = evt.target?.value;
-            reason && setRefundReason(reason);
+            reason && setRefundReason(reason as RefundReason);
         },
         [setRefundReason]
     );

@@ -31,6 +31,7 @@ const Select = <T extends SelectItem>({
     placeholder,
     uniqueId,
     renderListItem,
+    renderButtonContent,
     isCollatingErrors,
     setToTargetWidth,
     withoutCollapseIndicator = false,
@@ -154,7 +155,7 @@ const Select = <T extends SelectItem>({
             }
         }
         clearSelectionInProgress.current = false;
-    }, [closeList, commitSelection, multiSelect, selection]);
+    }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
         if (committing) closeList();
@@ -425,11 +426,13 @@ const Select = <T extends SelectItem>({
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
+                name={name}
                 onButtonKeyDown={handleButtonKeyDown}
                 onFilterInputKeyDown={handleFilterInputKeyDown}
                 multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
+                renderButtonContent={renderButtonContent}
                 selectListId={selectListId}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}

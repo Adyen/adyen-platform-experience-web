@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi } from 'vitest';
-import { act, fireEvent, render, screen, within } from '@testing-library/preact';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
 import { validationErrors } from '../constants';
 import Dropzone from './Dropzone';
@@ -171,10 +171,10 @@ describe('Dropzone', () => {
         expect(file.size).toBeGreaterThan(maxFileSize);
         expect(uploadFilesMock).not.toHaveBeenCalled();
 
-        const inputError = screen.getByText(validationErrors.VERY_LARGE_FILE);
+        const inputError = await screen.findByText(validationErrors.VERY_LARGE_FILE);
 
-        expect(inputError).toBeInTheDocument();
-        expect(inputError).toBeVisible();
+        await waitFor(() => expect(inputError).toBeInTheDocument());
+        await waitFor(() => expect(inputError).toBeVisible());
     });
 
     test('should not upload file if disabled', async () => {
@@ -198,7 +198,7 @@ describe('Dropzone', () => {
 
         render(<Dropzone uploadFiles={uploadFilesMock} />);
 
-        const dropzone = screen.getByRole('region');
+        const dropzone = await screen.findByRole('region');
 
         for (let i = 1; i <= 3; i++) {
             const file = FILES[i % FILES.length]!;
@@ -209,8 +209,8 @@ describe('Dropzone', () => {
                 });
             });
 
-            expect(uploadFilesMock).toHaveBeenCalledTimes(i);
-            expect(uploadFilesMock).toHaveBeenLastCalledWith([file]);
+            await waitFor(() => expect(uploadFilesMock).toHaveBeenCalledTimes(i));
+            await waitFor(() => expect(uploadFilesMock).toHaveBeenLastCalledWith([file]));
         }
     });
 
@@ -250,10 +250,10 @@ describe('Dropzone', () => {
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
 
-        const inputError = screen.getByText(validationErrors.DISALLOWED_FILE_TYPE);
+        const inputError = await screen.findByText(validationErrors.DISALLOWED_FILE_TYPE);
 
-        expect(inputError).toBeInTheDocument();
-        expect(inputError).toBeVisible();
+        await waitFor(() => expect(inputError).toBeInTheDocument());
+        await waitFor(() => expect(inputError).toBeVisible());
     });
 
     test('should not drop file larger than the maximum file size', async () => {
@@ -273,10 +273,10 @@ describe('Dropzone', () => {
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
 
-        const inputError = screen.getByText(validationErrors.VERY_LARGE_FILE);
+        const inputError = await screen.findByText(validationErrors.VERY_LARGE_FILE);
 
-        expect(inputError).toBeInTheDocument();
-        expect(inputError).toBeVisible();
+        await waitFor(() => expect(inputError).toBeInTheDocument());
+        await waitFor(() => expect(inputError).toBeVisible());
     });
 
     test('should not drop file if disabled', async () => {

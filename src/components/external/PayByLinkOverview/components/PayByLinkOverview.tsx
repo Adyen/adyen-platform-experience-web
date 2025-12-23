@@ -38,11 +38,12 @@ import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
 import { IStore, IStores } from '../../../../types/api/models/stores';
 import * as RangePreset from '../../../internal/Calendar/calendar/timerange/presets';
+import { PaymentLinkDetailsModal } from './PaymentLinkDetailsModal/PaymentLinkDetailsModal';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
 const PAY_BY_LINK_STORES_FILTER_PARAM = 'storeIds';
-
+const LAST_REFRESH_TIMESTAMP_PARAM = '_t';
 const PAY_BY_LINK_STATUS_FILTER_VALUES = Object.keys(PAY_BY_LINK_STATUSES) as IPayByLinkStatus[];
 
 const PayByLinkOverviewTabsDropdown = ({
@@ -71,13 +72,17 @@ const PayByLinkOverviewTabsDropdown = ({
             aria-label={ariaLabel}
             items={selectItems}
             selected={statusGroup}
-            onChange={({ target }) => setStatusGroup(target.value)}
+            onChange={({ target }) => setStatusGroup(target.value as IPayByLinkStatusGroup)}
             showOverlay={true}
             multiSelect={false}
             filterable={false}
         />
     );
 };
+
+interface PaymentLinksPageRequestParams extends Record<FilterParam | 'cursor', string> {
+    [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
+}
 
 export const PayByLinkOverview = ({
     onFiltersChanged,
@@ -101,7 +106,7 @@ export const PayByLinkOverview = ({
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const getPayByLinkListData = useCallback(
-        async ({ ...pageRequestParams }: Record<FilterParam | 'cursor', string>, signal?: AbortSignal) => {
+        async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: PaymentLinksPageRequestParams, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
             return getPayByLinkListEndpoint!(requestOptions, {
                 query: {
@@ -134,6 +139,7 @@ export const PayByLinkOverview = ({
         [PAY_BY_LINK_STATUS_FILTER_PARAM]: undefined,
         statusGroup: DEFAULT_PAY_BY_LINK_STATUS_GROUP,
         [PAY_BY_LINK_STORES_FILTER_PARAM]: undefined,
+        [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
     });
 
     //TODO - Infer the return type of getPayByLinkListData instead of having to specify it
@@ -263,6 +269,10 @@ export const PayByLinkOverview = ({
         return new Date(RangePreset.lastNDays(EARLIEST_PAYMENT_LINK_DATE).from).toString();
     }, []);
 
+    const refreshPaymentLinkList = useCallback(() => {
+        updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+    }, [updateFilters]);
+
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="payByLink.overview.title">
@@ -330,11 +340,10 @@ export const PayByLinkOverview = ({
                     ></TextFilter>
                 </FilterBar>
             )}
-            <DataDetailsModal
-                ariaLabelKey="payByLink.details.title"
+            <PaymentLinkDetailsModal
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}
-                className={BASE_DETAILS_CLASS}
+                onUpdate={refreshPaymentLinkList}
             >
                 <PayByLinkTable
                     stores={stores}
@@ -349,7 +358,7 @@ export const PayByLinkOverview = ({
                     paymentLinks={records}
                     {...paginationProps}
                 />
-            </DataDetailsModal>
+            </PaymentLinkDetailsModal>
         </div>
     );
 };

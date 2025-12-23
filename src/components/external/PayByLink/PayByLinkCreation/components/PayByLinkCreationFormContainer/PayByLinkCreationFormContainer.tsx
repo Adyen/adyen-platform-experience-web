@@ -2,8 +2,8 @@ import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { LinkCreationFormStep, PBLFormValues } from '../types';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { PBLFormValues, LinkCreationFormStep } from '../types';
 import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
 import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
 import { FormSummary } from '../Form/Summary/FormSummary';
@@ -14,43 +14,63 @@ import '../../PayByLinkCreation.scss';
 import './PayByLinkCreationForm.scss';
 import useMutation from '../../../../../../hooks/useMutation/useMutation';
 import { SuccessResponse } from '../../../../../../types/api/endpoints';
-import { StoreForm } from '../Form/StoreForm/StoreForm';
 import Icon from '../../../../../internal/Icon';
 import { usePayByLinkFormData } from './usePayByLinkFormData';
 import { PayByLinkCreationComponentProps } from '../../../../../types';
+import { scrollToFirstErrorField } from '../../utils';
+import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
+import { FormStepRenderer } from './FormStepRenderer';
 import { AlertTypeOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
 import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
+    onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: string[] | string;
     onContactSupport?: () => void;
 };
 
+const LoadingSkeleton = () => (
+    <div className="adyen-pe-pay-by-link-creation-form__skeleton">
+        {[...Array(4)].map((_, index) => (
+            <div key={index} className="adyen-pe-pay-by-link-creation-form__skeleton-item"></div>
+        ))}
+    </div>
+);
+
 export const PayByLinkCreationFormContainer = ({
     fieldsConfig,
     storeIds,
+    onCreationDismiss,
     onPaymentLinkCreated,
     onContactSupport,
 }: PayByLinkCreationFormContainerProps) => {
+    const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
     const { i18n } = useCoreContext();
+    const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const {
-        storesQuery,
-        configurationQuery,
-        settingsQuery,
+        storesData,
+        configurationData,
+        countriesData,
+        isFetchingCountries,
+        countryDatasetData,
+        isFetchingCountryDataset,
+        settingsData,
         storesSelectorItems,
         termsAndConditionsProvisioned,
         formSteps,
-        steps,
+        stepperItems,
         formStepsAriaLabel,
         wizardForm,
         createPBLPaymentLink,
         isDataLoading,
+        isFirstLoadDone,
     } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
@@ -58,12 +78,23 @@ export const PayByLinkCreationFormContainer = ({
     const handleNext = useCallback(
         async (index: number) => {
             if (!isLastStep) {
-                await validateStep(index);
+                const isValid = await validateStep(index);
+                if (!isValid && isXsAndDownContainer) {
+                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors));
+                    return;
+                }
                 await nextStep();
             }
         },
-        [isLastStep, nextStep, validateStep]
+        [isLastStep, nextStep, validateStep, wizardForm.formState.errors, isXsAndDownContainer]
     );
+
+    useEffect(() => {
+        // Scroll to top of the form on each step change
+        if (isXsAndDownContainer) {
+            containerRef.current?.scrollIntoView({ block: 'start' });
+        }
+    }, [currentStep, isXsAndDownContainer]);
 
     const onClickStep = useCallback(
         (index: number) => {
@@ -77,6 +108,15 @@ export const PayByLinkCreationFormContainer = ({
         return step ? (step.id as LinkCreationFormStep) : 'store';
     }, [currentStep, formSteps]);
 
+    const handlePrevious = () => {
+        if (isFirstStep) {
+            onCreationDismiss?.();
+            return;
+        }
+        submitMutation.reset();
+        previousStep();
+    };
+
     const handleContinue = async () => {
         await handleNext(currentStep);
     };
@@ -85,11 +125,6 @@ export const PayByLinkCreationFormContainer = ({
     const submitMutation = useMutation({
         queryFn: createPBLPaymentLink,
     });
-
-    const handlePrevious = () => {
-        submitMutation.reset();
-        previousStep();
-    };
 
     const onSubmit = async (data: PBLFormValues) => {
         const { store, ...dataWithoutStore } = data;
@@ -121,33 +156,48 @@ export const PayByLinkCreationFormContainer = ({
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
 
     const accountIsMisconfigured = useMemo(() => {
-        return storesQuery && storesQuery.data && storesQuery.data?.data.length === 0;
-    }, [storesQuery]);
+        return storesData && storesData.data && storesData.data.length === 0;
+    }, [storesData]);
 
     const displayConfigurationError = useMemo(() => {
-        return currentFormStep !== 'store' && !!configurationQuery.error;
-    }, [configurationQuery.error, currentFormStep]);
+        return currentFormStep !== 'store' && !configurationData;
+    }, [configurationData, currentFormStep]);
 
     const nextButtonIsDisabled = useMemo(() => {
         return !termsAndConditionsProvisioned || accountIsMisconfigured || displayConfigurationError;
     }, [accountIsMisconfigured, displayConfigurationError, termsAndConditionsProvisioned]);
 
+    if (!isFirstLoadDone) {
+        return (
+            <div className="adyen-pe-pay-by-link-creation-form__component">
+                <div className="adyen-pe-pay-by-link-creation-form__header">
+                    <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                        {i18n.get('payByLink.linkCreation.form.title')}
+                    </Typography>
+                    <LoadingSkeleton />
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="adyen-pe-pay-by-link-creation-form__component">
-            <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                {i18n.get('payByLink.linkCreation.form.title')}
-            </Typography>
-            <Stepper
-                nextStepDisabled={!canGoNext || !isStepComplete(currentStep)}
-                variant="horizontal"
-                activeIndex={currentStep}
-                ariaLabel={formStepsAriaLabel}
-                onChange={onClickStep}
-            >
-                {steps.map(step => (
-                    <>{step.label}</>
-                ))}
-            </Stepper>
+        <div className="adyen-pe-pay-by-link-creation-form__component" ref={containerRef}>
+            <div className="adyen-pe-pay-by-link-creation-form__header">
+                <Typography variant={TypographyVariant.SUBTITLE} stronger>
+                    {i18n.get('payByLink.linkCreation.form.title')}
+                </Typography>
+                <Stepper
+                    nextStepDisabled={!canGoNext || !isStepComplete(currentStep)}
+                    variant="horizontal"
+                    activeIndex={currentStep}
+                    ariaLabel={formStepsAriaLabel}
+                    onChange={onClickStep}
+                >
+                    {stepperItems.map(item => (
+                        <>{item.label}</>
+                    ))}
+                </Stepper>
+            </div>
             <WizardFormProvider {...wizardForm}>
                 <div className="adyen-pe-pay-by-link-creation-form__container">
                     <form
@@ -158,31 +208,24 @@ export const PayByLinkCreationFormContainer = ({
                         }}
                     >
                         <div>
-                            {(() => {
-                                switch (currentFormStep) {
-                                    case 'store':
-                                        return (
-                                            <StoreForm
-                                                settingsQuery={settingsQuery}
-                                                storeIds={storeIds}
-                                                storesQuery={storesQuery}
-                                                selectItems={storesSelectorItems}
-                                                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
-                                            />
-                                        );
-                                    case 'payment':
-                                        return <PaymentDetailsForm timezone={timezone} configuration={configurationQuery.data} />;
-                                    case 'customer':
-                                        return (
-                                            <CustomerDetailsForm isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
-                                        );
-                                    case 'summary':
-                                        return <FormSummary />;
-                                    default:
-                                        return <PaymentDetailsForm configuration={configurationQuery.data} />;
-                                }
-                            })()}
+                            <FormStepRenderer
+                                currentFormStep={currentFormStep}
+                                settingsData={settingsData}
+                                storeIds={storeIds}
+                                storesData={storesData}
+                                selectItems={storesSelectorItems}
+                                termsAndConditionsProvisioned={termsAndConditionsProvisioned}
+                                timezone={timezone}
+                                configurationData={configurationData}
+                                isSeparateAddress={isSeparateAddress}
+                                setIsSeparateAddress={setIsSeparateAddress}
+                                countriesData={countriesData}
+                                isFetchingCountries={isFetchingCountries}
+                                countryDatasetData={countryDatasetData}
+                                isFetchingCountryDataset={isFetchingCountryDataset}
+                            />
                         </div>
+
                         {displayConfigurationError && (
                             <ErrorMessageDisplay
                                 condensed
@@ -228,26 +271,24 @@ export const PayByLinkCreationFormContainer = ({
                             />
                         )}
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
-                            <div className="adyen-pe-pay-by-link-creation-form__buttons">
+                            {(!isFirstStep || onCreationDismiss) && (
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
-                                    {isFirstStep
-                                        ? i18n.get('payByLink.linkCreation.form.steps.cancel')
-                                        : i18n.get('payByLink.linkCreation.form.steps.back')}
+                                    {i18n.get('payByLink.linkCreation.form.steps.back')}
                                 </Button>
-                                <Button
-                                    className="adyen-pe-pay-by-link-creation-form__submit-button"
-                                    type={isLastStep ? 'submit' : 'button'}
-                                    variant={ButtonVariant.PRIMARY}
-                                    onClick={!isLastStep ? handleContinue : undefined}
-                                    state={isNextStepLoading ? 'loading' : undefined}
-                                    disabled={nextButtonIsDisabled}
-                                    iconRight={<Icon name="arrow-right" />}
-                                >
-                                    {isLastStep
-                                        ? i18n.get('payByLink.linkCreation.form.steps.submit')
-                                        : i18n.get('payByLink.linkCreation.form.steps.continue')}
-                                </Button>
-                            </div>
+                            )}
+                            <Button
+                                className="adyen-pe-pay-by-link-creation-form__submit-button"
+                                type={isLastStep ? 'submit' : 'button'}
+                                variant={ButtonVariant.PRIMARY}
+                                onClick={!isLastStep ? handleContinue : undefined}
+                                state={isNextStepLoading ? 'loading' : undefined}
+                                disabled={nextButtonIsDisabled}
+                                iconRight={<Icon name="arrow-right" />}
+                            >
+                                {isLastStep
+                                    ? i18n.get('payByLink.linkCreation.form.steps.submit')
+                                    : i18n.get('payByLink.linkCreation.form.steps.continue')}
+                            </Button>
                         </div>
                     </form>
                 </div>

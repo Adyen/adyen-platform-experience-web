@@ -79,6 +79,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                 [DROPDOWN_BUTTON_VALID_CLASS]: props.isValid,
             })}
             filterable={filterable}
+            name={props.name}
             onClick={!readonly ? props.toggleList : undefined}
             onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
             role={!filterable || showList ? 'button' : undefined}
@@ -90,7 +91,9 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
             id={props.id}
             {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
         >
-            {showList && filterable ? (
+            {props.renderButtonContent ? (
+                props.renderButtonContent({ item: buttonActiveItem })
+            ) : showList && filterable ? (
                 <input
                     aria-autocomplete="list"
                     aria-label={props['aria-label']}

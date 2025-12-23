@@ -5,12 +5,17 @@ import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact/compat';
 import { FormTextInput } from '../../../../../../../../internal/FormWrappers/FormTextInput';
 import { PBL_CREATION_FIELD_LENGTHS } from '../../../../../constants';
-import { useAddressChecker } from '../../useAddressChecker';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddress: boolean }) => {
+export const ShippingPostalCodeField = ({
+    isSeparateAddress,
+    isAddressFieldRequired,
+}: {
+    isSeparateAddress: boolean;
+    isAddressFieldRequired: AddressFieldRequiredChecker;
+}) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PBLFormValues>();
-    const { isAddressFieldRequired } = useAddressChecker();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
@@ -24,7 +29,6 @@ export const ShippingPostalCodeField = ({ isSeparateAddress }: { isSeparateAddre
     return (
         <FormTextInput<PBLFormValues>
             maxLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.postalCode.max}
-            minLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.postalCode.min}
             fieldName="deliveryAddress.postalCode"
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.postalCode.label')}
             onInput={onInput}

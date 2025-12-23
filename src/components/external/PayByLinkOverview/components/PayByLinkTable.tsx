@@ -8,7 +8,13 @@ import { TranslationKey } from '../../../../translations';
 import DataGrid from '../../../internal/DataGrid';
 import Pagination from '../../../internal/Pagination';
 import { PayByLinkTableProps } from './types';
-import { BASE_TABLE_GRID_CLASS, PAY_BY_LINK_STATUSES } from './constants';
+import {
+    BASE_TABLE_GRID_CLASS,
+    MOBILE_AMOUNT_CELL_CLASS,
+    MOBILE_EXPIRE_DATE_CELL_CLASS,
+    MOBILE_TABLE_CELL_CLASS,
+    PAY_BY_LINK_STATUSES,
+} from './constants';
 import { Tag } from '../../../internal/Tag/Tag';
 import { TagVariant } from '../../../internal/Tag/types';
 import Typography from '../../../internal/Typography/Typography';
@@ -18,6 +24,7 @@ import { DATE_FORMAT_PAY_BY_LINK, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE, DATE_FORM
 import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
 import { Tooltip } from '../../../internal/Tooltip/Tooltip';
 import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
+import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 
@@ -62,6 +69,8 @@ const FIELDS_KEYS = {
     storeCode: 'payByLink.overview.list.fields.store',
 } as const satisfies Record<(typeof PAY_BY_LINK_TABLE_FIELDS)[number], TranslationKey>;
 
+const errorMessage = 'payByLink.overview.errors.couldNotLoadLinks' as const;
+
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     error,
     loading,
@@ -92,6 +101,8 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
         [dateFormat, i18n]
     );
 
+    const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
     const columns = useTableColumns({
         fields: PAY_BY_LINK_TABLE_FIELDS,
         fieldsKeys: FIELDS_KEYS,
@@ -102,9 +113,28 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             },
             linkType: {
                 label: i18n.get(FIELDS_KEYS.linkType),
+                visible: !isMobileContainer,
             },
             storeCode: {
-                visible: stores && stores?.length > 1,
+                visible: stores && stores?.length > 1 && !isMobileContainer,
+            },
+            merchantReference: {
+                visible: !isMobileContainer,
+            },
+            currency: {
+                visible: !isMobileContainer,
+            },
+            status: {
+                visible: !isMobileContainer,
+            },
+            expirationDate: {
+                visible: !isMobileContainer,
+            },
+            creationDate: {
+                visible: !isMobileContainer,
+            },
+            shopperEmail: {
+                visible: !isMobileContainer,
             },
         },
     });
@@ -114,11 +144,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
         message: ['payByLink.overview.errors.listEmpty.message'],
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
-    const errorMessage = useMemo(() => {
-        return 'payByLink.overview.errors.couldNotLoadLinks' as const;
-    }, []);
-
-    const storeError: AdyenPlatformExperienceError | undefined = useMemo(() => {
+    const noStoresError = useMemo(() => {
         if (stores?.length !== 0) return undefined;
         return {
             message: 'No stores configured',
@@ -126,7 +152,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             errorCode: 'ACCOUNT_MISCONFIGURATION',
             type: 'error',
             requestId: '',
-        };
+        } as AdyenPlatformExperienceError;
     }, [stores]);
 
     const errorDisplay = useMemo(
@@ -134,20 +160,21 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             return (
                 <PaymentLinksErrors
                     getImageAsset={getImageAsset}
-                    error={storeError || error}
+                    error={noStoresError || error}
                     onContactSupport={onContactSupport}
                     errorMessage={errorMessage}
                 />
             );
         },
-        [error, errorMessage, getImageAsset, onContactSupport, storeError]
+        [error, getImageAsset, onContactSupport, noStoresError]
     );
 
     return (
         <div className={BASE_TABLE_GRID_CLASS}>
             <DataGrid
+                narrowColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
-                error={storeError || error}
+                error={noStoresError || error}
                 columns={columns}
                 data={paymentLinks}
                 loading={loading}
@@ -159,8 +186,24 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                         if (!item?.amount?.currency) return;
                         return <Tag label={`${item.amount.currency}`} variant={TagVariant.DEFAULT} />;
                     },
-                    amount: ({ value }) => {
+                    amount: ({ value, item }) => {
                         const amount = i18n.amount(value.value, value.currency, { hideCurrency: true });
+
+                        if (isMobileContainer) {
+                            return (
+                                <div className={classNames(MOBILE_TABLE_CELL_CLASS, MOBILE_AMOUNT_CELL_CLASS)}>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} strongest>
+                                        {amount}
+                                    </Typography>
+                                    <span>
+                                        {item.status && (
+                                            <Tag label={i18n.get(PAY_BY_LINK_STATUSES[item.status])} variant={getTagVariantForStatus(item.status)} />
+                                        )}
+                                    </span>
+                                </div>
+                            );
+                        }
+
                         return (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                                 {amount}
@@ -205,6 +248,29 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                                 </Typography>
                             </time>
                         );
+                    },
+                    paymentLinkId: ({ item }) => {
+                        if (isMobileContainer) {
+                            return (
+                                <div className={MOBILE_TABLE_CELL_CLASS}>
+                                    <Typography strongest el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {item.paymentLinkId}
+                                    </Typography>
+                                    <time dateTime={item.expirationDate}>
+                                        <Typography
+                                            className={MOBILE_EXPIRE_DATE_CELL_CLASS}
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.CAPTION}
+                                        >
+                                            {i18n.get('payByLink.overview.common.actionNeeded.expiresAt', {
+                                                values: { date: dateFormat(item.expirationDate, DATE_FORMAT_PAY_BY_LINK_EXPIRE_DATE) },
+                                            })}
+                                        </Typography>
+                                    </time>
+                                </div>
+                            );
+                        }
+                        return <>{item.paymentLinkId}</>;
                     },
                 }}
             >

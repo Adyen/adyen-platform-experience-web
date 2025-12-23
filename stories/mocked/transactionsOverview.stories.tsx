@@ -6,8 +6,6 @@ import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
-import { SearchBar } from '../../src/components/internal/SearchBar/SearchBar';
-import InputBase from '../../src/components/internal/FormFields/InputBase';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
 export const Default: ElementStory<typeof TransactionsOverview> = {

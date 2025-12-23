@@ -20,3 +20,21 @@ $adyen-pe-breakpoint-lg: 1024px;
         @content;
     }
 }
+
+@mixin adyen-pe-screen-sm-and-down {
+    @container (max-width: #{$adyen-pe-breakpoint-sm}) {
+        @content;
+    }
+}
+
+@mixin adyen-pe-screen-md-and-down {
+    @container (max-width: #{$adyen-pe-breakpoint-md}) {
+        @content;
+    }
+}
+
+@mixin adyen-pe-screen-lg-and-down {
+    @container (max-width: #{$adyen-pe-breakpoint-lg}) {
+        @content;
+    }
+}

@@ -23,6 +23,16 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
         if (activeIndex > latestActiveStep) {
             setLatestActiveStep(activeIndex);
         }
+
+        // Scroll to active step if its out of view
+        const stepElement = stepRefs.current[activeIndex];
+        if (stepElement) {
+            stepElement.scrollIntoView({
+                block: 'nearest',
+                inline: 'nearest',
+                behavior: 'smooth',
+            });
+        }
     }, [activeIndex, latestActiveStep]);
 
     const canActivate = useCallback(

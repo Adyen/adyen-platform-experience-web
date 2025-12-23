@@ -5,7 +5,7 @@ import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormConte
 import { FieldValues, ValidationRules } from '../../../hooks/form/types';
 import FormField from './FormField';
 import { VisibleField } from './VisibleField';
-import { TargetedEvent } from 'preact/compat';
+import { SelectChangeEvent } from '../FormFields/Select/types';
 
 interface FormSelectProps<TFieldValues> {
     fieldName: FieldValues<TFieldValues>;
@@ -17,7 +17,7 @@ interface FormSelectProps<TFieldValues> {
     className?: string;
     isRequired?: boolean;
     validate?: ValidationRules['validate'];
-    onChange?: (e: TargetedEvent<HTMLSelectElement>) => void;
+    onChange?: (e: SelectChangeEvent) => void;
     preventInvalidState?: boolean;
 }
 
@@ -57,30 +57,25 @@ export function FormSelect<TFieldValues>({
                         validate,
                     }}
                     render={({ field, fieldState }) => {
-                        const handleChange = (e: TargetedEvent<HTMLSelectElement>) => {
+                        const handleChange = (e: SelectChangeEvent) => {
                             const value = (e.target as HTMLSelectElement).value;
                             field.onInput(value);
                             onChange?.(e);
                         };
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
 
-                        useEffect(() => {
-                            if (isInvalid) {
-                                control.trigger(fieldName);
-                            }
-                        }, [isRequired]);
-
                         return (
                             <div>
                                 <Select
                                     {...field}
-                                    selected={field.value as string}
-                                    onChange={handleChange}
-                                    items={items}
-                                    readonly={readonly}
-                                    isValid={!fieldState.error}
                                     isInvalid={preventInvalidState ? false : isInvalid}
+                                    isValid={!fieldState.error}
+                                    items={items}
                                     filterable={filterable}
+                                    name={fieldName}
+                                    onChange={handleChange}
+                                    readonly={readonly}
+                                    selected={field.value as string}
                                 />
                                 {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
                             </div>
