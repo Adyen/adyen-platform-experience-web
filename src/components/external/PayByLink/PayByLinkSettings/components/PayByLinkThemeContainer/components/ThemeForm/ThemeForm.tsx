@@ -12,16 +12,7 @@ import usePayByLinkSettingsContext from '../../../PayByLinkSettingsContainer/con
 import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';
 import LogoInput from '../LogoInput/LogoInput';
-
-const cloneFormData = (formData: FormData) => {
-    const formDataClone = new FormData();
-    for (const [field, value] of formData.entries()) {
-        if (value instanceof File) {
-            formDataClone.set(field, value, value.name);
-        } else formDataClone.set(field, value);
-    }
-    return formDataClone;
-};
+import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid } = usePayByLinkSettingsContext();

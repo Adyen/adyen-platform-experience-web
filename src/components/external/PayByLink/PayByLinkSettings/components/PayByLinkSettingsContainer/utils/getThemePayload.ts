@@ -1,7 +1,6 @@
-import { ThemeFormDataFields } from '../../PayByLinkThemeContainer/types';
 import { IPayByLinkTheme } from '../../../../../../../types';
 
-const cloneFormData = (formData: FormData) => {
+export const cloneFormData = (formData: FormData) => {
     const formDataClone = new FormData();
     for (const [field, value] of formData.entries()) {
         if (value instanceof File) {
