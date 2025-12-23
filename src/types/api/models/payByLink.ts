@@ -21,3 +21,6 @@ export type IPayByLinkFilterStatusGroup = Schema<components, 'FiltersResponseDTO
 export type PaymentLinkCurrencyDTO = Schema<components, 'CurrenciesResponseDTO'>['data'];
 export type PayByLinkSettingsDTO = Schema<components, 'PayByLinkSettingsResponse'>;
 export type PayByLinkCountryDTO = Schema<components, 'CountryDTO'>;
+export type IPayByLinkTermsAndConditions = Schema<components, 'PayByLinkSettingsResponse'>;
+export type IPayByLinkTheme = Schema<components, 'ThemeDTO'>;
+export type IStore = Schema<components, 'PayByLinkStoreDTO'>;

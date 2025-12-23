@@ -1,18 +1,18 @@
 export const STORES = [
     {
         description: 'Main Store - New York',
-        storeCode: 'New York Store',
-        storeId: 'NY001',
+        storeCode: 'NY001',
+        storeId: 'STORE_NY_001',
     },
     {
         description: 'Main Store - London',
-        storeCode: 'London Store',
-        storeId: 'LD001',
+        storeCode: 'LN001',
+        storeId: 'STORE_LON_001',
     },
     {
         description: 'Main Store - Amsterdam',
-        storeCode: 'Amsterdam Store',
-        storeId: 'AM001',
+        storeCode: 'AM001',
+        storeId: 'STORE_AMS_001',
     },
 ];
 
@@ -197,15 +197,43 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
 const { linkValidity, deliveryAddress, ...configWithoutLinkValidityAndAddress } = BASE_PAY_BY_LINK_CONFIGURATION;
 
 export const PAY_BY_LINK_CONFIGURATION = {
-    NY001: BASE_PAY_BY_LINK_CONFIGURATION,
-    LD001: configWithoutLinkValidityAndAddress,
-    AM001: BASE_PAY_BY_LINK_CONFIGURATION,
+    STORE_NY_001: BASE_PAY_BY_LINK_CONFIGURATION,
+    STORE_LON_001: configWithoutLinkValidityAndAddress,
+    STORE_AMS_001: BASE_PAY_BY_LINK_CONFIGURATION,
 };
 
 export const PAY_BY_LINK_SETTINGS = {
-    NY001: {
+    STORE_NY_001: {
         termsOfServiceUrl: 'https://example.com/terms-and-conditions',
     },
-    LD001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
-    AM001: {},
+    STORE_LON_001: { termsOfServiceUrl: 'https://example.com/terms-and-conditions' },
+    STORE_AMS_001: {},
+};
+
+export const STORE_THEME = {
+    STORE_NY_001: {},
+    STORE_LON_001: {
+        brandName: 'Adyen London',
+        logoUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcLzFGc1Z0alNLVnYzN3FpVTJVVkZ0LnN2ZyJ9:adyen:RAaShqweWtpB-wgUfoAAyM0i53H16yUEh3btcbNlZoI',
+    },
+    STORE_AMS_001: {
+        brandName: 'Adyen Amsterdam',
+        logoUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
+        fullWidthLogoUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
+    },
+};
+
+export const STORE_SETTINGS = {
+    STORE_NY_001: {},
+    STORE_LON_001: {
+        termsOfServiceUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcLzFGc1Z0alNLVnYzN3FpVTJVVkZ0LnN2ZyJ9:adyen:RAaShqweWtpB-wgUfoAAyM0i53H16yUEh3btcbNlZoI',
+    },
+    STORE_AMS_001: {
+        termsOfServiceUrl:
+            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
+    },
 };

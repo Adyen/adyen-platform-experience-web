@@ -1,14 +1,20 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, PAY_BY_LINK_SETTINGS } from '../mock-data/payByLink';
 import { getPaymentLinksByStatusGroup, PAY_BY_LINK_FILTERS } from '../mock-data';
 import { IPayByLinkStatusGroup } from '../../src';
+import { STORES, PAY_BY_LINK_CONFIGURATION, CURRENCIES, COUNTRIES, INSTALLMENTS, STORE_THEME, STORE_SETTINGS } from '../mock-data/payByLink';
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
 const networkError = false;
 const defaultPaginationLimit = 10;
+
+const getStoreForRequestPathParams = (params: PathParams) => {
+    const store = STORES.find(store => store.storeCode === params.id);
+    if (!store) throw HttpResponse.json({ error: 'Cannot find store' }, { status: 404 });
+    return store;
+};
 
 export const payByLinkMocks = [
     // GET /stores
@@ -125,6 +131,47 @@ export const payByLinkMocks = [
         return HttpResponse.json(settings);
     }),
 
+    // GET /paybylink/themes/{storeId}
+    http.get(mockEndpointsPBL.themes, async ({ params }) => {
+        const store = getStoreForRequestPathParams(params);
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json(STORE_THEME[store.storeCode as keyof typeof STORE_THEME]);
+    }),
+
+    // POST /paybylink/themes/{storeId}
+    http.post(mockEndpointsPBL.themes, async () => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json(null, { status: 204 });
+    }),
+
+    // GET /paybylink/settings/{storeId}
+    http.get(mockEndpointsPBL.settings, async ({ params }) => {
+        const store = getStoreForRequestPathParams(params);
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json(STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS]);
+    }),
+
+    // POST /paybylink/settings/{storeId}
+    http.post(mockEndpointsPBL.settings, async () => {
+        await delay();
+        if (networkError) {
+            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
+        }
+
+        return HttpResponse.json(null, { status: 204 });
+    }),
     // GET /paybylink/paymentLinks - Payment links list
     http.get(mockEndpointsPBL.paymentLinks, async ({ request }) => {
         if (networkError) {
