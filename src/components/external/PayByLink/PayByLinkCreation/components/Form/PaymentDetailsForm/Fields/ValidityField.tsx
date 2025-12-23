@@ -12,6 +12,7 @@ import Select from '../../../../../../../internal/FormFields/Select';
 import { LINK_VALIDITY_DURATION_UNITS } from '../../../../constants';
 import InputBase from '../../../../../../../internal/FormFields/InputBase';
 import { transformToMS } from '../../../../../../../../utils';
+import { SelectChangeEvent } from '../../../../../../../internal/FormFields/Select/types';
 
 export type ValidityFieldProps = {
     configuration?: PaymentLinkConfiguration;
@@ -65,7 +66,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         setCustomDurationQuantity(quantity || '');
         setValidityValue(findCurrentOption()?.id || '');
         initializeDefaultValidity();
-    }, [getValidityFromFormState, validitySelectItems, findCurrentOption]);
+    }, [getValidityFromFormState, validitySelectItems, findCurrentOption, initializeDefaultValidity]);
 
     const isDurationUnitRequired = fieldsConfig['linkValidity.durationUnit']?.required;
     const isDurationQuantityRequired = fieldsConfig['linkValidity.quantity']?.required;
@@ -141,7 +142,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                         control={control}
                         rules={{ required: isDurationQuantityRequired, validate }}
                         render={({ field: durationQuantityField, fieldState: durationQuantityFieldState }) => {
-                            const onSelectInput = (e: Event) => {
+                            const onSelectInput = (e: SelectChangeEvent) => {
                                 const newValue = (e.target as HTMLSelectElement)?.value;
                                 if (newValue !== FLEXIBLE_ID) {
                                     const [value, durationUnit] = newValue?.split(' ') || [];
