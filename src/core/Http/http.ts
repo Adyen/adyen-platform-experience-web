@@ -61,10 +61,15 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                     //TODO: when backend is ready double check this logic
                     switch (contentType) {
                         case 'application/json':
-                            // This could throw an exception in one of these two cases:
-                            //   (1) if response has no body content
-                            //   (2) if response body content is not valid JSON
-                            return await res.json(); // (!!)
+                            // This could throw an exception if response body content is not valid JSON
+                            const text = await res.clone().text();
+                            if (!text) {
+                                if (process.env.VITE_MODE === 'development') {
+                                    console.warn(`Response from ${url} has an empty body. Review the API response.`);
+                                }
+                                return null;
+                            }
+                            return await res.json();
                         default:
                             const blob = await res.blob();
                             const filename = getResponseDownloadFilename(res);

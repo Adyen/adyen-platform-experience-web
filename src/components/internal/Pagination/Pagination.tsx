@@ -4,7 +4,7 @@ import Select from '../FormFields/Select';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
 import { EMPTY_ARRAY, isNullish } from '../../../utils';
-import { SelectItem } from '../FormFields/Select/types';
+import { SelectChangeEvent, SelectItem } from '../FormFields/Select/types';
 import { ButtonVariant } from '../Button/types';
 import { Translation } from '../Translation';
 import { PaginationProps } from './types';
@@ -49,7 +49,7 @@ export default function Pagination({
     );
 
     const _onLimitChanged = useCallback(
-        ({ target }: any) => {
+        ({ target }: SelectChangeEvent) => {
             if (isNullish(target?.value)) return;
             onLimitSelection?.(+target.value);
         },

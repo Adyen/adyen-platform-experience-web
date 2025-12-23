@@ -12,7 +12,10 @@ export const defaultMapErrors = (error: ValidationError): TranslationKey => {
             return 'common.inputs.file.errors.tooMany';
         case validationErrors.VERY_LARGE_FILE:
             return 'common.inputs.file.errors.tooLarge';
+        case validationErrors.MAX_DIMENSIONS:
+            return 'common.inputs.file.errors.maxDimensions';
     }
+    return 'common.inputs.file.errors.default';
 };
 
 export default defaultMapErrors;

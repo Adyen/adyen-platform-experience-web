@@ -1,0 +1,42 @@
+@use '../../../style';
+
+.adyen-pe-secondary-nav {
+    display: flex;
+    flex-direction: row;
+    gap: style.token(spacer-090);
+    width: 100%;
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+        list-style: none;
+        margin-top: style.token(spacer-080);
+        padding: 0;
+    }
+
+    &__item {
+        background-color: transparent;
+        border: 0;
+        border-radius: style.token(border-radius-m);
+        color: style.token(color-label-primary);
+        cursor: pointer;
+        font: inherit;
+        padding: style.token(spacer-040) style.token(spacer-050);
+        width: 100%;
+
+        &-label {
+            font-size: style.token(text-body-font-size);
+            font-weight: style.token(text-body-stronger-font-weight);
+            text-align: left;
+        }
+
+        &--active {
+            background-color: style.token(color-background-primary-active);
+        }
+
+        &:hover {
+            background-color: style.token(color-background-primary-hover);
+        }
+    }
+}

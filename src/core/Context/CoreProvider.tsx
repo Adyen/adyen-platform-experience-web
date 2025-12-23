@@ -18,6 +18,8 @@ const CoreProvider = ({
     externalErrorHandler,
     componentRef,
     getImageAsset,
+    getDatasetAsset,
+    getCdnDataset,
     getCdnConfig,
 }: CoreProviderProps) => {
     const [ready, setReady] = useBooleanState(false);
@@ -32,8 +34,30 @@ const CoreProvider = ({
     }, []);
 
     const coreContextValues = useMemo(
-        () => ({ i18n, commonProps, loadingContext, updateCore, externalErrorHandler, componentRef, getImageAsset, getCdnConfig }),
-        [commonProps, componentRef, externalErrorHandler, i18n, loadingContext, getImageAsset, updateCore, getCdnConfig]
+        () => ({
+            i18n,
+            commonProps,
+            loadingContext,
+            updateCore,
+            externalErrorHandler,
+            componentRef,
+            getImageAsset,
+            getDatasetAsset,
+            getCdnConfig,
+            getCdnDataset,
+        }),
+        [
+            commonProps,
+            componentRef,
+            externalErrorHandler,
+            i18n,
+            loadingContext,
+            getImageAsset,
+            getDatasetAsset,
+            getCdnConfig,
+            getCdnDataset,
+            updateCore,
+        ]
     );
 
     if (!ready) return null;

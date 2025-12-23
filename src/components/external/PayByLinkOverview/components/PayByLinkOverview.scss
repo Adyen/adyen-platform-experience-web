@@ -20,8 +20,7 @@
         }
 
         .adyen-pe-data-grid__cell {
-            padding-bottom: style.token(spacer-060);
-            padding-top: style.token(spacer-060);
+            padding: style.token(spacer-060) 0;
         }
     }
 
@@ -49,5 +48,21 @@
 
     &__action-button {
         height: 100%;
+    }
+}
+
+.adyen-pe-pay-by-link-table {
+    &__mobile-cell {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-050);
+    }
+
+    &__mobile-amount-cell {
+        align-items: end;
+    }
+
+    &__mobile-expire-date-cell {
+        color: style.token(color-label-secondary);
     }
 }

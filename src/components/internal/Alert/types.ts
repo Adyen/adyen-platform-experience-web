@@ -1,7 +1,13 @@
 import { ComponentChild, VNode } from 'preact';
 import { JSXInternal } from 'preact/src/jsx';
 
+export interface AlertAction {
+    label: string;
+    onClick: () => void;
+}
+
 export interface AlertProps {
+    actions?: AlertAction[];
     className?: string;
     type: AlertTypeOption;
     title?: VNode<Element> | string;

@@ -9,6 +9,7 @@ export interface BaseFileInputProps {
     required?: boolean;
     maxFileSize?: number | ((type: string) => number | undefined);
     allowedFileTypes?: readonly string[];
+    maxDimensions?: { width: number; height: number };
     mapError?: (error: ValidationError, fileInfo?: { size: number; type: string }) => string;
 }
 
@@ -19,6 +20,7 @@ export interface DropzoneProps extends PropsWithChildren<BaseFileInputProps> {
 export interface FileInputProps extends PropsWithChildren<BaseFileInputProps> {
     onChange?: (files: File[]) => void;
     onDelete?: () => void;
+    renderDelete?: (onDeleteCallback: () => void) => void;
 }
 
 export interface UploadedFileProps {

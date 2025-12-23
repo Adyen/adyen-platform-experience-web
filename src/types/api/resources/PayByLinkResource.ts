@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/v1/paybylink/countries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["countries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/paybylink/paymentLinks/{storeId}": {
         parameters: {
             query?: never;
@@ -15,6 +32,40 @@ export interface paths {
         put?: never;
         /** @description Add @Operation annotation to provide a description */
         post: operations["createPBLPaymentLink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/paybylink/currencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Add @Operation annotation to provide a description */
+        get: operations["currencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/paybylink/paymentLinks/{paymentLinkId}/expire": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Add @Operation annotation to provide a description */
+        post: operations["expirePayByLinkPaymentLink"];
         delete?: never;
         options?: never;
         head?: never;
@@ -149,6 +200,145 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        CountriesResponseDTO: {
+            /** @description List of countries */
+            data: components["schemas"]["CountryDTO"][];
+        };
+        CountryDTO: {
+            /** @description Country Code */
+            countryCode: string;
+            /** @description Country Name */
+            countryName: string;
+        };
+        BodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        ContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
+        };
+        FormDataBodyPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            formDataContentDisposition?: components['schemas']['FormDataContentDisposition'];
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            name?: string;
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+            simple?: boolean;
+            value?: string;
+        };
+        FormDataContentDisposition: {
+            /** Format: date-time */
+            creationDate?: string;
+            fileName?: string;
+            /** Format: date-time */
+            modificationDate?: string;
+            name?: string;
+            parameters?: {
+                [key: string]: string;
+            };
+            /** Format: date-time */
+            readDate?: string;
+            /** Format: int64 */
+            size?: number;
+            type?: string;
+        };
+        FormDataMultiPart: {
+            bodyParts?: components['schemas']['BodyPart'][];
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            fields?: {
+                [key: string]: components['schemas']['FormDataBodyPart'][];
+            };
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        MediaType: {
+            parameters?: {
+                [key: string]: string;
+            };
+            subtype?: string;
+            type?: string;
+            wildcardSubtype?: boolean;
+            wildcardType?: boolean;
+        };
+        MessageBodyWorkers: Record<string, never>;
+        MultiPart: {
+            contentDisposition?: components['schemas']['ContentDisposition'];
+            entity?: Record<string, never>;
+            headers?: {
+                empty?: boolean;
+            } & {
+                [key: string]: string[];
+            };
+            mediaType?: components['schemas']['MediaType'];
+            messageBodyWorkers?: components['schemas']['MessageBodyWorkers'];
+            parameterizedHeaders?: {
+                empty?: boolean;
+            } & {
+                [key: string]: components['schemas']['ParameterizedHeader'][];
+            };
+            parent?: components['schemas']['MultiPart'];
+            providers?: components['schemas']['Providers'];
+        };
+        ParameterizedHeader: {
+            parameters?: {
+                [key: string]: string;
+            };
+            value?: string;
+        };
+        Providers: Record<string, never>;
+        StreamingOutput: Record<string, never>;
         CreatePaymentLinkResponse: {
             paymentLinkId?: string;
             status?: string;
@@ -204,6 +394,10 @@ export interface components {
         ShopperName: {
             firstName?: string;
             lastName?: string;
+        };
+        CurrenciesResponseDTO: {
+            /** @description List of currencies */
+            data: string[];
         };
         ConfigurationResponse: {
             amountValue: components["schemas"]["FieldRequirementVoid"];
@@ -406,6 +600,26 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    countries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CountriesResponseDTO"];
+                };
+            };
+        };
+    };
     createPBLPaymentLink: {
         parameters: {
             query?: never;
@@ -428,6 +642,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreatePaymentLinkResponse"];
+                };
+            };
+        };
+    };
+    currencies: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurrenciesResponseDTO"];
+                };
+            };
+        };
+    };
+    expirePayByLinkPaymentLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentLinkId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content - the request has been successfully processed, but there is no additional content. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
@@ -580,9 +836,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": {
-                    brandName: string;
-                };
+                "multipart/form-data": components['schemas']['FormDataMultiPart'];
             };
         };
         responses: {

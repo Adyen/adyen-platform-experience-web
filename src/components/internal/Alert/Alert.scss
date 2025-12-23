@@ -54,6 +54,13 @@
         }
     }
 
+    &__actions {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
     &--tip {
         #{$adyen-pe-alert}__icon {
             height: style.token(spacer-080);
