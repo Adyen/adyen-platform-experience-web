@@ -211,6 +211,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
     };
     storeIds: string[] | string;
     onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
+    onCreationDismiss?: () => void;
 }
 
 export interface PayByLinkSettingsComponentProps extends UIElementProps {

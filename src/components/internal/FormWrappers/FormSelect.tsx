@@ -68,13 +68,14 @@ export function FormSelect<TFieldValues>({
                             <div>
                                 <Select
                                     {...field}
-                                    selected={field.value as string}
-                                    onChange={handleChange}
-                                    items={items}
-                                    readonly={readonly}
-                                    isValid={!fieldState.error}
                                     isInvalid={preventInvalidState ? false : isInvalid}
+                                    isValid={!fieldState.error}
+                                    items={items}
                                     filterable={filterable}
+                                    name={fieldName}
+                                    onChange={handleChange}
+                                    readonly={readonly}
+                                    selected={field.value as string}
                                 />
                                 {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
                             </div>

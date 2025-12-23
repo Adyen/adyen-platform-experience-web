@@ -1,5 +1,8 @@
 @use '../../../../style/variable-generator' as style;
+@use '../../../../style/breakpoints.scss' as *;
 
 .adyen-pe-pay-by-link-creation {
-    //
+    @include adyen-pe-screen-sm-and-down {
+        height: 100%;
+    }
 }

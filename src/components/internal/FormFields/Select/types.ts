@@ -69,6 +69,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     isInvalid?: boolean;
     isValid?: boolean;
     multiSelect?: boolean;
+    name?: string;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
     onFilterInputKeyDown?: (evt: KeyboardEvent) => any;
     onInput?: (evt: Event) => any;

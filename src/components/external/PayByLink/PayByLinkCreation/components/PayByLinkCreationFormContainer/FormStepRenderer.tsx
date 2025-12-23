@@ -26,6 +26,8 @@ type FormStepRendererProps = {
         data: PayByLinkCountryDTO[];
     };
     isFetchingCountries: boolean;
+    countryDatasetData?: Array<{ id: string; name: string }>;
+    isFetchingCountryDataset: boolean;
 };
 
 export const FormStepRenderer = ({
@@ -41,6 +43,8 @@ export const FormStepRenderer = ({
     setIsSeparateAddress,
     countriesData,
     isFetchingCountries,
+    countryDatasetData,
+    isFetchingCountryDataset,
 }: FormStepRendererProps) => {
     switch (currentFormStep) {
         case 'store':
@@ -62,6 +66,8 @@ export const FormStepRenderer = ({
                     setIsSeparateAddress={setIsSeparateAddress}
                     countriesData={countriesData}
                     isFetchingCountries={isFetchingCountries}
+                    countryDatasetData={countryDatasetData}
+                    isFetchingCountryDataset={isFetchingCountryDataset}
                 />
             );
         case 'summary':

@@ -9,7 +9,6 @@ import { operations as CapitalMissingActionsOps } from './resources/CapitalMissi
 import { components as SetupResource } from './resources/SetupResource';
 import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 import { operations as PayByLinkOps } from './resources/PayByLinkResource';
-import { operations as CurrenciesOps } from './resources/CurrencyResource';
 
 export type EndpointsOperations = AnalyticsOps &
     BalanceAccountOps &
@@ -20,8 +19,7 @@ export type EndpointsOperations = AnalyticsOps &
     ReportsOps &
     TransactionsOps &
     DisputesOps &
-    PayByLinkOps &
-    CurrenciesOps & {};
+    PayByLinkOps & {};
 
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 

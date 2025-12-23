@@ -125,11 +125,11 @@ const BASE_PAY_BY_LINK_CONFIGURATION = {
     },
     countryCode: {
         required: true,
-        options: COUNTRIES,
+        options: ['ES', 'US'],
     },
     currency: {
         required: true,
-        options: CURRENCIES.map(id => ({ id })),
+        options: CURRENCIES,
     },
     deliveryAddress: {
         required: false,
