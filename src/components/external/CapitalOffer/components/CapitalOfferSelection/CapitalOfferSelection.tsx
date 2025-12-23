@@ -178,6 +178,7 @@ export const CapitalOfferSelection = ({
                 userEvents.addEvent?.('Changed capital offer slider', {
                     ...sharedAnalyticsEventProperties,
                     label: 'Slider changed',
+                    currency: currency!,
                     value: val,
                 });
             }

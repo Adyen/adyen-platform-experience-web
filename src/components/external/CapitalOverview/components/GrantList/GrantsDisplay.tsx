@@ -82,18 +82,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
         setSelectedGrant(grant);
     }, []);
 
-    const grant = activeGrants[0];
-
-    useLandedPageEvent({
-        ...sharedAnalyticsEventProperties,
-        ...(grant
-            ? {
-                  grantId: grant.id,
-                  grants: grant.status,
-              }
-            : {}),
-        label: 'Capital overview',
-    });
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital overview' });
 
     if (selectedGrant) {
         switch (selectedGrantDetail) {
