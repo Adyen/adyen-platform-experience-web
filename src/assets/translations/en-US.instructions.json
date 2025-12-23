@@ -412,7 +412,6 @@
     "payByLink.settings.termsAndConditions.error.urlValidation": "Validation error message displayed when the entered URL format is invalid.",
     "payByLink.settings.termsAndConditions.requirement.checkbox.part1": "First part of the checkbox label text for confirming that the terms and conditions meet all requirements. The %{requirements} placeholder is a link to the requirements documentation.",
     "payByLink.settings.termsAndConditions.requirement.checkbox.part2": "Second part of the checkbox label text for confirming that the terms and conditions meet all requirements.",
-    "payByLink.settings.termsAndConditions.requirement.checkbox.text": "Checkbox label text for confirming that the terms and conditions meet all requirements.",
     "payByLink.settings.termsAndConditions.subtitle": "Subtitle text explaining that the user needs to complete the information to comply with regulations.",
     "payByLink.settings.termsAndConditions.title": "Title for the terms and conditions section in Pay by Link settings.",
     "payByLink.settings.termsAndConditions.urlInput.label": "Label for the input field where users enter their terms and conditions URL.",
