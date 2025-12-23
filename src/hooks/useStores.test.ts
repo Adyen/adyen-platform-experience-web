@@ -44,6 +44,7 @@ describe('useStores', () => {
             data: [
                 {
                     storeCode: 'STORE001',
+                    storeId: 'STORE_001',
                     description: 'Main Store',
                 },
                 {
@@ -61,13 +62,13 @@ describe('useStores', () => {
             {
                 storeCode: 'STORE001',
                 description: 'Main Store',
-                id: 'STORE001',
+                id: 'STORE_001',
                 name: 'STORE001',
             },
             {
                 storeCode: 'STORE002',
                 description: 'Secondary Store',
-                id: 'STORE002',
+                id: '',
                 name: 'STORE002',
             },
         ]);
@@ -83,7 +84,7 @@ describe('useStores', () => {
         const { result } = renderHook(() => useStores());
 
         await waitFor(() => {
-            expect(result.current.selectedStore).toBe('NY001');
+            expect(result.current.selectedStore).toBe('STORE_NY_001');
         });
     });
 
@@ -97,7 +98,7 @@ describe('useStores', () => {
         const { result } = renderHook(() => useStores());
 
         await waitFor(() => {
-            expect(result.current.selectedStore).toBe('NY001');
+            expect(result.current.selectedStore).toBe('STORE_NY_001');
         });
 
         act(() => {
