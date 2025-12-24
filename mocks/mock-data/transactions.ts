@@ -1,4 +1,4 @@
-import type { ILineItem, ILineItemRefundStatus, ITransaction, ITransactionRefundStatus } from '../../src';
+import type { ILineItem, ILineItemRefundStatus, ITransaction } from '../../src';
 import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/TransactionsOverview/constants';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
@@ -19,7 +19,7 @@ const getCreatedAt = (() => {
     };
 })();
 
-const getPspReference = (() => {
+export const getPspReference = (() => {
     let index = 0;
 
     return () => {
@@ -46,7 +46,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -66,7 +66,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -85,7 +85,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -105,7 +104,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -125,7 +123,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -145,7 +142,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -164,7 +160,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -183,7 +178,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -203,7 +198,6 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Chargeback',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -222,7 +216,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -242,7 +236,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -262,7 +255,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -281,7 +274,6 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -301,7 +293,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -321,7 +313,6 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Capital',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -341,7 +332,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -360,7 +351,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -380,7 +371,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -399,7 +390,6 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Transfer',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -419,7 +409,7 @@ export const TRANSACTIONS: ITransaction[] = [
         category: 'Payment',
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -439,7 +429,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -458,7 +447,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -477,7 +465,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -497,7 +484,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -517,7 +503,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -537,7 +523,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -556,7 +541,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -575,7 +559,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -594,7 +578,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -613,7 +596,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -633,7 +616,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -653,7 +635,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -673,7 +655,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -692,7 +674,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -711,7 +692,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -730,7 +710,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -750,7 +729,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -769,7 +747,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -789,7 +766,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -809,7 +785,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -829,7 +805,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -848,7 +824,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -867,7 +843,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -887,7 +862,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -906,7 +880,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -925,7 +898,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -944,7 +916,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -964,7 +935,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -984,7 +954,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1003,7 +972,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1023,7 +992,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1043,7 +1012,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1062,7 +1031,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1081,7 +1049,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1101,7 +1068,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1120,7 +1086,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1139,7 +1105,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1158,7 +1124,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1177,7 +1142,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1196,7 +1160,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1216,7 +1179,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1235,7 +1197,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1254,7 +1215,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1273,7 +1234,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1292,7 +1252,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1311,7 +1270,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1331,7 +1289,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1351,7 +1309,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1370,7 +1327,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1390,7 +1347,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1410,7 +1367,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1430,7 +1387,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1450,7 +1406,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1470,7 +1425,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1489,7 +1443,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1508,7 +1461,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1528,7 +1481,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1547,7 +1500,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1567,7 +1519,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1587,7 +1539,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1607,7 +1558,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1627,7 +1578,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1647,7 +1598,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1666,7 +1616,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1686,7 +1635,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1705,7 +1653,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1724,7 +1672,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1744,7 +1692,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1763,7 +1710,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1783,7 +1730,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1803,7 +1750,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1822,7 +1769,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1842,7 +1789,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1861,7 +1807,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1881,7 +1826,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1901,7 +1846,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1920,7 +1864,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1939,7 +1883,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -1958,7 +1902,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1978,7 +1921,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -1998,7 +1941,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2017,7 +1959,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2036,7 +1977,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2055,7 +1995,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2075,7 +2015,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2095,7 +2034,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2115,7 +2054,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2134,7 +2073,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2154,7 +2092,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2174,7 +2112,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2194,7 +2131,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2213,7 +2149,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2233,7 +2169,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2252,7 +2188,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2272,7 +2208,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2291,7 +2226,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2310,7 +2245,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2329,7 +2263,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2349,7 +2282,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2368,7 +2300,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2387,7 +2319,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2406,7 +2337,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2425,7 +2355,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2444,7 +2373,6 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2464,7 +2392,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2483,7 +2411,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2502,7 +2430,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[1].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         bankAccount: {
@@ -2521,7 +2449,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
     {
         paymentMethod: {
@@ -2541,7 +2469,7 @@ export const TRANSACTIONS: ITransaction[] = [
         balanceAccountId: BALANCE_ACCOUNTS[0].id,
         status: 'Booked',
         createdAt: getCreatedAt(),
-        pspReference: getPspReference(),
+        paymentPspReference: getPspReference(),
     },
 ];
 
@@ -2644,62 +2572,6 @@ export const DEFAULT_LINE_ITEMS: ILineItem[] = [
     },
 ];
 
-export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -1500 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -100 },
-        status: 'failed',
-    },
-    {
-        amount: { currency: 'USD', value: -200 },
-        status: 'failed',
-    },
-    {
-        amount: { currency: 'USD', value: -200 },
-        status: 'failed',
-    },
-];
-
-export const FAILED_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -117500 },
-        status: 'failed',
-    },
-];
-
-export const IN_PROGRESS_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -1000000 },
-        status: 'in_progress',
-    },
-    {
-        amount: { currency: 'USD', value: -400000 },
-        status: 'in_progress',
-    },
-];
-
-export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
-    },
-    {
-        amount: { currency: 'USD', value: -500 },
-        status: 'completed',
-    },
-];
-
 export const DEFAULT_TRANSACTION: ITransaction = {
     id: '1VVF0D5V3709DX6D',
     amountBeforeDeductions: { currency: 'EUR', value: 100000 },
@@ -2709,5 +2581,4 @@ export const DEFAULT_TRANSACTION: ITransaction = {
     category: 'Other',
     paymentMethod: { lastFourDigits: '1945', type: 'mc' },
     createdAt: '2022-08-29T14:47:03+02:00',
-    pspReference: 'PSP0000000000999',
 };

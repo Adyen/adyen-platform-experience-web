@@ -20,5 +20,5 @@ export interface TransactionsFilters {
     statuses: readonly ITransactionStatus[];
     currencies: readonly IAmount['currency'][];
     createdDate: RangeTimestamps;
-    pspReference?: string;
+    paymentPspReference?: string;
 }

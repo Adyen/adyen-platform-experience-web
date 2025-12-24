@@ -31,7 +31,7 @@ const useTransactionsList = ({
         () =>
             ({
                 balanceAccountId: filters.balanceAccount?.id,
-                pspReference: filters.pspReference,
+                paymentPspReference: filters.paymentPspReference,
                 statuses: String(filters.statuses) || undefined,
                 categories: String(filters.categories) || undefined,
                 currencies: String(filters.currencies) || undefined,
@@ -50,7 +50,7 @@ const useTransactionsList = ({
             const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
                 ...requestParams,
                 balanceAccountId: filters.balanceAccount?.id!,
-                pspReference: filters.pspReference,
+                paymentPspReference: filters.paymentPspReference,
                 createdSince: new Date(filters.createdDate.from).toISOString(),
                 createdUntil: new Date(filters.createdDate.to).toISOString(),
                 categories: filters.categories as (typeof filters.categories)[number][],

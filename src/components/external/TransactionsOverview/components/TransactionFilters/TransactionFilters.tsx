@@ -25,7 +25,7 @@ const TransactionsFilters = ({ availableCurrencies, balanceAccounts, eventCatego
     const [categories, setCategories] = useState(INITIAL_FILTERS.categories);
     const [currencies, setCurrencies] = useState(INITIAL_FILTERS.currencies);
     const [createdDate, setCreatedDate] = useState(INITIAL_FILTERS.createdDate);
-    const [pspReference, setPspReference] = useState(INITIAL_FILTERS.pspReference);
+    const [paymentPspReference, setPaymentPspReference] = useState(INITIAL_FILTERS.paymentPspReference);
     const [balanceAccount, setBalanceAccount] = useState(INITIAL_FILTERS.balanceAccount);
 
     const cachedAvailableCurrencies = useRef(availableCurrencies);
@@ -72,7 +72,7 @@ const TransactionsFilters = ({ availableCurrencies, balanceAccounts, eventCatego
         setCategories(INITIAL_FILTERS.categories);
         setCurrencies(INITIAL_FILTERS.currencies);
         setCreatedDate(INITIAL_FILTERS.createdDate);
-        setPspReference(INITIAL_FILTERS.pspReference);
+        setPaymentPspReference(INITIAL_FILTERS.paymentPspReference);
         setBalanceAccount(initialBalanceAccount.current);
     }, []);
 
@@ -82,10 +82,10 @@ const TransactionsFilters = ({ availableCurrencies, balanceAccounts, eventCatego
             createdDate,
             categories,
             currencies,
-            pspReference,
+            paymentPspReference,
             statuses,
         } as const);
-    }, [onChange, balanceAccount, createdDate, categories, currencies, pspReference, statuses]);
+    }, [onChange, balanceAccount, createdDate, categories, currencies, paymentPspReference, statuses]);
 
     return (
         <FilterBar

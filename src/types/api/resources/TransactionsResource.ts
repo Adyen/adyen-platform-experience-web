@@ -137,7 +137,7 @@ export interface components {
             'id' |
             'netAmount' |
             'paymentMethod' |
-            'pspReference' |
+            'paymentPspReference' |
             'status';
         PaymentMethod: {
             /** @description Payment method name, such as PayPal, Mastercard etc. */
@@ -349,8 +349,9 @@ export interface operations {
                 createdUntil?: string;
                 categories?: components['schemas']['Category'][];
                 statuses?: components['schemas']['Status'][];
-                columns?: components['schemas']['ExportColumn'][];
+                columns: components['schemas']['ExportColumn'][];
                 currencies?: string[];
+                paymentPspReference?: string;
                 sortDirection?: components['schemas']['SortDirection'];
             };
             header?: never;

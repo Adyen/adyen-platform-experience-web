@@ -104,7 +104,7 @@ export interface components {
              */
             createdAt: string;
             status: string;
-            type: components['schemas']['Category'];
+            type: string;
         };
         ExistingRefund: {
             amount: components['schemas']['Amount'];
@@ -168,10 +168,8 @@ export interface components {
             originalAmount?: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
-            /** @description When Category is payment, this is the PSP reference of the PSP payment */
+            /** @description When applicable, the PSP reference of the PSP payment */
             paymentPspReference?: string;
-            /** @description The PSP reference */
-            pspReference: string;
             /** @description Additional data related to refund operations */
             refundDetails?: components['schemas']['RefundDetails'];
             /** @description When Category is refund, additional information and references related to the refund */
@@ -199,8 +197,8 @@ export interface components {
             netAmount: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
-            /** @description PSP reference */
-            pspReference: string;
+            /** @description When applicable, the PSP reference of the PSP payment */
+            paymentPspReference?: string;
             /** @description Status */
             status: components['schemas']['Status'];
         };
@@ -331,7 +329,7 @@ export interface operations {
                 categories?: components['schemas']['Category'][];
                 statuses?: components['schemas']['Status'][];
                 currencies?: string[];
-                pspReference?: string;
+                paymentPspReference?: string;
                 cursor?: string;
                 sortDirection?: components['schemas']['SortDirection'];
                 limit?: number;

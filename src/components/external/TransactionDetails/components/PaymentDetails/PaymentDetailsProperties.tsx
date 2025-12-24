@@ -52,7 +52,7 @@ const PaymentDetailsProperties = ({ dataCustomization, extraFields, transaction 
     const { i18n } = useCoreContext();
 
     const standardPropertiesList = useMemo<StructuredListProps['items']>(() => {
-        const { balanceAccount, category, id, merchantReference, paymentPspReference, pspReference, refundMetadata } = transaction;
+        const { balanceAccount, category, id, merchantReference, paymentPspReference, refundMetadata } = transaction;
         const customizedFields = dataCustomization?.details?.fields;
         const isRefundTransaction = category === 'Refund';
 

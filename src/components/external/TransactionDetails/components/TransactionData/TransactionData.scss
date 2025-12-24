@@ -6,10 +6,13 @@
     gap: style.token(spacer-080);
 
     &__container {
-        align-items: flex-start;
         display: flex;
         flex-direction: column;
         width: 100%;
+    }
+
+    &__status-box {
+        margin-top: style.token(spacer-060);
     }
 
     &__action-bar {
