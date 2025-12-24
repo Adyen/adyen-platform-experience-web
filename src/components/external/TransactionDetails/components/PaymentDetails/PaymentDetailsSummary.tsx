@@ -14,7 +14,7 @@ import StructuredList from '../../../../internal/StructuredList';
 import cx from 'classnames';
 
 const paymentAmountKeys = {
-    amountBeforeDeductions: 'transactions.details.summary.fields.amountBeforeDeductions',
+    grossAmount: 'transactions.details.summary.fields.grossAmount',
     netAmount: 'transactions.details.summary.fields.netAmount',
     originalAmount: 'transactions.details.summary.fields.originalAmount',
 } satisfies Record<string, TranslationKey>;
@@ -39,7 +39,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
 
         const listItems: StructuredListProps['items'] = [
             // original amount
-            originalAmount
+            originalAmount && ((additions && additions.length > 0) || originalAmount.value !== amountBeforeDeductions.value)
                 ? {
                       id: 'originalAmount',
                       key: paymentAmountKeys.originalAmount,
@@ -56,7 +56,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
             // amountBeforeDeductions
             {
                 id: 'grossAmount',
-                key: paymentAmountKeys.amountBeforeDeductions,
+                key: paymentAmountKeys.grossAmount,
                 value: getFormattedAmount(amountBeforeDeductions),
             },
 
@@ -84,7 +84,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
 
     const renderListPropertyValue = useCallback<NonNullable<StructuredListProps['renderValue']>>((val, key) => {
         const stronger = key === paymentAmountKeys.netAmount;
-        const strongest = key === paymentAmountKeys.amountBeforeDeductions;
+        const strongest = key === paymentAmountKeys.grossAmount;
         const variant = stronger ? TypographyVariant.SUBTITLE : TypographyVariant.BODY;
         return (
             <Typography el={TypographyElement.DIV} variant={variant} stronger={stronger} strongest={strongest}>
