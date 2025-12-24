@@ -344,6 +344,7 @@
     "payByLink.linkCreation.summary.fields.deliveryAddress.houseNumberOrName": "Label for the house number within the delivery address on the summary page.",
     "payByLink.linkCreation.summary.fields.deliveryAddress.postalCode": "Label for the postal code within the delivery address on the summary page.",
     "payByLink.linkCreation.summary.fields.deliveryAddress.stateOrProvince": "Label for the state or province within the delivery address on the summary page.",
+    "payByLink.linkCreation.summary.fields.deliveryAddress.street": "Label for the street within the delivery address on the summary page.",
     "payByLink.linkCreation.summary.shopperInformation": "Title for the shopper information section on the payment link summary page.",
     "payByLink.overview.common.actionNeeded.expiresAt": "Label displaying the expiration date of a payment link in the format 'Expires: [date]'. The %{date} placeholder is formatted as a localized date.",
     "payByLink.overview.common.actionNeeded.expiresDays": "Label displaying the number of days until a payment link expires along with the expiration date. The %{days} placeholder represents the number of days and %{date} is formatted as a localized date.",
