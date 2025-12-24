@@ -831,7 +831,7 @@
     "payByLink.overview.filters.types.status.label": "Status",
     "payByLink.overview.filters.types.stores.label": "Stores",
     "payByLink.overview.list.fields.amount": "Amount",
-    "payByLink.overview.list.fields.createdAt": "Creation Date",
+    "payByLink.overview.list.fields.createdAt": "Creation date",
     "payByLink.overview.list.fields.currency": "Currency",
     "payByLink.overview.list.fields.expirationDate": "Expiration",
     "payByLink.overview.list.fields.id": "Payment Link ID",
