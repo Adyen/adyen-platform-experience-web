@@ -11,7 +11,7 @@ import {
 import Localization from '../../src/core/Localization';
 import { http, HttpResponse, PathParams } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
-import { DEFAULT_TRANSACTION, TRANSACTIONS } from '../mock-data';
+import { DEFAULT_TRANSACTION, getPspReference, TRANSACTIONS } from '../mock-data';
 import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { clamp, getMappedValue } from '../../src/utils';
@@ -34,7 +34,6 @@ const TRANSACTIONS_REFUND_LOCKED = new Set<string>();
 
 const ALL_TRANSACTIONS: ITransactionWithDetails[] = [];
 const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
-const PAYMENT_OR_TRANSFER = ['Payment', 'Transfer'];
 
 const mockEndpoints = endpoints('mock');
 const networkError = false;
@@ -56,7 +55,7 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
     let refundMode: IRefundMode = 'non_refundable';
     let deductedAmount = 0;
 
-    if (PAYMENT_OR_TRANSFER.includes(transaction?.category)) {
+    if (transaction?.category === 'Payment') {
         if (KLARNA_OR_PAYPAL.includes(transaction?.paymentMethod?.type ?? '')) {
             refundMode = 'partially_refundable_with_line_items_required';
             deductedAmount = 350;
@@ -69,85 +68,6 @@ const getTransactionMetadata = <T extends ITransaction>(transaction: T) => {
     }
 
     return { deductedAmount, refundMode } as const;
-};
-
-const getPaymentOrTransferWithDetails = <T extends ITransaction>(transaction: T, deductedAmount = 0) => {
-    return getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
-        const tx = getTransactionWithAmountDeduction(transaction, deductedAmount);
-        let { currency, value: originalAmount } = tx.amountBeforeDeductions;
-        let deductionsAmount = Math.abs(deductedAmount);
-
-        const index = Number(tx.pspReference.slice(-3));
-        const additions = [];
-        const deductions = [];
-
-        if (deductionsAmount > 0) {
-            if (deductionsAmount >= 350) {
-                if (tx.category === 'Payment' && (index % 2 === 0 || index % 3 === 1)) {
-                    const tip = Math.min(150, Math.floor((deductionsAmount * 4) / 1000) * 100);
-                    deductions.push({ currency, value: -tip, type: 'tip' });
-                    additions.push({ currency, value: tip, type: 'tip' });
-
-                    deductionsAmount -= tip;
-                    originalAmount -= tip;
-                }
-
-                if (index % 7 === 0 || index % 3 === 1) {
-                    const surcharge = Math.min(1500, Math.floor(deductionsAmount / 100) * 100);
-                    deductions.push({ currency, value: -surcharge, type: 'surcharge' });
-                    additions.push({ currency, value: surcharge, type: 'surcharge' });
-
-                    deductionsAmount -= surcharge;
-                    originalAmount -= surcharge;
-                }
-            }
-
-            if (deductionsAmount > 500) {
-                const split = Math.floor((deductionsAmount * 8) / 5000) * 500;
-                deductions.push({ currency, value: -split, type: 'split' });
-                deductionsAmount -= split;
-            }
-
-            if (deductionsAmount) {
-                deductions.unshift({ currency, value: -deductionsAmount, type: 'fee' });
-            }
-        }
-
-        return {
-            ...tx,
-            ...(additions.length > 0 && {
-                originalAmount: { currency, value: originalAmount },
-                additions,
-            }),
-            ...(deductions.length > 0 && { deductions }),
-            ...(tx.category === 'Payment' && {
-                events: [
-                    {
-                        amount: tx.netAmount,
-                        createdAt: tx.createdAt,
-                        status: 'received',
-                        type: 'payment',
-                    },
-                    ...(deductionsAmount
-                        ? [
-                              {
-                                  amount: { currency, value: deductionsAmount },
-                                  createdAt: tx.createdAt,
-                                  status: 'fee',
-                                  type: 'capture',
-                              },
-                          ]
-                        : []),
-                    {
-                        amount: tx.netAmount,
-                        createdAt: tx.createdAt,
-                        status: 'settled',
-                        type: 'capture',
-                    },
-                ],
-            }),
-        } as ITransactionWithDetails;
-    });
 };
 
 const enrichTransactionDataWithDetails = <T extends ITransaction>(
@@ -171,11 +91,85 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
     let transactionWithDetails = { ...transaction } as ITransactionWithDetails;
 
     switch (transaction.category) {
-        case 'Payment':
-        case 'Transfer':
-            transactionWithDetails = getPaymentOrTransferWithDetails(transaction, deductedAmount)!;
+        case 'Payment': {
+            transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
+                const tx = getTransactionWithAmountDeduction(transaction, deductedAmount);
+                let { currency, value: originalAmount } = tx.amountBeforeDeductions;
+                let deductionsAmount = Math.abs(deductedAmount);
+
+                const index = Number(tx.paymentPspReference?.slice(-3) ?? -1);
+                const additions = [];
+                const deductions = [];
+
+                if (deductionsAmount > 0) {
+                    if (deductionsAmount >= 350) {
+                        if (index % 2 === 0 || index % 3 === 1) {
+                            const tip = Math.min(150, Math.floor((deductionsAmount * 4) / 1000) * 100);
+                            deductions.push({ currency, value: -tip, type: 'tip' });
+                            additions.push({ currency, value: tip, type: 'tip' });
+
+                            deductionsAmount -= tip;
+                            originalAmount -= tip;
+                        }
+
+                        if (index % 7 === 0 || index % 3 === 1) {
+                            const surcharge = Math.min(1500, Math.floor(deductionsAmount / 100) * 100);
+                            deductions.push({ currency, value: -surcharge, type: 'surcharge' });
+                            additions.push({ currency, value: surcharge, type: 'surcharge' });
+
+                            deductionsAmount -= surcharge;
+                            originalAmount -= surcharge;
+                        }
+                    }
+
+                    if (deductionsAmount > 500) {
+                        const split = Math.floor((deductionsAmount * 8) / 5000) * 500;
+                        deductions.push({ currency, value: -split, type: 'split' });
+                        deductionsAmount -= split;
+                    }
+
+                    if (deductionsAmount) {
+                        deductions.unshift({ currency, value: -deductionsAmount, type: 'fee' });
+                    }
+                }
+
+                return {
+                    ...tx,
+                    ...(additions.length > 0 && {
+                        originalAmount: { currency, value: originalAmount },
+                        additions,
+                    }),
+                    ...(deductions.length > 0 && { deductions }),
+                    events: [
+                        {
+                            amount: tx.netAmount,
+                            createdAt: tx.createdAt,
+                            status: 'received',
+                            type: 'payment',
+                        },
+                        ...(deductionsAmount
+                            ? [
+                                  {
+                                      amount: { currency, value: deductionsAmount },
+                                      createdAt: tx.createdAt,
+                                      status: 'fee',
+                                      type: 'capture',
+                                  },
+                              ]
+                            : []),
+                        {
+                            amount: tx.netAmount,
+                            createdAt: tx.createdAt,
+                            status: 'settled',
+                            type: 'capture',
+                        },
+                    ],
+                } as ITransactionWithDetails;
+            })!;
+
             refundableAmount = transactionWithDetails.netAmount.value;
             break;
+        }
 
         case 'Refund': {
             transactionWithDetails = getMappedValue(transaction.id, TRANSACTIONS_DETAILS_CACHE, () => {
@@ -184,7 +178,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                 let paymentTx: ITransactionWithDetails | undefined = undefined;
 
                 for (const tx of ALL_TRANSACTIONS) {
-                    if (!PAYMENT_OR_TRANSFER.includes(tx.category)) continue;
+                    if (tx.category !== 'Payment') continue;
                     if (tx.balanceAccountId !== transaction.balanceAccountId) continue;
                     if (tx.netAmount.currency !== currency) continue;
 
@@ -193,7 +187,7 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                     const completedRefunds = tx.refundDetails?.refundStatuses?.filter(({ status }) => status === 'completed').length ?? 0;
 
                     const isFullRefund = refundMode === 'fully_refundable_only' && txAmount === amount;
-                    const isPartialRefund = refundMode === 'partially_refundable_any_amount' && txAmount < amount && completedRefunds < 2;
+                    const isPartialRefund = refundMode === 'partially_refundable_any_amount' && txAmount < amount && completedRefunds < 10;
 
                     if (isFullRefund) refundType = 'full';
 
@@ -205,12 +199,13 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 
                 if (paymentTx) {
                     const tx = { ...transactionWithDetails };
+                    const refundPspReference = getPspReference();
 
-                    tx.paymentPspReference = paymentTx.pspReference;
+                    tx.paymentPspReference = transaction.paymentPspReference = paymentTx.paymentPspReference;
                     tx.refundMetadata = {
                         originalPaymentId: paymentTx.id,
-                        refundPspReference: tx.pspReference,
                         refundReason: 'requested_by_customer',
+                        refundPspReference,
                         refundType,
                     };
 
@@ -276,26 +271,10 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
 };
 
 const fetchTransaction = async (params: PathParams) => {
-    let responseDelay = 1000;
-
-    if (ALL_TRANSACTIONS.length === 0) {
-        responseDelay = 2500;
-
-        [...TRANSACTIONS, DEFAULT_TRANSACTION]
-            .sort(({ category: a }, { category: b }) => {
-                if (PAYMENT_OR_TRANSFER.includes(a)) return -1;
-                if (PAYMENT_OR_TRANSFER.includes(b)) return 1;
-                return 0;
-            })
-            .forEach(transaction => {
-                ALL_TRANSACTIONS.push(enrichTransactionDataWithDetails(transaction));
-            });
-    }
-
     const matchingMock = ALL_TRANSACTIONS.find(mock => mock.id === params.id);
     if (!matchingMock) return HttpResponse.text('Cannot find matching Transaction mock', { status: 404 });
 
-    await delay(responseDelay);
+    await delay(1000);
     passThroughRefundLockDeadlineCheckpoint();
     return HttpResponse.json(matchingMock);
 };
@@ -311,7 +290,7 @@ const fetchTransactionsForRequest = (req: Request) => {
     const currencies = searchParams.getAll('currencies');
     const sortDirection = searchParams.get('sortDirection') ?? DEFAULT_SORT_DIRECTION;
     const statuses = searchParams.getAll('statuses');
-    const pspReferenceValue = searchParams.get('pspReference');
+    const pspReferenceValue = searchParams.get('paymentPspReference');
 
     const hashArray = [
         createdSince,
@@ -346,8 +325,8 @@ const fetchTransactionsForRequest = (req: Request) => {
 
         transactions = periodTransactions
             .filter(
-                ({ netAmount: amount, category, status, pspReference }) =>
-                    (!pspReferenceValue || pspReferenceValue === pspReference) &&
+                ({ netAmount: amount, category, status, paymentPspReference }) =>
+                    (!pspReferenceValue || pspReferenceValue === paymentPspReference) &&
                     (!categories.length || categories.includes(category)) &&
                     (!currencies.length || currencies.includes(amount.currency)) &&
                     (!statuses.length || statuses!.includes(status))
@@ -378,11 +357,23 @@ const DownloadFields: Record<ITransactionExportColumn, (transaction: ITransactio
     paymentMethod: ({ paymentMethod, bankAccount }) =>
         (paymentMethod ? parsePaymentMethodType(paymentMethod) : bankAccount?.accountNumberLastFourDigits) ?? '',
     category: ({ category }) => category,
-    pspReference: ({ pspReference }) => pspReference ?? '',
+    paymentPspReference: ({ paymentPspReference }) => paymentPspReference ?? '',
     currency: ({ netAmount: amount }) => amount.currency,
     netAmount: ({ netAmount: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
     amountBeforeDeductions: ({ amountBeforeDeductions: amount }) => `"${i18n.amount(amount.value, amount.currency)}"`,
 };
+
+if (ALL_TRANSACTIONS.length === 0) {
+    [...TRANSACTIONS, DEFAULT_TRANSACTION]
+        .sort(({ category: a }, { category: b }) => {
+            if (a === 'Payment') return -1;
+            if (b === 'Payment') return 1;
+            return 0;
+        })
+        .forEach(transaction => {
+            ALL_TRANSACTIONS.push(enrichTransactionDataWithDetails(transaction));
+        });
+}
 
 export const transactionsMocks = [
     http.get(mockEndpoints.transactions, async ({ request }) => {
