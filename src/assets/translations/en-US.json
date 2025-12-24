@@ -836,7 +836,7 @@
     "payByLink.overview.list.fields.expirationDate": "Expiration",
     "payByLink.overview.list.fields.id": "Payment Link ID",
     "payByLink.overview.list.fields.linkType": "Type",
-    "payByLink.overview.list.fields.merchantReference": "Merchant Reference",
+    "payByLink.overview.list.fields.merchantReference": "Merchant reference",
     "payByLink.overview.list.fields.shopperEmail": "Shopper email",
     "payByLink.overview.list.fields.status": "Status",
     "payByLink.overview.list.fields.store": "Store",
