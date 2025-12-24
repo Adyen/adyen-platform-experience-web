@@ -112,7 +112,7 @@
     "common.inputs.file.actions.delete": "Used as assistive technology button label for a button that removes an uploaded file. The filename placeholder will be replaced with the name of the file to be deleted (e.g: photo.png).",
     "common.inputs.file.errors.default": "Generic error message displayed during the file upload process when an unspecified issue occurs.",
     "common.inputs.file.errors.disallowedType": "Will be displayed as input validation error message if at least one uploaded file is of a file type that is not accepted.",
-    "common.inputs.file.errors.maxDimensions": "Label indicating the file input exceeds the required dimentions",
+    "common.inputs.file.errors.maxDimensions": "Label indicating the file input exceeds the required dimensions",
     "common.inputs.file.errors.required": "Will be displayed as input validation error message if at least one file is required but none has been uploaded.",
     "common.inputs.file.errors.tooLarge": "Will be displayed as input validation error message if at least one uploaded file is of a size larger than the maximum allowed file size.",
     "common.inputs.file.errors.tooMany": "Will be displayed as input validation error message if the number of uploaded files is more than expected.",
