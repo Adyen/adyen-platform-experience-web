@@ -710,7 +710,6 @@
     "payByLink.common.status.completed": "Completed",
     "payByLink.common.status.expired": "Expired",
     "payByLink.common.status.paymentPending": "Payment pending",
-    "payByLink.details.title": "Pay By Link details",
     "payByLink.linkCreation.fields.amount.label": "Amount",
     "payByLink.linkCreation.fields.amountValue.error.currency": "Please select a currency",
     "payByLink.linkCreation.fields.amountValue.error.negativeNumber": "No negative numbers allowed",
