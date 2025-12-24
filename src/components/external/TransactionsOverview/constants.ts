@@ -65,7 +65,7 @@ export const EXPORT_COLUMNS = [
     'status',
     'paymentMethod',
     'category',
-    'pspReference',
+    'paymentPspReference',
     'currency',
     'netAmount',
     'amountBeforeDeductions',

@@ -40,7 +40,7 @@ const TransactionPspReferenceFilter = ({ eventCategory, onChange, value }: Trans
     const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'PSP reference filter' });
     const [pendingResetAction, setPendingResetAction] = useState(false);
 
-    const label = useMemo(() => i18n.get('transactions.overview.filters.types.pspReference.label'), [i18n]);
+    const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
     const cachedValue = useRef(value);
 
     const onValueChange = useCallback<NonNullable<typeof onChange>>(
@@ -92,9 +92,12 @@ TransactionPspReferenceFilter.EditModal = ({
     const labelId = useMemo(uniqueId, []);
 
     const fromDate = useMemo(() => dateFormat(FROM_DATE, FROM_DATE_FORMAT_OPTIONS), [dateFormat]);
-    const fromDateInfo = useMemo(() => i18n.get('transactions.overview.filters.types.pspReference.fromDateInfo', { values: { fromDate } }), [i18n]);
-    const label = useMemo(() => i18n.get('transactions.overview.filters.types.pspReference.label'), [i18n]);
-    const placeholder = useMemo(() => i18n.get('transactions.overview.filters.types.pspReference.placeholder'), [i18n]);
+    const fromDateInfo = useMemo(
+        () => i18n.get('transactions.overview.filters.types.paymentPspReference.fromDateInfo', { values: { fromDate } }),
+        [i18n]
+    );
+    const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
+    const placeholder = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.placeholder'), [i18n]);
 
     const handleInput = (evt: h.JSX.TargetedEvent<HTMLInputElement>) => {
         const inputElement = evt.currentTarget;

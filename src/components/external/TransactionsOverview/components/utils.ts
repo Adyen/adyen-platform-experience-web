@@ -24,7 +24,7 @@ export const getTransactionsFilterQueryParams = <T extends TransactionsFilters>(
         createdSince: new Date(filters.createdDate.from).toISOString(),
         createdUntil: new Date(filters.createdDate.to).toISOString(),
         currencies: filters.currencies as (typeof filters.currencies)[number][],
-        pspReference: filters.pspReference,
+        paymentPspReference: filters.paymentPspReference,
         statuses: filters.statuses as (typeof filters.statuses)[number][],
     } as const;
 };

@@ -66,7 +66,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     const [exportColumns, setExportColumns] = useState([] as readonly (typeof EXPORT_COLUMNS)[number][]);
 
     const [activeFilters, exportParams] = useMemo(() => {
-        const { balanceAccount, pspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
+        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
 
         const activeFilters: readonly TranslationKey[] = [
             ...(balanceAccount?.id ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -74,7 +74,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
             // ...(statuses.length ? (['transactions.overview.export.filters.types.status'] as const) : EMPTY_ARRAY),
             ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
             ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
-            ...(pspReference ? (['transactions.overview.export.filters.types.pspReference'] as const) : EMPTY_ARRAY),
+            ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
         ] as const;
 
         const exportParams = {
