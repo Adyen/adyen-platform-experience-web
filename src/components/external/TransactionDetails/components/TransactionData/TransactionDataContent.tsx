@@ -2,28 +2,31 @@ import PaymentRefund from '../PaymentRefund/PaymentRefund';
 import PaymentDetails from '../PaymentDetails/PaymentDetails';
 import useRefundMetadata from '../../hooks/useRefundMetadata';
 import useTransaction from '../../hooks/useTransaction';
-import useBalanceAccounts from '../../../../../hooks/useBalanceAccounts';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { IBalanceAccountBase, ILineItem } from '../../../../../types';
-import { ActiveView, TransactionDataProps } from '../../types';
 import { EMPTY_ARRAY } from '../../../../../utils';
+import { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
 
-export interface TransactionDataContentProps {
-    transaction: NonNullable<TransactionDataProps['transaction']>;
-    // TODO - Unify this parameter with dataCustomization
+type UseTransactionResult = ReturnType<typeof useTransaction>;
+
+export interface TransactionDataContentProps extends Omit<UseTransactionResult, 'error' | 'transaction'> {
+    dataCustomization?: TransactionDetailsProps['dataCustomization'];
     extraFields: Record<string, any> | undefined;
-    balanceAccount?: IBalanceAccountBase;
-    dataCustomization?: TransactionDataProps['dataCustomization'];
+    transaction: TransactionDetails;
 }
 
-export const TransactionDataContent = ({ transaction: initialTransaction, extraFields, dataCustomization }: TransactionDataContentProps) => {
+export const TransactionDataContent = ({
+    dataCustomization,
+    extraFields,
+    fetchingTransaction,
+    refreshTransaction,
+    transaction,
+    transactionNavigator,
+}: TransactionDataContentProps) => {
     const [activeView, setActiveView] = useState(ActiveView.DETAILS);
     const [locked, setLocked] = useState(false);
-
-    const { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(initialTransaction);
-    const { balanceAccounts } = useBalanceAccounts(transaction.balanceAccountId);
 
     const {
         fullRefundFailed,
@@ -43,15 +46,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
     const refundIsDisabled = useMemo(() => refundDisabled || locked, [refundDisabled, locked]);
     const refundIsLocked = useMemo(() => refundLocked || locked, [refundLocked, locked]);
 
-    const transactionWithBalanceAccount = useMemo(() => {
-        const balanceAccount = balanceAccounts?.find(account => account.id === transaction.balanceAccountId);
-        return { ...transaction, balanceAccount } as const;
-    }, [balanceAccounts, transaction]);
-
-    const lineItems = useMemo<readonly ILineItem[]>(
-        () => Object.freeze(transactionWithBalanceAccount.lineItems ?? EMPTY_ARRAY),
-        [transactionWithBalanceAccount.lineItems]
-    );
+    const lineItems = useMemo<readonly ILineItem[]>(() => Object.freeze(transaction.lineItems ?? EMPTY_ARRAY), [transaction.lineItems]);
 
     useEffect(() => {
         if ((cachedRefundLocked.current = refundLocked)) {
@@ -80,7 +75,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     refundingAmounts={refundAmounts.in_progress ?? EMPTY_ARRAY}
                     setActiveView={setActiveView}
                     setLocked={setLocked}
-                    transaction={transactionWithBalanceAccount}
+                    transaction={transaction}
                 />
             );
 
@@ -99,7 +94,7 @@ export const TransactionDataContent = ({ transaction: initialTransaction, extraF
                     refundedState={refundedState}
                     refundLocked={refundIsLocked}
                     setActiveView={setActiveView}
-                    transaction={transactionWithBalanceAccount}
+                    transaction={transaction}
                     transactionNavigator={transactionNavigator}
                 />
             );

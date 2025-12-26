@@ -2,12 +2,12 @@ import PaymentRefundAlerts from './PaymentRefundAlerts';
 import PaymentDetailsActions from './PaymentDetailsActions';
 import PaymentDetailsProperties from './PaymentDetailsProperties';
 import PaymentDetailsStatusBox from './PaymentDetailsStatusBox';
-import { ActiveView, RefundedState, TransactionDataProps } from '../../types';
 import { REFUND_STATUSES, TX_DATA_CLASS, TX_DATA_CONTAINER } from '../../constants';
-import { TransactionNavigator } from '../../hooks/useTransaction/transactionNavigator/types';
+import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
+import { ActiveView, RefundedState, TransactionDetails, TransactionDetailsProps } from '../../types';
 
 export interface PaymentDetailsProps {
-    dataCustomization?: TransactionDataProps['dataCustomization'];
+    dataCustomization?: TransactionDetailsProps['dataCustomization'];
     extraFields: Record<string, any> | undefined;
     fullRefundFailed: boolean;
     fullRefundInProgress: boolean;
@@ -19,8 +19,8 @@ export interface PaymentDetailsProps {
     refundedState: RefundedState;
     refundLocked: boolean;
     setActiveView: (activeView: ActiveView) => void;
-    transaction: NonNullable<TransactionDataProps['transaction']>;
-    transactionNavigator: TransactionNavigator;
+    transaction: TransactionDetails;
+    transactionNavigator: TransactionDataContentProps['transactionNavigator'];
 }
 
 const PaymentDetails = ({

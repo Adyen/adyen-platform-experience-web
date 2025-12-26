@@ -1,11 +1,11 @@
 import { useMemo } from 'preact/hooks';
 import { boolOrFalse, isFunction } from '../../../../../utils';
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import { RefundMode, RefundedState, TransactionDataProps } from '../../types';
+import { RefundMode, RefundedState, TransactionDetails } from '../../types';
 import { IRefundMode } from '../../../../../types';
 import { REFUND_STATUSES } from '../../constants';
 
-export const useRefundMetadata = (transaction: TransactionDataProps['transaction']) => {
+export const useRefundMetadata = (transaction?: TransactionDetails) => {
     const details = transaction?.refundDetails;
     const refundMode: IRefundMode = details?.refundMode ?? RefundMode.FULL_AMOUNT;
     const refundLocked = boolOrFalse(details?.refundLocked);

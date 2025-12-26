@@ -2,13 +2,13 @@ import { memo } from 'preact/compat';
 import { IAmount } from '../../../../../types';
 import { isNullish } from '../../../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
-import { TransactionDataProps } from '../../types';
 import { TranslationKey } from '../../../../../translations';
+import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import { getTransactionRefundReason } from '../../../../utils/translation/getters';
 import { isCustomDataObject } from '../../../../internal/DataGrid/components/TableCells';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../constants';
+import { TX_DATA_LABEL, TX_DATA_LIST, sharedTransactionDetailsEventProperties } from '../../constants';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import StructuredList from '../../../../internal/StructuredList';
@@ -43,16 +43,16 @@ const paymentDataCopyButtonKeys = {
 const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
 export interface PaymentDetailsPropertiesProps {
-    dataCustomization?: TransactionDataProps['dataCustomization'];
+    dataCustomization?: TransactionDetailsProps['dataCustomization'];
     extraFields: Record<string, any> | undefined;
-    transaction: NonNullable<TransactionDataProps['transaction']>;
+    transaction: TransactionDetails;
 }
 
 const PaymentDetailsProperties = ({ dataCustomization, extraFields, transaction }: PaymentDetailsPropertiesProps) => {
     const { i18n } = useCoreContext();
 
     const standardPropertiesList = useMemo<StructuredListProps['items']>(() => {
-        const { balanceAccount, category, id, merchantReference, paymentPspReference, refundMetadata } = transaction;
+        const { balanceAccount, category, id, paymentPspReference, refundMetadata } = transaction;
         const customizedFields = dataCustomization?.details?.fields;
         const isRefundTransaction = category === 'Refund';
 
@@ -134,9 +134,7 @@ const PaymentDetailsProperties = ({ dataCustomization, extraFields, transaction 
     const customPropertiesList = useMemo<StructuredListProps['items']>(
         () =>
             Object.entries(extraFields || {})
-                .filter(([key, value]) => {
-                    return !TX_DETAILS_RESERVED_FIELDS_SET.has(key as any) && value?.type !== 'button' && value?.visibility !== 'hidden';
-                })
+                .filter(([, value]) => value?.type !== 'button')
                 .map(([key, value]) => ({
                     key: key as TranslationKey,
                     value: isCustomDataObject(value) ? value.value : value,
