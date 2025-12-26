@@ -7,6 +7,7 @@ export interface HttpOptions {
     contentType?: string;
     errorMessage?: string;
     headers?: HeadersInit;
+    keepalive?: boolean;
     loadingContext?: string;
     clientKey?: string;
     method: HttpMethod;
