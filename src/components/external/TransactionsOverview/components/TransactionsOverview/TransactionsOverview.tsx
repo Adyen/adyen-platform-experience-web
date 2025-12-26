@@ -46,37 +46,25 @@ export const TransactionsOverview = ({
     const canFetchTransactions = !!balanceAccount?.id;
     const canFetchTransactionsTotals = !!balanceAccount?.id;
 
-    const {
-        balances,
-        currencies,
-        isEmpty: balancesEmpty,
-        isMultiCurrency: hasMultipleCurrencies,
-        isWaiting: loadingBalances,
-    } = useAccountBalances({ balanceAccount });
+    const accountBalancesResult = useAccountBalances({ balanceAccount });
 
-    const { totals, isWaiting: loadingTotals } = useTransactionsTotals({
-        currencies,
-        filters,
-        loadingBalances,
-        fetchEnabled: canFetchTransactionsTotals,
-    });
-
-    const {
-        error: transactionsError,
-        fetching: loadingTransactions,
-        fields: transactionsFields,
-        records: transactions,
-        updateLimit: onLimitSelection,
-        hasCustomColumn,
-        ...paginationProps
-    } = useTransactionsList({
+    const transactionsListResult = useTransactionsList({
+        fetchEnabled: canFetchTransactions,
         allowLimitSelection,
         dataCustomization,
         filters,
         onFiltersChanged,
         preferredLimit,
-        fetchEnabled: canFetchTransactions,
     });
+
+    const transactionsTotalsResult = useTransactionsTotals({
+        currencies: accountBalancesResult.currencies,
+        fetchEnabled: canFetchTransactionsTotals,
+        loadingBalances: accountBalancesResult.isWaiting,
+        filters,
+    });
+
+    const { error, fetching, fields, records, updateLimit, hasCustomColumn, ...paginationProps } = transactionsListResult;
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
@@ -86,7 +74,7 @@ export const TransactionsOverview = ({
 
             <TransactionsFilters
                 {...filterBarState}
-                availableCurrencies={currencies}
+                availableCurrencies={accountBalancesResult.currencies}
                 balanceAccounts={balanceAccounts}
                 eventCategory="Transaction component"
                 onChange={setFilters}
@@ -102,32 +90,36 @@ export const TransactionsOverview = ({
 
                 <div className={classes.summary}>
                     <div className={classes.summaryItem}>
-                        <TransactionTotals balanceAccount={balanceAccount} loadingTotals={loadingTotals} totals={totals} />
+                        <TransactionTotals
+                            balanceAccount={balanceAccount}
+                            loadingTotals={transactionsTotalsResult.isWaiting}
+                            totals={transactionsTotalsResult.totals}
+                        />
                     </div>
                     <div className={classes.summaryItem}>
                         <Balances
                             balanceAccount={balanceAccount}
-                            balances={balances}
-                            balancesEmpty={balancesEmpty}
-                            loadingBalances={loadingBalances}
+                            balances={accountBalancesResult.balances}
+                            balancesEmpty={accountBalancesResult.isEmpty}
+                            loadingBalances={accountBalancesResult.isWaiting}
                         />
                     </div>
                 </div>
 
                 <TransactionsList
-                    availableCurrencies={currencies}
+                    availableCurrencies={accountBalancesResult.currencies}
                     balanceAccount={balanceAccount}
                     dataCustomization={dataCustomization}
-                    hasMultipleCurrencies={hasMultipleCurrencies}
+                    hasMultipleCurrencies={accountBalancesResult.isMultiCurrency}
                     loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}
-                    loadingTransactions={loadingTransactions}
+                    loadingTransactions={transactionsListResult.fetching}
                     onContactSupport={onContactSupport}
-                    onLimitSelection={onLimitSelection}
+                    onLimitSelection={transactionsListResult.updateLimit}
                     onRecordSelection={onRecordSelection}
                     showDetails={showDetails}
-                    transactionsError={transactionsError}
-                    transactionsFields={transactionsFields}
-                    transactions={transactions}
+                    transactionsError={transactionsListResult.error}
+                    transactionsFields={transactionsListResult.fields}
+                    transactions={transactionsListResult.records}
                     {...paginationProps}
                 />
             </>

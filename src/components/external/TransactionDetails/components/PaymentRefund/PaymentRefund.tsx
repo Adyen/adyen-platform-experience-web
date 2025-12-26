@@ -18,7 +18,7 @@ import PaymentRefundReason from './PaymentRefundReason';
 import Alert from '../../../../internal/Alert/Alert';
 import Button from '../../../../internal/Button/Button';
 import Typography from '../../../../internal/Typography/Typography';
-import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDataProps } from '../../types';
+import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDetails } from '../../types';
 import { TypographyModifier, TypographyVariant } from '../../../../internal/Typography/types';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -39,7 +39,7 @@ export interface PaymentRefundProps {
     refundingAmounts: readonly number[];
     setActiveView: (activeView: ActiveView) => void;
     setLocked: (locked: boolean) => void;
-    transaction: NonNullable<TransactionDataProps['transaction']>;
+    transaction: TransactionDetails;
 }
 
 interface PaymentRefundFormProps extends Omit<PaymentRefundProps, 'disabled' | 'refreshTransaction' | 'setActiveView' | 'setLocked'> {

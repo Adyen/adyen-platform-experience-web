@@ -6,6 +6,7 @@ import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
 
 export interface UseMultiSelectionFilterPropsConfig<T extends string> {
     eventCategory?: string;
+    eventSubCategory?: string;
     eventLabel?: FilterType;
     onResetFilter?: () => void;
     onUpdateFilter?: (selection: readonly T[]) => void;
@@ -15,13 +16,14 @@ export interface UseMultiSelectionFilterPropsConfig<T extends string> {
 
 const useMultiSelectionFilterProps = <T extends string>({
     eventCategory,
+    eventSubCategory,
     eventLabel,
     onResetFilter,
     onUpdateFilter,
     selectionOptions,
     selection,
 }: UseMultiSelectionFilterPropsConfig<T>) => {
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: eventLabel });
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: eventLabel });
 
     const onResetAction = useCallback(() => {
         // The reset action clears every existing selection (deselects every option).

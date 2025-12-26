@@ -1,5 +1,5 @@
 import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import { TransactionDetailData, TransactionDetailsFields } from './types';
+import { TransactionDetails, TransactionDetailsFields } from './types';
 import { TranslationKey } from '../../../translations';
 import { IRefundStatus } from '../../../types';
 
@@ -31,7 +31,7 @@ export const TX_REFUND_RESPONSE_ERROR_ICON = `${TX_REFUND_RESPONSE_ICON}--error`
 export const TX_REFUND_STATUSES_CONTAINER = `${TX_DATA_CLASS}__refund-statuses-container`;
 
 export const TX_DETAILS_RESERVED_FIELDS_SET = new Set<TransactionDetailsFields>([
-    ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetailData)[]),
+    ...(['status', 'category', 'paymentMethod', 'bankAccount', 'balanceAccount', 'id', 'balanceAccountId'] satisfies (keyof TransactionDetails)[]),
     ...TRANSACTION_FIELDS,
     'deductedAmount',
     'lineItems',

@@ -5,7 +5,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getTransactionCategory } from '../../../../utils/translation/getters';
 import { getAmountStyleForTransaction, getRefundTypeForTransaction } from '../../utils';
 import { TX_DATA_AMOUNT, TX_DATA_CONTAINER, TX_DATA_TAGS, TX_STATUS_BOX } from '../../constants';
-import { RefundedState, RefundType, TransactionDataProps } from '../../types';
+import { RefundedState, RefundType, TransactionDetails } from '../../types';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { useMemo } from 'preact/hooks';
@@ -13,7 +13,7 @@ import { memo } from 'preact/compat';
 
 export interface PaymentDetailsStatusBoxProps {
     refundedState: RefundedState;
-    transaction: NonNullable<TransactionDataProps['transaction']>;
+    transaction: TransactionDetails;
 }
 
 const PaymentDetailsStatusBox = ({ refundedState, transaction }: PaymentDetailsStatusBoxProps) => {
