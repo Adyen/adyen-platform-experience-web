@@ -30,7 +30,8 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
     const [isTermsAndConditionsChanged, setIsTermsAndConditionsChanged] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const userRequirementsInput = useRef(false);
-    const { savedData, setPayload, saveActionCalled, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
+    const { savedData, setPayload, saveActionCalled, setIsValid, setSaveActionCalled, isSaveSuccess, setIsSaveError, setIsSaveSuccess, isSaveError } =
+        usePayByLinkSettingsContext();
 
     useEffect(() => {
         if (isRequirementsChecked && termsAndConditionsURL && isValidURL(termsAndConditionsURL)) {
@@ -176,6 +177,20 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 <Modal headerWithBorder={false} isDismissible={false} size={'full-screen'} isOpen={requirementsAreOpened} onClose={closeModal}>
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
+            )}
+            {isSaveSuccess && (
+                <Alert
+                    type={AlertTypeOption.SUCCESS}
+                    onClose={() => setIsSaveSuccess(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
+                />
+            )}
+            {isSaveError && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    onClose={() => setIsSaveError(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
+                />
             )}
         </section>
     );

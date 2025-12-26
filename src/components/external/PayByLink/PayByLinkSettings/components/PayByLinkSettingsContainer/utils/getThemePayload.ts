@@ -17,5 +17,6 @@ export const getThemePayload = (theme: IPayByLinkTheme): FormData => {
             formData.set(key, value);
         }
     }
-    return formData;
+    return cloneFormData(formData);
+    return cloneFormData(formData);
 };

@@ -215,7 +215,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
 }
 
 export interface PayByLinkSettingsComponentProps extends UIElementProps {
-    // Placeholder for component props
+    storeIds: string[] | string;
 }
 
 export const enum FilterParam {

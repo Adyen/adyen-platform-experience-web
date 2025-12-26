@@ -1,6 +1,5 @@
 import {
     BASE_CLASS,
-    BASE_DETAILS_CLASS,
     BASE_XS_CLASS,
     DEFAULT_PAY_BY_LINK_STATUS_GROUP,
     EARLIEST_PAYMENT_LINK_DATE,
@@ -26,7 +25,6 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
 import useModalDetails from '../../../../hooks/useModalDetails';
 import { PayByLinkTable } from './PayByLinkTable';
-import { DataDetailsModal } from '../../../internal/DataOverviewDisplay/DataDetailsModal';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
 import Tabs from '../../../internal/Tabs/Tabs';
 import { TabComponentProps } from '../../../internal/Tabs/types';

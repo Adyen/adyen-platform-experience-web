@@ -3,7 +3,7 @@ import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 
-export const useStores = () => {
+export const useStores = (storeIds?: string | string[]) => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
     const { getPayByLinkStores } = useConfigContext().endpoints;
 
@@ -20,16 +20,20 @@ export const useStores = () => {
         )
     );
 
-    //Add IDs for Select component compatibility
     const stores = useMemo(
         () =>
-            data?.data?.map(store => ({
-                id: store.storeId || '',
-                name: store.storeCode || '',
-                storeCode: store.storeCode || '',
-                description: store.description || '',
-            })),
-        [data]
+            data?.data
+                ?.filter(store => {
+                    if (!store.storeId) return false;
+                    return !storeIds || (typeof storeIds === 'string' ? store.storeId === storeIds : storeIds?.includes(store.storeId));
+                })
+                .map(store => ({
+                    id: store.storeId || '',
+                    name: store.storeCode || '',
+                    storeCode: store.storeCode || '',
+                    description: store.description || '',
+                })),
+        [data, storeIds]
     );
 
     useEffect(() => {
@@ -38,5 +42,5 @@ export const useStores = () => {
         }
     }, [stores, selectedStore]);
 
-    return { stores, selectedStore, setSelectedStore };
+    return { stores, selectedStore, setSelectedStore, isFetching, error };
 };

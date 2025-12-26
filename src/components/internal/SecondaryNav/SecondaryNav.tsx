@@ -2,21 +2,41 @@ import './SecondaryNav.scss';
 import cx from 'classnames';
 import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
-import { useState } from 'preact/hooks';
+import { useCallback, useState } from 'preact/hooks';
 import { VNode } from 'preact';
 
-interface SecondaryNavProps {
+interface SecondaryNavProps<T> {
     className?: string;
-    items: { value: string; label: string }[];
+    items: T[];
     activeValue: string;
-    onValueChange: (value: string) => void;
+    onValueChange: (value: T) => void;
     renderContent: (activeMenu: string) => VNode<any>;
     renderHeader: () => VNode<any>;
 }
 
-export const SecondaryNav = ({ renderHeader, className, items, activeValue, onValueChange, renderContent }: SecondaryNavProps) => {
+export interface SecondaryNavItem<T extends string = string> {
+    value: T;
+    label: string;
+}
+
+export const SecondaryNav = <T extends SecondaryNavItem>({
+    renderHeader,
+    className,
+    items,
+    activeValue,
+    onValueChange,
+    renderContent,
+}: SecondaryNavProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [contentOpen, setContentOpen] = useState(!isSmContainer);
+
+    const onClick = useCallback(
+        (item: T) => {
+            onValueChange(item);
+            isSmContainer && setContentOpen(true);
+        },
+        [isSmContainer, onValueChange]
+    );
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className)}>
@@ -28,10 +48,7 @@ export const SecondaryNav = ({ renderHeader, className, items, activeValue, onVa
                             <button
                                 aria-selected={item.value === activeValue}
                                 className={cx('adyen-pe-secondary-nav__item', { 'adyen-pe-secondary-nav__item--active': item.value === activeValue })}
-                                onClick={() => {
-                                    onValueChange(item.value);
-                                    isSmContainer && setContentOpen(true);
-                                }}
+                                onClick={onClick.bind(null, item)}
                             >
                                 <p data-testid="typography" className="adyen-pe-secondary-nav__item-label">
                                     {item.label}

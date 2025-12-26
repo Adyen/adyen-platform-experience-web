@@ -13,14 +13,19 @@ import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';
 import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
+import Alert from '../../../../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../../../../internal/Alert/types';
+import { noop } from '../../../../../../../../utils';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
-    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid } = usePayByLinkSettingsContext();
+    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaveSuccess, isSaveError, setIsSaveError, setIsSaveSuccess, isSaving } =
+        usePayByLinkSettingsContext();
 
-    const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
-    const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? null);
-    const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(theme?.fullWidthLogoUrl ?? null);
-    const [themePayload, setThemePayload] = useState<FormData | undefined>(initialPayload ?? undefined);
+    const { brandName: initialBrandName, logo, fullWidthLogo } = theme;
+    const [brandName, setBrandName] = useState(initialBrandName ?? undefined);
+    const [logoUrl, setLogoUrl] = useState(logo ?? null);
+    const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(fullWidthLogo ?? null);
+    const [themePayload, setThemePayload] = useState<FormData | undefined>();
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
     const brandInputId = useUniqueId();
@@ -28,10 +33,11 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
 
     useEffect(() => {
         setIsValid(!!brandName);
-        if (brandName) {
-            setPayload(themePayload);
-        }
     }, [brandName, setIsValid, themePayload, setPayload]);
+
+    useEffect(() => {
+        setThemePayload(initialPayload);
+    }, [initialPayload]);
 
     useEffect(() => {
         if (saveActionCalled) {
@@ -42,13 +48,18 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
         }
     }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName]);
 
-    const addFileToThemePayload = useCallback((field: string, file: File) => {
-        setThemePayload(previousFormData => {
-            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
-            nextFormData.set(field, file, file.name);
-            return nextFormData;
-        });
-    }, []);
+    const addFileToThemePayload = useCallback(
+        (field: string, file: File) => {
+            setThemePayload(previousFormData => {
+                const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+                nextFormData.set(field, file, file.name);
+                nextFormData.set(field, file, file.name);
+                setPayload(nextFormData);
+                return nextFormData;
+            });
+        },
+        [setPayload]
+    );
 
     const onBrandNameChange = useCallback(
         (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
@@ -58,22 +69,27 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
             setThemePayload(previousFormData => {
                 const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
                 nextFormData.set(ThemeFormDataRequest.BRAND, value);
+                setPayload(nextFormData);
                 return nextFormData;
             });
         },
-        [setShowMissingBrandName, setBrandName, setThemePayload]
+        [setShowMissingBrandName, setBrandName, setThemePayload, setPayload]
     );
 
-    const removeFieldFromThemePayload = useCallback((field: string) => {
-        setThemePayload(previousFormData => {
-            if (previousFormData && previousFormData.has(field)) {
-                const nextFormData = cloneFormData(previousFormData);
-                nextFormData.delete(field);
-                return nextFormData;
-            }
-            return previousFormData;
-        });
-    }, []);
+    const removeFieldFromThemePayload = useCallback(
+        (field: string) => {
+            setThemePayload(previousFormData => {
+                if (previousFormData && previousFormData.has(field)) {
+                    const nextFormData = cloneFormData(previousFormData);
+                    nextFormData.delete(field);
+                    setPayload(nextFormData);
+                    return nextFormData;
+                }
+                return previousFormData;
+            });
+        },
+        [setPayload]
+    );
 
     const logoPreview = useCallback(
         (type: LogoTypes, file: File) => {
@@ -164,6 +180,20 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                     </div>
                 );
             })}
+            {isSaveSuccess && (
+                <Alert
+                    type={AlertTypeOption.SUCCESS}
+                    onClose={() => setIsSaveSuccess(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
+                />
+            )}
+            {isSaveError && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    onClose={() => setIsSaveError(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
+                />
+            )}
         </div>
     );
 };

@@ -125,7 +125,7 @@ function DataGridBody<
             style={showSkeleton && { display: 'grid', gridTemplateColumns: '1fr' }}
         >
             {showSkeleton ? (
-                <SkeletonBody columnsNumber={props.columns.length} loading={props.loading} />
+                1
             ) : props.onRowClick ? (
                 <InteractiveBody<Items, Columns, ClickedField, CustomCells>
                     onRowHover={props.onRowHover}

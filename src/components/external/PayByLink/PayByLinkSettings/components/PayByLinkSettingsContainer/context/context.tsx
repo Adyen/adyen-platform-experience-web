@@ -1,17 +1,22 @@
 import { memo, PropsWithChildren } from 'preact/compat';
 import { createContext } from 'preact';
-import { useCallback, useContext, useRef, useState, useEffect } from 'preact/hooks';
+import { useCallback, useContext, useRef, useState, useEffect, useMemo } from 'preact/hooks';
 import { noop } from '../../../../../../../utils';
-import { IPayByLinkSettingsContext, PayByLinkSettingsData, PayByLinkSettingsPayload } from './types';
-import { ActiveMenuItem, DEFAULT_MENU_ITEM } from './constants';
+import { IPayByLinkSettingsContext, MenuItemType, PayByLinkSettingsData, PayByLinkSettingsItem, PayByLinkSettingsPayload } from './types';
+import { DEFAULT_MENU_ITEM, MenuItem } from './constants';
 import { useStores } from '../../../../../../../hooks/useStores';
+import { SecondaryNavItem } from '../../../../../../internal/SecondaryNav';
+import Spinner from '../../../../../../internal/Spinner';
+import { useStoreTheme } from '../../../hooks/useStoreTheme';
+import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
+import { useSaveAction } from '../../../hooks/useSaveAction';
 
 export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>({
-    activeMenuItem: ActiveMenuItem.theme,
+    activeMenuItem: MenuItem.theme,
     payload: undefined,
     setPayload: noop,
     selectedStore: undefined,
-    setActiveMenuItem: noop,
+    setSelectedMenuItem: noop,
     saveActionCalled: undefined,
     setIsValid: noop,
     getIsValid: () => false,
@@ -20,65 +25,158 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     setSelectedStore: noop,
     savedData: undefined,
     setSavedData: () => undefined,
+    menuItems: undefined,
+    isLoadingContent: true,
+    isSaveError: undefined,
+    isSaveSuccess: undefined,
+    isSaving: undefined,
+    onSave: noop,
+    setIsSaveError: noop,
+    setIsSaveSuccess: noop,
 });
 
-export const PayByLinkSettingsProvider = memo(({ children }: PropsWithChildren) => {
-    const [activeMenuItem, setActiveMenuItem] = useState<string>(DEFAULT_MENU_ITEM);
-    const [payload, setPayload] = useState<PayByLinkSettingsPayload>(undefined);
-    const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
-    const isValid = useRef(false);
-    const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
-    const { stores, selectedStore, setSelectedStore } = useStores();
+export const PayByLinkSettingsProvider = memo(
+    ({ children, selectedMenuItems, storeIds }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[] }>) => {
+        const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
+        const [loading, setLoading] = useState<boolean>(false);
+        const [activeMenuItem, setActiveMenuItem] = useState<PayByLinkSettingsItem>(
+            menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM
+        );
+        const [payload, setPayload] = useState<PayByLinkSettingsPayload>(undefined);
+        const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
+        const isValid = useRef(false);
+        const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
+        const { stores, selectedStore, setSelectedStore, isFetching: isFetchingStores, error: storesError } = useStores(storeIds);
+        const [isSaving, setIsSaving] = useState(false);
+        const [isSaveError, setIsSaveError] = useState(false);
+        const [isSaveSuccess, setIsSaveSuccess] = useState(false);
 
-    useEffect(() => {
-        if (!selectedStore) setSelectedStore(stores?.[0]?.id);
-    }, [stores, selectedStore, setSelectedStore]);
+        const getIsValid = useCallback(() => {
+            return isValid.current;
+        }, []);
 
-    const onPayloadChange = useCallback((payload: PayByLinkSettingsPayload) => {
-        if (payload) {
-            setPayload(payload);
-        }
-    }, []);
+        const { onSave } = useSaveAction(
+            setIsSaving,
+            setIsSaveError,
+            setIsSaveSuccess,
+            selectedStore,
+            payload,
+            activeMenuItem,
+            getIsValid,
+            setSaveActionCalled,
+            setSavedData,
+            setPayload
+        );
 
-    const onDataSave = useCallback(
-        (data: PayByLinkSettingsData) => {
-            setSavedData(data);
-        },
-        [setSavedData]
-    );
+        const [fetchThemeEnabled, setFetchThemeEnabled] = useState<boolean>(false);
+        const [fetchTermsAndConditionsEnabled, setFetchTermsAndConditionsEnabled] = useState<boolean>(false);
 
-    const setIsValid = useCallback((validity: boolean) => {
-        if (isValid.current !== validity) {
-            isValid.current = validity;
-        }
-    }, []);
+        useEffect(() => {
+            switch (activeMenuItem) {
+                case MenuItem.theme:
+                    setLoading(true);
+                    selectedStore && setFetchThemeEnabled(true);
+                    break;
+                case MenuItem.termsAndConditions:
+                    setLoading(true);
+                    selectedStore && setFetchTermsAndConditionsEnabled(true);
+                    break;
+            }
+        }, [activeMenuItem, selectedStore]);
 
-    const getIsValid = useCallback(() => {
-        return isValid.current;
-    }, []);
+        const onPayloadChange = useCallback(
+            (payload: PayByLinkSettingsPayload) => {
+                if (payload) {
+                    setPayload(payload);
+                }
+            },
+            [setPayload]
+        );
 
-    return (
-        <PayByLinkSettingsContext.Provider
-            value={{
-                setPayload: onPayloadChange,
-                payload,
-                activeMenuItem,
-                selectedStore,
-                setActiveMenuItem,
-                getIsValid,
-                setIsValid,
-                saveActionCalled: saveActionCalled,
-                setSaveActionCalled: setSaveActionCalled,
-                stores,
-                setSelectedStore,
-                savedData,
-                setSavedData: onDataSave,
-            }}
-        >
-            {!selectedStore || !activeMenuItem || !stores || stores?.length === 0 ? null : children}
-        </PayByLinkSettingsContext.Provider>
-    );
-});
+        const { theme, isFetching: loadingThemes } = useStoreTheme(selectedStore, fetchThemeEnabled, setFetchThemeEnabled, onPayloadChange);
+        const { data: termsAndConditions, isFetching: loadingTermsAndConditions } = useStoreTermsAndConditions(
+            selectedStore,
+            fetchTermsAndConditionsEnabled,
+            setFetchTermsAndConditionsEnabled,
+            onPayloadChange
+        );
+
+        const activeData = useMemo(() => {
+            switch (activeMenuItem) {
+                case MenuItem.theme:
+                    if (loadingThemes) return;
+                    return theme;
+                case MenuItem.termsAndConditions:
+                    if (loadingTermsAndConditions) return;
+                    return termsAndConditions;
+                default:
+                    return;
+            }
+        }, [activeMenuItem, theme, termsAndConditions, loadingThemes, loadingTermsAndConditions]);
+
+        useEffect(() => {
+            if (activeData) {
+                setLoading(false);
+            }
+            setSavedData(activeData);
+        }, [activeData, activeMenuItem]);
+
+        useEffect(() => {
+            if (!selectedStore) setSelectedStore(stores?.[0]?.id);
+        }, [stores, selectedStore, setSelectedStore]);
+
+        const onDataSave = useCallback(
+            (data: PayByLinkSettingsData) => {
+                setSavedData(data);
+            },
+            [setSavedData]
+        );
+
+        const setIsValid = useCallback((validity: boolean) => {
+            if (isValid.current !== validity) {
+                isValid.current = validity;
+            }
+        }, []);
+
+        const setSelectedMenuItem = useCallback((item: SecondaryNavItem<PayByLinkSettingsItem>) => {
+            setActiveMenuItem(item.value);
+        }, []);
+
+        const contentLoading = loading || loadingThemes || loadingTermsAndConditions;
+
+        return (
+            <PayByLinkSettingsContext.Provider
+                value={{
+                    isLoadingContent: contentLoading,
+                    setPayload: onPayloadChange,
+                    menuItems,
+                    payload,
+                    activeMenuItem,
+                    selectedStore,
+                    setSelectedMenuItem,
+                    getIsValid,
+                    setIsValid,
+                    saveActionCalled: saveActionCalled,
+                    setSaveActionCalled: setSaveActionCalled,
+                    stores,
+                    setSelectedStore,
+                    savedData,
+                    setSavedData: onDataSave,
+                    isSaveError,
+                    isSaveSuccess,
+                    isSaving,
+                    setIsSaveError,
+                    setIsSaveSuccess,
+                    onSave: onSave,
+                }}
+            >
+                {isFetchingStores && <Spinner />}
+                {storesError && <>Stores Error</>}
+                {!selectedStore || !activeMenuItem || !stores || stores?.length === 0 ? null : children}
+            </PayByLinkSettingsContext.Provider>
+        );
+    }
+);
 
 export const usePayByLinkSettingsContext = () => useContext(PayByLinkSettingsContext);
 export default usePayByLinkSettingsContext;
