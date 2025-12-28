@@ -225,15 +225,3 @@ export const STORE_THEME = {
             'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
     },
 };
-
-export const STORE_SETTINGS = {
-    STORE_NY_001: {},
-    STORE_LON_001: {
-        termsOfServiceUrl:
-            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcLzFGc1Z0alNLVnYzN3FpVTJVVkZ0LnN2ZyJ9:adyen:RAaShqweWtpB-wgUfoAAyM0i53H16yUEh3btcbNlZoI',
-    },
-    STORE_AMS_001: {
-        termsOfServiceUrl:
-            'https://cdn-assets-eu.frontify.com/s3/frontify-enterprise-files-eu/eyJwYXRoIjoiYWR5ZW5cL2ZpbGVcL2txY3BLSzRhR0djSFhIM3o4WXF0LnN2ZyJ9:adyen:Cv3X5-eZhQecs_MZFmyWHVpc9l1ipIvTGLUJusiOfDA',
-    },
-};

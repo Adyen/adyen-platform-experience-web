@@ -51,4 +51,8 @@
             margin-top: style.token(spacer-080);
         }
     }
+
+    &__requirements-link {
+        color: style.token(color-label-highlight);
+    }
 }
