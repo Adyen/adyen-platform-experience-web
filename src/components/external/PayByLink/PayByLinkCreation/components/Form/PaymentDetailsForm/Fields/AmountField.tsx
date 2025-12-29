@@ -6,9 +6,11 @@ import { CurrencyInput } from '../../../../../../../internal/FormFields/Currency
 import { VisibleField } from '../../../../../../../internal/FormWrappers/VisibleField';
 import FormField from '../../../../../../../internal/FormWrappers/FormField';
 import { Controller } from '../../../../../../../../hooks/form';
+import { FieldError } from '../../../../../../../internal/FormFields/FieldError/FieldError';
 
 const VALUE_FIELD_NAME = 'amount.value';
 const CURRENCY_FIELD_NAME = 'amount.currency';
+const MAX_AMOUNT = 10_000_000_000_000; // 10 billion
 
 export const AmountField = () => {
     const { i18n } = useCoreContext();
@@ -61,6 +63,7 @@ export const AmountField = () => {
                     }}
                     render={({ field, fieldState }) => {
                         const isInvalid = !!fieldState.error && fieldState.isTouched;
+                        const errorMessage = fieldState.error?.message;
                         return (
                             <>
                                 <CurrencyInput
@@ -73,8 +76,9 @@ export const AmountField = () => {
                                     name={VALUE_FIELD_NAME}
                                     amount={field.value ? Number(field.value) : undefined}
                                     onAmountChange={field.onInput}
+                                    maxValue={MAX_AMOUNT}
                                 />
-                                {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
+                                {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} />}
                             </>
                         );
                     }}

@@ -18,7 +18,11 @@ import { PaymentLinkTypeDTO } from '../../../../../../../types/api/models/payByL
 import type { TranslationKey } from '../../../../../../../translations';
 import './FormSummary.scss';
 
-export const FormSummary = () => {
+interface FormSummaryProps {
+    countryDatasetData?: { id: string; name: string }[];
+}
+
+export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
     const { getSummaryData, getValues, getDisplayValue } = useWizardFormContext<PBLFormValues>();
     const formValues = getSummaryData();
     const { i18n } = useCoreContext();
@@ -42,7 +46,7 @@ export const FormSummary = () => {
         const items: StructuredListItem[] | undefined = jointFields?.map(({ label, value, id, displayValue }) => ({
             key: (label || id) as TranslationKey,
             value: displayValue || value,
-            id: id,
+            id,
             render: item => {
                 switch (item.id) {
                     case 'linkValidity.quantity': {
@@ -84,7 +88,16 @@ export const FormSummary = () => {
             key: (label || id) as TranslationKey,
             value: displayValue || value,
             id,
-            render: () => displayValue || value,
+            render: item => {
+                switch (item.id) {
+                    case 'countryCode':
+                    case 'deliveryAddress.country':
+                    case 'billingAddress.country':
+                        return countryDatasetData?.find(countryData => countryData.id === item.value)?.name;
+                    default:
+                        return item.value;
+                }
+            },
         });
 
         const deliveryAddressItems = visibleFields?.filter(field => field.id?.startsWith('deliveryAddress.'))?.map(createListItem);

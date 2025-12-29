@@ -1,0 +1,13 @@
+@use '../../../../style' as style;
+
+.adyen-pe-field-error {
+    align-items: center;
+    color: style.token(color-label-critical);
+    display: flex;
+    font-size: style.token(text-body-font-size);
+    gap: style.token(spacer-010);
+
+    &--with-top-margin {
+        margin-top: style.token(spacer-020);
+    }
+}

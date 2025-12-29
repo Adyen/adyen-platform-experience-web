@@ -9,6 +9,27 @@ import { useConfigContext } from '../../../../core/ConfigContext';
 import { PaymentLinkCurrencyDTO } from '../../../../types';
 import { formatAmount, getCurrencyExponent } from '../../../../utils/currency/main';
 
+const PRIORITIZED_CURRENCY_CODES = ['EUR', 'GBP', 'USD'] as const;
+
+const sortCurrencyItems = <T extends { id: string; name: string }>(items: readonly T[]): T[] => {
+    const priorityIndexByCode = new Map<string, number>(PRIORITIZED_CURRENCY_CODES.map((code, index) => [code, index]));
+
+    return [...items].sort((a, b) => {
+        const aCode = a.id.toUpperCase();
+        const bCode = b.id.toUpperCase();
+        const aPriorityIndex = priorityIndexByCode.get(aCode);
+        const bPriorityIndex = priorityIndexByCode.get(bCode);
+
+        if (aPriorityIndex !== undefined || bPriorityIndex !== undefined) {
+            if (aPriorityIndex === undefined) return 1;
+            if (bPriorityIndex === undefined) return -1;
+            return aPriorityIndex - bPriorityIndex;
+        }
+
+        return aCode.localeCompare(bCode);
+    });
+};
+
 interface CurrencyInputProps {
     amount?: number;
     currency: string;
@@ -16,6 +37,7 @@ interface CurrencyInputProps {
     hideCurrencySelector?: boolean;
     interactionsDisabled?: boolean;
     isInvalid?: boolean;
+    maxValue?: number;
     name?: string;
     onAmountChange: (amount: number) => void;
     onCurrencyChange: (value: string) => void;
@@ -29,6 +51,7 @@ export const CurrencyInput = ({
     hideCurrencySelector,
     interactionsDisabled,
     isInvalid = false,
+    maxValue,
     name,
     onAmountChange,
     onCurrencyChange,
@@ -41,10 +64,12 @@ export const CurrencyInput = ({
 
     const computedNumberAmount = useCallback(
         (value: string) => {
+            const decimalSeparator = (1.1).toLocaleString(i18n.locale).match(/\d(.*?)\d/)?.[1] || '.';
+            const normalizedValue = decimalSeparator === '.' ? value : value.replace(decimalSeparator, '.');
             const exponent = getCurrencyExponent(currency);
-            return Math.trunc(+`${parseFloat(value)}e${exponent}`) || 0;
+            return Math.trunc(+`${parseFloat(normalizedValue)}e${exponent}`) || 0;
         },
-        [currency]
+        [currency, i18n.locale]
     );
 
     useEffect(() => {
@@ -75,6 +100,23 @@ export const CurrencyInput = ({
             }
         }
 
+        if (value.endsWith(decimalSeparator)) {
+            value = value.slice(0, -decimalSeparator.length);
+            evt.currentTarget.value = value;
+        }
+
+        if (typeof maxValue === 'number') {
+            const normalizedValue = decimalSeparator === '.' ? value : value.replace(decimalSeparator, '.');
+            const parsed = parseFloat(normalizedValue);
+
+            if (Number.isFinite(parsed) && parsed > maxValue) {
+                const exponent = getCurrencyExponent(currency);
+                const fixed = maxValue.toFixed(exponent);
+                value = decimalSeparator === '.' ? fixed : fixed.replace('.', decimalSeparator);
+                evt.currentTarget.value = value;
+            }
+        }
+
         setDisplayValue(value);
         onAmountChange(computedNumberAmount(value));
     };
@@ -88,13 +130,19 @@ export const CurrencyInput = ({
 
     const currencyDropdownItems = useMemo(() => {
         const currencies: PaymentLinkCurrencyDTO = currenciesQuery.data?.data ?? [];
-        return currencies.map(currency => {
+        const items = currencies.map(currency => {
             return {
                 id: currency,
                 name: currency,
             };
         });
+        return sortCurrencyItems(items);
     }, [currenciesQuery.data]);
+
+    const sortedCurrencyItems = useMemo(() => {
+        const items = currencyItems?.length ? currencyItems : currencyDropdownItems;
+        return sortCurrencyItems(items);
+    }, [currencyDropdownItems, currencyItems]);
 
     const inputIdentifier = useRef(uniqueId());
     const labelIdentifier = useRef(uniqueId());
@@ -107,12 +155,12 @@ export const CurrencyInput = ({
         return {
             onDropdownInput: onCurrencyChange,
             dropdown: {
-                items: currencyItems?.length ? currencyItems : currencyDropdownItems,
+                items: sortedCurrencyItems,
                 value: selectedCurrencyCode,
                 readonly: currenciesQuery.isFetching,
             },
         };
-    }, [hideCurrencySelector, currencyDropdownItems, currencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
+    }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
 
     return (
         <div className="adyen-pe-currency-input__container">

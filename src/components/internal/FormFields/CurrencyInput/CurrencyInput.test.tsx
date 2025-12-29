@@ -239,6 +239,44 @@ describe('CurrencyInput', () => {
             expect(mockOnAmountChange).toHaveBeenCalledWith(1050);
         });
 
+        test('should clamp input to maxValue when value exceeds it (major units)', () => {
+            mockGetCurrencyExponent.mockReturnValue(2);
+
+            render(
+                <CurrencyInput
+                    currency={TEST_CONSTANTS.CURRENCY_EUR}
+                    onAmountChange={mockOnAmountChange}
+                    onCurrencyChange={mockOnCurrencyChange}
+                    maxValue={100}
+                />
+            );
+
+            const input = screen.getByTestId('currency-input') as HTMLInputElement;
+            fireEvent.input(input, { target: { value: '1000' } });
+
+            expect(input.value).toBe('100.00');
+            expect(mockOnAmountChange).toHaveBeenCalledWith(10000);
+        });
+
+        test('should clamp input to maxValue while preserving currency exponent formatting', () => {
+            mockGetCurrencyExponent.mockReturnValue(2);
+
+            render(
+                <CurrencyInput
+                    currency={TEST_CONSTANTS.CURRENCY_EUR}
+                    onAmountChange={mockOnAmountChange}
+                    onCurrencyChange={mockOnCurrencyChange}
+                    maxValue={100}
+                />
+            );
+
+            const input = screen.getByTestId('currency-input') as HTMLInputElement;
+            fireEvent.input(input, { target: { value: '100.50' } });
+
+            expect(input.value).toBe('100.00');
+            expect(mockOnAmountChange).toHaveBeenCalledWith(10000);
+        });
+
         test('should call onAmountChange with zero for empty input', () => {
             render(
                 <CurrencyInput currency={TEST_CONSTANTS.CURRENCY_EUR} onAmountChange={mockOnAmountChange} onCurrencyChange={mockOnCurrencyChange} />

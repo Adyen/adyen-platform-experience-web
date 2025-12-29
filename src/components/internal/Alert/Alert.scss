@@ -59,6 +59,12 @@
         flex-direction: row;
         gap: style.token(spacer-040);
         margin-top: style.token(spacer-040);
+
+        button {
+            &:active {
+                background-color: transparent;
+            }
+        }
     }
 
     &--tip {

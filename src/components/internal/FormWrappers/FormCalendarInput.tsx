@@ -5,6 +5,7 @@ import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormConte
 import FormField from './FormField';
 import { CalendarInput } from '../FormFields/CalendarInput/CalendarInput';
 import { VisibleField } from './VisibleField';
+import { FieldError } from '../FormFields/FieldError/FieldError';
 
 interface FormCalendarInputProps<TFieldValues> {
     fieldName: FieldValues<TFieldValues>;
@@ -35,7 +36,7 @@ export function FormCalendarInput<TFieldValues>({ fieldName, label, timezone }: 
                                     isInvalid={!!fieldState.error && fieldState.isTouched}
                                     timezone={timezone}
                                 />
-                                <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
+                                {fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
                             </div>
                         );
                     }}
