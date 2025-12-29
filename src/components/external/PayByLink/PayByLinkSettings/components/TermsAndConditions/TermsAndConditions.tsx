@@ -178,6 +178,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                     className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
                     label={checkboxLabel}
                     onInput={onCheckboxInput}
+                    error={showNotCheckedRequirementsError}
                 />
                 {showNotCheckedRequirementsError && (
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
