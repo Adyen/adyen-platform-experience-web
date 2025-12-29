@@ -101,15 +101,25 @@ export const PayByLinkOverview = ({
     isFiltersLoading,
     filterParams,
     stores,
+    ...props
 }: ExternalUIComponentProps<PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; stores?: IStores; isFiltersLoading: boolean }>) => {
     const { i18n } = useCoreContext();
-
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payByLink');
     const [statusGroup, setStatusGroup] = useState<IPayByLinkStatusGroup>(DEFAULT_PAY_BY_LINK_STATUS_GROUP);
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IPayByLinkStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
+    const subContentProps = useMemo(
+        () => ({
+            ...(props.fieldsConfig ? { fieldsConfig: props.fieldsConfig } : {}),
+            ...(props.storeIds ? { storeIds: props.storeIds } : {}),
+            ...(props.onPaymentLinkCreated ? { onPaymentLinkCreated: props.onPaymentLinkCreated } : {}),
+            ...(props.onCreationDismiss ? { onCreationDismiss: props.onCreationDismiss } : {}),
+        }),
+        [props]
+    );
 
     const getPayByLinkListData = useCallback(
         async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: PaymentLinksPageRequestParams, signal?: AbortSignal) => {
@@ -396,7 +406,13 @@ export const PayByLinkOverview = ({
                     {...paginationProps}
                 />
             </PaymentLinkDetailsModal>
-            <PayByLinkOverviewModal modalType={modalType} isModalVisible={isModalVisible} onCloseModal={onCloseModal} storeIds={storeIds} />
+            <PayByLinkOverviewModal
+                subContentProps={subContentProps}
+                modalType={modalType}
+                isModalVisible={isModalVisible}
+                onCloseModal={onCloseModal}
+                storeIds={storeIds}
+            />
         </div>
     );
 };

@@ -187,6 +187,8 @@ export interface TransactionOverviewComponentProps
 
 export interface PayByLinkOverviewComponentProps
     extends _DataOverviewComponentProps,
+        PayByLinkCreationComponentProps,
+        PayByLinkSettingsComponentProps,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps

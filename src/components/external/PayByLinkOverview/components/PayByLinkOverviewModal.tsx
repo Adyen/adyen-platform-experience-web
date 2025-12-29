@@ -4,8 +4,8 @@ import { popoverUtil } from '../../../internal/Popover/utils/popoverUtil';
 import Modal from '../../../internal/Modal';
 import { PayByLinkOverviewModalType } from './types';
 import PayByLinkCreationContainer from '../../PayByLink/PayByLinkCreation/components/PayByLinkCreationContainer/PayByLinkCreationContainer';
-import { Core } from '../../../../core';
 import PayByLinkSettingsContainer from '../../PayByLink/PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
+import { PayByLinkCreationComponentProps, PayByLinkSettingsComponentProps } from '../../../types';
 
 export interface PayByLinkOverviewModalProps {
     isModalVisible: boolean;
@@ -13,9 +13,10 @@ export interface PayByLinkOverviewModalProps {
     onContactSupport?: () => void;
     modalType?: PayByLinkOverviewModalType;
     storeIds?: string[] | string;
+    subContentProps?: Partial<PayByLinkCreationComponentProps> & Partial<PayByLinkSettingsComponentProps>;
 }
 
-export const PayByLinkOverviewModal = ({ isModalVisible, onCloseModal, modalType, storeIds }: PayByLinkOverviewModalProps) => {
+export const PayByLinkOverviewModal = ({ subContentProps, isModalVisible, onCloseModal, modalType, storeIds }: PayByLinkOverviewModalProps) => {
     const { i18n } = useCoreContext();
 
     const onCloseCallback = useCallback(() => {
@@ -39,8 +40,8 @@ export const PayByLinkOverviewModal = ({ isModalVisible, onCloseModal, modalType
                     headerWithBorder={false}
                     size={'large'}
                 >
-                    {modalType === 'LinkCreation' ? <PayByLinkCreationContainer storeIds={undefined} /> : null}
-                    {modalType === 'Settings' ? <PayByLinkSettingsContainer /> : null}
+                    {modalType === 'LinkCreation' ? <PayByLinkCreationContainer {...subContentProps} /> : null}
+                    {modalType === 'Settings' ? <PayByLinkSettingsContainer {...subContentProps} /> : null}
                 </Modal>
             )}
         </div>
