@@ -48,6 +48,7 @@ describe('useStores', () => {
                     description: 'Main Store',
                 },
                 {
+                    storeId: 'STORE_002',
                     storeCode: 'STORE002',
                     description: 'Secondary Store',
                 },
@@ -57,6 +58,8 @@ describe('useStores', () => {
         mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
 
         const { result } = renderHook(() => useStores());
+
+        console.log(result.current.stores);
 
         expect(result.current.stores).toEqual([
             {
@@ -68,7 +71,7 @@ describe('useStores', () => {
             {
                 storeCode: 'STORE002',
                 description: 'Secondary Store',
-                id: '',
+                id: 'STORE_002',
                 name: 'STORE002',
             },
         ]);
