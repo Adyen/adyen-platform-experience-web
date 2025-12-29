@@ -11,12 +11,9 @@ function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayBy
     //TODO: Change loading filters case
     if (isFetching) return <Spinner />;
 
-    //TODO: Change error
-    if (!stores?.data || stores?.data?.length === 0) return <>Stores cannot be loaded</>;
-
     return (
         <>
-            <PayByLinkOverview {...props} filterParams={filters} stores={stores.data} isFiltersLoading={isFetching} />
+            <PayByLinkOverview {...props} filterParams={filters} stores={stores?.data} isFiltersLoading={isFetching} />
         </>
     );
 }
