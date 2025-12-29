@@ -15,6 +15,21 @@ import {
     getPaymentLinkItemsByStatusGroup,
     expirePaymentLink,
 } from '../mock-data';
+import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
+import { ErrorTypes } from '../../src/core/Http/utils';
+
+export const PAY_BY_LINK_ERRORS = {
+    // (Invalid ID)
+    INVALID_ID: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', undefined, '29_001', [
+        { name: 'paymentLinkId', value: 'PL...', message: 'Must be a valid payment link ID' },
+    ]),
+    // (Too Many Stores)
+    TOO_MANY_STORES: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', undefined, '29_001', [
+        { name: 'storeIds', value: '', message: 'Number of stores must be less or equal than 20' },
+    ]),
+    // (Invalid Terms URL)
+    INVALID_TERMS_URL: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', 'Internal error', '00_500'),
+};
 
 const mockEndpoints = endpoints('mock');
 const mockEndpointsPBL = endpoints('mock').payByLink;
@@ -25,6 +40,35 @@ const getStoreForRequestPathParams = (params: PathParams) => {
     const store = STORES.find(store => store.storeId === params.id);
     if (!store) throw HttpResponse.json({ error: 'Cannot find store' }, { status: 404 });
     return store;
+};
+
+const getErrorHandler = (error: any, status = 500) => {
+    return async () => {
+        await delay(300);
+        return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
+    };
+};
+
+export const PayByLinkOverviewMockedResponses = {
+    tooManyStores: {
+        handlers: [http.get(mockEndpointsPBL.paymentLinks, getErrorHandler(PAY_BY_LINK_ERRORS.TOO_MANY_STORES, 422))],
+    },
+    emptyList: {
+        handlers: [
+            http.get(mockEndpointsPBL.paymentLinks, async () => {
+                await delay(300);
+                return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
+            }),
+        ],
+    },
+    storesMisconfiguration: {
+        handlers: [
+            http.get(mockEndpoints.stores, async () => {
+                await delay(300);
+                return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
+            }),
+        ],
+    },
 };
 
 export const payByLinkMocks = [
@@ -243,6 +287,10 @@ export const payByLinkMocks = [
         // Pagination logic
         const cursorValue = +(cursor ?? 0);
         const limitValue = +(limit ?? defaultPaginationLimit);
+
+        if (paymentLinkId && /[^a-zA-Z0-9]/.test(paymentLinkId)) {
+            return HttpResponse.json({ ...PAY_BY_LINK_ERRORS.INVALID_ID, status: 422, detail: 'detail' }, { status: 422 });
+        }
 
         return HttpResponse.json({
             data: filteredLinks.slice(cursorValue, cursorValue + limitValue),
