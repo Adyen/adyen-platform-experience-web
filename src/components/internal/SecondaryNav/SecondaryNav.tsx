@@ -18,6 +18,7 @@ interface SecondaryNavProps<T> {
     renderContent: (activeMenu: string) => VNode<any>;
     renderHeader: () => VNode<any>;
     onContentVisibilityChange: (contentVisible: boolean) => void;
+    loading?: boolean;
 }
 
 export interface SecondaryNavItem<T extends string = string> {
@@ -25,12 +26,21 @@ export interface SecondaryNavItem<T extends string = string> {
     label: string;
 }
 
+const LoadingSkeleton = ({ rowNumber, className }: { rowNumber: number; className: string }) => (
+    <div className={cx('adyen-pe-secondary-nav__skeleton', className)}>
+        {[...Array(rowNumber)].map((_, index) => (
+            <div key={index} className="adyen-pe-secondary-nav__skeleton-item"></div>
+        ))}
+    </div>
+);
+
 export const SecondaryNav = <T extends SecondaryNavItem>({
     renderHeader,
     className,
     items,
     activeValue,
     onValueChange,
+    loading,
     onContentVisibilityChange,
     renderContent,
 }: SecondaryNavProps<T>) => {
@@ -52,6 +62,18 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
         setContentOpen(false);
         onContentVisibilityChange(false);
     }, [onContentVisibilityChange, setContentOpen]);
+
+    if (loading) {
+        return !isSmContainer ? (
+            <div className={'adyen-pe-secondary-nav__skeleton-container'}>
+                <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--aside'} />
+                <Divider variant="vertical" />
+                <LoadingSkeleton rowNumber={5} className={'adyen-pe-secondary-nav__skeleton--content'} />
+            </div>
+        ) : (
+            <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--content'} />
+        );
+    }
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className, { 'adyen-pe-secondary-nav--mobile': isSmContainer })}>

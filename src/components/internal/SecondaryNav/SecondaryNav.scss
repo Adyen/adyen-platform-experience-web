@@ -1,4 +1,5 @@
 @use '../../../style';
+@use '../../../style/skeleton' as skeleton;
 
 .adyen-pe-secondary-nav {
     display: flex;
@@ -16,6 +17,47 @@
 
         &--mobile {
             flex-direction: column;
+        }
+    }
+
+    &__skeleton {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        &--aside {
+            margin-top: style.token(spacer-080);
+            width: 20%;
+        }
+
+        &--content {
+            background-color: transparent;
+            border: 0;
+            border-radius: style.token(border-radius-m);
+            color: style.token(color-label-primary);
+            cursor: pointer;
+            display: flex;
+            font: inherit;
+            gap: style.token(spacer-070);
+            justify-content: space-between;
+            padding: style.token(spacer-070) style.token(spacer-060);
+            width: 100%;
+        }
+
+        &-container {
+            display: flex;
+            flex-direction: row;
+            gap: style.token(spacer-020);
+        }
+
+        &-item {
+            border-radius: style.token(border-radius-s);
+            display: block;
+            height: 20px;
+            width: 100%;
+
+            /* stylelint-disable-next-line order/order */
+            @include skeleton.adyen-pe-skeleton-animation();
         }
     }
 

@@ -6,11 +6,10 @@ import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/c
 import { useEffect, useState } from 'preact/hooks';
 import { ThemeForm } from './components/ThemeForm';
 import { isTermsAndConditionsData, isThemePayload } from './types';
-import DataOverviewDetailsSkeleton from '../../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 
 const PayByLinkThemeContainer = () => {
     const { i18n } = useCoreContext();
-    const { selectedStore, payload, setSavedData, savedData: theme, isLoadingContent } = usePayByLinkSettingsContext();
+    const { selectedStore, payload, setSavedData, savedData: theme } = usePayByLinkSettingsContext();
     const [initialPayload, setInitialPayload] = useState<FormData>();
 
     useEffect(() => {
@@ -18,8 +17,6 @@ const PayByLinkThemeContainer = () => {
             setInitialPayload(payload);
         }
     }, [payload, setSavedData, setInitialPayload]);
-
-    if (isLoadingContent) return <DataOverviewDetailsSkeleton skeletonRowNumber={6} />;
 
     if (!selectedStore || !theme || isTermsAndConditionsData(theme) || !initialPayload) return null;
 

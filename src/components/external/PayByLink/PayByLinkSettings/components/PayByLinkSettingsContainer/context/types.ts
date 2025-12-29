@@ -4,6 +4,7 @@ import { StoreSelectorItemParams } from '../../../../../../internal/StoreSelecto
 import { IPayByLinkTermsAndConditions } from '../../../../../../../types';
 import { SecondaryNavItem } from '../../../../../../internal/SecondaryNav';
 import { TranslationKey } from '../../../../../../../translations';
+import { AdyenErrorResponse } from '../../../../../../../core/Http/types';
 
 export type PayByLinkSettingsPayload = FormData | IPayByLinkTermsAndConditions | undefined;
 export type ThemeFormData = {
@@ -18,6 +19,8 @@ export type MenuItemType = { value: PayByLinkSettingsItem; label: string };
 
 export interface IPayByLinkSettingsContext {
     isLoadingContent: boolean;
+    isLoadingStores: boolean;
+    storesError: Error | AdyenErrorResponse | undefined;
     menuItems: MenuItemType[] | undefined;
     payload: PayByLinkSettingsPayload;
     activeMenuItem: PayByLinkSettingsItem | null;

@@ -6,7 +6,6 @@ import { IPayByLinkSettingsContext, MenuItemType, PayByLinkSettingsData, PayByLi
 import { DEFAULT_MENU_ITEM, MenuItem } from './constants';
 import { useStores } from '../../../../../../../hooks/useStores';
 import { SecondaryNavItem } from '../../../../../../internal/SecondaryNav';
-import Spinner from '../../../../../../internal/Spinner';
 import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
 import { useSaveAction } from '../../../hooks/useSaveAction';
@@ -34,6 +33,8 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     onSave: noop,
     setIsSaveError: noop,
     setIsSaveSuccess: noop,
+    isLoadingStores: false,
+    storesError: undefined,
 });
 
 export const PayByLinkSettingsProvider = memo(
@@ -52,7 +53,7 @@ export const PayByLinkSettingsProvider = memo(
         const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
         const isValid = useRef(false);
         const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
-        const { filteredStores, selectedStore, setSelectedStore, isFetching: isFetchingStores, error: storesError } = useStores(storeIds);
+        const { filteredStores, selectedStore, setSelectedStore, isFetching: isLoadingStores, error: storesError } = useStores(storeIds);
         const [isSaving, setIsSaving] = useState(false);
         const [isSaveError, setIsSaveError] = useState(false);
         const [isSaveSuccess, setIsSaveSuccess] = useState(false);
@@ -164,7 +165,6 @@ export const PayByLinkSettingsProvider = memo(
 
         const contentLoading = loading || loadingThemes || loadingTermsAndConditions;
 
-        //TODO: Add store error once it is merged
         return (
             <PayByLinkSettingsContext.Provider
                 value={{
@@ -189,11 +189,13 @@ export const PayByLinkSettingsProvider = memo(
                     setIsSaveError,
                     setIsSaveSuccess,
                     onSave: onSave,
+                    isLoadingStores,
+                    storesError,
                 }}
             >
-                {isFetchingStores && <Spinner />}
-                {storesError && <>Stores Error</>}
-                {!selectedStore || (!activeMenuItem && !isSmContainer) || !filteredStores || filteredStores?.length === 0 ? null : children}
+                {(!activeMenuItem && !isSmContainer) || (!isLoadingStores && !storesError && (!filteredStores || filteredStores?.length === 0))
+                    ? null
+                    : children}
             </PayByLinkSettingsContext.Provider>
         );
     }

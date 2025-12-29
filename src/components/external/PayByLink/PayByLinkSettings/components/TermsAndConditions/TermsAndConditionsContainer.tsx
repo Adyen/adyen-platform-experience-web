@@ -7,11 +7,10 @@ import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/c
 import { useState, useEffect } from 'preact/hooks';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
-import DataOverviewDetailsSkeleton from '../../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { selectedStore, setPayload, setSavedData, savedData: termsAndConditionsData, isLoadingContent } = usePayByLinkSettingsContext();
+    const { selectedStore, setPayload, setSavedData, savedData: termsAndConditionsData } = usePayByLinkSettingsContext();
     const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
@@ -19,8 +18,6 @@ const TermsAndConditionsContainer = () => {
             setInitialData(termsAndConditionsData);
         }
     }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
-
-    if (isLoadingContent) return <DataOverviewDetailsSkeleton skeletonRowNumber={6} />;
 
     if (!selectedStore || !termsAndConditionsData || !isTermsAndConditionsData(termsAndConditionsData) || !initialData) return null;
 
