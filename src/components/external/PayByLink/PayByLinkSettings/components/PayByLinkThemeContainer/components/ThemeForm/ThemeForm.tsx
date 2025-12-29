@@ -172,7 +172,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                 {logoOptionsList.map(logoType => {
                     const url = getLogoUrl(logoType);
                     return (
-                        <div key={logoType} className="adyen-pe-pay-by-link-settings__input-container">
+                        <div key={logoType} className={'adyen-pe-pay-by-link-settings__input-container '}>
                             {url ? (
                                 <LogoPreview disabled={!!isSaving} logoType={logoType} logoURL={url} onRemoveLogo={onRemoveLogoUrl} />
                             ) : (

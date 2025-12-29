@@ -4,6 +4,10 @@
     display: flex;
     flex-direction: row;
 
+    &--mobile {
+        flex-direction: column;
+    }
+
     &__container {
         display: flex;
         flex-direction: row;
@@ -30,7 +34,13 @@
         padding: 0;
     }
 
+    &--sidebar-mobile {
+        width: 100%;
+    }
+
     &__item {
+        align-items: flex-start;
+        align-self: stretch;
         background-color: transparent;
         border: 0;
         border-radius: style.token(border-radius-m);
@@ -38,8 +48,9 @@
         cursor: pointer;
         display: flex;
         font: inherit;
+        gap: style.token(spacer-070);
         justify-content: space-between;
-        padding: style.token(spacer-040) style.token(spacer-050);
+        padding: style.token(spacer-070) style.token(spacer-060);
         width: 100%;
 
         &-label {

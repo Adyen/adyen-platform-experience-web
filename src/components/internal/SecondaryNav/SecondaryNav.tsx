@@ -7,6 +7,8 @@ import { VNode } from 'preact';
 import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import Button from '../Button/Button';
+import Typography from '../Typography/Typography';
+import { TypographyVariant } from '../Typography/types';
 
 interface SecondaryNavProps<T> {
     className?: string;
@@ -52,9 +54,9 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     }, [onContentVisibilityChange, setContentOpen]);
 
     return (
-        <div className={cx('adyen-pe-secondary-nav', className)}>
+        <div className={cx('adyen-pe-secondary-nav', className, { 'adyen-pe-secondary-nav--mobile': isSmContainer })}>
             {isSmContainer && contentOpen && (
-                <div className={cx('adyen-pe-secondary-nav__close-content--mobile')}>
+                <div className={cx({ 'adyen-pe-secondary-nav__close-content--mobile': isSmContainer })}>
                     <Button onClick={handleDismiss} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
                         <Icon name="arrow-right" />
                     </Button>
@@ -71,7 +73,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
             )}
             <div className={cx('adyen-pe-secondary-nav__container', { 'adyen-pe-secondary-nav__container-mobile': isSmContainer })}>
                 {(!contentOpen || !isSmContainer) && (
-                    <aside className={cx('adyen-pe-secondary-nav--sidebar')}>
+                    <aside className={cx('adyen-pe-secondary-nav--sidebar', { 'adyen-pe-secondary-nav--sidebar-mobile': isSmContainer })}>
                         {renderHeader()}
                         <ul className="adyen-pe-secondary-nav__list">
                             {items.map(item => (
@@ -81,12 +83,17 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                                         className={cx('adyen-pe-secondary-nav__item', {
                                             'adyen-pe-secondary-nav__item--active': item.value === activeValue,
                                         })}
+                                        iconRight={isSmContainer ? <Icon name="chevron-right" /> : undefined}
                                         onClick={onClick.bind(null, item)}
                                     >
-                                        <p data-testid="typography" className="adyen-pe-secondary-nav__item-label">
+                                        <Typography
+                                            variant={TypographyVariant.BODY}
+                                            stronger
+                                            data-testid="typography"
+                                            className="adyen-pe-secondary-nav__item-label"
+                                        >
                                             {item.label}
-                                        </p>
-                                        {isSmContainer && <Icon name="chevron-right" />}
+                                        </Typography>
                                     </Button>
                                 </li>
                             ))}

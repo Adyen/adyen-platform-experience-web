@@ -69,7 +69,7 @@ const LogoInput = ({
     );
 
     return (
-        <div className="adyen-pe-pay-by-link-settings__input-container">
+        <>
             <label htmlFor={logoInputId} aria-labelledby={logoInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                     {i18n.get(LogoLabel[logoType])}
@@ -85,7 +85,7 @@ const LogoInput = ({
                 mapError={mapError}
             />
             <LogoRequirements logoType={logoType} />
-        </div>
+        </>
     );
 };
 

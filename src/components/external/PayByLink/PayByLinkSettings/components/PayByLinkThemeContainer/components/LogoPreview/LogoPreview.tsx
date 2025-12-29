@@ -27,7 +27,7 @@ const LogoPreview = ({
     }, [logoType, onRemoveLogo]);
 
     return (
-        <div className="adyen-pe-pay-by-link-settings__input-container adyen-pe-pay-by-link-theme-form__preview--conteiner">
+        <div className="adyen-pe-pay-by-link-theme-form__preview--conteiner">
             <label htmlFor={logoURLId} aria-labelledby={logoURLId}>
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                     {i18n.get(LogoLabel[logoType])}
