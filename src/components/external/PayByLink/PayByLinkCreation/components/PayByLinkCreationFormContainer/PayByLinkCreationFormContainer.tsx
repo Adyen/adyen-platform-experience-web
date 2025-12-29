@@ -167,6 +167,15 @@ export const PayByLinkCreationFormContainer = ({
         return !termsAndConditionsProvisioned || accountIsMisconfigured || displayConfigurationError;
     }, [accountIsMisconfigured, displayConfigurationError, termsAndConditionsProvisioned]);
 
+    const getSubmitErrorLabel = useCallback(
+        (error: any) => {
+            return i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong');
+        },
+        [i18n]
+    );
+
+    //i18n.get('common.actions.contactSupport.labels.reachOut')
+
     if (!isFirstLoadDone) {
         return (
             <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -258,7 +267,7 @@ export const PayByLinkCreationFormContainer = ({
                         {submitMutation.isError && (
                             <Alert
                                 type={AlertTypeOption.CRITICAL}
-                                title={i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong')}
+                                title={getSubmitErrorLabel(submitMutation.error)}
                                 description={
                                     onContactSupport ? (
                                         <div>

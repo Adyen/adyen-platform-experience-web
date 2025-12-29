@@ -88,6 +88,20 @@ export const SubmitNetworkError: ElementStory<typeof PayByLinkCreation> = {
     },
 };
 
+export const SubmitInvalidFieldError: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Error - Submit Invalid Field Error',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.submitInvalidFields,
+        },
+    },
+};
+
 export const ConfigurationError: ElementStory<typeof PayByLinkCreation> = {
     name: 'Error -Configuration Error',
     args: {

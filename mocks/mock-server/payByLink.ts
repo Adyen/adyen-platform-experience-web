@@ -20,15 +20,41 @@ import { ErrorTypes } from '../../src/core/Http/utils';
 
 export const PAY_BY_LINK_ERRORS = {
     // (Invalid ID)
-    INVALID_ID: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', undefined, '29_001', [
-        { name: 'paymentLinkId', value: 'PL...', message: 'Must be a valid payment link ID' },
-    ]),
+    INVALID_ID: new AdyenPlatformExperienceError(
+        ErrorTypes.ERROR,
+        '769ac4ce59f0f159ad672d38d3291e91',
+        undefined,
+        '29_001',
+        [{ name: 'paymentLinkId', value: 'PL...', message: 'Must be a valid payment link ID' }],
+        '422'
+    ),
     // (Too Many Stores)
-    TOO_MANY_STORES: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', undefined, '29_001', [
-        { name: 'storeIds', value: '', message: 'Number of stores must be less or equal than 20' },
-    ]),
+    TOO_MANY_STORES: new AdyenPlatformExperienceError(
+        ErrorTypes.ERROR,
+        '769ac4ce59f0f159ad672d38d3291e91',
+        undefined,
+        '29_001',
+        [{ name: 'storeIds', value: '', message: 'Number of stores must be less or equal than 20' }],
+        '422'
+    ),
     // (Invalid Terms URL)
-    INVALID_TERMS_URL: new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e91', 'Internal error', '00_500'),
+    INVALID_TERMS_URL: new AdyenPlatformExperienceError(
+        ErrorTypes.ERROR,
+        '769ac4ce59f0f159ad672d38d3291e91',
+        'Internal error',
+        '00_500',
+        undefined,
+        '500'
+    ),
+    // (Amount Too High)
+    INVALID_FIELDS: new AdyenPlatformExperienceError(
+        ErrorTypes.ERROR,
+        'c1687a5dab2d374ba9e1831aa88f3288',
+        'he request is missing required fields or contains invalid data.',
+        '29_001',
+        [{ name: 'amount', value: '', message: 'amount_too_high' }],
+        '422'
+    ),
 };
 
 const mockEndpoints = endpoints('mock');
@@ -84,7 +110,7 @@ export const PaymentLinkCreationMockedResponses = {
         handlers: [
             http.post(mockEndpoints.payByLink.paymentLinks, async () => {
                 await delay(300);
-                return HttpResponse.error();
+                return HttpResponse.json(PAY_BY_LINK_ERRORS.INVALID_FIELDS, { status: 422 });
             }),
         ],
     },
