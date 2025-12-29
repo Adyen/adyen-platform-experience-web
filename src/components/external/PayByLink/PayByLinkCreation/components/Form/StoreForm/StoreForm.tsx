@@ -9,9 +9,10 @@ import { useFetch } from '../../../../../../../hooks/useFetch';
 import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO } from '../../../../../../../types';
+import { StoreIds } from '../../../../types';
 
 interface StoreFormProps {
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     settingsData?: PayByLinkSettingsDTO;
     storesData?: PayByLinkStoreDTO[];
     selectItems: { id: string; name: string }[];

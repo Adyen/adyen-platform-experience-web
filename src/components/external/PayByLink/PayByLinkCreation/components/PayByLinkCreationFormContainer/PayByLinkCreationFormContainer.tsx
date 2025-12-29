@@ -18,12 +18,13 @@ import { scrollToFirstErrorField } from '../../utils';
 import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
+import { StoreIds } from '../../../types';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
 };
 
 const LoadingSkeleton = () => (

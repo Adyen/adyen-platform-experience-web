@@ -5,18 +5,27 @@ import Modal from '../../../internal/Modal';
 import { PayByLinkOverviewModalType } from './types';
 import PayByLinkCreationContainer from '../../PayByLink/PayByLinkCreation/components/PayByLinkCreationContainer/PayByLinkCreationContainer';
 import PayByLinkSettingsContainer from '../../PayByLink/PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
-import { PayByLinkCreationComponentProps, PayByLinkSettingsComponentProps } from '../../../types';
+import { PayByLinkOverviewComponentProps } from '../../../types';
+import { StoreIds } from '../../PayByLink/types';
 
 export interface PayByLinkOverviewModalProps {
     isModalVisible: boolean;
     onCloseModal: () => void;
     onContactSupport?: () => void;
     modalType?: PayByLinkOverviewModalType;
-    storeIds?: string[] | string;
-    subContentProps?: Partial<PayByLinkCreationComponentProps> & Partial<PayByLinkSettingsComponentProps>;
+    paymentLinkCreation: PayByLinkOverviewComponentProps['paymentLinkCreation'];
+    paymentLinkSettings: PayByLinkOverviewComponentProps['paymentLinkSettings'];
+    storeIds?: StoreIds;
 }
 
-export const PayByLinkOverviewModal = ({ subContentProps, isModalVisible, onCloseModal, modalType, storeIds }: PayByLinkOverviewModalProps) => {
+export const PayByLinkOverviewModal = ({
+    isModalVisible,
+    onCloseModal,
+    modalType,
+    paymentLinkCreation,
+    paymentLinkSettings,
+    storeIds,
+}: PayByLinkOverviewModalProps) => {
     const { i18n } = useCoreContext();
 
     const onCloseCallback = useCallback(() => {
@@ -40,8 +49,8 @@ export const PayByLinkOverviewModal = ({ subContentProps, isModalVisible, onClos
                     headerWithBorder={false}
                     size={'large'}
                 >
-                    {modalType === 'LinkCreation' ? <PayByLinkCreationContainer {...subContentProps} /> : null}
-                    {modalType === 'Settings' ? <PayByLinkSettingsContainer {...subContentProps} /> : null}
+                    {modalType === 'LinkCreation' ? <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} /> : null}
+                    {modalType === 'Settings' ? <PayByLinkSettingsContainer {...paymentLinkSettings} storeIds={storeIds} /> : null}
                 </Modal>
             )}
         </div>

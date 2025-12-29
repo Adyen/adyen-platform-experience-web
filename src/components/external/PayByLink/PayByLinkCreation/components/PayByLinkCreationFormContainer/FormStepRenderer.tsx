@@ -5,11 +5,12 @@ import { FormSummary } from '../Form/Summary/FormSummary';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
 import { Dispatch, SetStateAction } from 'preact/compat';
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO, PaymentLinkConfiguration, PayByLinkCountryDTO } from '../../../../../../types/api/models/payByLink';
+import { StoreIds } from '../../../types';
 
 type FormStepRendererProps = {
     currentFormStep: LinkCreationFormStep;
     settingsData?: PayByLinkSettingsDTO;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     storesData?: {
         data: PayByLinkStoreDTO[];
     };

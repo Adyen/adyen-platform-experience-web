@@ -10,6 +10,7 @@ import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 import { PBLFormValues } from './external/PayByLink/PayByLinkCreation/components/types';
+import { StoreIds } from './external/PayByLink/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -185,11 +186,15 @@ export interface TransactionOverviewComponentProps
         >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+type PayByLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds'>;
+
 export interface PayByLinkOverviewComponentProps
     extends _DataOverviewComponentProps,
-        PayByLinkCreationComponentProps,
-        PayByLinkSettingsComponentProps,
-        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
+    paymentLinkCreation?: PayByLinkOverviewSubComponentProps<PayByLinkCreationComponentProps>;
+    paymentLinkSettings?: PayByLinkOverviewSubComponentProps<PayByLinkSettingsComponentProps>;
+    storeIds?: StoreIds;
+}
 
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
@@ -211,7 +216,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
     fieldsConfig?: {
         data: DeepPartial<PBLFormValues>;
     };
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
     onCreationDismiss?: () => void;
 }
