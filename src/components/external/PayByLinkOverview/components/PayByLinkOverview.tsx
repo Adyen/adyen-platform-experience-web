@@ -34,9 +34,9 @@ import { containerQueries, useResponsiveContainer } from '../../../../hooks/useR
 import Select from '../../../internal/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
-import { IStore, IStores } from '../../../../types/api/models/stores';
 import * as RangePreset from '../../../internal/Calendar/calendar/timerange/presets';
 import { PaymentLinkDetailsModal } from './PaymentLinkDetailsModal/PaymentLinkDetailsModal';
+import { StoreData } from './types';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -93,7 +93,9 @@ export const PayByLinkOverview = ({
     isFiltersLoading,
     filterParams,
     stores,
-}: ExternalUIComponentProps<PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; stores?: IStores; isFiltersLoading: boolean }>) => {
+}: ExternalUIComponentProps<
+    PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; stores?: StoreData[]; isFiltersLoading: boolean }
+>) => {
     const { i18n } = useCoreContext();
 
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
@@ -174,7 +176,7 @@ export const PayByLinkOverview = ({
     const storesTypesFilter = useMultiSelectionFilter({
         mapFilterOptionName: useCallback((store: string) => store, []),
         filterParam: PAY_BY_LINK_STORES_FILTER_PARAM,
-        filterValues: stores && stores?.length > 0 ? stores.map((store: IStore) => store.storeCode!) : undefined,
+        filterValues: stores && stores?.length > 0 ? stores.map((store: StoreData) => store.storeCode!) : undefined,
         defaultFilters,
         updateFilters,
         filters,

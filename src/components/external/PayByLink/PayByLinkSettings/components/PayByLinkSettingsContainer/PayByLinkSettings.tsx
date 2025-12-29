@@ -12,7 +12,7 @@ import { useCallback, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 
 const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, 'storeIds'>) => {
-    const { activeMenuItem, setSelectedMenuItem, selectedStore, setSelectedStore, stores, menuItems, isLoadingContent } =
+    const { activeMenuItem, setSelectedMenuItem, selectedStore, setSelectedStore, filteredStores, menuItems, isLoadingContent } =
         usePayByLinkSettingsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [contentVisible, setContentVisible] = useState(!isSmContainer);
@@ -34,7 +34,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                     <div className={SIDEBAR_CONTAINER_CLASS_NAME}>
                         <SecondaryNav<MenuItemType>
                             renderHeader={() => (
-                                <StoreSelector stores={stores} selectedStoreId={selectedStore} setSelectedStoreId={setSelectedStore} />
+                                <StoreSelector stores={filteredStores} selectedStoreId={selectedStore} setSelectedStoreId={setSelectedStore} />
                             )}
                             className={SECONDARY_NAV_CLASS_NAME}
                             items={menuItems}

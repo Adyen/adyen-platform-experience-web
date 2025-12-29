@@ -22,7 +22,7 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     setIsValid: noop,
     getIsValid: () => false,
     setSaveActionCalled: noop,
-    stores: undefined,
+    filteredStores: undefined,
     setSelectedStore: noop,
     savedData: undefined,
     setSavedData: () => undefined,
@@ -52,7 +52,7 @@ export const PayByLinkSettingsProvider = memo(
         const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
         const isValid = useRef(false);
         const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
-        const { stores, selectedStore, setSelectedStore, isFetching: isFetchingStores, error: storesError } = useStores(storeIds);
+        const { filteredStores, selectedStore, setSelectedStore, isFetching: isFetchingStores, error: storesError } = useStores(storeIds);
         const [isSaving, setIsSaving] = useState(false);
         const [isSaveError, setIsSaveError] = useState(false);
         const [isSaveSuccess, setIsSaveSuccess] = useState(false);
@@ -142,8 +142,8 @@ export const PayByLinkSettingsProvider = memo(
         }, [activeData, activeMenuItem]);
 
         useEffect(() => {
-            if (!selectedStore) setSelectedStore(stores?.[0]?.id);
-        }, [stores, selectedStore, setSelectedStore]);
+            if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
+        }, [filteredStores, selectedStore, setSelectedStore]);
 
         const onDataSave = useCallback(
             (data: PayByLinkSettingsData) => {
@@ -164,6 +164,7 @@ export const PayByLinkSettingsProvider = memo(
 
         const contentLoading = loading || loadingThemes || loadingTermsAndConditions;
 
+        //TODO: Add store error once it is merged
         return (
             <PayByLinkSettingsContext.Provider
                 value={{
@@ -178,7 +179,7 @@ export const PayByLinkSettingsProvider = memo(
                     setIsValid,
                     saveActionCalled: saveActionCalled,
                     setSaveActionCalled: setSaveActionCalled,
-                    stores,
+                    filteredStores,
                     setSelectedStore,
                     savedData,
                     setSavedData: onDataSave,
@@ -192,7 +193,7 @@ export const PayByLinkSettingsProvider = memo(
             >
                 {isFetchingStores && <Spinner />}
                 {storesError && <>Stores Error</>}
-                {!selectedStore || (!activeMenuItem && !isSmContainer) || !stores || stores?.length === 0 ? null : children}
+                {!selectedStore || (!activeMenuItem && !isSmContainer) || !filteredStores || filteredStores?.length === 0 ? null : children}
             </PayByLinkSettingsContext.Provider>
         );
     }

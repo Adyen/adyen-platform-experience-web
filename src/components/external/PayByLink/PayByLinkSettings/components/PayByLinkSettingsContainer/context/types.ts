@@ -28,7 +28,7 @@ export interface IPayByLinkSettingsContext {
     setIsValid: (validity: boolean) => void;
     getIsValid: () => boolean;
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>;
-    stores: StoreSelectorItemParams[] | undefined;
+    filteredStores: StoreSelectorItemParams[] | undefined;
     setSelectedStore: Dispatch<StateUpdater<string | undefined>>;
     setSavedData: (data: PayByLinkSettingsData) => void;
     savedData: PayByLinkSettingsData;

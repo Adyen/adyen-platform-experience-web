@@ -20,7 +20,7 @@ export const useStores = (storeIds?: string | string[]) => {
         )
     );
 
-    const stores = useMemo(
+    const filteredStores = useMemo(
         () =>
             data?.data
                 ?.filter(store => {
@@ -36,11 +36,22 @@ export const useStores = (storeIds?: string | string[]) => {
         [data, storeIds]
     );
 
-    useEffect(() => {
-        if (!selectedStore && stores && stores?.length > 0) {
-            setSelectedStore(stores?.[0]?.id);
-        }
-    }, [stores, selectedStore]);
+    const allStores = useMemo(
+        () =>
+            data?.data?.map(store => ({
+                id: store.storeId || '',
+                name: store.storeCode || '',
+                storeCode: store.storeCode || '',
+                description: store.description || '',
+            })),
+        [data]
+    );
 
-    return { stores, selectedStore, setSelectedStore, isFetching, error };
+    useEffect(() => {
+        if (!selectedStore && filteredStores && filteredStores?.length > 0) {
+            setSelectedStore(filteredStores?.[0]?.id);
+        }
+    }, [filteredStores, selectedStore]);
+
+    return { filteredStores, selectedStore, setSelectedStore, isFetching, error, allStores };
 };

@@ -59,7 +59,7 @@ describe('useStores', () => {
 
         const { result } = renderHook(() => useStores());
 
-        expect(result.current.stores).toEqual([
+        expect(result.current.filteredStores).toEqual([
             {
                 storeCode: 'STORE001',
                 description: 'Main Store',
@@ -114,7 +114,8 @@ describe('useStores', () => {
 
         const { result } = renderHook(() => useStores());
 
-        expect(result.current.stores).toBeUndefined();
+        expect(result.current.filteredStores).toBeUndefined();
+        expect(result.current.allStores).toBeUndefined();
         expect(result.current.selectedStore).toBeUndefined();
     });
 
@@ -123,7 +124,129 @@ describe('useStores', () => {
 
         const { result } = renderHook(() => useStores());
 
-        expect(result.current.stores).toBeUndefined();
+        expect(result.current.filteredStores).toBeUndefined();
+        expect(result.current.allStores).toBeUndefined();
         expect(result.current.selectedStore).toBeUndefined();
+    });
+
+    test('should filter the data based on storeIds when multiple storeIds sent', () => {
+        const mockStoreData = {
+            data: [
+                {
+                    storeCode: 'STORE001',
+                    storeId: 'STORE_001',
+                    description: 'Main Store',
+                },
+                {
+                    storeId: 'STORE_002',
+                    storeCode: 'STORE002',
+                    description: 'Secondary Store',
+                },
+                {
+                    storeId: 'STORE_003',
+                    storeCode: 'STORE003',
+                    description: 'Third Store',
+                },
+            ],
+        };
+
+        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
+
+        const storeIds = ['STORE_001', 'STORE_003'];
+
+        const { result } = renderHook(() => useStores(storeIds));
+
+        expect(result.current.filteredStores).toEqual([
+            {
+                storeCode: 'STORE001',
+                description: 'Main Store',
+                id: 'STORE_001',
+                name: 'STORE001',
+            },
+            {
+                storeCode: 'STORE003',
+                description: 'Third Store',
+                id: 'STORE_003',
+                name: 'STORE003',
+            },
+        ]);
+
+        expect(result.current.allStores).toEqual([
+            {
+                storeCode: 'STORE001',
+                description: 'Main Store',
+                id: 'STORE_001',
+                name: 'STORE001',
+            },
+            {
+                storeCode: 'STORE002',
+                description: 'Secondary Store',
+                id: 'STORE_002',
+                name: 'STORE002',
+            },
+            {
+                storeCode: 'STORE003',
+                description: 'Third Store',
+                id: 'STORE_003',
+                name: 'STORE003',
+            },
+        ]);
+    });
+    test('should filter the data based on storeIds for a single store id', () => {
+        const mockStoreData = {
+            data: [
+                {
+                    storeCode: 'STORE001',
+                    storeId: 'STORE_001',
+                    description: 'Main Store',
+                },
+                {
+                    storeId: 'STORE_002',
+                    storeCode: 'STORE002',
+                    description: 'Secondary Store',
+                },
+                {
+                    storeId: 'STORE_003',
+                    storeCode: 'STORE003',
+                    description: 'Third Store',
+                },
+            ],
+        };
+
+        mockUseFetch.mockReturnValue({ data: mockStoreData, isFetching: false, refetch: vi.fn() });
+
+        const storeIds = 'STORE_002';
+
+        const { result } = renderHook(() => useStores(storeIds));
+
+        expect(result.current.filteredStores).toEqual([
+            {
+                storeCode: 'STORE002',
+                description: 'Secondary Store',
+                id: 'STORE_002',
+                name: 'STORE002',
+            },
+        ]);
+
+        expect(result.current.allStores).toEqual([
+            {
+                storeCode: 'STORE001',
+                description: 'Main Store',
+                id: 'STORE_001',
+                name: 'STORE001',
+            },
+            {
+                storeCode: 'STORE002',
+                description: 'Secondary Store',
+                id: 'STORE_002',
+                name: 'STORE002',
+            },
+            {
+                storeCode: 'STORE003',
+                description: 'Third Store',
+                id: 'STORE_003',
+                name: 'STORE003',
+            },
+        ]);
     });
 });
