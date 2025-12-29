@@ -3,7 +3,7 @@ import PayByLinkThemeContainer from '../../../PayByLinkThemeContainer/PayByLinkT
 import { MenuItem } from '../../context/constants';
 
 type PayByLinkSettingsContentProps = {
-    activeMenuItem: string;
+    activeMenuItem: string | null;
 };
 
 const PayByLinkSettingsContent = ({ activeMenuItem }: PayByLinkSettingsContentProps) => {

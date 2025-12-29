@@ -15,7 +15,6 @@ import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
 import Alert from '../../../../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../../../../internal/Alert/types';
-import { noop } from '../../../../../../../../utils';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaveSuccess, isSaveError, setIsSaveError, setIsSaveSuccess, isSaving } =
@@ -140,46 +139,49 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     );
 
     return (
-        <div className="adyen-pe-pay-by-link-theme-form">
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__brand-input">
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('payByLink.settings.theme.brandName.input.label')}
-                    </Typography>
-                </label>
-                <InputText
-                    type="text"
-                    lang={i18n.locale}
-                    uniqueId={brandInputId}
-                    value={brandName}
-                    onInput={onBrandNameChange}
-                    placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
-                />
-                {showMissingBrandName && (
-                    <div className="adyen-pe-pay-by-link-theme-form__error">
-                        <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
-                        <Typography
-                            className={'adyen-pe-pay-by-link-theme-form__error-text'}
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.BODY}
-                        >
-                            {i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing')}
+        <div className="adyen-pe-pay-by-link-theme-form-container">
+            <div className="adyen-pe-pay-by-link-theme-form">
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__brand-input">
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                            {i18n.get('payByLink.settings.theme.brandName.input.label')}
                         </Typography>
-                    </div>
-                )}
+                    </label>
+                    <InputText
+                        type="text"
+                        disabled={!!isSaving}
+                        lang={i18n.locale}
+                        uniqueId={brandInputId}
+                        value={brandName}
+                        onInput={onBrandNameChange}
+                        placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
+                    />
+                    {showMissingBrandName && (
+                        <div className="adyen-pe-pay-by-link-theme-form__error">
+                            <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
+                            <Typography
+                                className={'adyen-pe-pay-by-link-theme-form__error-text'}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.BODY}
+                            >
+                                {i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing')}
+                            </Typography>
+                        </div>
+                    )}
+                </div>
+                {logoOptionsList.map(logoType => {
+                    const url = getLogoUrl(logoType);
+                    return (
+                        <div key={logoType} className="adyen-pe-pay-by-link-settings__input-container">
+                            {url ? (
+                                <LogoPreview disabled={!!isSaving} logoType={logoType} logoURL={url} onRemoveLogo={onRemoveLogoUrl} />
+                            ) : (
+                                <LogoInput disabled={!!isSaving} logoType={logoType} onFileInputChange={onLogoChange} />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
-            {logoOptionsList.map(logoType => {
-                const url = getLogoUrl(logoType);
-                return (
-                    <div key={logoType} className="adyen-pe-pay-by-link-settings__input-container">
-                        {url ? (
-                            <LogoPreview logoType={logoType} logoURL={url} onRemoveLogo={onRemoveLogoUrl} />
-                        ) : (
-                            <LogoInput logoType={logoType} onFileInputChange={onLogoChange} />
-                        )}
-                    </div>
-                );
-            })}
             {isSaveSuccess && (
                 <Alert
                     type={AlertTypeOption.SUCCESS}

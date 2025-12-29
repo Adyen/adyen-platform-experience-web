@@ -3,8 +3,23 @@
 .adyen-pe-secondary-nav {
     display: flex;
     flex-direction: row;
-    gap: style.token(spacer-090);
-    width: 100%;
+
+    &__container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+        width: 100%;
+
+        &--mobile {
+            flex-direction: column;
+        }
+    }
+
+    &__close-content--mobile {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
     &__list {
         display: flex;
@@ -21,7 +36,9 @@
         border-radius: style.token(border-radius-m);
         color: style.token(color-label-primary);
         cursor: pointer;
+        display: flex;
         font: inherit;
+        justify-content: space-between;
         padding: style.token(spacer-040) style.token(spacer-050);
         width: 100%;
 

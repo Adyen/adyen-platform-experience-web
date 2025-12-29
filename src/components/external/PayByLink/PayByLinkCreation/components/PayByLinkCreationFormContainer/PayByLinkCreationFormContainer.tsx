@@ -18,6 +18,7 @@ import { scrollToFirstErrorField } from '../../utils';
 import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
+import PayByLinkSettingsContainer from '../../../PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
@@ -63,9 +64,11 @@ export const PayByLinkCreationFormContainer = ({
         createPBLPaymentLink,
         isDataLoading,
         isFirstLoadDone,
+        selectedStore,
     } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
+    const [showTermsAndConditions, setShowTermsAndConditions] = useState<boolean>(false);
 
     const handleNext = useCallback(
         async (index: number) => {
@@ -159,6 +162,16 @@ export const PayByLinkCreationFormContainer = ({
         );
     }
 
+    if (showTermsAndConditions) {
+        return (
+            <PayByLinkSettingsContainer
+                storeIds={selectedStore}
+                settingsItems={['termsAndConditions']}
+                navigateBack={() => setShowTermsAndConditions(false)}
+            />
+        );
+    }
+
     return (
         <div className="adyen-pe-pay-by-link-creation-form__component" ref={containerRef}>
             <div className="adyen-pe-pay-by-link-creation-form__header">
@@ -188,6 +201,7 @@ export const PayByLinkCreationFormContainer = ({
                     >
                         <div>
                             <FormStepRenderer
+                                setShowTermsAndConditions={setShowTermsAndConditions}
                                 currentFormStep={currentFormStep}
                                 settingsData={settingsData}
                                 storeIds={storeIds}

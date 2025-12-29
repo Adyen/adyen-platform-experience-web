@@ -10,6 +10,7 @@ import Spinner from '../../../../../../internal/Spinner';
 import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
 import { useSaveAction } from '../../../hooks/useSaveAction';
+import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
 
 export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>({
     activeMenuItem: MenuItem.theme,
@@ -39,9 +40,14 @@ export const PayByLinkSettingsProvider = memo(
     ({ children, selectedMenuItems, storeIds }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[] }>) => {
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
-        const [activeMenuItem, setActiveMenuItem] = useState<PayByLinkSettingsItem>(
-            menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM
-        );
+        const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+
+        const menuItemPreSelect = useMemo(() => {
+            if (isSmContainer) return null;
+            return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
+        }, [menuItems, isSmContainer]);
+
+        const [activeMenuItem, setActiveMenuItem] = useState<PayByLinkSettingsItem | null>(null);
         const [payload, setPayload] = useState<PayByLinkSettingsPayload>(undefined);
         const [savedData, setSavedData] = useState<PayByLinkSettingsData>(undefined);
         const isValid = useRef(false);
@@ -50,6 +56,10 @@ export const PayByLinkSettingsProvider = memo(
         const [isSaving, setIsSaving] = useState(false);
         const [isSaveError, setIsSaveError] = useState(false);
         const [isSaveSuccess, setIsSaveSuccess] = useState(false);
+
+        useEffect(() => {
+            setActiveMenuItem(menuItemPreSelect);
+        }, [menuItemPreSelect]);
 
         const getIsValid = useCallback(() => {
             return isValid.current;
@@ -71,7 +81,17 @@ export const PayByLinkSettingsProvider = memo(
         const [fetchThemeEnabled, setFetchThemeEnabled] = useState<boolean>(false);
         const [fetchTermsAndConditionsEnabled, setFetchTermsAndConditionsEnabled] = useState<boolean>(false);
 
+        const resetState = useCallback(() => {
+            setIsSaving(false);
+            setIsSaveError(false);
+            setIsSaveSuccess(false);
+            setSaveActionCalled(false);
+            setSavedData(undefined);
+            setPayload(undefined);
+        }, []);
+
         useEffect(() => {
+            resetState();
             switch (activeMenuItem) {
                 case MenuItem.theme:
                     setLoading(true);
@@ -82,7 +102,7 @@ export const PayByLinkSettingsProvider = memo(
                     selectedStore && setFetchTermsAndConditionsEnabled(true);
                     break;
             }
-        }, [activeMenuItem, selectedStore]);
+        }, [activeMenuItem, selectedStore, resetState]);
 
         const onPayloadChange = useCallback(
             (payload: PayByLinkSettingsPayload) => {
@@ -172,7 +192,7 @@ export const PayByLinkSettingsProvider = memo(
             >
                 {isFetchingStores && <Spinner />}
                 {storesError && <>Stores Error</>}
-                {!selectedStore || !activeMenuItem || !stores || stores?.length === 0 ? null : children}
+                {!selectedStore || (!activeMenuItem && !isSmContainer) || !stores || stores?.length === 0 ? null : children}
             </PayByLinkSettingsContext.Provider>
         );
     }

@@ -4,14 +4,18 @@ import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import { useCallback, useState } from 'preact/hooks';
 import { VNode } from 'preact';
+import { ButtonVariant } from '../Button/types';
+import Icon from '../Icon';
+import Button from '../Button/Button';
 
 interface SecondaryNavProps<T> {
     className?: string;
     items: T[];
-    activeValue: string;
+    activeValue: string | null;
     onValueChange: (value: T) => void;
     renderContent: (activeMenu: string) => VNode<any>;
     renderHeader: () => VNode<any>;
+    onContentVisibilityChange: (contentVisible: boolean) => void;
 }
 
 export interface SecondaryNavItem<T extends string = string> {
@@ -25,6 +29,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     items,
     activeValue,
     onValueChange,
+    onContentVisibilityChange,
     renderContent,
 }: SecondaryNavProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -33,33 +38,64 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     const onClick = useCallback(
         (item: T) => {
             onValueChange(item);
-            isSmContainer && setContentOpen(true);
+            if (isSmContainer) {
+                onContentVisibilityChange(true);
+                setContentOpen(true);
+            }
         },
-        [isSmContainer, onValueChange]
+        [isSmContainer, onValueChange, onContentVisibilityChange, setContentOpen]
     );
+
+    const handleDismiss = useCallback(() => {
+        setContentOpen(false);
+        onContentVisibilityChange(false);
+    }, [onContentVisibilityChange, setContentOpen]);
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className)}>
-            <aside>
-                {renderHeader()}
-                <ul className="adyen-pe-secondary-nav__list">
-                    {items.map(item => (
-                        <li key={item.label} className="adyen-pe-secondary-nav__list-item">
-                            <button
-                                aria-selected={item.value === activeValue}
-                                className={cx('adyen-pe-secondary-nav__item', { 'adyen-pe-secondary-nav__item--active': item.value === activeValue })}
-                                onClick={onClick.bind(null, item)}
-                            >
-                                <p data-testid="typography" className="adyen-pe-secondary-nav__item-label">
-                                    {item.label}
-                                </p>
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </aside>
-            {!isSmContainer && <Divider variant="vertical" />}
-            {contentOpen && renderContent(activeValue)}
+            {isSmContainer && contentOpen && (
+                <div className={cx('adyen-pe-secondary-nav__close-content--mobile')}>
+                    <Button onClick={handleDismiss} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
+                        <Icon name="arrow-right" />
+                    </Button>
+                    <Button
+                        onClick={handleDismiss}
+                        variant={ButtonVariant.TERTIARY}
+                        iconButton
+                        classNameModifiers={['circle']}
+                        className={`adyen-pe-modal__dismiss-button`}
+                    >
+                        <Icon name="cross" />
+                    </Button>
+                </div>
+            )}
+            <div className={cx('adyen-pe-secondary-nav__container', { 'adyen-pe-secondary-nav__container-mobile': isSmContainer })}>
+                {(!contentOpen || !isSmContainer) && (
+                    <aside className={cx('adyen-pe-secondary-nav--sidebar')}>
+                        {renderHeader()}
+                        <ul className="adyen-pe-secondary-nav__list">
+                            {items.map(item => (
+                                <li key={item.label} className="adyen-pe-secondary-nav__list-item">
+                                    <Button
+                                        aria-selected={item.value === activeValue}
+                                        className={cx('adyen-pe-secondary-nav__item', {
+                                            'adyen-pe-secondary-nav__item--active': item.value === activeValue,
+                                        })}
+                                        onClick={onClick.bind(null, item)}
+                                    >
+                                        <p data-testid="typography" className="adyen-pe-secondary-nav__item-label">
+                                            {item.label}
+                                        </p>
+                                        {isSmContainer && <Icon name="chevron-right" />}
+                                    </Button>
+                                </li>
+                            ))}
+                        </ul>
+                    </aside>
+                )}
+                {!isSmContainer && <Divider variant="vertical" />}
+                {contentOpen && activeValue && renderContent(activeValue)}
+            </div>
         </div>
     );
 };

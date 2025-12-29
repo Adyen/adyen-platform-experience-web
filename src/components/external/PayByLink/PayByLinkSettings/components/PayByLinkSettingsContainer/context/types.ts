@@ -20,7 +20,7 @@ export interface IPayByLinkSettingsContext {
     isLoadingContent: boolean;
     menuItems: MenuItemType[] | undefined;
     payload: PayByLinkSettingsPayload;
-    activeMenuItem: PayByLinkSettingsItem;
+    activeMenuItem: PayByLinkSettingsItem | null;
     setPayload: (payload: PayByLinkSettingsPayload) => void;
     saveActionCalled: boolean | undefined;
     setSelectedMenuItem: (item: SecondaryNavItem<PayByLinkSettingsItem>) => void;

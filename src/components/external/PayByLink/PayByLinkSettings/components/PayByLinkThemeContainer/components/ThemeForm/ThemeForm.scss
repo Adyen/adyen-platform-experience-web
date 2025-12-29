@@ -1,7 +1,21 @@
 @use '../../../../../../../../style';
 
 .adyen-pe-pay-by-link-theme-form {
-    width: 100%;
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    gap: var(--spacing-padding-margin-gap-spacer-070, 16px);
+    padding: var(--spacing-padding-margin-gap-spacer-000, 0);
+
+    &-container {
+        align-items: flex-start;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
 
     &__brand-input {
         display: block;

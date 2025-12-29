@@ -1,17 +1,21 @@
-import { _UIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
+import { _UIComponentProps, type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import './PayByLinkSettingsContainer.scss';
 import { PayByLinkSettingsProvider } from './context/context';
-import PayByLinkWrapper from './PayByLinkSettings';
+import PayByLinkSettings from './PayByLinkSettings';
 import { PayByLinkSettingsItem } from './context/types';
 import { useMemo } from 'preact/hooks';
 import { MENU_ITEMS } from './context/constants';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { ButtonVariant } from '../../../../../internal/Button/types';
+import Icon from '../../../../../internal/Icon';
+import Button from '../../../../../internal/Button/Button';
 
 const PayByLinkSettingsContainer = ({
     settingsItems,
     storeIds,
+    navigateBack,
     ...props
-}: _UIComponentProps<PayByLinkSettingsComponentProps> & { settingsItems?: PayByLinkSettingsItem[] }) => {
+}: ExternalUIComponentProps<PayByLinkSettingsComponentProps> & { settingsItems?: PayByLinkSettingsItem[]; navigateBack?: () => void }) => {
     const { i18n } = useCoreContext();
 
     const filteredMenuItems = useMemo(
@@ -28,7 +32,12 @@ const PayByLinkSettingsContainer = ({
 
     return (
         <PayByLinkSettingsProvider selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
-            <PayByLinkWrapper {...props} />
+            {navigateBack && (
+                <Button onClick={navigateBack} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
+                    <Icon name="arrow-right" />
+                </Button>
+            )}
+            <PayByLinkSettings {...props} />
         </PayByLinkSettingsProvider>
     );
 };

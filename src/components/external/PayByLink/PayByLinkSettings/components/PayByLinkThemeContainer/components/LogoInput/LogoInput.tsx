@@ -24,10 +24,12 @@ const getImageDimensionLimitation = (logoType: LogoTypes) => {
     }
 };
 
-const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTypes, files: File[]) => void }> = ({
+const LogoInput = ({
+    disabled,
     logoType,
     onFileInputChange,
 }: {
+    disabled: boolean;
     logoType: LogoTypes;
     onFileInputChange: (logoType: LogoTypes, files: File[]) => void;
 }) => {
@@ -74,6 +76,7 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
                 </Typography>
             </label>
             <FileInput
+                disabled={disabled}
                 maxDimensions={dimensions}
                 maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
                 allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}

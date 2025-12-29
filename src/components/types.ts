@@ -215,7 +215,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
 }
 
 export interface PayByLinkSettingsComponentProps extends UIElementProps {
-    storeIds: string[] | string;
+    storeIds?: string[] | string;
 }
 
 export const enum FilterParam {

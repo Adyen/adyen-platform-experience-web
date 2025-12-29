@@ -8,15 +8,27 @@ import { usePayByLinkSettingsContext } from './context/context';
 import PayByLinkSettingsContent from './components/PayByLinkSettingsContent/PayByLinkSettingsContent';
 import SaveAction from './components/SaveAction';
 import { MenuItemType } from './context/types';
+import { useCallback, useState } from 'preact/hooks';
+import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 
-const PayByLinkSettings = ({ ...props }: Omit<_UIComponentProps<PayByLinkSettingsComponentProps>, 'storeIds'>) => {
-    const { activeMenuItem, setSelectedMenuItem, selectedStore, setSelectedStore, stores, menuItems } = usePayByLinkSettingsContext();
+const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, 'storeIds'>) => {
+    const { activeMenuItem, setSelectedMenuItem, selectedStore, setSelectedStore, stores, menuItems, isLoadingContent } =
+        usePayByLinkSettingsContext();
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const [contentVisible, setContentVisible] = useState(!isSmContainer);
 
-    if (!activeMenuItem || !selectedStore || !menuItems || menuItems.length === 0) return null;
+    const onContentVisibilityChange = useCallback(
+        (contentVisible: boolean) => {
+            setContentVisible(contentVisible);
+        },
+        [setContentVisible]
+    );
+
+    if ((!activeMenuItem && !isSmContainer) || !selectedStore || !menuItems || menuItems.length === 0) return null;
 
     return (
         <div className={CONTAINER_CLASS_NAME}>
-            <Header hideTitle={props.hideTitle} titleKey="payByLink.settings.title" />
+            {(!isSmContainer || !contentVisible) && <Header hideTitle={props.hideTitle} titleKey="payByLink.settings.title" />}
             <div className={CONTENT_CONTAINER_CLASS_NAME}>
                 {menuItems.length > 1 ? (
                     <div className={SIDEBAR_CONTAINER_CLASS_NAME}>
@@ -28,6 +40,7 @@ const PayByLinkSettings = ({ ...props }: Omit<_UIComponentProps<PayByLinkSetting
                             items={menuItems}
                             activeValue={activeMenuItem}
                             onValueChange={setSelectedMenuItem}
+                            onContentVisibilityChange={onContentVisibilityChange}
                             renderContent={(activeMenuItem: string) => <PayByLinkSettingsContent activeMenuItem={activeMenuItem} />}
                         />
                     </div>
@@ -35,7 +48,7 @@ const PayByLinkSettings = ({ ...props }: Omit<_UIComponentProps<PayByLinkSetting
                     <PayByLinkSettingsContent activeMenuItem={activeMenuItem} />
                 )}
             </div>
-            <SaveAction />
+            {contentVisible && !isLoadingContent && <SaveAction />}
         </div>
     );
 };
