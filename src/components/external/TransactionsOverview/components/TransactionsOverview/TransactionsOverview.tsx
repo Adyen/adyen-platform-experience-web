@@ -1,18 +1,20 @@
 import cx from 'classnames';
-import { useEffect, useState } from 'preact/hooks';
-import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useTransactionsList from '../../hooks/useTransactionsList';
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
-import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { classes, INITIAL_FILTERS } from '../../constants';
-import { Header } from '../../../../internal/Header';
-import { IBalanceAccountBase } from '../../../../../types';
+import useAccountBalances from '../../../../../hooks/useAccountBalances';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import TransactionsOverviewList from './TransactionsOverviewList';
+import TransactionsOverviewInsights from './TransactionsOverviewInsights';
 import TransactionsFilters from '../TransactionFilters/TransactionFilters';
-import TransactionTotals from '../TransactionTotals/TransactionTotals';
-import TransactionsList from '../TransactionsList/TransactionsList';
-import { Balances } from '../Balances/Balances';
+import TransactionsExport from '../TransactionsExport/TransactionsExport';
+import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
+import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
+import { classes, INITIAL_FILTERS, TRANSACTIONS_VIEW_TABS } from '../../constants';
+import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
+import { TransactionOverviewProps, TransactionsView } from '../../types';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { compareTransactionsFilters } from '../utils';
+import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
 
 export const TransactionsOverview = ({
@@ -26,25 +28,24 @@ export const TransactionsOverview = ({
     onContactSupport,
     hideTitle,
     dataCustomization,
-}: ExternalUIComponentProps<
-    TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
->) => {
-    const [filters, setFilters] = useState(INITIAL_FILTERS);
+}: TransactionOverviewProps) => {
+    const cachedFilters = useRef(INITIAL_FILTERS);
     const filterBarState = useFilterBarState();
-    const userEvents = useAnalyticsContext();
 
-    useEffect(() => {
-        userEvents.addEvent?.('Landed on page', {
-            category: 'PIE components',
-            subCategory: 'Transactions overview',
-        });
-    }, [userEvents]);
+    const [filters, setFilters] = useState(cachedFilters.current);
+    const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
+    const [insightsCurrency, setInsightsCurrency] = useState<string>();
 
     const { balanceAccount } = filters;
     const { isMobileContainer } = filterBarState;
+    const { i18n } = useCoreContext();
 
-    const canFetchTransactions = !!balanceAccount?.id;
-    const canFetchTransactionsTotals = !!balanceAccount?.id;
+    const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
+
+    const canFetchTransactions = useMemo(
+        () => isTransactionsView && !!balanceAccount?.id && compareTransactionsFilters(filters, cachedFilters.current),
+        [isTransactionsView, balanceAccount, filters]
+    );
 
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
@@ -59,70 +60,76 @@ export const TransactionsOverview = ({
 
     const transactionsTotalsResult = useTransactionsTotals({
         currencies: accountBalancesResult.currencies,
-        fetchEnabled: canFetchTransactionsTotals,
+        fetchEnabled: !!balanceAccount?.id,
         loadingBalances: accountBalancesResult.isWaiting,
         filters,
     });
 
-    const { error, fetching, fields, records, updateLimit, hasCustomColumn, ...paginationProps } = transactionsListResult;
+    const exportButton = useMemo(
+        () =>
+            isTransactionsView ? (
+                <TransactionsExport disabled={transactionsListResult.records.length < 1 || transactionsListResult.fetching} filters={filters} />
+            ) : null,
+        [filters, isTransactionsView, transactionsListResult.fetching, transactionsListResult.records]
+    );
+
+    const viewSwitcher = useMemo(
+        () =>
+            TRANSACTIONS_VIEW_TABS.length > 1 ? (
+                <SegmentedControl
+                    aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
+                    activeItem={activeView}
+                    items={TRANSACTIONS_VIEW_TABS}
+                    onChange={({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id)}
+                />
+            ) : null,
+        [activeView, i18n]
+    );
+
+    useEffect(() => {
+        if (canFetchTransactions) {
+            cachedFilters.current = filters;
+        }
+    }, [canFetchTransactions, filters]);
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="transactions.overview.title">
                 <FilterBarMobileSwitch {...filterBarState} />
+                {!isMobileContainer && <>{viewSwitcher}</>}
             </Header>
 
-            <TransactionsFilters
-                {...filterBarState}
-                availableCurrencies={accountBalancesResult.currencies}
-                balanceAccounts={balanceAccounts}
-                eventCategory="Transaction component"
-                onChange={setFilters}
-            />
+            {isMobileContainer && <>{viewSwitcher}</>}
 
-            <>
-                {/*<Balances*/}
-                {/*    availableCurrencies={availableCurrencies}*/}
-                {/*    currency={activeCurrency}*/}
-                {/*    onCurrencyChange={onCurrencyChange}*/}
-                {/*    balancesLookup={balancesLookup}*/}
-                {/*/>*/}
-
-                <div className={classes.summary}>
-                    <div className={classes.summaryItem}>
-                        <TransactionTotals
-                            balanceAccount={balanceAccount}
-                            loadingTotals={transactionsTotalsResult.isWaiting}
-                            totals={transactionsTotalsResult.totals}
-                        />
-                    </div>
-                    <div className={classes.summaryItem}>
-                        <Balances
-                            balanceAccount={balanceAccount}
-                            balances={accountBalancesResult.balances}
-                            balancesEmpty={accountBalancesResult.isEmpty}
-                            loadingBalances={accountBalancesResult.isWaiting}
-                        />
-                    </div>
-                </div>
-
-                <TransactionsList
+            <div role="toolbar" className={classes.toolbar}>
+                <TransactionsFilters
+                    {...filterBarState}
                     availableCurrencies={accountBalancesResult.currencies}
+                    balanceAccounts={balanceAccounts}
+                    isTransactionsView={isTransactionsView}
+                    setInsightsCurrency={setInsightsCurrency}
+                    onChange={setFilters}
+                />
+                {/* [TODO]: Mobile responsiveness for export button */}
+                {!isMobileContainer && <>{exportButton}</>}
+            </div>
+
+            {isTransactionsView ? (
+                <TransactionsOverviewList
+                    accountBalancesResult={accountBalancesResult}
                     balanceAccount={balanceAccount}
+                    balanceAccounts={balanceAccounts}
                     dataCustomization={dataCustomization}
-                    hasMultipleCurrencies={accountBalancesResult.isMultiCurrency}
-                    loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}
-                    loadingTransactions={transactionsListResult.fetching}
+                    isLoadingBalanceAccount={isLoadingBalanceAccount}
                     onContactSupport={onContactSupport}
-                    onLimitSelection={transactionsListResult.updateLimit}
                     onRecordSelection={onRecordSelection}
                     showDetails={showDetails}
-                    transactionsError={transactionsListResult.error}
-                    transactionsFields={transactionsListResult.fields}
-                    transactions={transactionsListResult.records}
-                    {...paginationProps}
+                    transactionsListResult={transactionsListResult}
+                    transactionsTotalsResult={transactionsTotalsResult}
                 />
-            </>
+            ) : (
+                <TransactionsOverviewInsights currency={insightsCurrency} transactionsTotalsResult={transactionsTotalsResult} />
+            )}
         </div>
     );
 };

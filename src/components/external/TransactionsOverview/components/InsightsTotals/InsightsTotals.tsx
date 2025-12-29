@@ -40,7 +40,7 @@ const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals }: I
 
                             <div className={classes.breakdownList}>
                                 {breakdownListArray.map((_, index) => (
-                                    <span className={className} />
+                                    <span className={className} key={`breakdown-${index}`} />
                                 ))}
                             </div>
                         </div>

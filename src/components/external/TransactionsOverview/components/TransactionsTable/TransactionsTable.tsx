@@ -73,7 +73,7 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                     : `${i18n.get(FIELDS_KEYS['grossAmount'])} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                 position: 'right',
                 flex: isSmAndUpContainer ? 1.5 : undefined,
-                visible: isMdAndUpContainer, // [TODO]: Determine whether to show this on mobile instead of netAmount
+                visible: isMdAndUpContainer,
             },
             currency: { visible: isMdAndUpContainer && hasMultipleCurrencies },
             transactionType: { visible: isMdAndUpContainer },

@@ -5,7 +5,6 @@ import { CommitAction } from '../../../../../hooks/useCommitAction';
 import { TextFilterProps } from '../../../../internal/FilterBar/filters/TextFilter/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { FilterEditModalRenderProps } from '../../../../internal/FilterBar/filters/BaseFilter/types';
-import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import TextFilter from '../../../../internal/FilterBar/filters/TextFilter';
@@ -14,13 +13,6 @@ import InputBase from '../../../../internal/FormFields/InputBase';
 import './TransactionPspReferenceFilter.scss';
 
 const BASE_CLASS = 'adyen-pe-psp-reference-filter';
-const FROM_DATE = new Date('2025-03-01T00:00:00.000Z');
-
-const FROM_DATE_FORMAT_OPTIONS = {
-    year: 'numeric',
-    month: 'long',
-    day: undefined,
-} as const;
 
 const classes = {
     root: BASE_CLASS,
@@ -31,13 +23,14 @@ const classes = {
 
 export interface TransactionPspReferenceFilterProps {
     eventCategory?: string;
+    eventSubCategory?: string;
     onChange?: (value?: string) => void;
     value?: string;
 }
 
-const TransactionPspReferenceFilter = ({ eventCategory, onChange, value }: TransactionPspReferenceFilterProps) => {
+const TransactionPspReferenceFilter = ({ eventCategory, eventSubCategory, onChange, value }: TransactionPspReferenceFilterProps) => {
     const { i18n } = useCoreContext();
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'PSP reference filter' });
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: 'PSP reference filter' });
     const [pendingResetAction, setPendingResetAction] = useState(false);
 
     const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
@@ -84,18 +77,12 @@ TransactionPspReferenceFilter.EditModal = ({
     value,
 }: FilterEditModalRenderProps<TextFilterProps>) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
     const [currentValue, setCurrentValue] = useState(value);
 
     const firstInputElementRef = useRef<HTMLInputElement | null>(null);
     const inputId = useMemo(uniqueId, []);
     const labelId = useMemo(uniqueId, []);
 
-    const fromDate = useMemo(() => dateFormat(FROM_DATE, FROM_DATE_FORMAT_OPTIONS), [dateFormat]);
-    const fromDateInfo = useMemo(
-        () => i18n.get('transactions.overview.filters.types.paymentPspReference.fromDateInfo', { values: { fromDate } }),
-        [i18n]
-    );
     const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
     const placeholder = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.placeholder'), [i18n]);
 
@@ -155,9 +142,6 @@ TransactionPspReferenceFilter.EditModal = ({
                     onInput={handleInput}
                 />
             </div>
-            <Typography className={classes.info} el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                {fromDateInfo}
-            </Typography>
         </div>
     );
 };

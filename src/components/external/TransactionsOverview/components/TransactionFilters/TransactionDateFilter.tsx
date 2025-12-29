@@ -16,11 +16,12 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
     eventCategory?: string;
+    eventSubCategory?: string;
     setCreatedDate: (createdDate: RangeTimestamps) => void;
     timezone?: string;
 }
 
-const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
+const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
     const { i18n } = useCoreContext();
 
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
@@ -49,7 +50,7 @@ const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, tim
         } as const;
     }, [createdDate]);
 
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'Date filter' });
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: 'Date filter' });
 
     const onFilterChange = useCallback<DateFilterProps['onChange']>(
         (params = EMPTY_OBJECT) => {
