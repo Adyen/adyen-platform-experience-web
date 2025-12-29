@@ -3,7 +3,7 @@ import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 
-export const useStores = (storeIds?: string | string[]) => {
+export const useStores = (storeIds?: string | string[], preselect = true) => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
     const { getPayByLinkStores } = useConfigContext().endpoints;
 
@@ -48,10 +48,10 @@ export const useStores = (storeIds?: string | string[]) => {
     );
 
     useEffect(() => {
-        if (!selectedStore && filteredStores && filteredStores?.length > 0) {
+        if (!selectedStore && filteredStores && filteredStores?.length > 0 && preselect) {
             setSelectedStore(filteredStores?.[0]?.id);
         }
-    }, [filteredStores, selectedStore]);
+    }, [filteredStores, selectedStore, preselect]);
 
     return { filteredStores, selectedStore, setSelectedStore, isFetching, error, allStores };
 };
