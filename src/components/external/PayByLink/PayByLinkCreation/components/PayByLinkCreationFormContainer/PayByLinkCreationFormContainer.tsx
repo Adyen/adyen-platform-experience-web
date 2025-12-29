@@ -23,6 +23,8 @@ import Alert from '../../../../../internal/Alert/Alert';
 import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { useInvalidFieldsConfig } from '../../hooks/useInvalidFieldsConfig';
 import { AdyenErrorResponse } from '../../../../../../core/Http/types';
+import { Translation } from '../../../../../internal/Translation';
+import CopyText from '../../../../../internal/CopyText/CopyText';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
@@ -293,7 +295,8 @@ export const PayByLinkCreationFormContainer = ({
                                 type={AlertTypeOption.CRITICAL}
                                 title={getSubmitErrorLabel(submitMutation.error)}
                                 description={(() => {
-                                    const mappedErrors = getMappedInvalidFields(submitMutation.error);
+                                    const submitError = submitMutation.error as AdyenErrorResponse;
+                                    const mappedErrors = getMappedInvalidFields(submitError);
                                     const hasInvalidFields = mappedErrors.length > 0;
 
                                     return (
@@ -308,9 +311,21 @@ export const PayByLinkCreationFormContainer = ({
                                                 </ul>
                                             )}
                                             {onContactSupport && (
-                                                <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
-                                                    {i18n.get('common.actions.contactSupport.labels.reachOut')}
-                                                </Button>
+                                                <div className="adyen-pe-pay-by-link-creation-form__contact-support">
+                                                    <Translation
+                                                        translationKey="payByLink.linkCreation.form.error.submit.contactSupport"
+                                                        fills={{
+                                                            contactSupport: (
+                                                                <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                                                    {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                                                </Button>
+                                                            ),
+                                                            errorCode: (
+                                                                <CopyText stronger textToCopy={submitError?.requestId || submitError?.errorCode} />
+                                                            ),
+                                                        }}
+                                                    />
+                                                </div>
                                             )}
                                         </div>
                                     );

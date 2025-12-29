@@ -1,6 +1,19 @@
 {
     "fields": {
-        "amount": "payByLink.linkCreation.fields.amount.label"
+        "amount": "payByLink.linkCreation.fields.amount.label",
+        "payByLink.linkCreation.fields.shopperReference.label": "Shopper reference",
+        "payByLink.linkCreation.fields.store.label": "Store",
+        "payByLink.linkCreation.fields.shopperEmail.label": "Shopper email",
+        "payByLink.linkCreation.fields.shopperName.label": "Shopper name",
+        "payByLink.linkCreation.fields.shopperPhone.label": "Shopper phone",
+        "payByLink.linkCreation.fields.validity.label": "Validity",
+        "payByLink.linkCreation.fields.language.label": "Language",
+        "payByLink.linkCreation.fields.linkType.label": "Link type",
+        "payByLink.linkCreation.fields.merchantReference.label": "Merchant Reference",
+        "payByLink.linkCreation.fields.description.label": "Description",
+        "payByLink.linkCreation.fields.country.label": "Country/Region",
+        "payByLink.linkCreation.fields.deliverAt.label": "Delivery date",
+        "payByLink.linkCreation.fields.billingAddress.label": "Billing address"
     },
     "messages": {
         "amount_too_high": "payByLink.linkCreation.errors.invalidFields.reason.amountTooHigh"

@@ -765,6 +765,7 @@
     "payByLink.linkCreation.fields.validity.supportText": "Available time window for payment.",
     "payByLink.linkCreation.form.alert.invalidFields": "We cannot create a payment link because these fields are invalid:",
     "payByLink.linkCreation.form.alert.somethingWentWrong": "Something went wrong. Please try again, or contact support if you continue to have problems.",
+    "payByLink.linkCreation.form.error.submit.contactSupport": "%{contactSupport} and share error code: %{errorCode}",
     "payByLink.linkCreation.form.linkTypes.open": "Open",
     "payByLink.linkCreation.form.linkTypes.singleUse": "Single use",
     "payByLink.linkCreation.form.steps.back": "Back",
