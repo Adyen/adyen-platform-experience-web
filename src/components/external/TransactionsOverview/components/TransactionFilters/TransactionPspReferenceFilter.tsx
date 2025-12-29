@@ -91,7 +91,7 @@ TransactionPspReferenceFilter.EditModal = ({
         const selectionEnd = inputElement.selectionEnd;
         const value = inputElement.value
             .replace(/[^a-z\d]/gi, '')
-            .slice(0, 32)
+            .slice(0, 16)
             .toUpperCase();
 
         inputElement.value = value;
