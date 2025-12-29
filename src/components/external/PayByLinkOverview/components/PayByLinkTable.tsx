@@ -69,7 +69,7 @@ const FIELDS_KEYS = {
     storeCode: 'payByLink.overview.list.fields.store',
 } as const satisfies Record<(typeof PAY_BY_LINK_TABLE_FIELDS)[number], TranslationKey>;
 
-const errorMessage = 'payByLink.overview.errors.couldNotLoadLinks' as const;
+const ERROR_MESSAGE_KEY = 'payByLink.overview.errors.couldNotLoadLinks' as const;
 
 export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     error,
@@ -162,7 +162,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                     getImageAsset={getImageAsset}
                     error={noStoresError || error}
                     onContactSupport={onContactSupport}
-                    errorMessage={errorMessage}
+                    errorMessage={ERROR_MESSAGE_KEY}
                 />
             );
         },
