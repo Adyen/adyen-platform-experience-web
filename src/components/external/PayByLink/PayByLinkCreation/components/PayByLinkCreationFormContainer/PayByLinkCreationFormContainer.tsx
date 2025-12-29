@@ -28,14 +28,15 @@ type PayByLinkCreationFormContainerProps = {
 
 const LoadingSkeleton = () => (
     <div className="adyen-pe-pay-by-link-creation-form__skeleton">
-        {[...Array(4)].map((_, index) => (
+        <div className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--large" />
+        {[...Array(3)].map((_, index) => (
             <>
                 <div
-                    key={index}
+                    key={`${index}-small`}
                     className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--small"
                 />
                 <div
-                    key={index}
+                    key={`${index}-large`}
                     className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--large"
                 />
             </>
