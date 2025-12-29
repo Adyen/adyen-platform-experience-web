@@ -27,3 +27,4 @@ export type IStore = Schema<components, 'PayByLinkStoreDTO'>;
 
 export type IPaymentLinkDetails = Schema<components, 'PaymentLinkDetails'>;
 export type IPaymentLinkActivity = Schema<components, 'PaymentLinkActivity'>;
+export type IShopperAddress = Schema<components, 'address'>;

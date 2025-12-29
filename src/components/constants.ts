@@ -1,1 +1,2 @@
 export const CAPITAL_REPAYMENT_FREQUENCY = 30;
+export const REDACTED_DATA_MARKER = '***REDACTED***';

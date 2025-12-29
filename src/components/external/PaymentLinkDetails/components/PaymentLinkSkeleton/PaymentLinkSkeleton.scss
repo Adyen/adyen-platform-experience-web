@@ -1,0 +1,82 @@
+@use '../../../../../style';
+@use '../../../../../style/skeleton';
+
+.adyen-pe-payment-link-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__summary-container {
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        padding: style.token(spacer-060);
+    }
+
+    &__status {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 22px;
+        width: 60px;
+    }
+
+    &__amount {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 34px;
+        width: 180px;
+    }
+
+    &__expiration-date {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 390px;
+    }
+
+    &__tabs-container {
+        padding: 0 style.token(spacer-080) style.token(spacer-070) style.token(spacer-080);
+    }
+
+    &__tab-labels-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+    }
+
+    &__tab-label {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 26px;
+        width: 120px;
+    }
+
+    &__fields-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        padding-top: style.token(spacer-080);
+    }
+
+    &__field-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-060);
+    }
+
+    &__field-label {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 180px;
+    }
+
+    &__field-value {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 300px;
+    }
+}
