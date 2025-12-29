@@ -2,7 +2,7 @@ import { memo } from 'preact/compat';
 import { IAmount } from '../../../../../types';
 import { isNullish } from '../../../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
-import { TransactionDataProps } from '../../types';
+import { TransactionDetails } from '../../types';
 import { TranslationKey } from '../../../../../translations';
 import { TX_DATA_LABEL, TX_DATA_LIST } from '../../constants';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -22,7 +22,7 @@ const paymentAmountKeys = {
 const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 
 export interface PaymentDetailsSummaryProps {
-    transaction: NonNullable<TransactionDataProps['transaction']>;
+    transaction: TransactionDetails;
 }
 
 const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {

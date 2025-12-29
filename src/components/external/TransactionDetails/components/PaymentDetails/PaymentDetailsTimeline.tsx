@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { uniqueId } from '../../../../../utils';
-import { TransactionDataProps } from '../../types';
+import { TransactionDetails } from '../../types';
 import { TX_TIMELINE_LABEL, TX_TIMELINE_VALUE } from '../../constants';
 import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '../../../../utils/translation/getters';
 import { StructuredListItem, StructuredListProps } from '../../../../internal/StructuredList/types';
@@ -14,11 +14,11 @@ import StructuredList from '../../../../internal/StructuredList';
 import Timeline from '../../../../internal/Timeline/Timeline';
 
 export interface PaymentDetailsTimelineProps {
-    transaction: NonNullable<TransactionDataProps['transaction']>;
+    transaction: TransactionDetails;
 }
 
 interface PaymentDetailsTimelineItemProps {
-    event: NonNullable<PaymentDetailsTimelineProps['transaction']['events']>[number];
+    event: NonNullable<TransactionDetails['events']>[number];
     defaultTimestamp: TimelineTimestamp;
 }
 
