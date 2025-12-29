@@ -11,8 +11,6 @@ import {
     INSTALLMENTS,
     PAY_BY_LINK_SETTINGS,
     STORE_THEME,
-    STORE_SETTINGS,
-    getPaymentLinksByStatusGroup,
     getPaymentLinkDetails,
     getPaymentLinkItemsByStatusGroup,
     expirePaymentLink,
@@ -39,7 +37,7 @@ const networkError = false;
 const defaultPaginationLimit = 10;
 
 const getStoreForRequestPathParams = (params: PathParams) => {
-    const store = STORES.find(store => store.storeCode === params.id);
+    const store = STORES.find(store => store.storeId === params.id);
     if (!store) throw HttpResponse.json({ error: 'Cannot find store' }, { status: 404 });
     return store;
 };
@@ -223,7 +221,7 @@ export const payByLinkMocks = [
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
 
-        return HttpResponse.json(STORE_THEME[store.storeCode as keyof typeof STORE_THEME]);
+        return HttpResponse.json(STORE_THEME[store.storeId as keyof typeof STORE_THEME]);
     }),
 
     // POST /paybylink/themes/{storeId}
@@ -234,17 +232,6 @@ export const payByLinkMocks = [
         }
 
         return HttpResponse.json(null, { status: 204 });
-    }),
-
-    // GET /paybylink/settings/{storeId}
-    http.get(mockEndpointsPBL.settings, async ({ params }) => {
-        const store = getStoreForRequestPathParams(params);
-        await delay();
-        if (networkError) {
-            return HttpResponse.json({ error: 'Network error' }, { status: 500 });
-        }
-
-        return HttpResponse.json(STORE_SETTINGS[store.storeCode as keyof typeof STORE_SETTINGS]);
     }),
 
     // POST /paybylink/settings/{storeId}
