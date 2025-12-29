@@ -1,11 +1,11 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
-import { ActiveView, TransactionDataProps } from '../../types';
+import { ActiveView, TransactionDetails } from '../../types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { ButtonActionObject, ButtonActionsLayoutBasic, ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
-import { TransactionNavigator } from '../../hooks/useTransaction/transactionNavigator/types';
+import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -16,8 +16,8 @@ export interface PaymentDetailsActionsProps {
     refundAvailable: boolean;
     refundDisabled: boolean;
     setActiveView: (activeView: ActiveView) => void;
-    transaction: NonNullable<TransactionDataProps['transaction']>;
-    transactionNavigator: TransactionNavigator;
+    transaction: TransactionDetails;
+    transactionNavigator: TransactionDataContentProps['transactionNavigator'];
 }
 
 const PaymentDetailsActions = ({
@@ -91,18 +91,18 @@ const PaymentDetailsActions = ({
         }
     }, [actionButtons, backward, forward, transactionNavigation, userEvents]);
 
-    const customActions = useMemo<ButtonActionsList>(() => {
-        return extraFields
-            ? Object.values(extraFields)
-                  .filter(field => field.type === 'button')
-                  .map(action => ({
-                      title: action.value,
-                      variant: ButtonVariant.SECONDARY,
-                      event: action.config?.action,
-                      classNames: action.config?.className ? [action.config.className] : [],
-                  }))
-            : [];
-    }, [extraFields]);
+    const customActions = useMemo<ButtonActionsList>(
+        () =>
+            Object.values(extraFields || [])
+                .filter(field => field?.type === 'button')
+                .map(action => ({
+                    title: action.value,
+                    variant: ButtonVariant.SECONDARY,
+                    event: action.config?.action,
+                    classNames: action.config?.className ? [action.config.className] : [],
+                })),
+        [extraFields]
+    );
 
     const actions = useMemo(
         () => [primaryAction, secondaryAction, ...customActions].filter(Boolean) as ButtonActionsList,

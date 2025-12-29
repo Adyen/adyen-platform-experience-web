@@ -1,8 +1,8 @@
 import { EMPTY_OBJECT } from '../../../utils';
-import { RefundType, TransactionDetailData } from './types';
+import { RefundType, TransactionDetails } from './types';
 import { TagVariant } from '../../internal/Tag/types';
 
-export const getAmountStyleForTransaction = (transaction: TransactionDetailData) => {
+export const getAmountStyleForTransaction = (transaction?: TransactionDetails) => {
     switch (transaction?.status) {
         case 'Booked':
             return 'default';
@@ -13,7 +13,7 @@ export const getAmountStyleForTransaction = (transaction: TransactionDetailData)
     }
 };
 
-export const getTagVariantForTransaction = (transaction: TransactionDetailData) => {
+export const getTagVariantForTransaction = (transaction?: TransactionDetails) => {
     switch (transaction?.status) {
         case 'Booked':
             return TagVariant.SUCCESS;
@@ -24,9 +24,9 @@ export const getTagVariantForTransaction = (transaction: TransactionDetailData) 
     }
 };
 
-export const getRefundTypeForTransaction = (transaction: TransactionDetailData) => {
-    if (transaction.category === 'Refund') {
-        const { refundType } = transaction.refundMetadata ?? (EMPTY_OBJECT as NonNullable<TransactionDetailData['refundMetadata']>);
+export const getRefundTypeForTransaction = (transaction?: TransactionDetails) => {
+    if (transaction?.category === 'Refund') {
+        const { refundType } = transaction.refundMetadata ?? (EMPTY_OBJECT as NonNullable<TransactionDetails['refundMetadata']>);
         switch (refundType) {
             case RefundType.FULL:
                 return RefundType.FULL;

@@ -1,4 +1,5 @@
 import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
+import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../types';
 import { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
 import { TranslationKey } from '../../../translations';
 
@@ -23,7 +24,6 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
-export const enum TransactionsView {
-    TRANSACTIONS = 'transactions',
-    INSIGHTS = 'insights',
-}
+export type TransactionOverviewProps = ExternalUIComponentProps<
+    TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+>;

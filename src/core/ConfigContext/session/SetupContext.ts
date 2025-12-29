@@ -87,6 +87,7 @@ export class SetupContext {
                 {
                     body: data,
                     contentType: 'application/x-www-form-urlencoded',
+                    keepalive: true,
                 },
                 EMPTY_OBJECT
             );
@@ -103,6 +104,7 @@ export class SetupContext {
                         {
                             body: payload,
                             contentType: 'application/x-www-form-urlencoded',
+                            keepalive: true,
                         },
                         EMPTY_OBJECT
                     ).catch(() => {

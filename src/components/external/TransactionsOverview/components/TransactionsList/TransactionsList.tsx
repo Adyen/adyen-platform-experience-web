@@ -1,9 +1,8 @@
-import { classes } from '../../constants';
 import { useCallback } from 'preact/hooks';
 import { TransactionsListProps } from './types';
 import { ITransaction } from '../../../../../types';
+import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
-import { DataDetailsModal } from '../../../../internal/DataOverviewDisplay/DataDetailsModal';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
@@ -55,12 +54,11 @@ const TransactionsList = ({
     );
 
     return (
-        <DataDetailsModal
-            ariaLabelKey="transactions.details.title"
-            dataCustomization={dataCustomization?.details}
-            selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
+        <TransactionDetailsModal
+            dataCustomization={dataCustomization}
+            onContactSupport={onContactSupport}
             resetDetails={resetDetails}
-            className={classes.details}
+            selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
         >
             <TransactionsTable
                 activeBalanceAccount={balanceAccount}
@@ -76,7 +74,7 @@ const TransactionsList = ({
                 customColumns={transactionsFields}
                 {...paginationProps}
             />
-        </DataDetailsModal>
+        </TransactionDetailsModal>
     );
 };
 

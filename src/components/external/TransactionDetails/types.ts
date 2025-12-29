@@ -1,16 +1,7 @@
-import type { StrictUnion } from '../../../utils/types';
 import { IBalanceAccountBase, ILineItem, IRefundReason, ITransactionWithDetails } from '../../../types';
-import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
+import { CustomDataRetrieved, DetailsDataCustomizationObject, ExternalUIComponentProps } from '../../types';
 
-export interface DetailsWithoutIdProps {
-    data: TransactionDetailData;
-}
-
-export interface DetailsWithIdProps {
-    id: string;
-}
-
-export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved>;
+export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
 
 export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<any, any, any>> {
     dataCustomization?: {
@@ -18,22 +9,15 @@ export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<a
     };
 }
 
-export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps>;
-
-export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProps;
-
-export interface BalanceAccountProps {
+export type TransactionDetails = ITransactionWithDetails & {
     balanceAccount?: IBalanceAccountBase;
-}
+    lineItems?: ILineItem[];
+};
 
-export interface TransactionDataProps {
-    error?: boolean;
-    isFetching?: boolean;
-    transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
-    dataCustomization?: { details?: DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
-    // TODO - Unify this parameter with dataCustomization
-    extraFields: Record<string, any> | undefined;
-}
+export type TransactionDetailsProps = ExternalUIComponentProps<{
+    dataCustomization?: { details?: TransactionDetailsCustomization };
+    id: string;
+}>;
 
 export type TransactionDetailsFields =
     | 'amount'
@@ -57,8 +41,6 @@ export type TransactionDetailsFields =
     | 'refundMetadata'
     | 'status'
     | 'transactionType';
-
-export type TransactionDetailsProps = DetailsComponentProps & DetailsWithExtraData<TransactionDetailsCustomization>;
 
 export const enum ActiveView {
     DETAILS = 'details',

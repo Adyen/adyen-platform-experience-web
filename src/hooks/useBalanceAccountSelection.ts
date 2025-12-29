@@ -12,6 +12,7 @@ export interface UseBalanceAccountSelectionProps {
     allowAllSelection?: boolean;
     balanceAccounts?: IBalanceAccountBase[];
     eventCategory?: string;
+    eventSubCategory?: string;
     eventLabel?: FilterType;
     onUpdateSelection?: (balanceAccount?: IBalanceAccountBase) => void;
 }
@@ -20,11 +21,12 @@ const useBalanceAccountSelection = ({
     allowAllSelection = false,
     balanceAccounts,
     eventCategory,
+    eventSubCategory,
     eventLabel = 'Balance account filter',
     onUpdateSelection,
 }: UseBalanceAccountSelectionProps) => {
     const { i18n } = useCoreContext();
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: eventLabel });
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: eventLabel });
     const [selectedBalanceAccountIndex, setSelectedBalanceAccountIndex] = useState(0);
 
     const allBalanceAccounts = useMemo(
@@ -85,7 +87,6 @@ const useBalanceAccountSelection = ({
                 logEvent?.('update', activeBalanceAccountId);
             }
 
-            // Set active balance account in transactions overview context
             onUpdateSelection?.(activeBalanceAccount);
         }
     }, [activeBalanceAccount, activeBalanceAccountId, logEvent, onUpdateSelection]);
