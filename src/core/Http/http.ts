@@ -103,6 +103,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
                 error.status = response.status;
+                error.invalidFields = response.invalidFields;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {
