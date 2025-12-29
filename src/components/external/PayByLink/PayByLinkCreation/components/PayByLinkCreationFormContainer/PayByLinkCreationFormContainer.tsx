@@ -4,9 +4,6 @@ import { TypographyElement, TypographyVariant } from '../../../../../internal/Ty
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { PBLFormValues, LinkCreationFormStep } from '../types';
-import { CustomerDetailsForm } from '../Form/CustomerDetailsForm/CustomerDetailsForm';
-import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsForm';
-import { FormSummary } from '../Form/Summary/FormSummary';
 import { WizardFormProvider } from '../../../../../../hooks/form/wizard/WizardFormContext';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import Button from '../../../../../internal/Button';
@@ -24,6 +21,8 @@ import { FormStepRenderer } from './FormStepRenderer';
 import { AlertTypeOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
 import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { useInvalidFieldsConfig } from '../../hooks/useInvalidFieldsConfig';
+import { AdyenErrorResponse } from '../../../../../../core/Http/types';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
@@ -167,14 +166,39 @@ export const PayByLinkCreationFormContainer = ({
         return !termsAndConditionsProvisioned || accountIsMisconfigured || displayConfigurationError;
     }, [accountIsMisconfigured, displayConfigurationError, termsAndConditionsProvisioned]);
 
-    const getSubmitErrorLabel = useCallback(
-        (error: any) => {
-            return i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong');
+    const { invalidFieldsConfig } = useInvalidFieldsConfig();
+
+    const getMappedInvalidFields = useCallback(
+        (error: Error | AdyenErrorResponse | null) => {
+            if (!error || !('invalidFields' in error) || !error.invalidFields?.length) return [];
+
+            return error.invalidFields
+                .map((field: { name: string; message: string }) => {
+                    const fieldKey = invalidFieldsConfig.fields?.[field.name];
+                    const messageKey = invalidFieldsConfig.messages?.[field.message];
+
+                    if (!fieldKey && !messageKey) return null;
+
+                    const fieldName = fieldKey ? i18n.get(fieldKey) : field.name;
+
+                    if (!messageKey) return `${fieldName}`;
+
+                    const message = i18n.get(messageKey);
+
+                    return `${fieldName} (${message})`;
+                })
+                .filter((msg: string | null): msg is string => msg !== null);
         },
-        [i18n]
+        [i18n, invalidFieldsConfig]
     );
 
-    //i18n.get('common.actions.contactSupport.labels.reachOut')
+    const getSubmitErrorLabel = useCallback(
+        (error: Error | AdyenErrorResponse | null) => {
+            if (getMappedInvalidFields(error).length) return i18n.get('payByLink.linkCreation.form.alert.invalidFields');
+            return i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong');
+        },
+        [getMappedInvalidFields, i18n]
+    );
 
     if (!isFirstLoadDone) {
         return (
@@ -268,15 +292,29 @@ export const PayByLinkCreationFormContainer = ({
                             <Alert
                                 type={AlertTypeOption.CRITICAL}
                                 title={getSubmitErrorLabel(submitMutation.error)}
-                                description={
-                                    onContactSupport ? (
-                                        <div>
-                                            <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
-                                                {i18n.get('common.actions.contactSupport.labels.reachOut')}
-                                            </Button>
+                                description={(() => {
+                                    const mappedErrors = getMappedInvalidFields(submitMutation.error);
+                                    const hasInvalidFields = mappedErrors.length > 0;
+
+                                    return (
+                                        <div className="adyen-pe-pay-by-link-creation-form__error-alert">
+                                            {hasInvalidFields && (
+                                                <ul className="adyen-pe-pay-by-link-creation-form__invalid-fields-error">
+                                                    {mappedErrors.map((msg, idx) => (
+                                                        <li key={idx}>
+                                                            <Typography variant={TypographyVariant.CAPTION}>{msg}</Typography>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                            {onContactSupport && (
+                                                <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                                    {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                                </Button>
+                                            )}
                                         </div>
-                                    ) : undefined
-                                }
+                                    );
+                                })()}
                             />
                         )}
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">

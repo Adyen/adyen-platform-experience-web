@@ -1,3 +1,8 @@
 {
-    "amount_too_high": "payByLink.linkCreation.errors.invalidFields.amountTooHigh"
+    "fields": {
+        "amount": "payByLink.linkCreation.fields.amount.label"
+    },
+    "messages": {
+        "amount_too_high": "payByLink.linkCreation.errors.invalidFields.reason.amountTooHigh"
+    }
 }

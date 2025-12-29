@@ -150,4 +150,11 @@
         flex-direction: column;
         gap: style.token(spacer-020);
     }
+
+    &__invalid-fields-error {
+        li {
+            margin-left: style.token(spacer-060);
+            padding-left: 0;
+        }
+    }
 }
