@@ -59,8 +59,6 @@ describe('useStores', () => {
 
         const { result } = renderHook(() => useStores());
 
-        console.log(result.current.stores);
-
         expect(result.current.stores).toEqual([
             {
                 storeCode: 'STORE001',
