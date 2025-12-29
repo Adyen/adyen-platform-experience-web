@@ -96,9 +96,11 @@ function DataGridTable<
                 {showMessage &&
                     (emptyBody && !props.error ? (
                         <ErrorMessageDisplay
+                            withHeaderOffset
                             title={props.emptyTableMessage?.title ?? 'common.errors.noResults'}
                             message={props.emptyTableMessage?.message}
-                            imageDesktop={getImageAsset?.({ name: 'no-data-female' })}
+                            imageDesktop={getImageAsset?.({ name: 'no-results-found' })}
+                            imageMobile={getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' })}
                             centered
                         />
                     ) : props.error && errorDisplay ? (
