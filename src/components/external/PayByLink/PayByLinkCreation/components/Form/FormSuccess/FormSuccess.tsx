@@ -7,7 +7,7 @@ import Icon from '../../../../../../internal/Icon/Icon';
 import Button from '../../../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../../../internal/Button/types';
 import './FormSuccess.scss';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 
 type FormSuccessProps = {
     onGoToDetails: () => void;
@@ -15,10 +15,31 @@ type FormSuccessProps = {
 };
 export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps) => {
     const { i18n } = useCoreContext();
+
+    const [copied, setCopied] = useState(false);
+    const copiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (copiedTimeoutRef.current) {
+                clearTimeout(copiedTimeoutRef.current);
+            }
+        };
+    }, []);
+
     const onCopy = useCallback(async () => {
         if (!paymentLinkUrl) return;
         try {
             await navigator.clipboard.writeText(paymentLinkUrl);
+
+            setCopied(true);
+            if (copiedTimeoutRef.current) {
+                clearTimeout(copiedTimeoutRef.current);
+            }
+            copiedTimeoutRef.current = setTimeout(() => {
+                setCopied(false);
+                copiedTimeoutRef.current = null;
+            }, 3000);
         } catch (e) {
             // no-op
         }
@@ -42,9 +63,9 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     onClick={onCopy}
-                    iconLeft={<Icon className="adyen-pe-pay-by-link-creation-form-success__button-icon" name="copy" />}
+                    iconLeft={<Icon className="adyen-pe-pay-by-link-creation-form-success__button-icon" name={copied ? 'checkmark' : 'copy'} />}
                 >
-                    {i18n.get('payByLink.linkCreation.success.copyLink')}
+                    {copied ? i18n.get('payByLink.linkCreation.success.copiedToClipboard') : i18n.get('payByLink.linkCreation.success.copyLink')}
                 </Button>
             </div>
         </section>

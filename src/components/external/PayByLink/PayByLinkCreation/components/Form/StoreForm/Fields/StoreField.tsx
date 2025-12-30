@@ -27,8 +27,8 @@ const StoreField = ({ items }: StoreFieldProps) => {
             fieldName={'store'}
             label={i18n.get('payByLink.linkCreation.fields.store.label')}
             items={items}
-            preventInvalidState
             onChange={handleChange}
+            preventInvalidState
         />
     );
 };

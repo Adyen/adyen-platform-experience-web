@@ -9,6 +9,7 @@ import Select from './Select';
 import { filterDisallowedCharacters } from './utils';
 import './FormFields.scss';
 import { ButtonVariant } from '../Button/types';
+import { FieldError } from './FieldError/FieldError';
 
 function InputBase(
     {
@@ -187,11 +188,7 @@ function InputBase(
             ) : (
                 inputElement
             )}
-            {isInvalid && errorMessage && (
-                <span className="adyen-pe-input__invalid-value" id={`${uniqueId}${ARIA_ERROR_SUFFIX}`}>
-                    {errorMessage}
-                </span>
-            )}
+            {isInvalid && errorMessage && <FieldError id={uniqueId} errorMessage={errorMessage} />}
         </>
     );
 }

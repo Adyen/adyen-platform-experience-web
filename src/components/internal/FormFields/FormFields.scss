@@ -182,12 +182,6 @@
             margin-right: 0;
         }
     }
-
-    &__invalid-value {
-        color: style.token(color-label-critical);
-        max-width: 20rem;
-        text-wrap: wrap;
-    }
 }
 
 .adyen-pe-dropdown {
@@ -268,10 +262,6 @@
 
 .adyen-pe-input__inline-validation--invalid {
     color: style.token(color-label-critical);
-}
-
-.adyen-pe-input--valid {
-    border-bottom-color: style.token(color-outline-success-hover);
 }
 
 .adyen-pe-input--error,
