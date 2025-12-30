@@ -13,6 +13,7 @@ import { LINK_VALIDITY_DURATION_UNITS } from '../../../../constants';
 import InputBase from '../../../../../../../internal/FormFields/InputBase';
 import { transformToMS } from '../../../../../../../../utils';
 import { SelectChangeEvent } from '../../../../../../../internal/FormFields/Select/types';
+import { FieldError } from '../../../../../../../internal/FormFields/FieldError/FieldError';
 
 export type ValidityFieldProps = {
     configuration?: PaymentLinkConfiguration;
@@ -148,6 +149,8 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                     const [value, durationUnit] = newValue?.split(' ') || [];
                                     durationQuantityField.onInput(value);
                                     durationUnitField.onInput(durationUnit);
+                                    durationQuantityField.triggerValidation();
+                                    durationUnitField.triggerValidation();
                                 } else {
                                     durationUnitField.onInput('');
                                     durationQuantityField.onInput('');
@@ -198,7 +201,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                             </FormField>
                                         )}
                                     </div>
-                                    {isInvalid && <span className="adyen-pe-input__invalid-value">{errorMessage}</span>}
+                                    {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} withTopMargin />}
                                 </div>
                             );
                         }}

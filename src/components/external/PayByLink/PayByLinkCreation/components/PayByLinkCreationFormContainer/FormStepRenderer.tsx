@@ -76,7 +76,7 @@ export const FormStepRenderer = ({
                 />
             );
         case 'summary':
-            return <FormSummary />;
+            return <FormSummary countryDatasetData={countryDatasetData} />;
         default:
             return <PaymentDetailsForm configuration={configurationData} />;
     }

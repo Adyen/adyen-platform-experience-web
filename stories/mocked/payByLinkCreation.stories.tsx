@@ -21,6 +21,13 @@ const fieldsConfig = {
             postalCode: '28001',
             street: 'Gran Via',
         },
+        billingAddress: {
+            city: 'Medellin',
+            country: 'MX',
+            houseNumberOrName: '1',
+            postalCode: '05001',
+            street: 'Calle 25 #34-12',
+        },
         description: 'This is a test description',
         reference: 'SHP000001',
         linkType: 'open',

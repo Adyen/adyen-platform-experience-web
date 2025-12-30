@@ -202,6 +202,34 @@ describe('CalendarInput', () => {
         expect(mockOnInput).toHaveBeenCalledWith('2023-12-25T10:00:00.000Z');
     });
 
+    test('should show clear button only when clearable and value is provided', () => {
+        const testDate = '2023-12-25T10:00:00.000Z';
+
+        const { container, rerender } = render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
+        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).toBeInTheDocument();
+
+        rerender(<CalendarInput value={testDate} onInput={mockOnInput} clearable={false} />);
+        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).not.toBeInTheDocument();
+
+        rerender(<CalendarInput value={undefined} onInput={mockOnInput} clearable={true} />);
+        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).not.toBeInTheDocument();
+    });
+
+    test('should clear value when clear button is clicked and not open the popover', () => {
+        const testDate = '2023-12-25T10:00:00.000Z';
+        const { container } = render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
+
+        const mainButton = screen.getAllByRole('button')[0];
+        expect(mainButton).toHaveAttribute('aria-expanded', 'false');
+
+        const clearButton = container.querySelector('.adyen-pe-dropdown__button-clear');
+        expect(clearButton).toBeInTheDocument();
+
+        fireEvent.click(clearButton as Element);
+        expect(mockOnInput).toHaveBeenCalledWith('');
+        expect(mainButton).toHaveAttribute('aria-expanded', 'false');
+    });
+
     test('should get grid label correctly for calendar', () => {
         render(<CalendarInput value={undefined} onInput={mockOnInput} />);
 
