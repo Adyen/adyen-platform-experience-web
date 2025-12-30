@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { HTMLProps } from 'preact/compat';
+import { HTMLProps, ReactNode } from 'preact/compat';
 import { TranslationKey } from '../../../translations';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
@@ -15,7 +15,7 @@ type CopyTextProps = {
     showCopyTextTooltip?: boolean;
     type?: 'Trimmed' | 'Text' | 'Default';
     textToCopy: string;
-    visibleText?: string;
+    visibleText?: string | ReactNode;
     onCopyText?: () => void;
     stronger?: boolean;
 } & HTMLProps<HTMLSpanElement>;

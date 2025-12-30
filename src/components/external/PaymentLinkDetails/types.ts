@@ -1,5 +1,6 @@
 export type PaymentLinkDetailsProps = {
     id: string;
-    onUpdate?: () => void;
+    onContactSupport?: () => void;
     onDismiss?: () => void;
+    onUpdate?: () => void;
 };
