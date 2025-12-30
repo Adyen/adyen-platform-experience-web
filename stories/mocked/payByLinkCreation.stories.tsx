@@ -46,6 +46,7 @@ export const Default: ElementStory<typeof PayByLinkCreation> = {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
         onCreationDismiss: action('Creation dismissed'),
+        storeIds: ['STORE_NY_001', 'STORE_LON_001', 'STORE_AMS_001'],
     },
 };
 
@@ -56,7 +57,7 @@ export const Prefilled: ElementStory<typeof PayByLinkCreation> = {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
         onCreationDismiss: action('Creation dismissed'),
-        storeIds: ['London Store', 'Amsterdam Store'],
+        storeIds: ['STORE_NY_001'],
     },
 };
 
