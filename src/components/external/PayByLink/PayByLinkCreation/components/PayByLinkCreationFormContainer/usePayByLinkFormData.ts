@@ -41,11 +41,9 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
                 if (!storeIds) {
                     return true;
                 }
-                // Array
                 if (Array.isArray(storeIds) && storeId) {
                     return storeIds.includes(storeId);
                 }
-                // Single string
                 return storeIds === storeId;
             })
             .map(({ storeCode, storeId }) => ({
