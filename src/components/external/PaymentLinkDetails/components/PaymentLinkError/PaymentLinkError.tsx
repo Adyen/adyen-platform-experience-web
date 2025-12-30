@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
@@ -23,7 +23,10 @@ export const PaymentLinkError = ({ error, onContactSupport, onDismiss }: Payment
         );
     }, [i18n, onDismiss]);
 
-    const errorProps = getPaymentLinkErrorMessage(error as AdyenPlatformExperienceError, 'paymentLinks.details.errors.unavailable', onContactSupport);
+    const errorProps = useMemo(
+        () => getPaymentLinkErrorMessage(error as AdyenPlatformExperienceError, 'paymentLinks.details.errors.unavailable', onContactSupport),
+        [error, onContactSupport]
+    );
 
     return (
         <ErrorMessageDisplay
