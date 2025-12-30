@@ -115,10 +115,7 @@ export class UserEvents {
         if (this.subscriptions.size > 0) {
             while (this.queue.length > 0) {
                 const nextEvent = this.queue.shift()!;
-
-                this.subscriptions.forEach((callback: UserEventCallback) => {
-                    return callback(nextEvent);
-                });
+                this.subscriptions.forEach((callback: UserEventCallback) => callback(nextEvent));
             }
         } else if (this.doneWaitingForSubscribers === undefined) {
             new Promise<void>(resolve => {
