@@ -418,7 +418,6 @@ const Select = <T extends SelectItem>({
 
     const handleClear = useCallback(
         (e?: Event) => {
-            console.log('clearing');
             e?.preventDefault?.();
             e?.stopPropagation?.();
             resetSelection();

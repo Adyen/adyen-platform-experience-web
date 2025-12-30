@@ -134,9 +134,19 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                 </span>
             )}
             {showClearButton && (
-                <button className={DROPDOWN_BUTTON_CLEAR_CLASS} onClick={onClear}>
-                    <Icon name="clear" />
-                </button>
+                <span
+                    role="button"
+                    tabIndex={0}
+                    className={DROPDOWN_BUTTON_CLEAR_CLASS}
+                    onClick={onClear}
+                    onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            onClear?.(e);
+                        }
+                    }}
+                >
+                    <Icon name="cross-circle-fill" />
+                </span>
             )}
         </SelectButtonElement>
     );

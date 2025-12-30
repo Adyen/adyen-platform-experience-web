@@ -32,17 +32,25 @@ export function CalendarInputButton({ label, isOpen, isInvalid, onClick, onClear
             iconRight={
                 showClearButton ? (
                     <>
-                        <button
+                        <span
+                            role="button"
+                            tabIndex={0}
                             className="adyen-pe-dropdown__button-clear"
                             onClick={e => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 onClear?.(e as unknown as Event);
                             }}
-                            type="button"
+                            onKeyDown={e => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onClear?.(e as unknown as Event);
+                                }
+                            }}
                         >
-                            <Icon name="clear" />
-                        </button>
+                            <Icon name="cross-circle-fill" />
+                        </span>
                     </>
                 ) : (
                     <Icon className="adyen-pe-dropdown__button-collapse-indicator" name="chevron-down" />
