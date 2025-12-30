@@ -20,6 +20,7 @@ export type TransactionDetailsProps = ExternalUIComponentProps<{
 }>;
 
 export type TransactionDetailsFields =
+    | 'account'
     | 'amount'
     | 'amountBeforeDeductions'
     | 'balanceAccount'
@@ -29,9 +30,11 @@ export type TransactionDetailsFields =
     | 'createdAt'
     | 'currency'
     | 'deductedAmount'
+    | 'description'
     | 'grossAmount'
     | 'id'
     | 'lineItems'
+    | 'merchantReference'
     | 'netAmount'
     | 'originalAmount'
     | 'paymentMethod'
@@ -39,6 +42,8 @@ export type TransactionDetailsFields =
     | 'pspReference'
     | 'refundDetails'
     | 'refundMetadata'
+    | 'refundPspReference'
+    | 'refundReason'
     | 'status'
     | 'transactionType';
 

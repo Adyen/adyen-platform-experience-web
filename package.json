@@ -85,7 +85,7 @@
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.9.3",
     "@storybook/addon-essentials": "8.6.4",
     "@storybook/core": "8.6.4",

@@ -4,10 +4,7 @@ import useRefundMetadata from '../../hooks/useRefundMetadata';
 import useTransaction from '../../hooks/useTransaction';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useModalContext } from '../../../../internal/Modal/Modal';
-import { sharedTransactionDetailsEventProperties } from '../../constants';
 import { EMPTY_ARRAY } from '../../../../../utils';
 import { ILineItem } from '../../../../../types';
 import './TransactionData.scss';
@@ -31,8 +28,6 @@ export const TransactionDataContent = ({
     const [activeView, setActiveView] = useState(ActiveView.DETAILS);
     const [locked, setLocked] = useState(false);
 
-    const { withinModal } = useModalContext();
-
     const {
         fullRefundFailed,
         fullRefundInProgress,
@@ -52,11 +47,6 @@ export const TransactionDataContent = ({
     const refundIsLocked = useMemo(() => refundLocked || locked, [refundLocked, locked]);
 
     const lineItems = useMemo<readonly ILineItem[]>(() => Object.freeze(transaction.lineItems ?? EMPTY_ARRAY), [transaction.lineItems]);
-
-    useLandedPageEvent({
-        ...sharedTransactionDetailsEventProperties,
-        ...(withinModal && { fromPage: 'Transactions overview' }),
-    });
 
     useEffect(() => {
         if ((cachedRefundLocked.current = refundLocked)) {

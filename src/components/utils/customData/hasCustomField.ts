@@ -3,8 +3,8 @@ import type { CustomColumn } from '../../types';
 
 type _Fields<Field extends string> = readonly CustomColumn<Field>[];
 
-export const hasCustomField = <Field extends string, PreferredFields extends _Fields<Field>, StandardFields extends readonly string[] = string[]>(
-    preferredFields?: PreferredFields,
+export const hasCustomField = <Field extends string, StandardFields extends readonly string[] = string[]>(
+    preferredFields?: _Fields<Field>,
     standardFields = EMPTY_ARRAY as unknown as StandardFields
 ) => {
     if (Array.isArray(preferredFields)) {

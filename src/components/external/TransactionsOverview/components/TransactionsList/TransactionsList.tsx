@@ -3,23 +3,27 @@ import { TransactionsListProps } from './types';
 import { ITransaction } from '../../../../../types';
 import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
-import { sharedTransactionDetailsEventProperties } from '../../../TransactionDetails/constants';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 
 const TransactionsList = ({
-    accountBalancesResult,
+    availableCurrencies,
     balanceAccount,
     dataCustomization,
+    hasMultipleCurrencies,
     loadingBalanceAccounts,
+    loadingTransactions,
     onContactSupport,
+    onLimitSelection,
     onRecordSelection,
     showDetails,
-    transactionsListResult,
+    transactionsError,
+    transactionsFields,
+    transactions,
+    ...paginationProps
 }: TransactionsListProps) => {
     const userEvents = useAnalyticsContext();
-    const { currencies: availableCurrencies } = accountBalancesResult;
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails({
         transaction: {
@@ -32,8 +36,9 @@ const TransactionsList = ({
         ({ id, category }: ITransaction) => {
             if (category) {
                 userEvents.addEvent?.('Viewed transaction details', {
-                    ...sharedTransactionDetailsEventProperties,
                     transactionType: category,
+                    category: 'Transaction component',
+                    subCategory: 'Transaction details',
                 });
             }
             updateDetails({
@@ -48,16 +53,6 @@ const TransactionsList = ({
         [balanceAccount, updateDetails, userEvents]
     );
 
-    const {
-        error: transactionsError,
-        fetching: loadingTransactions,
-        fields: transactionsFields,
-        records: transactions,
-        updateLimit: onLimitSelection,
-        hasCustomColumn,
-        ...paginationProps
-    } = transactionsListResult;
-
     return (
         <TransactionDetailsModal
             dataCustomization={dataCustomization}
@@ -69,7 +64,7 @@ const TransactionsList = ({
                 activeBalanceAccount={balanceAccount}
                 availableCurrencies={availableCurrencies as (typeof availableCurrencies)[number][]}
                 error={transactionsError as AdyenPlatformExperienceError}
-                hasMultipleCurrencies={accountBalancesResult.isMultiCurrency}
+                hasMultipleCurrencies={hasMultipleCurrencies}
                 loading={loadingBalanceAccounts || loadingTransactions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={onLimitSelection}

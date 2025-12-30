@@ -4,8 +4,8 @@ import {
     TRANSACTION_DATE_RANGE_MAX_YEARS,
     TRANSACTION_DATE_RANGES,
 } from '../../constants';
-import { EMPTY_OBJECT } from '../../../../../utils';
 import { TransactionsDateRange } from '../../types';
+import { EMPTY_OBJECT, unreachable } from '../../../../../utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
 import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
@@ -16,12 +16,34 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
     eventCategory?: string;
-    eventSubCategory?: string;
     setCreatedDate: (createdDate: RangeTimestamps) => void;
     timezone?: string;
 }
 
-const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
+const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRange) => {
+    switch (dateRangeSelection) {
+        case 'common.filters.types.date.rangeSelect.options.custom':
+            return 'Custom';
+        case 'common.filters.types.date.rangeSelect.options.last7Days':
+            return 'Last 7 days';
+        case 'common.filters.types.date.rangeSelect.options.last30Days':
+            return 'Last 30 days';
+        case 'common.filters.types.date.rangeSelect.options.thisWeek':
+            return 'This week';
+        case 'common.filters.types.date.rangeSelect.options.lastWeek':
+            return 'Last week';
+        case 'common.filters.types.date.rangeSelect.options.thisMonth':
+            return 'This month';
+        case 'common.filters.types.date.rangeSelect.options.lastMonth':
+            return 'Last month';
+        case 'common.filters.types.date.rangeSelect.options.yearToDate':
+            return 'Year to date';
+        default:
+            return unreachable(dateRangeSelection);
+    }
+};
+
+const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
     const { i18n } = useCoreContext();
 
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
@@ -50,13 +72,14 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
         } as const;
     }, [createdDate]);
 
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: 'Date filter' });
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'Date filter' });
 
     const onFilterChange = useCallback<DateFilterProps['onChange']>(
         (params = EMPTY_OBJECT) => {
             const selected = params.selectedPresetOption || defaultDateRange;
 
             if (selected !== selectedDateRange || selected === customDateRange) {
+                let selectedDateRangeKey: TransactionsDateRange = TRANSACTION_DATE_RANGE_CUSTOM;
                 let nextCreatedDate: RangeTimestamps;
 
                 if (selected === customDateRange) {
@@ -68,14 +91,19 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
                         to: until ? new Date(until).getTime() : createdDate.to,
                     })();
                 } else {
-                    nextCreatedDate = Object.entries(TRANSACTION_DATE_RANGES).find(
-                        ([range]) => i18n.get(range as TransactionsDateRange) === selected
-                    )![1];
+                    [selectedDateRangeKey, nextCreatedDate] = (
+                        Object.entries(TRANSACTION_DATE_RANGES) as [TransactionsDateRange, RangeTimestamps][]
+                    ).find(([range]) => i18n.get(range as TransactionsDateRange) === selected)!;
                 }
+
+                const eventValue =
+                    selected === customDateRange
+                        ? String([nextCreatedDate.from, nextCreatedDate.to])
+                        : getDateRangeSelectionEventValue(selectedDateRangeKey);
 
                 setSelectedDateRange(selected);
                 setCreatedDate((cachedCreatedDate.current = nextCreatedDate));
-                logEvent?.('update', `${nextCreatedDate.from},${nextCreatedDate.to}`);
+                logEvent?.('update', eventValue);
             }
         },
         [i18n, createdDate, customDateRange, defaultDateRange, selectedDateRange, logEvent]

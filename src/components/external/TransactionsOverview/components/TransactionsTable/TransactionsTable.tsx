@@ -18,17 +18,15 @@ import './TransactionTable.scss';
 import PaymentMethodCell from './PaymentMethodCell';
 import { TransactionTableProps } from './types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
-import { Tag } from '../../../../internal/Tag/Tag';
 
 // Remove status column temporarily
-export const TRANSACTION_FIELDS = ['createdAt' /*, 'status'*/, 'paymentMethod', 'transactionType', 'currency', 'netAmount', 'grossAmount'] as const;
+export const TRANSACTION_FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
 
 const FIELDS_KEYS = {
+    amount: 'transactions.overview.list.fields.amount',
     createdAt: 'transactions.overview.list.fields.createdAt',
-    currency: 'transactions.overview.list.fields.currency',
-    grossAmount: 'transactions.overview.list.fields.grossAmount',
-    netAmount: 'transactions.overview.list.fields.netAmount',
+    // currency: 'transactions.overview.list.fields.currency',
     paymentMethod: 'transactions.overview.list.fields.paymentMethod',
     // status: 'transactions.overview.list.fields.status',
     transactionType: 'transactions.overview.list.fields.transactionType',
@@ -55,27 +53,19 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
     const isMdAndUpContainer = useResponsiveContainer(containerQueries.up.md);
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
+    const amountLabel = i18n.get(FIELDS_KEYS['amount']);
     const columns = useTableColumns({
         customColumns,
         fields: TRANSACTION_FIELDS,
         fieldsKeys: FIELDS_KEYS,
         columnConfig: {
-            netAmount: {
+            amount: {
                 label: hasMultipleCurrencies
                     ? undefined
-                    : `${i18n.get(FIELDS_KEYS['netAmount'])} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
+                    : `${amountLabel} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
                 position: 'right',
                 flex: isSmAndUpContainer ? 1.5 : undefined,
             },
-            grossAmount: {
-                label: hasMultipleCurrencies
-                    ? undefined
-                    : `${i18n.get(FIELDS_KEYS['grossAmount'])} ${availableCurrencies && availableCurrencies[0] ? `(${getCurrencyCode(availableCurrencies[0])})` : ''}`,
-                position: 'right',
-                flex: isSmAndUpContainer ? 1.5 : undefined,
-                visible: isMdAndUpContainer,
-            },
-            currency: { visible: isMdAndUpContainer && hasMultipleCurrencies },
             transactionType: { visible: isMdAndUpContainer },
             paymentMethod: { visible: isSmAndUpContainer },
         },
@@ -142,21 +132,8 @@ export const TransactionsTable: FC<TransactionTableProps> = ({
                         }
                         return null;
                     },
-                    currency: ({ item }) => {
-                        return <Tag>{item.amountBeforeDeductions.currency}</Tag>;
-                    },
-                    netAmount: ({ value: netAmount }) => {
-                        const { value, currency } = netAmount;
-                        const amount = i18n.amount(value, currency, { hideCurrency: !hasMultipleCurrencies });
-                        return (
-                            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
-                                {amount}
-                            </Typography>
-                        );
-                    },
-                    grossAmount: ({ item }) => {
-                        const { value, currency } = item.amountBeforeDeductions;
-                        const amount = i18n.amount(value, currency, { hideCurrency: !hasMultipleCurrencies });
+                    amount: ({ item }) => {
+                        const amount = i18n.amount(item.netAmount.value, item.netAmount.currency, { hideCurrency: !hasMultipleCurrencies });
                         return (
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={AMOUNT_CLASS}>
                                 {amount}
