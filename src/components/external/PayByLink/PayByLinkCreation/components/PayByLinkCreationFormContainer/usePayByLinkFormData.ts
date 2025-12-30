@@ -9,9 +9,10 @@ import { TranslationKey } from '../../../../../../translations';
 import { useWizardForm } from '../../../../../../hooks/form/wizard/useWizardForm';
 import { PBLFormValues } from '../types';
 import { DeepPartial } from '../../../../../types';
+import { StoreIds } from '../../../types';
 
 type UsePayByLinkFormDataProps = {
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     defaultValues?: DeepPartial<PBLFormValues>;
 };
 
@@ -37,7 +38,15 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     const storesSelectorItems = useMemo(() => {
         const stores: PayByLinkStoreDTO[] = storesData?.data ?? [];
         return stores
-            .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
+            .filter(({ storeId }) => {
+                if (!storeIds) {
+                    return true;
+                }
+                if (Array.isArray(storeIds) && storeId) {
+                    return storeIds.includes(storeId);
+                }
+                return storeIds === storeId;
+            })
             .map(({ storeCode, storeId }) => ({
                 id: storeId || '',
                 name: storeCode || '',

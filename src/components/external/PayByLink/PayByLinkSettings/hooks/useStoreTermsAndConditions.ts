@@ -1,15 +1,21 @@
-import { useMemo } from 'preact/hooks';
+import { useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
+import { PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
 
-export const useStoreTermsAndConditions = (selectedStore: string | undefined, enabled: boolean, setEnabled: Dispatch<StateUpdater<boolean>>) => {
+export const useStoreTermsAndConditions = (
+    selectedStore: string | undefined,
+    enabled: boolean,
+    setEnabled: Dispatch<StateUpdater<boolean>>,
+    setPayload: (payload: PayByLinkSettingsPayload) => void
+) => {
     const { getPayByLinkSettings } = useConfigContext().endpoints;
 
     //TODO: Add error cases and loading cases
-    const { data, isFetching } = useFetch(
+    const { data, isFetching, error } = useFetch(
         useMemo(
             () => ({
                 fetchOptions: {
@@ -24,5 +30,14 @@ export const useStoreTermsAndConditions = (selectedStore: string | undefined, en
         )
     );
 
-    return { data, isFetching };
+    const termsAndConditions = useMemo(() => {
+        if ((!data || !data?.termsOfServiceUrl) && !isFetching && !error) return { termsOfServiceUrl: '' };
+        return data;
+    }, [data, isFetching, error]);
+
+    useEffect(() => {
+        setPayload(termsAndConditions);
+    }, [termsAndConditions, setPayload]);
+
+    return { data: termsAndConditions, isFetching, error };
 };

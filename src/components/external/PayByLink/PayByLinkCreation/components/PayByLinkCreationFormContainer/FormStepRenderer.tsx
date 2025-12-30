@@ -5,11 +5,14 @@ import { FormSummary } from '../Form/Summary/FormSummary';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
 import { Dispatch, SetStateAction } from 'preact/compat';
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO, PaymentLinkConfiguration, PayByLinkCountryDTO } from '../../../../../../types/api/models/payByLink';
+import { StateUpdater } from 'preact/hooks';
+import { StoreIds } from '../../../types';
 
 type FormStepRendererProps = {
+    setShowTermsAndConditions: Dispatch<StateUpdater<boolean>>;
     currentFormStep: LinkCreationFormStep;
     settingsData?: PayByLinkSettingsDTO;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     storesData?: {
         data: PayByLinkStoreDTO[];
     };
@@ -31,6 +34,7 @@ type FormStepRendererProps = {
 };
 
 export const FormStepRenderer = ({
+    setShowTermsAndConditions,
     currentFormStep,
     settingsData,
     storeIds,
@@ -50,6 +54,7 @@ export const FormStepRenderer = ({
         case 'store':
             return (
                 <StoreForm
+                    setShowTermsAndConditions={setShowTermsAndConditions}
                     settingsData={settingsData}
                     storeIds={storeIds}
                     storesData={storesData?.data}
@@ -71,7 +76,7 @@ export const FormStepRenderer = ({
                 />
             );
         case 'summary':
-            return <FormSummary />;
+            return <FormSummary countryDatasetData={countryDatasetData} />;
         default:
             return <PaymentDetailsForm configuration={configurationData} />;
     }

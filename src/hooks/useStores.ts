@@ -3,7 +3,7 @@ import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 
-export const useStores = () => {
+export const useStores = (storeIds?: string | string[], preselect = true) => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
     const { getPayByLinkStores } = useConfigContext().endpoints;
 
@@ -20,8 +20,23 @@ export const useStores = () => {
         )
     );
 
-    //Add IDs for Select component compatibility
-    const stores = useMemo(
+    const filteredStores = useMemo(
+        () =>
+            data?.data
+                ?.filter(store => {
+                    if (!store.storeId) return false;
+                    return !storeIds || (typeof storeIds === 'string' ? store.storeId === storeIds : storeIds?.includes(store.storeId));
+                })
+                .map(store => ({
+                    id: store.storeId || '',
+                    name: store.storeCode || '',
+                    storeCode: store.storeCode || '',
+                    description: store.description || '',
+                })),
+        [data, storeIds]
+    );
+
+    const allStores = useMemo(
         () =>
             data?.data?.map(store => ({
                 id: store.storeId || '',
@@ -33,10 +48,10 @@ export const useStores = () => {
     );
 
     useEffect(() => {
-        if (!selectedStore && stores && stores?.length > 0) {
-            setSelectedStore(stores?.[0]?.id);
+        if (!selectedStore && filteredStores && filteredStores?.length > 0 && preselect) {
+            setSelectedStore(filteredStores?.[0]?.id);
         }
-    }, [stores, selectedStore]);
+    }, [filteredStores, selectedStore, preselect]);
 
-    return { stores, selectedStore, setSelectedStore };
+    return { filteredStores, selectedStore, setSelectedStore, isFetching, error, allStores };
 };

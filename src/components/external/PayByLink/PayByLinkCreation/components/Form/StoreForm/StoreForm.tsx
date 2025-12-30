@@ -3,22 +3,24 @@ import Alert from '../../../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../../../internal/Alert/types';
 import StoreField from './Fields/StoreField';
 
-import { useMemo } from 'preact/hooks';
+import { StateUpdater, useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../../../../../core/ConfigContext';
-import { useFetch } from '../../../../../../../hooks/useFetch';
 import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO } from '../../../../../../../types';
+import { Dispatch } from 'preact/compat';
+import { StoreIds } from '../../../../types';
 
 interface StoreFormProps {
-    storeIds?: string[] | string;
+    setShowTermsAndConditions: Dispatch<StateUpdater<boolean>>;
+    storeIds?: StoreIds;
     settingsData?: PayByLinkSettingsDTO;
     storesData?: PayByLinkStoreDTO[];
     selectItems: { id: string; name: string }[];
     termsAndConditionsProvisioned: boolean;
 }
 
-export const StoreForm = ({ settingsData, storesData, selectItems, termsAndConditionsProvisioned }: StoreFormProps) => {
+export const StoreForm = ({ setShowTermsAndConditions, settingsData, storesData, selectItems, termsAndConditionsProvisioned }: StoreFormProps) => {
     const { i18n } = useCoreContext();
     const { savePayByLinkSettings } = useConfigContext().endpoints;
     const { getValues } = useWizardFormContext<PBLFormValues>();
@@ -43,11 +45,11 @@ export const StoreForm = ({ settingsData, storesData, selectItems, termsAndCondi
             {
                 label: i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction'),
                 onClick: () => {
-                    console.log('TODO: Open terms and conditions');
+                    setShowTermsAndConditions(true);
                 },
             },
         ];
-    }, [canModifySettings]);
+    }, [canModifySettings, setShowTermsAndConditions, i18n]);
 
     return (
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">

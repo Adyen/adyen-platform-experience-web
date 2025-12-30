@@ -6,6 +6,7 @@ import { FieldValues, ValidationRules } from '../../../hooks/form/types';
 import FormField from './FormField';
 import { VisibleField } from './VisibleField';
 import { SelectChangeEvent } from '../FormFields/Select/types';
+import { FieldError } from '../FormFields/FieldError/FieldError';
 
 interface FormSelectProps<TFieldValues> {
     fieldName: FieldValues<TFieldValues>;
@@ -18,11 +19,13 @@ interface FormSelectProps<TFieldValues> {
     isRequired?: boolean;
     validate?: ValidationRules['validate'];
     onChange?: (e: SelectChangeEvent) => void;
+    clearable?: boolean;
     preventInvalidState?: boolean;
 }
 
 export function FormSelect<TFieldValues>({
     className,
+    clearable,
     fieldName,
     filterable,
     hideOptionalLabel,
@@ -45,6 +48,12 @@ export function FormSelect<TFieldValues>({
             setValue(fieldName, '');
         }
     }, [getValues, setValue, items]);
+
+    useEffect(() => {
+        if (items && items.length === 1) {
+            setValue(fieldName, items[0]?.id);
+        }
+    }, [items, setValue, fieldName]);
 
     return (
         <VisibleField name={fieldName}>
@@ -72,12 +81,13 @@ export function FormSelect<TFieldValues>({
                                     isValid={!fieldState.error}
                                     items={items}
                                     filterable={filterable}
+                                    clearable={clearable}
                                     name={fieldName}
                                     onChange={handleChange}
                                     readonly={readonly}
                                     selected={field.value as string}
                                 />
-                                {isInvalid && <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>}
+                                {isInvalid && fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
                             </div>
                         );
                     }}

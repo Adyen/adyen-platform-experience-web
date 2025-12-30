@@ -18,18 +18,30 @@ import { scrollToFirstErrorField } from '../../utils';
 import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
+import PayByLinkSettingsContainer from '../../../PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
+import { StoreIds } from '../../../types';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
 };
 
 const LoadingSkeleton = () => (
     <div className="adyen-pe-pay-by-link-creation-form__skeleton">
-        {[...Array(4)].map((_, index) => (
-            <div key={index} className="adyen-pe-pay-by-link-creation-form__skeleton-item"></div>
+        <div className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--large" />
+        {[...Array(3)].map((_, index) => (
+            <>
+                <div
+                    key={`${index}-small`}
+                    className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--small"
+                />
+                <div
+                    key={`${index}-large`}
+                    className="adyen-pe-pay-by-link-creation-form__skeleton-item adyen-pe-pay-by-link-creation-form__skeleton-item--large"
+                />
+            </>
         ))}
     </div>
 );
@@ -63,9 +75,11 @@ export const PayByLinkCreationFormContainer = ({
         createPBLPaymentLink,
         isDataLoading,
         isFirstLoadDone,
+        selectedStore,
     } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
+    const [showTermsAndConditions, setShowTermsAndConditions] = useState<boolean>(false);
 
     const handleNext = useCallback(
         async (index: number) => {
@@ -136,6 +150,10 @@ export const PayByLinkCreationFormContainer = ({
         }
     };
 
+    const navigateBackFromTermsAndConditions = useCallback(() => {
+        setShowTermsAndConditions(false);
+    }, []);
+
     const onError = (errors: any) => {
         console.log(errors);
         // TODO - Define errorHandling
@@ -156,6 +174,16 @@ export const PayByLinkCreationFormContainer = ({
                     <LoadingSkeleton />
                 </div>
             </div>
+        );
+    }
+
+    if (showTermsAndConditions) {
+        return (
+            <PayByLinkSettingsContainer
+                storeIds={selectedStore}
+                settingsItems={['termsAndConditions']}
+                navigateBack={navigateBackFromTermsAndConditions}
+            />
         );
     }
 
@@ -188,6 +216,7 @@ export const PayByLinkCreationFormContainer = ({
                     >
                         <div>
                             <FormStepRenderer
+                                setShowTermsAndConditions={setShowTermsAndConditions}
                                 currentFormStep={currentFormStep}
                                 settingsData={settingsData}
                                 storeIds={storeIds}

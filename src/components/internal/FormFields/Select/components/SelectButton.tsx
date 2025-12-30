@@ -14,6 +14,7 @@ import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
     DROPDOWN_BUTTON_CLASS,
     DROPDOWN_BUTTON_CLASSNAME,
+    DROPDOWN_BUTTON_CLEAR_CLASS,
     DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
     DROPDOWN_BUTTON_HAS_SELECTION_CLASS,
     DROPDOWN_BUTTON_ICON_CLASS,
@@ -24,6 +25,7 @@ import {
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
 import type { SelectButtonProps, SelectItem } from '../types';
+import { InteractionKeyCode } from '../../../../types';
 
 const SelectButtonElement = <T extends SelectItem>({
     active,
@@ -57,10 +59,11 @@ const SelectButtonElement = <T extends SelectItem>({
 
 const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
     const { i18n } = useCoreContext();
-    const { active, filterable, multiSelect, placeholder, readonly, showList, withoutCollapseIndicator } = props;
+    const { active, clearable, filterable, multiSelect, placeholder, onClear, readonly, showList, withoutCollapseIndicator } = props;
     const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('common.inputs.select.placeholder'), [i18n, placeholder]);
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
+    const showClearButton = useMemo(() => boolOrFalse(clearable) && !!active.length, [active, clearable]);
 
     return (
         <SelectButtonElement
@@ -126,9 +129,24 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                     )}
                 </>
             )}
-            {!withoutCollapseIndicator && (
+            {!withoutCollapseIndicator && !showClearButton && (
                 <span className={DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS}>
                     <Icon name="chevron-down" />
+                </span>
+            )}
+            {showClearButton && (
+                <span
+                    role="button"
+                    tabIndex={0}
+                    className={DROPDOWN_BUTTON_CLEAR_CLASS}
+                    onClick={onClear}
+                    onKeyDown={e => {
+                        if (e.code === InteractionKeyCode.ENTER || e.code === InteractionKeyCode.SPACE) {
+                            onClear?.(e);
+                        }
+                    }}
+                >
+                    <Icon name="cross-circle-fill" />
                 </span>
             )}
         </SelectButtonElement>

@@ -1,14 +1,16 @@
-import { _UIComponentProps, PayByLinkCreationComponentProps } from '../../../../../types';
+import { ExternalUIComponentProps, PayByLinkCreationComponentProps } from '../../../../../types';
 import { PayByLinkCreationFormContainer } from '../PayByLinkCreationFormContainer/PayByLinkCreationFormContainer';
 import '../../PayByLinkCreation.scss';
 import { useState } from 'preact/hooks';
 import { FormSuccess } from '../Form/FormSuccess/FormSuccess';
+import { PaymentLinkDetails } from '../../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails';
 
 type PayByLinkCreationState = 'Creation' | 'Success' | 'Details';
 
-const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationComponentProps>) => {
+const PayByLinkCreationContainer = (props: ExternalUIComponentProps<PayByLinkCreationComponentProps>) => {
     const [state, setState] = useState<PayByLinkCreationState>('Creation');
     const [paymentLinkUrl, setPaymentLinkUrl] = useState<string>('');
+    const [paymentLinkId, setPaymentLinkId] = useState<string>('');
 
     return (
         <div className="adyen-pe-pay-by-link-creation">
@@ -21,6 +23,7 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                                 onPaymentLinkCreated={data => {
                                     props.onPaymentLinkCreated?.(data);
                                     setPaymentLinkUrl(data.paymentLink?.url ?? '');
+                                    setPaymentLinkId(data.paymentLink?.paymentLinkId ?? '');
                                     setState('Success');
                                 }}
                             />
@@ -32,7 +35,7 @@ const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationCo
                             </div>
                         );
                     case 'Details':
-                        return <div>{'Details screen'}</div>;
+                        return <PaymentLinkDetails id={paymentLinkId} />;
                     default:
                         return null;
                 }

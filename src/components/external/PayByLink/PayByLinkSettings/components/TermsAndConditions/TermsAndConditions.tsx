@@ -30,7 +30,19 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
     const [isTermsAndConditionsChanged, setIsTermsAndConditionsChanged] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const userRequirementsInput = useRef(false);
-    const { savedData, setPayload, saveActionCalled, setIsValid, setSaveActionCalled } = usePayByLinkSettingsContext();
+    const {
+        savedData,
+        setPayload,
+        saveActionCalled,
+        setIsValid,
+        isSaving,
+        setSaveActionCalled,
+        isSaveSuccess,
+        setIsSaveError,
+        setIsSaveSuccess,
+        isSaveError,
+        embeddedInOverview,
+    } = usePayByLinkSettingsContext();
 
     useEffect(() => {
         if (isRequirementsChecked && termsAndConditionsURL && isValidURL(termsAndConditionsURL)) {
@@ -39,6 +51,10 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
             setIsValid(false);
         }
     }, [isRequirementsChecked, termsAndConditionsURL, setIsValid, setPayload]);
+
+    useEffect(() => {
+        userRequirementsInput.current = false;
+    }, [savedData]);
 
     useEffect(() => {
         if (saveActionCalled) {
@@ -134,7 +150,12 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                         {i18n.get('payByLink.settings.termsAndConditions.urlInput.label')}
                     </Typography>
                 </label>
-                <InputText uniqueId={checkboxIdentifier.current} value={termsAndConditionsURL} onInput={onTermsAndConditionsURLInput} />
+                <InputText
+                    disabled={isSaving}
+                    uniqueId={checkboxIdentifier.current}
+                    value={termsAndConditionsURL}
+                    onInput={onTermsAndConditionsURLInput}
+                />
                 {showInvalidURL && (
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
                         <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-icon'} />
@@ -154,10 +175,11 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
             <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
                 <Checkbox
                     checked={isRequirementsChecked}
-                    disabled={disabled}
+                    disabled={disabled || isSaving}
                     className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
                     label={checkboxLabel}
                     onInput={onCheckboxInput}
+                    error={showNotCheckedRequirementsError}
                 />
                 {showNotCheckedRequirementsError && (
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
@@ -173,9 +195,29 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 )}
             </div>
             {requirementsAreOpened && (
-                <Modal headerWithBorder={false} isDismissible={false} size={'full-screen'} isOpen={requirementsAreOpened} onClose={closeModal}>
+                <Modal
+                    isOpen={requirementsAreOpened}
+                    onClose={closeModal}
+                    isDismissible={true}
+                    headerWithBorder={false}
+                    size={embeddedInOverview ? 'full-screen' : 'large'}
+                >
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
+            )}
+            {isSaveSuccess && (
+                <Alert
+                    type={AlertTypeOption.SUCCESS}
+                    onClose={() => setIsSaveSuccess(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
+                />
+            )}
+            {isSaveError && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    onClose={() => setIsSaveError(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
+                />
             )}
         </section>
     );

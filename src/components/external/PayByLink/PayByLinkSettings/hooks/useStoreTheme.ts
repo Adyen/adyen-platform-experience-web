@@ -1,10 +1,18 @@
-import { StateUpdater, useMemo } from 'preact/hooks';
+import { StateUpdater, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Dispatch } from 'preact/compat';
+import { getThemePayload } from '../components/PayByLinkSettingsContainer/utils/getThemePayload';
+import { IPayByLinkTheme } from '../../../../../types';
+import { PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
 
-export const useStoreTheme = (selectedStore: string | undefined, enabled: boolean, setEnabled: Dispatch<StateUpdater<boolean>>) => {
+export const useStoreTheme = (
+    selectedStore: string | undefined,
+    enabled: boolean,
+    setEnabled: Dispatch<StateUpdater<boolean>>,
+    setPayload: (payload: PayByLinkSettingsPayload) => void
+) => {
     const { getPayByLinkTheme } = useConfigContext().endpoints;
 
     //TODO: Add error cases and loading cases
@@ -25,8 +33,17 @@ export const useStoreTheme = (selectedStore: string | undefined, enabled: boolea
 
     //TODO: Add IDs for Select component compatibility
     const theme = useMemo(() => {
-        return data;
-    }, [data]);
+        if (!data && !isFetching && !error) return {};
+        return {
+            ...(data?.brandName ? { brandName: data?.brandName } : {}),
+            ...(data?.logoUrl ? { logo: data?.logoUrl } : {}),
+            ...(data?.fullWidthLogoUrl ? { fullWidthLogo: data?.fullWidthLogoUrl } : {}),
+        };
+    }, [data, isFetching, error]);
 
-    return { theme, isFetching };
+    useEffect(() => {
+        setPayload(getThemePayload(theme as IPayByLinkTheme));
+    }, [theme, setPayload]);
+
+    return { theme, isFetching, error };
 };

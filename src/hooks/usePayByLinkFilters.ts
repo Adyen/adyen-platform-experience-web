@@ -2,15 +2,16 @@ import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';
+import { useStores } from './useStores';
 
-const usePayByLinkFilters = (enabled?: boolean) => {
-    const { payByLinkFilters: getPayByLinkFiltersEndpointCall, getPayByLinkStores: getStoresEndpointCall } = useConfigContext().endpoints;
+const usePayByLinkFilters = (storeIds?: string | string[], enabled?: boolean) => {
+    const { payByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
 
     // TODO: Add error case. Fallback can be static values or be received from CDN.
     const {
         data: filters,
         isFetching: isFetchingFilters,
-        error,
+        error: filterError,
     } = useFetch(
         useMemo(
             () => ({
@@ -21,19 +22,7 @@ const usePayByLinkFilters = (enabled?: boolean) => {
         )
     );
 
-    const {
-        data: stores,
-        isFetching: isFetchingStores,
-        error: storeError,
-    } = useFetch(
-        useMemo(
-            () => ({
-                fetchOptions: { enabled: !!getStoresEndpointCall && (enabled ?? true), keepPrevData: true },
-                queryFn: async () => getStoresEndpointCall?.(EMPTY_OBJECT, {}),
-            }),
-            [getStoresEndpointCall, enabled]
-        )
-    );
+    const { filteredStores: stores, isFetching: isFetchingStores, error: storeError } = useStores(storeIds);
 
     const isFetching = isFetchingStores || isFetchingFilters;
 
@@ -41,7 +30,8 @@ const usePayByLinkFilters = (enabled?: boolean) => {
         filters,
         stores,
         isFetching,
-        error,
+        filterError,
+        storeError,
     } as const;
 };
 
