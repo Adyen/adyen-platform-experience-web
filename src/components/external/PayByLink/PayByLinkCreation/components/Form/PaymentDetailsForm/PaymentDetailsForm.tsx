@@ -34,6 +34,7 @@ export const PaymentDetailsForm = ({ timezone, configuration }: PaymentDetailsFo
                 supportText={i18n.get('payByLink.linkCreation.fields.description.supportText')}
             />
             <FormCalendarInput<PBLFormValues>
+                clearable
                 fieldName="deliverAt"
                 label={i18n.get('payByLink.linkCreation.fields.deliverAt.label')}
                 timezone={timezone}

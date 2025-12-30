@@ -39,6 +39,7 @@ export const BillingCountryField = ({
 
     return (
         <FormSelect<PBLFormValues>
+            clearable
             filterable
             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
             fieldName="billingAddress.country"

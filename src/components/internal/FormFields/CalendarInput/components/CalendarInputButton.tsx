@@ -1,17 +1,21 @@
+import { InteractionKeyCode } from '../../../../types';
 import Button from '../../../Button';
 import { ButtonVariant } from '../../../Button/types';
 import Icon from '../../../Icon';
 import cx from 'classnames';
+import { MutableRef } from 'preact/hooks';
 
 interface CalendarInputButtonProps {
     label: string;
     isOpen: boolean;
     isInvalid?: boolean;
     onClick: () => void;
-    buttonRef: React.RefObject<HTMLButtonElement>;
+    onClear?: (e?: Event) => void;
+    showClearButton?: boolean;
+    buttonRef: MutableRef<HTMLButtonElement | null>;
 }
 
-export function CalendarInputButton({ label, isOpen, isInvalid, onClick, buttonRef }: CalendarInputButtonProps) {
+export function CalendarInputButton({ label, isOpen, isInvalid, onClick, onClear, showClearButton, buttonRef }: CalendarInputButtonProps) {
     return (
         <Button
             ref={buttonRef}
@@ -26,7 +30,33 @@ export function CalendarInputButton({ label, isOpen, isInvalid, onClick, buttonR
             className={cx('adyen-pe-button adyen-pe-dropdown__button', {
                 ['adyen-pe-button--invalid']: isInvalid,
             })}
-            iconRight={<Icon className="adyen-pe-dropdown__button-collapse-indicator" name="chevron-down" />}
+            iconRight={
+                showClearButton ? (
+                    <>
+                        <span
+                            role="button"
+                            tabIndex={0}
+                            className="adyen-pe-dropdown__button-clear"
+                            onClick={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                onClear?.(e as unknown as Event);
+                            }}
+                            onKeyDown={e => {
+                                if (e.code === InteractionKeyCode.ENTER || e.code === InteractionKeyCode.SPACE) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onClear?.(e as unknown as Event);
+                                }
+                            }}
+                        >
+                            <Icon name="cross-circle-fill" />
+                        </span>
+                    </>
+                ) : (
+                    <Icon className="adyen-pe-dropdown__button-collapse-indicator" name="chevron-down" />
+                )
+            }
         >
             <span>{label}</span>
         </Button>

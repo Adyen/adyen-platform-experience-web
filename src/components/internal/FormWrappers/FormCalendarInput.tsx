@@ -7,12 +7,13 @@ import { CalendarInput } from '../FormFields/CalendarInput/CalendarInput';
 import { VisibleField } from './VisibleField';
 
 interface FormCalendarInputProps<TFieldValues> {
+    clearable?: boolean;
     fieldName: FieldValues<TFieldValues>;
     label: string;
     timezone?: string;
 }
 
-export function FormCalendarInput<TFieldValues>({ fieldName, label, timezone }: FormCalendarInputProps<TFieldValues>) {
+export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label, timezone }: FormCalendarInputProps<TFieldValues>) {
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
 
     const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
@@ -33,6 +34,7 @@ export function FormCalendarInput<TFieldValues>({ fieldName, label, timezone }: 
                                     value={field.value as string}
                                     onInput={field.onInput}
                                     isInvalid={!!fieldState.error && fieldState.isTouched}
+                                    clearable={clearable}
                                     timezone={timezone}
                                 />
                                 <span className="adyen-pe-input__invalid-value">{fieldState.error?.message}</span>
