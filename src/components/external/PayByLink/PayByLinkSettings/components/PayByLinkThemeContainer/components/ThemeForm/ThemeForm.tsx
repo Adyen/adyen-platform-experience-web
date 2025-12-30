@@ -13,14 +13,18 @@ import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';
 import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
+import Alert from '../../../../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../../../../internal/Alert/types';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
-    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid } = usePayByLinkSettingsContext();
+    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaveSuccess, isSaveError, setIsSaveError, setIsSaveSuccess, isSaving } =
+        usePayByLinkSettingsContext();
 
-    const [brandName, setBrandName] = useState(theme?.brandName ?? undefined);
-    const [logoUrl, setLogoUrl] = useState(theme?.logoUrl ?? null);
-    const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(theme?.fullWidthLogoUrl ?? null);
-    const [themePayload, setThemePayload] = useState<FormData | undefined>(initialPayload ?? undefined);
+    const { brandName: initialBrandName, logo, fullWidthLogo } = theme;
+    const [brandName, setBrandName] = useState(initialBrandName ?? undefined);
+    const [logoUrl, setLogoUrl] = useState(logo ?? null);
+    const [fullWidthLogoUrl, setFullWidthLogoUrl] = useState(fullWidthLogo ?? null);
+    const [themePayload, setThemePayload] = useState<FormData | undefined>();
     const [showMissingBrandName, setShowMissingBrandName] = useState(false);
 
     const brandInputId = useUniqueId();
@@ -28,10 +32,11 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
 
     useEffect(() => {
         setIsValid(!!brandName);
-        if (brandName) {
-            setPayload(themePayload);
-        }
     }, [brandName, setIsValid, themePayload, setPayload]);
+
+    useEffect(() => {
+        setThemePayload(initialPayload);
+    }, [initialPayload]);
 
     useEffect(() => {
         if (saveActionCalled) {
@@ -42,13 +47,18 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
         }
     }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName]);
 
-    const addFileToThemePayload = useCallback((field: string, file: File) => {
-        setThemePayload(previousFormData => {
-            const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
-            nextFormData.set(field, file, file.name);
-            return nextFormData;
-        });
-    }, []);
+    const addFileToThemePayload = useCallback(
+        (field: string, file: File) => {
+            setThemePayload(previousFormData => {
+                const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
+                nextFormData.set(field, file, file.name);
+                nextFormData.set(field, file, file.name);
+                setPayload(nextFormData);
+                return nextFormData;
+            });
+        },
+        [setPayload]
+    );
 
     const onBrandNameChange = useCallback(
         (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
@@ -58,22 +68,27 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
             setThemePayload(previousFormData => {
                 const nextFormData = previousFormData ? cloneFormData(previousFormData) : new FormData();
                 nextFormData.set(ThemeFormDataRequest.BRAND, value);
+                setPayload(nextFormData);
                 return nextFormData;
             });
         },
-        [setShowMissingBrandName, setBrandName, setThemePayload]
+        [setShowMissingBrandName, setBrandName, setThemePayload, setPayload]
     );
 
-    const removeFieldFromThemePayload = useCallback((field: string) => {
-        setThemePayload(previousFormData => {
-            if (previousFormData && previousFormData.has(field)) {
-                const nextFormData = cloneFormData(previousFormData);
-                nextFormData.delete(field);
-                return nextFormData;
-            }
-            return previousFormData;
-        });
-    }, []);
+    const removeFieldFromThemePayload = useCallback(
+        (field: string) => {
+            setThemePayload(previousFormData => {
+                if (previousFormData && previousFormData.has(field)) {
+                    const nextFormData = cloneFormData(previousFormData);
+                    nextFormData.delete(field);
+                    setPayload(nextFormData);
+                    return nextFormData;
+                }
+                return previousFormData;
+            });
+        },
+        [setPayload]
+    );
 
     const logoPreview = useCallback(
         (type: LogoTypes, file: File) => {
@@ -124,46 +139,63 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     );
 
     return (
-        <div className="adyen-pe-pay-by-link-theme-form">
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__brand-input">
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('payByLink.settings.theme.brandName.input.label')}
-                    </Typography>
-                </label>
-                <InputText
-                    type="text"
-                    lang={i18n.locale}
-                    uniqueId={brandInputId}
-                    value={brandName}
-                    onInput={onBrandNameChange}
-                    placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
-                />
-                {showMissingBrandName && (
-                    <div className="adyen-pe-pay-by-link-theme-form__error">
-                        <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
-                        <Typography
-                            className={'adyen-pe-pay-by-link-theme-form__error-text'}
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.BODY}
-                        >
-                            {i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing')}
+        <div className="adyen-pe-pay-by-link-theme-form-container">
+            <div className="adyen-pe-pay-by-link-theme-form">
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <label htmlFor={brandInputId} aria-labelledby={brandInputId} className="adyen-pe-pay-by-link-theme-form__brand-input">
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                            {i18n.get('payByLink.settings.theme.brandName.input.label')}
                         </Typography>
-                    </div>
-                )}
+                    </label>
+                    <InputText
+                        type="text"
+                        disabled={!!isSaving}
+                        lang={i18n.locale}
+                        uniqueId={brandInputId}
+                        value={brandName}
+                        onInput={onBrandNameChange}
+                        placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
+                    />
+                    {showMissingBrandName && (
+                        <div className="adyen-pe-pay-by-link-theme-form__error">
+                            <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-theme-form__error-icon'} />
+                            <Typography
+                                className={'adyen-pe-pay-by-link-theme-form__error-text'}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.BODY}
+                            >
+                                {i18n.get('payByLink.settings.theme.inputs.brandName.errors.missing')}
+                            </Typography>
+                        </div>
+                    )}
+                </div>
+                {logoOptionsList.map(logoType => {
+                    const url = getLogoUrl(logoType);
+                    return (
+                        <div key={logoType} className={'adyen-pe-pay-by-link-settings__input-container '}>
+                            {url ? (
+                                <LogoPreview disabled={!!isSaving} logoType={logoType} logoURL={url} onRemoveLogo={onRemoveLogoUrl} />
+                            ) : (
+                                <LogoInput disabled={!!isSaving} logoType={logoType} onFileInputChange={onLogoChange} />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
-            {logoOptionsList.map(logoType => {
-                const url = getLogoUrl(logoType);
-                return (
-                    <div key={logoType} className="adyen-pe-pay-by-link-settings__input-container">
-                        {url ? (
-                            <LogoPreview logoType={logoType} logoURL={url} onRemoveLogo={onRemoveLogoUrl} />
-                        ) : (
-                            <LogoInput logoType={logoType} onFileInputChange={onLogoChange} />
-                        )}
-                    </div>
-                );
-            })}
+            {isSaveSuccess && (
+                <Alert
+                    type={AlertTypeOption.SUCCESS}
+                    onClose={() => setIsSaveSuccess(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
+                />
+            )}
+            {isSaveError && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    onClose={() => setIsSaveError(false)}
+                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
+                />
+            )}
         </div>
     );
 };

@@ -15,18 +15,19 @@ const StoreField = ({ items }: StoreFieldProps) => {
     const { setFieldDisplayValue } = useWizardFormContext<PBLFormValues>();
 
     const handleChange = useCallback(
-        ({ target: { value } }: SelectChangeEvent) => {
-            setFieldDisplayValue('store', items.find(item => item.id === value)?.name);
+        (event: SelectChangeEvent) => {
+            const displayValue = items.find(item => item.id === event.target.value)?.name;
+            setFieldDisplayValue('store', displayValue);
         },
-        [items, setFieldDisplayValue]
+        [items]
     );
 
     return (
         <FormSelect<PBLFormValues>
             fieldName={'store'}
-            onChange={handleChange}
             label={i18n.get('payByLink.linkCreation.fields.store.label')}
             items={items}
+            onChange={handleChange}
             preventInvalidState
         />
     );

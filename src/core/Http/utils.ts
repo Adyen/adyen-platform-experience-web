@@ -1,6 +1,6 @@
 import { isNullish } from '../../utils';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError, { InvalidField } from '../Errors/AdyenPlatformExperienceError';
 
 const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
 
@@ -85,6 +85,7 @@ export function handleFetchError({
     errorCode,
     type = ErrorTypes.NETWORK_ERROR,
     requestId,
+    invalidFields,
 }: {
     message: string;
     level: ErrorLevel | undefined;
@@ -92,6 +93,7 @@ export function handleFetchError({
     type?: ErrorTypes;
     requestId?: string;
     status?: number;
+    invalidFields?: InvalidField[];
 }) {
     switch (level) {
         case 'silent': {
@@ -103,7 +105,7 @@ export function handleFetchError({
             break;
         case 'error':
         default:
-            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode);
+            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode, invalidFields);
     }
 }
 

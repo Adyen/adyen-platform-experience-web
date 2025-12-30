@@ -19,11 +19,13 @@ interface FormSelectProps<TFieldValues> {
     isRequired?: boolean;
     validate?: ValidationRules['validate'];
     onChange?: (e: SelectChangeEvent) => void;
+    clearable?: boolean;
     preventInvalidState?: boolean;
 }
 
 export function FormSelect<TFieldValues>({
     className,
+    clearable,
     fieldName,
     filterable,
     hideOptionalLabel,
@@ -79,6 +81,7 @@ export function FormSelect<TFieldValues>({
                                     isValid={!fieldState.error}
                                     items={items}
                                     filterable={filterable}
+                                    clearable={clearable}
                                     name={fieldName}
                                     onChange={handleChange}
                                     readonly={readonly}

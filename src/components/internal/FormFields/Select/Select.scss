@@ -72,6 +72,43 @@
         }
     }
 
+    &-clear {
+        @extend %adyen-pe-dropdown-decoration;
+        @extend %adyen-pe-dropdown-decoration--right;
+
+        background: none;
+        border: 0;
+        cursor: pointer;
+        position: relative;
+        transition: color 150ms ease;
+        z-index: 0;
+
+        &::before {
+            background-color: transparent;
+            border-radius: 9999px;
+            content: '';
+            inset: -4px;
+            position: absolute;
+            transition: background-color 150ms ease;
+            z-index: 0;
+        }
+
+        svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        &:hover::before,
+        &:focus-visible::before {
+            background-color: style.token(color-background-tertiary-hover);
+        }
+
+        &:hover,
+        &:focus-visible {
+            color: style.token(color-label-primary-hover);
+        }
+    }
+
     &-multiselect-counter {
         display: none;
 

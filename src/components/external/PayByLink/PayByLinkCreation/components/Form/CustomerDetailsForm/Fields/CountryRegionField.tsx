@@ -29,6 +29,7 @@ export const CountryRegionField = ({ countriesData, isFetchingCountries, country
 
     return (
         <FormSelect<PBLFormValues>
+            clearable
             filterable
             fieldName="countryCode"
             label={i18n.get('payByLink.linkCreation.fields.country.label')}

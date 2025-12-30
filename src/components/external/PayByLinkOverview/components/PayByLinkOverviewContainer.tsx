@@ -6,17 +6,14 @@ import Spinner from '../../../internal/Spinner';
 
 function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayByLinkOverviewComponentProps>) {
     //TODO: Add error case
-    const { filters, isFetching, stores, error } = usePayByLinkFilters();
+    const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds, false);
 
     //TODO: Change loading filters case
     if (isFetching) return <Spinner />;
 
-    //TODO: Change error
-    if (!stores?.data || stores?.data?.length === 0) return <>Stores cannot be loaded</>;
-
     return (
         <>
-            <PayByLinkOverview {...props} filterParams={filters} stores={stores.data} isFiltersLoading={isFetching} />
+            <PayByLinkOverview {...props} filterParams={filters} stores={stores} isFiltersLoading={isFetching} />
         </>
     );
 }

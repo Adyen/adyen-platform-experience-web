@@ -37,7 +37,15 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     const storesSelectorItems = useMemo(() => {
         const stores: PayByLinkStoreDTO[] = storesData?.data ?? [];
         return stores
-            .filter(store => !storeIds || storeIds.includes(store.storeCode || ''))
+            .filter(({ storeId }) => {
+                if (!storeIds) {
+                    return true;
+                }
+                if (Array.isArray(storeIds) && storeId) {
+                    return storeIds.includes(storeId);
+                }
+                return storeIds === storeId;
+            })
             .map(({ storeCode, storeId }) => ({
                 id: storeId || '',
                 name: storeCode || '',

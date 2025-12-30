@@ -24,12 +24,6 @@ $adyen-pe-one-eighth: math.div(1, 8);
     width: 100%;
 
     &--mobile {
-        @include mixins.adyen-pe-error-message-display-mobile-fix {
-            #{$adyen-pe-self}__error-container {
-                position: relative;
-            }
-        }
-
         .adyen-pe-structured-list__item {
             flex-direction: column;
         }
