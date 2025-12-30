@@ -4,6 +4,7 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { PayByLinkCreationMeta } from '../components/payByLinkCreation';
 import { action } from '@storybook/addon-actions';
 import { PayByLinkCreationComponentProps } from '../../src/components/types';
+import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../mocks/mock-server/payByLink';
 
 const meta: Meta<ElementProps<typeof PayByLinkCreation>> = { ...PayByLinkCreationMeta, title: 'Mocked/Pay by link Creation' };
 
@@ -65,6 +66,61 @@ export const Prefilled: ElementStory<typeof PayByLinkCreation> = {
         onPaymentLinkCreated: action('Payment link created'),
         onCreationDismiss: action('Creation dismissed'),
         storeIds: ['STORE_NY_001'],
+    },
+};
+
+export const StoresMisconfiguration: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Stores misconfiguration',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+    },
+    parameters: {
+        msw: {
+            ...PayByLinkOverviewMockedResponses.storesMisconfiguration,
+        },
+    },
+};
+
+export const SubmitNetworkError: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Error - Submit Network Error',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.submitNetworkError,
+        },
+    },
+};
+
+export const SubmitInvalidFieldError: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Error - Submit Invalid Field Error',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.submitInvalidFields,
+        },
+    },
+};
+
+export const ConfigurationError: ElementStory<typeof PayByLinkCreation> = {
+    name: 'Error -Configuration Error',
+    args: {
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.configError,
+        },
     },
 };
 

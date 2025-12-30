@@ -1,6 +1,6 @@
 import Typography from '../../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { TypographyVariant } from '../../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
 import { Stepper } from '../../../../../internal/Stepper/Stepper';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { PBLFormValues, LinkCreationFormStep } from '../types';
@@ -20,12 +20,20 @@ import { containerQueries } from '../../../../../../hooks/useResponsiveContainer
 import { FormStepRenderer } from './FormStepRenderer';
 import PayByLinkSettingsContainer from '../../../PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
 import { StoreIds } from '../../../types';
+import { AlertTypeOption } from '../../../../../internal/Alert/types';
+import Alert from '../../../../../internal/Alert/Alert';
+import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { useInvalidFieldsConfig } from '../../hooks/useInvalidFieldsConfig';
+import { AdyenErrorResponse } from '../../../../../../core/Http/types';
+import { Translation } from '../../../../../internal/Translation';
+import CopyText from '../../../../../internal/CopyText/CopyText';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: StoreIds;
+    onContactSupport?: () => void;
 };
 
 const LoadingSkeleton = () => (
@@ -51,6 +59,7 @@ export const PayByLinkCreationFormContainer = ({
     storeIds,
     onCreationDismiss,
     onPaymentLinkCreated,
+    onContactSupport,
 }: PayByLinkCreationFormContainerProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
@@ -119,6 +128,7 @@ export const PayByLinkCreationFormContainer = ({
             onCreationDismiss?.();
             return;
         }
+        submitMutation.reset();
         previousStep();
     };
 
@@ -163,6 +173,87 @@ export const PayByLinkCreationFormContainer = ({
     const timezone = undefined;
 
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
+
+    const accountIsMisconfigured = useMemo(() => {
+        return storesData && storesData.data && storesData.data.length === 0;
+    }, [storesData]);
+
+    const displayConfigurationError = useMemo(() => {
+        return currentFormStep !== 'store' && !configurationData;
+    }, [configurationData, currentFormStep]);
+
+    const nextButtonIsDisabled = useMemo(() => {
+        return !termsAndConditionsProvisioned || accountIsMisconfigured || displayConfigurationError;
+    }, [accountIsMisconfigured, displayConfigurationError, termsAndConditionsProvisioned]);
+
+    const { invalidFieldsConfig } = useInvalidFieldsConfig();
+
+    const getMappedInvalidFields = useCallback(
+        (error: Error | AdyenErrorResponse | null) => {
+            if (!error || !('invalidFields' in error) || !error.invalidFields?.length) return [];
+
+            return error.invalidFields
+                .map((field: { name: string; message: string }) => {
+                    const fieldKey = invalidFieldsConfig.fields?.[field.name];
+                    const messageKey = invalidFieldsConfig.messages?.[field.message];
+
+                    if (!fieldKey && !messageKey) return null;
+
+                    const fieldName = fieldKey ? i18n.get(fieldKey) : field.name;
+
+                    if (!messageKey) return `${fieldName}`;
+
+                    const message = i18n.get(messageKey);
+
+                    return `${fieldName} (${message})`;
+                })
+                .filter((msg: string | null): msg is string => msg !== null);
+        },
+        [i18n, invalidFieldsConfig]
+    );
+
+    const getSubmitErrorLabel = useCallback(
+        (error: Error | AdyenErrorResponse | null) => {
+            if (getMappedInvalidFields(error).length) return i18n.get('payByLink.linkCreation.form.alert.invalidFields');
+            return i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong');
+        },
+        [getMappedInvalidFields, i18n]
+    );
+
+    const renderErrorDescription = useMemo(() => {
+        const submitError = submitMutation.error as AdyenErrorResponse;
+        const mappedErrors = getMappedInvalidFields(submitError);
+        const hasInvalidFields = mappedErrors.length > 0;
+
+        return (
+            <div className="adyen-pe-pay-by-link-creation-form__error-alert">
+                {hasInvalidFields && (
+                    <ul className="adyen-pe-pay-by-link-creation-form__invalid-fields-error">
+                        {mappedErrors.map((msg, idx) => (
+                            <li key={idx}>
+                                <Typography variant={TypographyVariant.CAPTION}>{msg}</Typography>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                {onContactSupport && (
+                    <div className="adyen-pe-pay-by-link-creation-form__contact-support">
+                        <Translation
+                            translationKey="payByLink.linkCreation.form.error.submit.contactSupport"
+                            fills={{
+                                contactSupport: (
+                                    <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                        {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                    </Button>
+                                ),
+                                errorCode: <CopyText stronger textToCopy={submitError?.requestId || submitError?.errorCode} />,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        );
+    }, [getMappedInvalidFields, i18n, onContactSupport, submitMutation.error]);
 
     if (!isFirstLoadDone) {
         return (
@@ -234,6 +325,42 @@ export const PayByLinkCreationFormContainer = ({
                             />
                         </div>
 
+                        {displayConfigurationError && (
+                            <ErrorMessageDisplay
+                                condensed
+                                title={'common.errors.somethingWentWrong'}
+                                withImage
+                                absolutePosition={false}
+                                outlined={false}
+                                withBackground={false}
+                                message={['payByLink.linkCreation.errors.unavailable', 'common.errors.retry']}
+                            />
+                        )}
+                        {accountIsMisconfigured && (
+                            <Alert
+                                type={AlertTypeOption.WARNING}
+                                title={i18n.get('payByLink.overview.errors.accountConfiguration')}
+                                description={
+                                    <div className="adyen-pe-pay-by-link-creation-form__warning-alert">
+                                        <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
+                                            {i18n.get('common.errors.contactSupport')}
+                                        </Typography>
+                                        {onContactSupport ? (
+                                            <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                                {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                            </Button>
+                                        ) : null}
+                                    </div>
+                                }
+                            />
+                        )}
+                        {submitMutation.isError && (
+                            <Alert
+                                type={AlertTypeOption.CRITICAL}
+                                title={getSubmitErrorLabel(submitMutation.error)}
+                                description={renderErrorDescription}
+                            />
+                        )}
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
                             {(!isFirstStep || onCreationDismiss) && (
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
@@ -246,7 +373,7 @@ export const PayByLinkCreationFormContainer = ({
                                 variant={ButtonVariant.PRIMARY}
                                 onClick={!isLastStep ? handleContinue : undefined}
                                 state={isNextStepLoading ? 'loading' : undefined}
-                                disabled={!termsAndConditionsProvisioned}
+                                disabled={nextButtonIsDisabled}
                                 iconRight={<Icon name="arrow-right" />}
                             >
                                 {isLastStep
