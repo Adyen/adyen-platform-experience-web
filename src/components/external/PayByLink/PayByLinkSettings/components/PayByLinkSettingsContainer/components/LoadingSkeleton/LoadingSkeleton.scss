@@ -1,0 +1,26 @@
+@use '../../../../../../../../style';
+@use '../../../../../../../../style/skeleton' as skeleton;
+
+.adyen-pe-pay-by-link-settings {
+    &__skeleton {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+
+        &-item {
+            border-radius: style.token(border-radius-m);
+            color: style.token(color-label-primary);
+            cursor: pointer;
+            display: block;
+            font: inherit;
+            height: 20px;
+            justify-content: space-between;
+            padding: style.token(spacer-070) style.token(spacer-060);
+            width: 100%;
+
+            /* stylelint-disable-next-line order/order */
+            @include skeleton.adyen-pe-skeleton-animation();
+        }
+    }
+}

@@ -5,34 +5,21 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { useState, useEffect } from 'preact/hooks';
-import { useStoreTermsAndConditions } from '../../hooks/useStoreTermsAndConditions';
-import Spinner from '../../../../../internal/Spinner';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { activeMenuItem, selectedStore, setPayload, setSavedData } = usePayByLinkSettingsContext();
-    const [enabled, setEnabled] = useState(true);
+    const { selectedStore, setPayload, setSavedData, savedData: termsAndConditionsData } = usePayByLinkSettingsContext();
     const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
-        setEnabled(true);
-    }, [activeMenuItem, selectedStore]);
-
-    const { data, isFetching } = useStoreTermsAndConditions(selectedStore, enabled, setEnabled);
-
-    useEffect(() => {
-        if (data && !initialData) {
-            setPayload(data);
-            setSavedData(data);
-            setInitialData(data);
+        if (termsAndConditionsData && !initialData && isTermsAndConditionsData(termsAndConditionsData)) {
+            setInitialData(termsAndConditionsData);
         }
-    }, [data, setPayload, setSavedData, initialData]);
+    }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
 
-    if (!data || !selectedStore || !isTermsAndConditionsData(data) || !initialData) return null;
-
-    if (isFetching) return <Spinner size={'x-small'} />;
+    if (!selectedStore || !termsAndConditionsData || !isTermsAndConditionsData(termsAndConditionsData) || !initialData) return null;
 
     return (
         <section className="adyen-pe-pay-by-link-settings">
@@ -46,7 +33,7 @@ const TermsAndConditionsContainer = () => {
                     </Typography>
                 </div>
             </div>
-            <TermsAndConditions data={data} initialData={initialData} />
+            <TermsAndConditions data={termsAndConditionsData} initialData={initialData} />
         </section>
     );
 };

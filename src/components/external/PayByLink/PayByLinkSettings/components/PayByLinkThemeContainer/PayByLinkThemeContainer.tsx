@@ -1,39 +1,24 @@
 import './PayByLinkThemeContainer.scss';
-import Spinner from '../../../../../internal/Spinner';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { useEffect, useState } from 'preact/hooks';
-import { getThemePayload } from '../PayByLinkSettingsContainer/utils/getThemePayload';
-import { useStoreTheme } from '../../hooks/useStoreTheme';
 import { ThemeForm } from './components/ThemeForm';
+import { isTermsAndConditionsData, isThemePayload } from './types';
 
 const PayByLinkThemeContainer = () => {
     const { i18n } = useCoreContext();
-    const { activeMenuItem, selectedStore, setPayload, setSavedData } = usePayByLinkSettingsContext();
-    const [enabled, setEnabled] = useState(true);
+    const { selectedStore, payload, setSavedData, savedData: theme } = usePayByLinkSettingsContext();
     const [initialPayload, setInitialPayload] = useState<FormData>();
 
     useEffect(() => {
-        setEnabled(true);
-    }, [activeMenuItem, selectedStore]);
-
-    const { theme, isFetching } = useStoreTheme(selectedStore, enabled, setEnabled);
-
-    useEffect(() => {
-        if (theme && !initialPayload) {
-            const themeData = { brandName: theme.brandName, logo: theme.logoUrl, fullWidthLogo: theme.fullWidthLogoUrl };
-            const initialThemePayload = getThemePayload(themeData);
-            setPayload(initialThemePayload);
-            setSavedData(theme);
-            setInitialPayload(initialThemePayload);
+        if (isThemePayload(payload)) {
+            setInitialPayload(payload);
         }
-    }, [theme, setPayload, setSavedData, setInitialPayload, initialPayload]);
+    }, [payload, setSavedData, setInitialPayload]);
 
-    if (!theme || !selectedStore || !initialPayload) return null;
-
-    if (isFetching) return <Spinner size={'x-small'} />;
+    if (!selectedStore || !theme || isTermsAndConditionsData(theme) || !initialPayload) return null;
 
     return (
         <section className="adyen-pe-pay-by-link-theme">
