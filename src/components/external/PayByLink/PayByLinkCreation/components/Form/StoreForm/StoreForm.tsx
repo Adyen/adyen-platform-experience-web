@@ -10,6 +10,7 @@ import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/Wiz
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO } from '../../../../../../../types';
 import { Dispatch } from 'preact/compat';
 import { StoreIds } from '../../../../types';
+import './StoreForm.scss';
 
 interface StoreFormProps {
     setShowTermsAndConditions: Dispatch<StateUpdater<boolean>>;
@@ -56,6 +57,7 @@ export const StoreForm = ({ setShowTermsAndConditions, settingsData, storesData,
             <StoreField items={selectItems} />
             {settingsData && storesData && selectedStoreId && !termsAndConditionsProvisioned && (
                 <Alert
+                    className="adyen-pe-pay-by-link-creation-form__tc-alert"
                     title={i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle')}
                     type={AlertTypeOption.WARNING}
                     description={alertLabel && i18n.get(alertLabel)}
