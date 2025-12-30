@@ -16,24 +16,27 @@
     }
 
     &__status {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 22px;
         width: 60px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__amount {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 34px;
         width: 180px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__expiration-date {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 20px;
         width: 390px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__tabs-container {
@@ -47,10 +50,11 @@
     }
 
     &__tab-label {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 26px;
         width: 120px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__fields-container {
@@ -67,16 +71,18 @@
     }
 
     &__field-label {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 20px;
         width: 180px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__field-value {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: style.token(border-radius-s);
         height: 20px;
         width: 300px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 }
