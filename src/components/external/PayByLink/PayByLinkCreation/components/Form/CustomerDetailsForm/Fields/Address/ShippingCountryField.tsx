@@ -51,6 +51,7 @@ export const ShippingCountryField = ({
 
     return (
         <FormSelect<PBLFormValues>
+            clearable
             filterable
             fieldName="deliveryAddress.country"
             label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.country.label')}

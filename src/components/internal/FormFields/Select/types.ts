@@ -28,6 +28,7 @@ export interface SelectItem<T extends string = string> {
 export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     className?: string;
     classNameModifiers?: string[];
+    clearable?: boolean;
     filterable?: boolean;
     isCollatingErrors?: boolean;
     isInvalid?: boolean;
@@ -62,6 +63,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     active: readonly T[];
     ariaDescribedBy?: string;
     className?: string;
+    clearable?: boolean;
     filterable: boolean;
     filterInputRef?: Ref<HTMLInputElement>;
     id: string;
@@ -70,6 +72,7 @@ export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttrib
     isValid?: boolean;
     multiSelect?: boolean;
     name?: string;
+    onClear?: (evt?: Event) => any;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
     onFilterInputKeyDown?: (evt: KeyboardEvent) => any;
     onInput?: (evt: Event) => any;
