@@ -1,4 +1,4 @@
-import { isUndefined, uniqueId } from '../../../../../../utils';
+import { uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
