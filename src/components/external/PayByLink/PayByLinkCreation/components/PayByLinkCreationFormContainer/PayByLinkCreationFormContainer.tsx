@@ -19,12 +19,13 @@ import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveCon
 import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
 import PayByLinkSettingsContainer from '../../../PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
+import { StoreIds } from '../../../types';
 
 type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
 };
 
 const LoadingSkeleton = () => (

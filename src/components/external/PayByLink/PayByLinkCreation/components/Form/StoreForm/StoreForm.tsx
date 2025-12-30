@@ -9,10 +9,11 @@ import { PBLFormValues } from '../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { PayByLinkSettingsDTO, PayByLinkStoreDTO } from '../../../../../../../types';
 import { Dispatch } from 'preact/compat';
+import { StoreIds } from '../../../../types';
 
 interface StoreFormProps {
     setShowTermsAndConditions: Dispatch<StateUpdater<boolean>>;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     settingsData?: PayByLinkSettingsDTO;
     storesData?: PayByLinkStoreDTO[];
     selectItems: { id: string; name: string }[];

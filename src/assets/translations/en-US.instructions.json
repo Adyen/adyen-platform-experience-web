@@ -358,6 +358,7 @@
     "payByLink.overview.filters.types.paymentLinkID.label": "Label for the payment link ID filter field in the payment links overview.",
     "payByLink.overview.filters.types.status.label": "Label for the status filter field in the payment links overview.",
     "payByLink.overview.filters.types.stores.label": "Label for the stores filter field in the payment links overview.",
+    "payByLink.overview.list.actions.createPaymentLink": "Create payment link button label",
     "payByLink.overview.list.fields.amount": "Column header label for the payment amount in the payment links list.",
     "payByLink.overview.list.fields.createdAt": "Column header label for the creation date in the payment links list.",
     "payByLink.overview.list.fields.currency": "Column header label for the currency in the payment links list.",
