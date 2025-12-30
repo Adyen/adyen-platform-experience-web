@@ -1,3 +1,4 @@
+import { InteractionKeyCode } from '../../../../types';
 import Button from '../../../Button';
 import { ButtonVariant } from '../../../Button/types';
 import Icon from '../../../Icon';
@@ -42,7 +43,7 @@ export function CalendarInputButton({ label, isOpen, isInvalid, onClick, onClear
                                 onClear?.(e as unknown as Event);
                             }}
                             onKeyDown={e => {
-                                if (e.key === 'Enter' || e.key === ' ') {
+                                if (e.code === InteractionKeyCode.ENTER || e.code === InteractionKeyCode.SPACE) {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     onClear?.(e as unknown as Event);

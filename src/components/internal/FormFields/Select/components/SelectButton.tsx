@@ -25,6 +25,7 @@ import {
     DROPDOWN_BUTTON_VALID_CLASS,
 } from '../constants';
 import type { SelectButtonProps, SelectItem } from '../types';
+import { InteractionKeyCode } from '../../../../types';
 
 const SelectButtonElement = <T extends SelectItem>({
     active,
@@ -140,7 +141,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                     className={DROPDOWN_BUTTON_CLEAR_CLASS}
                     onClick={onClear}
                     onKeyDown={e => {
-                        if (e.key === 'Enter' || e.key === ' ') {
+                        if (e.code === InteractionKeyCode.ENTER || e.code === InteractionKeyCode.SPACE) {
                             onClear?.(e);
                         }
                     }}
