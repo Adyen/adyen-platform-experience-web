@@ -219,6 +219,41 @@ export const PayByLinkCreationFormContainer = ({
         [getMappedInvalidFields, i18n]
     );
 
+    const renderErrorDescription = useMemo(() => {
+        const submitError = submitMutation.error as AdyenErrorResponse;
+        const mappedErrors = getMappedInvalidFields(submitError);
+        const hasInvalidFields = mappedErrors.length > 0;
+
+        return (
+            <div className="adyen-pe-pay-by-link-creation-form__error-alert">
+                {hasInvalidFields && (
+                    <ul className="adyen-pe-pay-by-link-creation-form__invalid-fields-error">
+                        {mappedErrors.map((msg, idx) => (
+                            <li key={idx}>
+                                <Typography variant={TypographyVariant.CAPTION}>{msg}</Typography>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                {onContactSupport && (
+                    <div className="adyen-pe-pay-by-link-creation-form__contact-support">
+                        <Translation
+                            translationKey="payByLink.linkCreation.form.error.submit.contactSupport"
+                            fills={{
+                                contactSupport: (
+                                    <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
+                                        {i18n.get('common.actions.contactSupport.labels.reachOut')}
+                                    </Button>
+                                ),
+                                errorCode: <CopyText stronger textToCopy={submitError?.requestId || submitError?.errorCode} />,
+                            }}
+                        />
+                    </div>
+                )}
+            </div>
+        );
+    }, [getMappedInvalidFields, i18n, onContactSupport, submitMutation.error]);
+
     if (!isFirstLoadDone) {
         return (
             <div className="adyen-pe-pay-by-link-creation-form__component">
@@ -322,42 +357,7 @@ export const PayByLinkCreationFormContainer = ({
                             <Alert
                                 type={AlertTypeOption.CRITICAL}
                                 title={getSubmitErrorLabel(submitMutation.error)}
-                                description={(() => {
-                                    const submitError = submitMutation.error as AdyenErrorResponse;
-                                    const mappedErrors = getMappedInvalidFields(submitError);
-                                    const hasInvalidFields = mappedErrors.length > 0;
-
-                                    return (
-                                        <div className="adyen-pe-pay-by-link-creation-form__error-alert">
-                                            {hasInvalidFields && (
-                                                <ul className="adyen-pe-pay-by-link-creation-form__invalid-fields-error">
-                                                    {mappedErrors.map((msg, idx) => (
-                                                        <li key={idx}>
-                                                            <Typography variant={TypographyVariant.CAPTION}>{msg}</Typography>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            )}
-                                            {onContactSupport && (
-                                                <div className="adyen-pe-pay-by-link-creation-form__contact-support">
-                                                    <Translation
-                                                        translationKey="payByLink.linkCreation.form.error.submit.contactSupport"
-                                                        fills={{
-                                                            contactSupport: (
-                                                                <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
-                                                                    {i18n.get('common.actions.contactSupport.labels.reachOut')}
-                                                                </Button>
-                                                            ),
-                                                            errorCode: (
-                                                                <CopyText stronger textToCopy={submitError?.requestId || submitError?.errorCode} />
-                                                            ),
-                                                        }}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })()}
+                                description={renderErrorDescription}
                             />
                         )}
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
