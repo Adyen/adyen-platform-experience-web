@@ -6,10 +6,11 @@ import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/c
 import { useEffect, useState } from 'preact/hooks';
 import { ThemeForm } from './components/ThemeForm';
 import { isTermsAndConditionsData, isThemePayload } from './types';
+import LoadingSkeleton from '../PayByLinkSettingsContainer/components/LoadingSkeleton/LoadingSkeleton';
 
 const PayByLinkThemeContainer = () => {
     const { i18n } = useCoreContext();
-    const { selectedStore, payload, setSavedData, savedData: theme } = usePayByLinkSettingsContext();
+    const { payload, setSavedData, savedData: theme } = usePayByLinkSettingsContext();
     const [initialPayload, setInitialPayload] = useState<FormData>();
 
     useEffect(() => {
@@ -18,7 +19,9 @@ const PayByLinkThemeContainer = () => {
         }
     }, [payload, setSavedData, setInitialPayload]);
 
-    if (!selectedStore || !theme || isTermsAndConditionsData(theme) || !initialPayload) return null;
+    if (!theme || isTermsAndConditionsData(theme) || !initialPayload) {
+        return <LoadingSkeleton rowNumber={5} />;
+    }
 
     return (
         <section className="adyen-pe-pay-by-link-theme">

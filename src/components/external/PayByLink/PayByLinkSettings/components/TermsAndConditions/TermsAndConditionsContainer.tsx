@@ -7,6 +7,7 @@ import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/c
 import { useState, useEffect } from 'preact/hooks';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
+import LoadingSkeleton from '../PayByLinkSettingsContainer/components/LoadingSkeleton/LoadingSkeleton';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
@@ -19,7 +20,9 @@ const TermsAndConditionsContainer = () => {
         }
     }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
 
-    if (!isTermsAndConditionsData(termsAndConditionsData) || !initialData) return null;
+    if (!isTermsAndConditionsData(termsAndConditionsData) || !initialData) {
+        return <LoadingSkeleton rowNumber={5} />;
+    }
 
     return (
         <section className="adyen-pe-pay-by-link-settings">
