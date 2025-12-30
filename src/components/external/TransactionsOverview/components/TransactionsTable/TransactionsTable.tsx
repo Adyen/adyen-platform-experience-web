@@ -20,8 +20,6 @@ import { TransactionTableProps } from './types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 
 // Remove status column temporarily
-// const FIELDS = ['createdAt', 'status', 'paymentMethod', 'transactionType', 'amount'] as const;
-
 export const TRANSACTION_FIELDS = ['createdAt', 'paymentMethod', 'transactionType', 'amount'] as const;
 export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
 

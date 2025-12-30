@@ -1,3 +1,4 @@
+import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '../TransactionsOverview/constants';
 import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
 import { TransactionDetails, TransactionDetailsFields } from './types';
 import { TranslationKey } from '../../../translations';
@@ -47,6 +48,17 @@ export const TX_DETAILS_RESERVED_FIELDS_SET = new Set<TransactionDetailsFields>(
     'refundReason',
 ] as const);
 
+export const TX_DETAILS_FIELDS_REMAPS = {
+    balanceAccount: 'account',
+    balanceAccountId: (tx?: TransactionDetails) => {
+        const account = tx?.balanceAccount;
+        if (account && !account.description) return 'account';
+    },
+    description: (tx?: TransactionDetails) => {
+        if (tx?.balanceAccount?.description) return 'account';
+    },
+} as const;
+
 export const REFUND_STATUSES = ['completed', 'in_progress', 'failed'] as const satisfies readonly IRefundStatus[];
 export const REFUND_REASONS = ['requested_by_customer', 'issue_with_item_sold', 'fraudulent', 'duplicate', 'other'] as const;
 
@@ -61,6 +73,6 @@ export const REFUND_REASONS_KEYS = Object.freeze({
 export const REFUND_REFERENCE_CHAR_LIMIT = 80;
 
 export const sharedTransactionDetailsEventProperties = {
-    category: 'Transaction component',
-    subCategory: 'Transaction details',
+    category: TRANSACTION_ANALYTICS_CATEGORY,
+    subCategory: TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS,
 } as const;

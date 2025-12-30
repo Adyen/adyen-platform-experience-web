@@ -15,6 +15,9 @@ export const getPayoutFundsCapturedType = createDynamicTranslationFactory(payout
 const reportTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'reports.common.types.' });
 export const getReportType = createDynamicTranslationFactory(reportTypeKeyFactory, originalValueFallback);
 
+const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
+export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);
+
 const txCategoryKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.' });
 export const getTransactionCategory = createDynamicTranslationFactory(txCategoryKeyFactory, originalValueFallback);
 
@@ -23,6 +26,12 @@ export const getTransactionCategoryDescription = createDynamicTranslationFactory
 
 const txStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.statuses.' });
 export const getTransactionStatus = createDynamicTranslationFactory(txStatusKeyFactory, originalValueFallback);
+
+const txTimelineStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.statuses.' });
+export const getTransactionTimelineTxStatus = createDynamicTranslationFactory(txTimelineStatusKeyFactory, originalValueFallback);
+
+const txTimelineTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.types.' });
+export const getTransactionTimelineTxType = createDynamicTranslationFactory(txTimelineTypeKeyFactory, originalValueFallback);
 
 const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.common.refundReasons.' });
 const txRefundReasonKeyFactory: KeyFactoryFunction = reason => reason && (REFUND_REASONS_KEYS[reason as RefundReason] ?? txRefundReasonKey(reason));

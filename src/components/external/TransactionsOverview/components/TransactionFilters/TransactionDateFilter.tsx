@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
-import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
-import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
-import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
-import { TransactionsDateRange } from '../../types';
-import { EMPTY_OBJECT } from '../../../../../utils';
 import {
     TRANSACTION_DATE_RANGE_CUSTOM,
     TRANSACTION_DATE_RANGE_DEFAULT,
     TRANSACTION_DATE_RANGE_MAX_YEARS,
     TRANSACTION_DATE_RANGES,
 } from '../../constants';
+import { TransactionsDateRange } from '../../types';
+import { EMPTY_OBJECT, unreachable } from '../../../../../utils';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
+import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
+import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
+import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
@@ -20,34 +20,66 @@ export interface TransactionDateFilterProps {
     timezone?: string;
 }
 
-// [TODO]: Fix date filter bug (reset and select custom date range)
+const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRange) => {
+    switch (dateRangeSelection) {
+        case 'common.filters.types.date.rangeSelect.options.custom':
+            return 'Custom';
+        case 'common.filters.types.date.rangeSelect.options.last7Days':
+            return 'Last 7 days';
+        case 'common.filters.types.date.rangeSelect.options.last30Days':
+            return 'Last 30 days';
+        case 'common.filters.types.date.rangeSelect.options.thisWeek':
+            return 'This week';
+        case 'common.filters.types.date.rangeSelect.options.lastWeek':
+            return 'Last week';
+        case 'common.filters.types.date.rangeSelect.options.thisMonth':
+            return 'This month';
+        case 'common.filters.types.date.rangeSelect.options.lastMonth':
+            return 'Last month';
+        case 'common.filters.types.date.rangeSelect.options.yearToDate':
+            return 'Year to date';
+        default:
+            return unreachable(dateRangeSelection);
+    }
+};
+
 const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
     const { i18n } = useCoreContext();
-    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'Date filter' });
-
-    // prettier-ignore
-    const [from, to] = useMemo(() => [
-        new Date(createdDate.from).toISOString(),
-        new Date(createdDate.to).toISOString(),
-    ], [createdDate]);
-
-    const [sinceDate, untilDate] = useMemo(() => {
-        const sinceDate = new Date();
-        sinceDate.setFullYear(sinceDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
-        return [sinceDate.toISOString(), new Date().toISOString()];
-    }, []);
 
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
     const customDateRange = useMemo(() => i18n.get(TRANSACTION_DATE_RANGE_CUSTOM), [i18n]);
     const defaultDateRange = useMemo(() => i18n.get(TRANSACTION_DATE_RANGE_DEFAULT), [i18n]);
+    const cachedCreatedDate = useRef(createdDate);
 
     const [selectedDateRange, setSelectedDateRange] = useState(defaultDateRange);
+    const [pendingResetAction, setPendingResetAction] = useState(false);
+
+    const { from, to, since, until, now } = useMemo(() => {
+        const now = Date.now();
+        const fromDate = new Date(createdDate.from);
+        const toDate = new Date(createdDate.to);
+        const sinceDate = new Date(now);
+        const untilDate = new Date(now);
+
+        sinceDate.setFullYear(sinceDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
+
+        return {
+            from: fromDate.toISOString(),
+            to: toDate.toISOString(),
+            since: sinceDate.toISOString(),
+            until: untilDate.toISOString(),
+            now,
+        } as const;
+    }, [createdDate]);
+
+    const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, label: 'Date filter' });
 
     const onFilterChange = useCallback<DateFilterProps['onChange']>(
         (params = EMPTY_OBJECT) => {
             const selected = params.selectedPresetOption || defaultDateRange;
 
             if (selected !== selectedDateRange || selected === customDateRange) {
+                let selectedDateRangeKey: TransactionsDateRange = TRANSACTION_DATE_RANGE_CUSTOM;
                 let nextCreatedDate: RangeTimestamps;
 
                 if (selected === customDateRange) {
@@ -59,20 +91,31 @@ const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, tim
                         to: until ? new Date(until).getTime() : createdDate.to,
                     })();
                 } else {
-                    nextCreatedDate = Object.entries(TRANSACTION_DATE_RANGES).find(
-                        ([range]) => i18n.get(range as TransactionsDateRange) === selected
-                    )![1];
+                    [selectedDateRangeKey, nextCreatedDate] = (
+                        Object.entries(TRANSACTION_DATE_RANGES) as [TransactionsDateRange, RangeTimestamps][]
+                    ).find(([range]) => i18n.get(range as TransactionsDateRange) === selected)!;
                 }
 
+                const eventValue =
+                    selected === customDateRange
+                        ? String([nextCreatedDate.from, nextCreatedDate.to])
+                        : getDateRangeSelectionEventValue(selectedDateRangeKey);
+
                 setSelectedDateRange(selected);
-                setCreatedDate(nextCreatedDate);
-                logEvent?.('update', `${nextCreatedDate.from},${nextCreatedDate.to}`);
+                setCreatedDate((cachedCreatedDate.current = nextCreatedDate));
+                logEvent?.('update', eventValue);
             }
         },
         [i18n, createdDate, customDateRange, defaultDateRange, selectedDateRange, logEvent]
     );
 
-    const onFilterResetAction = useCallback<NonNullable<DateFilterProps['onResetAction']>>(() => void logEvent?.('reset'), [logEvent]);
+    const onFilterResetAction = useCallback(() => setPendingResetAction(true), []);
+
+    useEffect(() => {
+        if (!pendingResetAction) return;
+        setPendingResetAction(false);
+        if (cachedCreatedDate.current !== createdDate) logEvent?.('reset');
+    }, [pendingResetAction, createdDate, logEvent]);
 
     useEffect(() => {
         const dateRangeKey = Object.entries(TRANSACTION_DATE_RANGES).find(([_, timestamps]) => timestamps === createdDate)?.[0];
@@ -82,15 +125,15 @@ const TransactionDateFilter = ({ createdDate, eventCategory, setCreatedDate, tim
     return (
         <DateFilterCore
             name={'createdAt'}
-            now={Date.now()}
+            now={now}
             label={filterLabel}
             aria-label={filterLabel}
-            sinceDate={sinceDate}
-            untilDate={untilDate}
+            sinceDate={since}
+            untilDate={until}
             from={from}
             to={to}
             onChange={onFilterChange}
-            onResetAction={onFilterResetAction} // [TODO]: Ensure filter reset event is logged
+            onResetAction={onFilterResetAction}
             selectedPresetOption={selectedDateRange}
             timeRangePresetOptions={TRANSACTION_DATE_RANGES}
             timezone={timezone}

@@ -144,24 +144,24 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
                         {
                             amount: tx.netAmount,
                             createdAt: tx.createdAt,
-                            status: 'received',
-                            type: 'payment',
+                            status: 'Received',
+                            type: 'Capture',
                         },
                         ...(deductionsAmount
                             ? [
                                   {
                                       amount: { currency, value: deductionsAmount },
                                       createdAt: tx.createdAt,
-                                      status: 'fee',
-                                      type: 'capture',
+                                      status: 'Fee',
+                                      type: 'Capture',
                                   },
                               ]
                             : []),
                         {
                             amount: tx.netAmount,
                             createdAt: tx.createdAt,
-                            status: 'settled',
-                            type: 'capture',
+                            status: 'Settled',
+                            type: 'Payment',
                         },
                     ],
                 } as ITransactionWithDetails;
