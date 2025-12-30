@@ -2,6 +2,9 @@ import { PBLFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
+import { SelectChangeEvent } from '../../../../../../../internal/FormFields/Select/types';
+import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useCallback } from 'preact/hooks';
 
 interface StoreFieldProps {
     items: { id: string; name: string }[];
@@ -9,6 +12,15 @@ interface StoreFieldProps {
 
 const StoreField = ({ items }: StoreFieldProps) => {
     const { i18n } = useCoreContext();
+    const { setFieldDisplayValue } = useWizardFormContext<PBLFormValues>();
+
+    const handleChange = useCallback(
+        (event: SelectChangeEvent) => {
+            const displayValue = items.find(item => item.id === event.target.value)?.name;
+            setFieldDisplayValue('store', displayValue);
+        },
+        [items]
+    );
 
     return (
         <FormSelect<PBLFormValues>
@@ -16,6 +28,7 @@ const StoreField = ({ items }: StoreFieldProps) => {
             label={i18n.get('payByLink.linkCreation.fields.store.label')}
             items={items}
             preventInvalidState
+            onChange={handleChange}
         />
     );
 };
