@@ -29,8 +29,8 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     const { getPayByLinkPaymentLinkById } = useConfigContext().endpoints;
     const {
         data: paymentLinkData,
-        isFetching: isFetchingPaymentLink,
-        error,
+        isFetching: isFetchingPaymentLinkData,
+        error: paymentLinkDataError,
         refetch,
     } = useFetch(
         useMemo(
@@ -75,7 +75,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         [countries]
     );
 
-    const isFetching = isFetchingPaymentLink || isFetchingCountries;
+    const isFetching = isFetchingPaymentLinkData || isFetchingCountries;
     const paymentLink = useMemo(
         () =>
             paymentLinkData && {
@@ -149,8 +149,14 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
             return <PaymentLinkSkeleton />;
         }
 
-        if (!paymentLink || error) {
-            return 'error';
+        if (!paymentLink || paymentLinkDataError) {
+            return (
+                <PaymentLinkError
+                    error={paymentLinkDataError as AdyenPlatformExperienceError}
+                    onDismiss={onDismiss}
+                    onContactSupport={onContactSupport}
+                />
+            );
         }
 
         if (activeScreen === 'expirationConfirmation') {
@@ -170,7 +176,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                 {actionButtons.length > 0 && <ButtonActions actions={actionButtons} />}
             </>
         );
-    }, [actionButtons, activeScreen, error, handleExpirationSuccess, isFetching, onContactSupport, onDismiss, paymentLink]);
+    }, [isFetching, paymentLink, paymentLinkDataError, activeScreen, actionButtons, onDismiss, onContactSupport, handleExpirationSuccess]);
 
     return (
         <div className={CLASSNAMES.root}>

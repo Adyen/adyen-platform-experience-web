@@ -173,10 +173,6 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                       ],
         };
 
-        if (paymentLink.shopperInformation?.billingAddress?.street === REDACTED_DATA_MARKER) {
-            items.billingAddress = [];
-        }
-
         // Filter out items with empty values from each group
         return Object.fromEntries(
             Object.entries(items).map(([category, categoryItems]) => [
