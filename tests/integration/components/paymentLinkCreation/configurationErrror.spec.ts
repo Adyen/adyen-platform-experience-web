@@ -10,7 +10,7 @@ test.describe('Payment link creation - Configuration error', () => {
         await expect(page.getByText('New payment link')).toBeVisible();
 
         await page.getByRole('button', { name: 'Select option' }).click();
-        await page.getByRole('option', { name: 'New York Store' }).click();
+        await page.getByRole('option', { name: 'NY001' }).click();
 
         const continueButton = page.getByRole('button', { name: 'Continue' });
         await continueButton.click();
