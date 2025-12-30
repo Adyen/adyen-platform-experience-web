@@ -378,7 +378,12 @@ export const PayByLinkOverview = ({
                         <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
                             {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
                         </Button>
-                        <Button variant={ButtonVariant.SECONDARY} className={ACTION_BUTTON_CLASS} onClick={openSettingsModal}>
+                        <Button
+                            aria-label={i18n.get('disputes.overview.actions.settings.a11y.label')}
+                            variant={ButtonVariant.SECONDARY}
+                            className={ACTION_BUTTON_CLASS}
+                            onClick={openSettingsModal}
+                        >
                             <Icon name="cog" />
                         </Button>
                     </div>

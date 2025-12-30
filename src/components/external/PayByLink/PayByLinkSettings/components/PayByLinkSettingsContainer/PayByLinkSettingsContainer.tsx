@@ -1,4 +1,4 @@
-import { _UIComponentProps, type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
+import { type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import './PayByLinkSettingsContainer.scss';
 import { PayByLinkSettingsProvider } from './context/context';
 import PayByLinkSettings from './PayByLinkSettings';
@@ -14,8 +14,13 @@ const PayByLinkSettingsContainer = ({
     settingsItems,
     storeIds,
     navigateBack,
+    embeddedInOverview,
     ...props
-}: ExternalUIComponentProps<PayByLinkSettingsComponentProps> & { settingsItems?: PayByLinkSettingsItem[]; navigateBack?: () => void }) => {
+}: ExternalUIComponentProps<PayByLinkSettingsComponentProps> & {
+    settingsItems?: PayByLinkSettingsItem[];
+    navigateBack?: () => void;
+    embeddedInOverview?: boolean;
+}) => {
     const { i18n } = useCoreContext();
 
     const filteredMenuItems = useMemo(
@@ -31,7 +36,7 @@ const PayByLinkSettingsContainer = ({
     if (paymentLinkSettingsItem.length === 0) return <>{'Cannot load settings menu'}</>;
 
     return (
-        <PayByLinkSettingsProvider selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
+        <PayByLinkSettingsProvider embeddedInOverview={embeddedInOverview} selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
             {navigateBack && (
                 <Button onClick={navigateBack} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
                     <Icon name="arrow-right" />

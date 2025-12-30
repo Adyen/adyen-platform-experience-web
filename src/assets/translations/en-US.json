@@ -671,6 +671,7 @@
     "disputes.management.details.types.chargeback": "Chargeback",
     "disputes.management.details.types.notificationOfFraud": "Notification of fraud",
     "disputes.management.details.types.requestForInformation": "Request for information",
+    "disputes.overview.actions.settings.a11y.label": "Open link settings",
     "disputes.overview.chargebacks.errors.listEmpty": "No chargebacks found",
     "disputes.overview.chargebacks.errors.updateFilters": "Try different filters or check again later for new chargebacks.",
     "disputes.overview.chargebacks.limitSelect.a11y.label": "Chargebacks per page",

@@ -41,6 +41,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         setIsSaveError,
         setIsSaveSuccess,
         isSaveError,
+        embeddedInOverview,
     } = usePayByLinkSettingsContext();
 
     useEffect(() => {
@@ -194,7 +195,13 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 )}
             </div>
             {requirementsAreOpened && (
-                <Modal isOpen={requirementsAreOpened} onClose={closeModal} isDismissible={true} headerWithBorder={false} size={'large'}>
+                <Modal
+                    isOpen={requirementsAreOpened}
+                    onClose={closeModal}
+                    isDismissible={true}
+                    headerWithBorder={false}
+                    size={embeddedInOverview ? 'full-screen' : 'large'}
+                >
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
             )}

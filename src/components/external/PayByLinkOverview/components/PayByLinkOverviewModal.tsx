@@ -25,6 +25,7 @@ export const PayByLinkOverviewModal = ({
     paymentLinkCreation,
     paymentLinkSettings,
     storeIds,
+    onContactSupport,
 }: PayByLinkOverviewModalProps) => {
     const { i18n } = useCoreContext();
 
@@ -49,8 +50,17 @@ export const PayByLinkOverviewModal = ({
                     headerWithBorder={false}
                     size={'large'}
                 >
-                    {modalType === 'LinkCreation' ? <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} /> : null}
-                    {modalType === 'Settings' ? <PayByLinkSettingsContainer {...paymentLinkSettings} storeIds={storeIds} /> : null}
+                    {modalType === 'LinkCreation' ? (
+                        <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} onContactSupport={onContactSupport} />
+                    ) : null}
+                    {modalType === 'Settings' ? (
+                        <PayByLinkSettingsContainer
+                            {...paymentLinkSettings}
+                            storeIds={storeIds}
+                            onContactSupport={onContactSupport}
+                            embeddedInOverview
+                        />
+                    ) : null}
                 </Modal>
             )}
         </div>
