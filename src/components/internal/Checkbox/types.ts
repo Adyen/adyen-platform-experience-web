@@ -11,4 +11,5 @@ export interface CheckboxProps {
     onInput?: (event: any) => void;
     value?: boolean;
     className?: string;
+    error?: boolean;
 }

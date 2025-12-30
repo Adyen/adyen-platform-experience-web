@@ -1,51 +1,76 @@
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { useCallback } from 'preact/hooks';
-import { ActiveMenuItem } from '../components/PayByLinkSettingsContainer/context/constants';
-import usePayByLinkSettingsContext from '../components/PayByLinkSettingsContainer/context/context';
+import { StateUpdater, useCallback } from 'preact/hooks';
+import { MenuItem } from '../components/PayByLinkSettingsContainer/context/constants';
 import { isUndefined } from '../../../../../utils';
-import { PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
+import { PayByLinkSettingsData, PayByLinkSettingsItem, PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
 import { getThemePayload } from '../components/PayByLinkSettingsContainer/utils/getThemePayload';
+import { Dispatch } from 'preact/compat';
+import { isThemePayload } from '../components/PayByLinkThemeContainer/types';
 
-const isThemePayload = (data: PayByLinkSettingsPayload): data is FormData => {
-    return data instanceof FormData;
-};
-
-export const useSaveAction = () => {
-    const { selectedStore, payload, activeMenuItem, getIsValid, setSaveActionCalled, setSavedData, setPayload } = usePayByLinkSettingsContext();
-
+export const useSaveAction = (
+    setIsSaving: Dispatch<StateUpdater<boolean>>,
+    setIsSaveError: Dispatch<StateUpdater<boolean>>,
+    setIsSaveSuccess: Dispatch<StateUpdater<boolean>>,
+    selectedStore: string | undefined,
+    payload: PayByLinkSettingsPayload,
+    activeMenuItem: PayByLinkSettingsItem | null,
+    getIsValid: () => boolean,
+    setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>,
+    setSavedData: (data: PayByLinkSettingsData) => void,
+    setPayload: (payload: PayByLinkSettingsPayload) => void
+) => {
     const { updatePayByLinkTheme, savePayByLinkSettings } = useConfigContext().endpoints;
 
     const savePayByLinkTheme = useMutation({
         queryFn: updatePayByLinkTheme,
         options: {
             onSuccess: data => {
-                setSavedData(data);
-                const themeData = { brandName: data.brandName, logo: data.logoUrl, fullWidthLogo: data.fullWidthLogoUrl };
+                const themeData = { brandName: data?.brandName, logo: data?.logoUrl, fullWidthLogo: data?.fullWidthLogoUrl };
+                setSavedData(themeData);
                 setPayload(getThemePayload(themeData));
+                setIsSaveError(false);
+                setIsSaveSuccess(true);
+                setIsSaving(false);
+            },
+            onError: () => {
+                setIsSaveError(true);
+                setIsSaveSuccess(false);
+                setIsSaving(false);
             },
         },
     });
 
     const onSaveTheme = useCallback(() => {
-        if (isUndefined(payload) || !getIsValid()) return;
+        if (!selectedStore || isUndefined(payload) || !getIsValid()) return;
         if (!isThemePayload(payload)) return;
+        setIsSaving(true);
         savePayByLinkTheme.mutate({ contentType: 'multipart/form-data', body: payload }, { path: { storeId: selectedStore! } });
-    }, [savePayByLinkTheme, selectedStore, payload, getIsValid]);
+    }, [savePayByLinkTheme, selectedStore, payload, getIsValid, setIsSaving]);
 
     const updatePayByLinkTermsAndConditions = useMutation({
         queryFn: savePayByLinkSettings,
         options: {
             onSuccess: data => {
-                setSavedData(data);
-                setPayload(data);
+                const savedData = !data || !data?.termsOfServiceUrl ? { termsOfServiceUrl: '' } : data;
+                setSavedData(savedData);
+                setPayload(savedData);
+                setIsSaveError(false);
+                setIsSaveSuccess(true);
+                setIsSaving(false);
+            },
+            onError: () => {
+                setIsSaveError(true);
+                setIsSaveSuccess(false);
+                setIsSaving(false);
             },
         },
     });
 
     const onSaveTermsAndConditions = useCallback(() => {
-        if (isUndefined(payload) || !getIsValid()) return;
+        if (!selectedStore || isUndefined(payload) || !getIsValid()) return;
         if (isThemePayload(payload)) return;
+        setIsSaving(true);
         updatePayByLinkTermsAndConditions.mutate(
             {
                 contentType: 'application/json',
@@ -53,12 +78,13 @@ export const useSaveAction = () => {
             },
             { path: { storeId: selectedStore! } }
         );
-    }, [updatePayByLinkTermsAndConditions, selectedStore, payload, getIsValid]);
+    }, [updatePayByLinkTermsAndConditions, selectedStore, payload, getIsValid, setIsSaving]);
 
     const onSave = useCallback(() => {
+        if (!activeMenuItem) return;
         setSaveActionCalled(true);
-        if (activeMenuItem === ActiveMenuItem.theme) return onSaveTheme();
-        if (activeMenuItem === ActiveMenuItem.termsAndConditions) return onSaveTermsAndConditions();
+        if (activeMenuItem === MenuItem.theme) return onSaveTheme();
+        if (activeMenuItem === MenuItem.termsAndConditions) return onSaveTermsAndConditions();
     }, [activeMenuItem, onSaveTermsAndConditions, onSaveTheme, setSaveActionCalled]);
 
     return { onSave };
