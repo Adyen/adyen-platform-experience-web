@@ -39,30 +39,25 @@ export const PayByLinkOverviewModal = ({
         }
     }, [isModalVisible]);
 
+    if (!isModalVisible || !modalType) return null;
+
     return (
         <div>
-            {isModalVisible && modalType && (
-                <Modal
-                    isOpen={isModalVisible}
-                    aria-label={i18n.get('payByLink.overview.title')}
-                    onClose={onCloseCallback}
-                    isDismissible={true}
-                    headerWithBorder={false}
-                    size={'large'}
-                >
-                    {modalType === 'LinkCreation' ? (
-                        <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} onContactSupport={onContactSupport} />
-                    ) : null}
-                    {modalType === 'Settings' ? (
-                        <PayByLinkSettingsContainer
-                            {...paymentLinkSettings}
-                            storeIds={storeIds}
-                            onContactSupport={onContactSupport}
-                            embeddedInOverview
-                        />
-                    ) : null}
-                </Modal>
-            )}
+            <Modal
+                isOpen={isModalVisible}
+                aria-label={i18n.get('payByLink.overview.title')}
+                onClose={onCloseCallback}
+                isDismissible={true}
+                headerWithBorder={false}
+                size={'large'}
+            >
+                {modalType === 'LinkCreation' ? (
+                    <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} onContactSupport={onContactSupport} />
+                ) : null}
+                {modalType === 'Settings' ? (
+                    <PayByLinkSettingsContainer {...paymentLinkSettings} storeIds={storeIds} onContactSupport={onContactSupport} embeddedInOverview />
+                ) : null}
+            </Modal>
         </div>
     );
 };
