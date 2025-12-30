@@ -28,8 +28,6 @@ const PayByLinkSettingsContainer = ({
         return settingsItems.map(item => ({ ...item, label: i18n.get(item.label) }));
     }, [i18n, filteredMenuItems]);
 
-    if (paymentLinkSettingsItem.length === 0) return <>{'Cannot load settings menu'}</>;
-
     return (
         <PayByLinkSettingsProvider selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
             {navigateBack && (

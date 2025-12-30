@@ -10,7 +10,7 @@ import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { selectedStore, setPayload, setSavedData, savedData: termsAndConditionsData } = usePayByLinkSettingsContext();
+    const { setPayload, setSavedData, savedData: termsAndConditionsData } = usePayByLinkSettingsContext();
     const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
@@ -19,7 +19,7 @@ const TermsAndConditionsContainer = () => {
         }
     }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
 
-    if (!selectedStore || !termsAndConditionsData || !isTermsAndConditionsData(termsAndConditionsData) || !initialData) return null;
+    if (!isTermsAndConditionsData(termsAndConditionsData) || !initialData) return null;
 
     return (
         <section className="adyen-pe-pay-by-link-settings">
