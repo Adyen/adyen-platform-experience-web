@@ -8,6 +8,12 @@
         gap: style.token(spacer-070);
         width: 100%;
 
+        &-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
         &-item {
             border-radius: style.token(border-radius-m);
             color: style.token(color-label-primary);
@@ -16,11 +22,26 @@
             font: inherit;
             height: 20px;
             justify-content: space-between;
-            padding: style.token(spacer-070) style.token(spacer-060);
-            width: 100%;
+            margin-bottom: style.token(spacer-020);
 
             /* stylelint-disable-next-line order/order */
             @include skeleton.adyen-pe-skeleton-animation();
+
+            &--header {
+                height: 24px;
+                width: 40%;
+            }
+
+            &--small {
+                height: 14px;
+                margin-bottom: style.token(spacer-020);
+                width: 20%;
+            }
+
+            &--large {
+                height: 20px;
+                margin-bottom: style.token(spacer-070);
+            }
         }
     }
 }

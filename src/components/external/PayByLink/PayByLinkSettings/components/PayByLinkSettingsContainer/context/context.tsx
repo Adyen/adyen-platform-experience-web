@@ -119,12 +119,19 @@ export const PayByLinkSettingsProvider = memo(
             [setPayload]
         );
 
-        const { theme, isFetching: loadingThemes } = useStoreTheme(selectedStore, fetchThemeEnabled, setFetchThemeEnabled, onPayloadChange);
+        const { theme, isFetching: loadingThemes } = useStoreTheme(
+            selectedStore,
+            fetchThemeEnabled,
+            setFetchThemeEnabled,
+            onPayloadChange,
+            setLoading
+        );
         const { data: termsAndConditions, isFetching: loadingTermsAndConditions } = useStoreTermsAndConditions(
             selectedStore,
             fetchTermsAndConditionsEnabled,
             setFetchTermsAndConditionsEnabled,
-            onPayloadChange
+            onPayloadChange,
+            setLoading
         );
 
         const activeData = useMemo(() => {
@@ -142,10 +149,9 @@ export const PayByLinkSettingsProvider = memo(
 
         useEffect(() => {
             if (activeData) {
-                setLoading(false);
+                setSavedData(activeData);
             }
-            setSavedData(activeData);
-        }, [activeData, activeMenuItem]);
+        }, [activeData, activeMenuItem, fetchThemeEnabled, fetchTermsAndConditionsEnabled]);
 
         useEffect(() => {
             if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
@@ -165,10 +171,11 @@ export const PayByLinkSettingsProvider = memo(
         }, []);
 
         const setSelectedMenuItem = useCallback((item: SecondaryNavItem<PayByLinkSettingsItem>) => {
+            setLoading(true);
             setActiveMenuItem(item.value);
         }, []);
 
-        const contentLoading = loading || loadingThemes || loadingTermsAndConditions;
+        const contentLoading = loading || loadingThemes || loadingTermsAndConditions || isLoadingStores;
 
         return (
             <PayByLinkSettingsContext.Provider

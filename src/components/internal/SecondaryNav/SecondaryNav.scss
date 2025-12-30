@@ -27,7 +27,8 @@
 
         &--aside {
             margin-top: style.token(spacer-080);
-            width: 20%;
+            padding: style.token(spacer-070) style.token(spacer-060);
+            width: 180px;
         }
 
         &--content {
