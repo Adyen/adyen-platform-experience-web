@@ -320,6 +320,7 @@
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction": "Action label for the button that redirects to terms and conditions setup.",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle": "Title for the alert about required terms and conditions setup.",
     "payByLink.linkCreation.storeForm.alerts.tcSetupRequiredWithoutPermissions": "Alert message displayed when the user lacks permissions to set up terms and conditions, advising them to contact their organization.",
+    "payByLink.linkCreation.success.copiedToClipboard": "Label for the button that indicates the payment link has been copied to the clipboard.",
     "payByLink.linkCreation.success.copyLink": "Label for the button that copies the generated payment link to the clipboard.",
     "payByLink.linkCreation.success.description": "Description text explaining what the user should do with the generated payment link.",
     "payByLink.linkCreation.success.showDetails": "Label for a button that reveals additional details about the created payment link.",
