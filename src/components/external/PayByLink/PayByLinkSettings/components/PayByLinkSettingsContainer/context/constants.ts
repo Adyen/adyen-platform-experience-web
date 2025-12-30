@@ -1,13 +1,13 @@
-import { TranslationKey } from '../../../../../../../translations';
+import { PayByLinkSettingsItem, PayByLinkSettingsMenuItem } from './types';
 
-export const ActiveMenuItem = {
+export const MenuItem = {
     theme: 'theme',
     termsAndConditions: 'termsAndConditions',
-};
+} as const;
 
 export const MENU_ITEMS = [
-    { value: ActiveMenuItem.theme, label: 'payByLink.settings.navigation.theme' },
-    { value: ActiveMenuItem.termsAndConditions, label: 'payByLink.settings.navigation.termsAndConditions' },
-] as { value: string; label: TranslationKey }[];
+    { value: MenuItem.theme, label: 'payByLink.settings.navigation.theme' },
+    { value: MenuItem.termsAndConditions, label: 'payByLink.settings.navigation.termsAndConditions' },
+] as PayByLinkSettingsMenuItem[];
 
-export const DEFAULT_MENU_ITEM = ActiveMenuItem.theme;
+export const DEFAULT_MENU_ITEM = MenuItem.theme as PayByLinkSettingsItem;

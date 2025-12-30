@@ -9,7 +9,7 @@ import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { uniqueId } from '../../../utils';
 import { h } from 'preact';
 
-export const Checkbox = ({ checked, description, disabled, id, label, name, value, onInput, className, ...props }: CheckboxProps) => {
+export const Checkbox = ({ checked, error, description, disabled, id, label, name, value, onInput, className, ...props }: CheckboxProps) => {
     const [checkedInternal, setCheckedInternal] = useState(checked);
     const inputRef = useRef(uniqueId());
 
@@ -45,7 +45,7 @@ export const Checkbox = ({ checked, description, disabled, id, label, name, valu
                 {checkedInternal ? (
                     <Icon name="checkmark-square-fill" className="adyen-pe-checkbox__icon" />
                 ) : (
-                    <Icon name="square" className="adyen-pe-checkbox__icon" />
+                    <Icon name="square" className={cx('adyen-pe-checkbox__icon', { 'adyen-pe-checkbox__icon--error': error })} />
                 )}
             </label>
             <div className="adyen-pe-checkbox__label-content">

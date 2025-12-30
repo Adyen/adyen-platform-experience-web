@@ -24,10 +24,12 @@ const getImageDimensionLimitation = (logoType: LogoTypes) => {
     }
 };
 
-const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTypes, files: File[]) => void }> = ({
+const LogoInput = ({
+    disabled,
     logoType,
     onFileInputChange,
 }: {
+    disabled: boolean;
     logoType: LogoTypes;
     onFileInputChange: (logoType: LogoTypes, files: File[]) => void;
 }) => {
@@ -67,13 +69,14 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
     );
 
     return (
-        <div className="adyen-pe-pay-by-link-settings__input-container">
+        <>
             <label htmlFor={logoInputId} aria-labelledby={logoInputId} className="adyen-pe-pay-by-link-theme-form__file-input">
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                     {i18n.get(LogoLabel[logoType])}
                 </Typography>
             </label>
             <FileInput
+                disabled={disabled}
                 maxDimensions={dimensions}
                 maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
                 allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
@@ -82,7 +85,7 @@ const LogoInput: FC<{ logoType: LogoTypes; onFileInputChange: (logoType: LogoTyp
                 mapError={mapError}
             />
             <LogoRequirements logoType={logoType} />
-        </div>
+        </>
     );
 };
 

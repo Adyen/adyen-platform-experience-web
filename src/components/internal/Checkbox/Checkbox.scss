@@ -10,6 +10,10 @@
         align-self: baseline;
         display: flex;
         margin-top: style.token(spacer-010);
+
+        &--error {
+            color: style.token(color-outline-critical);
+        }
     }
 
     &__label {

@@ -1,11 +1,11 @@
-import { IPayByLinkTermsAndConditions, IPayByLinkTheme } from '../../../../../../types';
-import { PayByLinkSettingsData } from '../PayByLinkSettingsContainer/context/types';
+import { IPayByLinkTermsAndConditions } from '../../../../../../types';
+import { PayByLinkSettingsData, PayByLinkSettingsPayload, ThemeFormData } from '../PayByLinkSettingsContainer/context/types';
 import { hasOwnProperty } from '../../../../../../utils';
 
 export type LogoTypes = 'logo' | 'fullWidthLogo';
 
 export interface ThemeFormProps {
-    theme: IPayByLinkTheme;
+    theme: ThemeFormData;
     initialPayload?: FormData;
 }
 
@@ -15,10 +15,11 @@ export const ThemeFormDataRequest = {
     FULL_WIDTH_LOGO: 'fullWidthLogo',
 };
 
-export type ThemeFormDataFields = keyof IPayByLinkTheme;
-
 export const isTermsAndConditionsData = (data: PayByLinkSettingsData): data is IPayByLinkTermsAndConditions => {
     const dataObj = typeof data === 'object' ? data : {};
-    const keys = Object.keys(dataObj);
-    return hasOwnProperty(data, 'termsOfServiceUrl') || keys.length === 0;
+    return hasOwnProperty(dataObj, 'termsOfServiceUrl');
+};
+
+export const isThemePayload = (data: PayByLinkSettingsPayload): data is FormData => {
+    return data instanceof FormData;
 };
