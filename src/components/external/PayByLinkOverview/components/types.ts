@@ -20,3 +20,5 @@ export interface PayByLinkTableProps extends WithPaginationLimitSelection<Pagina
 }
 
 export type StoreData = IStore & { name?: string };
+
+export type PayByLinkOverviewModalType = 'LinkCreation' | 'Settings';

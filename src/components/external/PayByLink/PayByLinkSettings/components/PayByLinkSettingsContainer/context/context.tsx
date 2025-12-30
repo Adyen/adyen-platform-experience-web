@@ -38,7 +38,12 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
 });
 
 export const PayByLinkSettingsProvider = memo(
-    ({ children, selectedMenuItems, storeIds }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[] }>) => {
+    ({
+        children,
+        selectedMenuItems,
+        storeIds,
+        embeddedInOverview,
+    }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[]; embeddedInOverview?: boolean }>) => {
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -191,6 +196,7 @@ export const PayByLinkSettingsProvider = memo(
                     onSave: onSave,
                     isLoadingStores,
                     storesError,
+                    embeddedInOverview,
                 }}
             >
                 {(!activeMenuItem && !isSmContainer) || (!isLoadingStores && !storesError && (!filteredStores || filteredStores?.length === 0))

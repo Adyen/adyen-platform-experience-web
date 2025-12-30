@@ -19,6 +19,7 @@ import { useResponsiveContainer } from '../../../../../../hooks/useResponsiveCon
 import { containerQueries } from '../../../../../../hooks/useResponsiveContainer';
 import { FormStepRenderer } from './FormStepRenderer';
 import PayByLinkSettingsContainer from '../../../PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
+import { StoreIds } from '../../../types';
 import { AlertTypeOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
 import { ErrorMessageDisplay } from '../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
@@ -31,7 +32,7 @@ type PayByLinkCreationFormContainerProps = {
     fieldsConfig?: PayByLinkCreationComponentProps['fieldsConfig'];
     onCreationDismiss?: () => void;
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     onContactSupport?: () => void;
 };
 

@@ -9,9 +9,10 @@ import { TranslationKey } from '../../../../../../translations';
 import { useWizardForm } from '../../../../../../hooks/form/wizard/useWizardForm';
 import { PBLFormValues } from '../types';
 import { DeepPartial } from '../../../../../types';
+import { StoreIds } from '../../../types';
 
 type UsePayByLinkFormDataProps = {
-    storeIds?: string[] | string;
+    storeIds?: StoreIds;
     defaultValues?: DeepPartial<PBLFormValues>;
 };
 

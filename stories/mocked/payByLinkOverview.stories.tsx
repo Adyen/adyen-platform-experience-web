@@ -13,6 +13,23 @@ export const Default: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
+export const WithPropsToSubComponents: ElementStory<typeof PayByLinkOverview> = {
+    name: 'With props to sub-components',
+    args: {
+        mockedApi: true,
+        paymentLinkCreation: {
+            fieldsConfig: {
+                data: {
+                    reference: 'Prefilled Merchant Reference',
+                },
+            },
+        },
+        paymentLinkSettings: {
+            hideTitle: true,
+        },
+    },
+};
+
 export const EmptyList: ElementStory<typeof PayByLinkOverview> = {
     name: 'Empty List',
     args: {

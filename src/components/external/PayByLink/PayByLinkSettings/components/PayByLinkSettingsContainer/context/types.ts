@@ -41,4 +41,5 @@ export interface IPayByLinkSettingsContext {
     onSave: () => void;
     setIsSaveError: Dispatch<StateUpdater<boolean>>;
     setIsSaveSuccess: Dispatch<StateUpdater<boolean>>;
+    embeddedInOverview?: boolean;
 }

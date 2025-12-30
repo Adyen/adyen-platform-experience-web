@@ -1,4 +1,4 @@
-import { _UIComponentProps, PayByLinkCreationComponentProps } from '../../../../../types';
+import { ExternalUIComponentProps, PayByLinkCreationComponentProps } from '../../../../../types';
 import { PayByLinkCreationFormContainer } from '../PayByLinkCreationFormContainer/PayByLinkCreationFormContainer';
 import '../../PayByLinkCreation.scss';
 import { useState } from 'preact/hooks';
@@ -7,7 +7,7 @@ import { PaymentLinkDetails } from '../../../../PaymentLinkDetails/components/Pa
 
 type PayByLinkCreationState = 'Creation' | 'Success' | 'Details';
 
-const PayByLinkCreationContainer = (props: _UIComponentProps<PayByLinkCreationComponentProps>) => {
+const PayByLinkCreationContainer = (props: ExternalUIComponentProps<PayByLinkCreationComponentProps>) => {
     const [state, setState] = useState<PayByLinkCreationState>('Creation');
     const [paymentLinkUrl, setPaymentLinkUrl] = useState<string>('');
     const [paymentLinkId, setPaymentLinkId] = useState<string>('');
