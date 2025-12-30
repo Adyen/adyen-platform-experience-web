@@ -1,14 +1,15 @@
 import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
 import { TransactionsFilters } from '../types';
-import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
-import { TRANSACTION_FIELDS } from '../components/TransactionsTable/TransactionsTable';
+import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
+import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import normalizeCustomFields from '../../../utils/customData/normalizeCustomFields';
 import hasCustomField from '../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../utils/customData/mergeRecords';
 
@@ -76,7 +77,9 @@ const useTransactionsList = ({
     );
 
     const { fields, onDataRetrieve } = dataCustomization?.list ?? {};
-    const hasCustomColumn = useMemo(() => hasCustomField(fields, TRANSACTION_FIELDS), [fields]);
+
+    const normalizedFields = useMemo<typeof fields>(() => normalizeCustomFields(fields, TRANSACTION_FIELDS_REMAPS), [fields]);
+    const hasCustomColumn = useMemo(() => hasCustomField(normalizedFields, TRANSACTION_FIELDS), [normalizedFields]);
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ hasCustomColumn, mergeCustomData, onDataRetrieve, records });
 
     useEffect(() => {
@@ -89,7 +92,7 @@ const useTransactionsList = ({
     return {
         ...paginationProps,
         error,
-        fields,
+        fields: normalizedFields,
         fetching: fetching || loadingCustomRecords,
         records: customRecords,
         hasCustomColumn,

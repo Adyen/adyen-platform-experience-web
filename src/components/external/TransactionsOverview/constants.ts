@@ -1,5 +1,6 @@
-import { ITransactionCategory, ITransactionStatus } from '../../../types';
-import { TransactionsDateRange, TransactionsFilters } from './types';
+import { TranslationKey } from '../../../translations';
+import { ITransaction, ITransactionCategory, ITransactionStatus } from '../../../types';
+import { TransactionsDateRange, TransactionsFilters, TransactionsView } from './types';
 import * as RangePreset from '../../internal/Calendar/calendar/timerange/presets';
 
 const ROOT_CLASS = 'adyen-pe-transactions';
@@ -11,6 +12,7 @@ export const classes = {
     rootSmall: BASE_CLASS + '--xs',
     summary: BASE_CLASS + '__summary',
     summaryItem: BASE_CLASS + '__summary-item',
+    toolbar: BASE_CLASS + '__toolbar',
     details: DETAILS_CLASS,
 } as const;
 
@@ -42,6 +44,11 @@ export const TRANSACTION_CATEGORIES: readonly ITransactionCategory[] = [
     'Other',
 ] as const;
 
+export const TRANSACTIONS_VIEW_TABS: readonly Readonly<{ id: TransactionsView; label: TranslationKey; content: null }>[] = [
+    { id: TransactionsView.TRANSACTIONS, label: 'transactions.overview.views.transactions', content: null } as const,
+    { id: TransactionsView.INSIGHTS, label: 'transactions.overview.views.insights', content: null } as const,
+] as const;
+
 export const INITIAL_FILTERS: Readonly<TransactionsFilters> = {
     balanceAccount: undefined,
     categories: [] as const,
@@ -50,6 +57,28 @@ export const INITIAL_FILTERS: Readonly<TransactionsFilters> = {
     paymentPspReference: undefined,
     statuses: ['Booked'] as const,
 } as const;
+
+export const EXPORT_COLUMNS = [
+    'id',
+    'balanceAccountId',
+    'createdAt',
+    'status',
+    'paymentMethod',
+    'category',
+    'paymentPspReference',
+    'currency',
+    'netAmount',
+    'amountBeforeDeductions',
+] as const satisfies (keyof ITransaction | 'currency')[];
+
+export const DEFAULT_EXPORT_COLUMNS: readonly (typeof EXPORT_COLUMNS)[number][] = [
+    'createdAt',
+    'paymentMethod',
+    'category',
+    'currency',
+    'netAmount',
+    'amountBeforeDeductions',
+] as const;
 
 export const TRANSACTION_ANALYTICS_CATEGORY = 'Transaction component' as const;
 export const TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS = 'Transaction details' as const;
