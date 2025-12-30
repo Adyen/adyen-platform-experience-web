@@ -15,6 +15,7 @@ const icons = {
     'chevron-right': () => import('../../../images/icons/chevron-right.svg?component'),
     'chevron-up': () => import('../../../images/icons/chevron-up.svg?component'),
     'chevron-up-down': () => import('../../../images/icons/chevron-up-down.svg?component'),
+    clear: () => import('../../../images/icons/clear.svg?component'),
     copy: () => import('../../../images/icons/copy.svg?component'),
     'cross-circle-fill': () => import('../../../images/icons/cross-circle-fill.svg?component'),
     search: () => import('../../../images/icons/search.svg?component'),

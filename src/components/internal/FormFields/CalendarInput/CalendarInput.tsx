@@ -7,13 +7,14 @@ import { CalendarInputButton } from './components/CalendarInputButton';
 import { CalendarInputPopover } from './components/CalendarInputPopover';
 
 interface CalendarInputProps {
+    clearable?: boolean;
     value?: string;
     onInput: (val: any) => void;
     isInvalid?: boolean;
     timezone?: string;
 }
 
-export function CalendarInput({ value, onInput, isInvalid, timezone }: CalendarInputProps) {
+export function CalendarInput({ clearable, value, onInput, isInvalid, timezone }: CalendarInputProps) {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timezone);
     const [open, setOpen] = useState(false);
@@ -42,9 +43,30 @@ export function CalendarInput({ value, onInput, isInvalid, timezone }: CalendarI
         [lastUpdatedTimestamp, onInput]
     );
 
+    const showClearButton = useMemo(() => !!clearable && !!value, [clearable, value]);
+
+    const onClear = useCallback(
+        (e?: Event) => {
+            e?.preventDefault?.();
+            e?.stopPropagation?.();
+            onInput('');
+            setLastUpdatedTimestamp(undefined);
+            setOpen(false);
+        },
+        [onInput]
+    );
+
     return (
         <div>
-            <CalendarInputButton label={label} isOpen={open} isInvalid={isInvalid} onClick={() => setOpen(prev => !prev)} buttonRef={buttonRef} />
+            <CalendarInputButton
+                label={label}
+                isOpen={open}
+                isInvalid={isInvalid}
+                onClick={() => setOpen(prev => !prev)}
+                showClearButton={showClearButton}
+                onClear={onClear}
+                buttonRef={buttonRef}
+            />
             <CalendarInputPopover
                 isOpen={open}
                 onClose={() => setOpen(false)}

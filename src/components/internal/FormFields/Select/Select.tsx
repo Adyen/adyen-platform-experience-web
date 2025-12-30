@@ -16,6 +16,7 @@ import './Select.scss';
 const Select = <T extends SelectItem>({
     className,
     classNameModifiers = EMPTY_ARRAY as [],
+    clearable = false,
     popoverClassNameModifiers,
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
@@ -415,6 +416,18 @@ const Select = <T extends SelectItem>({
         showingList.current = showList;
     }, [filterable, showList]);
 
+    const handleClear = useCallback(
+        (e?: Event) => {
+            console.log('clearing');
+            e?.preventDefault?.();
+            e?.stopPropagation?.();
+            resetSelection();
+            cachedSelectedItems.current = EMPTY_ARRAY;
+            onChange({ target: { value: '', name } });
+        },
+        [name, onChange, resetSelection]
+    );
+
     return (
         <div className={dropdownClassName}>
             <SelectButton
@@ -422,11 +435,13 @@ const Select = <T extends SelectItem>({
                 id={selectButtonId}
                 appliedFilterNumber={appliedFilterNumber}
                 active={selection}
+                clearable={clearable}
                 filterInputRef={filterInputRef}
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
                 name={name}
+                onClear={handleClear}
                 onButtonKeyDown={handleButtonKeyDown}
                 onFilterInputKeyDown={handleFilterInputKeyDown}
                 multiSelect={multiSelect}

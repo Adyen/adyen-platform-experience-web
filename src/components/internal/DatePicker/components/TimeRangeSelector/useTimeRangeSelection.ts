@@ -8,6 +8,7 @@ import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 export type TimeRangeOptions = 'last7Days' | 'last30Days' | 'last90Days' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'yearToDate';
 
 export type UseTimeRangeSelectionConfig = {
+    clearable?: boolean;
     now?: RangeTimestamp;
     options: Readonly<Partial<{ [P in TimeRangeOptions as `common.filters.types.date.rangeSelect.options.${P}`]: RangeTimestamps }>>;
     selectedOption?: string;
