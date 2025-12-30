@@ -61,8 +61,10 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
             setShowInvalidURL(Boolean(termsAndConditionsURL && !isValidURL(termsAndConditionsURL)));
             setShowNotCheckedRequirementsError(!isRequirementsChecked);
             setSaveActionCalled(false);
+            setIsSaveSuccess(false);
+            setIsSaveError(false);
         }
-    }, [termsAndConditionsURL, isRequirementsChecked, showNotCheckedRequirementsError, saveActionCalled, setSaveActionCalled, setPayload]);
+    }, [termsAndConditionsURL, isRequirementsChecked, saveActionCalled, setSaveActionCalled, setPayload, setIsSaveError, setIsSaveSuccess]);
 
     useEffect(() => {
         let data = isTermsAndConditionsData(savedData) ? (savedData as IPayByLinkTermsAndConditions) : undefined;

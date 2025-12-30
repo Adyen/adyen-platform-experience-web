@@ -16,6 +16,7 @@ interface SecondaryNavProps<T> {
     activeValue: string | null;
     onValueChange: (value: T) => void;
     renderContent: (activeMenu: string) => VNode<any>;
+    renderLoadingContent: (activeMenu: string | null) => VNode<any>;
     renderHeader: () => VNode<any>;
     onContentVisibilityChange: (contentVisible: boolean) => void;
     loading?: boolean;
@@ -43,6 +44,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     loading,
     onContentVisibilityChange,
     renderContent,
+    renderLoadingContent,
 }: SecondaryNavProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [contentOpen, setContentOpen] = useState(!isSmContainer);
@@ -65,10 +67,12 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
 
     if (loading) {
         return !isSmContainer ? (
-            <div className={'adyen-pe-secondary-nav__skeleton-container'}>
-                <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--aside'} />
-                <Divider variant="vertical" />
-                <LoadingSkeleton rowNumber={5} className={'adyen-pe-secondary-nav__skeleton--content'} />
+            <div className={cx('adyen-pe-secondary-nav')}>
+                <div className={'adyen-pe-secondary-nav__container'}>
+                    <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--aside'} />
+                    <Divider variant="vertical" />
+                    {renderLoadingContent(activeValue)}
+                </div>
             </div>
         ) : (
             <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--content'} />

@@ -41,8 +41,10 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                 setShowMissingBrandName(true);
             }
             setSaveActionCalled(false);
+            setIsSaveSuccess(false);
+            setIsSaveError(false);
         }
-    }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName]);
+    }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName, setIsSaveError, setIsSaveSuccess]);
 
     const addFileToThemePayload = useCallback(
         (field: string, file: File) => {

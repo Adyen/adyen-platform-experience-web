@@ -11,7 +11,8 @@ export const useStoreTheme = (
     selectedStore: string | undefined,
     enabled: boolean,
     setEnabled: Dispatch<StateUpdater<boolean>>,
-    setPayload: (payload: PayByLinkSettingsPayload) => void
+    setPayload: (payload: PayByLinkSettingsPayload) => void,
+    setLoading: Dispatch<StateUpdater<boolean>>
 ) => {
     const { getPayByLinkTheme } = useConfigContext().endpoints;
 
@@ -23,11 +24,12 @@ export const useStoreTheme = (
                     enabled: !!getPayByLinkTheme && enabled && !!selectedStore,
                     onSuccess: () => {
                         setEnabled(false);
+                        setLoading(false);
                     },
                 },
                 queryFn: async () => getPayByLinkTheme?.(EMPTY_OBJECT, { path: { storeId: selectedStore! } }),
             }),
-            [getPayByLinkTheme, selectedStore, enabled, setEnabled]
+            [getPayByLinkTheme, selectedStore, enabled, setEnabled, setLoading]
         )
     );
 

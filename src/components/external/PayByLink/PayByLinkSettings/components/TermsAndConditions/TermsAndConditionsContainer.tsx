@@ -21,7 +21,7 @@ const TermsAndConditionsContainer = () => {
     }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
 
     if (!isTermsAndConditionsData(termsAndConditionsData) || !initialData) {
-        return <LoadingSkeleton rowNumber={5} />;
+        return <LoadingSkeleton rowNumber={2} />;
     }
 
     return (
