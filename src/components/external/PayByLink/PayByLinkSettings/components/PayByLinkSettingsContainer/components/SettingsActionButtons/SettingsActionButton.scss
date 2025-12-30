@@ -1,0 +1,15 @@
+.adyen-pe-pay-by-link-settings {
+    .adyen-pe-button-actions--buttons-end {
+        flex-direction: column-reverse;
+    }
+
+    &__cta-container--mobile {
+        display: block;
+        width: 100%;
+
+        .adyen-pe-button__label {
+            display: flex;
+            justify-content: center;
+        }
+    }
+}

@@ -75,17 +75,4 @@
         gap: style.token(spacer-090);
         min-width: 25%;
     }
-
-    &__cta-container {
-        align-items: flex-end;
-        align-self: stretch;
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding: style.token(spacer-070) style.token(spacer-090);
-
-        &--mobile {
-            padding: style.token(spacer-070) 0;
-        }
-    }
 }

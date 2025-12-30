@@ -6,14 +6,10 @@ import { PayByLinkSettingsItem } from './context/types';
 import { useMemo } from 'preact/hooks';
 import { MENU_ITEMS } from './context/constants';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import { ButtonVariant } from '../../../../../internal/Button/types';
-import Icon from '../../../../../internal/Icon';
-import Button from '../../../../../internal/Button/Button';
 
 const PayByLinkSettingsContainer = ({
     settingsItems,
     storeIds,
-    navigateBack,
     embeddedInOverview,
     ...props
 }: ExternalUIComponentProps<PayByLinkSettingsComponentProps> & {
@@ -35,11 +31,6 @@ const PayByLinkSettingsContainer = ({
 
     return (
         <PayByLinkSettingsProvider embeddedInOverview={embeddedInOverview} selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
-            {navigateBack && (
-                <Button onClick={navigateBack} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
-                    <Icon name="arrow-right" />
-                </Button>
-            )}
             <PayByLinkSettings {...props} />
         </PayByLinkSettingsProvider>
     );

@@ -18,7 +18,7 @@ export const PaymentLinkError = ({ error, onContactSupport, onDismiss }: Payment
     const renderBackButton = useCallback(() => {
         return (
             <Button variant={ButtonVariant.SECONDARY} onClick={onDismiss}>
-                {i18n.get('paymentLinks.details.actions.goBack')}
+                {i18n.get('paymentLinks.common.actions.goBack')}
             </Button>
         );
     }, [i18n, onDismiss]);
