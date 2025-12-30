@@ -187,6 +187,7 @@ export interface TransactionOverviewComponentProps
 
 export interface PayByLinkOverviewComponentProps
     extends _DataOverviewComponentProps,
+        PayByLinkSettingsComponentProps,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
 export interface PayoutsOverviewComponentProps
@@ -215,7 +216,7 @@ export interface PayByLinkCreationComponentProps extends UIElementProps {
 }
 
 export interface PayByLinkSettingsComponentProps extends UIElementProps {
-    // Placeholder for component props
+    storeIds?: string[] | string;
 }
 
 export const enum FilterParam {
