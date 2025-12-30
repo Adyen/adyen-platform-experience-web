@@ -4,6 +4,7 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { SelectChangeEvent } from '../../../../../../../internal/FormFields/Select/types';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useCallback } from 'preact/hooks';
 
 interface StoreFieldProps {
     items: { id: string; name: string }[];
@@ -13,9 +14,12 @@ const StoreField = ({ items }: StoreFieldProps) => {
     const { i18n } = useCoreContext();
     const { setFieldDisplayValue } = useWizardFormContext<PBLFormValues>();
 
-    const handleChange = ({ target: { value } }: SelectChangeEvent) => {
-        setFieldDisplayValue('store', items.find(item => item.id === value)?.name);
-    };
+    const handleChange = useCallback(
+        ({ target: { value } }: SelectChangeEvent) => {
+            setFieldDisplayValue('store', items.find(item => item.id === value)?.name);
+        },
+        [items, setFieldDisplayValue]
+    );
 
     return (
         <FormSelect<PBLFormValues>

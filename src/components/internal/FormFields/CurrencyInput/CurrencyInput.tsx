@@ -136,7 +136,7 @@ export const CurrencyInput = ({
                 name: currency,
             };
         });
-        return sortCurrencyItems(items);
+        return items;
     }, [currenciesQuery.data]);
 
     const sortedCurrencyItems = useMemo(() => {

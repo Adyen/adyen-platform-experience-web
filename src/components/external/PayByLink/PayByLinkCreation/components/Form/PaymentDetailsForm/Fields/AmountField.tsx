@@ -1,6 +1,6 @@
 import { PBLFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { CurrencyInput } from '../../../../../../../internal/FormFields/CurrencyInput/CurrencyInput';
 import { VisibleField } from '../../../../../../../internal/FormWrappers/VisibleField';
@@ -50,6 +50,12 @@ export const AmountField = () => {
         const options = fieldsConfig?.[CURRENCY_FIELD_NAME]?.options as string[] | undefined;
         return options?.map(option => ({ id: option, name: option }));
     }, [fieldsConfig]);
+
+    useEffect(() => {
+        if (currencyItems?.length === 1) {
+            setValue(CURRENCY_FIELD_NAME, currencyItems[0]?.id);
+        }
+    }, [currencyItems]);
 
     return (
         <VisibleField<PBLFormValues> name={VALUE_FIELD_NAME}>
