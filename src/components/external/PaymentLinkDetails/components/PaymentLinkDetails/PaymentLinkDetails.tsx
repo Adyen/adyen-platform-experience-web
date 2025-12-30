@@ -11,23 +11,26 @@ import { PaymentLinkDetailsProps } from '../../types';
 import { ExternalUIComponentProps } from 'src/components/types';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { PaymentLinkSummary } from '../PaymentLinkSummary/PaymentLinkSummary';
-import './PaymentLinkDetails.scss';
-import { PaymentLinkExpiration } from '../PaymentLinkExpiration/PaymentLinkExpiration';
 import { PaymentLinkTabs } from '../PaymentLinkTabs/PaymentLinkTabs';
-import { ButtonActionsList } from '../../../../../components/internal/Button/ButtonActions/types';
+import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
+import { PaymentLinkExpiration } from '../PaymentLinkExpiration/PaymentLinkExpiration';
+import './PaymentLinkDetails.scss';
+import { PaymentLinkSkeleton } from '../PaymentLinkSkeleton/PaymentLinkSkeleton';
+import { PaymentLinkError } from '../PaymentLinkError/PaymentLinkError';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-details',
     content: 'adyen-pe-payment-link-details__content',
 };
 
-export const PaymentLinkDetails = ({ id, onUpdate, hideTitle }: ExternalUIComponentProps<PaymentLinkDetailsProps>) => {
-    const { i18n } = useCoreContext();
+export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: ExternalUIComponentProps<PaymentLinkDetailsProps>) => {
+    const { i18n, getCdnDataset } = useCoreContext();
     const { getPayByLinkPaymentLinkById } = useConfigContext().endpoints;
     const {
-        data: paymentLink,
-        isFetching,
-        error,
+        data: paymentLinkData,
+        isFetching: isFetchingPaymentLinkData,
+        error: paymentLinkDataError,
         refetch,
     } = useFetch(
         useMemo(
@@ -47,6 +50,44 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle }: ExternalUICompon
         )
     );
 
+    const { data: countries, isFetching: isFetchingCountries } = useFetch({
+        queryFn: useCallback(async () => {
+            const fileName = `${i18n.locale ?? 'en-US'}`;
+            if (getCdnDataset) {
+                return (
+                    (await getCdnDataset<Array<{ id: string; name: string }>>({
+                        name: fileName,
+                        extension: 'json',
+                        subFolder: 'countries',
+                        fallback: [] as Array<{ id: string; name: string }>,
+                    })) ?? []
+                );
+            }
+            return [] as Array<{ id: string; name: string }>;
+        }, [getCdnDataset, i18n.locale]),
+    });
+
+    const getCountryName = useCallback(
+        (countryCode: string) => {
+            const country = countries?.find(country => country.id === countryCode);
+            return country?.name;
+        },
+        [countries]
+    );
+
+    const isFetching = isFetchingPaymentLinkData || isFetchingCountries;
+    const paymentLink = useMemo(
+        () =>
+            paymentLinkData && {
+                ...paymentLinkData,
+                shopperInformation: {
+                    ...paymentLinkData?.shopperInformation,
+                    shopperCountry:
+                        paymentLinkData?.shopperInformation?.shopperCountry && getCountryName(paymentLinkData?.shopperInformation.shopperCountry),
+                },
+            },
+        [paymentLinkData, getCountryName]
+    );
     const [activeScreen, setActiveScreen] = useState<'details' | 'expirationConfirmation'>('details');
     const [isCopiedIndicatorVisible, setCopiedIndicatorVisible] = useState(false);
 
@@ -74,11 +115,11 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle }: ExternalUICompon
         setActiveScreen('expirationConfirmation');
     };
 
-    const handleExpirationSuccess = () => {
+    const handleExpirationSuccess = useCallback(() => {
         setActiveScreen('details');
         refetch();
         onUpdate?.();
-    };
+    }, [onUpdate, refetch]);
 
     const actionButtons: ButtonActionsList = useMemo(() => {
         if (!paymentLink) return [];
@@ -103,37 +144,46 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle }: ExternalUICompon
 
     const { withinModal } = useModalContext();
 
-    if (isFetching) {
-        return 'loading';
-    }
+    const renderContent = useCallback(() => {
+        if (isFetching) {
+            return <PaymentLinkSkeleton />;
+        }
 
-    if (!paymentLink || error) {
-        return 'error';
-    }
+        if (!paymentLink || paymentLinkDataError) {
+            return (
+                <PaymentLinkError
+                    error={paymentLinkDataError as AdyenPlatformExperienceError}
+                    onDismiss={onDismiss}
+                    onContactSupport={onContactSupport}
+                />
+            );
+        }
+
+        if (activeScreen === 'expirationConfirmation') {
+            return (
+                <PaymentLinkExpiration
+                    paymentLink={paymentLink}
+                    onCancel={() => setActiveScreen('details')}
+                    onExpirationSuccess={handleExpirationSuccess}
+                />
+            );
+        }
+
+        return (
+            <>
+                <PaymentLinkSummary paymentLink={paymentLink} />
+                <PaymentLinkTabs paymentLink={paymentLink} />
+                {actionButtons.length > 0 && <ButtonActions actions={actionButtons} />}
+            </>
+        );
+    }, [isFetching, paymentLink, paymentLinkDataError, activeScreen, actionButtons, onDismiss, onContactSupport, handleExpirationSuccess]);
 
     return (
         <div className={CLASSNAMES.root}>
             <div className={cx({ ['adyen-pe-visually-hidden']: activeScreen !== 'details' })}>
                 <Header hideTitle={hideTitle} forwardedToRoot={!withinModal} titleKey={'paymentLinks.details.title'} />
             </div>
-
-            <div className={CLASSNAMES.content}>
-                {activeScreen === 'expirationConfirmation' && (
-                    <PaymentLinkExpiration
-                        paymentLink={paymentLink}
-                        onCancel={() => setActiveScreen('details')}
-                        onExpirationSuccess={handleExpirationSuccess}
-                    />
-                )}
-
-                {activeScreen === 'details' && (
-                    <>
-                        <PaymentLinkSummary paymentLink={paymentLink} />
-                        <PaymentLinkTabs paymentLink={paymentLink} />
-                        {actionButtons.length > 0 && <ButtonActions actions={actionButtons} />}
-                    </>
-                )}
-            </div>
+            <div className={CLASSNAMES.content}>{renderContent()}</div>
         </div>
     );
 };

@@ -21,7 +21,7 @@ type PaymentLinkSummaryProps = {
 
 export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { dateFormat } = useTimezoneAwareDateFormatting();
     const status = paymentLink?.linkInformation.status;
     const getStatusVariant = (status: IPayByLinkStatus): TagVariant => {
         switch (status) {

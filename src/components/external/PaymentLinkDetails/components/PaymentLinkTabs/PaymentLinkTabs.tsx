@@ -5,7 +5,7 @@ import { ListValue, StructuredListItem, StructuredListItemType } from '../../../
 import Tabs from '../../../../internal/Tabs/Tabs';
 import { DATE_FORMAT_PAYMENT_LINK_TABS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { IPaymentLinkDetails } from '../../../../../types';
+import { IPaymentLinkDetails, IShopperAddress } from '../../../../../types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../../components/internal/Typography/Typography';
 import { PaymentLinkActivity } from '../PaymentLinkActivity/PaymentLinkActivity';
@@ -13,6 +13,8 @@ import { TabProps } from 'src/components/internal/Tabs/types';
 import './PaymentLinkTabs.scss';
 import { TranslationKey } from '../../../../../translations';
 import CopyText from '../../../../internal/CopyText/CopyText';
+import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../constants';
+import Link from '../../../../internal/Link/Link';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-tabs',
@@ -29,7 +31,11 @@ type ListItems = Record<'linkInformation' | 'shopperInformation' | 'shippingAddr
 
 export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
     const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+    const { dateFormat } = useTimezoneAwareDateFormatting();
+
+    const isAddressRedacted = useCallback((address: IShopperAddress) => {
+        return Object.values(address).some(value => value === BACKEND_REDACTED_DATA_MARKER);
+    }, []);
 
     const listItems = useMemo<ListItems>(() => {
         const linkType = paymentLink.linkInformation.linkType;
@@ -38,7 +44,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                 {
                     key: 'paymentLinks.details.fields.paymentLink',
                     value: paymentLink.linkInformation.paymentLinkId,
-                    config: { copyable: true },
+                    config: { isCopyable: true, linkUrl: paymentLink.linkInformation.paymentLink },
                 },
                 {
                     key: 'paymentLinks.details.fields.store',
@@ -75,75 +81,97 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                     value: [paymentLink.shopperInformation?.shopperName?.firstName, paymentLink.shopperInformation?.shopperName?.lastName]
                         .filter(Boolean)
                         .join(' '),
-                    config: { copyable: true },
+                    config: { isCopyable: true },
                 },
                 {
                     key: 'paymentLinks.details.fields.shopper.email',
                     value: paymentLink.shopperInformation?.shopperEmail,
-                    config: { copyable: true },
+                    config: { isCopyable: true },
                 },
                 {
                     key: 'paymentLinks.details.fields.shopper.phone',
                     value: paymentLink.shopperInformation?.telephoneNumber,
-                    config: { copyable: true },
+                    config: { isCopyable: true },
                 },
                 {
                     key: 'paymentLinks.details.fields.shopper.country',
                     value: paymentLink.shopperInformation?.shopperCountry,
                 },
+                ...(paymentLink.shopperInformation?.shippingAddress && isAddressRedacted(paymentLink.shopperInformation?.shippingAddress)
+                    ? [
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.title' as TranslationKey,
+                              value: FRONTEND_REDACTED_DATA_MARKER,
+                          },
+                      ]
+                    : []),
+                ...(paymentLink.shopperInformation?.billingAddress && isAddressRedacted(paymentLink.shopperInformation?.billingAddress)
+                    ? [
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.title' as TranslationKey,
+                              value: FRONTEND_REDACTED_DATA_MARKER,
+                          },
+                      ]
+                    : []),
             ],
-            shippingAddress: [
-                {
-                    key: 'paymentLinks.details.fields.shippingAddress.street',
-                    value: paymentLink.shopperInformation?.shippingAddress?.street,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.shippingAddress.houseNumberOrName',
-                    value: paymentLink.shopperInformation?.shippingAddress?.houseNumberOrName,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.shippingAddress.country',
-                    value: paymentLink.shopperInformation?.shippingAddress?.country,
-                },
-                {
-                    key: 'paymentLinks.details.fields.shippingAddress.city',
-                    value: paymentLink.shopperInformation?.shippingAddress?.city,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.shippingAddress.postalCode',
-                    value: paymentLink.shopperInformation?.shippingAddress?.postalCode,
-                    config: { copyable: true },
-                },
-            ],
-            billingAddress: [
-                {
-                    key: 'paymentLinks.details.fields.billingAddress.street',
-                    value: paymentLink.shopperInformation?.billingAddress?.street,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.billingAddress.houseNumberOrName',
-                    value: paymentLink.shopperInformation?.billingAddress?.houseNumberOrName,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.billingAddress.country',
-                    value: paymentLink.shopperInformation?.billingAddress?.country,
-                },
-                {
-                    key: 'paymentLinks.details.fields.billingAddress.city',
-                    value: paymentLink.shopperInformation?.billingAddress?.city,
-                    config: { copyable: true },
-                },
-                {
-                    key: 'paymentLinks.details.fields.billingAddress.postalCode',
-                    value: paymentLink.shopperInformation?.billingAddress?.postalCode,
-                    config: { copyable: true },
-                },
-            ],
+            shippingAddress:
+                !paymentLink.shopperInformation?.shippingAddress || isAddressRedacted(paymentLink.shopperInformation?.shippingAddress)
+                    ? []
+                    : [
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.street',
+                              value: paymentLink.shopperInformation?.shippingAddress?.street,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.houseNumberOrName',
+                              value: paymentLink.shopperInformation?.shippingAddress?.houseNumberOrName,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.country',
+                              value: paymentLink.shopperInformation?.shippingAddress?.country,
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.city',
+                              value: paymentLink.shopperInformation?.shippingAddress?.city,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.shippingAddress.postalCode',
+                              value: paymentLink.shopperInformation?.shippingAddress?.postalCode,
+                              config: { isCopyable: true },
+                          },
+                      ],
+            billingAddress:
+                !paymentLink.shopperInformation?.billingAddress || isAddressRedacted(paymentLink.shopperInformation?.billingAddress)
+                    ? []
+                    : [
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.street',
+                              value: paymentLink.shopperInformation?.billingAddress?.street,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.houseNumberOrName',
+                              value: paymentLink.shopperInformation?.billingAddress?.houseNumberOrName,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.country',
+                              value: paymentLink.shopperInformation?.billingAddress?.country,
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.city',
+                              value: paymentLink.shopperInformation?.billingAddress?.city,
+                              config: { isCopyable: true },
+                          },
+                          {
+                              key: 'paymentLinks.details.fields.billingAddress.postalCode',
+                              value: paymentLink.shopperInformation?.billingAddress?.postalCode,
+                              config: { isCopyable: true },
+                          },
+                      ],
         };
 
         // Filter out items with empty values from each group
@@ -153,15 +181,25 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                 categoryItems.filter(item => item.value != null && item.value !== '' && item.value !== undefined),
             ])
         ) as ListItems;
-    }, [dateFormat, i18n, paymentLink]);
+    }, [paymentLink, dateFormat, i18n, isAddressRedacted]);
 
     const renderListItemLabel = useCallback((label: string) => <div className={CLASSNAMES.listLabel}>{label}</div>, []);
     const renderListItemValue = useCallback((value: ListValue, key: TranslationKey, type: StructuredListItemType | undefined, config: any) => {
-        return (
-            <div className={CLASSNAMES.listValue}>
-                {config?.copyable && value ? <CopyText textToCopy={value.toString()} type={'Default'} /> : value}
-            </div>
-        );
+        let transformedValue;
+        if (value === BACKEND_REDACTED_DATA_MARKER) {
+            transformedValue = FRONTEND_REDACTED_DATA_MARKER;
+        } else if (config?.isCopyable && value && value !== '') {
+            const visibleText = config?.linkUrl ? (
+                <Link href={config.linkUrl} target="_blank">
+                    {value.toString()}
+                </Link>
+            ) : undefined;
+            transformedValue = <CopyText textToCopy={value.toString()} visibleText={visibleText} type={'Default'} />;
+        } else {
+            transformedValue = value;
+        }
+
+        return <div className={CLASSNAMES.listValue}>{transformedValue}</div>;
     }, []);
 
     const tabs = useMemo<TabProps<string>[]>(

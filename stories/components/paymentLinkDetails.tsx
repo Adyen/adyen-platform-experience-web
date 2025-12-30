@@ -6,6 +6,7 @@ import { ElementProps } from '../utils/types';
 export const PaymentLinkDetailsMeta: Meta<ElementProps<typeof PaymentLinkDetails>> = {
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         hideTitle: { type: 'boolean' },
         id: { type: 'string' },
     },

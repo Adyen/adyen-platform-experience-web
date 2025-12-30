@@ -1,0 +1,88 @@
+@use '../../../../../style';
+@use '../../../../../style/skeleton';
+
+.adyen-pe-payment-link-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__summary-container {
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        padding: style.token(spacer-060);
+    }
+
+    &__status {
+        border-radius: style.token(border-radius-s);
+        height: 22px;
+        width: 60px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__amount {
+        border-radius: style.token(border-radius-s);
+        height: 34px;
+        width: 180px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__expiration-date {
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 390px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__tabs-container {
+        padding: 0 style.token(spacer-080) style.token(spacer-070) style.token(spacer-080);
+    }
+
+    &__tab-labels-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-090);
+    }
+
+    &__tab-label {
+        border-radius: style.token(border-radius-s);
+        height: 26px;
+        width: 120px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__fields-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        padding-top: style.token(spacer-080);
+    }
+
+    &__field-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-060);
+    }
+
+    &__field-label {
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 180px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+
+    &__field-value {
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 300px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
+    }
+}
