@@ -139,6 +139,10 @@ export const PayByLinkCreationFormContainer = ({
         }
     };
 
+    const navigateBackFromTermsAndConditions = useCallback(() => {
+        setShowTermsAndConditions(false);
+    }, []);
+
     const onError = (errors: any) => {
         console.log(errors);
         // TODO - Define errorHandling
@@ -167,7 +171,7 @@ export const PayByLinkCreationFormContainer = ({
             <PayByLinkSettingsContainer
                 storeIds={selectedStore}
                 settingsItems={['termsAndConditions']}
-                navigateBack={() => setShowTermsAndConditions(false)}
+                navigateBack={navigateBackFromTermsAndConditions}
             />
         );
     }
