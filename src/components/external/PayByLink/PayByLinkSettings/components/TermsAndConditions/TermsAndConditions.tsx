@@ -1,4 +1,4 @@
-import { uniqueId } from '../../../../../../utils';
+import { isUndefined, uniqueId } from '../../../../../../utils';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
@@ -23,7 +23,7 @@ import { Requirements } from './Requirements/Requirements';
 export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTermsAndConditions; initialData: IPayByLinkTermsAndConditions }) => {
     const { i18n } = useCoreContext();
     const checkboxIdentifier = useRef(uniqueId());
-    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string | undefined>(data?.termsOfServiceUrl ?? '');
+    const [termsAndConditionsURL, setTermsAndConditionsURL] = useState<string>(data?.termsOfServiceUrl ?? '');
     const [isRequirementsChecked, setIsRequirementsChecked] = useState<boolean | undefined>(undefined);
     const [showNotCheckedRequirementsError, setShowNotCheckedRequirementsError] = useState(false);
     const [showInvalidURL, setShowInvalidURL] = useState(false);
@@ -45,7 +45,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
     } = usePayByLinkSettingsContext();
 
     useEffect(() => {
-        if (isRequirementsChecked && termsAndConditionsURL && isValidURL(termsAndConditionsURL)) {
+        if (isRequirementsChecked && isValidURL(termsAndConditionsURL)) {
             setIsValid(true);
         } else {
             setIsValid(false);
