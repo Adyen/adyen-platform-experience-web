@@ -64,7 +64,7 @@ export const PayByLinkCreationFormContainer = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
-    const selectedStoreCache = useRef<string>('');
+    const selectedStoreNavigationCache = useRef<string>('');
     const { i18n } = useCoreContext();
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -166,8 +166,9 @@ export const PayByLinkCreationFormContainer = ({
     };
 
     const navigateBackFromTermsAndConditions = useCallback(() => {
-        setSelectedStore(selectedStoreCache.current);
+        setSelectedStore(selectedStoreNavigationCache.current);
         setShowTermsAndConditions(false);
+        selectedStoreNavigationCache.current = '';
     }, [setShowTermsAndConditions, setSelectedStore]);
 
     const onError = (errors: any) => {
@@ -219,7 +220,7 @@ export const PayByLinkCreationFormContainer = ({
     );
 
     const onNavigateToTermsAndConditions = useCallback(() => {
-        selectedStoreCache.current = selectedStore;
+        selectedStoreNavigationCache.current = selectedStore;
         setSelectedStore('');
         setShowTermsAndConditions(true);
     }, [selectedStore, setSelectedStore, setShowTermsAndConditions]);
@@ -283,7 +284,7 @@ export const PayByLinkCreationFormContainer = ({
     if (showTermsAndConditions) {
         return (
             <PayByLinkSettingsContainer
-                storeIds={selectedStoreCache.current}
+                storeIds={selectedStoreNavigationCache.current}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}
             />
