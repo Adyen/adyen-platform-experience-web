@@ -104,6 +104,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                                         aria-selected={item.value === activeValue}
                                         className={cx('adyen-pe-secondary-nav__item', {
                                             'adyen-pe-secondary-nav__item--active': item.value === activeValue,
+                                            'adyen-pe-secondary-nav__item--mobile': isSmContainer,
                                         })}
                                         iconRight={isSmContainer ? <Icon name="chevron-right" /> : undefined}
                                         onClick={onClick.bind(null, item)}

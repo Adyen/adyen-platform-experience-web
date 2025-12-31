@@ -10,7 +10,6 @@
         display: inline-block;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-stronger-font-weight);
-        margin-bottom: style.token(spacer-040);
 
         &--info-text {
             display: inline;
@@ -20,6 +19,19 @@
         &--required {
             color: style.token(color-label-secondary);
             display: inline;
+        }
+    }
+
+    &__alert {
+        align-items: center;
+        align-self: stretch;
+        display: flex;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-050) style.token(spacer-060);
+
+        div {
+            display: flex;
+            justify-self: center;
         }
     }
 
