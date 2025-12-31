@@ -28,7 +28,7 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
             event: navigateBack ?? noop,
             title: i18n.get('paymentLinks.common.actions.goBack'),
             variant: ButtonVariant.SECONDARY,
-            classNames: [`${isSmContainer ? 'adyen-pe-pay-by-link-settings__cta-container--mobile' : ''}`],
+            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta-container--mobile'] : [],
         } as ButtonActionObject;
     }, [navigateBack, i18n, isSmContainer]);
 
