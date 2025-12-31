@@ -42,7 +42,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
         const items: ListItems = {
             linkInformation: [
                 {
-                    key: 'paymentLinks.details.fields.paymentLink',
+                    key: 'paymentLinks.details.fields.paymentLinkId',
                     value: paymentLink.linkInformation.paymentLinkId,
                     config: { isCopyable: true, linkUrl: paymentLink.linkInformation.paymentLink },
                 },
@@ -186,7 +186,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
     const renderListItemLabel = useCallback((label: string) => <div className={CLASSNAMES.listLabel}>{label}</div>, []);
     const renderListItemValue = useCallback((value: ListValue, key: TranslationKey, type: StructuredListItemType | undefined, config: any) => {
         let transformedValue;
-        if (value === BACKEND_REDACTED_DATA_MARKER) {
+        if (value && value.toString().includes(BACKEND_REDACTED_DATA_MARKER)) {
             transformedValue = FRONTEND_REDACTED_DATA_MARKER;
         } else if (config?.isCopyable && value && value !== '') {
             const visibleText = config?.linkUrl ? (

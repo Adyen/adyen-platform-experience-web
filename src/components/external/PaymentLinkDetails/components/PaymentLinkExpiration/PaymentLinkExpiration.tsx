@@ -11,6 +11,8 @@ import { EMPTY_OBJECT } from '../../../../../utils';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
 import './PaymentLinkExpiration.scss';
+import Alert from '../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-expiration',
@@ -51,7 +53,7 @@ export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSucce
                 state: expirePaymentLinkMutation.isLoading ? 'loading' : 'default',
             },
             {
-                title: i18n.get('paymentLinks.details.expiration.actions.cancel'),
+                title: i18n.get('paymentLinks.details.expiration.actions.goBack'),
                 event: onCancel,
                 variant: ButtonVariant.SECONDARY,
                 disabled: expirePaymentLinkMutation.isLoading,
@@ -66,6 +68,13 @@ export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSucce
                 {i18n.get('paymentLinks.details.expiration.title')}
             </Typography>
             <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expiration.description')}</Typography>
+            {expirePaymentLinkMutation.error && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    title={i18n.get('paymentLinks.details.expiration.errorTitle')}
+                    description={i18n.get('paymentLinks.details.expiration.errorDescription')}
+                />
+            )}
             <ButtonActions actions={actionButtons} />
         </div>
     );
