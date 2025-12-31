@@ -19,7 +19,7 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
             event: onSave,
             title: i18n.get('payByLink.settings.common.action.save'),
             variant: ButtonVariant.PRIMARY,
-            classNames: [`${isSmContainer ? 'adyen-pe-pay-by-link-settings__cta-container--mobile' : ''}`],
+            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta-container--mobile'] : [],
         } as ButtonActionObject;
     }, [i18n, onSave, isSaving, isSmContainer]);
 
