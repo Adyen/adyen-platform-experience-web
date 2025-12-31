@@ -6,7 +6,7 @@ import Spinner from '../../../internal/Spinner';
 
 function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayByLinkOverviewComponentProps>) {
     //TODO: Add error case
-    const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds, false);
+    const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds);
 
     //TODO: Change loading filters case
     if (isFetching) return <Spinner />;

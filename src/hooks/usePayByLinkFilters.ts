@@ -4,7 +4,7 @@ import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';
 import { useStores } from './useStores';
 
-const usePayByLinkFilters = (storeIds?: string | string[], enabled?: boolean) => {
+const usePayByLinkFilters = (storeIds?: string | string[]) => {
     const { payByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
 
     // TODO: Add error case. Fallback can be static values or be received from CDN.
@@ -15,10 +15,10 @@ const usePayByLinkFilters = (storeIds?: string | string[], enabled?: boolean) =>
     } = useFetch(
         useMemo(
             () => ({
-                fetchOptions: { enabled: !!getPayByLinkFiltersEndpointCall && (enabled ?? true), keepPrevData: true },
+                fetchOptions: { enabled: !!getPayByLinkFiltersEndpointCall, keepPrevData: true },
                 queryFn: async () => getPayByLinkFiltersEndpointCall?.(EMPTY_OBJECT),
             }),
-            [getPayByLinkFiltersEndpointCall, enabled]
+            [getPayByLinkFiltersEndpointCall]
         )
     );
 
