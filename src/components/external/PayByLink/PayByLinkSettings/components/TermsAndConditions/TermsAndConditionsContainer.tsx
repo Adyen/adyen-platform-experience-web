@@ -8,17 +8,28 @@ import { useState, useEffect } from 'preact/hooks';
 import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
 import LoadingSkeleton from '../PayByLinkSettingsContainer/components/LoadingSkeleton/LoadingSkeleton';
+import SettingsError from '../PayByLinkSettingsContainer/components/SettingsError/SettingsError';
+
+const ERROR_MESSAGE_KEY = 'payByLink.settings.termsAndConditions.errors.couldNotLoad';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { setPayload, setSavedData, savedData: termsAndConditionsData } = usePayByLinkSettingsContext();
+    const { savedData: termsAndConditionsData, isLoadingContent, termsAndConditionsError } = usePayByLinkSettingsContext();
     const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
-        if (termsAndConditionsData && !initialData && isTermsAndConditionsData(termsAndConditionsData)) {
-            setInitialData(termsAndConditionsData);
+        if (!isLoadingContent && !termsAndConditionsError) {
+            const data =
+                termsAndConditionsData && typeof termsAndConditionsData === 'object' && Object.keys(termsAndConditionsData).length > 0
+                    ? (termsAndConditionsData as IPayByLinkTermsAndConditions)
+                    : { termsOfServiceUrl: '' };
+            setInitialData(data);
         }
-    }, [termsAndConditionsData, setPayload, setSavedData, initialData]);
+    }, [termsAndConditionsData, setInitialData, isLoadingContent, termsAndConditionsError]);
+
+    if (termsAndConditionsError) {
+        return <SettingsError error={termsAndConditionsError} errorMessage={ERROR_MESSAGE_KEY} />;
+    }
 
     if (!isTermsAndConditionsData(termsAndConditionsData) || !initialData) {
         return <LoadingSkeleton rowNumber={2} />;

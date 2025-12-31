@@ -20,6 +20,11 @@ export const isTermsAndConditionsData = (data: PayByLinkSettingsData): data is I
     return hasOwnProperty(dataObj, 'termsOfServiceUrl');
 };
 
+export const isThemeData = (data: PayByLinkSettingsData): data is ThemeFormData => {
+    const dataObj = typeof data === 'object' ? data : {};
+    return hasOwnProperty(dataObj, 'brandName');
+};
+
 export const isThemePayload = (data: PayByLinkSettingsPayload): data is FormData => {
     return data instanceof FormData;
 };

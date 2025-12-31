@@ -124,6 +124,28 @@ export const PaymentLinkCreationMockedResponses = {
     },
 };
 
+export const PaymentLinkThemesMockedResponses = {
+    themeError: {
+        handlers: [
+            http.get(mockEndpoints.payByLink.themes, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
+export const PaymentLinkSettingsMockedResponses = {
+    termsAndConditionsError: {
+        handlers: [
+            http.get(mockEndpoints.payByLink.settings, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
 export const payByLinkMocks = [
     // GET /stores
     http.get(mockEndpoints.stores, async ({ request }) => {

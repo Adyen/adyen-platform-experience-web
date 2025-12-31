@@ -4,7 +4,7 @@ import { StoreSelectorItemParams } from '../../../../../../internal/StoreSelecto
 import { IPayByLinkTermsAndConditions } from '../../../../../../../types';
 import { SecondaryNavItem } from '../../../../../../internal/SecondaryNav';
 import { TranslationKey } from '../../../../../../../translations';
-import { AdyenErrorResponse } from '../../../../../../../core/Http/types';
+import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
 
 export type PayByLinkSettingsPayload = FormData | IPayByLinkTermsAndConditions | undefined;
 export type ThemeFormData = {
@@ -20,7 +20,9 @@ export type MenuItemType = { value: PayByLinkSettingsItem; label: string };
 export interface IPayByLinkSettingsContext {
     isLoadingContent: boolean;
     isLoadingStores: boolean;
-    storesError: Error | AdyenErrorResponse | undefined;
+    storesError: AdyenPlatformExperienceError | undefined;
+    termsAndConditionsError: AdyenPlatformExperienceError | undefined;
+    themeError: AdyenPlatformExperienceError | undefined;
     menuItems: MenuItemType[] | undefined;
     payload: PayByLinkSettingsPayload;
     activeMenuItem: PayByLinkSettingsItem | null;
@@ -32,6 +34,7 @@ export interface IPayByLinkSettingsContext {
     getIsValid: () => boolean;
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>;
     filteredStores: StoreSelectorItemParams[] | undefined;
+    allStores: StoreSelectorItemParams[] | undefined;
     setSelectedStore: Dispatch<StateUpdater<string | undefined>>;
     setSavedData: (data: PayByLinkSettingsData) => void;
     savedData: PayByLinkSettingsData;

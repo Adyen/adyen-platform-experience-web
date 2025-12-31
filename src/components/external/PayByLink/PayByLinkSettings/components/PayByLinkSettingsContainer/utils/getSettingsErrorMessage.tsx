@@ -1,10 +1,10 @@
-import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '../../../../translations';
-import { ErrorMessage, UNDEFINED_ERROR } from '../../../utils/getCommonErrorCode';
-import CopyText from '../../../internal/CopyText/CopyText';
-import { AssetOptions } from '../../../../core/Assets/Assets';
+import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
+import { TranslationKey } from '../../../../../../../translations';
+import { AssetOptions } from '../../../../../../../core/Assets/Assets';
+import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../../utils/getCommonErrorCode';
+import CopyText from '../../../../../../internal/CopyText/CopyText';
 
-export const getPaymentLinksErrorMessage = (
+const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
     errorMessage: TranslationKey,
     onContactSupport?: () => void,
@@ -27,27 +27,11 @@ export const getPaymentLinksErrorMessage = (
                 translationValues,
                 onContactSupport,
             };
-        case '29_001':
-            if (error.invalidFields?.some(field => field.name === 'paymentLinkId')) {
-                return {
-                    title: 'payByLink.overview.errors.listEmpty',
-                    message: ['payByLink.overview.errors.listEmpty.message'],
-                    images: {
-                        desktop: getImageAsset?.({ name: 'no-results-found' }),
-                        mobile: getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' }),
-                    },
-                };
-            }
-            return {
-                title: 'common.errors.somethingWentWrong',
-                message: ['payByLink.overview.errors.couldNotLoadLinks', 'common.errors.retry'],
-                onContactSupport,
-            };
         case '00_500':
         case undefined:
             return {
                 title: 'common.errors.somethingWentWrong',
-                message: ['payByLink.overview.errors.couldNotLoadLinks', secondaryErrorMessage],
+                message: [errorMessage, secondaryErrorMessage],
                 translationValues,
                 refreshComponent: true,
             };
@@ -61,3 +45,5 @@ export const getPaymentLinksErrorMessage = (
             };
     }
 };
+
+export default getSettingsErrorMessage;

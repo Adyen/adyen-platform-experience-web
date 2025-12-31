@@ -6,6 +6,7 @@ import { Dispatch } from 'preact/compat';
 import { getThemePayload } from '../components/PayByLinkSettingsContainer/utils/getThemePayload';
 import { IPayByLinkTheme } from '../../../../../types';
 import { PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
 export const useStoreTheme = (
     selectedStore: string | undefined,
@@ -47,5 +48,7 @@ export const useStoreTheme = (
         setPayload(getThemePayload(theme as IPayByLinkTheme));
     }, [theme, setPayload]);
 
-    return { theme, isFetching, error };
+    const themeError = error as AdyenPlatformExperienceError;
+
+    return { theme, isFetching, error: themeError };
 };
