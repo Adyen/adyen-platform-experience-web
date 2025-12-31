@@ -211,20 +211,6 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
             )}
-            {isSaveSuccess && (
-                <Alert
-                    type={AlertTypeOption.SUCCESS}
-                    onClose={() => setIsSaveSuccess(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
-                />
-            )}
-            {isSaveError && (
-                <Alert
-                    type={AlertTypeOption.CRITICAL}
-                    onClose={() => setIsSaveError(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
-                />
-            )}
         </section>
     );
 };
