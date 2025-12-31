@@ -15,7 +15,7 @@ import { usePayByLinkSettingsContext } from './context/context';
 import PayByLinkSettingsContent from './components/PayByLinkSettingsContent/PayByLinkSettingsContent';
 import SettingsActionButtons from './components/SettingsActionButtons/SettingsActionButtons';
 import { MenuItemType } from './context/types';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import cx from 'classnames';
 import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
@@ -39,7 +39,12 @@ const PayByLinkSettings = ({
     } = usePayByLinkSettingsContext();
 
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-    const [contentVisible, setContentVisible] = useState(!isSmContainer || (menuItems && menuItems?.length === 1));
+    const [contentVisible, setContentVisible] = useState(false);
+
+    useEffect(() => {
+        const visibility = Boolean(!isSmContainer || (isSmContainer && menuItems && menuItems?.length === 1));
+        setContentVisible(visibility);
+    }, [isSmContainer, menuItems]);
 
     const onContentVisibilityChange = useCallback(
         (contentVisible: boolean) => {

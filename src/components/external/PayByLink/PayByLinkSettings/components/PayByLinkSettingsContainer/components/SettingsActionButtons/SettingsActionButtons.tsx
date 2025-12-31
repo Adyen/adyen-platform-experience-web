@@ -34,8 +34,8 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
 
     const buttonActions = useMemo(() => {
         if (!navigateBack) return [saveButton];
-        return isSmContainer ? [goBackButton, saveButton] : [saveButton, goBackButton];
-    }, [saveButton, goBackButton, navigateBack, isSmContainer]);
+        return [saveButton, goBackButton];
+    }, [saveButton, goBackButton, navigateBack]);
 
     const layout = useMemo(() => (isSmContainer ? ButtonActionsLayout.VERTICAL_STACK : ButtonActionsLayoutBasic.BUTTONS_END), [isSmContainer]);
 
