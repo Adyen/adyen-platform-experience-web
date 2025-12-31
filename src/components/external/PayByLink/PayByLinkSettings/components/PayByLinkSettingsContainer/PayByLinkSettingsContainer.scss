@@ -53,7 +53,7 @@
 
     &__content-container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: style.token(spacer-090);
         margin-top: style.token(spacer-070);
     }

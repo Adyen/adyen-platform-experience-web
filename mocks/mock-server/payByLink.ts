@@ -133,12 +133,30 @@ export const PaymentLinkThemesMockedResponses = {
             }),
         ],
     },
+
+    saveThemesError: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.themes, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
 };
 
 export const PaymentLinkSettingsMockedResponses = {
     termsAndConditionsError: {
         handlers: [
             http.get(mockEndpoints.payByLink.settings, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+
+    saveSettingsError: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.settings, async () => {
                 await delay(300);
                 return HttpResponse.error();
             }),

@@ -41,6 +41,18 @@ export const ThemeError: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
+export const ThemesSaveError: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Themes Save Error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkThemesMockedResponses.saveThemesError,
+        },
+    },
+};
+
 export const SettingsError: ElementStory<typeof PayByLinkOverview> = {
     name: 'Error - Terms and Conditions Error',
     args: {
@@ -49,6 +61,18 @@ export const SettingsError: ElementStory<typeof PayByLinkOverview> = {
     parameters: {
         msw: {
             ...PaymentLinkSettingsMockedResponses.termsAndConditionsError,
+        },
+    },
+};
+
+export const SettingsSaveError: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Terms and Conditions Save Error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkSettingsMockedResponses.saveSettingsError,
         },
     },
 };
