@@ -5,7 +5,7 @@ import './PayByLink.scss';
 
 function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayByLinkOverviewComponentProps>) {
     //TODO: Add error case
-    const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds, false);
+    const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds);
 
     return (
         <>
