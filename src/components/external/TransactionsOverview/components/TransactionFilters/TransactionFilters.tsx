@@ -53,11 +53,6 @@ const TransactionsFilters = ({
     const [paymentPspReference, setPaymentPspReference] = useState(initialFilters.current.paymentPspReference);
     const [balanceAccount, setBalanceAccount] = useState(initialFilters.current.balanceAccount);
 
-    if (!initialFilters.current.balanceAccount && balanceAccount) {
-        // Update initial balance account selection (first selection only)
-        initialFilters.current.balanceAccount = balanceAccount;
-    }
-
     const currentFilters = useMemo(
         () => ({ balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses }) as const,
         [balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses]
@@ -103,6 +98,13 @@ const TransactionsFilters = ({
 
     useEffect(() => setCurrencies(initialFilters.current.currencies), [availableCurrencies]);
     useEffect(() => onChange?.(currentFilters), [onChange, currentFilters]);
+
+    useEffect(() => {
+        if (!initialFilters.current.balanceAccount && balanceAccount) {
+            // Update initial balance account selection (first selection only)
+            initialFilters.current.balanceAccount = balanceAccount;
+        }
+    }, [balanceAccount]);
 
     return (
         <FilterBar
