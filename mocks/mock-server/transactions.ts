@@ -10,6 +10,7 @@ import {
 } from '../../src';
 import {
     BASE_TRANSACTION,
+    COMPLETE_TRANSACTION_DETAILS,
     FULL_REFUND_TRANSACTION,
     FULLY_REFUNDABLE_TRANSACTION,
     FULLY_REFUNDED_TRANSACTION,
@@ -552,13 +553,29 @@ export const transactionsMocks = [
 
 const sharedMockEndpointsHandlers = [
     http.post(mockEndpoints.initiateRefund, async ({ request }) => {
-        await delay(500);
+        await delay(1000);
         const { amount, refundReason } = (await request.json()) as ITransactionRefundPayload;
         return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
     }),
 ] as const;
 
 export const TRANSACTION_DETAILS_HANDLERS = {
+    default: {
+        handlers: [
+            http.get(mockEndpoints.transaction, ({ params }) => {
+                return HttpResponse.json({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id });
+            }),
+            ...sharedMockEndpointsHandlers,
+        ],
+    },
+    completeDetails: {
+        handlers: [
+            http.get(mockEndpoints.transaction, ({ params }) => {
+                return HttpResponse.json({ ...COMPLETE_TRANSACTION_DETAILS, id: params.id });
+            }),
+            ...sharedMockEndpointsHandlers,
+        ],
+    },
     fullRefund: {
         handlers: [
             http.get(mockEndpoints.transaction, ({ params }) => {

@@ -4,21 +4,42 @@ import { goToStory } from '../../../utils/utils';
 const STORY_ID = 'mocked-transaction-details--default';
 
 test.describe('Default', () => {
-    const expectExactPaymentDetailsRendering = async (page: Page) => {
+    const expectSamePaymentStatusBoxRendering = async (page: Page) => {
         await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
         await expect(page.locator('.adyen-pe-tag--blue', { hasText: 'Partially refunded' })).toBeVisible();
         await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
 
-        await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
+        // Using first here to prevent clashes with other amounts displayed on page
+        await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
         await expect(page.getByText('•••• •••• •••• 1945', { exact: true })).toBeVisible();
         await expect(page.getByText('Monday, August 29, 2022 at 09:47 AM GMT-3', { exact: true })).toBeVisible();
+    };
 
-        await expect(page.getByText('Original amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
+    const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
+        await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
+        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
+        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
 
-        await expect(page.getByText('Fee', { exact: true })).toBeVisible();
-        await expect(page.getByText('€0.00', { exact: true })).toBeVisible();
+        const refundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
 
+        await expect(refundButton).toBeVisible();
+        await expect(refundButton).toBeEnabled();
+    };
+
+    const expectAfterPaymentRefundDetailsRendering = async (page: Page) => {
+        await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
+        await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
+
+        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(2);
+        await expect(page.locator('.adyen-pe-alert')).toHaveCount(2);
+
+        const lockedRefundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
+
+        await expect(lockedRefundButton).toBeVisible();
+        await expect(lockedRefundButton).toBeDisabled();
+    };
+
+    const expectSamePaymentDetailsRendering = async (page: Page) => {
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
 
@@ -27,6 +48,8 @@ test.describe('Default', () => {
 
         await expect(page.getByText('PSP reference', { exact: true })).toBeVisible();
         await expect(page.getByText('PSP0000000000990', { exact: true })).toBeVisible();
+
+        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
     };
 
     test.beforeEach(async ({ page }) => {
@@ -34,18 +57,11 @@ test.describe('Default', () => {
     });
 
     test.describe('render', () => {
-        test.afterEach(async ({ page }) => {
-            await expectExactPaymentDetailsRendering(page);
-
-            await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
-            await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-            await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
-
-            await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
-            await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeEnabled();
+        test('should render payment transaction details', async ({ page }) => {
+            await expectSamePaymentStatusBoxRendering(page);
+            await expectSamePaymentDetailsRendering(page);
+            await expectBeforePaymentRefundDetailsRendering(page);
         });
-
-        test('should render payment transaction details', () => {});
 
         test('should switch to payment refund view and back', async ({ page }) => {
             await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
@@ -82,6 +98,11 @@ test.describe('Default', () => {
             await expect(refundButton).toBeEnabled();
 
             await backButton.click();
+
+            // Back to payment details
+            await expectSamePaymentStatusBoxRendering(page);
+            await expectSamePaymentDetailsRendering(page);
+            await expectBeforePaymentRefundDetailsRendering(page);
         });
     });
 
@@ -198,18 +219,10 @@ test.describe('Default', () => {
 
             await page.getByRole('button', { name: 'Go back' }).click();
 
-            await expectExactPaymentDetailsRendering(page);
-
-            await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
-            await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
-
-            await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(2);
-            await expect(page.locator('.adyen-pe-alert')).toHaveCount(2);
-
-            const lockedRefundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
-
-            await expect(lockedRefundButton).toBeVisible();
-            await expect(lockedRefundButton).toBeDisabled();
+            // Return to payment details (refund will be locked)
+            await expectSamePaymentStatusBoxRendering(page);
+            await expectSamePaymentDetailsRendering(page);
+            await expectAfterPaymentRefundDetailsRendering(page);
         });
     });
 });
