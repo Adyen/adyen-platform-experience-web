@@ -47,8 +47,6 @@ export const PayByLinkOverviewModal = ({
         }
     }, [isModalVisible]);
 
-    if (!isModalVisible || !modalType) return null;
-
     const onPaymentLinkCreated = useCallback(
         (paymentLink: PBLFormValues) => {
             paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
@@ -56,6 +54,8 @@ export const PayByLinkOverviewModal = ({
         },
         [paymentLinkCreation]
     );
+
+    if (!isModalVisible || !modalType) return null;
 
     return (
         <div>
