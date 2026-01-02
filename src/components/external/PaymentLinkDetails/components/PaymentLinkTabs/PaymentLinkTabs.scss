@@ -1,7 +1,7 @@
 @use '../../../../../style';
 
 .adyen-pe-payment-link-tabs {
-    padding: 0 style.token(spacer-080) style.token(spacer-070) style.token(spacer-080);
+    padding-bottom: style.token(spacer-070);
 
     &__list-heading {
         padding-bottom: style.token(spacer-040);

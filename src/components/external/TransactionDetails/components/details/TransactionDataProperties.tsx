@@ -118,7 +118,7 @@ const TransactionDataProperties = () => {
             <StructuredList
                 classNames={TX_DATA_LIST}
                 items={itemsWithExtraFields}
-                layout="5-7"
+                layout="4-8"
                 align="start"
                 renderLabel={label => <div className={TX_DATA_LABEL}>{label}</div>}
                 renderValue={(val, key, type, config) => {

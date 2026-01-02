@@ -212,7 +212,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                         <StructuredList
                             items={listItems.linkInformation}
                             align="start"
-                            layout="5-7"
+                            layout="4-8"
                             renderLabel={renderListItemLabel}
                             renderValue={renderListItemValue}
                         />
@@ -226,7 +226,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                             <StructuredList
                                 items={listItems.shopperInformation}
                                 align="start"
-                                layout="5-7"
+                                layout="4-8"
                                 renderLabel={renderListItemLabel}
                                 renderValue={renderListItemValue}
                             />
@@ -239,7 +239,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                     <StructuredList
                                         items={listItems.shippingAddress}
                                         align="start"
-                                        layout="5-7"
+                                        layout="4-8"
                                         renderLabel={renderListItemLabel}
                                         renderValue={renderListItemValue}
                                     />
@@ -254,7 +254,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                     <StructuredList
                                         items={listItems.billingAddress}
                                         align="start"
-                                        layout="5-7"
+                                        layout="4-8"
                                         renderLabel={renderListItemLabel}
                                         renderValue={renderListItemValue}
                                     />
