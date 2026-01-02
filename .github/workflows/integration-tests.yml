@@ -40,6 +40,7 @@ jobs:
     timeout-minutes: 15
     env:
       CI: true
+      TEST_ENV: '1'
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
       PLAYGROUND_URL: http://localhost:4173

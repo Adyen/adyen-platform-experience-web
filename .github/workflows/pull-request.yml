@@ -30,6 +30,10 @@ jobs:
 
       - name: Run unit tests
         run: npm run test
+        env:
+          TEST_ENV: '1'
 
       - name: Build library
         run: npm run build
+        env:
+          TEST_ENV: '1'

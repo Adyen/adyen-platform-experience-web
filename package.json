@@ -83,6 +83,7 @@
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
+    "@adyen/identityrisk-data-collection": "^1.0.2",
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
     "@playwright/test": "^1.56.0",

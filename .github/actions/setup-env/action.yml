@@ -46,7 +46,6 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_READ_TOKEN }}
-        npm install
+        npm ci
       env:
         HUSKY: "0"

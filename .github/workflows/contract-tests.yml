@@ -24,6 +24,7 @@ jobs:
       - name: Run contract tests
         run: npm run test:contract
         env:
+          TEST_ENV: '1'
           SESSION_ACCOUNT_HOLDER: ${{ secrets.SESSION_ACCOUNT_HOLDER }}
           SESSION_API_URL: ${{ secrets.SESSION_API_URL }}
           API_KEY: ${{ secrets.API_KEY }}

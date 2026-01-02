@@ -25,6 +25,7 @@ const getMySessionToken = async session => {
                     'Reports Overview Component: View',
                     'Transactions Overview Component: Manage Refunds',
                     'Transactions Overview Component: View',
+                    'Device Fingerprint: Submit',
                     ...(session?.roles?.length ? session.roles : []),
                 ],
             },
