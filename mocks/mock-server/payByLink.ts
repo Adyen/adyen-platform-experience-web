@@ -101,6 +101,15 @@ export const PayByLinkOverviewMockedResponses = {
             }),
         ],
     },
+
+    filterError: {
+        handlers: [
+            http.get(mockEndpointsPBL.filters, async () => {
+                await delay(300);
+                return HttpResponse.error();
+            }),
+        ],
+    },
 };
 
 export const PaymentLinkCreationMockedResponses = {
