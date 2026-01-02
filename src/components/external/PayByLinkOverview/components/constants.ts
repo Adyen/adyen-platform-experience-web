@@ -12,6 +12,8 @@ export const MOBILE_AMOUNT_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-amount
 export const MOBILE_EXPIRE_DATE_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-expire-date-cell`;
 export const FILTERS_CONTAINER_CLASS = `${BASE_CLASS}__filters-container`;
 export const ACTION_BUTTONS_CONTAINER_CLASS = `${BASE_CLASS}__action-buttons-container`;
+export const FILTERS_ALERT_CONTAINER_CLASS = `${BASE_CLASS}__filters-alert-container`;
+export const FILTERS_ALERT_CONTAINER_MOBILE_CLASS = `${BASE_CLASS}__filters-alert-container--mobile`;
 export const ACTION_BUTTON_CLASS = `${BASE_CLASS}__action-button`;
 
 export const EARLIEST_PAYMENT_LINK_DATE = 90;

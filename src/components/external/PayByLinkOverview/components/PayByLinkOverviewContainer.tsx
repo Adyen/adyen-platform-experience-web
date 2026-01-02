@@ -7,11 +7,7 @@ function PayByLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PayBy
     //TODO: Add error case
     const { filters, isFetching, stores, filterError, storeError } = usePayByLinkFilters(props?.storeIds);
 
-    return (
-        <>
-            <PayByLinkOverview {...props} filterParams={filters} stores={stores} isFiltersLoading={isFetching} />
-        </>
-    );
+    return <PayByLinkOverview {...props} filterParams={filters} stores={stores} isFiltersLoading={isFetching} />;
 }
 
 export default PayByLinkOverviewContainer;

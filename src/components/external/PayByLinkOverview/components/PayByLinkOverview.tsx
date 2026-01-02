@@ -5,6 +5,8 @@ import {
     BASE_XS_CLASS,
     DEFAULT_PAY_BY_LINK_STATUS_GROUP,
     EARLIEST_PAYMENT_LINK_DATE,
+    FILTERS_ALERT_CONTAINER_CLASS,
+    FILTERS_ALERT_CONTAINER_MOBILE_CLASS,
     FILTERS_CONTAINER_CLASS,
     PAY_BY_LINK_STATUS_GROUPS_FILTER_MAPPING,
     PAY_BY_LINK_STATUS_GROUPS_TABS,
@@ -39,12 +41,13 @@ import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
 import * as RangePreset from '../../../internal/Calendar/calendar/timerange/presets';
 import { PaymentLinkDetailsModal } from './PaymentLinkDetailsModal/PaymentLinkDetailsModal';
-import { StoreData } from './types';
+import { PayByLinkOverviewModalType, StoreData } from './types';
 import Button from '../../../internal/Button';
 import { ButtonVariant } from '../../../internal/Button/types';
 import Icon from '../../../internal/Icon';
 import { PayByLinkOverviewModal } from './PayByLinkOverviewModal';
-import { PayByLinkOverviewModalType } from './types';
+import Alert from '../../../internal/Alert/Alert';
+import { AlertTypeOption, AlertVariantOption } from '../../../internal/Alert/types';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -104,8 +107,16 @@ export const PayByLinkOverview = ({
     paymentLinkCreation,
     paymentLinkSettings,
     storeIds,
+    filterError,
+    storeError,
 }: ExternalUIComponentProps<
-    PayByLinkOverviewComponentProps & { filterParams?: IPayByLinkFilters; stores?: StoreData[]; isFiltersLoading: boolean }
+    PayByLinkOverviewComponentProps & {
+        filterParams?: IPayByLinkFilters;
+        stores?: StoreData[];
+        isFiltersLoading: boolean;
+        filterError?: AdyenPlatformExperienceError | undefined;
+        storeError?: AdyenPlatformExperienceError | undefined;
+    }
 >) => {
     const { i18n } = useCoreContext();
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
@@ -114,6 +125,7 @@ export const PayByLinkOverview = ({
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IPayByLinkStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+    const [showFiltersAlert, setShowFiltersAlert] = useState(false);
 
     const getPayByLinkListData = useCallback(
         async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: PaymentLinksPageRequestParams, signal?: AbortSignal) => {
@@ -271,9 +283,10 @@ export const PayByLinkOverview = ({
 
     const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.list.filters.types.statusGroup'), [i18n]);
 
-    const showLinkTypesFilter = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0;
-    const showStatusesFilter = filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0;
-    const showStoreFilter = stores && stores?.length > 1;
+    const typesFilterEnabled = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0 && !filterError;
+    const statusesFilterEnabled =
+        filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0 && !filterError;
+    const storeFilterEnabled = stores && stores?.length > 1 && !storeError;
 
     const sinceDate = useMemo(() => {
         return new Date(RangePreset.lastNDays(EARLIEST_PAYMENT_LINK_DATE).from).toString();
@@ -316,6 +329,14 @@ export const PayByLinkOverview = ({
         };
     }, [onContactSupport, storeIds]);
 
+    useEffect(() => {
+        setShowFiltersAlert(!statusesFilterEnabled || !typesFilterEnabled || !storeFilterEnabled);
+    }, [statusesFilterEnabled, typesFilterEnabled, storeFilterEnabled]);
+
+    const closeFiltersAlert = useCallback(() => {
+        setShowFiltersAlert(false);
+    }, [setShowFiltersAlert]);
+
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="payByLink.overview.title">
@@ -340,9 +361,12 @@ export const PayByLinkOverview = ({
             {!isFiltersLoading && (
                 <div className={FILTERS_CONTAINER_CLASS}>
                     <FilterBar {...filterBarState} ariaLabelKey="payByLink.overview.filters.label">
-                        {showStoreFilter && (
-                            <MultiSelectionFilter {...storesTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.stores.label')} />
-                        )}
+                        <MultiSelectionFilter
+                            {...storesTypesFilter}
+                            isInvalid={!storeFilterEnabled}
+                            readonly={!storeFilterEnabled}
+                            placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
+                        />
                         <DateFilter
                             canResetFilters={canResetFilters}
                             defaultParams={defaultParams}
@@ -352,12 +376,18 @@ export const PayByLinkOverview = ({
                             refreshNowTimestamp={refreshNowTimestamp}
                             updateFilters={updateFilters}
                         />
-                        {showLinkTypesFilter && (
-                            <MultiSelectionFilter {...linkTypesFilter} placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')} />
-                        )}
-                        {showStatusesFilter && (
-                            <MultiSelectionFilter {...linkStatusFilter} placeholder={i18n.get('payByLink.overview.filters.types.status.label')} />
-                        )}
+                        <MultiSelectionFilter
+                            {...linkTypesFilter}
+                            isInvalid={!typesFilterEnabled}
+                            readonly={!typesFilterEnabled}
+                            placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')}
+                        />
+                        <MultiSelectionFilter
+                            {...linkStatusFilter}
+                            isInvalid={!statusesFilterEnabled}
+                            readonly={!statusesFilterEnabled}
+                            placeholder={i18n.get('payByLink.overview.filters.types.status.label')}
+                        />
                         <TextFilter
                             name={i18n.get('payByLink.overview.filters.types.merchantReference.label')}
                             label={
@@ -380,6 +410,16 @@ export const PayByLinkOverview = ({
                             onChange={onPaymentLinkIDFilterChange}
                             containerSize={PopoverContainerSize.MEDIUM}
                         ></TextFilter>
+                        {showFiltersAlert && (
+                            <Alert
+                                className={cx(FILTERS_ALERT_CONTAINER_CLASS, { [FILTERS_ALERT_CONTAINER_MOBILE_CLASS]: isMobileContainer })}
+                                type={AlertTypeOption.CRITICAL}
+                                variant={AlertVariantOption.TIP}
+                                closeButton={true}
+                                onClose={closeFiltersAlert}
+                                description={i18n.get('payByLink.overview.filters.errors.networkError')}
+                            />
+                        )}
                     </FilterBar>
                     <div className={ACTION_BUTTONS_CONTAINER_CLASS}>
                         <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>

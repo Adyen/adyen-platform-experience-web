@@ -87,6 +87,12 @@ export const PayByLinkOverviewMockedResponses = {
             }),
         ],
     },
+    storeNetworkError: {
+        handlers: [http.get(endpoints('mock').stores, async () => HttpResponse.error())],
+    },
+    filtersNetworkError: {
+        handlers: [http.get(mockEndpointsPBL.filters, async () => HttpResponse.error())],
+    },
     storesMisconfiguration: {
         handlers: [
             http.get(mockEndpoints.stores, async () => {

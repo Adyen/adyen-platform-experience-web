@@ -54,7 +54,7 @@ export const TooManyStores: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
-export const EmptyStores: ElementStory<typeof PayByLinkOverview> = {
+export const StoresMisconfiguration: ElementStory<typeof PayByLinkOverview> = {
     name: 'Error - Stores Not Configured',
     args: {
         mockedApi: true,
@@ -62,6 +62,30 @@ export const EmptyStores: ElementStory<typeof PayByLinkOverview> = {
     parameters: {
         msw: {
             ...PayByLinkOverviewMockedResponses.storesMisconfiguration,
+        },
+    },
+};
+
+export const StoreNetworkError: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Stores Network Error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PayByLinkOverviewMockedResponses.storeNetworkError,
+        },
+    },
+};
+
+export const FiltersNetworkError: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Filters Network Error',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PayByLinkOverviewMockedResponses.filtersNetworkError,
         },
     },
 };
