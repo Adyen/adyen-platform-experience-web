@@ -1,13 +1,20 @@
-import { IBalance, IBalanceAccountBase } from '../../../../../types';
+import { AriaAttributes } from 'preact/compat';
+import { IBalance } from '../../../../../types';
+
+export type BalancesCardProps = {
+    balances: readonly Readonly<IBalance>[];
+    hiddenField?: 'available' | 'reserved';
+    isLoading: boolean;
+    fullWidth?: boolean;
+} & Pick<AriaAttributes, 'aria-label'>;
 
 export type IBalanceWithKey = IBalance & {
-    balanceElemId?: string;
+    availableBalanceElemId?: string;
+    reservedBalanceElemId?: string;
     key?: string;
 };
 
 export type BalancesProps = {
-    balanceAccount?: Readonly<IBalanceAccountBase>;
     balances: readonly Readonly<IBalance>[];
-    balancesEmpty: boolean;
     loadingBalances: boolean;
 };

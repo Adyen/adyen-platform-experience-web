@@ -20,7 +20,7 @@ const test = base.extend<{
 test('cells should show correct value and open correct modal ', async ({ transactionsOverviewPage, page }) => {
     const transactionsOverview = transactionsOverviewPage;
     await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
-    await transactionsOverview.getCell('amount').waitFor();
+    await transactionsOverview.getCell('netAmount').waitFor();
     await transactionsOverview.firstRow.click();
 
     const referenceID = page

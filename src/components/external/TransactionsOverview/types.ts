@@ -24,6 +24,11 @@ export interface TransactionsFilters {
     paymentPspReference?: string;
 }
 
+export const enum TransactionsView {
+    TRANSACTIONS = 'transactions',
+    INSIGHTS = 'insights',
+}
+
 export type TransactionOverviewProps = ExternalUIComponentProps<
     TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >;

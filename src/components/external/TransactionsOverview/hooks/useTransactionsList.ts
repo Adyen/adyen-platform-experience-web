@@ -2,12 +2,14 @@ import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
 import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
-import { TRANSACTION_FIELDS } from '../components/TransactionsTable/TransactionsTable';
+import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
+import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
-import { useCallback, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import normalizeCustomFields from '../../../utils/customData/normalizeCustomFields';
 import hasCustomField from '../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../utils/customData/mergeRecords';
 
@@ -27,20 +29,7 @@ const useTransactionsList = ({
 }: UseTransactionsListProps) => {
     const { getTransactions } = useConfigContext().endpoints;
 
-    const filterParams = useMemo(
-        () =>
-            ({
-                balanceAccountId: filters.balanceAccount?.id,
-                paymentPspReference: filters.paymentPspReference,
-                statuses: String(filters.statuses) || undefined,
-                categories: String(filters.categories) || undefined,
-                currencies: String(filters.currencies) || undefined,
-                createdSince: new Date(filters.createdDate.from).toISOString(),
-                createdUntil: new Date(filters.createdDate.to).toISOString(),
-            }) as const,
-        [filters]
-    );
-
+    const filterParams = useMemo(() => getTransactionsFilterParams(filters), [filters]);
     const initialFilterParams = useRef(filterParams).current;
     const cachedFilterParams = useRef(initialFilterParams);
     const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
@@ -49,13 +38,7 @@ const useTransactionsList = ({
         async (requestParams: Pick<Parameters<NonNullable<typeof getTransactions>>[1]['query'], 'limit' | 'cursor'>, signal?: AbortSignal) => {
             const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
                 ...requestParams,
-                balanceAccountId: filters.balanceAccount?.id!,
-                paymentPspReference: filters.paymentPspReference,
-                createdSince: new Date(filters.createdDate.from).toISOString(),
-                createdUntil: new Date(filters.createdDate.to).toISOString(),
-                categories: filters.categories as (typeof filters.categories)[number][],
-                currencies: filters.currencies as (typeof filters.currencies)[number][],
-                statuses: filters.statuses as (typeof filters.statuses)[number][],
+                ...getTransactionsFilterQueryParams(filters),
                 sortDirection: 'desc' as const,
             } as const;
 
@@ -94,18 +77,22 @@ const useTransactionsList = ({
     );
 
     const { fields, onDataRetrieve } = dataCustomization?.list ?? {};
-    const hasCustomColumn = useMemo(() => hasCustomField(fields, TRANSACTION_FIELDS), [fields]);
+
+    const normalizedFields = useMemo<typeof fields>(() => normalizeCustomFields(fields, TRANSACTION_FIELDS_REMAPS), [fields]);
+    const hasCustomColumn = useMemo(() => hasCustomField(normalizedFields, TRANSACTION_FIELDS), [normalizedFields]);
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ hasCustomColumn, mergeCustomData, onDataRetrieve, records });
 
-    if (cachedFilterParams.current !== filterParams) {
-        cachedFilterParams.current = filterParams;
-        updateFilters?.(filterParams);
-    }
+    useEffect(() => {
+        if (cachedFilterParams.current !== filterParams) {
+            cachedFilterParams.current = filterParams;
+            updateFilters?.(filterParams);
+        }
+    }, [filterParams, updateFilters]);
 
     return {
         ...paginationProps,
         error,
-        fields,
+        fields: normalizedFields,
         fetching: fetching || loadingCustomRecords,
         records: customRecords,
         hasCustomColumn,
