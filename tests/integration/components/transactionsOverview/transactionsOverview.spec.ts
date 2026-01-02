@@ -20,7 +20,7 @@ const test = base.extend<{
 test('cells should show correct value and open correct modal ', async ({ transactionsOverviewPage, page }) => {
     const transactionsOverview = transactionsOverviewPage;
     await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
-    await transactionsOverview.applyDateFilter('2024-01-01');
+    await transactionsOverview.applyDateFilter('2026-01-01');
     await transactionsOverview.getCell('amount').waitFor();
     await transactionsOverview.firstRow.click();
 
@@ -88,7 +88,7 @@ test.describe('Transaction details modal with partial refunds', () => {
     test.beforeEach(async ({ transactionsOverviewPage, page }) => {
         const transactionsOverview = transactionsOverviewPage;
         await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
-        await transactionsOverview.applyDateFilter('2024-01-01');
+        await transactionsOverview.applyDateFilter('2026-01-01');
         await transactionsOverview.getCell('amount').waitFor();
         await transactionsOverview.firstRow.click();
     });
@@ -114,7 +114,7 @@ test.describe('Refund action modal', () => {
     test.beforeEach(async ({ transactionsOverviewPage, page }) => {
         const transactionsOverview = transactionsOverviewPage;
         await goToStory(page, { id: `${COMPONENT_PREFIX}--default` });
-        await transactionsOverview.applyDateFilter('2024-01-01');
+        await transactionsOverview.applyDateFilter('2026-01-01');
         await transactionsOverview.getCell('amount').waitFor();
         await transactionsOverview.firstRow.click();
         const refundButton = page.getByLabel(getTranslatedKey('transactions.details.actions.refund'));

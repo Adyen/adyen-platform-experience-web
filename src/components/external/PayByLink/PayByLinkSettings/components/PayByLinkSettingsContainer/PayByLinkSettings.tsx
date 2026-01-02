@@ -1,6 +1,12 @@
 import { SecondaryNav } from '../../../../../internal/SecondaryNav';
 import { PayByLinkSettingsComponentProps } from '../../../../../types';
-import { CONTAINER_CLASS_NAME, SIDEBAR_CONTAINER_CLASS_NAME, SECONDARY_NAV_CLASS_NAME, CONTENT_CONTAINER_CLASS_NAME } from './constants';
+import {
+    CONTAINER_CLASS_NAME,
+    SIDEBAR_CONTAINER_CLASS_NAME,
+    SECONDARY_NAV_CLASS_NAME,
+    CONTENT_CONTAINER_CLASS_NAME,
+    CONTENT_CONTAINER_MOBILE_CLASS_NAME,
+} from './constants';
 import './PayByLinkSettingsContainer.scss';
 import { StoreSelector } from '../../../../../internal/StoreSelector';
 import { Header } from '../../../../../internal/Header';
@@ -10,6 +16,7 @@ import SaveAction from './components/SaveAction';
 import { MenuItemType } from './context/types';
 import { useCallback, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import cx from 'classnames';
 
 const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, 'storeIds'>) => {
     const {
@@ -43,7 +50,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                 <>Store Error</>
             ) : (
                 <>
-                    <div className={CONTENT_CONTAINER_CLASS_NAME}>
+                    <div className={cx(CONTENT_CONTAINER_CLASS_NAME, { [CONTENT_CONTAINER_MOBILE_CLASS_NAME]: isSmContainer && contentVisible })}>
                         {menuItems.length > 1 ? (
                             <div className={SIDEBAR_CONTAINER_CLASS_NAME}>
                                 <SecondaryNav<MenuItemType>
