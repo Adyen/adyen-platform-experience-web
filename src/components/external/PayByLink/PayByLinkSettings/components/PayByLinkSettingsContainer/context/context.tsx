@@ -49,7 +49,7 @@ export const PayByLinkSettingsProvider = memo(
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
         const menuItemPreSelect = useMemo(() => {
-            if (isSmContainer) return;
+            if (isSmContainer && menuItems.length > 1) return;
             return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
         }, [menuItems, isSmContainer]);
 
