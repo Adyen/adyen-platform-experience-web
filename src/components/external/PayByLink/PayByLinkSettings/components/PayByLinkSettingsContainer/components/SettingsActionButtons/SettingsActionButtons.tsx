@@ -7,8 +7,9 @@ import ButtonActions from '../../../../../../../internal/Button/ButtonActions/Bu
 import { useMemo } from 'preact/hooks';
 import './SettingsActionButton.scss';
 import { ButtonVariant } from '../../../../../../../internal/Button/types';
+import cx from 'classnames';
 
-const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | undefined }) => {
+const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
     const { onSave, isSaving } = usePayByLinkSettingsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -26,22 +27,26 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
 
     const goBackButton = useMemo(() => {
         return {
-            event: navigateBack ?? noop,
+            event: navigateBack ?? closeContent ?? noop,
             title: i18n.get('paymentLinks.common.actions.goBack'),
             variant: ButtonVariant.SECONDARY,
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [navigateBack, i18n, isSmContainer]);
+    }, [navigateBack, i18n, isSmContainer, closeContent]);
 
     const buttonActions = useMemo(() => {
-        if (!navigateBack) return [saveButton];
+        if (!navigateBack && !closeContent) return [saveButton];
         return [saveButton, goBackButton];
-    }, [saveButton, goBackButton, navigateBack]);
+    }, [saveButton, goBackButton, navigateBack, closeContent]);
 
     const layout = useMemo(() => (isSmContainer ? ButtonActionsLayout.VERTICAL_STACK : ButtonActionsLayoutBasic.BUTTONS_END), [isSmContainer]);
 
     return (
-        <div className={'adyen-pe-pay-by-link-settings__cta-container'}>
+        <div
+            className={cx('adyen-pe-pay-by-link-settings__cta-container', {
+                ['adyen-pe-pay-by-link-settings__cta-container--mobile']: isSmContainer,
+            })}
+        >
             <ButtonActions actions={buttonActions} layout={layout} />
         </div>
     );

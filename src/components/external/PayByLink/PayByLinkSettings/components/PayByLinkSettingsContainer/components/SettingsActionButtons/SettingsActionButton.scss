@@ -12,6 +12,15 @@
         flex-direction: column;
         gap: 0;
         padding: style.token(spacer-060) 0;
+
+        &--mobile {
+            align-items: stretch;
+
+            .adyen-pe-button__label {
+                display: flex;
+                justify-content: center;
+            }
+        }
     }
 
     &-cta--mobile {

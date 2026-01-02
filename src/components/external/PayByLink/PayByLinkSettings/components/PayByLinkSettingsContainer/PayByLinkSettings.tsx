@@ -52,6 +52,11 @@ const PayByLinkSettings = ({
         [setContentVisible]
     );
 
+    const closeContent = useCallback(() => {
+        if (!isSmContainer) return;
+        setContentVisible(false);
+    }, [isSmContainer]);
+
     if ((!activeMenuItem && !isSmContainer) || (!isLoadingStores && !selectedStore) || !menuItems || menuItems.length === 0) return null;
 
     //TODO: Add store error once it is merged
@@ -73,6 +78,7 @@ const PayByLinkSettings = ({
                                             setSelectedStoreId={setSelectedStore}
                                         />
                                     )}
+                                    contentVisible={contentVisible}
                                     loading={isLoadingStores}
                                     className={SECONDARY_NAV_CLASS_NAME}
                                     items={menuItems}
@@ -89,7 +95,12 @@ const PayByLinkSettings = ({
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {contentVisible && !isLoadingContent && <SettingsActionButtons navigateBack={navigateBack} />}
+                    {contentVisible && !isLoadingContent && (
+                        <SettingsActionButtons
+                            navigateBack={navigateBack ? navigateBack : undefined}
+                            closeContent={isSmContainer ? closeContent : undefined}
+                        />
+                    )}
                 </>
             )}
         </div>
