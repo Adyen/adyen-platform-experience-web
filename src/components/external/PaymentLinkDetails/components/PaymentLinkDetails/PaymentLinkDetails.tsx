@@ -1,13 +1,13 @@
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useState, useMemo, useEffect, useCallback } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import ButtonActions from '../../../../../components/internal/Button/ButtonActions/ButtonActions';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import Header from '../../../../../components/internal/Header';
-import { PaymentLinkDetailsProps } from '../../types';
+import { PaymentLinkDetailsProps as PaymentLinkDetailsElementProps } from '../../types';
 import { ExternalUIComponentProps } from 'src/components/types';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { PaymentLinkSummary } from '../PaymentLinkSummary/PaymentLinkSummary';
@@ -18,13 +18,22 @@ import './PaymentLinkDetails.scss';
 import { PaymentLinkSkeleton } from '../PaymentLinkSkeleton/PaymentLinkSkeleton';
 import { PaymentLinkError } from '../PaymentLinkError/PaymentLinkError';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import Icon from '../../../../internal/Icon';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyVariant } from '../../../../internal/Typography/types';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-details',
     content: 'adyen-pe-payment-link-details__content',
+    expirationSuccessContainer: 'adyen-pe-payment-link-details__expiration-success-container',
+    expirationSuccessIcon: 'adyen-pe-payment-link-details__expiration-success-icon',
 };
 
-export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: ExternalUIComponentProps<PaymentLinkDetailsProps>) => {
+type PaymentLinkDetailsProps = Omit<ExternalUIComponentProps<PaymentLinkDetailsElementProps>, 'onDismiss'> & {
+    onDismiss?: (withUpdate?: boolean) => void;
+};
+
+export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: PaymentLinkDetailsProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getPayByLinkPaymentLinkById } = useConfigContext().endpoints;
     const {
@@ -88,7 +97,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
             },
         [paymentLinkData, getCountryName]
     );
-    const [activeScreen, setActiveScreen] = useState<'details' | 'expirationConfirmation'>('details');
+    const [activeScreen, setActiveScreen] = useState<'details' | 'expirationConfirmation' | 'expirationSuccess'>('details');
     const [isCopiedIndicatorVisible, setCopiedIndicatorVisible] = useState(false);
 
     useEffect(() => {
@@ -111,36 +120,23 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         }
     }, [paymentLink]);
 
-    const handleExpireNow = async () => {
+    const handleExpireNow = useCallback(() => {
         setActiveScreen('expirationConfirmation');
-    };
+    }, []);
 
     const handleExpirationSuccess = useCallback(() => {
+        setActiveScreen('expirationSuccess');
+    }, []);
+
+    const handleNavigationToDetailsAfterExpiration = useCallback(() => {
         setActiveScreen('details');
         refetch();
         onUpdate?.();
     }, [onUpdate, refetch]);
 
-    const actionButtons: ButtonActionsList = useMemo(() => {
-        if (!paymentLink) return [];
-        return [
-            {
-                title: i18n.get(isCopiedIndicatorVisible ? 'paymentLinks.details.actions.copied' : 'paymentLinks.details.actions.copyLink'),
-                event: handleCopyLink,
-                variant: ButtonVariant.PRIMARY,
-                disabled: isCopiedIndicatorVisible,
-            },
-            ...(paymentLink.linkInformation.status !== 'expired' && paymentLink.linkInformation.status !== 'completed'
-                ? [
-                      {
-                          title: i18n.get('paymentLinks.details.actions.expire'),
-                          event: handleExpireNow,
-                          variant: ButtonVariant.SECONDARY,
-                      },
-                  ]
-                : []),
-        ];
-    }, [handleCopyLink, i18n, isCopiedIndicatorVisible, paymentLink]);
+    const handleNavigationToListAfterExpiration = useCallback(() => {
+        onDismiss?.(true);
+    }, [onDismiss]);
 
     const { withinModal } = useModalContext();
 
@@ -169,14 +165,81 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
             );
         }
 
-        return (
-            <>
-                <PaymentLinkSummary paymentLink={paymentLink} />
-                <PaymentLinkTabs paymentLink={paymentLink} />
-                {actionButtons.length > 0 && <ButtonActions actions={actionButtons} />}
-            </>
-        );
-    }, [isFetching, paymentLink, paymentLinkDataError, activeScreen, actionButtons, onDismiss, onContactSupport, handleExpirationSuccess]);
+        if (activeScreen === 'expirationSuccess') {
+            const actionButtons: ButtonActionsList = [
+                ...(onDismiss
+                    ? [
+                          {
+                              title: i18n.get('paymentLinks.details.expirationSuccess.actions.goBackToList'),
+                              event: handleNavigationToListAfterExpiration,
+                              variant: ButtonVariant.SECONDARY,
+                          },
+                      ]
+                    : []),
+                {
+                    title: i18n.get('paymentLinks.details.expirationSuccess.actions.showDetails'),
+                    event: handleNavigationToDetailsAfterExpiration,
+                    variant: ButtonVariant.SECONDARY,
+                },
+            ];
+            return (
+                <div className={CLASSNAMES.expirationSuccessContainer}>
+                    <Icon name="checkmark-circle-fill" className={CLASSNAMES.expirationSuccessIcon} />
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('paymentLinks.details.expirationSuccess.title')}</Typography>
+                    <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expirationSuccess.description')}</Typography>
+                    <ButtonActions actions={actionButtons} />
+                </div>
+            );
+        }
+
+        if (activeScreen === 'details') {
+            const actionButtons: ButtonActionsList = [
+                {
+                    title: i18n.get(isCopiedIndicatorVisible ? 'paymentLinks.details.actions.copied' : 'paymentLinks.details.actions.copyLink'),
+                    event: handleCopyLink,
+                    variant: ButtonVariant.PRIMARY,
+                    disabled: isCopiedIndicatorVisible,
+                    iconLeft: (
+                        <Icon
+                            className="adyen-pe-pay-by-link-creation-form-success__button-icon"
+                            name={isCopiedIndicatorVisible ? 'checkmark' : 'copy'}
+                        />
+                    ),
+                },
+                ...(paymentLink.linkInformation.status !== 'expired' && paymentLink.linkInformation.status !== 'completed'
+                    ? [
+                          {
+                              title: i18n.get('paymentLinks.details.actions.expire'),
+                              event: handleExpireNow,
+                              variant: ButtonVariant.SECONDARY,
+                          },
+                      ]
+                    : []),
+            ];
+
+            return (
+                <>
+                    <PaymentLinkSummary paymentLink={paymentLink} />
+                    <PaymentLinkTabs paymentLink={paymentLink} />
+                    <ButtonActions actions={actionButtons} />
+                </>
+            );
+        }
+    }, [
+        isFetching,
+        paymentLink,
+        paymentLinkDataError,
+        activeScreen,
+        onDismiss,
+        onContactSupport,
+        handleExpirationSuccess,
+        i18n,
+        handleNavigationToListAfterExpiration,
+        handleNavigationToDetailsAfterExpiration,
+        isCopiedIndicatorVisible,
+        handleCopyLink,
+        handleExpireNow,
+    ]);
 
     return (
         <div className={CLASSNAMES.root}>

@@ -18,6 +18,7 @@ import Link from '../../../../internal/Link/Link';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-tabs',
+    list: 'adyen-pe-payment-link-tabs__list',
     listHeading: 'adyen-pe-payment-link-tabs__list-heading',
     listLabel: 'adyen-pe-payment-link-tabs__list-label',
     listValue: 'adyen-pe-payment-link-tabs__list-value',
@@ -42,7 +43,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
         const items: ListItems = {
             linkInformation: [
                 {
-                    key: 'paymentLinks.details.fields.paymentLink',
+                    key: 'paymentLinks.details.fields.paymentLinkId',
                     value: paymentLink.linkInformation.paymentLinkId,
                     config: { isCopyable: true, linkUrl: paymentLink.linkInformation.paymentLink },
                 },
@@ -186,7 +187,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
     const renderListItemLabel = useCallback((label: string) => <div className={CLASSNAMES.listLabel}>{label}</div>, []);
     const renderListItemValue = useCallback((value: ListValue, key: TranslationKey, type: StructuredListItemType | undefined, config: any) => {
         let transformedValue;
-        if (value === BACKEND_REDACTED_DATA_MARKER) {
+        if (value && value.toString().includes(BACKEND_REDACTED_DATA_MARKER)) {
             transformedValue = FRONTEND_REDACTED_DATA_MARKER;
         } else if (config?.isCopyable && value && value !== '') {
             const visibleText = config?.linkUrl ? (
@@ -210,9 +211,10 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                     label: 'paymentLinks.details.tabs.linkInformation',
                     content: (
                         <StructuredList
+                            classNames={CLASSNAMES.list}
                             items={listItems.linkInformation}
                             align="start"
-                            layout="5-7"
+                            layout="4-8"
                             renderLabel={renderListItemLabel}
                             renderValue={renderListItemValue}
                         />
@@ -224,9 +226,10 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                     content: (
                         <>
                             <StructuredList
+                                classNames={CLASSNAMES.list}
                                 items={listItems.shopperInformation}
                                 align="start"
-                                layout="5-7"
+                                layout="4-8"
                                 renderLabel={renderListItemLabel}
                                 renderValue={renderListItemValue}
                             />
@@ -237,9 +240,10 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                         {i18n.get('paymentLinks.details.fields.shippingAddress.title')}
                                     </Typography>
                                     <StructuredList
+                                        classNames={CLASSNAMES.list}
                                         items={listItems.shippingAddress}
                                         align="start"
-                                        layout="5-7"
+                                        layout="4-8"
                                         renderLabel={renderListItemLabel}
                                         renderValue={renderListItemValue}
                                     />
@@ -252,9 +256,10 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                         {i18n.get('paymentLinks.details.fields.billingAddress.title')}
                                     </Typography>
                                     <StructuredList
+                                        classNames={CLASSNAMES.list}
                                         items={listItems.billingAddress}
                                         align="start"
-                                        layout="5-7"
+                                        layout="4-8"
                                         renderLabel={renderListItemLabel}
                                         renderValue={renderListItemValue}
                                     />

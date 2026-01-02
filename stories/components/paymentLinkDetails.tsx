@@ -18,5 +18,5 @@ export const PaymentLinkDetailsMeta: Meta<ElementProps<typeof PaymentLinkDetails
             sort: 'alpha',
         },
     },
-    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 500, width: '100%' }}>{Story()}</div>],
+    decorators: [Story => <div className="compact-component-wrapper">{Story()}</div>],
 };
