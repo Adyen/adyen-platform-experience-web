@@ -27,7 +27,7 @@ export interface SecondaryNavItem<T extends string = string> {
     label: string;
 }
 
-const LoadingSkeleton = ({ rowNumber, className }: { rowNumber: number; className: string }) => (
+const LoadingSkeleton = ({ rowNumber, className }: { rowNumber: number; className?: string }) => (
     <div className={cx('adyen-pe-secondary-nav__skeleton', className)}>
         {[...Array(rowNumber)].map((_, index) => (
             <div key={index} className="adyen-pe-secondary-nav__skeleton-item"></div>
@@ -69,7 +69,12 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
         return !isSmContainer ? (
             <div className={cx('adyen-pe-secondary-nav')}>
                 <div className={'adyen-pe-secondary-nav__container'}>
-                    <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--aside'} />
+                    <div className={'adyen-pe-secondary-nav__skeleton--aside'}>
+                        <LoadingSkeleton rowNumber={1} />
+                        <div className={'adyen-pe-secondary-nav__list'}>
+                            <LoadingSkeleton rowNumber={2} />
+                        </div>
+                    </div>
                     <Divider variant="vertical" />
                     {renderLoadingContent(activeValue)}
                 </div>
