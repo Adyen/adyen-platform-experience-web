@@ -18,6 +18,7 @@ import Link from '../../../../internal/Link/Link';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-tabs',
+    list: 'adyen-pe-payment-link-tabs__list',
     listHeading: 'adyen-pe-payment-link-tabs__list-heading',
     listLabel: 'adyen-pe-payment-link-tabs__list-label',
     listValue: 'adyen-pe-payment-link-tabs__list-value',
@@ -210,6 +211,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                     label: 'paymentLinks.details.tabs.linkInformation',
                     content: (
                         <StructuredList
+                            classNames={CLASSNAMES.list}
                             items={listItems.linkInformation}
                             align="start"
                             layout="4-8"
@@ -224,6 +226,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                     content: (
                         <>
                             <StructuredList
+                                classNames={CLASSNAMES.list}
                                 items={listItems.shopperInformation}
                                 align="start"
                                 layout="4-8"
@@ -237,6 +240,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                         {i18n.get('paymentLinks.details.fields.shippingAddress.title')}
                                     </Typography>
                                     <StructuredList
+                                        classNames={CLASSNAMES.list}
                                         items={listItems.shippingAddress}
                                         align="start"
                                         layout="4-8"
@@ -252,6 +256,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                                         {i18n.get('paymentLinks.details.fields.billingAddress.title')}
                                     </Typography>
                                     <StructuredList
+                                        classNames={CLASSNAMES.list}
                                         items={listItems.billingAddress}
                                         align="start"
                                         layout="4-8"
