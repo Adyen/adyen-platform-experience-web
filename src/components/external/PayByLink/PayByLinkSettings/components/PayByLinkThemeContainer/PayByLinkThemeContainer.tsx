@@ -20,7 +20,7 @@ const PayByLinkThemeContainer = () => {
     }, [payload, setSavedData, setInitialPayload]);
 
     if (!theme || isTermsAndConditionsData(theme) || !initialPayload) {
-        return <LoadingSkeleton rowNumber={5} />;
+        return <LoadingSkeleton rowNumber={3} />;
     }
 
     return (

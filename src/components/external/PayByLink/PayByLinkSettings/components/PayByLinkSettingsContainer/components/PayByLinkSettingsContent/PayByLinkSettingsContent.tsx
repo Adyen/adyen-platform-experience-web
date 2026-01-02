@@ -1,12 +1,12 @@
 import TermsAndConditionsContainer from '../../../TermsAndConditions/TermsAndConditionsContainer';
 import PayByLinkThemeContainer from '../../../PayByLinkThemeContainer/PayByLinkThemeContainer';
 import { MenuItem } from '../../context/constants';
-import LoadingSkeleton from '../LoadingSkeleton/LoadingSkeleton';
 import { containerQueries, useResponsiveContainer } from '../../../../../../../../hooks/useResponsiveContainer';
 import Alert from '../../../../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../../../../internal/Alert/types';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import usePayByLinkSettingsContext from '../../context/context';
+import PayByLinkSettingsContentLoading from '../PayByLinkSettingsContentLoading/PayByLinkSettingsContentLoading';
 
 type PayByLinkSettingsContentProps = {
     activeMenuItem: string | null;
@@ -15,7 +15,7 @@ type PayByLinkSettingsContentProps = {
 
 const PayByLinkSettingsContentItem = ({ activeMenuItem, isLoadingContent }: PayByLinkSettingsContentProps) => {
     if (isLoadingContent) {
-        return <LoadingSkeleton rowNumber={5} />;
+        return <PayByLinkSettingsContentLoading activeMenuItem={activeMenuItem} />;
     }
     switch (activeMenuItem) {
         case MenuItem.theme:

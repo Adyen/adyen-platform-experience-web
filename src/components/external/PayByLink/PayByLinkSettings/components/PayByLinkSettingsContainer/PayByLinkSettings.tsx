@@ -17,6 +17,7 @@ import { MenuItemType } from './context/types';
 import { useCallback, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import cx from 'classnames';
+import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
 
 const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, 'storeIds'>) => {
     const {
@@ -70,6 +71,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                                     renderContent={(activeMenuItem: string) => (
                                         <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                                     )}
+                                    renderLoadingContent={() => <LoadingSkeleton rowNumber={3} />}
                                 />
                             </div>
                         ) : (
