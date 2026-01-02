@@ -27,8 +27,6 @@ test('cells should show correct value and open correct modal ', async ({ transac
     await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
     const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
-    await referenceID.waitFor();
-
     await expect(referenceID).toHaveText('B78I76Y77072H127');
 });
 

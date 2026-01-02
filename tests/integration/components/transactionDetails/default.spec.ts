@@ -191,20 +191,23 @@ test.describe('Default', () => {
             const backButton = page.getByRole('button', { name: 'Go back', exact: true });
             const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true });
 
+            const expectations = Promise.all([
+                expect(reasonSelect).toBeVisible(),
+                expect(reasonSelect).toBeDisabled(),
+
+                expect(amountInput).toBeVisible(),
+                expect(amountInput).toBeDisabled(),
+
+                expect(backButton).toBeVisible(),
+                expect(backButton).toBeDisabled(),
+
+                expect(refundButton).toBeVisible(),
+                expect(refundButton).toBeDisabled(),
+                expect(refundButton).toHaveText('In progress..'),
+            ]);
+
             await refundButton.click();
-
-            await expect(reasonSelect).toBeVisible();
-            await expect(reasonSelect).toBeDisabled();
-
-            await expect(amountInput).toBeVisible();
-            await expect(amountInput).toBeDisabled();
-
-            await expect(backButton).toBeVisible();
-            await expect(backButton).toBeDisabled();
-
-            await expect(refundButton).toBeVisible();
-            await expect(refundButton).toBeDisabled();
-            await expect(refundButton).toHaveText('In progress..');
+            await expectations;
         });
 
         test('should refund payment', async ({ page }) => {

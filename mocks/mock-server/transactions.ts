@@ -553,7 +553,7 @@ export const transactionsMocks = [
 
 const sharedMockEndpointsHandlers = [
     http.post(mockEndpoints.initiateRefund, async ({ request }) => {
-        await delay(1000);
+        await delay(500);
         const { amount, refundReason } = (await request.json()) as ITransactionRefundPayload;
         return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
     }),
