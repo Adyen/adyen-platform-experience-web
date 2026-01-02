@@ -13,7 +13,6 @@ import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';
 import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
-import InputBase from '../../../../../../../internal/FormFields/InputBase';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
     const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaving } = usePayByLinkSettingsContext();

@@ -22,19 +22,6 @@
         }
     }
 
-    &__alert {
-        align-items: center;
-        align-self: stretch;
-        display: flex;
-        gap: style.token(spacer-060);
-        padding: style.token(spacer-050) style.token(spacer-060);
-
-        div {
-            display: flex;
-            justify-self: center;
-        }
-    }
-
     &__error {
         align-items: flex-start;
         display: flex;

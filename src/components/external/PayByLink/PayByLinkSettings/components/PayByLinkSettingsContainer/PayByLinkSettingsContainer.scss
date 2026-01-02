@@ -29,9 +29,9 @@
             gap: style.token(spacer-060);
             padding: style.token(spacer-050) style.token(spacer-060);
 
-            div {
+            .adyen-pe-alert__content-container {
                 display: flex;
-                justify-self: center;
+                justify-content: center;
             }
         }
     }
