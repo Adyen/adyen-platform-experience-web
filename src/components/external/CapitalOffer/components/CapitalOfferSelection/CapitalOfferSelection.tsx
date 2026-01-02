@@ -5,12 +5,14 @@ import StructuredList from '../../../../internal/StructuredList';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { useEffect } from 'preact/compat';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
+import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
 import { getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
@@ -27,6 +29,11 @@ type CapitalOfferSelectionProps = {
     onOfferSelect: (data: IGrantOfferResponseDTO) => void;
     requestedAmount: number | undefined;
 };
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOfferAnalyticsEventProperties,
+    subCategory: 'Business financing offer',
+} as const;
 
 const LoadingSkeleton = () => (
     <div className="adyen-pe-capital-offer-selection__loading-container">
@@ -94,6 +101,7 @@ export const CapitalOfferSelection = ({
     requestedAmount,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
+    const userEvents = useAnalyticsContext();
 
     const initialValue = useMemo(() => {
         if (dynamicOffersConfig)
@@ -131,14 +139,18 @@ export const CapitalOfferSelection = ({
     });
 
     const onReview = useCallback(() => {
-        void reviewOfferMutation.mutate({
-            body: {
-                amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
-                currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
-            },
-            contentType: 'application/json',
-        });
-    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
+        try {
+            void reviewOfferMutation.mutate({
+                body: {
+                    amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
+                    currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
+                },
+                contentType: 'application/json',
+            });
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
+        }
+    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation, userEvents]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -147,7 +159,7 @@ export const CapitalOfferSelection = ({
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const debouncedGetOfferCall = debounce(getOffer, 300);
+    const debouncedGetOfferCall = useMemo(() => debounce(getOffer, 300), [getOffer]);
 
     const onChangeHandler = useCallback(
         (val: number) => {
@@ -158,7 +170,21 @@ export const CapitalOfferSelection = ({
         [debouncedGetOfferCall]
     );
 
-    const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
+    const handleSliderRelease = useCallback(
+        (val: number) => {
+            try {
+                return debouncedGetOfferCall(val);
+            } finally {
+                userEvents.addEvent?.('Changed capital offer slider', {
+                    ...sharedAnalyticsEventProperties,
+                    label: 'Slider changed',
+                    currency: currency!,
+                    value: val,
+                });
+            }
+        },
+        [debouncedGetOfferCall, userEvents]
+    );
 
     useEffect(() => {
         if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !requestedValue) {
@@ -173,6 +199,8 @@ export const CapitalOfferSelection = ({
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
+
+    useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
         <div className="adyen-pe-capital-offer-selection">
