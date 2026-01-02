@@ -37,10 +37,8 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         setIsValid,
         isSaving,
         setSaveActionCalled,
-        isSaveSuccess,
         setIsSaveError,
         setIsSaveSuccess,
-        isSaveError,
         embeddedInOverview,
     } = usePayByLinkSettingsContext();
 

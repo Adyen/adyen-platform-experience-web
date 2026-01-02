@@ -15,7 +15,8 @@ import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
-    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaving } = usePayByLinkSettingsContext();
+    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaving, setIsSaveSuccess, setIsSaveError } =
+        usePayByLinkSettingsContext();
 
     const { brandName: initialBrandName, logo, fullWidthLogo } = theme;
     const [brandName, setBrandName] = useState(initialBrandName ?? undefined);
