@@ -1,4 +1,4 @@
-import type { ILineItem, ILineItemRefundStatus, ITransaction } from '../../src';
+import type { IAmount, IPaymentMethod, ITransaction, ITransactionRefundDetails, ITransactionWithDetails } from '../../src';
 import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/TransactionsOverview/constants';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
@@ -2473,112 +2473,157 @@ export const TRANSACTIONS: ITransaction[] = [
     },
 ];
 
-export const DEFAULT_LINE_ITEM_REFUND_STATUSES: ILineItemRefundStatus = [
-    {
-        quantity: 1,
-        status: 'in_progress',
-    },
-    {
-        quantity: 2,
-        status: 'completed',
-    },
-    {
-        quantity: 1,
-        status: 'failed',
-    },
-];
+const amount: IAmount = { currency: 'EUR', value: 60750 };
+const paymentMethod: IPaymentMethod = { lastFourDigits: '1945', type: 'mc' };
+const refundFullAmount: IAmount = { ...amount, value: -amount.value };
+const refundPartialAmount: IAmount = { ...amount, value: -47375 };
 
-export const DEFAULT_LINE_ITEMS: ILineItem[] = [
-    {
-        id: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
-        reference: '2049f87a-d47b-4f57-80b7-d2a5b3bc1018',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: '3aa2de10-3de2-494a-9dc9-6abf77597945',
-        reference: '3aa2de10-3de2-494a-9dc9-6abf77597945',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
-        reference: '620472a7-7eb3-49e6-8ecd-3219e4d614dc',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: '681839b3-dffb-4909-b569-5e1f0606b143',
-        reference: '681839b3-dffb-4909-b569-5e1f0606b143',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: '74e5a2f4-7ca2-4ac0-ae0d-fa7fb4577ba1',
-        reference: '74e5a2f4-7ca2-4ac0-ae0d-fa7fb4577ba1',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: '9124281f-d310-4d38-849d-56502eadf98e',
-        reference: '9124281f-d310-4d38-849d-56502eadf98e',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: 'af6413df-eaed-4a36-aed3-d05837753e29',
-        reference: 'af6413df-eaed-4a36-aed3-d05837753e29',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: 'c946c7ff-adb1-4035-9a13-8f703e154f76',
-        reference: 'c946c7ff-adb1-4035-9a13-8f703e154f76',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-    {
-        id: 'e24de04e-b514-43e9-a42f-44c99b3dcca0',
-        reference: 'e24de04e-b514-43e9-a42f-44c99b3dcca0',
-        amountIncludingTax: { currency: 'USD', value: 4500 },
-        description: 'Boots',
-        availableQuantity: 2,
-        originalQuantity: 6,
-        refundStatuses: DEFAULT_LINE_ITEM_REFUND_STATUSES,
-    },
-];
+export const ORIGINAL_PAYMENT_ID = 'W9R2T6M4L1P7V8X5';
 
-export const DEFAULT_TRANSACTION: ITransaction = {
-    id: '1VVF0D5V3709DX6D',
-    amountBeforeDeductions: { currency: 'EUR', value: 100000 },
-    netAmount: { currency: 'EUR', value: 100000 },
-    balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+const refundDetails: ITransactionRefundDetails = {
+    refundableAmount: { ...amount, value: 0 },
+    refundLocked: false,
+    refundMode: 'non_refundable',
+    refundStatuses: [],
+};
+
+const refundMetadata: NonNullable<ITransactionWithDetails['refundMetadata']> = {
+    originalPaymentId: ORIGINAL_PAYMENT_ID,
+    refundPspReference: 'PSP0000000000999',
+    refundReason: 'requested_by_customer',
+    refundType: 'full',
+};
+
+export const BASE_TRANSACTION: ITransactionWithDetails = {
+    amountBeforeDeductions: { ...amount },
+    balanceAccountId: BALANCE_ACCOUNTS[0].id,
+    category: 'Payment',
+    createdAt: '2022-08-29T12:47:03.216Z',
+    id: ORIGINAL_PAYMENT_ID,
+    netAmount: { ...amount },
+    originalAmount: { ...amount },
+    paymentMethod: { ...paymentMethod },
+    paymentPspReference: 'PSP0000000000990',
+    refundDetails: { ...refundDetails },
     status: 'Booked',
-    category: 'Other',
-    paymentMethod: { lastFourDigits: '1945', type: 'mc' },
-    createdAt: '2022-08-29T14:47:03+02:00',
+};
+
+export const FULLY_REFUNDABLE_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        ...refundDetails,
+        refundableAmount: { ...amount },
+        refundMode: 'fully_refundable_only',
+    },
+};
+
+export const FULLY_REFUNDED_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        ...refundDetails,
+        refundStatuses: [
+            {
+                amount: { ...refundFullAmount },
+                status: 'completed',
+            },
+        ],
+    },
+};
+
+export const PARTIALLY_REFUNDABLE_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        ...refundDetails,
+        refundableAmount: { ...amount },
+        refundMode: 'partially_refundable_any_amount',
+    },
+};
+
+export const PARTIALLY_REFUNDED_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        ...refundDetails,
+        refundableAmount: { ...amount, value: 13375 },
+        refundMode: 'partially_refundable_any_amount',
+        refundStatuses: [
+            {
+                amount: { ...refundPartialAmount },
+                status: 'completed',
+            },
+        ],
+    },
+};
+
+export const PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        ...refundDetails,
+        refundableAmount: { ...amount, value: 5875 },
+        refundMode: 'partially_refundable_any_amount',
+        refundStatuses: [
+            {
+                amount: { ...amount, value: -25000 },
+                status: 'completed',
+            },
+            {
+                amount: { ...amount, value: -25000 },
+                status: 'failed',
+            },
+            {
+                amount: { ...amount, value: -22375 },
+                status: 'completed',
+            },
+            {
+                amount: { ...amount, value: -13375 },
+                status: 'failed',
+            },
+            {
+                amount: { ...amount, value: -7500 },
+                status: 'in_progress',
+            },
+            {
+                amount: { ...amount, value: -5875 },
+                status: 'failed',
+            },
+            {
+                amount: { ...amount, value: -5000 },
+                status: 'failed',
+            },
+            {
+                amount: { ...amount, value: -3750 },
+                status: 'failed',
+            },
+        ],
+    },
+};
+
+export const REFUND_LOCKED_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    refundDetails: {
+        refundableAmount: { ...amount, value: 13375 },
+        refundLocked: true,
+        refundMode: 'partially_refundable_any_amount',
+        refundStatuses: [
+            {
+                amount: { ...refundPartialAmount },
+                status: 'completed',
+            },
+        ],
+    },
+};
+
+export const FULL_REFUND_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    category: 'Refund',
+    amountBeforeDeductions: { ...refundFullAmount },
+    netAmount: { ...refundFullAmount },
+    refundMetadata: { ...refundMetadata },
+};
+
+export const PARTIAL_REFUND_TRANSACTION = {
+    ...BASE_TRANSACTION,
+    category: 'Refund',
+    amountBeforeDeductions: { ...refundPartialAmount },
+    netAmount: { ...refundPartialAmount },
+    refundMetadata: { ...refundMetadata, refundType: 'partial' },
 };
