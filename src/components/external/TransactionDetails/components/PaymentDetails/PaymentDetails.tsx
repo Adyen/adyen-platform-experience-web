@@ -69,6 +69,17 @@ const PaymentDetails = ({
         [transaction]
     );
 
+    const tabContent = useMemo(
+        () => ({
+            [DetailsTab.DETAILS]: (
+                <PaymentDetailsProperties dataCustomization={dataCustomization} extraFields={extraFields} transaction={transaction} />
+            ),
+            [DetailsTab.SUMMARY]: <PaymentDetailsSummary transaction={transaction} />,
+            [DetailsTab.TIMELINE]: <PaymentDetailsTimeline transaction={transaction} />,
+        }),
+        [dataCustomization, extraFields, transaction]
+    );
+
     useEffect(() => setActiveTab(navigationTabs[0]?.id), [navigationTabs]);
 
     return (
@@ -85,12 +96,7 @@ const PaymentDetails = ({
                     />
                 )}
 
-                {/* Mutually-exclusive states */}
-                {activeTab === DetailsTab.DETAILS && (
-                    <PaymentDetailsProperties dataCustomization={dataCustomization} extraFields={extraFields} transaction={transaction} />
-                )}
-                {activeTab === DetailsTab.SUMMARY && <PaymentDetailsSummary transaction={transaction} />}
-                {activeTab === DetailsTab.TIMELINE && <PaymentDetailsTimeline transaction={transaction} />}
+                {activeTab && tabContent[activeTab]}
             </div>
 
             <PaymentRefundAlerts

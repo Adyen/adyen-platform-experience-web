@@ -14,13 +14,13 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
 
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.totals.currency.label'), [i18n]);
 
-    const [firstTotal, ...restOfTotals] = useMemo(() => {
-        return totals.map((t: ITransactionTotalWithKey) => {
-            t['key'] = t.currency;
-            t['expensesElemId'] = uniqueId('elem');
-            t['incomingsElemId'] = uniqueId('elem');
-            return t as Required<ITransactionTotalWithKey>;
-        });
+    const [firstTotal, ...restOfTotals] = useMemo<Required<ITransactionTotalWithKey>[]>(() => {
+        return totals.map((t: ITransactionTotalWithKey) => ({
+            ...t,
+            key: t.currency,
+            expensesElemId: uniqueId('elem'),
+            incomingsElemId: uniqueId('elem'),
+        }));
     }, [totals]);
 
     const totalsListLabel = useMemo(() => {

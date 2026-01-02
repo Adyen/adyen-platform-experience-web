@@ -8,11 +8,10 @@ import { getCustomTransactionDataById, getMyCustomData } from './utils/customDat
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
+
 export const Default: ElementStory<typeof TransactionsOverview> = {
     name: 'Default',
-    args: {
-        mockedApi: true,
-    },
+    args: { mockedApi: true },
 };
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
@@ -31,9 +30,11 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
         }),
     ],
 };
+
 export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     name: 'Data customization',
     args: {
+        mockedApi: true,
         coreOptions: {
             translations: {
                 en_US: {
@@ -46,7 +47,6 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                 },
             },
         },
-        mockedApi: true,
         dataCustomization: {
             list: {
                 fields: [

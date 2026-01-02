@@ -10,6 +10,7 @@ export interface ButtonActionObject {
     renderTitle?: (title: string) => ComponentChild;
     state?: 'loading' | 'default';
     classNames?: string[];
+    ariaLabel?: string;
 }
 
 export type ButtonActionsList = ButtonActionObject[] | readonly ButtonActionObject[];

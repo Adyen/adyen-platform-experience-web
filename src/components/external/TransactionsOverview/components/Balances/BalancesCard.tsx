@@ -14,13 +14,13 @@ export const BalancesCard = memo(({ balances, isLoading, hiddenField, fullWidth,
 
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.balances.currency.label'), [i18n]);
 
-    const [firstBalance, ...restOfBalances] = useMemo(() => {
-        return balances.map((t: IBalanceWithKey) => {
-            t['key'] = t.currency;
-            t['availableBalanceElemId'] = uniqueId('elem');
-            t['reservedBalanceElemId'] = uniqueId('elem');
-            return t as Required<IBalanceWithKey>;
-        });
+    const [firstBalance, ...restOfBalances] = useMemo<Required<IBalanceWithKey>[]>(() => {
+        return balances.map((t: IBalanceWithKey) => ({
+            ...t,
+            key: t.currency,
+            availableBalanceElemId: uniqueId('elem'),
+            reservedBalanceElemId: uniqueId('elem'),
+        }));
     }, [balances]);
 
     const balancesListLabel = useMemo(() => {

@@ -86,7 +86,7 @@ InsightsTotals.Breakdown = ({ ariaLabel, breakdown, ...amountDisplayProps }: Bre
             breakdown.map(
                 ({ category, value }): StructuredListItem => ({
                     key: getTransactionCategory(i18n, category) as TranslationKey,
-                    value: i18n.amount(value, currency),
+                    value: `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`,
                 })
             ),
         [i18n, breakdown, currency]

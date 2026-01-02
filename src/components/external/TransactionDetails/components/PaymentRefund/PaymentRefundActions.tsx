@@ -95,6 +95,7 @@ const PaymentRefundActions = ({
         state: isLoading ? 'loading' : undefined,
         title: refundButtonLabel,
         variant: ButtonVariant.PRIMARY,
+        ariaLabel: isLoading ? refundButtonLabelWithAmount : refundButtonLabel,
     } as const;
 
     const secondaryAction = {

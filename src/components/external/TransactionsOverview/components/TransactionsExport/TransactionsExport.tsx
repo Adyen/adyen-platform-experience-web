@@ -96,7 +96,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     }, [filters]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
-    const canDownloadTransactions = isFunction(downloadTransactions) || true;
+    const canDownloadTransactions = isFunction(downloadTransactions);
     const canExportTransactions = canDownloadTransactions && popoverOpen && exportStarted && !!exportColumns.length;
 
     // [TODO]: How to display the download error
