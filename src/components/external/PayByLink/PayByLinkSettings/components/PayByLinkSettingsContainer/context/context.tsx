@@ -151,7 +151,7 @@ export const PayByLinkSettingsProvider = memo(
             if (activeData) {
                 setSavedData(activeData);
             }
-        }, [activeData, activeMenuItem, fetchThemeEnabled, fetchTermsAndConditionsEnabled]);
+        }, [activeData, setSavedData]);
 
         useEffect(() => {
             if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
