@@ -57,7 +57,7 @@ const PayByLinkSettings = ({
         setContentVisible(false);
     }, [isSmContainer]);
 
-    if ((!activeMenuItem && !isSmContainer) || (!isLoadingStores && !selectedStore) || !menuItems || menuItems.length === 0) return null;
+    if (!menuItems || menuItems.length === 0) return null;
 
     //TODO: Add store error once it is merged
     return (
