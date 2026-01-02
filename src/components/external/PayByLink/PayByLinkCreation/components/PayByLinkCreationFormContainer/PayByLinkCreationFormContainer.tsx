@@ -284,6 +284,7 @@ export const PayByLinkCreationFormContainer = ({
     if (showTermsAndConditions) {
         return (
             <PayByLinkSettingsContainer
+                hideTitle={true}
                 storeIds={selectedStoreNavigationCache.current}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}

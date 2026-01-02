@@ -1,9 +1,20 @@
+@use '../../../../../../../../style';
+
 .adyen-pe-pay-by-link-settings {
     .adyen-pe-button-actions--buttons-end {
         flex-direction: column-reverse;
     }
 
-    &__cta-container--mobile {
+    &__cta-container {
+        align-items: flex-end;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: style.token(spacer-060) 0;
+    }
+
+    &-cta--mobile {
         display: block;
         width: 100%;
 

@@ -1,5 +1,4 @@
 import { SecondaryNav } from '../../../../../internal/SecondaryNav';
-import { PayByLinkSettingsComponentProps } from '../../../../../types';
 import {
     CONTAINER_CLASS_NAME,
     SIDEBAR_CONTAINER_CLASS_NAME,

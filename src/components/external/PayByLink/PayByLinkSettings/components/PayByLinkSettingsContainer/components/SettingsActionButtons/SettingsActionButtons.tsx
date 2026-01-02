@@ -20,7 +20,7 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
             title: i18n.get('payByLink.settings.common.action.save'),
             variant: ButtonVariant.PRIMARY,
             state: boolOrFalse(isSaving) ? 'loading' : 'default',
-            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta-container--mobile'] : [],
+            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
     }, [i18n, onSave, isSaving, isSmContainer]);
 
@@ -29,7 +29,7 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
             event: navigateBack ?? noop,
             title: i18n.get('paymentLinks.common.actions.goBack'),
             variant: ButtonVariant.SECONDARY,
-            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta-container--mobile'] : [],
+            classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
     }, [navigateBack, i18n, isSmContainer]);
 
@@ -40,7 +40,11 @@ const SettingsActionButtons = ({ navigateBack }: { navigateBack?: () => void | u
 
     const layout = useMemo(() => (isSmContainer ? ButtonActionsLayout.VERTICAL_STACK : ButtonActionsLayoutBasic.BUTTONS_END), [isSmContainer]);
 
-    return <ButtonActions actions={buttonActions} layout={layout} />;
+    return (
+        <div className={'adyen-pe-pay-by-link-settings__cta-container'}>
+            <ButtonActions actions={buttonActions} layout={layout} />
+        </div>
+    );
 };
 
 export default SettingsActionButtons;
