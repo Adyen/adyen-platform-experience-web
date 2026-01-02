@@ -49,8 +49,9 @@ export const PayByLinkSettingsProvider = memo(
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
         const menuItemPreSelect = useMemo(() => {
+            if (isSmContainer) return;
             return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
-        }, [menuItems]);
+        }, [menuItems, isSmContainer]);
 
         const [activeMenuItem, setActiveMenuItem] = useState<PayByLinkSettingsItem | null>(null);
         const [payload, setPayload] = useState<PayByLinkSettingsPayload>(undefined);
@@ -63,7 +64,9 @@ export const PayByLinkSettingsProvider = memo(
         const [isSaveSuccess, setIsSaveSuccess] = useState(false);
 
         useEffect(() => {
-            setActiveMenuItem(menuItemPreSelect);
+            if (menuItemPreSelect) {
+                setActiveMenuItem(menuItemPreSelect);
+            }
         }, [menuItemPreSelect]);
 
         const getIsValid = useCallback(() => {
