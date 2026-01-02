@@ -1,6 +1,6 @@
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '../TransactionsOverview/constants';
 import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
-import { TransactionDetails, TransactionDetailsFields } from './types';
+import { DetailsTab, TransactionDetails, TransactionDetailsFields } from './types';
 import { TranslationKey } from '../../../translations';
 import { IRefundStatus } from '../../../types';
 
@@ -25,6 +25,8 @@ export const TX_DATA_PAY_METHOD_LOGO = `${TX_DATA_PAY_METHOD}-logo`;
 export const TX_DATA_PAY_METHOD_LOGO_CONTAINER = `${TX_DATA_PAY_METHOD_LOGO}-container`;
 export const TX_DATA_TAGS = `${TX_DATA_CLASS}__tags`;
 export const TX_STATUS_BOX = `${TX_DATA_CLASS}__status-box`;
+export const TX_TIMELINE_LABEL = `${TX_DATA_CLASS}__timeline-label`;
+export const TX_TIMELINE_VALUE = `${TX_DATA_CLASS}__timeline-value`;
 export const TX_REFUND_RESPONSE = `${TX_DATA_CLASS}__refund-response`;
 export const TX_REFUND_RESPONSE_ICON = `${TX_DATA_CLASS}__refund-response-icon`;
 export const TX_REFUND_RESPONSE_SUCCESS_ICON = `${TX_REFUND_RESPONSE_ICON}--success`;
@@ -58,6 +60,12 @@ export const TX_DETAILS_FIELDS_REMAPS = {
         if (tx?.balanceAccount?.description) return 'account';
     },
 } as const;
+
+export const TX_DETAILS_TABS: readonly Readonly<{ id: DetailsTab; label: TranslationKey; content: null }>[] = [
+    { id: DetailsTab.SUMMARY, label: 'transactions.details.views.summary', content: null } as const,
+    { id: DetailsTab.DETAILS, label: 'transactions.details.views.details', content: null } as const,
+    { id: DetailsTab.TIMELINE, label: 'transactions.details.views.timeline', content: null } as const,
+] as const;
 
 export const REFUND_STATUSES = ['completed', 'in_progress', 'failed'] as const satisfies readonly IRefundStatus[];
 export const REFUND_REASONS = ['requested_by_customer', 'issue_with_item_sold', 'fraudulent', 'duplicate', 'other'] as const;

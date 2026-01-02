@@ -11,12 +11,6 @@ test.describe('Partial refund', () => {
 
         await expect(page.getByText('- 473.75 EUR', { exact: true })).toBeVisible();
 
-        await expect(page.getByText('Original payment', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
-
-        await expect(page.getByText('Refund fee', { exact: true })).toBeVisible();
-        await expect(page.getByText('€0.00', { exact: true })).toBeVisible();
-
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
 
@@ -26,12 +20,13 @@ test.describe('Partial refund', () => {
         await expect(page.getByText('Reference ID', { exact: true })).toBeVisible();
         await expect(page.getByText('4B7N9Q2Y6R1W5M8T', { exact: true })).toBeVisible();
 
+        await expect(page.getByText('PSP reference', { exact: true })).toBeVisible();
+        await expect(page.getByText('PSP0000000000990', { exact: true })).toBeVisible();
+
         await expect(page.getByText('Refund PSP reference', { exact: true })).toBeVisible();
         await expect(page.getByText('PSP0000000000999', { exact: true })).toBeVisible();
 
-        await expect(page.getByText('Payment PSP reference', { exact: true })).toBeVisible();
-        await expect(page.getByText('PSP0000000000990', { exact: true })).toBeVisible();
-
+        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
         await expect(page.locator('.adyen-pe-alert')).toHaveCount(0);
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
@@ -57,12 +52,6 @@ test.describe('Partial refund', () => {
 
         await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
 
-        await expect(page.getByText('Original amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
-
-        await expect(page.getByText('Fee', { exact: true })).toBeVisible();
-        await expect(page.getByText('€0.00', { exact: true })).toBeVisible();
-
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
 
@@ -71,6 +60,8 @@ test.describe('Partial refund', () => {
 
         await expect(page.getByText('PSP reference', { exact: true })).toBeVisible();
         await expect(page.getByText('PSP0000000000990', { exact: true })).toBeVisible();
+
+        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
 
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
