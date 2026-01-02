@@ -15,7 +15,7 @@ test.describe('Error - Request funds - Generic with code', () => {
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Something went wrong.')).toBeVisible();
         await expect(
-            page.getByText("We couldn't continue with the offer.Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93")
+            page.getByText("We couldn't continue with the offer. Contact support for help and share error code 226ac4ce59f0f159ad672d38d3291e93")
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });

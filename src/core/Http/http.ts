@@ -8,6 +8,7 @@ import {
     isAdyenErrorResponse,
 } from './utils';
 import { API_VERSION } from './constants';
+import { EndpointDownloadStreamData } from '../../types/api/endpoints';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { HttpOptions } from './types';
 import { onErrorHandler } from '../types';
@@ -23,8 +24,9 @@ const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
 
 export async function http<T>(options: HttpOptions): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
+    const versionless = options.versionless || false;
     const request = getRequestObject(options);
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
+    const url = new URL(`${normalizeLoadingContext(loadingContext)}${versionless ? '' : API_VERSION}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
@@ -66,7 +68,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                         default:
                             const blob = await res.blob();
                             const filename = getResponseDownloadFilename(res);
-                            return { blob, filename } as const;
+                            return { blob, filename } as const satisfies EndpointDownloadStreamData;
                     }
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).

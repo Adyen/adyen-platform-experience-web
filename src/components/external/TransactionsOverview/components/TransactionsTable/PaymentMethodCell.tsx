@@ -36,7 +36,7 @@ const PaymentMethodCell = ({
                     </Typography>
                 </>
             ) : (
-                <Tag label={i18n.get('noData')} variant={TagVariant.LIGHT_WITH_OUTLINE} />
+                <Tag label={i18n.get('common.tags.noData')} variant={TagVariant.LIGHT_WITH_OUTLINE} />
             )}
         </div>
     );

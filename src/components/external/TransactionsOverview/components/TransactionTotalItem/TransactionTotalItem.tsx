@@ -8,11 +8,13 @@ export const TransactionTotalItem = ({
     total,
     hiddenField,
     isHeader = false,
-    isHovered = false,
+    showLabelUnderline = false,
     isSkeleton = false,
     isLoading = false,
     widths,
     onWidthsSet,
+    expensesElemId,
+    incomingsElemId,
 }: TransactionTotalItemProps) => {
     const { i18n } = useCoreContext();
     const incomingRef = useRef<HTMLDivElement>(null);
@@ -21,19 +23,27 @@ export const TransactionTotalItem = ({
 
     const columnConfigs: SummaryItemColumnConfig[] = useMemo(() => {
         const incomingsConfig: SummaryItemColumnConfig = {
-            labelKey: 'totalIncoming',
+            elemId: incomingsElemId,
+            labelKey: 'transactions.overview.totals.tags.incoming',
             ref: incomingRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.incomings, total.currency),
-            tooltipLabel: 'tooltip.totalIncoming',
+            tooltipLabel: 'transactions.overview.totals.tags.incoming.description',
+            get ariaLabel(): string {
+                return `${i18n.get(this.labelKey!)}: ${this.getValue()}`;
+            },
         };
 
         const expensesConfig: SummaryItemColumnConfig = {
-            labelKey: 'totalOutgoing',
+            elemId: expensesElemId,
+            labelKey: 'transactions.overview.totals.tags.outgoing',
             ref: expenseRef,
             skeletonWidth: 80,
             getValue: () => total && i18n.amount(total.expenses, total.currency),
-            tooltipLabel: 'tooltip.totalOutgoing',
+            tooltipLabel: 'transactions.overview.totals.tags.outgoing.description',
+            get ariaLabel(): string {
+                return `${i18n.get(this.labelKey!)}: ${this.getValue()}`;
+            },
         };
 
         return [
@@ -50,7 +60,7 @@ export const TransactionTotalItem = ({
 
     return (
         <SummaryItem
-            isHovered={isHovered}
+            showLabelUnderline={showLabelUnderline}
             isEmpty={!total}
             columnConfigs={columnConfigs}
             isHeader={isHeader}

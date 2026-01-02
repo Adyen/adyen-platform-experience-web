@@ -8,7 +8,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { SelectItem } from '../../../../internal/FormFields/Select/types';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseDocumentContent } from '../../utils';
-import { useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
@@ -47,9 +47,14 @@ const SelectAndUploadOptionalDoc = ({
     mapError: MapErrorCallback;
 }) => {
     const { i18n } = useCoreContext();
-    const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload } = useDisputeFlow();
-    const getDocInfo = useCallback((document: string) => getDefenseDocumentContent(i18n, document), [i18n]);
+    const { addFileToDefendPayload, moveFieldInDefendPayload, removeFieldFromDefendPayload, defenseDocumentConfig } = useDisputeFlow();
+    const documentSelectLabel = useMemo(() => i18n.get('disputes.management.defend.common.inputs.documentSelect.a11y.label'), [i18n]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
+    const getDocInfo = useCallback(
+        (document: string) => getDefenseDocumentContent(defenseDocumentConfig, i18n, document),
+        [defenseDocumentConfig, i18n]
+    );
 
     const updateDocumentSelection = useCallback(
         (documentSelection: string) => {
@@ -75,6 +80,7 @@ const SelectAndUploadOptionalDoc = ({
                 {onRemoveOption && (
                     <Button
                         disabled={disabled}
+                        aria-label={i18n.get('disputes.management.defend.common.actions.deleteOptionalDocument')}
                         onClick={() => index !== undefined && !disabled && onRemoveOption(index)}
                         variant={ButtonVariant.TERTIARY}
                         fullWidth={false}
@@ -90,14 +96,15 @@ const SelectAndUploadOptionalDoc = ({
                         const documentSelection = val.target.value;
                         updateDocumentSelection(documentSelection);
                     }}
+                    items={items}
                     filterable={false}
+                    multiSelect={false}
+                    showOverlay={false}
                     selected={selection}
                     readonly={disabled}
-                    multiSelect={false}
-                    items={items}
+                    aria-label={documentSelectLabel}
+                    placeholder={documentSelectLabel}
                     popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
-                    showOverlay={false}
-                    placeholder={i18n.get('disputes.uploadDocuments.selectDocumentType')}
                     fixedPopoverPositioning
                 />
                 {selection &&

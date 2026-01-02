@@ -1,0 +1,69 @@
+name: Upload assets to release tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment_choice:
+        description: 'Environment to modify assets'
+        required: true
+        type: choice
+        options:
+          - test
+          - live
+  workflow_call:
+    inputs:
+      environment_choice:
+        description: 'Environment to modify assets (test or live)'
+        required: true
+        type: string
+
+jobs:
+  replace-asset:
+    name: Replace Release Asset
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          # If 'live' is chosen, check out 'main'. Otherwise, check out 'develop'.
+          ref: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) == 'live' && 'main' || 'develop' }}
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Build and package assets
+        env:
+          DEPLOY_ENV: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}
+        run: |
+          ./scripts/upload-assets/package-assets.sh
+
+      - name: Map environment to tag name
+        id: map_tag
+        run: |
+          if [[ "${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}" == "test" ]]; then
+            echo "TAG_NAME=v1-cdn-test" >> $GITHUB_ENV
+          elif [[ "${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}" == "live" ]]; then
+            echo "TAG_NAME=v1-cdn-live" >> $GITHUB_ENV
+          fi
+
+      - name: Delete and Upload Asset in Target Repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_REPO: ${{ github.repository }}
+          ASSET_PATH: './platform-components-v1_cdn.tar.gz'
+          ASSET_NAME: 'platform-components-v1_cdn.tar.gz'
+        run: |
+          echo "Targeting repository: $TARGET_REPO"
+          echo "User selected: ${{ (github.event.inputs.environment_choice || inputs.environment_choice) }}, using mapped tag: ${{ env.TAG_NAME }}"
+          
+          # Delete the old asset from the target repo using the mapped tag
+          gh release delete-asset ${{ env.TAG_NAME }} "$ASSET_NAME" \
+            --repo "$TARGET_REPO"
+
+          # Upload the new asset to the target repo using the mapped tag
+          gh release upload ${{ env.TAG_NAME }} "$ASSET_PATH" \
+            --repo "$TARGET_REPO"

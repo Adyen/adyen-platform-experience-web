@@ -45,7 +45,7 @@ const TransactionRefundReference = () => {
             <div className={TX_DATA_INPUT_HEAD}>
                 <div id={labelIdentifier.current}>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
-                        {i18n.get('refundReference')}
+                        {i18n.get('transactions.details.refund.inputs.reference.label')}
                     </Typography>
                 </div>
                 <Typography className={TX_DATA_INPUT_CHARS} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
@@ -58,7 +58,7 @@ const TransactionRefundReference = () => {
                     <TextArea
                         id={inputIdentifier.current}
                         className={`${TX_DATA_INPUT} ${TX_DATA_INPUT_TEXTAREA}`}
-                        placeholder={i18n.get('refundReference.placeholder')}
+                        placeholder={i18n.get('transactions.details.refund.inputs.reference.placeholder')}
                         value={reference}
                         onInput={onInput}
                         maxRows={2}

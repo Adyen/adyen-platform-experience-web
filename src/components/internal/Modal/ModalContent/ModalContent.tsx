@@ -1,11 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import DataOverviewDetails from '../../DataOverviewDetails/DataOverviewDetails';
 import { DetailsComponentProps, PayoutDetailsWithIdProps, SelectedDetail } from '../../DataOverviewDetails/types';
-import './ModalContent.scss';
-
-const CLASSNAMES = {
-    base: 'adyen-pe-modal-content',
-};
 
 // [TODO]: Consider covering ...restData with type information (added here as a hack to capture extra details)
 function ModalContent({ type, data, dataCustomization, ...restData }: SelectedDetail) {
@@ -21,15 +16,7 @@ function ModalContent({ type, data, dataCustomization, ...restData }: SelectedDe
         }
     }, [data, restData, type]);
 
-    return (
-        <>
-            {detailProps && (
-                <div className={CLASSNAMES.base}>
-                    <DataOverviewDetails {...(detailProps as DetailsComponentProps)} dataCustomization={dataCustomization} />
-                </div>
-            )}
-        </>
-    );
+    return detailProps && <DataOverviewDetails {...(detailProps as DetailsComponentProps)} dataCustomization={dataCustomization} />;
 }
 
 export default ModalContent;

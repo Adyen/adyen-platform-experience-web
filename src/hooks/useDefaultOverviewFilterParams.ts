@@ -1,12 +1,15 @@
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { getTimeRangeSelectionDefaultPresetOptions } from '../components/internal/DatePicker/components/TimeRangeSelector';
+import { getTimeRangeSelectionDefaultPresetOptions, TimeRangeOptions } from '../components/internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../components/types';
 
-const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes') => {
+const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes', timeRange?: TimeRangeOptions) => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
-    const defaultTimeRange = 'rangePreset.last30Days';
+    const defaultTimeRange = timeRange
+        ? (`common.filters.types.date.rangeSelect.options.${timeRange}` as const)
+        : 'common.filters.types.date.rangeSelect.options.last30Days';
+
     const { from, to } = timeRangeOptions[defaultTimeRange];
 
     const defaultFilterParams = {
@@ -25,10 +28,11 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | '
 
 const useDefaultOverviewFilterParams = (
     filterType: Parameters<typeof getDefaultFilterParams>[0],
-    balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount']
+    balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount'],
+    timeRange?: TimeRangeOptions
 ) => {
     const [nowTimestamp, setNowTimestamp] = useState(Date.now());
-    const params = getDefaultFilterParams(filterType);
+    const params = getDefaultFilterParams(filterType, timeRange);
     const defaultParams: MutableRef<any> = useRef(params);
     const refreshNowTimestamp = useCallback(() => setNowTimestamp(Date.now()), [setNowTimestamp]);
 

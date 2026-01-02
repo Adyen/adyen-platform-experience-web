@@ -22,6 +22,10 @@ import { createTranslationsLoader, getLocalizationProxyDescriptors } from './loc
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
+import { httpGet } from '../Http/http';
+import { SupportedLocales } from './types';
+import { translations_dev_assets } from '../../translations/local';
+import localSwapConfig from '../../config/translations/swapConfig.json';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
@@ -32,19 +36,33 @@ export default class Localization {
     #customTranslations?: CustomTranslations;
     #translations: Translations = DEFAULT_TRANSLATIONS;
     #translationsLoader = createTranslationsLoader.call(this);
+    readonly #fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>;
 
     #ready: Promise<void> = ALREADY_RESOLVED_PROMISE;
     #currentRefresh?: Promise<void>;
     #markRefreshAsDone?: () => void;
     #refreshWatchlist = createWatchlist({ timestamp: () => performance.now() });
     #restamp: RestamperWithTimezone = restamper();
+    #keySwapConfig: Record<string, string | string[]> = localSwapConfig;
+    #warnedDeprecatedKeys = new Set<string>();
 
     private watch = this.#refreshWatchlist.subscribe.bind(undefined);
     public i18n: Omit<Localization, (typeof EXCLUDE_PROPS)[number]> = struct(getLocalizationProxyDescriptors.call(this));
     public preferredTranslations?: Readonly<{ [k: Locale]: TranslationSource }>;
 
-    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[]) {
+    constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '', cdnConfigUrl = '') {
         this.watch(noop);
+
+        this.#fetchTranslationFromCdnPromise = (locale: string) =>
+            process.env.VITE_LOCAL_ASSETS
+                ? translations_dev_assets[locale]!
+                : httpGet<any>({
+                      loadingContext: cdnTranslationsUrl,
+                      path: `/${locale}.json`,
+                      versionless: true,
+                      skipContentType: true,
+                      errorLevel: 'info',
+                  });
 
         this.preferredTranslations = Object.freeze(
             availableTranslations?.reduce((records, curr) => ({ ...records, ...curr }), en_US) ?? { ...en_US }
@@ -52,6 +70,27 @@ export default class Localization {
 
         this.#availableLocales = getLocalesFromTranslationSourcesRecord(this.preferredTranslations);
         this.locale = locale;
+
+        // Load swap config
+        (async () => {
+            // If no CDN config URL provided, use local fallback
+            if (!cdnConfigUrl || process.env.VITE_LOCAL_ASSETS) {
+                return localSwapConfig;
+            }
+
+            try {
+                return await httpGet<Record<string, string | string[]>>({
+                    loadingContext: cdnConfigUrl,
+                    path: '/translations/swapConfig.json',
+                    versionless: true,
+                    skipContentType: true,
+                    errorLevel: 'error',
+                });
+            } catch (error) {
+                console.warn('Failed to load swapConfig from CDN, using local fallback', error);
+                return localSwapConfig;
+            }
+        })().then(config => (this.#keySwapConfig = config));
     }
 
     get customTranslations(): CustomTranslations {
@@ -127,7 +166,7 @@ export default class Localization {
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
-            this.#translations = await this.#translationsLoader.load(customTranslations);
+            this.#translations = await this.#translationsLoader.load(this.#fetchTranslationFromCdnPromise, customTranslations);
             this.#locale = this.#translationsLoader.locale;
             this.#supportedLocales = Object.freeze(this.#translationsLoader.supportedLocales);
             this.#customTranslations = customTranslations;
@@ -150,6 +189,32 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
+        // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
+        if (this.#customTranslations) {
+            const oldKey = this.#keySwapConfig[key];
+
+            // Only process if oldKey is a string (skip arrays for now, they represent multi-key mappings that we will treat as new keys)
+            // Also skip if oldKey is the same as the new key (1:1 mappings)
+            if (oldKey && typeof oldKey === 'string' && oldKey !== key) {
+                const translationForOldKey = getTranslation(this.#translations, oldKey, options);
+
+                if (!isNull(translationForOldKey)) {
+                    // Warn about deprecated key usage (only once per key)
+                    if (!this.#warnedDeprecatedKeys.has(oldKey)) {
+                        console.warn(
+                            `[Adyen Platform Experience Web] Deprecated translation key detected: "${oldKey}". ` +
+                                `Please update to use the new key: "${key}". ` +
+                                `This backward compatibility will be removed in a future version.`
+                        );
+                        this.#warnedDeprecatedKeys.add(oldKey);
+                    }
+
+                    return translationForOldKey;
+                }
+            }
+        }
+
+        // Get translation normally (this includes custom translations with new key + default translations)
         const translation = getTranslation(this.#translations, key, options);
         return isNull(translation) ? key : translation;
     }

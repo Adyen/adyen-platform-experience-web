@@ -7,8 +7,10 @@ import { operations as CapitalGrantOfferOps } from './resources/CapitalGrantOffe
 import { operations as CapitalGrantsOps } from './resources/CapitalGrantsResource';
 import { operations as CapitalMissingActionsOps } from './resources/CapitalMissingActionsResource';
 import { components as SetupResource } from './resources/SetupResource';
+import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 
-export type EndpointsOperations = BalanceAccountOps &
+export type EndpointsOperations = AnalyticsOps &
+    BalanceAccountOps &
     CapitalGrantOfferOps &
     CapitalGrantsOps &
     CapitalMissingActionsOps &
@@ -20,18 +22,17 @@ export type EndpointsOperations = BalanceAccountOps &
 export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport';
+type JSONEndpoints = Exclude<EndpointName, DownloadStreamEndpoint>;
 
-type JSONEndpoints = Exclude<EndpointName, CSVEndpoints | 'downloadDefenseDocument'>;
-
+export type DownloadStreamEndpoint = CSVEndpoints | 'downloadDefenseDocument';
+export type EndpointDownloadStreamData = { blob: Blob; filename?: string };
 export type EndpointJSONData<T extends JSONEndpoints> = EndpointsOperations[T]['responses'][200]['content']['application/json'];
 
-export type EndpointCSVData<T extends CSVEndpoints> = EndpointsOperations[T]['responses'][200]['content']['text/csv'];
-
-export type EndpointData<T extends EndpointName> = T extends CSVEndpoints
-    ? EndpointCSVData<T>
+export type EndpointData<T extends EndpointName> = T extends DownloadStreamEndpoint
+    ? EndpointDownloadStreamData
     : T extends JSONEndpoints
-    ? EndpointJSONData<T>
-    : never;
+      ? EndpointJSONData<T>
+      : never;
 
 export type SetupEndpointResponse = SetupResource['schemas']['SetupEndpointResponse'];
 

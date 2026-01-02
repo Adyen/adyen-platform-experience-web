@@ -13,7 +13,7 @@ type StatusBoxDataProps = {
     createdAt?: string;
 };
 
-const useStatusBoxData = ({ timezone, paymentMethodData, bankAccount, amountData, createdAt }: StatusBoxDataProps) => {
+const useStatusBoxData = ({ timezone, paymentMethodData, bankAccount, amountData, createdAt: date }: StatusBoxDataProps) => {
     const paymentProps = useMemo(() => ({ paymentMethod: paymentMethodData, bankAccount }), [paymentMethodData, bankAccount]);
 
     const { i18n } = useCoreContext();
@@ -34,11 +34,11 @@ const useStatusBoxData = ({ timezone, paymentMethodData, bankAccount, amountData
         return getDisplayablePaymentMethod(paymentProps);
     }, [paymentProps]);
 
-    const date = useMemo(() => {
-        return createdAt && dateFormat(new Date(createdAt), DATE_FORMAT_TRANSACTION_DETAILS);
-    }, [createdAt, dateFormat]);
+    const formattedDate = useMemo(() => {
+        return date && dateFormat(date, DATE_FORMAT_TRANSACTION_DETAILS);
+    }, [date, dateFormat]);
 
-    return { amount, date, paymentMethod, paymentMethodType };
+    return { amount, date, formattedDate, paymentMethod, paymentMethodType };
 };
 
 export default useStatusBoxData;

@@ -1,20 +1,21 @@
+import cx from 'classnames';
+import { JSXInternal } from 'preact/src/jsx';
+import { createRef, RefObject } from 'preact';
+import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
+import { AnalyticsProvider } from '../../../core/Context/analytics/AnalyticsProvider';
 import { ConfigProvider } from '../../../core/ConfigContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
-import { JSXInternal } from 'preact/src/jsx';
 import BaseElement from '../BaseElement';
-import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import './UIElement.scss';
-import cx from 'classnames';
-import { createRef, RefObject } from 'preact';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
 
     public componentToRender: (() => JSXInternal.Element) | null = null;
+    public compRef: RefObject<HTMLDivElement>;
+    public customClassNames: string | undefined;
     public elementRef: UIElement<P> | null;
     public onContactSupport?: () => void;
-    public customClassNames: string | undefined;
-    public compRef: RefObject<HTMLDivElement>;
 
     constructor(props: P & UIElementProps & BaseElementProps) {
         super(props);
@@ -79,26 +80,29 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
     render() {
         const core = this.props.core;
-        const updateCore = core.update.bind(core);
-
         const externalErrorHandler = this.props.onError || core.onError || null;
+        const updateCore = core.update.bind(core);
 
         core.session.errorHandler = externalErrorHandler;
 
         return (
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
-                    i18n={core.localization.i18n}
-                    loadingContext={core.loadingContext}
-                    updateCore={updateCore}
-                    externalErrorHandler={externalErrorHandler}
                     componentRef={this.compRef}
+                    i18n={core.localization.i18n}
+                    getCdnConfig={core.getCdnConfig}
+                    getImageAsset={core.getImageAsset}
+                    loadingContext={core.loadingContext}
+                    externalErrorHandler={externalErrorHandler}
+                    updateCore={updateCore}
                 >
-                    {this.componentToRender && (
-                        <div ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
-                            <div className="adyen-pe-component__container">{this.componentToRender()}</div>
-                        </div>
-                    )}
+                    <AnalyticsProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
+                        {this.componentToRender && (
+                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                                <div className="adyen-pe-component__container">{this.componentToRender()}</div>
+                            </section>
+                        )}
+                    </AnalyticsProvider>
                 </CoreProvider>
             </ConfigProvider>
         );

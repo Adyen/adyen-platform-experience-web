@@ -10,9 +10,9 @@ export const enum ClickOutsideVariant {
     POPOVER = 'POPOVER',
     DEFAULT = 'DEFAULT',
 }
-const onFocusoutCapture = (e: Event) => {
-    e.stopImmediatePropagation();
-};
+
+const onFocusout = (e: Event) => e.stopImmediatePropagation();
+
 export const useClickOutside = <T extends Element = Element>(
     rootElementRef?: Nullable<Reflexable<T>>,
     callback?: (interactionKeyPressed: boolean) => void,
@@ -23,8 +23,10 @@ export const useClickOutside = <T extends Element = Element>(
 
     const handleClickOutside = useCallback(
         (e: Event) => {
-            const eventPath: EventTarget[] = e.composedPath();
             if (!(ref && ref.current)) return;
+
+            const eventPath: EventTarget[] = e.composedPath();
+
             if (variant === ClickOutsideVariant.POPOVER) {
                 popoverUtil.closePopoversOutsideOfClick(eventPath);
             } else {
@@ -48,45 +50,30 @@ export const useClickOutside = <T extends Element = Element>(
         [ref, callback, variant]
     );
 
-    const clickOutsideHandlerRef = useRef(handleClickOutside);
-
     useEffect(() => {
-        return () => {
-            if (ref.current) popoverUtil.remove(ref.current);
-            document.removeEventListener('click', clickOutsideHandlerRef.current, true);
-        };
-    }, []);
+        if (disableClickOutside) return;
 
-    useEffect(() => {
-        document.removeEventListener('click', clickOutsideHandlerRef.current, true);
-        clickOutsideHandlerRef.current = handleClickOutside;
-        document.addEventListener('click', clickOutsideHandlerRef.current, true);
-        if (variant === ClickOutsideVariant.POPOVER) {
-            if (ref.current instanceof Element) popoverUtil.add(ref.current, callback);
+        document.addEventListener('click', handleClickOutside, true);
+
+        if (variant === ClickOutsideVariant.POPOVER && ref.current instanceof Element) {
+            popoverUtil.add(ref.current, callback);
         }
-        return () => {
-            if (ref.current) popoverUtil.remove(ref.current);
-            document.removeEventListener('click', clickOutsideHandlerRef.current, true);
-        };
-    }, [handleClickOutside, callback, variant]);
 
-    useEffect(() => {
-        if (disableClickOutside) {
-            document.removeEventListener('click', clickOutsideHandlerRef.current, true);
-        } else {
-            document.addEventListener('click', clickOutsideHandlerRef.current, true);
-        }
-    }, [disableClickOutside]);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+            if (ref.current) popoverUtil.remove(ref.current);
+        };
+    }, [disableClickOutside, handleClickOutside, callback, variant, ref]);
 
     return useReflex<T>(
         useCallback(
             (current: Nullable<T>, previous) => {
                 if (previous instanceof Element) {
-                    previous.removeEventListener('focusout', onFocusoutCapture, true);
+                    previous.removeEventListener('focusout', onFocusout, false);
                 }
                 if (current instanceof Element) {
                     if (!disableClickOutside) {
-                        current.addEventListener('focusout', onFocusoutCapture, true);
+                        current.addEventListener('focusout', onFocusout, false);
                         ref.current = current;
                     }
                 }

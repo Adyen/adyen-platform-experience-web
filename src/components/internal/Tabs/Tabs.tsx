@@ -1,16 +1,22 @@
 import { TabComponentProps } from './types';
+import { AriaAttributes } from 'preact/compat';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useTabbedControl from '../../../hooks/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './Tabs.scss';
 
-function Tabs<TabId extends string>({ activeTab, tabs, onChange }: TabComponentProps<TabId>) {
+function Tabs<TabId extends string>({
+    ['aria-label']: ariaLabel,
+    activeTab,
+    tabs,
+    onChange,
+}: TabComponentProps<TabId> & Pick<AriaAttributes, 'aria-label'>) {
     const { activeIndex, onClick, onKeyDown, refs, uniqueId } = useTabbedControl({ onChange, options: tabs, activeOption: activeTab });
     const { i18n } = useCoreContext();
     return (
-        <section aria-label={i18n.get('tabs')}>
-            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal">
+        <div>
+            <div className="adyen-pe-tabs" role="tablist" aria-orientation="horizontal" aria-label={ariaLabel}>
                 {tabs.map((tab, index) => {
                     const isActive = activeIndex === index;
                     return (
@@ -37,7 +43,7 @@ function Tabs<TabId extends string>({ activeTab, tabs, onChange }: TabComponentP
             </div>
             <div className="adyen-pe-tabpanels">
                 {tabs.map((tab, index) => (
-                    <section
+                    <div
                         role="tabpanel"
                         key={`panel:${uniqueId}-${tab.id}`}
                         id={`panel:${uniqueId}-${tab.id}`}
@@ -46,10 +52,10 @@ function Tabs<TabId extends string>({ activeTab, tabs, onChange }: TabComponentP
                         hidden={activeIndex !== index}
                     >
                         {tab.content}
-                    </section>
+                    </div>
                 ))}
             </div>
-        </section>
+        </div>
     );
 }
 
