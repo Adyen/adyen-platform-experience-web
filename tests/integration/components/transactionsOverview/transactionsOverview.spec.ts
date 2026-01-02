@@ -23,10 +23,10 @@ test('cells should show correct value and open correct modal ', async ({ transac
     await transactionsOverview.getCell('netAmount').waitFor();
     await transactionsOverview.firstRow.click();
 
-    const referenceID = page
-        .getByRole('dialog')
-        .getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`)
-        .locator('dd');
+    const detailsModal = page.getByRole('dialog');
+    await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
+
+    const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
     await expect(referenceID).toHaveText('B78I76Y77072H127');
 });
 

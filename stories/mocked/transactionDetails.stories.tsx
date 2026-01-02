@@ -12,7 +12,15 @@ export const Default: ElementStory<typeof TransactionDetails> = {
     name: 'Default',
     args: sharedArgs,
     parameters: {
-        msw: { ...TRANSACTION_DETAILS_HANDLERS.refundedPartially },
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.default },
+    },
+};
+
+export const TabbedDetails: ElementStory<typeof TransactionDetails> = {
+    name: 'Tabbed details',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.completeDetails },
     },
 };
 
@@ -113,7 +121,7 @@ export const DataCustomization: ElementStory<typeof TransactionDetails> = {
                 en_US: {
                     _store: 'Store',
                     _product: 'Product',
-                    _summary: 'Summary',
+                    _summary: 'Summary link',
                     _sendEmail: 'Email',
                     _country: 'Country',
                 },
@@ -138,7 +146,7 @@ export const DataCustomization: ElementStory<typeof TransactionDetails> = {
                             _product: 'Coffee',
                             _summary: {
                                 type: 'link',
-                                value: 'Full summary',
+                                value: 'See summary',
                                 config: {
                                     href: CUSTOM_URL_EXAMPLE,
                                 },
@@ -164,7 +172,7 @@ export const DataCustomization: ElementStory<typeof TransactionDetails> = {
         },
     },
     parameters: {
-        msw: { ...TRANSACTION_DETAILS_HANDLERS.refundedPartially },
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.default },
     },
 };
 

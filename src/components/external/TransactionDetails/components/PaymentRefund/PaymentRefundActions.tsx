@@ -11,6 +11,7 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 export interface PaymentRefundActionsProps {
+    beginRefund: () => void;
     currency: string;
     disabled: boolean;
     maxAmount: number;
@@ -25,6 +26,7 @@ export interface PaymentRefundActionsProps {
 }
 
 const PaymentRefundActions = ({
+    beginRefund,
     currency,
     disabled,
     maxAmount,
@@ -73,11 +75,13 @@ const PaymentRefundActions = ({
         event: async () => {
             if (refundDisabled) return;
 
-            const analyticsEventProperties = {
+            beginRefund();
+
+            userEvents.addEvent?.('Completed refund', {
                 ...sharedTransactionDetailsEventProperties,
                 isFullRefund: isFullRefundAmount,
                 refundReason,
-            };
+            });
 
             try {
                 const path = { transactionId };
@@ -85,10 +89,8 @@ const PaymentRefundActions = ({
                 await refundTransaction({ contentType: 'application/json', body: payload }, { path });
                 setRefundResult('done');
             } catch {
-                return setRefundResult('error');
+                setRefundResult('error');
             }
-
-            userEvents.addEvent?.('Completed refund', analyticsEventProperties);
         },
         state: isLoading ? 'loading' : undefined,
         title: refundButtonLabel,

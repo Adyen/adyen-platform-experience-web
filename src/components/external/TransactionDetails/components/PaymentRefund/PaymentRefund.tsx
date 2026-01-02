@@ -5,11 +5,14 @@ import {
     TX_REFUND_RESPONSE_ERROR_ICON,
     TX_REFUND_RESPONSE_ICON,
     TX_REFUND_RESPONSE_SUCCESS_ICON,
+    sharedTransactionDetailsEventProperties,
 } from '../../constants';
 import { memo } from 'preact/compat';
 import { clamp } from '../../../../../utils';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useComponentTiming from '../../../../../hooks/useComponentTiming';
 // import useRefundLineItems from '../../hooks/useRefundLineItems';
 import PaymentRefundActions from './PaymentRefundActions';
 import PaymentRefundAmount from './PaymentRefundAmount';
@@ -43,6 +46,7 @@ export interface PaymentRefundProps {
 }
 
 interface PaymentRefundFormProps extends Omit<PaymentRefundProps, 'disabled' | 'refreshTransaction' | 'setActiveView' | 'setLocked'> {
+    beginRefund: () => void;
     setRefundResult: (result: RefundResult) => void;
     showDetails: () => void;
 }
@@ -54,23 +58,57 @@ interface PaymentRefundResultProps extends Pick<PaymentRefundProps, 'refreshTran
 
 const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked, ...formProps }: PaymentRefundProps) => {
     const [refundResult, setRefundResult] = useState<RefundResult>();
+    const beginRefund = useCallback(() => void (initiatedRefund.current = true), []);
     const lockRefunds = useCallback(() => setLocked(true), [setLocked]);
     const showDetails = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
+
+    const { duration } = useComponentTiming();
+    const loggedEntryEvent = useRef(false);
+    const initiatedRefund = useRef(false);
+    const userEvents = useAnalyticsContext();
+
+    useEffect(() => {
+        if (!loggedEntryEvent.current) {
+            loggedEntryEvent.current = true;
+            userEvents.addEvent?.('Switched to refund view', sharedTransactionDetailsEventProperties);
+        }
+    }, [userEvents]);
 
     useEffect(() => {
         if (disabled && !refundResult) showDetails();
         if (refundResult === 'done') lockRefunds();
     }, [disabled, lockRefunds, refundResult, showDetails]);
 
+    useEffect(() => {
+        return () => {
+            if (duration.current !== undefined && !initiatedRefund.current) {
+                // This component is unmounting (duration.current is defined),
+                // and a refund was not initiated (initiatedRefund.current is false),
+                // indicating an abrupt termination of the refund flow.
+                userEvents.addEvent?.('Cancelled refund', sharedTransactionDetailsEventProperties);
+            }
+        };
+    }, [duration, userEvents]);
+
     return refundResult ? (
         <PaymentRefund.Result result={refundResult} refreshTransaction={refreshTransaction} showDetails={showDetails} />
     ) : (
-        <PaymentRefund.Form {...formProps} setRefundResult={setRefundResult} showDetails={showDetails} />
+        <PaymentRefund.Form {...formProps} beginRefund={beginRefund} setRefundResult={setRefundResult} showDetails={showDetails} />
     );
 };
 
 PaymentRefund.Form = memo(
-    ({ currency, maxAmount, mode, refundedAmount, refundingAmounts, setRefundResult, showDetails, transaction }: PaymentRefundFormProps) => {
+    ({
+        beginRefund,
+        currency,
+        maxAmount,
+        mode,
+        refundedAmount,
+        refundingAmounts,
+        setRefundResult,
+        showDetails,
+        transaction,
+    }: PaymentRefundFormProps) => {
         const [refundInProgress, setRefundInProgress] = useState(false);
         const [refundReason, setRefundReason] = useState<RefundReason>(REFUND_REASONS[0]);
         const [refundAmount, setRefundAmount] = useState(0);
@@ -118,6 +156,7 @@ PaymentRefund.Form = memo(
                 {maxAmountAlert && <Alert variant={AlertVariantOption.TIP} type={AlertTypeOption.HIGHLIGHT} description={maxAmountAlert} />}
 
                 <PaymentRefundActions
+                    beginRefund={beginRefund}
                     currency={currency}
                     disabled={refundInProgress}
                     maxAmount={maxAmount}

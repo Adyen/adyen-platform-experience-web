@@ -1,10 +1,16 @@
+import Tabs from '../../../../internal/Tabs/Tabs';
 import PaymentRefundAlerts from './PaymentRefundAlerts';
 import PaymentDetailsActions from './PaymentDetailsActions';
 import PaymentDetailsProperties from './PaymentDetailsProperties';
 import PaymentDetailsStatusBox from './PaymentDetailsStatusBox';
-import { REFUND_STATUSES, TX_DATA_CLASS, TX_DATA_CONTAINER } from '../../constants';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
-import { ActiveView, RefundedState, TransactionDetails, TransactionDetailsProps } from '../../types';
+import PaymentDetailsSummary from './PaymentDetailsSummary';
+import PaymentDetailsTimeline from './PaymentDetailsTimeline';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { ActiveView, DetailsTab, RefundedState, TransactionDetails, TransactionDetailsProps } from '../../types';
+import { REFUND_STATUSES, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DETAILS_TABS } from '../../constants';
+import { TabProps } from '../../../../internal/Tabs/types';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 
 export interface PaymentDetailsProps {
     dataCustomization?: TransactionDetailsProps['dataCustomization'];
@@ -39,12 +45,58 @@ const PaymentDetails = ({
     transaction,
     transactionNavigator,
 }: PaymentDetailsProps) => {
+    const { i18n } = useCoreContext();
+    const [activeTab, setActiveTab] = useState<DetailsTab>();
+
+    const navigationTabs = useMemo(
+        () =>
+            TX_DETAILS_TABS.filter(({ id }) => {
+                switch (id) {
+                    case DetailsTab.SUMMARY:
+                        const { additions, deductions, originalAmount, amountBeforeDeductions, netAmount } = transaction;
+                        return (
+                            (additions && additions.length > 0) ||
+                            (deductions && deductions.length > 0) ||
+                            (originalAmount && originalAmount.value !== amountBeforeDeductions.value) ||
+                            netAmount.value !== amountBeforeDeductions.value
+                        );
+                    case DetailsTab.TIMELINE:
+                        return transaction.events && transaction.events.length > 0;
+                    default:
+                        return true;
+                }
+            }),
+        [transaction]
+    );
+
+    const tabContent = useMemo(
+        () => ({
+            [DetailsTab.DETAILS]: (
+                <PaymentDetailsProperties dataCustomization={dataCustomization} extraFields={extraFields} transaction={transaction} />
+            ),
+            [DetailsTab.SUMMARY]: <PaymentDetailsSummary transaction={transaction} />,
+            [DetailsTab.TIMELINE]: <PaymentDetailsTimeline transaction={transaction} />,
+        }),
+        [dataCustomization, extraFields, transaction]
+    );
+
+    useEffect(() => setActiveTab(navigationTabs[0]?.id), [navigationTabs]);
+
     return (
         <div className={TX_DATA_CLASS}>
             <PaymentDetailsStatusBox refundedState={refundedState} transaction={transaction} />
 
             <div className={TX_DATA_CONTAINER}>
-                <PaymentDetailsProperties dataCustomization={dataCustomization} extraFields={extraFields} transaction={transaction} />
+                {navigationTabs.length > 1 && (
+                    <Tabs
+                        aria-label={i18n.get('transactions.details.viewSelect.a11y.label')}
+                        onChange={({ id }: TabProps<DetailsTab>) => setActiveTab(id)}
+                        tabs={navigationTabs}
+                        activeTab={activeTab}
+                    />
+                )}
+
+                {activeTab && tabContent[activeTab]}
             </div>
 
             <PaymentRefundAlerts

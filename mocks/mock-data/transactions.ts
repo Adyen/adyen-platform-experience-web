@@ -2501,7 +2501,6 @@ export const BASE_TRANSACTION: ITransactionWithDetails = {
     createdAt: '2022-08-29T12:47:03.216Z',
     id: ORIGINAL_PAYMENT_ID,
     netAmount: { ...amount },
-    originalAmount: { ...amount },
     paymentMethod: { ...paymentMethod },
     paymentPspReference: 'PSP0000000000990',
     refundDetails: { ...refundDetails },
@@ -2626,4 +2625,41 @@ export const PARTIAL_REFUND_TRANSACTION = {
     amountBeforeDeductions: { ...refundPartialAmount },
     netAmount: { ...refundPartialAmount },
     refundMetadata: { ...refundMetadata, refundType: 'partial' },
+};
+
+export const COMPLETE_TRANSACTION_DETAILS = {
+    ...PARTIALLY_REFUNDED_TRANSACTION,
+    additions: [
+        { ...amount, value: 150, type: 'tip' },
+        { ...amount, value: 1500, type: 'surcharge' },
+    ],
+    deductions: [
+        { ...amount, value: -950, type: 'fee' },
+        { ...amount, value: -150, type: 'tip' },
+        { ...amount, value: -1500, type: 'surcharge' },
+        { ...amount, value: -2500, type: 'split' },
+    ],
+    amountBeforeDeductions: { ...amount, value: 65850 },
+    originalAmount: { ...amount, value: 64200 },
+    merchantReference: 'TX-F9X2V8L7P1K6W',
+    events: [
+        {
+            amount: { ...amount },
+            createdAt: '2022-08-29T12:47:03.216Z',
+            status: 'Received',
+            type: 'Capture',
+        },
+        {
+            amount: { ...amount, value: 950 },
+            createdAt: '2022-08-29T12:47:03.216Z',
+            status: 'Fee',
+            type: 'Capture',
+        },
+        {
+            amount: { ...amount },
+            createdAt: '2022-08-29T12:47:03.216Z',
+            status: 'Settled',
+            type: 'Payment',
+        },
+    ],
 };
