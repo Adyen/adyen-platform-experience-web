@@ -39,7 +39,7 @@ export const PayByLinkOverviewModal = ({
             refreshPaymentLinkList?.();
             setHasToRefresh(false);
         }
-    }, [onCloseModal, hasToRefresh, isModalVisible, refreshPaymentLinkList]);
+    }, [onCloseModal, hasToRefresh, refreshPaymentLinkList]);
 
     useEffect(() => {
         if (isModalVisible) {
