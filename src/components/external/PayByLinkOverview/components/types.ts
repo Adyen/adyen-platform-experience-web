@@ -17,6 +17,7 @@ export interface PayByLinkTableProps extends WithPaginationLimitSelection<Pagina
     showPagination: boolean;
     paymentLinks: IPaymentLinkItem[] | undefined;
     stores?: StoreData[];
+    storeError?: AdyenPlatformExperienceError;
 }
 
 export type StoreData = IStore & { name?: string };

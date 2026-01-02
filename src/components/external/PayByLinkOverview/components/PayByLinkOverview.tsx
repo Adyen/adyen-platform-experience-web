@@ -283,10 +283,10 @@ export const PayByLinkOverview = ({
 
     const statusGroupAriaLabel = useMemo(() => i18n.get('payByLink.overview.list.filters.types.statusGroup'), [i18n]);
 
-    const typesFilterEnabled = filterParams?.linkTypes && filterParams?.linkTypes?.length > 0 && !filterError;
-    const statusesFilterEnabled =
-        filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0 && !filterError;
-    const storeFilterEnabled = stores && stores?.length > 1 && !storeError;
+    const showTypeFilter = (filterParams?.linkTypes && filterParams?.linkTypes?.length > 0) || !!filterError;
+    const showStatusFilter =
+        (filterParams?.statuses && filterParams?.statuses?.[statusGroup] && filterParams?.statuses?.[statusGroup]?.length > 0) || !!filterError;
+    const showStoreFilter = (stores && stores?.length > 1) || !!storeError;
 
     const sinceDate = useMemo(() => {
         return new Date(RangePreset.lastNDays(EARLIEST_PAYMENT_LINK_DATE).from).toString();
@@ -330,8 +330,8 @@ export const PayByLinkOverview = ({
     }, [onContactSupport, storeIds]);
 
     useEffect(() => {
-        setShowFiltersAlert(!statusesFilterEnabled || !typesFilterEnabled || !storeFilterEnabled);
-    }, [statusesFilterEnabled, typesFilterEnabled, storeFilterEnabled]);
+        setShowFiltersAlert(!!storeError || !!filterError);
+    }, [storeError, filterError]);
 
     const closeFiltersAlert = useCallback(() => {
         setShowFiltersAlert(false);
@@ -361,12 +361,14 @@ export const PayByLinkOverview = ({
             {!isFiltersLoading && (
                 <div className={FILTERS_CONTAINER_CLASS}>
                     <FilterBar {...filterBarState} ariaLabelKey="payByLink.overview.filters.label">
-                        <MultiSelectionFilter
-                            {...storesTypesFilter}
-                            isInvalid={!storeFilterEnabled}
-                            readonly={!storeFilterEnabled}
-                            placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
-                        />
+                        {showStoreFilter && (
+                            <MultiSelectionFilter
+                                {...storesTypesFilter}
+                                isInvalid={!!storeError}
+                                readonly={!!storeError}
+                                placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
+                            />
+                        )}
                         <DateFilter
                             canResetFilters={canResetFilters}
                             defaultParams={defaultParams}
@@ -376,18 +378,22 @@ export const PayByLinkOverview = ({
                             refreshNowTimestamp={refreshNowTimestamp}
                             updateFilters={updateFilters}
                         />
-                        <MultiSelectionFilter
-                            {...linkTypesFilter}
-                            isInvalid={!typesFilterEnabled}
-                            readonly={!typesFilterEnabled}
-                            placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')}
-                        />
-                        <MultiSelectionFilter
-                            {...linkStatusFilter}
-                            isInvalid={!statusesFilterEnabled}
-                            readonly={!statusesFilterEnabled}
-                            placeholder={i18n.get('payByLink.overview.filters.types.status.label')}
-                        />
+                        {showTypeFilter && (
+                            <MultiSelectionFilter
+                                {...linkTypesFilter}
+                                isInvalid={!!filterError}
+                                readonly={!!filterError}
+                                placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')}
+                            />
+                        )}
+                        {showStatusFilter && (
+                            <MultiSelectionFilter
+                                {...linkStatusFilter}
+                                isInvalid={!!filterError}
+                                readonly={!!filterError}
+                                placeholder={i18n.get('payByLink.overview.filters.types.status.label')}
+                            />
+                        )}
                         <TextFilter
                             name={i18n.get('payByLink.overview.filters.types.merchantReference.label')}
                             label={
@@ -443,6 +449,7 @@ export const PayByLinkOverview = ({
             >
                 <PayByLinkTable
                     stores={stores}
+                    storeError={storeError}
                     error={error as AdyenPlatformExperienceError}
                     limit={limit}
                     limitOptions={limitOptions}
