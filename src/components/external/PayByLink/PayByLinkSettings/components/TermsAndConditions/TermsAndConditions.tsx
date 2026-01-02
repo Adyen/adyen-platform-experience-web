@@ -155,6 +155,8 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                     uniqueId={checkboxIdentifier.current}
                     value={termsAndConditionsURL}
                     onInput={onTermsAndConditionsURLInput}
+                    maxLength={2000}
+                    isInvalid={showInvalidURL}
                 />
                 {showInvalidURL && (
                     <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
@@ -170,7 +172,11 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 )}
             </div>
             {isTermsAndConditionsChanged && (
-                <Alert type={AlertTypeOption.WARNING} description={i18n.get('payByLink.settings.termsAndConditions.alert.urlChange')} />
+                <Alert
+                    type={AlertTypeOption.WARNING}
+                    description={i18n.get('payByLink.settings.termsAndConditions.alert.urlChange')}
+                    className={'adyen-pe-pay-by-link-settings-terms-and-conditions__alert'}
+                />
             )}
             <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
                 <Checkbox
@@ -204,20 +210,6 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 >
                     <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
                 </Modal>
-            )}
-            {isSaveSuccess && (
-                <Alert
-                    type={AlertTypeOption.SUCCESS}
-                    onClose={() => setIsSaveSuccess(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
-                />
-            )}
-            {isSaveError && (
-                <Alert
-                    type={AlertTypeOption.CRITICAL}
-                    onClose={() => setIsSaveError(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
-                />
             )}
         </section>
     );

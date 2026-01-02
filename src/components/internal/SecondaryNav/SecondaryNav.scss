@@ -92,8 +92,11 @@
         font: inherit;
         gap: style.token(spacer-070);
         justify-content: space-between;
-        padding: style.token(spacer-070) style.token(spacer-060);
         width: 100%;
+
+        &--mobile {
+            padding: style.token(spacer-070) style.token(spacer-060);
+        }
 
         &-label {
             font-size: style.token(text-body-font-size);

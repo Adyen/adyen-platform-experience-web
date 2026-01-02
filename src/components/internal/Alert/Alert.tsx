@@ -14,7 +14,7 @@ export const Alert = ({ className, description, title, type, children, onClose, 
     return (
         <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
             <AlertIcon type={type} className="adyen-pe-alert__icon" />
-            <div>
+            <div className="adyen-pe-alert__content-container">
                 <div className="adyen-pe-alert__content">
                     {title && variant !== AlertVariantOption.TIP && (
                         <Typography className={'adyen-pe-alert__title'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide strongest>
