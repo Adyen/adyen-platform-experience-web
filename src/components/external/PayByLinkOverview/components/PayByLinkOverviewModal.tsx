@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { popoverUtil } from '../../../internal/Popover/utils/popoverUtil';
 import Modal from '../../../internal/Modal';
 import { PayByLinkOverviewModalType } from './types';
@@ -7,6 +7,7 @@ import PayByLinkCreationContainer from '../../PayByLink/PayByLinkCreation/compon
 import PayByLinkSettingsContainer from '../../PayByLink/PayByLinkSettings/components/PayByLinkSettingsContainer/PayByLinkSettingsContainer';
 import { PayByLinkOverviewComponentProps } from '../../../types';
 import { StoreIds } from '../../PayByLink/types';
+import { PBLFormValues } from '../../PayByLink/PayByLinkCreation/components/types';
 
 export interface PayByLinkOverviewModalProps {
     isModalVisible: boolean;
@@ -16,6 +17,7 @@ export interface PayByLinkOverviewModalProps {
     paymentLinkCreation: PayByLinkOverviewComponentProps['paymentLinkCreation'];
     paymentLinkSettings: PayByLinkOverviewComponentProps['paymentLinkSettings'];
     storeIds?: StoreIds;
+    refreshPaymentLinkList?: () => void;
 }
 
 export const PayByLinkOverviewModal = ({
@@ -26,12 +28,18 @@ export const PayByLinkOverviewModal = ({
     paymentLinkSettings,
     storeIds,
     onContactSupport,
+    refreshPaymentLinkList,
 }: PayByLinkOverviewModalProps) => {
     const { i18n } = useCoreContext();
+    const [hasToRefresh, setHasToRefresh] = useState(false);
 
     const onCloseCallback = useCallback(() => {
         onCloseModal();
-    }, [onCloseModal]);
+        if (hasToRefresh) {
+            refreshPaymentLinkList?.();
+            setHasToRefresh(false);
+        }
+    }, [onCloseModal, hasToRefresh, isModalVisible, refreshPaymentLinkList]);
 
     useEffect(() => {
         if (isModalVisible) {
@@ -40,6 +48,14 @@ export const PayByLinkOverviewModal = ({
     }, [isModalVisible]);
 
     if (!isModalVisible || !modalType) return null;
+
+    const onPaymentLinkCreated = useCallback(
+        (paymentLink: PBLFormValues) => {
+            paymentLinkCreation?.onPaymentLinkCreated?.(paymentLink);
+            setHasToRefresh(true);
+        },
+        [paymentLinkCreation]
+    );
 
     return (
         <div>
@@ -52,7 +68,12 @@ export const PayByLinkOverviewModal = ({
                 size={'large'}
             >
                 {modalType === 'LinkCreation' ? (
-                    <PayByLinkCreationContainer {...paymentLinkCreation} storeIds={storeIds} onContactSupport={onContactSupport} />
+                    <PayByLinkCreationContainer
+                        {...paymentLinkCreation}
+                        onPaymentLinkCreated={onPaymentLinkCreated}
+                        storeIds={storeIds}
+                        onContactSupport={onContactSupport}
+                    />
                 ) : null}
                 {modalType === 'Settings' ? (
                     <PayByLinkSettingsContainer {...paymentLinkSettings} storeIds={storeIds} onContactSupport={onContactSupport} embeddedInOverview />
