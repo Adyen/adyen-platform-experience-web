@@ -5,6 +5,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    justify-self: center;
+    max-width: 600px;
     padding: style.token(spacer-100);
     text-align: center;
 
