@@ -5,6 +5,7 @@ import { StoreSelectorItem } from './StoreSelectorItem/StoreSelectorItem';
 import { StoreSelectorItemParams, StoreSelectorProps } from './types';
 import { SelectChangeEvent } from '../FormFields/Select/types';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
+import './StoreSelector.scss';
 
 export const StoreSelector = ({ stores = [], selectedStoreId, setSelectedStoreId }: StoreSelectorProps) => {
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -28,6 +29,7 @@ export const StoreSelector = ({ stores = [], selectedStoreId, setSelectedStoreId
 
     return (
         <Select
+            className={'adyen-pe-dropdown__store'}
             filterable={false}
             items={stores}
             multiSelect={false}
