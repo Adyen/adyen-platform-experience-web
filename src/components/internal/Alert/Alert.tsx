@@ -9,7 +9,18 @@ import { AlertIcon } from './AlertIcon';
 import { AlertProps, AlertVariantOption } from './types';
 import './Alert.scss';
 
-export const Alert = ({ className, description, title, type, children, onClose, actions, variant = AlertVariantOption.DEFAULT }: AlertProps) => {
+//TODO: Revisit the closeButton prop which is adopted from Bento component
+export const Alert = ({
+    className,
+    description,
+    closeButton,
+    title,
+    type,
+    children,
+    onClose,
+    actions,
+    variant = AlertVariantOption.DEFAULT,
+}: AlertProps) => {
     const { i18n } = useCoreContext();
     return (
         <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
@@ -41,7 +52,7 @@ export const Alert = ({ className, description, title, type, children, onClose, 
                     ))}
                 </div>
             </div>
-            {onClose && variant !== AlertVariantOption.TIP && (
+            {onClose && (variant !== AlertVariantOption.TIP || closeButton) && (
                 <div className="adyen-pe-alert__close-button">
                     <Button
                         iconButton
