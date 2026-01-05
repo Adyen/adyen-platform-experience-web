@@ -367,7 +367,6 @@ export const PayByLinkOverview = ({
                             }
                             value={filters[FilterParam.MERCHANT_REFERENCE]}
                             onChange={onMerchantReferenceFilterChange}
-                            type={'text'}
                             containerSize={PopoverContainerSize.MEDIUM}
                         ></TextFilter>
                         <TextFilter
@@ -379,7 +378,6 @@ export const PayByLinkOverview = ({
                             }
                             value={filters[FilterParam.PAYMENT_LINK_ID]}
                             onChange={onPaymentLinkIDFilterChange}
-                            type={'text'}
                             containerSize={PopoverContainerSize.MEDIUM}
                         ></TextFilter>
                     </FilterBar>
