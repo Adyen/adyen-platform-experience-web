@@ -101,7 +101,7 @@ export default defineConfig(({ mode }) => {
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(api.session.accountHolder || null),
-            'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevMode ? api.session.autoRefresh || null : undefined),
+            'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevMode ? api.session.autoRefresh === 'true' || null : undefined),
             'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevMode ? api.session.maxAgeMs || null : undefined),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(api.session.permissions || null),
             'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),

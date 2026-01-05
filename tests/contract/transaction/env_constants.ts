@@ -1,14 +1,15 @@
 import process from 'node:process';
 import dotenv from 'dotenv';
-import { SuccessResponse } from '../../../src/types/api/endpoints';
+import { operations } from '../../../src/types/api/resources/TransactionsResource';
+import { ExtractResponseType } from '../../../src/types/api/endpoints';
 
 dotenv.config({ path: './envs/.env' });
 
 interface TransactionsVariables {
     transactionId: string;
     refundTransactionId: string;
-    transaction_details_response: SuccessResponse<'getTransaction'>;
-    refund_details_response: SuccessResponse<'getTransaction'>;
+    transaction_details_response: ExtractResponseType<operations['getTransaction']>;
+    refund_details_response: ExtractResponseType<operations['getTransaction']>;
 }
 
 const TEST: TransactionsVariables = {

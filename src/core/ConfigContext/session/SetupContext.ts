@@ -1,5 +1,5 @@
 import Core from '../../core';
-import { SETUP_ENDPOINT_PATH } from './constants';
+import { SETUP_ENDPOINT_PATH, SETUP_ENDPOINTS_API_VERSIONS } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
@@ -17,7 +17,7 @@ import {
 } from '../../../utils';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
-import type { HttpMethod } from '../../Http/types';
+import type { HttpMethod, HttpOptions } from '../../Http/types';
 import { encodeAnalyticsEvent } from '../../Analytics/analytics/utils';
 
 export class SetupContext {
@@ -130,12 +130,18 @@ export class SetupContext {
                         return Reflect.get(target, endpoint, receiver);
                     }
 
+                    const apiVersion = SETUP_ENDPOINTS_API_VERSIONS[endpoint];
+                    const overrideHttpOptions: Partial<HttpOptions> = apiVersion ? { apiVersion } : EMPTY_OBJECT;
+
                     sessionAwareEndpoints[endpoint] ??= (() => {
                         const { method = 'GET', url } = endpoints[endpoint];
                         if (isUndefined(url || undefined)) return;
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
-                            const httpOptions = this._getHttpOptions(method as HttpMethod, url!, ...args);
+                            const httpOptions = {
+                                ...this._getHttpOptions(method as HttpMethod, url!, ...args),
+                                ...overrideHttpOptions,
+                            };
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;

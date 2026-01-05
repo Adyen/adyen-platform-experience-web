@@ -9,6 +9,7 @@ export interface AlertAction {
 export interface AlertProps {
     actions?: AlertAction[];
     className?: string;
+    closeButton?: boolean;
     type: AlertTypeOption;
     title?: VNode<Element> | string;
     description?: VNode<Element> | string;

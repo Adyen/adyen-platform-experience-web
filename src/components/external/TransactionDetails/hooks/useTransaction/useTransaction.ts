@@ -1,88 +1,95 @@
+import useBalanceAccounts from '../../../../../hooks/useBalanceAccounts';
 import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
-import type { TransactionDataContentProps } from '../../components/TransactionData/TransactionDataContent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { TransactionNavigator } from './transactionNavigator/types';
+import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import { useFetch } from '../../../../../hooks/useFetch';
-import { EMPTY_OBJECT } from '../../../../../utils';
+import { TransactionDetails } from '../../types';
 
-export const useTransaction = (initialTransaction: TransactionDataContentProps['transaction']) => {
-    const [transaction, setTransaction] = useState(initialTransaction);
-    const [fetchTransactionId, setFetchTransactionId] = useState(initialTransaction.id);
-    const [lastFetchTimestamp, setLastFetchTimestamp] = useState(performance.now());
+const getTransactionNavigatorState = (transactionNavigator: TransactionNavigator) => {
+    const { onNavigation, reset, ...navigatorState } = transactionNavigator;
+    return navigatorState;
+};
+
+export const useTransaction = (id: string) => {
+    const transactionNavigator = useRef(createDuplexTransactionNavigator()).current;
+
+    const [transactionId, setTransactionId] = useState(id);
+    const [transaction, setTransaction] = useState<TransactionDetails>();
+    const [navigatorState, setNavigatorState] = useState(() => getTransactionNavigatorState(transactionNavigator));
+
+    const { balanceAccounts } = useBalanceAccounts();
     const { getTransaction } = useConfigContext().endpoints;
-
-    const _transactionNavigator = useRef(createDuplexTransactionNavigator());
-    const transactionNavigator = _transactionNavigator.current;
-
-    const navigationAction = useRef(false);
-    const cachedIsFetching = useRef(false);
-    const cachedInitialTransaction = useRef(initialTransaction);
-    const lastFetchTransactionId = useRef(fetchTransactionId);
-
-    const fetchEnabled = useMemo(() => !!getTransaction && !!fetchTransactionId && navigationAction.current, [fetchTransactionId, getTransaction]);
-
-    const queryFn = useCallback(
-        () =>
-            getTransaction!(EMPTY_OBJECT, {
-                path: { transactionId: fetchTransactionId },
-            }),
-        [fetchTransactionId, getTransaction]
-    );
 
     const {
         data,
         error,
         isFetching: fetchingTransaction,
-    } = useFetch({
-        fetchOptions: { enabled: fetchEnabled },
-        queryFn,
-    });
-
-    const refreshTransaction = useCallback(() => {
-        return setFetchTransactionId(undefined!);
-    }, []);
-
-    useEffect(() => {
-        if (!fetchTransactionId) setFetchTransactionId(transaction.id);
-    }, [fetchTransactionId, transaction]);
-
-    useEffect(() => {
-        const navigator = _transactionNavigator.current;
-        const transaction = cachedInitialTransaction.current;
-
-        if (transaction.category === 'Refund') {
-            navigator.reset(transaction.id, transaction.refundMetadata?.originalPaymentId);
-            navigator.onNavigation = ({ to: id }) => {
-                navigationAction.current = true;
-                setLastFetchTimestamp(performance.now());
-                if (id) setFetchTransactionId(id);
+    } = useFetch(
+        useMemo(() => {
+            const enabled = isFunction(getTransaction) && !!transactionId;
+            const path = { transactionId };
+            return {
+                fetchOptions: { enabled },
+                queryFn: () => getTransaction!(EMPTY_OBJECT, { path }),
             };
+        }, [getTransaction, transactionId])
+    );
+
+    const cachedFetchingTransaction = useRef(fetchingTransaction);
+    const lastFetchedTransactionId = useRef(transactionId);
+
+    const transactionWithBalanceAccount = useMemo(() => {
+        if (!transaction) return;
+        const balanceAccount = balanceAccounts?.find(account => account.id === transaction.balanceAccountId);
+        return { ...transaction, balanceAccount } as const;
+    }, [balanceAccounts, transaction]);
+
+    const refreshTransaction = useCallback(() => setTransactionId(undefined!), []);
+
+    useEffect(() => {
+        switch (transaction?.id === id && transaction?.category) {
+            case 'Refund': {
+                transactionNavigator.reset(transaction?.id, transaction?.refundMetadata?.originalPaymentId);
+                transactionNavigator.onNavigation = ({ to: id }) => setTransactionId(id);
+                break;
+            }
         }
 
-        return () => {
-            navigationAction.current = false;
-            navigator.onNavigation = null;
-            navigator.reset();
-        };
-    }, []);
+        setNavigatorState(getTransactionNavigatorState(transactionNavigator));
+    }, [id, transaction, transactionNavigator]);
 
     useEffect(() => {
-        if (cachedIsFetching.current === fetchingTransaction) return;
-        if ((cachedIsFetching.current = fetchingTransaction)) return;
+        if (cachedFetchingTransaction.current === fetchingTransaction) return;
+        if ((cachedFetchingTransaction.current = fetchingTransaction)) return;
 
         if (!data || error) {
-            setFetchTransactionId(lastFetchTransactionId.current);
+            setTransactionId(lastFetchedTransactionId.current);
         } else {
-            const initialTransaction = cachedInitialTransaction.current;
-            setTransaction(() => ({
-                ...(data.id === initialTransaction.id ? initialTransaction : EMPTY_OBJECT),
-                ...data,
-            }));
-            lastFetchTransactionId.current = fetchTransactionId;
+            setTransaction(data);
+            lastFetchedTransactionId.current = transactionId;
         }
-    }, [data, error, fetchingTransaction, fetchTransactionId, lastFetchTimestamp]);
+    }, [data, error, fetchingTransaction, transactionId]);
 
-    return { fetchingTransaction, refreshTransaction, transaction, transactionNavigator } as const;
+    useEffect(() => {
+        if (!transactionId) setTransactionId(lastFetchedTransactionId.current);
+    }, [transaction, transactionId]);
+
+    useEffect(() => {
+        return () => {
+            transactionNavigator.onNavigation = null;
+            transactionNavigator.reset();
+        };
+    }, [transactionNavigator]);
+
+    return {
+        error,
+        fetchingTransaction,
+        refreshTransaction,
+        transaction: transactionWithBalanceAccount,
+        transactionNavigator: navigatorState,
+    } as const;
 };
 
 export default useTransaction;

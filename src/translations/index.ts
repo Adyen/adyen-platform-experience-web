@@ -1,5 +1,5 @@
 import type { KeyOfRecord } from '../utils/types';
-import EN_US from '../assets/translations/en-US.json';
+import EN_US from '../assets/translations/en-US.json' with { type: 'json' };
 const _en_US = { ...EN_US };
 
 type _SupportedLocale = KeyOfRecord<typeof all_locales>;
