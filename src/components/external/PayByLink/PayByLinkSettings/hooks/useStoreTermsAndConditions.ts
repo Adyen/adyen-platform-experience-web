@@ -5,6 +5,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
+import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 
 export const useStoreTermsAndConditions = (
     selectedStore: string | undefined,
@@ -41,5 +42,7 @@ export const useStoreTermsAndConditions = (
         setPayload(termsAndConditions);
     }, [termsAndConditions, setPayload]);
 
-    return { data: termsAndConditions, isFetching, error };
+    const termsAndConditionsError = error as AdyenPlatformExperienceError;
+
+    return { data: termsAndConditions, isFetching, error: termsAndConditionsError };
 };

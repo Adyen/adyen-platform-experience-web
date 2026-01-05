@@ -1,5 +1,9 @@
 @use '../../../../../../style';
 
+.adyen-pe-component__container {
+    min-width: fit-content;
+}
+
 .adyen-pe-pay-by-link-settings {
     &__container {
         display: flex;
@@ -55,7 +59,7 @@
 
     &__content-container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: style.token(spacer-090);
         margin-top: style.token(spacer-070);
     }
