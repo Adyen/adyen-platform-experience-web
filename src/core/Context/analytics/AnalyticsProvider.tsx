@@ -1,9 +1,9 @@
 import type { ComponentChildren } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
-import { useMemo } from 'preact/hooks';
-import { createUserEvents } from '../../Analytics/analytics/user-events';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { AnalyticsContext } from './AnalyticsContext';
-import { useAnalytics } from '../../../hooks/useAnalytics/useAnalytics';
+import { createUserEvents, type EventQueueItem } from '../../Analytics/analytics/user-events';
+import { usePushAnalyticEvent } from '../../../hooks/useAnalytics/usePushAnalyticEvent';
 import { ExternalComponentType } from '../../../components/types';
 
 export interface AnalyticsProviderProps {
@@ -13,9 +13,36 @@ export interface AnalyticsProviderProps {
 }
 
 export const AnalyticsProvider = ({ children, componentName, analyticsEnabled }: PropsWithChildren<AnalyticsProviderProps>) => {
-    const userEvents = useMemo(() => createUserEvents(analyticsEnabled, componentName), [componentName, analyticsEnabled]);
+    const pushAnalyticsEvent = usePushAnalyticEvent();
 
-    useAnalytics({ userEvents, analyticsEnabled });
+    const pushEvent = useCallback(
+        (data: EventQueueItem) => {
+            const { name, properties } = data;
+            pushAnalyticsEvent({
+                event: name,
+                properties: properties || {},
+            });
+        },
+        [pushAnalyticsEvent]
+    );
+
+    const userEvents = useMemo(() => {
+        const userEvents = createUserEvents(analyticsEnabled, componentName);
+
+        userEvents.updateBaseTrackingPayload?.({
+            sdkVersion: process.env.VITE_VERSION,
+            userAgent: navigator.userAgent,
+        });
+
+        return userEvents;
+    }, [analyticsEnabled, componentName]);
+
+    useEffect(() => {
+        if (analyticsEnabled) {
+            userEvents.subscribe?.(pushEvent);
+            return () => userEvents.unsubscribe?.(pushEvent);
+        }
+    }, [analyticsEnabled, pushEvent, userEvents]);
 
     return <AnalyticsContext.Provider value={userEvents}>{children}</AnalyticsContext.Provider>;
 };

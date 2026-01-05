@@ -197,5 +197,6 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
         // Loading state
         isDataLoading,
         isFirstLoadDone,
+        setSelectedStore,
     };
 };

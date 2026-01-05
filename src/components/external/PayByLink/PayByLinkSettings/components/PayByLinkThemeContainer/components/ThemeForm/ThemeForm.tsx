@@ -13,11 +13,9 @@ import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';
 import LogoInput from '../LogoInput/LogoInput';
 import { cloneFormData } from '../../../PayByLinkSettingsContainer/utils/getThemePayload';
-import Alert from '../../../../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../../../../internal/Alert/types';
 
 export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
-    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaveSuccess, isSaveError, setIsSaveError, setIsSaveSuccess, isSaving } =
+    const { setPayload, saveActionCalled, setSaveActionCalled, setIsValid, isSaving, setIsSaveSuccess, setIsSaveError } =
         usePayByLinkSettingsContext();
 
     const { brandName: initialBrandName, logo, fullWidthLogo } = theme;
@@ -44,8 +42,10 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                 setShowMissingBrandName(true);
             }
             setSaveActionCalled(false);
+            setIsSaveSuccess(false);
+            setIsSaveError(false);
         }
-    }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName]);
+    }, [saveActionCalled, setSaveActionCalled, brandName, setShowMissingBrandName, setIsSaveError, setIsSaveSuccess]);
 
     const addFileToThemePayload = useCallback(
         (field: string, file: File) => {
@@ -155,6 +155,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                         value={brandName}
                         onInput={onBrandNameChange}
                         placeholder={i18n.get('payByLink.settings.theme.brandName.input.placeholder')}
+                        isInvalid={showMissingBrandName}
                     />
                     {showMissingBrandName && (
                         <div className="adyen-pe-pay-by-link-theme-form__error">
@@ -182,20 +183,6 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                     );
                 })}
             </div>
-            {isSaveSuccess && (
-                <Alert
-                    type={AlertTypeOption.SUCCESS}
-                    onClose={() => setIsSaveSuccess(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
-                />
-            )}
-            {isSaveError && (
-                <Alert
-                    type={AlertTypeOption.CRITICAL}
-                    onClose={() => setIsSaveError(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
-                />
-            )}
         </div>
     );
 };

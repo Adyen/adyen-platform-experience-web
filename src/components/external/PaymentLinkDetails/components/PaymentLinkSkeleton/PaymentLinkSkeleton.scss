@@ -1,6 +1,9 @@
 @use '../../../../../style';
 @use '../../../../../style/skeleton';
 
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints';
+
 .adyen-pe-payment-link-skeleton {
     display: flex;
     flex-direction: column;
@@ -34,13 +37,14 @@
     &__expiration-date {
         border-radius: style.token(border-radius-s);
         height: 20px;
+        max-width: 100%;
         width: 390px;
         /* stylelint-disable-next-line order/order */
         @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__tabs-container {
-        padding: 0 style.token(spacer-080) style.token(spacer-070) style.token(spacer-080);
+        padding-bottom: style.token(spacer-070);
     }
 
     &__tab-labels-container {
@@ -66,8 +70,13 @@
 
     &__field-container {
         display: flex;
-        flex-direction: row;
-        gap: style.token(spacer-060);
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        @include adyen-pe-screen-sm-and-up {
+            flex-direction: row;
+            gap: style.token(spacer-060);
+        }
     }
 
     &__field-label {

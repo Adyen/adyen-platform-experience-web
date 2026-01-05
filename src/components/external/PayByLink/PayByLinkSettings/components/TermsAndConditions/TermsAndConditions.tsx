@@ -17,8 +17,8 @@ import { Translation } from '../../../../../internal/Translation';
 import { isValidURL } from '../PayByLinkSettingsContainer/utils/validateTermsAndConditionsURL';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import Button from '../../../../../internal/Button';
-import Modal from '../../../../../internal/Modal';
 import { Requirements } from './Requirements/Requirements';
+import cx from 'classnames';
 
 export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTermsAndConditions; initialData: IPayByLinkTermsAndConditions }) => {
     const { i18n } = useCoreContext();
@@ -37,11 +37,11 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         setIsValid,
         isSaving,
         setSaveActionCalled,
-        isSaveSuccess,
         setIsSaveError,
         setIsSaveSuccess,
-        isSaveError,
+        isShowingRequirements,
         embeddedInOverview,
+        setIsShowingRequirements,
     } = usePayByLinkSettingsContext();
 
     useEffect(() => {
@@ -61,8 +61,10 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
             setShowInvalidURL(Boolean(termsAndConditionsURL && !isValidURL(termsAndConditionsURL)));
             setShowNotCheckedRequirementsError(!isRequirementsChecked);
             setSaveActionCalled(false);
+            setIsSaveSuccess(false);
+            setIsSaveError(false);
         }
-    }, [termsAndConditionsURL, isRequirementsChecked, showNotCheckedRequirementsError, saveActionCalled, setSaveActionCalled, setPayload]);
+    }, [termsAndConditionsURL, isRequirementsChecked, saveActionCalled, setSaveActionCalled, setPayload, setIsSaveError, setIsSaveSuccess]);
 
     useEffect(() => {
         let data = isTermsAndConditionsData(savedData) ? (savedData as IPayByLinkTermsAndConditions) : undefined;
@@ -105,10 +107,8 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         [userRequirementsInput]
     );
 
-    const [requirementsAreOpened, setRequirementsAreOpened] = useState(false);
-
     const openRequirements = useCallback(() => {
-        setRequirementsAreOpened(true);
+        setIsShowingRequirements(true);
     }, []);
 
     const checkboxLabel = useMemo(() => {
@@ -130,93 +130,88 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
         );
     }, [i18n, openRequirements]);
 
-    const closeModal = useCallback(() => setRequirementsAreOpened(false), []);
+    const closeModal = useCallback(() => setIsShowingRequirements(false), []);
 
     const acceptRequirements = useCallback(() => setIsRequirementsChecked(true), []);
 
     return (
         <section className="adyen-pe-pay-by-link-settings-terms-and-conditions">
-            <div className="adyen-pe-pay-by-link-settings__input-container">
-                <label
-                    htmlFor={checkboxIdentifier.current}
-                    aria-labelledby={checkboxIdentifier.current}
-                    className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label"
-                >
-                    <Typography
-                        variant={TypographyVariant.BODY}
-                        stronger
-                        className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--info-text"
+            <div
+                className={cx('adyen-pe-pay-by-link-settings-terms-and-conditions__content', {
+                    'adyen-pe-pay-by-link-settings-terms-and-conditions__content--hidden': isShowingRequirements,
+                })}
+            >
+                <div className="adyen-pe-pay-by-link-settings__input-container">
+                    <label
+                        htmlFor={checkboxIdentifier.current}
+                        aria-labelledby={checkboxIdentifier.current}
+                        className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label"
                     >
-                        {i18n.get('payByLink.settings.termsAndConditions.urlInput.label')}
-                    </Typography>
-                </label>
-                <InputText
-                    disabled={isSaving}
-                    uniqueId={checkboxIdentifier.current}
-                    value={termsAndConditionsURL}
-                    onInput={onTermsAndConditionsURLInput}
-                />
-                {showInvalidURL && (
-                    <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
-                        <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-icon'} />
                         <Typography
-                            className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-text'}
-                            el={TypographyElement.SPAN}
                             variant={TypographyVariant.BODY}
+                            stronger
+                            className="adyen-pe-pay-by-link-settings-terms-and-conditions-input__label--info-text"
                         >
-                            {i18n.get('payByLink.settings.termsAndConditions.error.urlValidation')}
+                            {i18n.get('payByLink.settings.termsAndConditions.urlInput.label')}
                         </Typography>
-                    </div>
+                    </label>
+                    <InputText
+                        disabled={isSaving}
+                        uniqueId={checkboxIdentifier.current}
+                        value={termsAndConditionsURL}
+                        onInput={onTermsAndConditionsURLInput}
+                        maxLength={2000}
+                        isInvalid={showInvalidURL}
+                    />
+                    {showInvalidURL && (
+                        <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
+                            <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-icon'} />
+                            <Typography
+                                className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-text'}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.BODY}
+                            >
+                                {i18n.get('payByLink.settings.termsAndConditions.error.urlValidation')}
+                            </Typography>
+                        </div>
+                    )}
+                </div>
+                {isTermsAndConditionsChanged && (
+                    <Alert
+                        type={AlertTypeOption.WARNING}
+                        description={i18n.get('payByLink.settings.termsAndConditions.alert.urlChange')}
+                        className={'adyen-pe-pay-by-link-settings-terms-and-conditions__alert'}
+                    />
                 )}
+                <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
+                    <Checkbox
+                        checked={isRequirementsChecked}
+                        disabled={disabled || isSaving}
+                        className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
+                        label={checkboxLabel}
+                        onInput={onCheckboxInput}
+                        error={showNotCheckedRequirementsError}
+                    />
+                    {showNotCheckedRequirementsError && (
+                        <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
+                            <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-icon'} />
+                            <Typography
+                                className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-text'}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.BODY}
+                            >
+                                {i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')}
+                            </Typography>
+                        </div>
+                    )}
+                </div>
             </div>
-            {isTermsAndConditionsChanged && (
-                <Alert type={AlertTypeOption.WARNING} description={i18n.get('payByLink.settings.termsAndConditions.alert.urlChange')} />
-            )}
-            <div className="adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox__container">
-                <Checkbox
-                    checked={isRequirementsChecked}
-                    disabled={disabled || isSaving}
-                    className={'adyen-pe-pay-by-link-settings-terms-and-conditions-checkbox'}
-                    label={checkboxLabel}
-                    onInput={onCheckboxInput}
-                    error={showNotCheckedRequirementsError}
-                />
-                {showNotCheckedRequirementsError && (
-                    <div className="adyen-pe-pay-by-link-settings-terms-and-conditions__error">
-                        <Icon name="cross-circle-fill" className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-icon'} />
-                        <Typography
-                            className={'adyen-pe-pay-by-link-settings-terms-and-conditions__error-text'}
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.BODY}
-                        >
-                            {i18n.get('payByLink.settings.termsAndConditions.error.requirementsNotChecked')}
-                        </Typography>
-                    </div>
-                )}
-            </div>
-            {requirementsAreOpened && (
-                <Modal
-                    isOpen={requirementsAreOpened}
-                    onClose={closeModal}
-                    isDismissible={true}
-                    headerWithBorder={false}
-                    size={embeddedInOverview ? 'full-screen' : 'large'}
-                >
-                    <Requirements onGoBack={closeModal} termsAndConditionsURL={termsAndConditionsURL} acceptRequirements={acceptRequirements} />
-                </Modal>
-            )}
-            {isSaveSuccess && (
-                <Alert
-                    type={AlertTypeOption.SUCCESS}
-                    onClose={() => setIsSaveSuccess(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
-                />
-            )}
-            {isSaveError && (
-                <Alert
-                    type={AlertTypeOption.CRITICAL}
-                    onClose={() => setIsSaveError(false)}
-                    description={i18n.get('payByLink.settings.common.alerts.saveError')}
+            {isShowingRequirements && (
+                <Requirements
+                    onGoBack={closeModal}
+                    termsAndConditionsURL={termsAndConditionsURL}
+                    acceptRequirements={acceptRequirements}
+                    embeddedInOverview={embeddedInOverview}
                 />
             )}
         </section>

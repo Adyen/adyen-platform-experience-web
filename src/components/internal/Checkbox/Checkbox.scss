@@ -1,11 +1,6 @@
 @use '../../../style';
 
 .adyen-pe-checkbox {
-    &__input {
-        display: flex;
-        gap: style.token(spacer-070);
-    }
-
     &__icon {
         align-self: baseline;
         display: flex;
@@ -20,7 +15,7 @@
         align-items: center;
         cursor: pointer;
         display: flex;
-        gap: style.token(spacer-070);
+        gap: style.token(spacer-060);
 
         input:disabled ~ & {
             cursor: not-allowed;

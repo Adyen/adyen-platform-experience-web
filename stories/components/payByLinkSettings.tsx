@@ -17,5 +17,5 @@ export const PayByLinkSettingsMeta: Meta<ElementProps<typeof PayByLinkSettings>>
             sort: 'alpha',
         },
     },
-    decorators: [Story => <div style={{ margin: 'auto', maxWidth: 800 }}>{Story() as JSX.Element}</div>],
+    decorators: [Story => <div className="compact-component-wrapper">{Story() as JSX.Element}</div>],
 };

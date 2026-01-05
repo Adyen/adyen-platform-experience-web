@@ -297,8 +297,17 @@ export const PayByLinkOverview = ({
     }, []);
 
     const refreshPaymentLinkList = useCallback(() => {
-        updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
-    }, [updateFilters]);
+        const now = new Date();
+        const currentCreatedUntil = filters?.[FilterParam.CREATED_UNTIL];
+        const createdUntilDate = currentCreatedUntil ? new Date(currentCreatedUntil) : null;
+
+        const isSameDay = createdUntilDate?.toDateString() === now.toDateString();
+
+        updateFilters({
+            ...(isSameDay && { [FilterParam.CREATED_UNTIL]: now.toISOString() }),
+            [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now(),
+        } as any);
+    }, [filters, updateFilters]);
 
     const sharedModalProps = useMemo(() => {
         return {
@@ -416,6 +425,7 @@ export const PayByLinkOverview = ({
                 paymentLinkCreation={paymentLinkCreation}
                 storeIds={sharedModalProps.storeIds}
                 onContactSupport={sharedModalProps.onContactSupport}
+                refreshPaymentLinkList={refreshPaymentLinkList}
             />
         </div>
     );

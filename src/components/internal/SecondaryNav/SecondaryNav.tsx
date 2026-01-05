@@ -2,7 +2,7 @@ import './SecondaryNav.scss';
 import cx from 'classnames';
 import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { VNode } from 'preact';
 import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
@@ -16,9 +16,11 @@ interface SecondaryNavProps<T> {
     activeValue: string | null;
     onValueChange: (value: T) => void;
     renderContent: (activeMenu: string) => VNode<any>;
+    renderLoadingContent: (activeMenu: string | null) => VNode<any>;
     renderHeader: () => VNode<any>;
     onContentVisibilityChange: (contentVisible: boolean) => void;
     loading?: boolean;
+    contentVisible?: boolean;
 }
 
 export interface SecondaryNavItem<T extends string = string> {
@@ -26,7 +28,7 @@ export interface SecondaryNavItem<T extends string = string> {
     label: string;
 }
 
-const LoadingSkeleton = ({ rowNumber, className }: { rowNumber: number; className: string }) => (
+const LoadingSkeleton = ({ rowNumber, className }: { rowNumber: number; className?: string }) => (
     <div className={cx('adyen-pe-secondary-nav__skeleton', className)}>
         {[...Array(rowNumber)].map((_, index) => (
             <div key={index} className="adyen-pe-secondary-nav__skeleton-item"></div>
@@ -43,32 +45,38 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     loading,
     onContentVisibilityChange,
     renderContent,
+    contentVisible,
+    renderLoadingContent,
 }: SecondaryNavProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-    const [contentOpen, setContentOpen] = useState(!isSmContainer);
 
     const onClick = useCallback(
         (item: T) => {
             onValueChange(item);
             if (isSmContainer) {
                 onContentVisibilityChange(true);
-                setContentOpen(true);
             }
         },
-        [isSmContainer, onValueChange, onContentVisibilityChange, setContentOpen]
+        [isSmContainer, onValueChange, onContentVisibilityChange]
     );
 
     const handleDismiss = useCallback(() => {
-        setContentOpen(false);
         onContentVisibilityChange(false);
-    }, [onContentVisibilityChange, setContentOpen]);
+    }, [onContentVisibilityChange]);
 
     if (loading) {
         return !isSmContainer ? (
-            <div className={'adyen-pe-secondary-nav__skeleton-container'}>
-                <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--aside'} />
-                <Divider variant="vertical" />
-                <LoadingSkeleton rowNumber={5} className={'adyen-pe-secondary-nav__skeleton--content'} />
+            <div className={cx('adyen-pe-secondary-nav')}>
+                <div className={'adyen-pe-secondary-nav__container'}>
+                    <div className={'adyen-pe-secondary-nav__skeleton--aside'}>
+                        <LoadingSkeleton rowNumber={1} />
+                        <div className={'adyen-pe-secondary-nav__list'}>
+                            <LoadingSkeleton rowNumber={2} />
+                        </div>
+                    </div>
+                    <Divider variant="vertical" />
+                    {renderLoadingContent(activeValue)}
+                </div>
             </div>
         ) : (
             <LoadingSkeleton rowNumber={3} className={'adyen-pe-secondary-nav__skeleton--content'} />
@@ -77,11 +85,8 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className, { 'adyen-pe-secondary-nav--mobile': isSmContainer })}>
-            {isSmContainer && contentOpen && (
+            {isSmContainer && contentVisible && (
                 <div className={cx({ 'adyen-pe-secondary-nav__close-content--mobile': isSmContainer })}>
-                    <Button onClick={handleDismiss} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
-                        <Icon name="arrow-right" />
-                    </Button>
                     <Button
                         onClick={handleDismiss}
                         variant={ButtonVariant.TERTIARY}
@@ -94,7 +99,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                 </div>
             )}
             <div className={cx('adyen-pe-secondary-nav__container', { 'adyen-pe-secondary-nav__container-mobile': isSmContainer })}>
-                {(!contentOpen || !isSmContainer) && (
+                {(!contentVisible || !isSmContainer) && (
                     <aside className={cx('adyen-pe-secondary-nav--sidebar', { 'adyen-pe-secondary-nav--sidebar-mobile': isSmContainer })}>
                         {renderHeader()}
                         <ul className="adyen-pe-secondary-nav__list">
@@ -104,6 +109,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                                         aria-selected={item.value === activeValue}
                                         className={cx('adyen-pe-secondary-nav__item', {
                                             'adyen-pe-secondary-nav__item--active': item.value === activeValue,
+                                            'adyen-pe-secondary-nav__item--mobile': isSmContainer,
                                         })}
                                         iconRight={isSmContainer ? <Icon name="chevron-right" /> : undefined}
                                         onClick={onClick.bind(null, item)}
@@ -123,7 +129,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                     </aside>
                 )}
                 {!isSmContainer && <Divider variant="vertical" />}
-                {contentOpen && activeValue && renderContent(activeValue)}
+                {contentVisible && activeValue && renderContent(activeValue)}
             </div>
         </div>
     );

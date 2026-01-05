@@ -10,7 +10,8 @@ export const useStoreTermsAndConditions = (
     selectedStore: string | undefined,
     enabled: boolean,
     setEnabled: Dispatch<StateUpdater<boolean>>,
-    setPayload: (payload: PayByLinkSettingsPayload) => void
+    setPayload: (payload: PayByLinkSettingsPayload) => void,
+    setLoading: Dispatch<StateUpdater<boolean>>
 ) => {
     const { getPayByLinkSettings } = useConfigContext().endpoints;
 
@@ -22,11 +23,12 @@ export const useStoreTermsAndConditions = (
                     enabled: !!getPayByLinkSettings && enabled && !!selectedStore,
                     onSuccess: () => {
                         setEnabled(false);
+                        setLoading(false);
                     },
                 },
                 queryFn: async () => getPayByLinkSettings?.(EMPTY_OBJECT, { path: { storeId: selectedStore! } }),
             }),
-            [getPayByLinkSettings, selectedStore, enabled, setEnabled]
+            [getPayByLinkSettings, selectedStore, enabled, setEnabled, setLoading]
         )
     );
 

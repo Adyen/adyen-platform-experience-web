@@ -30,9 +30,11 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     isSaveError: undefined,
     isSaveSuccess: undefined,
     isSaving: undefined,
+    isShowingRequirements: false,
     onSave: noop,
     setIsSaveError: noop,
     setIsSaveSuccess: noop,
+    setIsShowingRequirements: noop,
     isLoadingStores: false,
     storesError: undefined,
 });
@@ -44,12 +46,13 @@ export const PayByLinkSettingsProvider = memo(
         storeIds,
         embeddedInOverview,
     }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[]; embeddedInOverview?: boolean }>) => {
+        const [isShowingRequirements, setIsShowingRequirements] = useState(false);
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
         const menuItemPreSelect = useMemo(() => {
-            if (isSmContainer) return null;
+            if (isSmContainer && menuItems.length > 1) return;
             return menuItems.length > 0 && menuItems[0] ? menuItems[0].value : DEFAULT_MENU_ITEM;
         }, [menuItems, isSmContainer]);
 
@@ -64,7 +67,9 @@ export const PayByLinkSettingsProvider = memo(
         const [isSaveSuccess, setIsSaveSuccess] = useState(false);
 
         useEffect(() => {
-            setActiveMenuItem(menuItemPreSelect);
+            if (menuItemPreSelect) {
+                setActiveMenuItem(menuItemPreSelect);
+            }
         }, [menuItemPreSelect]);
 
         const getIsValid = useCallback(() => {
@@ -119,12 +124,19 @@ export const PayByLinkSettingsProvider = memo(
             [setPayload]
         );
 
-        const { theme, isFetching: loadingThemes } = useStoreTheme(selectedStore, fetchThemeEnabled, setFetchThemeEnabled, onPayloadChange);
+        const { theme, isFetching: loadingThemes } = useStoreTheme(
+            selectedStore,
+            fetchThemeEnabled,
+            setFetchThemeEnabled,
+            onPayloadChange,
+            setLoading
+        );
         const { data: termsAndConditions, isFetching: loadingTermsAndConditions } = useStoreTermsAndConditions(
             selectedStore,
             fetchTermsAndConditionsEnabled,
             setFetchTermsAndConditionsEnabled,
-            onPayloadChange
+            onPayloadChange,
+            setLoading
         );
 
         const activeData = useMemo(() => {
@@ -142,10 +154,9 @@ export const PayByLinkSettingsProvider = memo(
 
         useEffect(() => {
             if (activeData) {
-                setLoading(false);
+                setSavedData(activeData);
             }
-            setSavedData(activeData);
-        }, [activeData, activeMenuItem]);
+        }, [activeData, setSavedData]);
 
         useEffect(() => {
             if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
@@ -165,10 +176,11 @@ export const PayByLinkSettingsProvider = memo(
         }, []);
 
         const setSelectedMenuItem = useCallback((item: SecondaryNavItem<PayByLinkSettingsItem>) => {
+            setLoading(true);
             setActiveMenuItem(item.value);
         }, []);
 
-        const contentLoading = loading || loadingThemes || loadingTermsAndConditions;
+        const contentLoading = loading || loadingThemes || loadingTermsAndConditions || isLoadingStores;
 
         return (
             <PayByLinkSettingsContext.Provider
@@ -191,6 +203,8 @@ export const PayByLinkSettingsProvider = memo(
                     isSaveError,
                     isSaveSuccess,
                     isSaving,
+                    isShowingRequirements,
+                    setIsShowingRequirements,
                     setIsSaveError,
                     setIsSaveSuccess,
                     onSave: onSave,

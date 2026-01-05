@@ -21,13 +21,16 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
     const [isPaymentLinkUpdated, setIsPaymentLinkUpdated] = useState(false);
     const isModalOpen = !!selectedDetail;
 
-    const onCloseCallback = useCallback(() => {
-        if (isPaymentLinkUpdated) {
-            setIsPaymentLinkUpdated(false);
-            onUpdate();
-        }
-        resetDetails();
-    }, [isPaymentLinkUpdated, setIsPaymentLinkUpdated, onUpdate, resetDetails]);
+    const handleDismiss = useCallback(
+        (withUpdate = false) => {
+            if (isPaymentLinkUpdated || withUpdate) {
+                setIsPaymentLinkUpdated(false);
+                onUpdate();
+            }
+            resetDetails();
+        },
+        [isPaymentLinkUpdated, setIsPaymentLinkUpdated, onUpdate, resetDetails]
+    );
 
     const handlePaymentLinkUpdate = useCallback(() => {
         setIsPaymentLinkUpdated(true);
@@ -40,12 +43,12 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
                 <Modal
                     isOpen={isModalOpen}
                     aria-label={i18n.get('paymentLinks.details.title')}
-                    onClose={onCloseCallback}
+                    onClose={handleDismiss}
                     isDismissible={true}
                     headerWithBorder={false}
                     size={selectedDetail.modalSize || 'large'}
                 >
-                    <PaymentLinkDetails id={selectedDetail.selection.data} onUpdate={handlePaymentLinkUpdate} onDismiss={resetDetails} hideTitle />
+                    <PaymentLinkDetails id={selectedDetail.selection.data} onUpdate={handlePaymentLinkUpdate} onDismiss={handleDismiss} hideTitle />
                 </Modal>
             )}
         </div>
