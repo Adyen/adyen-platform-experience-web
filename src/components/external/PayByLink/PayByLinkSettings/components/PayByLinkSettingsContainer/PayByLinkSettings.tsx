@@ -18,6 +18,11 @@ import { useCallback, useEffect, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import cx from 'classnames';
 import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
+import { useMemo } from 'preact/hooks';
+import AdyenPlatformExperienceError from '../../../../../../core/Errors/AdyenPlatformExperienceError';
+import SettingsError from './components/SettingsError/SettingsError';
+
+const ERROR_MESSAGE_KEY = 'payByLink.settings.errors.couldNotLoadSettings' as const;
 
 const PayByLinkSettings = ({
     navigateBack,
@@ -36,8 +41,10 @@ const PayByLinkSettings = ({
         filteredStores,
         menuItems,
         isLoadingContent,
+        allStores,
+        themeError,
+        termsAndConditionsError,
     } = usePayByLinkSettingsContext();
-
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [contentVisible, setContentVisible] = useState(false);
 
@@ -58,14 +65,46 @@ const PayByLinkSettings = ({
         setContentVisible(false);
     }, [isSmContainer]);
 
+    const noStoresError = useMemo(() => {
+        if (!allStores || allStores.length > 0 || isLoadingStores) return undefined;
+        return {
+            message: 'No stores configured',
+            name: 'Account misconfiguration',
+            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            type: 'error',
+            requestId: '',
+        } as AdyenPlatformExperienceError;
+    }, [allStores, isLoadingStores]);
+
+    const storesFilteredError = useMemo(() => {
+        if ((allStores && allStores?.length > 0 && filteredStores?.length !== 0) || isLoadingStores) return undefined;
+        return {
+            message: 'No stores configured',
+            name: 'Account misconfiguration',
+            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            type: 'error',
+            requestId: '',
+        } as AdyenPlatformExperienceError;
+    }, [allStores, filteredStores, isLoadingStores]);
+
+    const error = storesError ?? noStoresError ?? storesFilteredError;
+
+    const errorDisplay = useMemo(() => {
+        if (!error) return null;
+        return <SettingsError error={error} centered absolutePosition onContactSupport={props.onContactSupport} errorMessage={ERROR_MESSAGE_KEY} />;
+    }, [props.onContactSupport, error]);
+
+    const hasError = !!noStoresError || !!storesError || !!storesFilteredError;
+
     if (!menuItems || menuItems.length === 0) return null;
 
-    //TODO: Add store error once it is merged
+    const showActionButtons = contentVisible && !themeError && !storesError && !termsAndConditionsError && !isShowingRequirements;
+
     return (
         <div className={CONTAINER_CLASS_NAME}>
             {(!isSmContainer || !contentVisible) && <Header hideTitle={props.hideTitle} titleKey="payByLink.settings.title" />}
-            {storesError ? (
-                <>Store Error</>
+            {hasError ? (
+                errorDisplay
             ) : (
                 <>
                     <div className={cx(CONTENT_CONTAINER_CLASS_NAME, { [CONTENT_CONTAINER_MOBILE_CLASS_NAME]: isSmContainer && contentVisible })}>
@@ -96,7 +135,7 @@ const PayByLinkSettings = ({
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {!isShowingRequirements && contentVisible && (
+                    {showActionButtons && (
                         <SettingsActionButtons
                             navigateBack={navigateBack ? navigateBack : undefined}
                             closeContent={isSmContainer ? closeContent : undefined}

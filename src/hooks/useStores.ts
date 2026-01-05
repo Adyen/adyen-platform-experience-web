@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
+import AdyenPlatformExperienceError from '../core/Errors/AdyenPlatformExperienceError';
 
 export const useStores = (storeIds?: string | string[], preselect = true) => {
     const [selectedStore, setSelectedStore] = useState<string | undefined>(undefined);
@@ -53,5 +54,7 @@ export const useStores = (storeIds?: string | string[], preselect = true) => {
         }
     }, [filteredStores, selectedStore, preselect]);
 
-    return { filteredStores, selectedStore, setSelectedStore, isFetching, error, allStores };
+    const storesError = error as AdyenPlatformExperienceError;
+
+    return { filteredStores, selectedStore, setSelectedStore, isFetching, error: storesError, allStores };
 };

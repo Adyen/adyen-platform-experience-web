@@ -251,7 +251,6 @@ export type ExternalComponentType =
     | 'disputes'
     | 'disputesManagement'
     | 'payByLinkCreation'
-    | 'payByLinkTheme'
     | 'payByLinkOverview'
     | 'payByLinkSettings'
     | 'paymentLinkDetails';
