@@ -42,8 +42,8 @@ export const EmptyList: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
-export const FilterError: ElementStory<typeof PayByLinkOverview> = {
-    name: 'Filter Error',
+export const ErrorFiltersGeneric: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Filters - Generic',
     args: {
         mockedApi: true,
     },
