@@ -26,7 +26,7 @@ describe('BalanceAccountSelector', () => {
     };
 
     test('should render selected balance account with description (if available)', () => {
-        render(<BalanceAccountSelectorWrapper balanceAccounts={BALANCE_ACCOUNTS} />);
+        render(<BalanceAccountSelectorWrapper balanceAccounts={[...BALANCE_ACCOUNTS]} />);
 
         const activeBalanceAccountDescription = BALANCE_ACCOUNTS[0]?.description!;
         const buttonTextElement = within(screen.getByRole('button')).getByText(activeBalanceAccountDescription);

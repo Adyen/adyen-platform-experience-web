@@ -29,7 +29,7 @@ function ButtonActions({ actions, layout = ButtonActionsLayout.BUTTONS_END }: Bu
                 {reversedActions.map((button, index) => (
                     <Button
                         className={cx(button.classNames)}
-                        aria-label={button.title}
+                        aria-label={button.ariaLabel ?? button.title}
                         key={`${index}_${button.title || '0'}`}
                         disabled={button.disabled}
                         variant={button.variant || generateButtonVariantByIndex(index)}
