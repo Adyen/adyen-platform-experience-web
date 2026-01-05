@@ -27,6 +27,7 @@ import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
 import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
+import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../constants';
 
 const getTagVariantForStatus = (status: IPayByLinkStatus) => {
     switch (status) {
@@ -272,6 +273,9 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
                         }
                         return <>{item.paymentLinkId}</>;
                     },
+                    shopperEmail: ({ item }) => (
+                        <>{item.shopperEmail === BACKEND_REDACTED_DATA_MARKER ? FRONTEND_REDACTED_DATA_MARKER : item.shopperEmail}</>
+                    ),
                 }}
             >
                 {showPagination && (
