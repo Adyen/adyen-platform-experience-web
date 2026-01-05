@@ -154,6 +154,13 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                     current.setAttribute('tabindex', '-1');
                     setRootTabIndex.current = true;
                 }
+
+                // Automatically focus inside the trap if focus is not already within it
+                if (!focusIsWithin(current, document.activeElement)) {
+                    if (current instanceof HTMLElement) {
+                        current.focus();
+                    }
+                }
             } else tabbableRoot.root = null;
         }, []),
         rootElementRef
