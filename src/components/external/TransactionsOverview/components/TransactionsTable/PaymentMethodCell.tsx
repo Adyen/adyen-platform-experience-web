@@ -1,5 +1,5 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { ITransaction } from '../../../../../types';
+import { IBankAccount, IPaymentMethod } from '../../../../../types';
 import { Image } from '../../../../internal/Image/Image';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
@@ -9,13 +9,7 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { parsePaymentMethodType } from '../utils';
 import { PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
 
-const PaymentMethodCell = ({
-    paymentMethod,
-    bankAccount,
-}: {
-    paymentMethod?: ITransaction['paymentMethod'];
-    bankAccount?: ITransaction['bankAccount'];
-}) => {
+const PaymentMethodCell = ({ paymentMethod, bankAccount }: { paymentMethod?: IPaymentMethod; bankAccount?: IBankAccount }) => {
     const { i18n } = useCoreContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 

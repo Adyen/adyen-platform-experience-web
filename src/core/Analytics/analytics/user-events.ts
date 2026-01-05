@@ -51,7 +51,14 @@ export interface AdditionalEventProperties {
  * Name of the tracked event
  * Can be either a custom name or one of the pre-defined values
  */
-export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filter' | 'Category filter' | 'Currency filter' | 'Status filter';
+export type FilterType =
+    | 'Date filter'
+    | 'Amount filter'
+    | 'Balance account filter'
+    | 'Category filter'
+    | 'Currency filter'
+    | 'PSP reference filter'
+    | 'Status filter';
 
 /**
  * Name of the tracked event
@@ -143,10 +150,10 @@ export class UserEvents {
     /**
      * Adds an event with context specific to
      */
-    public addModifyFilterEvent(properties: Omit<AdditionalEventProperties, 'subCategory' | 'label'> & { label?: FilterType }) {
+    public addModifyFilterEvent(properties: Omit<AdditionalEventProperties, 'subCategory' | 'label'> & { label?: FilterType; subCategory?: string }) {
         this.addEvent('Modified filter', {
             ...properties,
-            subCategory: 'Filter',
+            subCategory: properties.subCategory ?? 'Filter',
         } as AdditionalEventProperties);
     }
 
