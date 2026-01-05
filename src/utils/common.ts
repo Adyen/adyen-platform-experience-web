@@ -5,8 +5,8 @@ type _BoundFn<T, Args extends any[]> = Args extends []
         ? (thisValue: ThisType, ...args: RestArgs) => ReturnType
         : never
     : T extends (this: Args[0], ...args: [...ListWithoutFirst<Args>, ...infer RestArgs]) => infer ReturnType
-    ? (...args: RestArgs) => ReturnType
-    : never;
+      ? (...args: RestArgs) => ReturnType
+      : never;
 
 export const fn: <T, Args extends any[]>(func: T, ...args: Args) => _BoundFn<T, Args> = Function.prototype.bind.bind(Function.prototype.call);
 
@@ -19,6 +19,10 @@ export const noop = () => {};
 
 export const panic = (reason?: any) => {
     throw reason;
+};
+
+export const unreachable = (value: never): never => {
+    throw new Error(`Unreachable code with value: ${value}`);
 };
 
 const _toString = fn(Object.prototype.toString);

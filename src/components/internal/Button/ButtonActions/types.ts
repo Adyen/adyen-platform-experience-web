@@ -11,6 +11,7 @@ export interface ButtonActionObject {
     classNames?: string[];
     iconLeft?: VNode<Element>;
     iconRight?: VNode<Element>;
+    ariaLabel?: string;
 }
 
 export type ButtonActionsList = ButtonActionObject[] | readonly ButtonActionObject[];

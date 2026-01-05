@@ -4,15 +4,21 @@ import useAnalyticsContext from '../../core/Context/analytics/useAnalyticsContex
 
 export interface UseFilterAnalyticsEventProps {
     category?: string;
+    subCategory?: string;
     label?: FilterType;
 }
 
-const useFilterAnalyticsEvent = ({ category, label }: UseFilterAnalyticsEventProps) => {
+const useFilterAnalyticsEvent = ({ category, label, subCategory }: UseFilterAnalyticsEventProps) => {
     const analytics = useAnalyticsContext();
 
     const logEvent = useMemo(() => {
         if (category && label) {
-            const defaultPayload = { actionType: 'reset', category, label } as const;
+            const defaultPayload = {
+                ...(subCategory && { subCategory }),
+                actionType: 'reset',
+                category,
+                label,
+            } as const;
 
             return (actionType: 'reset' | 'update', value?: MixpanelProperty) => {
                 try {
@@ -25,7 +31,7 @@ const useFilterAnalyticsEvent = ({ category, label }: UseFilterAnalyticsEventPro
                 }
             };
         }
-    }, [analytics, category, label]);
+    }, [analytics, category, label, subCategory]);
 
     return { logEvent } as const;
 };
