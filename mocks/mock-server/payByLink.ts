@@ -18,6 +18,8 @@ import {
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 
+const DELAY_TIME = 300;
+
 export const PAY_BY_LINK_ERRORS = {
     // (Invalid ID)
     INVALID_ID: new AdyenPlatformExperienceError(
@@ -70,7 +72,7 @@ const getStoreForRequestPathParams = (params: PathParams) => {
 
 const getErrorHandler = (error: any, status = 500) => {
     return async () => {
-        await delay(300);
+        await delay(DELAY_TIME);
         return HttpResponse.json({ ...error, status, detail: 'detail' }, { status });
     };
 };
@@ -82,7 +84,7 @@ export const PayByLinkOverviewMockedResponses = {
     emptyList: {
         handlers: [
             http.get(mockEndpointsPBL.paymentLinks, async () => {
-                await delay(300);
+                await delay(DELAY_TIME);
                 return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
             }),
         ],
@@ -96,7 +98,7 @@ export const PayByLinkOverviewMockedResponses = {
     storesMisconfiguration: {
         handlers: [
             http.get(mockEndpoints.stores, async () => {
-                await delay(300);
+                await delay(DELAY_TIME);
                 return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
             }),
         ],
@@ -116,7 +118,7 @@ export const PaymentLinkCreationMockedResponses = {
     submitNetworkError: {
         handlers: [
             http.post(mockEndpoints.payByLink.paymentLinks, async () => {
-                await delay(300);
+                await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
         ],
@@ -124,7 +126,7 @@ export const PaymentLinkCreationMockedResponses = {
     submitInvalidFields: {
         handlers: [
             http.post(mockEndpoints.payByLink.paymentLinks, async () => {
-                await delay(300);
+                await delay(DELAY_TIME);
                 return HttpResponse.json(PAY_BY_LINK_ERRORS.INVALID_FIELDS, { status: 422 });
             }),
         ],
@@ -132,7 +134,47 @@ export const PaymentLinkCreationMockedResponses = {
     configError: {
         handlers: [
             http.get(mockEndpointsPBL.configuration, async () => {
-                await delay(300);
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
+export const PaymentLinkThemesMockedResponses = {
+    themeError: {
+        handlers: [
+            http.get(mockEndpoints.payByLink.themes, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+
+    saveThemesError: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.themes, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
+export const PaymentLinkSettingsMockedResponses = {
+    termsAndConditionsError: {
+        handlers: [
+            http.get(mockEndpoints.payByLink.settings, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+
+    saveSettingsError: {
+        handlers: [
+            http.post(mockEndpoints.payByLink.settings, async () => {
+                await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
         ],
@@ -142,7 +184,7 @@ export const PaymentLinkCreationMockedResponses = {
 export const payByLinkMocks = [
     // GET /stores
     http.get(mockEndpoints.stores, async ({ request }) => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -165,7 +207,7 @@ export const payByLinkMocks = [
 
     // GET /paybylink/paymentLinks/{storeId}/configuration
     http.get(mockEndpointsPBL.configuration, async ({ params }) => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -182,7 +224,7 @@ export const payByLinkMocks = [
 
     // POST /paybylink/paymentLinks
     http.post(mockEndpointsPBL.paymentLinks, async () => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -199,7 +241,7 @@ export const payByLinkMocks = [
 
     // GET /currencies
     http.get(mockEndpointsPBL.currencies, async () => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -211,7 +253,7 @@ export const payByLinkMocks = [
 
     // GET /countries
     http.get(mockEndpointsPBL.countries, async () => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -223,7 +265,7 @@ export const payByLinkMocks = [
 
     // GET /paybylink/installments
     http.get(mockEndpointsPBL.installments, async () => {
-        await delay();
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -235,7 +277,7 @@ export const payByLinkMocks = [
 
     // GET /paybylink/settings/{storeId}
     http.get(mockEndpointsPBL.getPayByLinkSettings, async ({ params }) => {
-        await delay(500);
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -257,7 +299,7 @@ export const payByLinkMocks = [
     // GET /paybylink/themes/{storeId}
     http.get(mockEndpointsPBL.themes, async ({ params }) => {
         const store = getStoreForRequestPathParams(params);
-        await delay(500);
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -267,7 +309,7 @@ export const payByLinkMocks = [
 
     // POST /paybylink/themes/{storeId}
     http.post(mockEndpointsPBL.themes, async () => {
-        await delay(1000);
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -278,7 +320,7 @@ export const payByLinkMocks = [
     // POST /paybylink/settings/{storeId}
     http.post(mockEndpointsPBL.settings, async ({ request }) => {
         const body = await request.clone().json();
-        await delay(1000);
+        await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
         }
@@ -291,7 +333,7 @@ export const payByLinkMocks = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(DELAY_TIME);
 
         const paymentLinkDetails = getPaymentLinkDetails(params.id as string);
 
@@ -307,7 +349,7 @@ export const payByLinkMocks = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(DELAY_TIME);
 
         try {
             expirePaymentLink(params.id as string);
@@ -325,7 +367,7 @@ export const payByLinkMocks = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(DELAY_TIME);
 
         const url = new URL(request.url);
         const paymentLinkId = url.searchParams.get('paymentLinkId');
@@ -372,7 +414,7 @@ export const payByLinkMocks = [
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(200);
+        await delay(DELAY_TIME);
 
         return HttpResponse.json(PAY_BY_LINK_FILTERS);
     }),
