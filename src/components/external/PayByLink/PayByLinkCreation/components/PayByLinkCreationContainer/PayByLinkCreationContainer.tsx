@@ -7,7 +7,7 @@ import { PaymentLinkDetails } from '../../../../PaymentLinkDetails/components/Pa
 
 type PayByLinkCreationState = 'Creation' | 'Success' | 'Details';
 
-const PayByLinkCreationContainer = (props: ExternalUIComponentProps<PayByLinkCreationComponentProps>) => {
+const PayByLinkCreationContainer = (props: ExternalUIComponentProps<PayByLinkCreationComponentProps> & { embeddedInOverview?: boolean }) => {
     const [state, setState] = useState<PayByLinkCreationState>('Creation');
     const [paymentLinkUrl, setPaymentLinkUrl] = useState<string>('');
     const [paymentLinkId, setPaymentLinkId] = useState<string>('');
