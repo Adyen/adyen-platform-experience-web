@@ -30,6 +30,7 @@ const PayByLinkSettings = ({
         setSelectedMenuItem,
         selectedStore,
         isLoadingStores,
+        isShowingRequirements,
         storesError,
         setSelectedStore,
         filteredStores,
@@ -95,7 +96,7 @@ const PayByLinkSettings = ({
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {contentVisible && !isLoadingContent && (
+                    {!isShowingRequirements && contentVisible && !isLoadingContent && (
                         <SettingsActionButtons
                             navigateBack={navigateBack ? navigateBack : undefined}
                             closeContent={isSmContainer ? closeContent : undefined}

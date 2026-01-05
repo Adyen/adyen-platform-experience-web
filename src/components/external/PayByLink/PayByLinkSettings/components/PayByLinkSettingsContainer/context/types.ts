@@ -38,8 +38,10 @@ export interface IPayByLinkSettingsContext {
     isSaving: boolean | undefined;
     isSaveError: boolean | undefined;
     isSaveSuccess: boolean | undefined;
+    isShowingRequirements: boolean;
     onSave: () => void;
     setIsSaveError: Dispatch<StateUpdater<boolean>>;
     setIsSaveSuccess: Dispatch<StateUpdater<boolean>>;
+    setIsShowingRequirements: Dispatch<StateUpdater<boolean>>;
     embeddedInOverview?: boolean;
 }

@@ -47,17 +47,17 @@ export const Checkbox = ({ checked, error, description, disabled, id, label, nam
                 ) : (
                     <Icon name="square" className={cx('adyen-pe-checkbox__icon', { 'adyen-pe-checkbox__icon--error': error })} />
                 )}
-            </label>
-            <div className="adyen-pe-checkbox__label-content">
-                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                    {label}
-                </Typography>
-                {description && (
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-pe-checkbox__description">
-                        {description}
+                <div className="adyen-pe-checkbox__label-content">
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                        {label}
                     </Typography>
-                )}
-            </div>
+                    {description && (
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-pe-checkbox__description">
+                            {description}
+                        </Typography>
+                    )}
+                </div>
+            </label>
         </div>
     );
 };
