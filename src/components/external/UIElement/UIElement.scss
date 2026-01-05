@@ -9,6 +9,18 @@
     width: 100%;
 }
 
+// stylelint-disable scss/selector-no-redundant-nesting-selector
+.adyen-pe-component,
+.adyen-pe-popover,
+.adyen-pe-tooltip {
+    &,
+    & *,
+    & *::before,
+    & *::after {
+        box-sizing: border-box;
+    }
+}
+
 .adyen-pe-component__container {
     background: style.token(color-background-primary);
     padding: var(--adyen-pe-content-padding);
