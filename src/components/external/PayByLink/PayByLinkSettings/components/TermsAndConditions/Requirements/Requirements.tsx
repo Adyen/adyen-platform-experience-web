@@ -75,7 +75,7 @@ export const Requirements = ({
     }
 
     return (
-        <Modal isOpen onClose={onGoBack} isDismissible={true} headerWithBorder={false} size={embeddedInOverview ? 'full-screen' : 'large'}>
+        <Modal isOpen onClose={onGoBack} isDismissible={true} headerWithBorder={false} size="large">
             {content}
         </Modal>
     );
