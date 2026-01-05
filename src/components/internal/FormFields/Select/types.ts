@@ -10,9 +10,9 @@ type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item'
     iconClassName?: HTMLAttributes<any>['className'];
 };
 
-export type SelectChangeEvent = {
+export type SelectChangeEvent<T = string> = {
     target: {
-        value: string;
+        value: T;
         name?: string;
     };
 };
@@ -43,7 +43,7 @@ export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 
     disableFocusTrap?: boolean;
     multiSelect?: boolean;
     name?: string;
-    onChange: (e: SelectChangeEvent) => void;
+    onChange: (e: SelectChangeEvent<T['id']>) => void;
     placeholder?: string;
     readonly?: boolean;
     renderButtonContent?: (data: { item?: T }) => VNode<any> | null;
