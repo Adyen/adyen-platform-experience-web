@@ -5,17 +5,17 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
 import usePayByLinkSettingsContext from '../PayByLinkSettingsContainer/context/context';
 import { useState, useEffect } from 'preact/hooks';
-import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
-import LoadingSkeleton from '../PayByLinkSettingsContainer/components/LoadingSkeleton/LoadingSkeleton';
-import SettingsError from '../PayByLinkSettingsContainer/components/SettingsError/SettingsError';
 import cx from 'classnames';
+import { isTermsAndConditionsData } from '../PayByLinkThemeContainer/types';
+import SettingsError from '../PayByLinkSettingsContainer/components/SettingsError/SettingsError';
+import LoadingSkeleton from '../PayByLinkSettingsContainer/components/LoadingSkeleton/LoadingSkeleton';
 
 const ERROR_MESSAGE_KEY = 'payByLink.settings.termsAndConditions.errors.couldNotLoad';
 
 const TermsAndConditionsContainer = () => {
     const { i18n } = useCoreContext();
-    const { savedData: termsAndConditionsData, isLoadingContent, termsAndConditionsError } = usePayByLinkSettingsContext();
+    const { savedData: termsAndConditionsData, isLoadingContent, termsAndConditionsError, isShowingRequirements } = usePayByLinkSettingsContext();
     const [initialData, setInitialData] = useState<IPayByLinkTermsAndConditions>();
 
     useEffect(() => {
