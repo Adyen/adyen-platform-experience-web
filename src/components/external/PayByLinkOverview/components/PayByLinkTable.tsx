@@ -81,6 +81,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     showPagination,
     paymentLinks,
     stores,
+    storeError,
     ...paginationProps
 }) => {
     const { i18n, getImageAsset } = useCoreContext();
@@ -146,7 +147,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const noStoresError = useMemo(() => {
-        if (stores?.length !== 0) return undefined;
+        if (stores?.length !== 0 || storeError) return undefined;
         return {
             message: 'No stores configured',
             name: 'Account misconfiguration',
@@ -154,7 +155,7 @@ export const PayByLinkTable: FC<PayByLinkTableProps> = ({
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
-    }, [stores]);
+    }, [stores, storeError]);
 
     const errorDisplay = useMemo(
         () => () => {
