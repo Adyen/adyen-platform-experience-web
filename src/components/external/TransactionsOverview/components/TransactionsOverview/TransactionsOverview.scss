@@ -32,6 +32,11 @@
         }
     }
 
+    &__filter-bar-small {
+        display: flex;
+        gap: style.token(spacer-020);
+    }
+
     &__summary {
         display: flex;
         flex-wrap: wrap-reverse;
