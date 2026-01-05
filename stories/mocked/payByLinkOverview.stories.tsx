@@ -90,8 +90,8 @@ export const StoreNetworkError: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
-export const FiltersNetworkError: ElementStory<typeof PayByLinkOverview> = {
-    name: 'Error - Filters Network Error',
+export const ErrorFiltersGeneric: ElementStory<typeof PayByLinkOverview> = {
+    name: 'Error - Filters - Generic',
     args: {
         mockedApi: true,
     },

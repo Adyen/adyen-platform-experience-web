@@ -6,7 +6,6 @@ import {
     DEFAULT_PAY_BY_LINK_STATUS_GROUP,
     EARLIEST_PAYMENT_LINK_DATE,
     FILTERS_ALERT_CONTAINER_CLASS,
-    FILTERS_ALERT_CONTAINER_MOBILE_CLASS,
     FILTERS_CONTAINER_CLASS,
     PAY_BY_LINK_STATUS_GROUPS_FILTER_MAPPING,
     PAY_BY_LINK_STATUS_GROUPS_TABS,
@@ -358,90 +357,104 @@ export const PayByLinkOverview = ({
                     />
                 )}
             </div>
-            {!isFiltersLoading && (
-                <div className={FILTERS_CONTAINER_CLASS}>
-                    <FilterBar {...filterBarState} ariaLabelKey="payByLink.overview.filters.label">
-                        {showStoreFilter && (
-                            <MultiSelectionFilter
-                                {...storesTypesFilter}
-                                isInvalid={!!storeError}
-                                readonly={!!storeError}
-                                placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
+            <>
+                {!isFiltersLoading && (
+                    <div className={FILTERS_CONTAINER_CLASS}>
+                        <FilterBar {...filterBarState} ariaLabelKey="payByLink.overview.filters.label">
+                            {showStoreFilter && (
+                                <MultiSelectionFilter
+                                    {...storesTypesFilter}
+                                    isInvalid={!!storeError}
+                                    readonly={!!storeError}
+                                    placeholder={i18n.get('payByLink.overview.filters.types.stores.label')}
+                                />
+                            )}
+                            <DateFilter
+                                canResetFilters={canResetFilters}
+                                defaultParams={defaultParams}
+                                filters={filters}
+                                sinceDate={sinceDate}
+                                nowTimestamp={nowTimestamp}
+                                refreshNowTimestamp={refreshNowTimestamp}
+                                updateFilters={updateFilters}
                             />
-                        )}
-                        <DateFilter
-                            canResetFilters={canResetFilters}
-                            defaultParams={defaultParams}
-                            filters={filters}
-                            sinceDate={sinceDate}
-                            nowTimestamp={nowTimestamp}
-                            refreshNowTimestamp={refreshNowTimestamp}
-                            updateFilters={updateFilters}
-                        />
-                        {showTypeFilter && (
-                            <MultiSelectionFilter
-                                {...linkTypesFilter}
-                                isInvalid={!!filterError}
-                                readonly={!!filterError}
-                                placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')}
-                            />
-                        )}
-                        {showStatusFilter && (
-                            <MultiSelectionFilter
-                                {...linkStatusFilter}
-                                isInvalid={!!filterError}
-                                readonly={!!filterError}
-                                placeholder={i18n.get('payByLink.overview.filters.types.status.label')}
-                            />
-                        )}
-                        <TextFilter
-                            name={i18n.get('payByLink.overview.filters.types.merchantReference.label')}
-                            label={
-                                filters[FilterParam.MERCHANT_REFERENCE]
-                                    ? filters[FilterParam.MERCHANT_REFERENCE]
-                                    : i18n.get('payByLink.overview.filters.types.merchantReference.label')
-                            }
-                            value={filters[FilterParam.MERCHANT_REFERENCE]}
-                            onChange={onMerchantReferenceFilterChange}
-                            containerSize={PopoverContainerSize.MEDIUM}
-                        ></TextFilter>
-                        <TextFilter
-                            name={i18n.get('payByLink.overview.filters.types.paymentLinkID.label')}
-                            label={
-                                filters[FilterParam.PAYMENT_LINK_ID]
-                                    ? filters[FilterParam.PAYMENT_LINK_ID]
-                                    : i18n.get('payByLink.overview.filters.types.paymentLinkID.label')
-                            }
-                            value={filters[FilterParam.PAYMENT_LINK_ID]}
-                            onChange={onPaymentLinkIDFilterChange}
-                            containerSize={PopoverContainerSize.MEDIUM}
-                        ></TextFilter>
-                        {showFiltersAlert && (
-                            <Alert
-                                className={cx(FILTERS_ALERT_CONTAINER_CLASS, { [FILTERS_ALERT_CONTAINER_MOBILE_CLASS]: isMobileContainer })}
-                                type={AlertTypeOption.CRITICAL}
-                                variant={AlertVariantOption.TIP}
-                                closeButton={true}
-                                onClose={closeFiltersAlert}
-                                description={i18n.get('payByLink.overview.filters.errors.networkError')}
-                            />
-                        )}
-                    </FilterBar>
-                    <div className={ACTION_BUTTONS_CONTAINER_CLASS}>
-                        <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
-                            {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
-                        </Button>
-                        <Button
-                            aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
-                            variant={ButtonVariant.SECONDARY}
-                            className={ACTION_BUTTON_CLASS}
-                            onClick={openSettingsModal}
-                        >
-                            <Icon name="cog" />
-                        </Button>
+                            {showTypeFilter && (
+                                <MultiSelectionFilter
+                                    {...linkTypesFilter}
+                                    isInvalid={!!filterError}
+                                    readonly={!!filterError}
+                                    placeholder={i18n.get('payByLink.overview.filters.types.linkTypes.label')}
+                                />
+                            )}
+                            {showStatusFilter && (
+                                <MultiSelectionFilter
+                                    {...linkStatusFilter}
+                                    isInvalid={!!filterError}
+                                    readonly={!!filterError}
+                                    placeholder={i18n.get('payByLink.overview.filters.types.status.label')}
+                                />
+                            )}
+                            <TextFilter
+                                name={i18n.get('payByLink.overview.filters.types.merchantReference.label')}
+                                label={
+                                    filters[FilterParam.MERCHANT_REFERENCE]
+                                        ? filters[FilterParam.MERCHANT_REFERENCE]
+                                        : i18n.get('payByLink.overview.filters.types.merchantReference.label')
+                                }
+                                value={filters[FilterParam.MERCHANT_REFERENCE]}
+                                onChange={onMerchantReferenceFilterChange}
+                                type={'text'}
+                                containerSize={PopoverContainerSize.MEDIUM}
+                            ></TextFilter>
+                            <TextFilter
+                                name={i18n.get('payByLink.overview.filters.types.paymentLinkID.label')}
+                                label={
+                                    filters[FilterParam.PAYMENT_LINK_ID]
+                                        ? filters[FilterParam.PAYMENT_LINK_ID]
+                                        : i18n.get('payByLink.overview.filters.types.paymentLinkID.label')
+                                }
+                                value={filters[FilterParam.PAYMENT_LINK_ID]}
+                                onChange={onPaymentLinkIDFilterChange}
+                                type={'text'}
+                                containerSize={PopoverContainerSize.MEDIUM}
+                            ></TextFilter>
+                            {isMobileContainer && showFiltersAlert && (
+                                <Alert
+                                    className={cx(FILTERS_ALERT_CONTAINER_CLASS)}
+                                    type={AlertTypeOption.CRITICAL}
+                                    variant={AlertVariantOption.TIP}
+                                    closeButton={true}
+                                    onClose={closeFiltersAlert}
+                                    description={i18n.get('payByLink.overview.filters.errors.networkError')}
+                                />
+                            )}
+                        </FilterBar>
+                        <div className={ACTION_BUTTONS_CONTAINER_CLASS}>
+                            <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
+                                {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
+                            </Button>
+                            <Button
+                                aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
+                                variant={ButtonVariant.SECONDARY}
+                                className={ACTION_BUTTON_CLASS}
+                                onClick={openSettingsModal}
+                            >
+                                <Icon name="cog" />
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+                {!isMobileContainer && showFiltersAlert && (
+                    <Alert
+                        className={cx(FILTERS_ALERT_CONTAINER_CLASS)}
+                        type={AlertTypeOption.CRITICAL}
+                        variant={AlertVariantOption.TIP}
+                        closeButton={true}
+                        onClose={closeFiltersAlert}
+                        description={i18n.get('payByLink.overview.filters.errors.networkError')}
+                    />
+                )}
+            </>
             <PaymentLinkDetailsModal
                 selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}
                 resetDetails={resetDetails}

@@ -51,21 +51,17 @@
     &__filters-alert-container {
         align-items: center;
         display: flex;
-        margin-top: style.token(spacer-040);
-        width: 500px;
+        max-width: 500px;
+        width: 100%;
 
         .adyen-pe-alert__content-container {
             align-items: center;
             display: flex;
         }
 
-        &--mobile {
-            width: 100%;
-
-            .adyen-pe-alert__description {
-                white-space: normal;
-                word-break: break-word;
-            }
+        .adyen-pe-alert__description {
+            white-space: normal;
+            word-break: break-word;
         }
     }
 }
