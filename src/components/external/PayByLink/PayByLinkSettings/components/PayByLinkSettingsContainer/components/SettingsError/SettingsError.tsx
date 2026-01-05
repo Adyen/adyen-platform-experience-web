@@ -1,7 +1,6 @@
 import AdyenPlatformExperienceError from '../../../../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../../../../translations';
 import { ErrorMessageDisplay } from '../../../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { AssetOptions } from '../../../../../../../../core/Assets/Assets';
 import getSettingsErrorMessage from '../../utils/getSettingsErrorMessage';
 
 const SettingsError = ({
@@ -22,7 +21,7 @@ const SettingsError = ({
         message,
         refreshComponent,
         translationValues,
-        onContactSupport: ContactSupport,
+        onContactSupport: contactSupport,
         images,
     } = getSettingsErrorMessage(error, errorMessage, onContactSupport);
 
@@ -38,7 +37,7 @@ const SettingsError = ({
             centered={centered ?? false}
             absolutePosition={absolutePosition ?? false}
             refreshComponent={refreshComponent}
-            onContactSupport={ContactSupport}
+            onContactSupport={contactSupport}
         />
     );
 };

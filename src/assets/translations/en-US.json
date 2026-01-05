@@ -895,7 +895,7 @@
     "payByLink.settings.termsAndConditions.alert.urlChange": "Your terms and conditions URL has changed, you need to confirm this again",
     "payByLink.settings.termsAndConditions.error.requirementsNotChecked": "You must confirm acceptance of the terms to continue",
     "payByLink.settings.termsAndConditions.error.urlValidation": "Please enter a valid URL.",
-    "payByLink.settings.termsAndConditions.errors.couldNotLoad": "We couldn’t load your payment links terms and conditions.",
+    "payByLink.settings.termsAndConditions.errors.couldNotLoad": "We couldn’t load your payment links terms and conditions URL.",
     "payByLink.settings.termsAndConditions.requirement.checkbox.part1": "I confirm that these Terms and Conditions meet %{requirements}",
     "payByLink.settings.termsAndConditions.requirement.checkbox.part2": "all requirements.",
     "payByLink.settings.termsAndConditions.subtitle": "In order to comply with the latest regulations, you'll need to complete the information below.",
