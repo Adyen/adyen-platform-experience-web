@@ -61,6 +61,9 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
         const target = evt.target as Element | null;
         if (focusIsWithin(root, target)) return;
 
+        // Only trap focus if it's moving from within this trap.
+        if (!focusIsWithin(root, evt.relatedTarget as Element | null)) return;
+
         if (interactionKeyPressed.current && lastInteractionKey.current === InteractionKeyCode.TAB) {
             const tabbables = tabbableRoot.tabbables;
             if (tabbables.length) {
