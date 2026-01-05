@@ -20,11 +20,20 @@
         }
     }
 
+    &__skeleton--aside {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    &__loading-content {
+        flex: 2 1 0;
+        min-width: 0;
+    }
+
     &__skeleton {
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-020);
-        width: 225px;
 
         &--content {
             background-color: transparent;

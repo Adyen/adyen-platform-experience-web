@@ -705,7 +705,7 @@
     "disputes.overview.ongoingAndClosed.limitSelect.a11y.label": "Disputes per page",
     "payByLink.common.fields.optional.label": "optional",
     "payByLink.common.linkType.open": "Open",
-    "payByLink.common.linkType.singleUse": "Single Use",
+    "payByLink.common.linkType.singleUse": "Single use",
     "payByLink.common.status.active": "Active",
     "payByLink.common.status.completed": "Completed",
     "payByLink.common.status.expired": "Expired",
