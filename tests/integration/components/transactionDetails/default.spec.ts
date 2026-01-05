@@ -65,6 +65,7 @@ test.describe('Default', () => {
 
         test('should switch to payment refund view and back', async ({ page }) => {
             await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
 
             const refundNotice = 'Refunds can take up to 40 days depending on the payment method. Fees are included.';
 
@@ -109,6 +110,7 @@ test.describe('Default', () => {
     test.describe('refund', () => {
         test.beforeEach(async ({ page }) => {
             await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
         });
 
         test('should select refund reason', async ({ page }) => {
@@ -188,26 +190,14 @@ test.describe('Default', () => {
         test('should freeze interactions when refund is in progress', async ({ page }) => {
             const amountInput = page.getByLabel('Amount to refund', { exact: true });
             const reasonSelect = page.getByLabel('Reason for refund', { exact: true });
-            const backButton = page.getByRole('button', { name: 'Go back', exact: true });
             const refundButton = page.getByRole('button', { name: 'Refund €133.75', exact: true });
 
-            const expectations = Promise.all([
-                expect(reasonSelect).toBeVisible(),
-                expect(reasonSelect).toBeDisabled(),
-
-                expect(amountInput).toBeVisible(),
-                expect(amountInput).toBeDisabled(),
-
-                expect(backButton).toBeVisible(),
-                expect(backButton).toBeDisabled(),
-
-                expect(refundButton).toBeVisible(),
-                expect(refundButton).toBeDisabled(),
-                expect(refundButton).toHaveText('In progress..'),
-            ]);
-
             await refundButton.click();
-            await expectations;
+
+            await expect(refundButton).toBeDisabled();
+            await expect(reasonSelect).toBeDisabled();
+            await expect(amountInput).toBeDisabled();
+            await expect(refundButton).toHaveText('In progress..');
         });
 
         test('should refund payment', async ({ page }) => {

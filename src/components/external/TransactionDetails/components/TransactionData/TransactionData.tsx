@@ -78,7 +78,7 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
                 error &&
                 errorProps && (
                     <div className="adyen-pe-overview-details--error-container">
-                        <ErrorMessageDisplay withImage {...errorProps} />
+                        <ErrorMessageDisplay outlined={false} absolutePosition={false} withBackground={false} withImage {...errorProps} />
                     </div>
                 )
             )}
