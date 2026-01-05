@@ -42,18 +42,6 @@ export const EmptyList: ElementStory<typeof PayByLinkOverview> = {
     },
 };
 
-export const ErrorFiltersGeneric: ElementStory<typeof PayByLinkOverview> = {
-    name: 'Error - Filters - Generic',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: {
-            ...PayByLinkOverviewMockedResponses.filterError,
-        },
-    },
-};
-
 export const TooManyStores: ElementStory<typeof PayByLinkOverview> = {
     name: 'Error - Too Many Stores',
     args: {
