@@ -14,7 +14,7 @@ function FilterButton(props: FilterButtonProps, ref: ForwardedRef<HTMLButtonElem
     const classNameValue = useMemo(() => parseClassName('', className) || '', [className]);
     const disabledValue = useMemo(() => parseBooleanProp(disabled), [disabled]);
 
-    const { classes, click } = useButton(
+    const { allChildren, allProps, click } = useButton(
         classNameValue,
         classNameModifiers,
         DEFAULT_FILTER_BUTTON_CLASSNAME,
@@ -25,9 +25,9 @@ function FilterButton(props: FilterButtonProps, ref: ForwardedRef<HTMLButtonElem
     );
 
     return (
-        <button className={classes} ref={ref} onClick={click} {...restAttributes}>
+        <button ref={ref} onClick={click} {...allProps}>
             <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} stronger={true}>
-                {children}
+                {allChildren}
             </Typography>
         </button>
     );

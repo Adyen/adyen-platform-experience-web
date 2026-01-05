@@ -6,7 +6,6 @@ import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalIt
 import { ITransactionTotalWithKey, TotalsCardProps } from './types';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
 import { uniqueId } from '../../../../../utils';
-import './TransactionTotals.scss';
 
 export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...ariaAttributes }: TotalsCardProps) => {
     const { i18n } = useCoreContext();
@@ -15,13 +14,13 @@ export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...
 
     const localizedPlainCurrencyText = useMemo(() => i18n.get('transactions.overview.totals.currency.label'), [i18n]);
 
-    const [firstTotal, ...restOfTotals] = useMemo(() => {
-        return totals.map((t: Partial<ITransactionTotalWithKey>) => {
-            t['key'] = `${t.currency}-${Math.random()}`;
-            t['expensesElemId'] = uniqueId('elem');
-            t['incomingsElemId'] = uniqueId('elem');
-            return t as ITransactionTotalWithKey;
-        });
+    const [firstTotal, ...restOfTotals] = useMemo<Required<ITransactionTotalWithKey>[]>(() => {
+        return totals.map((t: ITransactionTotalWithKey) => ({
+            ...t,
+            key: t.currency,
+            expensesElemId: uniqueId('elem'),
+            incomingsElemId: uniqueId('elem'),
+        }));
     }, [totals]);
 
     const totalsListLabel = useMemo(() => {

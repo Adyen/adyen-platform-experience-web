@@ -16,6 +16,7 @@ export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
+    autoComplete?: 'off' | 'on';
     classNameModifiers?: string[];
     isInvalid?: boolean;
     isValid?: boolean;
