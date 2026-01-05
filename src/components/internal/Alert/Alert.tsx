@@ -9,6 +9,7 @@ import { AlertIcon } from './AlertIcon';
 import { AlertProps, AlertVariantOption } from './types';
 import './Alert.scss';
 
+//TODO: Revisit the closeButton prop which is adopted from Bento component
 export const Alert = ({
     className,
     description,
