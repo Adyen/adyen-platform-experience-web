@@ -6,7 +6,6 @@
     flex-direction: column;
     justify-content: center;
     justify-self: center;
-    max-width: 600px;
     padding: style.token(spacer-100);
     text-align: center;
 
@@ -24,6 +23,7 @@
     &__description {
         color: style.token(color-label-secondary);
         margin-bottom: style.token(spacer-100);
+        max-width: 600px;
     }
 
     &__actions {
