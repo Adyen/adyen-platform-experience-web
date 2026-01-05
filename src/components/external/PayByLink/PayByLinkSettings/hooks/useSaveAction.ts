@@ -38,7 +38,7 @@ export const useSaveAction = (
                 navigateBack();
             }, 500);
         } else {
-            setIsSaving(true);
+            setIsSaving(false);
         }
     }, [navigateBack, setIsSaving]);
 
