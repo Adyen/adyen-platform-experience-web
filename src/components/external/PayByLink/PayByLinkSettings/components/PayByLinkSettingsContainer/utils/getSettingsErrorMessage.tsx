@@ -23,10 +23,8 @@ const getSettingsErrorMessage = (
                 title: 'common.errors.somethingWentWrong',
                 message: ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport'],
                 translationValues,
-                onContactSupport,
             };
         case '00_500':
-        case undefined:
             return {
                 title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
@@ -38,7 +36,6 @@ const getSettingsErrorMessage = (
                 title: 'common.errors.somethingWentWrong',
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues,
-                onContactSupport,
                 refreshComponent: true,
             };
     }

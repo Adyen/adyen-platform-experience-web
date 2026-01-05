@@ -16,14 +16,7 @@ const SettingsError = ({
     absolutePosition?: boolean;
     onContactSupport?: () => void;
 }) => {
-    const {
-        title,
-        message,
-        refreshComponent,
-        translationValues,
-        onContactSupport: contactSupport,
-        images,
-    } = getSettingsErrorMessage(error, errorMessage, onContactSupport);
+    const { title, message, refreshComponent, translationValues, images } = getSettingsErrorMessage(error, errorMessage, onContactSupport);
 
     return (
         <ErrorMessageDisplay
@@ -37,7 +30,7 @@ const SettingsError = ({
             centered={centered ?? false}
             absolutePosition={absolutePosition ?? false}
             refreshComponent={refreshComponent}
-            onContactSupport={contactSupport}
+            onContactSupport={onContactSupport}
         />
     );
 };
