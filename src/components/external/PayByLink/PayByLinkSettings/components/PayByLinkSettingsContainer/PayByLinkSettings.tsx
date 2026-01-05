@@ -96,7 +96,7 @@ const PayByLinkSettings = ({
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {!isShowingRequirements && contentVisible && !isLoadingContent && (
+                    {!isShowingRequirements && contentVisible && (
                         <SettingsActionButtons
                             navigateBack={navigateBack ? navigateBack : undefined}
                             closeContent={isSmContainer ? closeContent : undefined}

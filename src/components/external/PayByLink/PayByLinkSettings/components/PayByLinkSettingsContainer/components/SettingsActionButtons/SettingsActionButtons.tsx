@@ -11,28 +11,29 @@ import cx from 'classnames';
 
 const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
-    const { onSave, isSaving } = usePayByLinkSettingsContext();
+    const { onSave, isSaving, isLoadingContent } = usePayByLinkSettingsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const saveButton = useMemo(() => {
         return {
-            disabled: boolOrFalse(isSaving),
+            disabled: boolOrFalse(isSaving || isLoadingContent),
             event: onSave,
             title: i18n.get('payByLink.settings.common.action.save'),
             variant: ButtonVariant.PRIMARY,
             state: boolOrFalse(isSaving) ? 'loading' : 'default',
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [i18n, onSave, isSaving, isSmContainer]);
+    }, [i18n, onSave, isSaving, isSmContainer, isLoadingContent]);
 
     const goBackButton = useMemo(() => {
         return {
+            disabled: boolOrFalse(isLoadingContent),
             event: navigateBack ?? closeContent ?? noop,
             title: i18n.get('paymentLinks.common.actions.goBack'),
             variant: ButtonVariant.SECONDARY,
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [navigateBack, i18n, isSmContainer, closeContent]);
+    }, [navigateBack, i18n, isSmContainer, closeContent, isLoadingContent]);
 
     const buttonActions = useMemo(() => {
         if (!navigateBack && !closeContent) return [saveButton];
