@@ -21,7 +21,7 @@ const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: 
             event: onSave,
             iconLeft:
                 navigateBack && isSaveSuccess ? (
-                    <Icon className={'adyen-pe-pay-by-link-settings_save-success__cta-icon'} name={'checkmark'} />
+                    <Icon className={'adyen-pe-pay-by-link-settings-save-success__cta-icon'} name={'checkmark'} />
                 ) : undefined,
             title: i18n.get('payByLink.settings.common.action.save'),
             variant: ButtonVariant.PRIMARY,
