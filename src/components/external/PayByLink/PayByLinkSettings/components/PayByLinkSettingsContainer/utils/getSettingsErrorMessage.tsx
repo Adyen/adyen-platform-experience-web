@@ -7,8 +7,7 @@ import CopyText from '../../../../../../internal/CopyText/CopyText';
 const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
     errorMessage: TranslationKey,
-    onContactSupport?: () => void,
-    getImageAsset?: (props: AssetOptions) => string
+    onContactSupport?: () => void
 ): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
 
