@@ -3,6 +3,7 @@ import { useFetch } from './useFetch';
 import { EMPTY_OBJECT } from '../utils';
 import { useMemo } from 'preact/hooks';
 import { useStores } from './useStores';
+import AdyenPlatformExperienceError from '../core/Errors/AdyenPlatformExperienceError';
 
 const usePayByLinkFilters = (storeIds?: string | string[], enabled?: boolean) => {
     const { payByLinkFilters: getPayByLinkFiltersEndpointCall } = useConfigContext().endpoints;
@@ -30,8 +31,8 @@ const usePayByLinkFilters = (storeIds?: string | string[], enabled?: boolean) =>
         filters,
         stores,
         isFetching,
-        filterError,
-        storeError,
+        filterError: filterError as AdyenPlatformExperienceError,
+        storeError: storeError as AdyenPlatformExperienceError,
     } as const;
 };
 
