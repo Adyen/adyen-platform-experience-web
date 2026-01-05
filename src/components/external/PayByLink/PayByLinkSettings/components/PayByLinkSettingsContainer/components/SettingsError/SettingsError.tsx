@@ -8,7 +8,6 @@ const SettingsError = ({
     error,
     errorMessage,
     onContactSupport,
-    getImageAsset,
     centered,
     absolutePosition,
 }: {
@@ -17,7 +16,6 @@ const SettingsError = ({
     centered?: boolean;
     absolutePosition?: boolean;
     onContactSupport?: () => void;
-    getImageAsset?: (props: AssetOptions) => string;
 }) => {
     const {
         title,
@@ -26,7 +24,7 @@ const SettingsError = ({
         translationValues,
         onContactSupport: ContactSupport,
         images,
-    } = getSettingsErrorMessage(error, errorMessage, onContactSupport, getImageAsset);
+    } = getSettingsErrorMessage(error, errorMessage, onContactSupport);
 
     return (
         <ErrorMessageDisplay

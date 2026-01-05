@@ -1,6 +1,5 @@
 import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../../../translations';
-import { AssetOptions } from '../../../../../../../core/Assets/Assets';
 import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../../utils/getCommonErrorCode';
 import CopyText from '../../../../../../internal/CopyText/CopyText';
 
