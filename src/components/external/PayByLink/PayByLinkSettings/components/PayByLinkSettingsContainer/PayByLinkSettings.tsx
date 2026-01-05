@@ -1,5 +1,4 @@
 import { SecondaryNav } from '../../../../../internal/SecondaryNav';
-import { PayByLinkSettingsComponentProps } from '../../../../../types';
 import {
     CONTAINER_CLASS_NAME,
     SIDEBAR_CONTAINER_CLASS_NAME,
@@ -7,19 +6,25 @@ import {
     CONTENT_CONTAINER_CLASS_NAME,
     CONTENT_CONTAINER_MOBILE_CLASS_NAME,
 } from './constants';
+import { type ExternalUIComponentProps, PayByLinkSettingsComponentProps } from '../../../../../types';
 import './PayByLinkSettingsContainer.scss';
 import { StoreSelector } from '../../../../../internal/StoreSelector';
 import { Header } from '../../../../../internal/Header';
 import { usePayByLinkSettingsContext } from './context/context';
 import PayByLinkSettingsContent from './components/PayByLinkSettingsContent/PayByLinkSettingsContent';
-import SaveAction from './components/SaveAction';
+import SettingsActionButtons from './components/SettingsActionButtons/SettingsActionButtons';
 import { MenuItemType } from './context/types';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
 import cx from 'classnames';
 import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
 
-const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, 'storeIds'>) => {
+const PayByLinkSettings = ({
+    navigateBack,
+    ...props
+}: ExternalUIComponentProps<PayByLinkSettingsComponentProps> & {
+    navigateBack?: () => void;
+}) => {
     const {
         activeMenuItem,
         setSelectedMenuItem,
@@ -32,8 +37,14 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
         menuItems,
         isLoadingContent,
     } = usePayByLinkSettingsContext();
+
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-    const [contentVisible, setContentVisible] = useState(!isSmContainer);
+    const [contentVisible, setContentVisible] = useState(false);
+
+    useEffect(() => {
+        const visibility = Boolean(!isSmContainer || (isSmContainer && menuItems && menuItems?.length === 1));
+        setContentVisible(visibility);
+    }, [isSmContainer, menuItems]);
 
     const onContentVisibilityChange = useCallback(
         (contentVisible: boolean) => {
@@ -42,7 +53,12 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
         [setContentVisible]
     );
 
-    if ((!activeMenuItem && !isSmContainer) || (!isLoadingStores && !selectedStore) || !menuItems || menuItems.length === 0) return null;
+    const closeContent = useCallback(() => {
+        if (!isSmContainer) return;
+        setContentVisible(false);
+    }, [isSmContainer]);
+
+    if (!menuItems || menuItems.length === 0) return null;
 
     //TODO: Add store error once it is merged
     return (
@@ -63,6 +79,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                                             setSelectedStoreId={setSelectedStore}
                                         />
                                     )}
+                                    contentVisible={contentVisible}
                                     loading={isLoadingStores}
                                     className={SECONDARY_NAV_CLASS_NAME}
                                     items={menuItems}
@@ -79,7 +96,12 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {!isShowingRequirements && !isLoadingStores && contentVisible && !isLoadingContent && <SaveAction />}
+                    {!isShowingRequirements && contentVisible && !isLoadingContent && (
+                        <SettingsActionButtons
+                            navigateBack={navigateBack ? navigateBack : undefined}
+                            closeContent={isSmContainer ? closeContent : undefined}
+                        />
+                    )}
                 </>
             )}
         </div>

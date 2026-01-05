@@ -66,6 +66,7 @@ export const PayByLinkCreationFormContainer = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
+    const selectedStoreNavigationCache = useRef<string>('');
     const { i18n } = useCoreContext();
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -87,7 +88,11 @@ export const PayByLinkCreationFormContainer = ({
         isDataLoading,
         isFirstLoadDone,
         selectedStore,
-    } = usePayByLinkFormData({ defaultValues: fieldsConfig?.data, storeIds });
+        setSelectedStore,
+    } = usePayByLinkFormData({
+        defaultValues: fieldsConfig?.data,
+        storeIds,
+    });
 
     const { isLastStep, isFirstStep, currentStep, validateStep, canGoNext, isStepComplete, nextStep, previousStep, goToStep } = wizardForm;
     const [showTermsAndConditions, setShowTermsAndConditions] = useState<boolean>(false);
@@ -163,8 +168,10 @@ export const PayByLinkCreationFormContainer = ({
     };
 
     const navigateBackFromTermsAndConditions = useCallback(() => {
+        setSelectedStore(selectedStoreNavigationCache.current);
         setShowTermsAndConditions(false);
-    }, []);
+        selectedStoreNavigationCache.current = '';
+    }, [setShowTermsAndConditions, setSelectedStore]);
 
     const onError = (errors: any) => {
         console.log(errors);
@@ -213,6 +220,12 @@ export const PayByLinkCreationFormContainer = ({
         },
         [i18n, invalidFieldsConfig]
     );
+
+    const onNavigateToTermsAndConditions = useCallback(() => {
+        selectedStoreNavigationCache.current = selectedStore;
+        setSelectedStore('');
+        setShowTermsAndConditions(true);
+    }, [selectedStore, setSelectedStore, setShowTermsAndConditions]);
 
     const getSubmitErrorLabel = useCallback(
         (error: Error | AdyenErrorResponse | null) => {
@@ -273,7 +286,8 @@ export const PayByLinkCreationFormContainer = ({
     if (showTermsAndConditions) {
         return (
             <PayByLinkSettingsContainer
-                storeIds={selectedStore}
+                hideTitle={true}
+                storeIds={selectedStoreNavigationCache.current}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}
                 embeddedInOverview={embeddedInOverview}
@@ -310,7 +324,7 @@ export const PayByLinkCreationFormContainer = ({
                     >
                         <div>
                             <FormStepRenderer
-                                setShowTermsAndConditions={setShowTermsAndConditions}
+                                setShowTermsAndConditions={onNavigateToTermsAndConditions}
                                 currentFormStep={currentFormStep}
                                 settingsData={settingsData}
                                 storeIds={storeIds}

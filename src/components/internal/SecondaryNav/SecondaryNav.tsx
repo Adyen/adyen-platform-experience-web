@@ -2,7 +2,7 @@ import './SecondaryNav.scss';
 import cx from 'classnames';
 import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback } from 'preact/hooks';
 import { VNode } from 'preact';
 import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
@@ -20,6 +20,7 @@ interface SecondaryNavProps<T> {
     renderHeader: () => VNode<any>;
     onContentVisibilityChange: (contentVisible: boolean) => void;
     loading?: boolean;
+    contentVisible?: boolean;
 }
 
 export interface SecondaryNavItem<T extends string = string> {
@@ -44,26 +45,24 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
     loading,
     onContentVisibilityChange,
     renderContent,
+    contentVisible,
     renderLoadingContent,
 }: SecondaryNavProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-    const [contentOpen, setContentOpen] = useState(!isSmContainer);
 
     const onClick = useCallback(
         (item: T) => {
             onValueChange(item);
             if (isSmContainer) {
                 onContentVisibilityChange(true);
-                setContentOpen(true);
             }
         },
-        [isSmContainer, onValueChange, onContentVisibilityChange, setContentOpen]
+        [isSmContainer, onValueChange, onContentVisibilityChange]
     );
 
     const handleDismiss = useCallback(() => {
-        setContentOpen(false);
         onContentVisibilityChange(false);
-    }, [onContentVisibilityChange, setContentOpen]);
+    }, [onContentVisibilityChange]);
 
     if (loading) {
         return !isSmContainer ? (
@@ -86,11 +85,8 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className, { 'adyen-pe-secondary-nav--mobile': isSmContainer })}>
-            {isSmContainer && contentOpen && (
+            {isSmContainer && contentVisible && (
                 <div className={cx({ 'adyen-pe-secondary-nav__close-content--mobile': isSmContainer })}>
-                    <Button onClick={handleDismiss} variant={ButtonVariant.TERTIARY} iconButton style={{ transform: 'rotate(180deg)' }}>
-                        <Icon name="arrow-right" />
-                    </Button>
                     <Button
                         onClick={handleDismiss}
                         variant={ButtonVariant.TERTIARY}
@@ -103,7 +99,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                 </div>
             )}
             <div className={cx('adyen-pe-secondary-nav__container', { 'adyen-pe-secondary-nav__container-mobile': isSmContainer })}>
-                {(!contentOpen || !isSmContainer) && (
+                {(!contentVisible || !isSmContainer) && (
                     <aside className={cx('adyen-pe-secondary-nav--sidebar', { 'adyen-pe-secondary-nav--sidebar-mobile': isSmContainer })}>
                         {renderHeader()}
                         <ul className="adyen-pe-secondary-nav__list">
@@ -133,7 +129,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                     </aside>
                 )}
                 {!isSmContainer && <Divider variant="vertical" />}
-                {contentOpen && activeValue && renderContent(activeValue)}
+                {contentVisible && activeValue && renderContent(activeValue)}
             </div>
         </div>
     );
