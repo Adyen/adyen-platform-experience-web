@@ -11,6 +11,7 @@ import PayByLinkSettingsContentLoading from '../PayByLinkSettingsContentLoading/
 type PayByLinkSettingsContentProps = {
     activeMenuItem: string | null;
     isLoadingContent: boolean;
+    navigateBack?: () => void;
 };
 
 const PayByLinkSettingsContentItem = ({ activeMenuItem, isLoadingContent }: PayByLinkSettingsContentProps) => {
@@ -27,7 +28,7 @@ const PayByLinkSettingsContentItem = ({ activeMenuItem, isLoadingContent }: PayB
     }
 };
 
-const PayByLinkSettingsContent = ({ activeMenuItem, isLoadingContent }: PayByLinkSettingsContentProps) => {
+const PayByLinkSettingsContent = ({ activeMenuItem, isLoadingContent, navigateBack }: PayByLinkSettingsContentProps) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const { i18n } = useCoreContext();
     const { isSaveSuccess, isSaveError, setIsSaveSuccess, setIsSaveError } = usePayByLinkSettingsContext();
@@ -35,7 +36,7 @@ const PayByLinkSettingsContent = ({ activeMenuItem, isLoadingContent }: PayByLin
     return (
         <div className={isSmContainer ? 'adyen-pe-pay-by-link-settings__content-item--mobile' : 'adyen-pe-pay-by-link-settings__content-item'}>
             <PayByLinkSettingsContentItem activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
-            {isSaveSuccess && (
+            {isSaveSuccess && !navigateBack && (
                 <Alert
                     type={AlertTypeOption.SUCCESS}
                     onClose={() => setIsSaveSuccess(false)}

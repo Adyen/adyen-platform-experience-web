@@ -32,4 +32,8 @@
             justify-content: center;
         }
     }
+
+    &_save-success__cta-icon {
+        margin-right: style.token(spacer-020);
+    }
 }

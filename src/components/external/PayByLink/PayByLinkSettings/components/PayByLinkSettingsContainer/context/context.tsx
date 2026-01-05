@@ -45,7 +45,13 @@ export const PayByLinkSettingsProvider = memo(
         selectedMenuItems,
         storeIds,
         embeddedInOverview,
-    }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[]; embeddedInOverview?: boolean }>) => {
+        navigateBack,
+    }: PropsWithChildren<{
+        selectedMenuItems: MenuItemType[];
+        storeIds?: string | string[];
+        embeddedInOverview?: boolean;
+        navigateBack?: () => void;
+    }>) => {
         const [isShowingRequirements, setIsShowingRequirements] = useState(false);
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
@@ -86,7 +92,8 @@ export const PayByLinkSettingsProvider = memo(
             getIsValid,
             setSaveActionCalled,
             setSavedData,
-            setPayload
+            setPayload,
+            navigateBack
         );
 
         const [fetchThemeEnabled, setFetchThemeEnabled] = useState<boolean>(false);

@@ -30,7 +30,12 @@ const PayByLinkSettingsContainer = ({
     }, [i18n, filteredMenuItems]);
 
     return (
-        <PayByLinkSettingsProvider embeddedInOverview={embeddedInOverview} selectedMenuItems={paymentLinkSettingsItem} storeIds={storeIds}>
+        <PayByLinkSettingsProvider
+            embeddedInOverview={embeddedInOverview}
+            selectedMenuItems={paymentLinkSettingsItem}
+            storeIds={storeIds}
+            navigateBack={props?.navigateBack}
+        >
             <PayByLinkSettings {...props} />
         </PayByLinkSettingsProvider>
     );
