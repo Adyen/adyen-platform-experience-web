@@ -25,6 +25,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
         setSelectedMenuItem,
         selectedStore,
         isLoadingStores,
+        isShowingRequirements,
         storesError,
         setSelectedStore,
         filteredStores,
@@ -78,7 +79,7 @@ const PayByLinkSettings = ({ ...props }: Omit<PayByLinkSettingsComponentProps, '
                             <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
                         )}
                     </div>
-                    {!isLoadingStores && contentVisible && !isLoadingContent && <SaveAction />}
+                    {!isShowingRequirements && !isLoadingStores && contentVisible && !isLoadingContent && <SaveAction />}
                 </>
             )}
         </div>

@@ -73,6 +73,7 @@ export const PayByLinkOverviewModal = ({
                         onPaymentLinkCreated={onPaymentLinkCreated}
                         storeIds={storeIds}
                         onContactSupport={onContactSupport}
+                        embeddedInOverview
                     />
                 ) : null}
                 {modalType === 'Settings' ? (

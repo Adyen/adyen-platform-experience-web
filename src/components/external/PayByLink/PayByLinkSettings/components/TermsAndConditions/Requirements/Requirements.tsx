@@ -6,15 +6,18 @@ import { useTermsRequirementsConfig } from './useTermsRequirementsConfig';
 import './Requirements.scss';
 import Button from '../../../../../../internal/Button';
 import { ButtonVariant } from '../../../../../../internal/Button/types';
+import Modal from '../../../../../../internal/Modal';
 
 export const Requirements = ({
     onGoBack,
     acceptRequirements,
     termsAndConditionsURL,
+    embeddedInOverview = false,
 }: {
     onGoBack: () => void;
     acceptRequirements: () => void;
     termsAndConditionsURL?: string;
+    embeddedInOverview?: boolean;
 }) => {
     const { termsRequirementsConfig, getTermsRequirementsConfig } = useTermsRequirementsConfig();
     const { i18n } = useCoreContext();
@@ -28,7 +31,7 @@ export const Requirements = ({
         void getTermsRequirementsConfig();
     }, [getTermsRequirementsConfig]);
 
-    return (
+    const content = (
         <div className="adyen-pe-pay-by-link-requirements">
             <Typography variant={TypographyVariant.SUBTITLE} stronger>
                 {i18n.get(termsRequirementsConfig.titleKey)}
@@ -65,5 +68,15 @@ export const Requirements = ({
                 )}
             </div>
         </div>
+    );
+
+    if (embeddedInOverview) {
+        return content;
+    }
+
+    return (
+        <Modal isOpen onClose={onGoBack} isDismissible={true} headerWithBorder={false} size={embeddedInOverview ? 'full-screen' : 'large'}>
+            {content}
+        </Modal>
     );
 };

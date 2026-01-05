@@ -34,6 +34,7 @@ type PayByLinkCreationFormContainerProps = {
     onPaymentLinkCreated?: (data: PBLFormValues & { paymentLink: SuccessResponse<'createPBLPaymentLink'> }) => void;
     storeIds?: StoreIds;
     onContactSupport?: () => void;
+    embeddedInOverview?: boolean;
 };
 
 const LoadingSkeleton = () => (
@@ -60,6 +61,7 @@ export const PayByLinkCreationFormContainer = ({
     onCreationDismiss,
     onPaymentLinkCreated,
     onContactSupport,
+    embeddedInOverview,
 }: PayByLinkCreationFormContainerProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
@@ -274,6 +276,7 @@ export const PayByLinkCreationFormContainer = ({
                 storeIds={selectedStore}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}
+                embeddedInOverview={embeddedInOverview}
             />
         );
     }

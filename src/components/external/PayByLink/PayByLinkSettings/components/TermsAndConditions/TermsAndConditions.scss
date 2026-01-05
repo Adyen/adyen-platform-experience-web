@@ -1,6 +1,15 @@
 @use '../../../../../../style';
 
 .adyen-pe-pay-by-link-settings-terms-and-conditions {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__content--hidden,
+    &__content-header--hidden {
+        display: none;
+    }
+
     &-disclaimer {
         color: style.token(color-label-secondary);
     }

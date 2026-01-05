@@ -30,9 +30,11 @@ export const PayByLinkSettingsContext = createContext<IPayByLinkSettingsContext>
     isSaveError: undefined,
     isSaveSuccess: undefined,
     isSaving: undefined,
+    isShowingRequirements: false,
     onSave: noop,
     setIsSaveError: noop,
     setIsSaveSuccess: noop,
+    setIsShowingRequirements: noop,
     isLoadingStores: false,
     storesError: undefined,
 });
@@ -44,6 +46,7 @@ export const PayByLinkSettingsProvider = memo(
         storeIds,
         embeddedInOverview,
     }: PropsWithChildren<{ selectedMenuItems: MenuItemType[]; storeIds?: string | string[]; embeddedInOverview?: boolean }>) => {
+        const [isShowingRequirements, setIsShowingRequirements] = useState(false);
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -198,6 +201,8 @@ export const PayByLinkSettingsProvider = memo(
                     isSaveError,
                     isSaveSuccess,
                     isSaving,
+                    isShowingRequirements,
+                    setIsShowingRequirements,
                     setIsSaveError,
                     setIsSaveSuccess,
                     onSave: onSave,
