@@ -1,9 +1,36 @@
 @use '../../../../internal/DataOverviewDisplay/styles' as *;
 @use '../../../../../style/breakpoints' as breakpoints;
 @use '../../../../../style';
+@use '../../../../mixins';
 
 .adyen-pe-transactions-overview {
     @include adyen-pe-data-overview;
+
+    &--xs {
+        @include mixins.adyen-pe-error-message-display-mobile-fix {
+            .adyen-pe-data-grid__table-wrapper {
+                overflow: hidden;
+                position: relative;
+            }
+        }
+
+        .adyen-pe-header {
+            align-items: center;
+        }
+
+        .adyen-pe-data-grid__cell {
+            padding-bottom: style.token(spacer-060);
+            padding-top: style.token(spacer-060);
+        }
+
+        .adyen-pe-segmented-control {
+            width: 100%;
+        }
+
+        .adyen-pe-segmented-control__item {
+            flex: 1 0 0;
+        }
+    }
 
     &__summary {
         display: flex;
@@ -18,5 +45,21 @@
         @include breakpoints.adyen-pe-screen-md-and-up {
             flex-grow: unset;
         }
+    }
+
+    .adyen-pe-segmented-control {
+        --vertical-offset: calc(#{style.token(spacer-030)} * -1);
+        margin-bottom: var(--vertical-offset);
+        margin-top: var(--vertical-offset);
+    }
+
+    .adyen-pe-segmented-content-container {
+        display: contents;
+    }
+
+    &__toolbar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
     }
 }

@@ -18,7 +18,7 @@ type CopyTextProps = {
     visibleText?: string | ReactNode;
     onCopyText?: () => void;
     stronger?: boolean;
-} & HTMLProps<HTMLSpanElement>;
+} & Omit<HTMLProps<HTMLSpanElement>, 'type'>;
 
 const BASE_CLASSNAME = 'adyen-pe-copy-text';
 

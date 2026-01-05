@@ -356,7 +356,7 @@ export const PayByLinkCreationFormContainer = ({
                         {accountIsMisconfigured && (
                             <Alert
                                 type={AlertTypeOption.WARNING}
-                                title={i18n.get('payByLink.overview.errors.accountConfiguration')}
+                                title={i18n.get('payByLink.common.errors.accountConfiguration')}
                                 description={
                                     <div className="adyen-pe-pay-by-link-creation-form__warning-alert">
                                         <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>

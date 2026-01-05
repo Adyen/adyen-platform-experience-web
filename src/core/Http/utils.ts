@@ -1,4 +1,5 @@
 import { isNullish } from '../../utils';
+import { API_VERSION } from './constants';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError, { InvalidField } from '../Errors/AdyenPlatformExperienceError';
 
@@ -31,6 +32,11 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
         default:
             return ErrorTypes.HTTP_ERROR;
     }
+};
+
+export const getApiVersion = (options: HttpOptions) => {
+    const [, version] = String(options.apiVersion).match(/^v?([1-9]\d*)$/i) ?? [];
+    return version ? `v${version}` : API_VERSION;
 };
 
 export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];
