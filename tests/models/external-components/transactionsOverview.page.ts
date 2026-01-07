@@ -3,6 +3,7 @@ import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
+import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../src/components/internal/DatePicker/components/TimeRangeSelector';
 
 export class TransactionsOverviewPage {
     private readonly _applyDateFilter;
@@ -21,7 +22,7 @@ export class TransactionsOverviewPage {
         const filterBar = new FilterBarPage(page, rootElementSelector);
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('common.filters.types.account.label'));
-        this.dateFilter = filterBar.getFilter(getTranslatedKey('common.filters.types.date.rangeSelect.options.last30Days'));
+        this.dateFilter = filterBar.getFilter(getTranslatedKey(TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS));
 
         this._applyDateFilter = applyDateFilter(page, {
             earliestDate: now => {

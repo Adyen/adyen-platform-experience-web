@@ -2,6 +2,7 @@ import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import {
     getTimeRangeSelectionDefaultPresetOptions,
+    TIME_RANGE_SELECTION_PRESET_OPTION_KEYS,
     TimeRangeOptions,
     UseTimeRangeSelectionConfig,
 } from '../components/internal/DatePicker/components/TimeRangeSelector';
@@ -16,9 +17,9 @@ const getDefaultFilterParams = (
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = timeRange
         ? (`common.filters.types.date.rangeSelect.options.${timeRange}` as const)
-        : 'common.filters.types.date.rangeSelect.options.last30Days';
+        : TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS;
 
-    const { from, to } = timeRangeOptions[defaultTimeRange];
+    const { from, to } = timeRangeOptions[defaultTimeRange]!;
 
     const defaultFilterParams = {
         ...(type === 'transactions' && {

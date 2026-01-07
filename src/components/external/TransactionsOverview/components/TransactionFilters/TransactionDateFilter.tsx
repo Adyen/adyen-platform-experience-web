@@ -12,6 +12,7 @@ import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../inter
 import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
 import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../../internal/DatePicker/components/TimeRangeSelector';
 
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
@@ -25,19 +26,19 @@ const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRan
     switch (dateRangeSelection) {
         case 'common.filters.types.date.rangeSelect.options.custom':
             return 'Custom';
-        case 'common.filters.types.date.rangeSelect.options.last7Days':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_7_DAYS:
             return 'Last 7 days';
-        case 'common.filters.types.date.rangeSelect.options.last30Days':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS:
             return 'Last 30 days';
-        case 'common.filters.types.date.rangeSelect.options.thisWeek':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_WEEK:
             return 'This week';
-        case 'common.filters.types.date.rangeSelect.options.lastWeek':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_WEEK:
             return 'Last week';
-        case 'common.filters.types.date.rangeSelect.options.thisMonth':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_MONTH:
             return 'This month';
-        case 'common.filters.types.date.rangeSelect.options.lastMonth':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_MONTH:
             return 'Last month';
-        case 'common.filters.types.date.rangeSelect.options.yearToDate':
+        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE:
             return 'Year to date';
         default:
             return unreachable(dateRangeSelection);
