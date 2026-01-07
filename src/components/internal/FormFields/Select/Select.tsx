@@ -111,19 +111,23 @@ const Select = <T extends SelectItem>({
         onChange({ target: { value, name } });
     }, [name, onChange, selection]);
 
+    const clearAndResetSelection = useCallback(() => {
+        resetSelection();
+        cachedSelectedItems.current = EMPTY_ARRAY;
+        onChange({ target: { value: '', name } });
+    }, [name, onChange, resetSelection]);
+
     useEffect(() => {
         switch (commitAction) {
             case CommitAction.APPLY:
                 commitSelection();
                 break;
             case CommitAction.CLEAR:
-                resetSelection();
                 clearSelectionInProgress.current = true;
-                cachedSelectedItems.current = EMPTY_ARRAY;
-                onChange({ target: { value: '', name } });
+                clearAndResetSelection();
                 break;
         }
-    }, [commitAction, commitSelection, name, onChange, resetSelection]);
+    }, [clearAndResetSelection, commitAction, commitSelection, name, onChange, resetSelection]);
 
     /**
      * Closes the select list and fires an onChange
@@ -422,11 +426,9 @@ const Select = <T extends SelectItem>({
         (e?: Event) => {
             e?.preventDefault?.();
             e?.stopPropagation?.();
-            resetSelection();
-            cachedSelectedItems.current = EMPTY_ARRAY;
-            onChange({ target: { value: '', name } });
+            clearAndResetSelection();
         },
-        [name, onChange, resetSelection]
+        [clearAndResetSelection]
     );
 
     return (
