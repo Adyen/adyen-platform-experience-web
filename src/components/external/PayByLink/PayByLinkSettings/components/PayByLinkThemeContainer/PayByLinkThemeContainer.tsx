@@ -33,7 +33,7 @@ const PayByLinkThemeContainer = () => {
     if (themeError) {
         return (
             <section className="adyen-pe-pay-by-link-theme">
-                <SettingsError error={themeError} errorMessage={ERROR_MESSAGE_KEY} centered={false} absolutePosition={false} />
+                <SettingsError error={themeError} errorMessage={ERROR_MESSAGE_KEY} />
             </section>
         );
     }

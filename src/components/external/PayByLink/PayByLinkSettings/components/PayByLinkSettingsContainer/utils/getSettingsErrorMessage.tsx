@@ -2,7 +2,6 @@ import AdyenPlatformExperienceError from '../../../../../../../core/Errors/Adyen
 import { TranslationKey } from '../../../../../../../translations';
 import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../../utils/getCommonErrorCode';
 import CopyText from '../../../../../../internal/CopyText/CopyText';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { AssetOptions } from '../../../../../../../core/Assets/Assets';
 
 const getSettingsErrorMessage = (
