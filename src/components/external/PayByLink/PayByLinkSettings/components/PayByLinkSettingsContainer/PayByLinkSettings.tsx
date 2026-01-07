@@ -127,13 +127,21 @@ const PayByLinkSettings = ({
                                     onValueChange={setSelectedMenuItem}
                                     onContentVisibilityChange={onContentVisibilityChange}
                                     renderContent={(activeMenuItem: string) => (
-                                        <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
+                                        <PayByLinkSettingsContent
+                                            activeMenuItem={activeMenuItem}
+                                            isLoadingContent={isLoadingContent}
+                                            navigateBack={navigateBack}
+                                        />
                                     )}
                                     renderLoadingContent={() => <LoadingSkeleton rowNumber={3} />}
                                 />
                             </div>
                         ) : (
-                            <PayByLinkSettingsContent activeMenuItem={activeMenuItem} isLoadingContent={isLoadingContent} />
+                            <PayByLinkSettingsContent
+                                activeMenuItem={activeMenuItem}
+                                isLoadingContent={isLoadingContent}
+                                navigateBack={navigateBack}
+                            />
                         )}
                     </div>
                     {showActionButtons && (
