@@ -9,14 +9,14 @@
     width: 100%;
 }
 
-// stylelint-disable scss/selector-no-redundant-nesting-selector
 .adyen-pe-component,
 .adyen-pe-popover,
 .adyen-pe-tooltip {
-    &,
-    & *,
-    & *::before,
-    & *::after {
+    box-sizing: border-box;
+
+    *,
+    *::before,
+    *::after {
         box-sizing: border-box;
     }
 }
