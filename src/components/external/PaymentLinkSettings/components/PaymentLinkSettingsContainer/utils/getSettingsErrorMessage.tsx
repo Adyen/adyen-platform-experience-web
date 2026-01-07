@@ -31,6 +31,7 @@ const getSettingsErrorMessage = (
                 title: 'common.errors.somethingWentWrong',
                 message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],
                 translationValues,
+                onContactSupport,
             };
         case '00_500':
             return {

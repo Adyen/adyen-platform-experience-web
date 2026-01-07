@@ -32,6 +32,7 @@ export const getPaymentLinksErrorMessage = (
                 title: 'common.errors.somethingWentWrong',
                 message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],
                 translationValues,
+                onContactSupport,
             };
         case '29_001':
             if (error.invalidFields?.some(field => field.name === 'paymentLinkId')) {
