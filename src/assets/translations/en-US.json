@@ -735,7 +735,7 @@
     "payByLink.creation.fields.description.supportText": "Accurate description of customer purchase.",
     "payByLink.creation.fields.language.label": "Language",
     "payByLink.creation.fields.linkType.label": "Link type",
-    "payByLink.creation.fields.merchantReference.label": "Merchant Reference",
+    "payByLink.creation.fields.merchantReference.label": "Merchant reference",
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode": "You must select a phone prefix",
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "You must enter a phone number",
     "payByLink.creation.fields.sendLinkToShopper.label": "Send the payment request to this email address",
