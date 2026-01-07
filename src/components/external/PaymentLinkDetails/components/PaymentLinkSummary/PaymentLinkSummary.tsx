@@ -42,7 +42,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
         <Card classNameModifiers={[CLASSNAMES.root]}>
             <div className={CLASSNAMES.content}>
                 <Tag variant={getStatusVariant(status)}>
-                    {i18n.has(`payByLink.common.status.${status}`)
+                    {i18n.has(`paymentLinks.common.status.${status}`)
                         ? i18n.get(`payByLink.common.status.${status}`)
                         : paymentLink?.linkInformation.status}
                 </Tag>
@@ -51,7 +51,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
                 </Typography>
                 <div>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={CLASSNAMES.expiresLabel}>
-                        {`${i18n.get('paymentLinks.details.fields.expiresOn')}: `}
+                        {`${i18n.get('payByLink.details.fields.expiresOn')}: `}
                     </Typography>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
                         {dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_SUMMARY)}

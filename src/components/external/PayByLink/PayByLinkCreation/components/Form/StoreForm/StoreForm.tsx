@@ -32,9 +32,9 @@ export const StoreForm = ({ setShowTermsAndConditions, settingsData, storesData,
     const alertLabel = useMemo(() => {
         if (!termsAndConditionsProvisioned) {
             if (canModifySettings) {
-                return 'payByLink.linkCreation.storeForm.alerts.tcSetupRequired';
+                return 'payByLink.creation.storeForm.alerts.tcSetupRequired';
             }
-            return 'payByLink.linkCreation.storeForm.alerts.tcSetupRequiredWithoutPermissions';
+            return 'payByLink.creation.storeForm.alerts.tcSetupRequiredWithoutPermissions';
         }
     }, [termsAndConditionsProvisioned, canModifySettings]);
 
@@ -44,7 +44,7 @@ export const StoreForm = ({ setShowTermsAndConditions, settingsData, storesData,
         }
         return [
             {
-                label: i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredAction'),
+                label: i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredAction'),
                 onClick: () => {
                     setShowTermsAndConditions(true);
                 },
@@ -58,7 +58,7 @@ export const StoreForm = ({ setShowTermsAndConditions, settingsData, storesData,
             {settingsData && storesData && selectedStoreId && !termsAndConditionsProvisioned && (
                 <Alert
                     className="adyen-pe-pay-by-link-creation-form__tc-alert"
-                    title={i18n.get('payByLink.linkCreation.storeForm.alerts.tcSetupRequiredTitle')}
+                    title={i18n.get('payByLink.creation.storeForm.alerts.tcSetupRequiredTitle')}
                     type={AlertTypeOption.WARNING}
                     description={alertLabel && i18n.get(alertLabel)}
                     actions={alertActions}

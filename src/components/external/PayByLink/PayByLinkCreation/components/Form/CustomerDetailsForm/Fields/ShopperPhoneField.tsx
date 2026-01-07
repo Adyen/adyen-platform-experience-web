@@ -74,18 +74,18 @@ export const ShopperPhoneField = () => {
     const validate = useCallback(() => {
         if (!isRequired && !phoneCode && !phoneNumberWithoutPhoneCode) return { valid: true };
         if (!phoneCode) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.phoneNumber.errors.requiredPhoneCode') };
+            return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode') };
         }
         const number = phoneNumberWithoutPhoneCode;
         if (!number) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.phoneNumber.errors.requiredPhoneNumber') };
+            return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber') };
         }
         return { valid: true };
     }, [phoneCode, phoneNumberWithoutPhoneCode]);
 
     return (
         <VisibleField<PBLFormValues> name="telephoneNumber">
-            <FormField label={i18n.get('payByLink.linkCreation.fields.shopperPhone.label')} optional={!isRequired}>
+            <FormField label={i18n.get('payByLink.creation.fields.shopperPhone.label')} optional={!isRequired}>
                 <Controller<PBLFormValues>
                     name="telephoneNumber"
                     control={control}
@@ -115,7 +115,7 @@ export const ShopperPhoneField = () => {
                                     filterable: true,
                                     items: phoneCodesDropdown,
                                     value: phoneCode,
-                                    placeholder: i18n.get('payByLink.linkCreation.fields.shopperPhone.phonePrefix.placeholder'),
+                                    placeholder: i18n.get('payByLink.creation.fields.shopperPhone.phonePrefix.placeholder'),
                                     readonly: phonesDatasetQuery.isFetching,
                                 }}
                                 onDropdownInput={val => {

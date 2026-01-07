@@ -21,10 +21,10 @@ export const AmountField = () => {
     const validate = useCallback(
         (value: string) => {
             if (Number(value) < 0) {
-                return { valid: false, message: i18n.get('payByLink.linkCreation.fields.amountValue.error.negativeNumber') };
+                return { valid: false, message: i18n.get('payByLink.creation.fields.amountValue.error.negativeNumber') };
             }
             if (currencyCodeFieldVisible && !getValues(CURRENCY_FIELD_NAME)) {
-                return { valid: false, message: i18n.get('payByLink.linkCreation.fields.amountValue.error.currency') };
+                return { valid: false, message: i18n.get('payByLink.creation.fields.amountValue.error.currency') };
             }
             if (!value || Number(value) === 0) {
                 return { valid: false, message: i18n.get('common.errors.fieldRequired') };
@@ -59,7 +59,7 @@ export const AmountField = () => {
 
     return (
         <VisibleField<PBLFormValues> name={VALUE_FIELD_NAME}>
-            <FormField label={i18n.get('payByLink.linkCreation.fields.amount.label')} optional={false} supportText={undefined} className={undefined}>
+            <FormField label={i18n.get('payByLink.creation.fields.amount.label')} optional={false} supportText={undefined} className={undefined}>
                 <Controller<PBLFormValues>
                     name={VALUE_FIELD_NAME}
                     control={control}

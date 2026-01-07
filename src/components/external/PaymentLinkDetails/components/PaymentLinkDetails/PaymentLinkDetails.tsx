@@ -170,14 +170,14 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                 ...(onDismiss
                     ? [
                           {
-                              title: i18n.get('paymentLinks.details.expirationSuccess.actions.goBackToList'),
+                              title: i18n.get('payByLink.details.expirationSuccess.actions.goBackToList'),
                               event: handleNavigationToListAfterExpiration,
                               variant: ButtonVariant.SECONDARY,
                           },
                       ]
                     : []),
                 {
-                    title: i18n.get('paymentLinks.details.expirationSuccess.actions.showDetails'),
+                    title: i18n.get('payByLink.details.expirationSuccess.actions.showDetails'),
                     event: handleNavigationToDetailsAfterExpiration,
                     variant: ButtonVariant.SECONDARY,
                 },
@@ -185,8 +185,8 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
             return (
                 <div className={CLASSNAMES.expirationSuccessContainer}>
                     <Icon name="checkmark-circle-fill" className={CLASSNAMES.expirationSuccessIcon} />
-                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('paymentLinks.details.expirationSuccess.title')}</Typography>
-                    <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expirationSuccess.description')}</Typography>
+                    <Typography variant={TypographyVariant.TITLE}>{i18n.get('payByLink.details.expirationSuccess.title')}</Typography>
+                    <Typography variant={TypographyVariant.BODY}>{i18n.get('payByLink.details.expirationSuccess.description')}</Typography>
                     <ButtonActions actions={actionButtons} />
                 </div>
             );
@@ -195,7 +195,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         if (activeScreen === 'details') {
             const actionButtons: ButtonActionsList = [
                 {
-                    title: i18n.get(isCopiedIndicatorVisible ? 'paymentLinks.details.actions.copied' : 'paymentLinks.details.actions.copyLink'),
+                    title: i18n.get(isCopiedIndicatorVisible ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
                     event: handleCopyLink,
                     variant: ButtonVariant.PRIMARY,
                     disabled: isCopiedIndicatorVisible,
@@ -209,7 +209,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                 ...(paymentLink.linkInformation.status !== 'expired' && paymentLink.linkInformation.status !== 'completed'
                     ? [
                           {
-                              title: i18n.get('paymentLinks.details.actions.expire'),
+                              title: i18n.get('payByLink.details.actions.expire'),
                               event: handleExpireNow,
                               variant: ButtonVariant.SECONDARY,
                           },
@@ -244,7 +244,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     return (
         <div className={CLASSNAMES.root}>
             <div className={cx({ ['adyen-pe-visually-hidden']: activeScreen !== 'details' })}>
-                <Header hideTitle={hideTitle} forwardedToRoot={!withinModal} titleKey={'paymentLinks.details.title'} />
+                <Header hideTitle={hideTitle} forwardedToRoot={!withinModal} titleKey={'payByLink.details.title'} />
             </div>
             <div className={CLASSNAMES.content}>{renderContent()}</div>
         </div>

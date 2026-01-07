@@ -18,7 +18,7 @@ export const LinkTypeField: FunctionalComponent<LinkTypeFieldProps> = ({ configu
     const linkTypes = useMemo(() => {
         const options = configuration?.linkType?.options?.length ? configuration?.linkType?.options : LINK_TYPE_FALLBACK;
         return options.map((type: PaymentLinkTypeDTO) => {
-            const key = `payByLink.linkCreation.form.linkTypes.${type}` as TranslationKey;
+            const key: TranslationKey = `payByLink.creation.form.linkTypes.${type}`;
             return {
                 id: type,
                 name: i18n.get(key),
@@ -26,5 +26,5 @@ export const LinkTypeField: FunctionalComponent<LinkTypeFieldProps> = ({ configu
         });
     }, [configuration, i18n]);
 
-    return <FormSelect<PBLFormValues> fieldName="linkType" label={i18n.get('payByLink.linkCreation.fields.linkType.label')} items={linkTypes} />;
+    return <FormSelect<PBLFormValues> fieldName="linkType" label={i18n.get('payByLink.creation.fields.linkType.label')} items={linkTypes} />;
 };

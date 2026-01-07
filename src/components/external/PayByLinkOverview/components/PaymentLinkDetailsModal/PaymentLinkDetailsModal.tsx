@@ -42,7 +42,7 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
             {selectedDetail && (
                 <Modal
                     isOpen={isModalOpen}
-                    aria-label={i18n.get('paymentLinks.details.title')}
+                    aria-label={i18n.get('payByLink.details.title')}
                     onClose={handleDismiss}
                     isDismissible={true}
                     headerWithBorder={false}

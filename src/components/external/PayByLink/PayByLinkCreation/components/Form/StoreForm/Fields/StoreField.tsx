@@ -25,7 +25,7 @@ const StoreField = ({ items }: StoreFieldProps) => {
     return (
         <FormSelect<PBLFormValues>
             fieldName={'store'}
-            label={i18n.get('payByLink.linkCreation.fields.store.label')}
+            label={i18n.get('payByLink.creation.fields.store.label')}
             items={items}
             onChange={handleChange}
             preventInvalidState

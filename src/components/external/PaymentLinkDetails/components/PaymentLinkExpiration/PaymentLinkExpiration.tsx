@@ -46,14 +46,14 @@ export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSucce
     const actionButtons: ButtonActionsList = useMemo(
         () => [
             {
-                title: i18n.get('paymentLinks.details.expiration.actions.confirmExpiration'),
+                title: i18n.get('payByLink.details.expiration.actions.confirmExpiration'),
                 event: handleConfirmExpire,
                 variant: ButtonVariant.PRIMARY,
                 disabled: expirePaymentLinkMutation.isLoading,
                 state: expirePaymentLinkMutation.isLoading ? 'loading' : 'default',
             },
             {
-                title: i18n.get('paymentLinks.details.expiration.actions.goBack'),
+                title: i18n.get('payByLink.details.expiration.actions.goBack'),
                 event: onCancel,
                 variant: ButtonVariant.SECONDARY,
                 disabled: expirePaymentLinkMutation.isLoading,
@@ -65,14 +65,14 @@ export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSucce
     return (
         <div className={CLASSNAMES.root}>
             <Typography el={titleEl} variant={TypographyVariant.SUBTITLE} stronger>
-                {i18n.get('paymentLinks.details.expiration.title')}
+                {i18n.get('payByLink.details.expiration.title')}
             </Typography>
-            <Typography variant={TypographyVariant.BODY}>{i18n.get('paymentLinks.details.expiration.description')}</Typography>
+            <Typography variant={TypographyVariant.BODY}>{i18n.get('payByLink.details.expiration.description')}</Typography>
             {expirePaymentLinkMutation.error && (
                 <Alert
                     type={AlertTypeOption.CRITICAL}
-                    title={i18n.get('paymentLinks.details.expiration.errorTitle')}
-                    description={i18n.get('paymentLinks.details.expiration.errorDescription')}
+                    title={i18n.get('payByLink.details.expiration.errorTitle')}
+                    description={i18n.get('payByLink.details.expiration.errorDescription')}
                 />
             )}
             <ButtonActions actions={actionButtons} />

@@ -30,7 +30,7 @@ export const ShippingHouseNumberField = ({
         <FormTextInput<PBLFormValues>
             maxLength={PBL_CREATION_FIELD_LENGTHS.deliveryAddress.houseNumberOrName.max}
             fieldName="deliveryAddress.houseNumberOrName"
-            label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.houseNumberOrName.label')}
+            label={i18n.get('payByLink.creation.fields.deliveryAddress.houseNumberOrName.label')}
             onInput={onInput}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--small"
             hideOptionalLabel

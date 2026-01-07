@@ -121,16 +121,16 @@ export const usePayByLinkFormData = ({ storeIds, defaultValues }: UsePayByLinkFo
     const formSteps = useMemo(() => {
         const skipStoreStep = storesSelectorItems.length === 1 && termsAndConditionsProvisioned;
         return getFormSteps({ i18n, getFieldConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
-    }, [configurationData, getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned]);
+    }, [getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned]);
 
     const stepperItems = useMemo(() => {
         return formSteps.map(step => ({
             id: step.id,
-            label: i18n.get(`payByLink.linkCreation.form.steps.${step.id}` as TranslationKey),
+            label: i18n.get(`payByLink.creation.form.steps.${step.id}` as TranslationKey),
         }));
     }, [formSteps, i18n]);
 
-    const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.linkCreation.steps.a11y.label'), [i18n]);
+    const formStepsAriaLabel = useMemo(() => i18n.get('payByLink.creation.steps.a11y.label'), [i18n]);
 
     // Wizard form setup
     const wizardForm = useWizardForm<PBLFormValues>({

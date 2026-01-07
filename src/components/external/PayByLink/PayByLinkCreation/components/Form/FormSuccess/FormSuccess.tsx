@@ -50,22 +50,22 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
             <div className="adyen-pe-pay-by-link-creation-form-success__content">
                 <Icon name="checkmark-circle-fill" className="adyen-pe-pay-by-link-creation-form-success__icon" />
                 <Typography variant={TypographyVariant.TITLE} className="adyen-pe-pay-by-link-creation-form-success__title">
-                    {i18n.get('payByLink.linkCreation.success.title')}
+                    {i18n.get('payByLink.creation.success.title')}
                 </Typography>
                 <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-success__description">
-                    {i18n.get('payByLink.linkCreation.success.description')}
+                    {i18n.get('payByLink.creation.success.description')}
                 </Typography>
             </div>
             <div className="adyen-pe-pay-by-link-creation-form-success__actions">
                 <Button variant={ButtonVariant.SECONDARY} onClick={onGoToDetails}>
-                    {i18n.get('payByLink.linkCreation.success.showDetails')}
+                    {i18n.get('payByLink.creation.success.showDetails')}
                 </Button>
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     onClick={onCopy}
                     iconLeft={<Icon className="adyen-pe-pay-by-link-creation-form-success__button-icon" name={copied ? 'checkmark' : 'copy'} />}
                 >
-                    {copied ? i18n.get('payByLink.linkCreation.success.copiedToClipboard') : i18n.get('payByLink.linkCreation.success.copyLink')}
+                    {copied ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink')}
                 </Button>
             </div>
         </section>

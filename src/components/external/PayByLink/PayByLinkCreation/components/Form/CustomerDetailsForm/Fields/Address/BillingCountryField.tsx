@@ -43,7 +43,7 @@ export const BillingCountryField = ({
             filterable
             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
             fieldName="billingAddress.country"
-            label={i18n.get('payByLink.linkCreation.fields.billingAddress.country.label')}
+            label={i18n.get('payByLink.creation.fields.billingAddress.country.label')}
             items={countriesListItems}
             readonly={isFetchingCountries || isFetchingCountryDataset}
             hideOptionalLabel

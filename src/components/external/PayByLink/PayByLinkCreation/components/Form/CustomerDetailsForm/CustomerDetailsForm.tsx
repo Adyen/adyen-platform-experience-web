@@ -54,7 +54,7 @@ export const CustomerDetailsForm = ({
         <div className="adyen-pe-pay-by-link-creation-form__fields-container">
             <FormTextInput<PBLFormValues>
                 fieldName={'shopperReference'}
-                label={i18n.get('payByLink.linkCreation.fields.shopperReference.label')}
+                label={i18n.get('payByLink.creation.fields.shopperReference.label')}
                 maxLength={PBL_CREATION_FIELD_LENGTHS.shopperReference.max}
                 minLength={PBL_CREATION_FIELD_LENGTHS.shopperReference.min}
             />
@@ -62,23 +62,23 @@ export const CustomerDetailsForm = ({
                 <div className="adyen-pe-pay-by-link-creation-form__shopper-name-container">
                     <FormTextInput<PBLFormValues>
                         fieldName={'shopperName.firstName'}
-                        label={i18n.get('payByLink.linkCreation.fields.shopperName.label')}
+                        label={i18n.get('payByLink.creation.fields.shopperName.label')}
                         maxLength={PBL_CREATION_FIELD_LENGTHS.shopperName.firstName.max}
                     />
                     <FormTextInput<PBLFormValues>
                         maxLength={PBL_CREATION_FIELD_LENGTHS.shopperName.lastName.max}
                         fieldName={'shopperName.lastName'}
-                        label={i18n.get('payByLink.linkCreation.fields.shopperLastName.label')}
+                        label={i18n.get('payByLink.creation.fields.shopperLastName.label')}
                     />
                 </div>
             )}
             <ShopperEmailField />
             {/* TODO: Pending discussion on whether we want to show this functionality                 
                 <div className="adyen-pe-pay-by-link-creation-form__email-checkbox-container">
-                    <EmailDependentCheckboxField name="sendLinkToShopper" label={i18n.get('payByLink.linkCreation.fields.sendLinkToShopper.label')} />
+                    <EmailDependentCheckboxField name="sendLinkToShopper" label={i18n.get('payByLink.creation.fields.sendLinkToShopper.label')} />
                     <EmailDependentCheckboxField
                         name="sendPaymentSuccessToShopper"
-                        label={i18n.get('payByLink.linkCreation.fields.sendPaymentSuccessToShopper.label')}
+                        label={i18n.get('payByLink.creation.fields.sendPaymentSuccessToShopper.label')}
                     />
                 </div> */}
 
@@ -99,7 +99,7 @@ export const CustomerDetailsForm = ({
                                 stronger
                                 className="adyen-pe-pay-by-link-creation-form__billing-address-title"
                             >
-                                {i18n.get('payByLink.linkCreation.sections.deliveryAddress.label')}
+                                {i18n.get('payByLink.creation.sections.deliveryAddress.label')}
                             </Typography>
                             {isDeliveryAddressOptional && (
                                 <Typography
@@ -142,7 +142,7 @@ export const CustomerDetailsForm = ({
                             stronger
                             className="adyen-pe-pay-by-link-creation-form__billing-address-title"
                         >
-                            {i18n.get('payByLink.linkCreation.sections.billingAddress.label')}
+                            {i18n.get('payByLink.creation.sections.billingAddress.label')}
                         </Typography>
                         {isBillingAddressOptional && (
                             <Typography
@@ -159,7 +159,7 @@ export const CustomerDetailsForm = ({
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.street.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--large"
                             fieldName="billingAddress.street"
-                            label={i18n.get('payByLink.linkCreation.fields.billingAddress.street.label')}
+                            label={i18n.get('payByLink.creation.fields.billingAddress.street.label')}
                             hideOptionalLabel
                             isRequired={fieldsConfig['billingAddress.street']?.required || isAddressFieldRequired('billingAddress.street')}
                         />
@@ -167,7 +167,7 @@ export const CustomerDetailsForm = ({
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.houseNumberOrName.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--small"
                             fieldName="billingAddress.houseNumberOrName"
-                            label={i18n.get('payByLink.linkCreation.fields.billingAddress.houseNumberOrName.label')}
+                            label={i18n.get('payByLink.creation.fields.billingAddress.houseNumberOrName.label')}
                             hideOptionalLabel
                             isRequired={
                                 fieldsConfig['billingAddress.houseNumberOrName']?.required ||
@@ -187,7 +187,7 @@ export const CustomerDetailsForm = ({
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.city.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--medium"
                             fieldName="billingAddress.city"
-                            label={i18n.get('payByLink.linkCreation.fields.billingAddress.city.label')}
+                            label={i18n.get('payByLink.creation.fields.billingAddress.city.label')}
                             hideOptionalLabel
                             isRequired={fieldsConfig['billingAddress.city']?.required || isAddressFieldRequired('billingAddress.city')}
                         />
@@ -195,7 +195,7 @@ export const CustomerDetailsForm = ({
                             maxLength={PBL_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
                             className="adyen-pe-pay-by-link-creation-form__billing-address-field--small"
                             fieldName="billingAddress.postalCode"
-                            label={i18n.get('payByLink.linkCreation.fields.billingAddress.postalCode.label')}
+                            label={i18n.get('payByLink.creation.fields.billingAddress.postalCode.label')}
                             hideOptionalLabel
                             isRequired={fieldsConfig['billingAddress.postalCode']?.required || isAddressFieldRequired('billingAddress.postalCode')}
                         />

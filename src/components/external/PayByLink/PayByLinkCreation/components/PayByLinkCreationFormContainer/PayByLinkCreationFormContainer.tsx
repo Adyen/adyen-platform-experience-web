@@ -229,8 +229,8 @@ export const PayByLinkCreationFormContainer = ({
 
     const getSubmitErrorLabel = useCallback(
         (error: Error | AdyenErrorResponse | null) => {
-            if (getMappedInvalidFields(error).length) return i18n.get('payByLink.linkCreation.form.alert.invalidFields');
-            return i18n.get('payByLink.linkCreation.form.alert.somethingWentWrong');
+            if (getMappedInvalidFields(error).length) return i18n.get('payByLink.creation.form.alert.invalidFields');
+            return i18n.get('payByLink.creation.form.alert.somethingWentWrong');
         },
         [getMappedInvalidFields, i18n]
     );
@@ -254,7 +254,7 @@ export const PayByLinkCreationFormContainer = ({
                 {onContactSupport && (
                     <div className="adyen-pe-pay-by-link-creation-form__contact-support">
                         <Translation
-                            translationKey="payByLink.linkCreation.form.error.submit.contactSupport"
+                            translationKey="payByLink.creation.form.error.submit.contactSupport"
                             fills={{
                                 contactSupport: (
                                     <Button variant={ButtonVariant.TERTIARY} onClick={onContactSupport}>
@@ -275,7 +275,7 @@ export const PayByLinkCreationFormContainer = ({
             <div className="adyen-pe-pay-by-link-creation-form__component">
                 <div className="adyen-pe-pay-by-link-creation-form__header">
                     <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                        {i18n.get('payByLink.linkCreation.form.title')}
+                        {i18n.get('payByLink.creation.form.title')}
                     </Typography>
                     <LoadingSkeleton />
                 </div>
@@ -299,7 +299,7 @@ export const PayByLinkCreationFormContainer = ({
         <div className="adyen-pe-pay-by-link-creation-form__component" ref={containerRef}>
             <div className="adyen-pe-pay-by-link-creation-form__header">
                 <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                    {i18n.get('payByLink.linkCreation.form.title')}
+                    {i18n.get('payByLink.creation.form.title')}
                 </Typography>
                 <Stepper
                     nextStepDisabled={!canGoNext || !isStepComplete(currentStep)}
@@ -350,7 +350,7 @@ export const PayByLinkCreationFormContainer = ({
                                 absolutePosition={false}
                                 outlined={false}
                                 withBackground={false}
-                                message={['payByLink.linkCreation.errors.unavailable', 'common.errors.retry']}
+                                message={['payByLink.creation.errors.unavailable', 'common.errors.retry']}
                             />
                         )}
                         {accountIsMisconfigured && (
@@ -381,7 +381,7 @@ export const PayByLinkCreationFormContainer = ({
                         <div className="adyen-pe-pay-by-link-creation-form__buttons-container">
                             {(!isFirstStep || onCreationDismiss) && (
                                 <Button variant={ButtonVariant.SECONDARY} onClick={handlePrevious}>
-                                    {i18n.get('payByLink.linkCreation.form.steps.back')}
+                                    {i18n.get('payByLink.creation.form.steps.back')}
                                 </Button>
                             )}
                             <Button
@@ -393,9 +393,7 @@ export const PayByLinkCreationFormContainer = ({
                                 disabled={nextButtonIsDisabled}
                                 iconRight={<Icon name="arrow-right" />}
                             >
-                                {isLastStep
-                                    ? i18n.get('payByLink.linkCreation.form.steps.submit')
-                                    : i18n.get('payByLink.linkCreation.form.steps.continue')}
+                                {isLastStep ? i18n.get('payByLink.creation.form.steps.submit') : i18n.get('payByLink.creation.form.steps.continue')}
                             </Button>
                         </div>
                     </form>

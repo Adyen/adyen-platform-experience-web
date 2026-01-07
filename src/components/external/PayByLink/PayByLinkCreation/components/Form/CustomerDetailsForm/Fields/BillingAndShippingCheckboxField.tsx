@@ -35,7 +35,7 @@ export const BillingAndShippingCheckboxField = ({ isSeparateAddress, setIsSepara
             <label className="adyen-pe-pay-by-link-creation-form__field-checkbox" htmlFor={isSeparateAddressInputId}>
                 {isSeparateAddress ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                    {i18n.get('payByLink.linkCreation.fields.billingAndDeliverySeparateAddress.label')}
+                    {i18n.get('payByLink.creation.fields.billingAndDeliverySeparateAddress.label')}
                 </Typography>
             </label>
         </div>

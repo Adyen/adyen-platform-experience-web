@@ -38,9 +38,9 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         const options: LinkValidityDTO[] = configuration?.linkValidity?.options ?? [];
         return options.map(({ quantity, durationUnit, type }) => {
             if (type === FLEXIBLE_ID) {
-                return { id: FLEXIBLE_ID, name: i18n.get('payByLink.linkCreation.fields.validity.linkValidityUnit.custom') };
+                return { id: FLEXIBLE_ID, name: i18n.get('payByLink.creation.fields.validity.linkValidityUnit.custom') };
             }
-            const key = `payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit}` as TranslationKey;
+            const key: TranslationKey = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}`;
             return { id: `${quantity} ${durationUnit}` || '', name: i18n.get(key, { values: { quantity }, count: quantity }) };
         });
     }, [configuration, i18n]);
@@ -96,7 +96,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         () =>
             LINK_VALIDITY_DURATION_UNITS.map(unit => ({
                 id: unit,
-                name: i18n.get(`payByLink.linkCreation.fields.validity.linkValidityUnit.${unit}__plural`),
+                name: i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${unit}__plural`),
             })),
         [i18n]
     );
@@ -108,19 +108,19 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         const qty = parseInt(durationQuantity, 10);
 
         if (!durationQuantity) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationValue') };
+            return { valid: false, message: i18n.get('payByLink.creation.fields.validity.customDuration.error.missingDurationValue') };
         }
         if (qty <= 0) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.invalidDurationValue') };
+            return { valid: false, message: i18n.get('payByLink.creation.fields.validity.customDuration.error.invalidDurationValue') };
         }
         if (!durationUnit) {
-            return { valid: false, message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.missingDurationUnit') };
+            return { valid: false, message: i18n.get('payByLink.creation.fields.validity.customDuration.error.missingDurationUnit') };
         }
         // TODO: Change to use config
         if (transformToMS(durationUnit, qty) > transformToMS('day', MAX_VALIDITY_DAYS)) {
             return {
                 valid: false,
-                message: i18n.get('payByLink.linkCreation.fields.validity.customDuration.error.durationTooLong', {
+                message: i18n.get('payByLink.creation.fields.validity.customDuration.error.durationTooLong', {
                     values: { maxDays: MAX_VALIDITY_DAYS },
                 }),
             };
@@ -171,8 +171,8 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                 <div>
                                     <div className="adyen-pe-pay-by-link-creation-form__validity-container">
                                         <FormField
-                                            label={i18n.get('payByLink.linkCreation.fields.validity.label')}
-                                            supportText={i18n.get('payByLink.linkCreation.fields.validity.supportText')}
+                                            label={i18n.get('payByLink.creation.fields.validity.label')}
+                                            supportText={i18n.get('payByLink.creation.fields.validity.supportText')}
                                             optional={!isDurationUnitRequired && !isDurationQuantityRequired}
                                         >
                                             <Select
@@ -184,10 +184,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                             />
                                         </FormField>
                                         {validityValue === FLEXIBLE_ID && (
-                                            <FormField
-                                                label={i18n.get('payByLink.linkCreation.fields.validity.customDuration.label')}
-                                                optional={false}
-                                            >
+                                            <FormField label={i18n.get('payByLink.creation.fields.validity.customDuration.label')} optional={false}>
                                                 <InputBase
                                                     dropdown={{ items: dropdownItems, value: customDurationUnit || '' }}
                                                     onDropdownInput={handleCustomDurationUnitChange}

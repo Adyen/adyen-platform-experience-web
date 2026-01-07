@@ -10,7 +10,7 @@ export const ShopperEmailField = () => {
     const invalidEMailObject = useMemo(
         () => ({
             valid: false,
-            message: i18n.get('payByLink.linkCreation.fields.shopperEmail.error.validEmail'),
+            message: i18n.get('payByLink.creation.fields.shopperEmail.error.validEmail'),
         }),
         [i18n]
     );
@@ -55,7 +55,7 @@ export const ShopperEmailField = () => {
     return (
         <FormTextInput<PBLFormValues>
             fieldName="shopperEmail"
-            label={i18n.get('payByLink.linkCreation.fields.shopperEmail.label')}
+            label={i18n.get('payByLink.creation.fields.shopperEmail.label')}
             validate={validateEmail}
             maxLength={PBL_CREATION_FIELD_LENGTHS.emailAddress.max}
         />

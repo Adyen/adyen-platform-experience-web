@@ -54,7 +54,7 @@ export const ShippingCountryField = ({
             clearable
             filterable
             fieldName="deliveryAddress.country"
-            label={i18n.get('payByLink.linkCreation.fields.deliveryAddress.country.label')}
+            label={i18n.get('payByLink.creation.fields.deliveryAddress.country.label')}
             items={countriesListItems}
             readonly={isFetchingCountries || isFetchingCountryDataset}
             className="adyen-pe-pay-by-link-creation-form__shipping-address-field--medium"

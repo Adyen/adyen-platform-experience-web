@@ -50,7 +50,7 @@ export const LanguageField = () => {
         <FormSelect<PBLFormValues>
             filterable
             fieldName="shopperLocale"
-            label={i18n.get('payByLink.linkCreation.fields.language.label')}
+            label={i18n.get('payByLink.creation.fields.language.label')}
             items={localeListItems}
             readonly={languagesQuery.isFetching}
         />

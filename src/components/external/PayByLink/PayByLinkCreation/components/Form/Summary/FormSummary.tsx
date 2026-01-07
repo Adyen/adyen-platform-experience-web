@@ -35,7 +35,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
         // Also, we want to show it under the payment details section
         const storeField = {
             id: 'store',
-            label: 'payByLink.linkCreation.summary.fields.store',
+            label: 'payByLink.creation.summary.fields.store',
             value: getValues('store'),
             displayValue: getDisplayValue('store'),
         };
@@ -50,7 +50,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
                 switch (item.id) {
                     case 'linkValidity.quantity': {
                         const durationUnit = payment?.fields?.find(field => field.id === 'linkValidity.durationUnit');
-                        return i18n.get(`payByLink.linkCreation.fields.validity.linkValidityUnit.${durationUnit?.value}` as TranslationKey, {
+                        return i18n.get(`payByLink.creation.fields.validity.linkValidityUnit.${durationUnit?.value}` as TranslationKey, {
                             values: { quantity: item.value },
                             count: Number(item.value),
                         });
@@ -60,7 +60,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
                         return i18n.amount(item.value, currencyField?.value);
                     }
                     case 'linkType':
-                        return i18n.get(`payByLink.linkCreation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`);
+                        return i18n.get(`payByLink.creation.form.linkTypes.${item.value as PaymentLinkTypeDTO}`);
                     default:
                         return item.value;
                 }
@@ -110,21 +110,21 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
 
         if (sendLinkToShopper || sendPaymentSuccessToShopper) {
             nonAddressItems?.splice(3, 0, {
-                key: 'payByLink.linkCreation.summary.fields.emailNotifications',
+                key: 'payByLink.creation.summary.fields.emailNotifications',
                 value: [sendPaymentSuccessToShopper, sendLinkToShopper].filter(Boolean),
                 render: () => (
                     <div className="adyen-pe-pay-by-link-creation-form-summary__tags-container">
                         {sendLinkToShopper && (
                             <Tag>
                                 <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
-                                    {i18n.get('payByLink.linkCreation.summary.fields.emailNotifications.emailCreation')}
+                                    {i18n.get('payByLink.creation.summary.fields.emailNotifications.emailCreation')}
                                 </Typography>
                             </Tag>
                         )}
                         {sendPaymentSuccessToShopper && (
                             <Tag>
                                 <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
-                                    {i18n.get('payByLink.linkCreation.summary.fields.emailNotifications.paymentSuccess')}
+                                    {i18n.get('payByLink.creation.summary.fields.emailNotifications.paymentSuccess')}
                                 </Typography>
                             </Tag>
                         )}
@@ -140,7 +140,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
         <section className={cx('adyen-pe-pay-by-link-creation-form-summary', { 'adyen-pe-pay-by-link-creation-form-summary--mobile': isMobile })}>
             <section className="adyen-pe-pay-by-link-creation-form-summary__section">
                 <Typography variant={TypographyVariant.SUBTITLE} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                    {i18n.get('payByLink.linkCreation.summary.paymentDetails')}
+                    {i18n.get('payByLink.creation.summary.paymentDetails')}
                 </Typography>
                 <div>
                     <StructuredList layout={'5-7'} align={'start'} condensed={false} items={paymentListItems} />
@@ -151,7 +151,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
                     <Divider />
                     <section className="adyen-pe-pay-by-link-creation-form-summary__section">
                         <Typography variant={TypographyVariant.SUBTITLE} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                            {i18n.get('payByLink.linkCreation.summary.shopperInformation')}
+                            {i18n.get('payByLink.creation.summary.shopperInformation')}
                         </Typography>
                         <div>
                             <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.nonAddressItems} />
@@ -162,7 +162,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
             {!!customerListItems.deliveryAddressItems?.length && (
                 <section className="adyen-pe-pay-by-link-creation-form-summary__section">
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                        {i18n.get('payByLink.linkCreation.summary.deliveryAddress')}
+                        {i18n.get('payByLink.creation.summary.deliveryAddress')}
                     </Typography>
                     <div>
                         <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.deliveryAddressItems || []} />
@@ -172,7 +172,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
             {!!customerListItems.billingAddressItems?.length && (
                 <section className="adyen-pe-pay-by-link-creation-form-summary__section">
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-pay-by-link-creation-form-summary__section-title">
-                        {i18n.get('payByLink.linkCreation.summary.billingAddress')}
+                        {i18n.get('payByLink.creation.summary.billingAddress')}
                     </Typography>
                     <div>
                         <StructuredList layout={'5-7'} align={'start'} condensed={false} items={customerListItems.billingAddressItems || []} />
@@ -183,7 +183,7 @@ export const FormSummary = ({ countryDatasetData }: FormSummaryProps) => {
                 className="adyen-pe-pay-by-link-creation-form-summary__alert"
                 variant={AlertVariantOption.TIP}
                 type={AlertTypeOption.HIGHLIGHT}
-                description={i18n.get('payByLink.linkCreation.summary.alertDescription')}
+                description={i18n.get('payByLink.creation.summary.alertDescription')}
             />
         </section>
     );
