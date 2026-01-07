@@ -27,7 +27,7 @@ export const useTermsRequirementsConfig = () => {
 
     const getTermsRequirementsConfig = useCallback(async () => {
         const config = await getCdnConfig?.<TermsRequirementsConfig>({
-            subFolder: 'paymentLinks',
+            subFolder: 'payByLink',
             name: 'termsRequirementsConfig',
             fallback: localTerms,
         });
