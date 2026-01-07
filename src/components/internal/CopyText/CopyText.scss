@@ -4,6 +4,7 @@
     $adyen-pe-root: &;
     align-items: center;
     display: inline-flex;
+    margin-top: 4px;
     text-decoration: none;
 
     &__text {
@@ -27,7 +28,7 @@
     }
 
     &__container {
-        align-items: center;
+        align-items: start;
         display: inline-flex;
         gap: style.token(spacer-020);
     }

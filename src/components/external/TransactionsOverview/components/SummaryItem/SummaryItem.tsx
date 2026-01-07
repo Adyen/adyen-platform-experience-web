@@ -50,7 +50,7 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => {
                 const value = config.getValue();
-                const isLongValue = !!value && value.length > 12;
+                const isLongValue = !!value && value.length > 15;
                 return (
                     <div key={index}>
                         {isHeader && (

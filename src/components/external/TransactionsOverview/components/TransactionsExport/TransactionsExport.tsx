@@ -26,6 +26,7 @@ import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
+import { Tag } from '../../../../internal/Tag/Tag';
 
 const sharedAnalyticsEventProperties = {
     category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -114,11 +115,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     const activeFiltersTitle = useMemo(() => i18n.get('transactions.overview.export.filters.title'), [i18n]);
     const exportColumnsTitle = useMemo(() => i18n.get('transactions.overview.export.columns.title'), [i18n]);
     const exportColumnsTitleId = useMemo(uniqueId, []);
-
-    const activeFiltersList = useMemo(() => {
-        const listFormatter = new Intl.ListFormat(i18n.locale, { type: 'conjunction', style: 'narrow' });
-        return listFormatter.format(activeFilters.map(key => i18n.get(key)));
-    }, [i18n, activeFilters]);
 
     const columnSwitches = useMemo(
         () =>
@@ -282,10 +278,10 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                     <div className={classes.popover}>
                         <div className={classes.popoverSections}>
                             <div className={cx(classes.popoverSection, classes.filtersSection)}>
-                                <SectionTitle>{activeFiltersTitle}</SectionTitle>
-                                <div className={classes.popoverSectionContent}>
-                                    <Text>{activeFiltersList}</Text>
-                                </div>
+                                <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
+                                {activeFilters.map(filter => (
+                                    <Tag label={i18n.get(filter)} key={filter} />
+                                ))}
                             </div>
 
                             <div className={cx(classes.popoverSection, classes.columnsSection)}>

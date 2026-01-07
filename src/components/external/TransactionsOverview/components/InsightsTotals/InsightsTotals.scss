@@ -5,7 +5,7 @@
     &__breakdowns {
         display: grid;
         gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     }
 
     &__breakdown-list {

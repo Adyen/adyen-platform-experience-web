@@ -24,7 +24,14 @@
     }
 
     &-section {
+        width: 320px;
+
         &--filters {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: style.token(spacer-020);
+            padding-bottom: style.token(spacer-040);
             position: relative;
 
             &::after {

@@ -83,11 +83,10 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
     );
 
     const renderListPropertyValue = useCallback<NonNullable<StructuredListProps['renderValue']>>((val, key) => {
-        const stronger = key === paymentAmountKeys.netAmount;
-        const strongest = key === paymentAmountKeys.grossAmount;
-        const variant = stronger ? TypographyVariant.SUBTITLE : TypographyVariant.BODY;
+        const strongest = key === paymentAmountKeys.netAmount;
+        const variant = TypographyVariant.BODY;
         return (
-            <Typography el={TypographyElement.DIV} variant={variant} stronger={stronger} strongest={strongest}>
+            <Typography el={TypographyElement.DIV} variant={variant} strongest={strongest}>
                 {val}
             </Typography>
         );
