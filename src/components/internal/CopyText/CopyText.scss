@@ -4,7 +4,7 @@
     $adyen-pe-root: &;
     align-items: center;
     display: inline-flex;
-    margin-top: 4px;
+    margin-top: style.token(spacer-010);
     text-decoration: none;
 
     &__text {
