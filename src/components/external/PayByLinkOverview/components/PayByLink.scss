@@ -1,7 +1,0 @@
-@use '../../../internal/DataOverviewDisplay/styles' as *;
-@use '../../../../style/breakpoints' as breakpoints;
-@use '../../../../style';
-
-.adyen-pe-pay-by-link-overview {
-    @include adyen-pe-data-overview;
-}

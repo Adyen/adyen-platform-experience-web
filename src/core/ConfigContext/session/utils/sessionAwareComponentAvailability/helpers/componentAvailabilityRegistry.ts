@@ -16,9 +16,9 @@ const componentAvailabilityRegistry: ExternalComponentAvailabilityRegistry = {
     capitalOffer: context => getComponentAvailabilityFromEndpoint(context, 'getDynamicGrantOffer'),
     disputes: context => getComponentAvailabilityFromEndpoint(context, 'getDisputeList'),
     disputesManagement: context => getComponentAvailabilityFromEndpoint(context, 'getDisputeDetail'),
-    payByLinkOverview: context => getComponentAvailabilityFromEndpoint(context, 'getPaymentLinks'),
-    payByLinkCreation: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkConfiguration'),
-    payByLinkSettings: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkSettings'),
+    paymentLinksOverview: context => getComponentAvailabilityFromEndpoint(context, 'getPaymentLinks'),
+    paymentLinkCreation: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkConfiguration'),
+    paymentLinkSettings: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkSettings'),
     paymentLinkDetails: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkPaymentLinkById'),
 };
 

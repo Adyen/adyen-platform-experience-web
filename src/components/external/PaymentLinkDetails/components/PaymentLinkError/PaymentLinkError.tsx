@@ -18,13 +18,13 @@ export const PaymentLinkError = ({ error, onContactSupport, onDismiss }: Payment
     const renderBackButton = useCallback(() => {
         return (
             <Button variant={ButtonVariant.SECONDARY} onClick={onDismiss}>
-                {i18n.get('paymentLinks.common.actions.goBack')}
+                {i18n.get('payByLink.common.actions.goBack')}
             </Button>
         );
     }, [i18n, onDismiss]);
 
     const errorProps = useMemo(
-        () => getPaymentLinkErrorMessage(error as AdyenPlatformExperienceError, 'paymentLinks.details.errors.unavailable', onContactSupport),
+        () => getPaymentLinkErrorMessage(error as AdyenPlatformExperienceError, 'payByLink.details.errors.unavailable', onContactSupport),
         [error, onContactSupport]
     );
 

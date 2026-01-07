@@ -1,7 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { IPayByLinkStatusGroup } from '../../src';
+import { IPaymentLinkStatusGroup } from '../../src';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
@@ -60,7 +60,7 @@ export const PAY_BY_LINK_ERRORS = {
 };
 
 const mockEndpoints = endpoints('mock');
-const mockEndpointsPBL = endpoints('mock').payByLink;
+const mockPayByLinkEndpoints = mockEndpoints.payByLink;
 const networkError = false;
 const defaultPaginationLimit = 10;
 
@@ -79,11 +79,11 @@ const getErrorHandler = (error: any, status = 500) => {
 
 export const PayByLinkOverviewMockedResponses = {
     tooManyStores: {
-        handlers: [http.get(mockEndpointsPBL.paymentLinks, getErrorHandler(PAY_BY_LINK_ERRORS.TOO_MANY_STORES, 422))],
+        handlers: [http.get(mockPayByLinkEndpoints.list, getErrorHandler(PAY_BY_LINK_ERRORS.TOO_MANY_STORES, 422))],
     },
     emptyList: {
         handlers: [
-            http.get(mockEndpointsPBL.paymentLinks, async () => {
+            http.get(mockPayByLinkEndpoints.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
             }),
@@ -93,7 +93,7 @@ export const PayByLinkOverviewMockedResponses = {
         handlers: [http.get(endpoints('mock').stores, async () => HttpResponse.error())],
     },
     filtersNetworkError: {
-        handlers: [http.get(mockEndpointsPBL.filters, async () => HttpResponse.error())],
+        handlers: [http.get(mockPayByLinkEndpoints.filters, async () => HttpResponse.error())],
     },
     storesMisconfiguration: {
         handlers: [
@@ -106,7 +106,7 @@ export const PayByLinkOverviewMockedResponses = {
 
     filterError: {
         handlers: [
-            http.get(mockEndpointsPBL.filters, async () => {
+            http.get(mockPayByLinkEndpoints.filters, async () => {
                 await delay(300);
                 return HttpResponse.error();
             }),
@@ -117,7 +117,7 @@ export const PayByLinkOverviewMockedResponses = {
 export const PaymentLinkCreationMockedResponses = {
     submitNetworkError: {
         handlers: [
-            http.post(mockEndpoints.payByLink.paymentLinks, async () => {
+            http.post(mockEndpoints.payByLink.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -125,7 +125,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     submitInvalidFields: {
         handlers: [
-            http.post(mockEndpoints.payByLink.paymentLinks, async () => {
+            http.post(mockEndpoints.payByLink.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json(PAY_BY_LINK_ERRORS.INVALID_FIELDS, { status: 422 });
             }),
@@ -133,7 +133,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     configError: {
         handlers: [
-            http.get(mockEndpointsPBL.configuration, async () => {
+            http.get(mockPayByLinkEndpoints.configuration, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -206,7 +206,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks/{storeId}/configuration
-    http.get(mockEndpointsPBL.configuration, async ({ params }) => {
+    http.get(mockPayByLinkEndpoints.configuration, async ({ params }) => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -223,7 +223,7 @@ export const payByLinkMocks = [
     }),
 
     // POST /paybylink/paymentLinks
-    http.post(mockEndpointsPBL.paymentLinks, async () => {
+    http.post(mockPayByLinkEndpoints.list, async () => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -240,7 +240,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /currencies
-    http.get(mockEndpointsPBL.currencies, async () => {
+    http.get(mockPayByLinkEndpoints.currencies, async () => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -252,7 +252,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /countries
-    http.get(mockEndpointsPBL.countries, async () => {
+    http.get(mockPayByLinkEndpoints.countries, async () => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -264,7 +264,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/installments
-    http.get(mockEndpointsPBL.installments, async () => {
+    http.get(mockPayByLinkEndpoints.installments, async () => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -276,7 +276,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/settings/{storeId}
-    http.get(mockEndpointsPBL.getPayByLinkSettings, async ({ params }) => {
+    http.get(mockPayByLinkEndpoints.settings, async ({ params }) => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -297,7 +297,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/themes/{storeId}
-    http.get(mockEndpointsPBL.themes, async ({ params }) => {
+    http.get(mockPayByLinkEndpoints.themes, async ({ params }) => {
         const store = getStoreForRequestPathParams(params);
         await delay(DELAY_TIME);
         if (networkError) {
@@ -308,7 +308,7 @@ export const payByLinkMocks = [
     }),
 
     // POST /paybylink/themes/{storeId}
-    http.post(mockEndpointsPBL.themes, async () => {
+    http.post(mockPayByLinkEndpoints.themes, async () => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -318,7 +318,7 @@ export const payByLinkMocks = [
     }),
 
     // POST /paybylink/settings/{storeId}
-    http.post(mockEndpointsPBL.settings, async ({ request }) => {
+    http.post(mockPayByLinkEndpoints.settings, async ({ request }) => {
         const body = await request.clone().json();
         await delay(DELAY_TIME);
         if (networkError) {
@@ -329,7 +329,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks/{paymentLinkId} - Single payment link details (returns full PaymentLinkDetails)
-    http.get(mockEndpointsPBL.details, async ({ params }) => {
+    http.get(mockPayByLinkEndpoints.details, async ({ params }) => {
         if (networkError) {
             return HttpResponse.error();
         }
@@ -345,7 +345,7 @@ export const payByLinkMocks = [
     }),
 
     // POST /paybylink/paymentLinks/{paymentLinkId}/expire - Expire a payment link
-    http.post(mockEndpointsPBL.expire, async ({ params }) => {
+    http.post(mockPayByLinkEndpoints.expire, async ({ params }) => {
         if (networkError) {
             return HttpResponse.error();
         }
@@ -363,7 +363,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks - Payment links list
-    http.get(mockEndpointsPBL.paymentLinks, async ({ request }) => {
+    http.get(mockPayByLinkEndpoints.list, async ({ request }) => {
         if (networkError) {
             return HttpResponse.error();
         }
@@ -380,7 +380,7 @@ export const payByLinkMocks = [
         const linkTypes = url.searchParams.getAll('linkTypes');
         const cursor = url.searchParams.get('cursor');
         const limit = url.searchParams.get('limit');
-        const statusGroup = url.searchParams.get('statusGroup')! as IPayByLinkStatusGroup;
+        const statusGroup = url.searchParams.get('statusGroup')! as IPaymentLinkStatusGroup;
 
         // Filter payment links based on query parameters
         const filteredLinks = getPaymentLinkItemsByStatusGroup(statusGroup).filter(
@@ -410,7 +410,7 @@ export const payByLinkMocks = [
     }),
 
     // GET /paybylink/paymentLinks - Payment links list
-    http.get(mockEndpointsPBL.filters, async () => {
+    http.get(mockPayByLinkEndpoints.filters, async () => {
         if (networkError) {
             return HttpResponse.error();
         }
