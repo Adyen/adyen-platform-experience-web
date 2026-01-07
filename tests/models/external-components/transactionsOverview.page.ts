@@ -1,9 +1,11 @@
-import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../../src/components/external/TransactionsOverview/constants';
 import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
-import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../src/components/internal/DatePicker/components/TimeRangeSelector/useTimeRangeSelection';
+
+// Duplicated from src/ to avoid importing runtime code that pulls in SCSS/JSON
+const TRANSACTION_DATE_RANGE_MAX_YEARS = 2;
+const DATE_FILTER_LABEL_KEY = 'common.filters.types.date.rangeSelect.options.last30Days';
 
 export class TransactionsOverviewPage {
     private readonly _applyDateFilter;
@@ -22,7 +24,7 @@ export class TransactionsOverviewPage {
         const filterBar = new FilterBarPage(page, rootElementSelector);
         this.filterBar = filterBar.rootElement;
         this.balanceAccountFilter = filterBar.getFilter(getTranslatedKey('common.filters.types.account.label'));
-        this.dateFilter = filterBar.getFilter(getTranslatedKey(TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS));
+        this.dateFilter = filterBar.getFilter(getTranslatedKey(DATE_FILTER_LABEL_KEY));
 
         this._applyDateFilter = applyDateFilter(page, {
             earliestDate: now => {
