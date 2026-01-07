@@ -24,7 +24,6 @@
         flex: 2 1 0;
         flex-direction: column;
         justify-content: space-between;
-        min-width: 0;
         width: 100%;
 
         &--alert {
@@ -79,7 +78,6 @@
 
         .adyen-pe-secondary-nav--sidebar {
             flex: 1 1 0;
-            min-width: 0;
         }
 
         .adyen-pe-button__label {
