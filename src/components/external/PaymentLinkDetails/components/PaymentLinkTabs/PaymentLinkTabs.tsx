@@ -65,7 +65,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                 },
                 {
                     key: 'payByLink.details.fields.linkType',
-                    value: i18n.has(`paymentLinks.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}`) : linkType,
+                    value: i18n.has(`payByLink.common.linkType.${linkType}`) ? i18n.get(`payByLink.common.linkType.${linkType}`) : linkType,
                 },
                 {
                     key: 'payByLink.details.fields.description',

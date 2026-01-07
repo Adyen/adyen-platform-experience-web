@@ -42,7 +42,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
         <Card classNameModifiers={[CLASSNAMES.root]}>
             <div className={CLASSNAMES.content}>
                 <Tag variant={getStatusVariant(status)}>
-                    {i18n.has(`paymentLinks.common.status.${status}`)
+                    {i18n.has(`payByLink.common.status.${status}`)
                         ? i18n.get(`payByLink.common.status.${status}`)
                         : paymentLink?.linkInformation.status}
                 </Tag>
