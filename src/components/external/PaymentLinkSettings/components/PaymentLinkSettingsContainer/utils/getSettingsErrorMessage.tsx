@@ -26,6 +26,12 @@ const getSettingsErrorMessage = (
                 message: ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport'],
                 translationValues,
             };
+        case 'WRONG_STORE_IDS':
+            return {
+                title: 'common.errors.somethingWentWrong',
+                message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],
+                translationValues,
+            };
         case '00_500':
             return {
                 title: 'common.errors.somethingWentWrong',

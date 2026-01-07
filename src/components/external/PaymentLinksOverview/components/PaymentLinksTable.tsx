@@ -85,6 +85,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     showPagination,
     paymentLinks,
     stores,
+    allStores,
     storeError,
     ...paginationProps
 }) => {
@@ -151,7 +152,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const noStoresError = useMemo(() => {
-        if (stores?.length !== 0 || storeError) return undefined;
+        if (allStores?.length !== 0 || storeError) return undefined;
         return {
             message: 'No stores configured',
             name: 'Account misconfiguration',
@@ -159,20 +160,31 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
-    }, [stores, storeError]);
+    }, [allStores, storeError]);
+
+    const storesFilteredError = useMemo(() => {
+        if (allStores && allStores?.length > 0 && stores?.length !== 0) return undefined;
+        return {
+            errorCode: 'WRONG_STORE_IDS',
+            type: 'error',
+            requestId: '',
+        } as AdyenPlatformExperienceError;
+    }, [allStores, stores]);
+
+    console.log(storesFilteredError);
 
     const errorDisplay = useMemo(
         () => () => {
             return (
                 <PaymentLinksErrors
                     getImageAsset={getImageAsset}
-                    error={noStoresError || error}
+                    error={noStoresError || error || storesFilteredError}
                     onContactSupport={onContactSupport}
                     errorMessage={ERROR_MESSAGE_KEY}
                 />
             );
         },
-        [error, getImageAsset, onContactSupport, noStoresError]
+        [error, getImageAsset, onContactSupport, noStoresError, storesFilteredError]
     );
 
     return (
@@ -180,7 +192,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
             <DataGrid
                 narrowColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
-                error={noStoresError || error}
+                error={noStoresError || error || storesFilteredError}
                 columns={columns}
                 data={paymentLinks}
                 loading={loading}

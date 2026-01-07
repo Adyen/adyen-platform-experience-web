@@ -18,6 +18,7 @@ export interface PaymentLinkTableProps extends WithPaginationLimitSelection<Pagi
     paymentLinks: IPaymentLinkItem[] | undefined;
     stores?: StoreData[];
     storeError?: AdyenPlatformExperienceError;
+    allStores?: StoreData[];
 }
 
 export type StoreData = IStore & { name?: string };

@@ -27,6 +27,12 @@ export const getPaymentLinksErrorMessage = (
                 translationValues,
                 onContactSupport,
             };
+        case 'WRONG_STORE_IDS':
+            return {
+                title: 'common.errors.somethingWentWrong',
+                message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],
+                translationValues,
+            };
         case '29_001':
             if (error.invalidFields?.some(field => field.name === 'paymentLinkId')) {
                 return {

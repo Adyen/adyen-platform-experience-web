@@ -68,8 +68,6 @@ const PaymentLinkSettings = ({
     const noStoresError = useMemo(() => {
         if (!allStores || allStores.length > 0 || isLoadingStores) return undefined;
         return {
-            message: 'No stores configured',
-            name: 'Account misconfiguration',
             errorCode: 'ACCOUNT_MISCONFIGURATION',
             type: 'error',
             requestId: '',
@@ -79,9 +77,7 @@ const PaymentLinkSettings = ({
     const storesFilteredError = useMemo(() => {
         if ((allStores && allStores?.length > 0 && filteredStores?.length !== 0) || isLoadingStores) return undefined;
         return {
-            message: 'No stores configured',
-            name: 'Account misconfiguration',
-            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            errorCode: 'WRONG_STORE_IDS',
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
