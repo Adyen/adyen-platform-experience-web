@@ -2,6 +2,7 @@ import AdyenPlatformExperienceError from '../../../../../../../../core/Errors/Ad
 import { TranslationKey } from '../../../../../../../../translations';
 import { ErrorMessageDisplay } from '../../../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import getSettingsErrorMessage from '../../utils/getSettingsErrorMessage';
+import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 
 const SettingsError = ({
     error,
@@ -16,7 +17,14 @@ const SettingsError = ({
     absolutePosition?: boolean;
     onContactSupport?: () => void;
 }) => {
-    const { title, message, refreshComponent, translationValues, images } = getSettingsErrorMessage(error, errorMessage, onContactSupport);
+    const { getImageAsset } = useCoreContext();
+
+    const { title, message, refreshComponent, translationValues, images } = getSettingsErrorMessage(
+        error,
+        errorMessage,
+        onContactSupport,
+        getImageAsset
+    );
 
     return (
         <ErrorMessageDisplay
@@ -31,6 +39,7 @@ const SettingsError = ({
             absolutePosition={absolutePosition ?? false}
             refreshComponent={refreshComponent}
             onContactSupport={onContactSupport}
+            outlined={false}
         />
     );
 };

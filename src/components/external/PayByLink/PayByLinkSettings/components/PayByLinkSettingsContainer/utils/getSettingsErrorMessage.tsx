@@ -2,11 +2,14 @@ import AdyenPlatformExperienceError from '../../../../../../../core/Errors/Adyen
 import { TranslationKey } from '../../../../../../../translations';
 import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../../utils/getCommonErrorCode';
 import CopyText from '../../../../../../internal/CopyText/CopyText';
+import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { AssetOptions } from '../../../../../../../core/Assets/Assets';
 
 const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
     errorMessage: TranslationKey,
-    onContactSupport?: () => void
+    onContactSupport?: () => void,
+    getImageAsset?: (props: AssetOptions) => string
 ): ErrorMessage => {
     if (!error) return UNDEFINED_ERROR;
 
@@ -30,6 +33,9 @@ const getSettingsErrorMessage = (
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues,
                 refreshComponent: true,
+                images: {
+                    desktop: getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' }),
+                },
             };
         default:
             return {
@@ -37,6 +43,9 @@ const getSettingsErrorMessage = (
                 message: [errorMessage, secondaryErrorMessage],
                 translationValues,
                 refreshComponent: true,
+                images: {
+                    desktop: getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' }),
+                },
             };
     }
 };
