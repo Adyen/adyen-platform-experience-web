@@ -119,9 +119,11 @@ const Select = <T extends SelectItem>({
             case CommitAction.CLEAR:
                 resetSelection();
                 clearSelectionInProgress.current = true;
+                cachedSelectedItems.current = EMPTY_ARRAY;
+                onChange({ target: { value: '', name } });
                 break;
         }
-    }, [commitAction, commitSelection, resetSelection]);
+    }, [commitAction, commitSelection, name, onChange, resetSelection]);
 
     /**
      * Closes the select list and fires an onChange
