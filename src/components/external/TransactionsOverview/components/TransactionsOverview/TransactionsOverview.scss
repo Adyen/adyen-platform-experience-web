@@ -37,6 +37,15 @@
         gap: style.token(spacer-020);
     }
 
+    &__totals-error {
+        flex-grow: unset;
+
+        @include breakpoints.adyen-pe-screen-md-and-up {
+            min-width: 400px;
+            width: auto;
+        }
+    }
+
     &__summary {
         display: flex;
         flex-wrap: wrap-reverse;

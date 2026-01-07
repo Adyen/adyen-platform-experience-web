@@ -1144,6 +1144,7 @@
     "transactions.overview.pagination.label": "Transactions pagination",
     "transactions.overview.title": "Transactions",
     "transactions.overview.totals.currency.label": "Currency",
+    "transactions.overview.totals.error": "Something went wrong, we couldn’t load totals.",
     "transactions.overview.totals.labels.default": "Show all transaction totals",
     "transactions.overview.totals.labels.incoming": "Show all incoming totals",
     "transactions.overview.totals.labels.outgoing": "Show all outgoing totals",
