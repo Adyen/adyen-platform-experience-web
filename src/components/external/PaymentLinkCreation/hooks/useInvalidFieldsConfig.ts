@@ -15,7 +15,7 @@ export const useInvalidFieldsConfig = () => {
 
     const getInvalidFieldsConfig = useCallback(async () => {
         const config = await getCdnConfig?.<InvalidFieldsConfig>({
-            subFolder: 'paymentLinks',
+            subFolder: 'payByLink',
             name: 'invalidFieldsConfig',
             fallback: localConfig,
         });
