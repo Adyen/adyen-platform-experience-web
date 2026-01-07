@@ -7,7 +7,7 @@ import { Checkbox } from '../../../../../internal/Checkbox';
 import InputText from '../../../../../internal/FormFields/InputText';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
-import { AlertTypeOption } from '../../../../../internal/Alert/types';
+import { AlertTypeOption, AlertVariantOption } from '../../../../../internal/Alert/types';
 import Alert from '../../../../../internal/Alert/Alert';
 import Icon from '../../../../../internal/Icon';
 import { IPayByLinkTermsAndConditions } from '../../../../../../types';
@@ -180,6 +180,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                 {isTermsAndConditionsChanged && (
                     <Alert
                         type={AlertTypeOption.WARNING}
+                        variant={AlertVariantOption.TIP}
                         description={i18n.get('payByLink.settings.termsAndConditions.alert.urlChange')}
                         className={'adyen-pe-pay-by-link-settings-terms-and-conditions__alert'}
                     />

@@ -36,7 +36,7 @@ export const Alert = ({
                         <Typography
                             className={'adyen-pe-alert__description'}
                             el={TypographyElement.DIV}
-                            variant={variant !== AlertVariantOption.TIP ? TypographyVariant.CAPTION : TypographyVariant.BODY}
+                            variant={variant === AlertVariantOption.TIP ? TypographyVariant.CAPTION : TypographyVariant.BODY}
                             wide
                         >
                             {description}
