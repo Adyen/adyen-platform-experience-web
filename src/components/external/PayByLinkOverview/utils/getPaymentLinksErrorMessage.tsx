@@ -23,7 +23,7 @@ export const getPaymentLinksErrorMessage = (
         case 'ACCOUNT_MISCONFIGURATION':
             return {
                 title: 'common.errors.somethingWentWrong',
-                message: ['payByLink.overview.errors.accountConfiguration', 'common.errors.contactSupport'],
+                message: ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport'],
                 translationValues,
                 onContactSupport,
             };

@@ -150,6 +150,7 @@ export const ThemeForm = ({ theme, initialPayload }: ThemeFormProps) => {
                     <InputText
                         type="text"
                         disabled={!!isSaving}
+                        readonly={!!isSaving}
                         lang={i18n.locale}
                         uniqueId={brandInputId}
                         value={brandName}

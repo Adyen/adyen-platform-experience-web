@@ -212,6 +212,7 @@
 .adyen-pe-input--disabled {
     background: style.token(color-background-tertiary-active);
     border-color: style.token(color-outline-primary);
+    cursor: not-allowed;
 }
 
 .adyen-pe-input--disabled:hover {
@@ -295,7 +296,7 @@
     background-color: style.token(color-background-tertiary-active);
     border-color: transparent;
     color: style.token(color-label-primary-hover);
-    cursor: default;
+    cursor: not-allowed;
 }
 
 /* stylelint-disable-next-line selector-no-qualifying-type */
