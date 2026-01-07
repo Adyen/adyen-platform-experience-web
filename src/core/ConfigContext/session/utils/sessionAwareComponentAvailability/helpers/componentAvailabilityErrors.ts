@@ -17,7 +17,7 @@ const componentAvailabilityErrors = (type: ExternalComponentType): TranslationKe
             return 'payouts.details.errors.unavailable';
         case 'disputesManagement':
             return 'disputes.management.common.errors.unavailable';
-        case 'payByLinkOverview':
+        case 'paymentLinksOverview':
             return 'payByLink.overview.errors.unavailable';
         default:
             return 'common.errors.componentUnavailable';

@@ -5,11 +5,11 @@ import { IPaymentLinkActivity } from '../../../../../types';
 export const getTitleKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {
     switch (activity.type) {
         case 'createdAction':
-            return 'paymentLinks.details.activity.created';
+            return 'payByLink.details.activity.created';
         case 'expiredAction':
-            return 'paymentLinks.details.activity.expired';
+            return 'payByLink.details.activity.expired';
         case 'paymentAttempt':
-            return 'paymentLinks.details.activity.paymentAttempt';
+            return 'payByLink.details.activity.paymentAttempt';
         default:
             return undefined;
     }
@@ -18,11 +18,11 @@ export const getTitleKey = (activity: IPaymentLinkActivity): TranslationKey | un
 export const getDescriptionKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {
     switch (activity.expirationReason) {
         case 'maximumAttemptsReached':
-            return 'paymentLinks.details.activity.expirationReason.maximumAttemptsReached';
+            return 'payByLink.details.activity.expirationReason.maximumAttemptsReached';
         case 'manuallyExpired':
-            return 'paymentLinks.details.activity.expirationReason.manuallyExpired';
+            return 'payByLink.details.activity.expirationReason.manuallyExpired';
         case 'expirationDateReached':
-            return 'paymentLinks.details.activity.expirationReason.expirationDateReached';
+            return 'payByLink.details.activity.expirationReason.expirationDateReached';
         default:
             return undefined;
     }

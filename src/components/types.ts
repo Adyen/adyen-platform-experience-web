@@ -9,8 +9,8 @@ import { PayoutsTableFields } from './external/PayoutsOverview/components/Payout
 import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
-import { PBLFormValues } from './external/PayByLink/PayByLinkCreation/components/types';
-import { StoreIds } from './external/PayByLink/types';
+import { PaymentLinkCreationFormValues } from './external/PaymentLinkCreation/components/types';
+import { StoreIds } from './external/PaymentLinksOverview/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -186,13 +186,13 @@ export interface TransactionOverviewComponentProps
         >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
-type PayByLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
+type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
 
-export interface PayByLinkOverviewComponentProps
+export interface PaymentLinkOverviewComponentProps
     extends _DataOverviewComponentProps,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
-    paymentLinkCreation?: PayByLinkOverviewSubComponentProps<PayByLinkCreationComponentProps>;
-    paymentLinkSettings?: PayByLinkOverviewSubComponentProps<PayByLinkSettingsComponentProps>;
+    paymentLinkCreation?: PaymentLinkOverviewSubComponentProps<PaymentLinkCreationComponentProps>;
+    paymentLinkSettings?: PaymentLinkOverviewSubComponentProps<PaymentLinkSettingsComponentProps>;
     storeIds?: StoreIds;
 }
 
@@ -212,16 +212,16 @@ export type DeepPartial<T> = T extends object
       }
     : T;
 
-export interface PayByLinkCreationComponentProps extends UIElementProps {
+export interface PaymentLinkCreationComponentProps extends UIElementProps {
     fieldsConfig?: {
-        data: DeepPartial<PBLFormValues>;
+        data: DeepPartial<PaymentLinkCreationFormValues>;
     };
     storeIds?: StoreIds;
-    onPaymentLinkCreated?: (paymentLink: PBLFormValues) => void;
+    onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
     onCreationDismiss?: () => void;
 }
 
-export interface PayByLinkSettingsComponentProps extends UIElementProps {
+export interface PaymentLinkSettingsComponentProps extends UIElementProps {
     storeIds?: string[] | string;
 }
 
@@ -241,16 +241,16 @@ export const enum FilterParam {
 }
 
 export type ExternalComponentType =
-    | 'transactions'
-    | 'transactionDetails'
-    | 'payouts'
-    | 'payoutDetails'
-    | 'reports'
     | 'capitalOverview'
     | 'capitalOffer'
     | 'disputes'
     | 'disputesManagement'
-    | 'payByLinkCreation'
-    | 'payByLinkOverview'
-    | 'payByLinkSettings'
-    | 'paymentLinkDetails';
+    | 'paymentLinkCreation'
+    | 'paymentLinkDetails'
+    | 'paymentLinksOverview'
+    | 'paymentLinkSettings'
+    | 'payouts'
+    | 'payoutDetails'
+    | 'reports'
+    | 'transactions'
+    | 'transactionDetails';
