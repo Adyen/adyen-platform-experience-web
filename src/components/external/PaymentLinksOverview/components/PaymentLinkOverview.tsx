@@ -47,6 +47,10 @@ import Icon from '../../../internal/Icon';
 import { PaymentLinkOverviewModal } from './PaymentLinkOverviewModal';
 import Alert from '../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../internal/Alert/types';
+import {
+    getTimeRangeSelectionDefaultPresetOptions,
+    TIME_RANGE_SELECTION_PRESET_OPTION_KEYS,
+} from '../../../internal/DatePicker/components/TimeRangeSelector';
 
 const PAYMENT_LINK_TYPES_FILTER_PARAM = 'linkTypes';
 const PAYMENT_LINK_STATUSES_FILTER_PARAM = 'statuses';
@@ -119,7 +123,13 @@ export const PaymentLinkOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getPaymentLinks } = useConfigContext().endpoints;
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('paymentLinks');
+    const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions({ exclude: [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE] });
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(
+        'paymentLinks',
+        undefined,
+        undefined,
+        timeRangeOptions
+    );
     const [statusGroup, setStatusGroup] = useState<IPaymentLinkStatusGroup>(DEFAULT_PAYMENT_LINK_STATUS_GROUP);
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IPaymentLinkStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);

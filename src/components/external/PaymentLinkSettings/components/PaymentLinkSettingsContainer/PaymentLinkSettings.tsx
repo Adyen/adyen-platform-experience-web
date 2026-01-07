@@ -91,7 +91,7 @@ const PaymentLinkSettings = ({
 
     const errorDisplay = useMemo(() => {
         if (!error) return null;
-        return <SettingsError error={error} centered absolutePosition onContactSupport={props.onContactSupport} errorMessage={ERROR_MESSAGE_KEY} />;
+        return <SettingsError error={error} onContactSupport={props.onContactSupport} errorMessage={ERROR_MESSAGE_KEY} />;
     }, [props.onContactSupport, error]);
 
     const hasError = !!noStoresError || !!storesError || !!storesFilteredError;
