@@ -12,6 +12,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import cx from 'classnames';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 
 const paymentAmountKeys = {
     grossAmount: 'transactions.details.summary.fields.grossAmount',
@@ -24,6 +25,16 @@ const SKIP_ITEM: StructuredListProps['items'][number] = null!;
 export interface PaymentDetailsSummaryProps {
     transaction: TransactionDetails;
 }
+
+const isAmount = (value: any): value is IAmount => {
+    return value && typeof value === 'object' && 'value' in value;
+};
+
+const ADJUSTMENTS_TOOLTIP_CONTENT: Record<`transactions.details.summary.adjustments.types.${string}`, TranslationKey> = {
+    'transactions.details.summary.adjustments.types.tip': 'transactions.details.summary.adjustments.types.tip.information',
+    'transactions.details.summary.adjustments.types.surcharge': 'transactions.details.summary.adjustments.types.surcharge.information',
+    'transactions.details.summary.adjustments.types.fee': 'transactions.details.summary.adjustments.types.fees.information',
+};
 
 const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
     const { i18n } = useCoreContext();
@@ -62,8 +73,10 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
 
             // deductions
             ...(deductions?.map(({ type, ...amount }) => ({
-                key: getTransactionAmountAdjustmentType(i18n, type) as TranslationKey,
+                key: `transactions.details.summary.adjustments.types.${type}` as TranslationKey,
                 value: getFormattedAmount(amount),
+                rawValue: amount,
+                label: getTransactionAmountAdjustmentType(i18n, type) as TranslationKey,
             })) ?? []),
 
             // netAmount
@@ -77,10 +90,18 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
         return listItems.filter(Boolean);
     }, [i18n, transaction]);
 
-    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>(
-        label => <div className={cx(TX_DATA_LABEL)}>{label}</div>,
-        []
-    );
+    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>((label, key, value) => {
+        const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as any];
+
+        if (value && isAmount(value) && value.value < 0 && tooltipContent) {
+            return (
+                <Tooltip content={i18n.get(tooltipContent)} key={key} isUnderlineVisible>
+                    <span className={cx(TX_DATA_LABEL)}>{label}</span>
+                </Tooltip>
+            );
+        }
+        return <div className={cx(TX_DATA_LABEL)}>{label}</div>;
+    }, []);
 
     const renderListPropertyValue = useCallback<NonNullable<StructuredListProps['renderValue']>>((val, key) => {
         const strongest = key === paymentAmountKeys.netAmount;
