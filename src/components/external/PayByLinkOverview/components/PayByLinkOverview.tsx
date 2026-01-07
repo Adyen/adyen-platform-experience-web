@@ -47,6 +47,7 @@ import Icon from '../../../internal/Icon';
 import { PayByLinkOverviewModal } from './PayByLinkOverviewModal';
 import Alert from '../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../internal/Alert/types';
+import { getTimeRangeSelectionDefaultPresetOptions } from '../../../internal/DatePicker/components/TimeRangeSelector';
 
 const PAY_BY_LINK_TYPE_FILTER_PARAM = 'linkTypes';
 const PAY_BY_LINK_STATUS_FILTER_PARAM = 'statuses';
@@ -119,7 +120,8 @@ export const PayByLinkOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getPaymentLinks: getPayByLinkListEndpoint } = useConfigContext().endpoints;
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payByLink');
+    const { 'common.filters.types.date.rangeSelect.options.yearToDate': _, ...timeRangeOptions } = getTimeRangeSelectionDefaultPresetOptions();
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('payByLink', undefined, undefined, timeRangeOptions);
     const [statusGroup, setStatusGroup] = useState<IPayByLinkStatusGroup>(DEFAULT_PAY_BY_LINK_STATUS_GROUP);
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IPayByLinkStatusGroup | undefined>(statusGroup);
     const [statusGroupFetchPending, setStatusGroupFetchPending] = useState(false);

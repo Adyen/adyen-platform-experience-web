@@ -1,10 +1,18 @@
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { getTimeRangeSelectionDefaultPresetOptions, TimeRangeOptions } from '../components/internal/DatePicker/components/TimeRangeSelector';
+import {
+    getTimeRangeSelectionDefaultPresetOptions,
+    TimeRangeOptions,
+    UseTimeRangeSelectionConfig,
+} from '../components/internal/DatePicker/components/TimeRangeSelector';
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../components/types';
 
-const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'payByLink', timeRange?: TimeRangeOptions) => {
+const getDefaultFilterParams = (
+    type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'payByLink',
+    timeRange?: TimeRangeOptions,
+    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig['options']>
+) => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = timeRange
         ? (`common.filters.types.date.rangeSelect.options.${timeRange}` as const)
@@ -31,16 +39,17 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | '
         [FilterParam.CREATED_UNTIL]: new Date(to).toISOString(),
     } as const;
 
-    return { defaultFilterParams, defaultTimeRange, timeRangeOptions } as const;
+    return { defaultFilterParams, defaultTimeRange, timeRangeOptions: timeRangeOptionsSubset || timeRangeOptions } as const;
 };
 
 const useDefaultOverviewFilterParams = (
     filterType: Parameters<typeof getDefaultFilterParams>[0],
     balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount'],
-    timeRange?: TimeRangeOptions
+    timeRange?: TimeRangeOptions,
+    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig['options']>
 ) => {
     const [nowTimestamp, setNowTimestamp] = useState(Date.now());
-    const params = getDefaultFilterParams(filterType, timeRange);
+    const params = getDefaultFilterParams(filterType, timeRange, timeRangeOptionsSubset);
     const defaultParams: MutableRef<any> = useRef(params);
     const refreshNowTimestamp = useCallback(() => setNowTimestamp(Date.now()), [setNowTimestamp]);
 
