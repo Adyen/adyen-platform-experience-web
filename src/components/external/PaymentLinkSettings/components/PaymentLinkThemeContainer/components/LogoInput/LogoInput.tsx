@@ -76,7 +76,7 @@ const LogoInput = ({
                 <Typography
                     el={TypographyElement.SPAN}
                     variant={TypographyVariant.BODY}
-                    className="adyen-pe-pay-by-link-theme-form__field-label-optional"
+                    className="adyen-pe-payment-link-theme-form__field-label-optional"
                 >
                     {`(${i18n.get('payByLink.common.fields.optional.label')})`}
                 </Typography>
