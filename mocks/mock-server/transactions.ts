@@ -479,6 +479,7 @@ export const transactionsMocks = [
     }),
 
     http.get(mockEndpoints.downloadTransactions, async ({ request }) => {
+        await delay(500);
         const { transactions } = fetchTransactionsForRequest(request);
         const columnsParam = new URLSearchParams(new URL(request.url).searchParams).getAll('columns');
         const columns = (Object.keys(DownloadFields) as ITransactionExportColumn[]).filter(column => columnsParam.includes(column));

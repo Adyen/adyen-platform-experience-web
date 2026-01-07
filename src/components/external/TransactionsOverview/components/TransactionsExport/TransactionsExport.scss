@@ -1,6 +1,10 @@
 /* stylelint-disable selector-no-qualifying-type */
 @use '../../../../../style';
 
+.adyen-pe-transactions-export {
+    margin-left: auto;
+}
+
 .adyen-pe-transactions-export__button {
     .adyen-pe-filter-button__label {
         align-items: center;
@@ -70,5 +74,15 @@
                 z-index: -1;
             }
         }
+    }
+
+    &-actions {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &-action-error {
+        padding: style.token(spacer-060);
     }
 }

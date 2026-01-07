@@ -1098,6 +1098,7 @@
     "transactions.overview.errors.unavailable": "We couldn't load the transactions overview.",
     "transactions.overview.export.actions.cancel": "Cancel",
     "transactions.overview.export.actions.download": "Download",
+    "transactions.overview.export.actions.error": "We couldn't process this request. Please try again.",
     "transactions.overview.export.button.inProgress": "Exporting",
     "transactions.overview.export.button.label": "Export",
     "transactions.overview.export.columns.title": "Columns",
