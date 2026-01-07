@@ -26,6 +26,9 @@ import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
+import { EndpointDownloadStreamData } from '../../../../../types/api/endpoints';
+import Alert from '../../../../internal/Alert/Alert';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { Tag } from '../../../../internal/Tag/Tag';
 
 const sharedAnalyticsEventProperties = {
@@ -100,11 +103,28 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     const canDownloadTransactions = isFunction(downloadTransactions);
     const canExportTransactions = canDownloadTransactions && popoverOpen && exportStarted && !!exportColumns.length;
 
-    // [TODO]: How to display the download error
-    const { data, error, isFetching } = useDownload(
+    const dismissPopover = useCallback(
+        (exportCancelled = true) => {
+            setPopoverOpen(false);
+            if (!exportCancelled) return;
+            userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
+        },
+        [userEvents]
+    );
+
+    const onExportSuccess = useCallback(
+        (data: EndpointDownloadStreamData) => {
+            downloadBlob(data);
+            dismissPopover(false);
+        },
+        [dismissPopover]
+    );
+
+    const { error, isFetching } = useDownload(
         'downloadTransactions',
         { query: { ...exportParams, columns: exportColumns } },
-        canExportTransactions
+        canExportTransactions,
+        onExportSuccess
     );
 
     const exportButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -163,15 +183,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         [masterSwitchId]
     );
 
-    const dismissPopover = useCallback(
-        (exportCancelled = true) => {
-            setPopoverOpen(false);
-            if (!exportCancelled) return;
-            userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
-        },
-        [userEvents]
-    );
-
     const openPopover = useCallback(() => {
         if (popoverOpenRef.current) return;
         setPopoverOpen(true);
@@ -193,11 +204,10 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
             event: () => setExportStarted(true),
             variant: ButtonVariant.PRIMARY,
             title: downloadButtonLabel,
+            state: isFetching ? 'loading' : 'default',
         }),
-        [downloadButtonLabel, exportColumns]
+        [downloadButtonLabel, exportColumns.length, isFetching]
     );
-
-    useEffect(() => void (data && downloadBlob(data)), [data]);
 
     useEffect(() => {
         if (!(popoverOpenRef.current = popoverOpen)) {
@@ -208,7 +218,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     useEffect(() => {
         if (exportStarted) {
             setExportStarted(false);
-            dismissPopover(false);
 
             if (isFetching) {
                 let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
@@ -269,7 +278,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                     dismissible={false}
                     dismiss={dismissPopover}
                     open={popoverOpen}
-                    position={PopoverContainerPosition.BOTTOM_RIGHT}
+                    position={isSmContainer ? PopoverContainerPosition.BOTTOM : PopoverContainerPosition.BOTTOM_RIGHT}
                     variant={PopoverContainerVariant.POPOVER}
                     showOverlay={isSmContainer}
                     targetElement={exportButtonRef}
@@ -314,8 +323,12 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                 </div>
                             </div>
                         </div>
-
                         <div className={classes.popoverActions}>
+                            {error && (
+                                <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
+                                    <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
+                                </Alert>
+                            )}
                             <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
                     </div>
