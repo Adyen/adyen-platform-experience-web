@@ -98,8 +98,7 @@ const PayByLinkSettings = ({
 
     if (!menuItems || menuItems.length === 0) return null;
 
-    const showActionButtons =
-        !isLoadingStores && contentVisible && !isLoadingContent && !themeError && !storesError && !termsAndConditionsError && !isShowingRequirements;
+    const showActionButtons = contentVisible && !themeError && !storesError && !termsAndConditionsError && !isShowingRequirements;
 
     return (
         <div className={CONTAINER_CLASS_NAME}>

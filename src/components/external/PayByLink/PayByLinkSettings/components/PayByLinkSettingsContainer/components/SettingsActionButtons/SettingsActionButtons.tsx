@@ -12,12 +12,13 @@ import Icon from '../../../../../../../internal/Icon';
 
 const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
-    const { onSave, isSaving, isSaveSuccess } = usePayByLinkSettingsContext();
+    const { onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePayByLinkSettingsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const isLoading = isLoadingContent || isLoadingStores;
 
     const saveButton = useMemo(() => {
         return {
-            disabled: boolOrFalse(isSaving || (navigateBack && isSaveSuccess)),
+            disabled: boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess)),
             event: onSave,
             iconLeft:
                 navigateBack && isSaveSuccess ? (
@@ -28,21 +29,22 @@ const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: 
             state: boolOrFalse(isSaving && !(navigateBack && isSaveSuccess)) ? 'loading' : 'default',
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess]);
+    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isLoading]);
 
     const goBackButton = useMemo(() => {
         return {
+            disabled: boolOrFalse(isLoading),
             event: navigateBack ?? closeContent ?? noop,
             title: i18n.get('paymentLinks.common.actions.goBack'),
             variant: ButtonVariant.SECONDARY,
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [navigateBack, i18n, isSmContainer, closeContent]);
+    }, [navigateBack, i18n, isSmContainer, closeContent, isLoading]);
 
     const buttonActions = useMemo(() => {
         if (!navigateBack && !closeContent) return [saveButton];
         return [saveButton, goBackButton];
-    }, [saveButton, goBackButton, navigateBack, closeContent]);
+    }, [saveButton, goBackButton, navigateBack, closeContent, isLoading]);
 
     const layout = useMemo(() => (isSmContainer ? ButtonActionsLayout.VERTICAL_STACK : ButtonActionsLayoutBasic.BUTTONS_END), [isSmContainer]);
 
