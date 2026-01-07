@@ -14,13 +14,13 @@ const FormField = ({
     const { i18n } = useCoreContext();
 
     return (
-        <div className={cx('adyen-pe-pay-by-link-creation-form__field-container', className)}>
-            <div className="adyen-pe-pay-by-link-creation-form__field-label-container">
+        <div className={cx('adyen-pe-payment-link-creation-form__field-container', className)}>
+            <div className="adyen-pe-payment-link-creation-form__field-label-container">
                 <Typography
                     el={TypographyElement.SPAN}
                     variant={TypographyVariant.BODY}
                     stronger
-                    className="adyen-pe-pay-by-link-creation-form__field-label"
+                    className="adyen-pe-payment-link-creation-form__field-label"
                 >
                     {label}
                 </Typography>
@@ -28,7 +28,7 @@ const FormField = ({
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation-form__field-label-optional"
+                        className="adyen-pe-payment-link-creation-form__field-label-optional"
                     >
                         {`(${i18n.get('payByLink.common.fields.optional.label')})`}
                     </Typography>
@@ -42,7 +42,7 @@ const FormField = ({
                     <Typography
                         el={TypographyElement.SPAN}
                         variant={TypographyVariant.BODY}
-                        className="adyen-pe-pay-by-link-creation-form__field-support-text"
+                        className="adyen-pe-payment-link-creation-form__field-support-text"
                     >
                         {supportText}
                     </Typography>

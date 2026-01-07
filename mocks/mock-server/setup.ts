@@ -163,7 +163,7 @@ export const setupBasicResponse = {
             method: 'GET',
             url: 'paybylink/filters',
         },
-        createPBLPaymentLink: {
+        createPaymentLink: {
             method: 'POST',
             url: 'paybylink/paymentLinks',
         },

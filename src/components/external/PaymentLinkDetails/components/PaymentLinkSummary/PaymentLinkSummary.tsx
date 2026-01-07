@@ -4,8 +4,8 @@ import { Tag } from '../../../../internal/Tag/Tag';
 import { TagVariant } from '../../../../internal/Tag/types';
 import { TypographyVariant, TypographyElement } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
-import { DATE_FORMAT_PAYMENT_LINK_SUMMARY } from '../../../../../constants';
-import { IPayByLinkStatus, IPaymentLinkDetails } from '../../../../../types';
+import { DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY } from '../../../../../constants';
+import { IPaymentLinkStatus, IPaymentLinkDetails } from '../../../../../types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import './PaymentLinkSummary.scss';
 
@@ -23,7 +23,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const status = paymentLink?.linkInformation.status;
-    const getStatusVariant = (status: IPayByLinkStatus): TagVariant => {
+    const getStatusVariant = (status: IPaymentLinkStatus): TagVariant => {
         switch (status) {
             case 'active':
                 return TagVariant.BLUE;
@@ -51,10 +51,10 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
                 </Typography>
                 <div>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={CLASSNAMES.expiresLabel}>
-                        {`${i18n.get('paymentLinks.details.fields.expiresOn')}: `}
+                        {`${i18n.get('payByLink.details.fields.expiresOn')}: `}
                     </Typography>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                        {dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_SUMMARY)}
+                        {dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY)}
                     </Typography>
                 </div>
             </div>
