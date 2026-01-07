@@ -253,6 +253,15 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         })();
     }, []);
 
+    const renderAlertError = useCallback(
+        () => (
+            <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
+                <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
+            </Alert>
+        ),
+        [i18n]
+    );
+
     return canDownloadTransactions ? (
         <div className={classes.root}>
             <FilterButton
@@ -304,6 +313,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                             checked={masterSwitchChecked}
                                             onChange={onExportColumnChange}
                                             id={masterSwitchId}
+                                            disabled={isFetching}
                                         >
                                             {masterSwitchLabel}
                                         </ExportColumn>
@@ -315,6 +325,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                                 value={value}
                                                 key={value}
                                                 id={id}
+                                                disabled={isFetching}
                                             >
                                                 {label}
                                             </ExportColumn>
@@ -324,11 +335,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                             </div>
                         </div>
                         <div className={classes.popoverActions}>
-                            {error && (
-                                <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
-                                    <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
-                                </Alert>
-                            )}
+                            {error && renderAlertError()}
                             <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
                     </div>
