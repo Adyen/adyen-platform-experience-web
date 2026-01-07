@@ -2,7 +2,9 @@
 @use '../../../../../style';
 
 .adyen-pe-transactions-export {
+    margin-bottom: auto;
     margin-left: auto;
+    padding-top: style.token(spacer-010);
 }
 
 .adyen-pe-transactions-export__button {
