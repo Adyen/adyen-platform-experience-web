@@ -75,7 +75,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                         </div>
                     </div>
                     <Divider variant="vertical" />
-                    {renderLoadingContent(activeValue)}
+                    <div className={'adyen-pe-secondary-nav__loading-content'}>{renderLoadingContent(activeValue)}</div>
                 </div>
             </div>
         ) : (
