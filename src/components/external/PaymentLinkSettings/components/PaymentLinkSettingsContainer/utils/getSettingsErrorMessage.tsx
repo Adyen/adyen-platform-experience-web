@@ -4,6 +4,9 @@ import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../utils/getCommonErr
 import CopyText from '../../../../../internal/CopyText/CopyText';
 import { AssetOptions } from '../../../../../../core/Assets/Assets';
 
+export const ACCOUNT_MISCONFIGURATION = 'ACCOUNT_MISCONFIGURATION';
+export const WRONG_STORE_IDS = 'WRONG_STORE_IDS';
+
 const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
     errorMessage: TranslationKey,
@@ -20,13 +23,13 @@ const getSettingsErrorMessage = (
     };
 
     switch (error.errorCode) {
-        case 'ACCOUNT_MISCONFIGURATION':
+        case ACCOUNT_MISCONFIGURATION:
             return {
                 title: 'common.errors.somethingWentWrong',
                 message: ['payByLink.common.errors.accountConfiguration', 'common.errors.contactSupport'],
                 translationValues,
             };
-        case 'WRONG_STORE_IDS':
+        case WRONG_STORE_IDS:
             return {
                 title: 'common.errors.somethingWentWrong',
                 message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],

@@ -32,6 +32,7 @@ import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../constants';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../utils/getPaymentLinksErrorMessage';
 
 const getTagVariantForStatus = (status: IPaymentLinkStatus) => {
     switch (status) {
@@ -156,7 +157,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
         return {
             message: 'No stores configured',
             name: 'Account misconfiguration',
-            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            errorCode: ACCOUNT_MISCONFIGURATION,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
@@ -165,7 +166,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     const storesFilteredError = useMemo(() => {
         if (allStores && allStores?.length > 0 && stores?.length !== 0) return undefined;
         return {
-            errorCode: 'WRONG_STORE_IDS',
+            errorCode: WRONG_STORE_IDS,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
