@@ -60,10 +60,6 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
         [isSmContainer, onValueChange, onContentVisibilityChange]
     );
 
-    const handleDismiss = useCallback(() => {
-        onContentVisibilityChange(false);
-    }, [onContentVisibilityChange]);
-
     if (loading) {
         return !isSmContainer ? (
             <div className={cx('adyen-pe-secondary-nav')}>
@@ -85,19 +81,6 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
 
     return (
         <div className={cx('adyen-pe-secondary-nav', className, { 'adyen-pe-secondary-nav--mobile': isSmContainer })}>
-            {isSmContainer && contentVisible && (
-                <div className={cx({ 'adyen-pe-secondary-nav__close-content--mobile': isSmContainer })}>
-                    <Button
-                        onClick={handleDismiss}
-                        variant={ButtonVariant.TERTIARY}
-                        iconButton
-                        classNameModifiers={['circle']}
-                        className={`adyen-pe-modal__dismiss-button`}
-                    >
-                        <Icon name="cross" />
-                    </Button>
-                </div>
-            )}
             <div className={cx('adyen-pe-secondary-nav__container', { 'adyen-pe-secondary-nav__container-mobile': isSmContainer })}>
                 {(!contentVisible || !isSmContainer) && (
                     <aside className={cx('adyen-pe-secondary-nav--sidebar', { 'adyen-pe-secondary-nav--sidebar-mobile': isSmContainer })}>

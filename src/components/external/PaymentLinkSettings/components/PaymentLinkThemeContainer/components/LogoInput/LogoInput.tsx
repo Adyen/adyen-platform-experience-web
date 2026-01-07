@@ -1,4 +1,3 @@
-import { FC } from 'preact/compat';
 import { LogoTypes } from '../../types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import useUniqueId from '../../../../../../../hooks/useUniqueId';
@@ -73,6 +72,13 @@ const LogoInput = ({
             <label htmlFor={logoInputId} aria-labelledby={logoInputId} className="adyen-pe-payment-link-theme-form__file-input">
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                     {i18n.get(LogoLabel[logoType])}
+                </Typography>
+                <Typography
+                    el={TypographyElement.SPAN}
+                    variant={TypographyVariant.BODY}
+                    className="adyen-pe-pay-by-link-theme-form__field-label-optional"
+                >
+                    {`(${i18n.get('payByLink.common.fields.optional.label')})`}
                 </Typography>
             </label>
             <FileInput
