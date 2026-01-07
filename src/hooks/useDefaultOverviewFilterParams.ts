@@ -4,7 +4,7 @@ import { getTimeRangeSelectionDefaultPresetOptions, TimeRangeOptions } from '../
 import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../components/types';
 
-const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'payByLink', timeRange?: TimeRangeOptions) => {
+const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'paymentLinks', timeRange?: TimeRangeOptions) => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = timeRange
         ? (`common.filters.types.date.rangeSelect.options.${timeRange}` as const)
@@ -18,10 +18,10 @@ const getDefaultFilterParams = (type: 'transactions' | 'payouts' | 'reports' | '
             [FilterParam.MIN_AMOUNT]: undefined,
             [FilterParam.MAX_AMOUNT]: undefined,
         }),
-        ...(type !== 'payByLink' && {
+        ...(type !== 'paymentLinks' && {
             [FilterParam.BALANCE_ACCOUNT]: undefined,
         }),
-        ...(type === 'payByLink' && {
+        ...(type === 'paymentLinks' && {
             [FilterParam.MERCHANT_REFERENCE]: undefined,
             [FilterParam.PAYMENT_LINK_ID]: undefined,
             [FilterParam.MIN_AMOUNT]: undefined,

@@ -6,7 +6,7 @@ import { EMPTY_OBJECT, uniqueId } from '../../../../utils';
 import { CURRENCY_INPUT_BASE_CLASS } from './constants';
 import { useFetch } from '../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../core/ConfigContext';
-import { PaymentLinkCurrencyDTO } from '../../../../types';
+import { IPaymentLinkCurrency } from '../../../../types';
 import { formatAmount, getCurrencyExponent } from '../../../../utils/currency/main';
 
 const PRIORITIZED_CURRENCY_CODES = ['EUR', 'GBP', 'USD'] as const;
@@ -129,7 +129,7 @@ export const CurrencyInput = ({
     });
 
     const currencyDropdownItems = useMemo(() => {
-        const currencies: PaymentLinkCurrencyDTO = currenciesQuery.data?.data ?? [];
+        const currencies: IPaymentLinkCurrency = currenciesQuery.data?.data ?? [];
         const items = currencies.map(currency => {
             return {
                 id: currency,

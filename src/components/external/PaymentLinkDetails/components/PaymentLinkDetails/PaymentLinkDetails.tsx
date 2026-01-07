@@ -201,7 +201,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                     disabled: isCopiedIndicatorVisible,
                     iconLeft: (
                         <Icon
-                            className="adyen-pe-pay-by-link-creation-form-success__button-icon"
+                            className="adyen-pe-payment-link-creation-form-success__button-icon"
                             name={isCopiedIndicatorVisible ? 'checkmark' : 'copy'}
                         />
                     ),

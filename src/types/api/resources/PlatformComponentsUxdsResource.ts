@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 export interface paths {
-    "/v1/uxdsclient/engage": {
+    '/v1/uxdsclient/engage': {
         parameters: {
             query?: never;
             header?: never;
@@ -13,14 +13,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["sendEngageEvent"];
+        post: operations['sendEngageEvent'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/uxdsclient/track": {
+    '/v1/uxdsclient/track': {
         parameters: {
             query?: never;
             header?: never;
@@ -30,7 +30,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["sendTrackEvent"];
+        post: operations['sendTrackEvent'];
         delete?: never;
         options?: never;
         head?: never;
@@ -52,10 +52,10 @@ export interface components {
             | 'capitalOffer'
             | 'disputes'
             | 'disputesManagement'
-            | 'payByLinkCreation'
-            | 'payByLinkOverview'
-            | 'payByLinkSettings'
-            | 'paymentLinkDetails';
+            | 'paymentLinkCreation'
+            | 'paymentLinkDetails'
+            | 'paymentLinksOverview'
+            | 'paymentLinkSettings';
     };
     responses: never;
     parameters: never;
@@ -68,7 +68,7 @@ export interface operations {
     sendEngageEvent: {
         parameters: {
             query?: {
-                component?: components["schemas"]["Component"];
+                component?: components['schemas']['Component'];
             };
             header?: never;
             path?: never;
@@ -76,7 +76,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/x-www-form-urlencoded": {
+                'application/x-www-form-urlencoded': {
                     data?: string;
                 };
             };
@@ -88,7 +88,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": string;
+                    'application/json': string;
                 };
             };
         };
@@ -96,7 +96,7 @@ export interface operations {
     sendTrackEvent: {
         parameters: {
             query?: {
-                component?: components["schemas"]["Component"];
+                component?: components['schemas']['Component'];
             };
             header?: never;
             path?: never;
@@ -104,7 +104,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/x-www-form-urlencoded": {
+                'application/x-www-form-urlencoded': {
                     data?: string;
                 };
             };
@@ -116,7 +116,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": string;
+                    'application/json': string;
                 };
             };
         };

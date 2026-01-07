@@ -3,9 +3,9 @@ import { useCallback, useMemo } from 'preact/hooks';
 import StructuredList from '../../../../internal/StructuredList';
 import { ListValue, StructuredListItem, StructuredListItemType } from '../../../../internal/StructuredList/types';
 import Tabs from '../../../../internal/Tabs/Tabs';
-import { DATE_FORMAT_PAYMENT_LINK_TABS } from '../../../../../constants';
+import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { IPaymentLinkDetails, IShopperAddress } from '../../../../../types';
+import { IPaymentLinkDetails, IPaymentLinkShopperAddress } from '../../../../../types';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../../components/internal/Typography/Typography';
 import { PaymentLinkActivity } from '../PaymentLinkActivity/PaymentLinkActivity';
@@ -34,7 +34,7 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
 
-    const isAddressRedacted = useCallback((address: IShopperAddress) => {
+    const isAddressRedacted = useCallback((address: IPaymentLinkShopperAddress) => {
         return Object.values(address).some(value => value === BACKEND_REDACTED_DATA_MARKER);
     }, []);
 
@@ -57,11 +57,11 @@ export const PaymentLinkTabs = ({ paymentLink }: PaymentLinkTabsProps) => {
                 },
                 {
                     key: 'payByLink.details.fields.createdOn',
-                    value: dateFormat(paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_TABS),
+                    value: dateFormat(paymentLink.linkInformation.creationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
                 },
                 {
                     key: 'payByLink.details.fields.expiresOn',
-                    value: dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_TABS),
+                    value: dateFormat(paymentLink.linkInformation.expirationDate, DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS),
                 },
                 {
                     key: 'payByLink.details.fields.linkType',

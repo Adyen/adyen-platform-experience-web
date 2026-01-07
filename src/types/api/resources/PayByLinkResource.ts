@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v1/paybylink/countries": {
+    '/v1/paybylink/countries': {
         parameters: {
             query?: never;
             header?: never;
@@ -12,7 +12,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["countries"];
+        get: operations['countries'];
         put?: never;
         post?: never;
         delete?: never;
@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/paymentLinks/{storeId}": {
+    '/v1/paybylink/paymentLinks/{storeId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -31,14 +31,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["createPBLPaymentLink"];
+        post: operations['createPBLPaymentLink'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/currencies": {
+    '/v1/paybylink/currencies': {
         parameters: {
             query?: never;
             header?: never;
@@ -46,7 +46,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["currencies"];
+        get: operations['currencies'];
         put?: never;
         post?: never;
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/paymentLinks/{paymentLinkId}/expire": {
+    '/v1/paybylink/paymentLinks/{paymentLinkId}/expire': {
         parameters: {
             query?: never;
             header?: never;
@@ -65,14 +65,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["expirePayByLinkPaymentLink"];
+        post: operations['expirePayByLinkPaymentLink'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/paymentLinks/{storeId}/configuration": {
+    '/v1/paybylink/paymentLinks/{storeId}/configuration': {
         parameters: {
             query?: never;
             header?: never;
@@ -80,7 +80,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["getPayByLinkConfiguration"];
+        get: operations['getPayByLinkConfiguration'];
         put?: never;
         post?: never;
         delete?: never;
@@ -89,7 +89,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/paymentLinks/{paymentLinkId}": {
+    '/v1/paybylink/paymentLinks/{paymentLinkId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -97,7 +97,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["getPayByLinkPaymentLinkById"];
+        get: operations['getPayByLinkPaymentLinkById'];
         put?: never;
         post?: never;
         delete?: never;
@@ -106,7 +106,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/settings/{storeId}": {
+    '/v1/paybylink/settings/{storeId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -114,17 +114,17 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["getPayByLinkSettings"];
+        get: operations['getPayByLinkSettings'];
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["savePayByLinkSettings"];
+        post: operations['savePayByLinkSettings'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/stores": {
+    '/v1/paybylink/stores': {
         parameters: {
             query?: never;
             header?: never;
@@ -135,7 +135,7 @@ export interface paths {
          * Get list of psp stores with pbl sales channel available for resources in the session
          * @description Add @Operation annotation to provide a description
          */
-        get: operations["getPayByLinkStores"];
+        get: operations['getPayByLinkStores'];
         put?: never;
         post?: never;
         delete?: never;
@@ -144,7 +144,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/themes/{storeId}": {
+    '/v1/paybylink/themes/{storeId}': {
         parameters: {
             query?: never;
             header?: never;
@@ -152,17 +152,17 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["getPayByLinkTheme"];
+        get: operations['getPayByLinkTheme'];
         put?: never;
         /** @description Add @Operation annotation to provide a description */
-        post: operations["updatePayByLinkTheme"];
+        post: operations['updatePayByLinkTheme'];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/paymentLinks": {
+    '/v1/paybylink/paymentLinks': {
         parameters: {
             query?: never;
             header?: never;
@@ -170,7 +170,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["getPaymentLinks"];
+        get: operations['getPaymentLinks'];
         put?: never;
         post?: never;
         delete?: never;
@@ -179,7 +179,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/paybylink/filters": {
+    '/v1/paybylink/filters': {
         parameters: {
             query?: never;
             header?: never;
@@ -187,7 +187,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Add @Operation annotation to provide a description */
-        get: operations["payByLinkFilters"];
+        get: operations['payByLinkFilters'];
         put?: never;
         post?: never;
         delete?: never;
@@ -202,7 +202,7 @@ export interface components {
     schemas: {
         CountriesResponseDTO: {
             /** @description List of countries */
-            data: components["schemas"]["CountryDTO"][];
+            data: components['schemas']['CountryDTO'][];
         };
         CountryDTO: {
             /** @description Country Code */
@@ -363,34 +363,34 @@ export interface components {
             street?: string;
         };
         CreatePaymentLinkRequestDTO: {
-            amount: components["schemas"]["Amount"];
-            billingAddress?: components["schemas"]["CreateLinkAddressDTO"];
+            amount: components['schemas']['Amount'];
+            billingAddress?: components['schemas']['CreateLinkAddressDTO'];
             countryCode: string;
             /** Format: date-time */
             deliverAt?: string;
-            deliveryAddress?: components["schemas"]["CreateLinkAddressDTO"];
+            deliveryAddress?: components['schemas']['CreateLinkAddressDTO'];
             description?: string;
-            linkType?: components["schemas"]["PaymentLinkType"];
-            linkValidity: components["schemas"]["CreatePaymentLinkValidity"];
+            linkType?: components['schemas']['PaymentLinkType'];
+            linkValidity: components['schemas']['CreatePaymentLinkValidity'];
             reference: string;
             sendLinkToShopper?: boolean;
             sendSuccessEmailToShopper?: boolean;
             /** Format: email */
             shopperEmail?: string;
             shopperLocale?: string;
-            shopperName?: components["schemas"]["ShopperName"];
+            shopperName?: components['schemas']['ShopperName'];
             shopperReference?: string;
             telephoneNumber?: string;
         };
         CreatePaymentLinkValidity: {
-            durationUnit: components["schemas"]["DurationUnit"];
+            durationUnit: components['schemas']['DurationUnit'];
             /** Format: int32 */
             quantity: number;
         };
         /** @enum {string} */
-        DurationUnit: "minute" | "hour" | "day" | "week";
+        DurationUnit: 'minute' | 'hour' | 'day' | 'week';
         /** @enum {string} */
-        PaymentLinkType: "open" | "singleUse";
+        PaymentLinkType: 'open' | 'singleUse';
         ShopperName: {
             firstName?: string;
             lastName?: string;
@@ -400,30 +400,30 @@ export interface components {
             data: string[];
         };
         ConfigurationResponse: {
-            amountValue: components["schemas"]["FieldRequirementVoid"];
-            billingAddress?: components["schemas"]["FieldRequirementVoid"];
-            countryCode: components["schemas"]["FieldRequirementString"];
-            currency: components["schemas"]["FieldRequirementString"];
-            deliveryAddress?: components["schemas"]["FieldRequirementVoid"];
-            deliveryDate?: components["schemas"]["FieldRequirementVoid"];
-            description?: components["schemas"]["FieldRequirementVoid"];
-            emailAddress?: components["schemas"]["FieldRequirementVoid"];
-            linkType?: components["schemas"]["FieldRequirementLinkType"];
-            linkValidity?: components["schemas"]["FieldRequirementLinkValidity"];
-            merchantReference?: components["schemas"]["FieldRequirementVoid"];
-            phoneNumber?: components["schemas"]["FieldRequirementVoid"];
-            sendLinkToShopper?: components["schemas"]["FieldRequirementVoid"];
-            sendSuccessEmailToShopper?: components["schemas"]["FieldRequirementVoid"];
-            shopperLocale?: components["schemas"]["FieldRequirementString"];
-            shopperName?: components["schemas"]["FieldRequirementVoid"];
-            shopperReference?: components["schemas"]["FieldRequirementVoid"];
+            amountValue: components['schemas']['FieldRequirementVoid'];
+            billingAddress?: components['schemas']['FieldRequirementVoid'];
+            countryCode: components['schemas']['FieldRequirementString'];
+            currency: components['schemas']['FieldRequirementString'];
+            deliveryAddress?: components['schemas']['FieldRequirementVoid'];
+            deliveryDate?: components['schemas']['FieldRequirementVoid'];
+            description?: components['schemas']['FieldRequirementVoid'];
+            emailAddress?: components['schemas']['FieldRequirementVoid'];
+            linkType?: components['schemas']['FieldRequirementLinkType'];
+            linkValidity?: components['schemas']['FieldRequirementLinkValidity'];
+            merchantReference?: components['schemas']['FieldRequirementVoid'];
+            phoneNumber?: components['schemas']['FieldRequirementVoid'];
+            sendLinkToShopper?: components['schemas']['FieldRequirementVoid'];
+            sendSuccessEmailToShopper?: components['schemas']['FieldRequirementVoid'];
+            shopperLocale?: components['schemas']['FieldRequirementString'];
+            shopperName?: components['schemas']['FieldRequirementVoid'];
+            shopperReference?: components['schemas']['FieldRequirementVoid'];
         };
         FieldRequirementLinkType: {
-            options?: components["schemas"]["LinkType"][];
+            options?: components['schemas']['LinkType'][];
             required: boolean;
         };
         FieldRequirementLinkValidity: {
-            options?: components["schemas"]["LinkValidity"][];
+            options?: components['schemas']['LinkValidity'][];
             required: boolean;
         };
         FieldRequirementString: {
@@ -435,27 +435,27 @@ export interface components {
             required: boolean;
         };
         /** @enum {string} */
-        LinkType: "singleUse" | "open";
+        LinkType: 'singleUse' | 'open';
         LinkValidity: {
-            durationUnit: components["schemas"]["DurationUnit"];
+            durationUnit: components['schemas']['DurationUnit'];
             /** Format: int32 */
             quantity: number;
-            type: components["schemas"]["Type"];
+            type: components['schemas']['Type'];
         };
         /** @enum {string} */
-        Type: "fixed" | "flexible";
+        Type: 'fixed' | 'flexible';
         LinkInformation: {
-            amount: components["schemas"]["Amount"];
+            amount: components['schemas']['Amount'];
             /** Format: date-time */
             creationDate: string;
             description: string;
             /** Format: date-time */
             expirationDate: string;
-            linkType: components["schemas"]["PaymentLinkType"];
+            linkType: components['schemas']['PaymentLinkType'];
             merchantReference: string;
             paymentLink: string;
             paymentLinkId: string;
-            status: components["schemas"]["PaymentLinkStatus"];
+            status: components['schemas']['PaymentLinkStatus'];
             storeCode?: string;
         };
         Name: {
@@ -466,7 +466,7 @@ export interface components {
              *     >The following values are permitted: `MALE`, `FEMALE`, `UNKNOWN`.
              * @enum {unknown}
              */
-            gender?: "MALE" | "FEMALE" | "UNKNOWN";
+            gender?: 'MALE' | 'FEMALE' | 'UNKNOWN';
             /** @description The name's infix, if applicable.
              *     >A maximum length of twenty (20) characters is imposed. */
             infix?: string;
@@ -476,26 +476,26 @@ export interface components {
         PaymentLinkActivity: {
             /** Format: date-time */
             date: string;
-            expirationReason?: components["schemas"]["PaymentLinkExpirationReason"];
-            type: components["schemas"]["PaymentLinkActivityType"];
+            expirationReason?: components['schemas']['PaymentLinkExpirationReason'];
+            type: components['schemas']['PaymentLinkActivityType'];
         };
         /** @enum {string} */
-        PaymentLinkActivityType: "createdAction" | "expiredAction" | "paymentAttempt";
+        PaymentLinkActivityType: 'createdAction' | 'expiredAction' | 'paymentAttempt';
         PaymentLinkDetails: {
-            linkInformation: components["schemas"]["LinkInformation"];
-            paymentLinkActivities?: components["schemas"]["PaymentLinkActivity"][];
-            shopperInformation?: components["schemas"]["ShopperInformation"];
+            linkInformation: components['schemas']['LinkInformation'];
+            paymentLinkActivities?: components['schemas']['PaymentLinkActivity'][];
+            shopperInformation?: components['schemas']['ShopperInformation'];
         };
         /** @enum {string} */
-        PaymentLinkExpirationReason: "maximumAttemptsReached" | "manuallyExpired" | "expirationDateReached";
+        PaymentLinkExpirationReason: 'maximumAttemptsReached' | 'manuallyExpired' | 'expirationDateReached';
         /** @enum {string} */
-        PaymentLinkStatus: "active" | "paymentPending" | "expired" | "completed";
+        PaymentLinkStatus: 'active' | 'paymentPending' | 'expired' | 'completed';
         ShopperInformation: {
-            billingAddress?: components["schemas"]["address"];
-            shippingAddress?: components["schemas"]["address"];
+            billingAddress?: components['schemas']['address'];
+            shippingAddress?: components['schemas']['address'];
             shopperCountry?: string;
             shopperEmail?: string;
-            shopperName?: components["schemas"]["Name"];
+            shopperName?: components['schemas']['Name'];
             shopperReference?: string;
             telephoneNumber?: string;
         };
@@ -526,9 +526,9 @@ export interface components {
         };
         Links: {
             /** @description Link to a different page */
-            next?: components["schemas"]["Link"];
+            next?: components['schemas']['Link'];
             /** @description Link to a different page */
-            prev?: components["schemas"]["Link"];
+            prev?: components['schemas']['Link'];
         };
         PayByLinkStoreDTO: {
             description?: string;
@@ -536,8 +536,8 @@ export interface components {
             storeId?: string;
         };
         PayByLinkStoresResponseDTO: {
-            data: components["schemas"]["PayByLinkStoreDTO"][];
-            links?: components["schemas"]["Links"];
+            data: components['schemas']['PayByLinkStoreDTO'][];
+            links?: components['schemas']['Links'];
         };
         ThemeDTO: {
             brandName?: string;
@@ -546,7 +546,7 @@ export interface components {
         };
         PaymentLinksItem: {
             /** @description Amount */
-            amount: components["schemas"]["Amount"];
+            amount: components['schemas']['Amount'];
             /**
              * Format: date-time
              * @description Creation Date
@@ -558,7 +558,7 @@ export interface components {
              */
             expirationDate: string;
             /** @description Payment Link Type */
-            linkType: components["schemas"]["PaymentLinkType"];
+            linkType: components['schemas']['PaymentLinkType'];
             /** @description Merchant Reference */
             merchantReference: string;
             /** @description Payment Link ID */
@@ -566,27 +566,27 @@ export interface components {
             /** @description Shopper Email */
             shopperEmail?: string;
             /** @description Status */
-            status: components["schemas"]["PaymentLinkStatus"];
+            status: components['schemas']['PaymentLinkStatus'];
             /** @description Store Code */
             storeCode?: string;
         };
         PaymentLinksResponse: {
             /** @description Links */
-            _links: components["schemas"]["Links"];
+            _links: components['schemas']['Links'];
             /** @description Payment links made within the filters provided */
-            data: components["schemas"]["PaymentLinksItem"][];
+            data: components['schemas']['PaymentLinksItem'][];
         };
         FiltersResponseDTO: {
-            linkTypes: components["schemas"]["PayByLinkLinkType"][];
-            statuses: components["schemas"]["PaymentLinkStatuses"];
+            linkTypes: components['schemas']['PayByLinkLinkType'][];
+            statuses: components['schemas']['PaymentLinkStatuses'];
         };
         /** @enum {string} */
-        PayByLinkLinkType: "singleUse" | "open";
+        PayByLinkLinkType: 'singleUse' | 'open';
         /** @enum {string} */
-        PayByLinkStatus: "completed" | "expired" | "active" | "paymentPending";
+        PayByLinkStatus: 'completed' | 'expired' | 'active' | 'paymentPending';
         PaymentLinkStatuses: {
-            active?: components["schemas"]["PayByLinkStatus"][];
-            inactive?: components["schemas"]["PayByLinkStatus"][];
+            active?: components['schemas']['PayByLinkStatus'][];
+            inactive?: components['schemas']['PayByLinkStatus'][];
         };
         SavePayByLinkSettingsRequest: {
             termsOfServiceUrl: string;
@@ -615,7 +615,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CountriesResponseDTO"];
+                    'application/json': components['schemas']['CountriesResponseDTO'];
                 };
             };
         };
@@ -631,7 +631,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["CreatePaymentLinkRequestDTO"];
+                'application/json': components['schemas']['CreatePaymentLinkRequestDTO'];
             };
         };
         responses: {
@@ -641,7 +641,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreatePaymentLinkResponse"];
+                    'application/json': components['schemas']['CreatePaymentLinkResponse'];
                 };
             };
         };
@@ -661,7 +661,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CurrenciesResponseDTO"];
+                    'application/json': components['schemas']['CurrenciesResponseDTO'];
                 };
             };
         };
@@ -683,7 +683,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    'application/json': unknown;
                 };
             };
         };
@@ -705,7 +705,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ConfigurationResponse"];
+                    'application/json': components['schemas']['ConfigurationResponse'];
                 };
             };
         };
@@ -727,7 +727,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaymentLinkDetails"];
+                    'application/json': components['schemas']['PaymentLinkDetails'];
                 };
             };
         };
@@ -749,7 +749,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PayByLinkSettingsResponse"];
+                    'application/json': components['schemas']['PayByLinkSettingsResponse'];
                 };
             };
         };
@@ -765,7 +765,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["SavePayByLinkSettingsRequest"];
+                'application/json': components['schemas']['SavePayByLinkSettingsRequest'];
             };
         };
         responses: {
@@ -775,7 +775,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PayByLinkSettingsResponse"];
+                    'application/json': components['schemas']['PayByLinkSettingsResponse'];
                 };
             };
         };
@@ -798,7 +798,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PayByLinkStoresResponseDTO"];
+                    'application/json': components['schemas']['PayByLinkStoresResponseDTO'];
                 };
             };
         };
@@ -820,7 +820,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ThemeDTO"];
+                    'application/json': components['schemas']['ThemeDTO'];
                 };
             };
         };
@@ -836,7 +836,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "multipart/form-data": components['schemas']['FormDataMultiPart'];
+                'multipart/form-data': components['schemas']['FormDataMultiPart'];
             };
         };
         responses: {
@@ -846,7 +846,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ThemeDTO"];
+                    'application/json': components['schemas']['ThemeDTO'];
                 };
             };
         };
@@ -879,7 +879,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaymentLinksResponse"];
+                    'application/json': components['schemas']['PaymentLinksResponse'];
                 };
             };
         };
@@ -899,7 +899,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FiltersResponseDTO"];
+                    'application/json': components['schemas']['FiltersResponseDTO'];
                 };
             };
         };
