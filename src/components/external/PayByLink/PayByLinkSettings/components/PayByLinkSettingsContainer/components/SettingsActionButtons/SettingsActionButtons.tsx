@@ -8,22 +8,27 @@ import { useMemo } from 'preact/hooks';
 import './SettingsActionButton.scss';
 import { ButtonVariant } from '../../../../../../../internal/Button/types';
 import cx from 'classnames';
+import Icon from '../../../../../../../internal/Icon';
 
 const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
-    const { onSave, isSaving } = usePayByLinkSettingsContext();
+    const { onSave, isSaving, isSaveSuccess } = usePayByLinkSettingsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const saveButton = useMemo(() => {
         return {
-            disabled: boolOrFalse(isSaving),
+            disabled: boolOrFalse(isSaving || (navigateBack && isSaveSuccess)),
             event: onSave,
+            iconLeft:
+                navigateBack && isSaveSuccess ? (
+                    <Icon className={'adyen-pe-pay-by-link-settings-save-success__cta-icon'} name={'checkmark'} />
+                ) : undefined,
             title: i18n.get('payByLink.settings.common.action.save'),
             variant: ButtonVariant.PRIMARY,
-            state: boolOrFalse(isSaving) ? 'loading' : 'default',
+            state: boolOrFalse(isSaving && !(navigateBack && isSaveSuccess)) ? 'loading' : 'default',
             classNames: isSmContainer ? ['adyen-pe-pay-by-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [i18n, onSave, isSaving, isSmContainer]);
+    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess]);
 
     const goBackButton = useMemo(() => {
         return {

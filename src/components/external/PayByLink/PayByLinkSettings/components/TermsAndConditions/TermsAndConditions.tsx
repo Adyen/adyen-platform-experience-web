@@ -156,7 +156,8 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPayByLinkTerm
                         </Typography>
                     </label>
                     <InputText
-                        disabled={isSaving}
+                        disabled={!!isSaving}
+                        readonly={!!isSaving}
                         uniqueId={checkboxIdentifier.current}
                         value={termsAndConditionsURL}
                         onInput={onTermsAndConditionsURLInput}
