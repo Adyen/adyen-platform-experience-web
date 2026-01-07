@@ -255,7 +255,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
 
     const renderAlertError = useCallback(
         () => (
-            <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
+            <Alert className={classes.popoverActionsAlert} type={AlertTypeOption.CRITICAL}>
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
             </Alert>
         ),
@@ -335,6 +335,11 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                             </div>
                         </div>
                         <div className={classes.popoverActions}>
+                            <Alert
+                                type={AlertTypeOption.HIGHLIGHT}
+                                className={classes.popoverActionsAlert}
+                                title={i18n.get('transactions.overview.export.actions.download.info')}
+                            />
                             {error && renderAlertError()}
                             <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
