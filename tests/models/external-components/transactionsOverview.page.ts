@@ -3,7 +3,7 @@ import type { Locator, Page } from '@playwright/test';
 import { applyDateFilter, getTranslatedKey } from '../../utils/utils';
 import DataGridPage from '../internal-components/dataGrid';
 import FilterBarPage from '../internal-components/filterBar';
-import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../src/components/internal/DatePicker/components/TimeRangeSelector';
+import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../src/components/internal/DatePicker/components/TimeRangeSelector/useTimeRangeSelection';
 
 export class TransactionsOverviewPage {
     private readonly _applyDateFilter;
