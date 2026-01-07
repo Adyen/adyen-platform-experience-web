@@ -1,8 +1,8 @@
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { StateUpdater, useCallback } from 'preact/hooks';
+import { StateUpdater, useCallback, useEffect, useRef } from 'preact/hooks';
 import { MenuItem } from '../components/PayByLinkSettingsContainer/context/constants';
-import { isUndefined } from '../../../../../utils';
+import { isFunction, isUndefined } from '../../../../../utils';
 import { PayByLinkSettingsData, PayByLinkSettingsItem, PayByLinkSettingsPayload } from '../components/PayByLinkSettingsContainer/context/types';
 import { getThemePayload } from '../components/PayByLinkSettingsContainer/utils/getThemePayload';
 import { Dispatch } from 'preact/compat';
@@ -18,9 +18,29 @@ export const useSaveAction = (
     getIsValid: () => boolean,
     setSaveActionCalled: Dispatch<StateUpdater<boolean | undefined>>,
     setSavedData: (data: PayByLinkSettingsData) => void,
-    setPayload: (payload: PayByLinkSettingsPayload) => void
+    setPayload: (payload: PayByLinkSettingsPayload) => void,
+    navigateBack?: () => void
 ) => {
     const { updatePayByLinkTheme, savePayByLinkSettings } = useConfigContext().endpoints;
+    const navigationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (navigationTimeoutRef.current) {
+                clearTimeout(navigationTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    const onSaveComplete = useCallback(() => {
+        if (navigateBack && isFunction(navigateBack)) {
+            navigationTimeoutRef.current = setTimeout(() => {
+                navigateBack();
+            }, 500);
+        } else {
+            setIsSaving(false);
+        }
+    }, [navigateBack, setIsSaving]);
 
     const savePayByLinkTheme = useMutation({
         queryFn: updatePayByLinkTheme,
@@ -57,7 +77,7 @@ export const useSaveAction = (
                 setPayload(savedData);
                 setIsSaveError(false);
                 setIsSaveSuccess(true);
-                setIsSaving(false);
+                onSaveComplete();
             },
             onError: () => {
                 setIsSaveError(true);
