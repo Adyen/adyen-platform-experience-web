@@ -32,6 +32,7 @@ import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../constants';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../utils/getPaymentLinksErrorMessage';
 
 const getTagVariantForStatus = (status: IPaymentLinkStatus) => {
     switch (status) {
@@ -85,6 +86,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     showPagination,
     paymentLinks,
     stores,
+    allStores,
     storeError,
     ...paginationProps
 }) => {
@@ -151,28 +153,37 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     } satisfies { title: TranslationKey; message: TranslationKey | TranslationKey[] };
 
     const noStoresError = useMemo(() => {
-        if (stores?.length !== 0 || storeError) return undefined;
+        if (allStores?.length !== 0 || storeError) return undefined;
         return {
             message: 'No stores configured',
             name: 'Account misconfiguration',
-            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            errorCode: ACCOUNT_MISCONFIGURATION,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
-    }, [stores, storeError]);
+    }, [allStores, storeError]);
+
+    const storesFilteredError = useMemo(() => {
+        if (allStores && allStores?.length > 0 && stores?.length !== 0) return undefined;
+        return {
+            errorCode: WRONG_STORE_IDS,
+            type: 'error',
+            requestId: '',
+        } as AdyenPlatformExperienceError;
+    }, [allStores, stores]);
 
     const errorDisplay = useMemo(
         () => () => {
             return (
                 <PaymentLinksErrors
                     getImageAsset={getImageAsset}
-                    error={noStoresError || error}
+                    error={noStoresError || error || storesFilteredError}
                     onContactSupport={onContactSupport}
                     errorMessage={ERROR_MESSAGE_KEY}
                 />
             );
         },
-        [error, getImageAsset, onContactSupport, noStoresError]
+        [error, getImageAsset, onContactSupport, noStoresError, storesFilteredError]
     );
 
     return (
@@ -180,7 +191,7 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
             <DataGrid
                 narrowColumns={isMobileContainer}
                 errorDisplay={errorDisplay}
-                error={noStoresError || error}
+                error={noStoresError || error || storesFilteredError}
                 columns={columns}
                 data={paymentLinks}
                 loading={loading}
