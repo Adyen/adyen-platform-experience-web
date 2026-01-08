@@ -172,8 +172,6 @@ export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
         } as AdyenPlatformExperienceError;
     }, [allStores, stores]);
 
-    console.log(storesFilteredError);
-
     const errorDisplay = useMemo(
         () => () => {
             return (
