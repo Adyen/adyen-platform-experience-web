@@ -9,6 +9,7 @@ export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
     disabled?: boolean;
     filterable?: boolean;
     items: readonly T[];
+    name?: string;
     readonly?: boolean;
     value?: T['id'] | readonly T['id'][];
     placeholder?: string;

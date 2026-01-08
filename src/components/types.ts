@@ -188,7 +188,7 @@ export interface TransactionOverviewComponentProps
 
 type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
 
-export interface PaymentLinkOverviewComponentProps
+export interface PaymentLinksOverviewComponentProps
     extends _DataOverviewComponentProps,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
     paymentLinkCreation?: PaymentLinkOverviewSubComponentProps<PaymentLinkCreationComponentProps>;
