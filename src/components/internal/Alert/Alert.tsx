@@ -44,13 +44,15 @@ export const Alert = ({
                     )}
                     {children}
                 </div>
-                <div className="adyen-pe-alert__actions">
-                    {actions?.map((action, index) => (
-                        <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>
-                            {action.label}
-                        </Button>
-                    ))}
-                </div>
+                {actions && (
+                    <div className="adyen-pe-alert__actions">
+                        {actions?.map((action, index) => (
+                            <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>
+                                {action.label}
+                            </Button>
+                        ))}
+                    </div>
+                )}
             </div>
             {onClose && (variant !== AlertVariantOption.TIP || closeButton) && (
                 <div className="adyen-pe-alert__close-button">

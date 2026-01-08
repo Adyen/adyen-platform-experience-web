@@ -6,6 +6,8 @@ import { REFUND_STATUSES, TX_REFUND_STATUSES_CONTAINER } from '../../constants';
 import { AlertProps, AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Alert from '../../../../internal/Alert/Alert';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '../../../../internal/Typography/Typography';
 
 const baseAlertProps = {
     type: AlertTypeOption.HIGHLIGHT,
@@ -40,7 +42,15 @@ const PaymentRefundAlerts = memo(
         }, [i18n, refundCurrency]);
 
         const nextAlert = useCallback(<T extends AlertProps>({ description, ...alertProps }: Partial<T>) => {
-            alerts.current.push(<Alert {...baseAlertProps} {...alertProps} description={description} />);
+            console.log(alertProps);
+            console.log(baseAlertProps);
+            alerts.current.push(
+                <Alert {...baseAlertProps} {...alertProps}>
+                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                        {description}
+                    </Typography>
+                </Alert>
+            );
         }, []);
 
         const alerts = useRef<ComponentChild[]>([]);

@@ -91,7 +91,7 @@ const DisputeDataAlert = ({
                                         fills={{
                                             date: (
                                                 <time dateTime={dueDate}>
-                                                    <Typography variant={TypographyVariant.BODY} el={TypographyElement.SPAN} stronger>
+                                                    <Typography variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN} stronger>
                                                         {dateFormat(dueDate, DATE_FORMAT_RESPONSE_DEADLINE)}
                                                     </Typography>
                                                 </time>
