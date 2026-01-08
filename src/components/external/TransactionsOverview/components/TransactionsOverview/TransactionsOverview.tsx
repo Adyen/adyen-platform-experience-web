@@ -95,8 +95,11 @@ export const TransactionsOverview = ({
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="transactions.overview.title">
-                <FilterBarMobileSwitch {...filterBarState} />
-                {!isMobileContainer && <>{viewSwitcher}</>}
+                <div className={cx({ [classes.filterBarSmall]: isMobileContainer })}>
+                    {isMobileContainer && exportButton}
+                    <FilterBarMobileSwitch {...filterBarState} />
+                    {!isMobileContainer && <>{viewSwitcher}</>}
+                </div>
             </Header>
 
             {isMobileContainer && <>{viewSwitcher}</>}
@@ -110,7 +113,6 @@ export const TransactionsOverview = ({
                     setInsightsCurrency={setInsightsCurrency}
                     onChange={setFilters}
                 />
-                {/* [TODO]: Mobile responsiveness for export button */}
                 {!isMobileContainer && <>{exportButton}</>}
             </div>
 

@@ -32,6 +32,20 @@
         }
     }
 
+    &__filter-bar-small {
+        display: flex;
+        gap: style.token(spacer-020);
+    }
+
+    &__totals-error {
+        flex-grow: unset;
+
+        @include breakpoints.adyen-pe-screen-md-and-up {
+            min-width: 400px;
+            width: auto;
+        }
+    }
+
     &__summary {
         display: flex;
         flex-wrap: wrap-reverse;
@@ -45,12 +59,6 @@
         @include breakpoints.adyen-pe-screen-md-and-up {
             flex-grow: unset;
         }
-    }
-
-    .adyen-pe-segmented-control {
-        --vertical-offset: calc(#{style.token(spacer-030)} * -1);
-        margin-bottom: var(--vertical-offset);
-        margin-top: var(--vertical-offset);
     }
 
     .adyen-pe-segmented-content-container {

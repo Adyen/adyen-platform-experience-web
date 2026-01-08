@@ -6,6 +6,7 @@ export const classes = {
     popover: POPOVER_CLASS,
     button: BASE_CLASS + '__button',
     popoverActions: POPOVER_CLASS + '-actions',
+    popoverActionsAlert: POPOVER_CLASS + '-actions-alert',
     popoverSections: POPOVER_CLASS + '-sections',
     popoverSection: POPOVER_CLASS + '-section',
     columnsSection: POPOVER_CLASS + '-section--columns',

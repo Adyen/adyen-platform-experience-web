@@ -14,6 +14,29 @@ export const Default: ElementStory<typeof TransactionsOverview> = {
     args: { mockedApi: true },
 };
 
+export const ErrorNoTotals: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - No Totals',
+    args: { mockedApi: true },
+    parameters: {
+        msw: {
+            handlers: [
+                http.get(endpoints('mock').transactionsTotals, () => {
+                    return HttpResponse.error();
+                }),
+                http.get(endpoints('mock').transactions, () => {
+                    return HttpResponse.json({
+                        data: [
+                            { ...TRANSACTIONS[0], createdAt: Date.now() },
+                            { ...TRANSACTIONS[6], createdAt: Date.now() },
+                        ],
+                        _links: {},
+                    });
+                }),
+            ],
+        },
+    },
+};
+
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
         http.get(endpoints('mock').transactions, () => {

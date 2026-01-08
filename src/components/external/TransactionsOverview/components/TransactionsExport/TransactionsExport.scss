@@ -1,6 +1,12 @@
 /* stylelint-disable selector-no-qualifying-type */
 @use '../../../../../style';
 
+.adyen-pe-transactions-export {
+    margin-bottom: auto;
+    margin-left: auto;
+    padding-top: style.token(spacer-010);
+}
+
 .adyen-pe-transactions-export__button {
     .adyen-pe-filter-button__label {
         align-items: center;
@@ -24,7 +30,14 @@
     }
 
     &-section {
+        width: 320px;
+
         &--filters {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: style.token(spacer-020);
+            padding-bottom: style.token(spacer-040);
             position: relative;
 
             &::after {
@@ -70,5 +83,15 @@
                 z-index: -1;
             }
         }
+    }
+
+    &-actions {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &-actions-alert {
+        padding: style.token(spacer-050);
     }
 }

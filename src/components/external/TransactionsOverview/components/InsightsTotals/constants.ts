@@ -9,4 +9,5 @@ export const classes = {
     skeletonLoading: BASE_CLASS + '__skeleton--loading',
     skeletonAmount: BASE_CLASS + '__skeleton--amount',
     skeletonAmountLarge: BASE_CLASS + '__skeleton--amount-large',
+    errorContainer: BASE_CLASS + '__error-container',
 };
