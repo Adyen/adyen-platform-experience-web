@@ -27,7 +27,7 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
             onUpdate();
         }
         resetDetails();
-    }, [isPaymentLinkUpdated, setIsPaymentLinkUpdated, onUpdate, resetDetails]);
+    }, [isPaymentLinkUpdated, onUpdate, resetDetails]);
 
     const handlePaymentLinkUpdate = useCallback(() => {
         setIsPaymentLinkUpdated(true);
