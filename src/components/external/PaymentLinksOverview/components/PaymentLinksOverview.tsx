@@ -124,7 +124,7 @@ export const PaymentLinksOverview = ({
     }
 >) => {
     const { i18n } = useCoreContext();
-    const { getPaymentLinks } = useConfigContext().endpoints;
+    const { getPaymentLinks, createPBLPaymentLink, getPayByLinkSettings } = useConfigContext().endpoints;
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions({ exclude: [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE] });
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(
         'paymentLinks',
@@ -350,6 +350,8 @@ export const PaymentLinksOverview = ({
         setShowFiltersAlert(false);
     }, [setShowFiltersAlert]);
 
+    const hasActionButtons = !!(getPayByLinkSettings || createPBLPaymentLink);
+
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
             <Header hideTitle={hideTitle} titleKey="payByLink.overview.title">
@@ -443,19 +445,25 @@ export const PaymentLinksOverview = ({
                                 />
                             )}
                         </FilterBar>
-                        <div className={ACTION_BUTTONS_CONTAINER_CLASS}>
-                            <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
-                                {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
-                            </Button>
-                            <Button
-                                aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
-                                variant={ButtonVariant.SECONDARY}
-                                className={ACTION_BUTTON_CLASS}
-                                onClick={openSettingsModal}
-                            >
-                                <Icon name="cog" />
-                            </Button>
-                        </div>
+                        {hasActionButtons && (
+                            <div className={ACTION_BUTTONS_CONTAINER_CLASS}>
+                                {createPBLPaymentLink && (
+                                    <Button variant={ButtonVariant.PRIMARY} className={ACTION_BUTTON_CLASS} onClick={openPaymentLinkModal}>
+                                        {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
+                                    </Button>
+                                )}
+                                {getPayByLinkSettings && (
+                                    <Button
+                                        aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
+                                        variant={ButtonVariant.SECONDARY}
+                                        className={ACTION_BUTTON_CLASS}
+                                        onClick={openSettingsModal}
+                                    >
+                                        <Icon name="cog" />
+                                    </Button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
                 {!isMobileContainer && showFiltersAlert && (
