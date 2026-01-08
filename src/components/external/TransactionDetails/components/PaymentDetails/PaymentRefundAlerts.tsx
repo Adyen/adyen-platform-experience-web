@@ -42,8 +42,6 @@ const PaymentRefundAlerts = memo(
         }, [i18n, refundCurrency]);
 
         const nextAlert = useCallback(<T extends AlertProps>({ description, ...alertProps }: Partial<T>) => {
-            console.log(alertProps);
-            console.log(baseAlertProps);
             alerts.current.push(
                 <Alert {...baseAlertProps} {...alertProps}>
                     <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
