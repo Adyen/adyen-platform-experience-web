@@ -4,7 +4,7 @@ import { InteractionKeyCode } from '../../types';
 interface FilterDisallowedCharactersProps {
     event: JSX.TargetedKeyboardEvent<HTMLInputElement>;
     inputType?: string;
-    onValidInput: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+    onValidInput?: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
 }
 
 const ALLOWED_NAVIGATION_KEYS = [
@@ -37,7 +37,7 @@ const filterDisallowedCharacters = ({ event, inputType, onValidInput }: FilterDi
         return;
     }
 
-    onValidInput(event);
+    onValidInput?.(event);
 };
 
 export { filterDisallowedCharacters };

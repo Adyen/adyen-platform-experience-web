@@ -20,6 +20,7 @@ function FilterButton(props: FilterButtonProps, ref: ForwardedRef<HTMLButtonElem
         DEFAULT_FILTER_BUTTON_CLASSNAME,
         disabledValue,
         props,
+        props.type,
         onClick
     );
 

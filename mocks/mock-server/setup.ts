@@ -139,6 +139,58 @@ export const setupBasicResponse = {
             url: 'capital/grants/missingActions/anaCredit',
             versions: [1],
         },
+        getPayByLinkStores: {
+            method: 'GET',
+            url: 'stores',
+        },
+        getPayByLinkConfiguration: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks/{storeId}/configuration',
+        },
+        getPaymentLinks: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks',
+        },
+        getPayByLinkPaymentLinkById: {
+            method: 'GET',
+            url: 'paybylink/paymentLinks/{paymentLinkId}',
+        },
+        expirePayByLinkPaymentLink: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks/{paymentLinkId}/expire',
+        },
+        payByLinkFilters: {
+            method: 'GET',
+            url: 'paybylink/filters',
+        },
+        createPaymentLink: {
+            method: 'POST',
+            url: 'paybylink/paymentLinks',
+        },
+        getPayByLinkTheme: {
+            method: 'GET',
+            url: 'paybylink/themes/{storeId}',
+        },
+        updatePayByLinkTheme: {
+            method: 'POST',
+            url: 'paybylink/themes/{storeId}',
+        },
+        currencies: {
+            method: 'GET',
+            url: 'paybylink/currencies',
+        },
+        countries: {
+            method: 'GET',
+            url: 'paybylink/countries',
+        },
+        getPayByLinkSettings: {
+            method: 'GET',
+            url: 'paybylink/settings/{storeId}',
+        },
+        savePayByLinkSettings: {
+            method: 'POST',
+            url: 'paybylink/settings/{storeId}',
+        },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string; versions: number[] }>,
 };
 

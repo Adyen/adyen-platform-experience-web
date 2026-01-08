@@ -47,4 +47,8 @@
         color: inherit;
         cursor: default;
     }
+
+    &--stronger {
+        font-weight: style.token(text-body-strongest-font-weight);
+    }
 }

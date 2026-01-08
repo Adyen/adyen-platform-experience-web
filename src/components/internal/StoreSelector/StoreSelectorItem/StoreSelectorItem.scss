@@ -1,0 +1,14 @@
+@use '../../../../style';
+
+.adyen-pe-store-selector-item {
+    display: flex;
+    flex-direction: column;
+
+    &__name {
+        text-align: left;
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+    }
+}
