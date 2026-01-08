@@ -142,54 +142,67 @@ export const setupBasicResponse = {
         getPayByLinkStores: {
             method: 'GET',
             url: 'stores',
+            versions: [1],
         },
         getPayByLinkConfiguration: {
             method: 'GET',
             url: 'paybylink/paymentLinks/{storeId}/configuration',
+            versions: [1],
         },
         getPaymentLinks: {
             method: 'GET',
             url: 'paybylink/paymentLinks',
+            versions: [1],
         },
         getPayByLinkPaymentLinkById: {
             method: 'GET',
             url: 'paybylink/paymentLinks/{paymentLinkId}',
+            versions: [1],
         },
         expirePayByLinkPaymentLink: {
             method: 'POST',
             url: 'paybylink/paymentLinks/{paymentLinkId}/expire',
+            versions: [1],
         },
         payByLinkFilters: {
             method: 'GET',
             url: 'paybylink/filters',
+            versions: [1],
         },
-        createPaymentLink: {
+        createPBLPaymentLink: {
             method: 'POST',
             url: 'paybylink/paymentLinks',
+            versions: [1],
         },
         getPayByLinkTheme: {
             method: 'GET',
             url: 'paybylink/themes/{storeId}',
+            versions: [1],
         },
         updatePayByLinkTheme: {
             method: 'POST',
             url: 'paybylink/themes/{storeId}',
+            versions: [1],
         },
         currencies: {
             method: 'GET',
             url: 'paybylink/currencies',
+            versions: [1],
         },
         countries: {
             method: 'GET',
             url: 'paybylink/countries',
+            versions: [1],
         },
         getPayByLinkSettings: {
             method: 'GET',
             url: 'paybylink/settings/{storeId}',
+            versions: [1],
         },
         savePayByLinkSettings: {
             method: 'POST',
             url: 'paybylink/settings/{storeId}',
+            versions: [1],
         },
     } satisfies Record<EndpointName, { method: HttpMethod; url: string; versions: number[] }>,
 };
