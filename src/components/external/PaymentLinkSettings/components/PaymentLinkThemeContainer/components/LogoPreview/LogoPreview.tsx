@@ -36,7 +36,7 @@ const LogoPreview = ({
             <img id={logoURLId} src={logoURL} alt={'full-width-logo'} className={'adyen-pe-payment-link-theme-form__preview--image'} />
             <Button
                 disabled={disabled}
-                variant={ButtonVariant.PRIMARY}
+                variant={ButtonVariant.SECONDARY}
                 onClick={onRemoveURL}
                 className="adyen-pe-payment-link-theme-form__preview--remove"
             >
