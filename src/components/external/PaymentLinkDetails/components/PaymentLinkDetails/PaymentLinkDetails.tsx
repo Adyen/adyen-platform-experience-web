@@ -30,7 +30,7 @@ const CLASSNAMES = {
 };
 
 type PaymentLinkDetailsProps = Omit<ExternalUIComponentProps<PaymentLinkDetailsElementProps>, 'onDismiss'> & {
-    onDismiss?: (withUpdate?: boolean) => void;
+    onDismiss?: () => void;
 };
 
 export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: PaymentLinkDetailsProps) => {
@@ -126,16 +126,16 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
 
     const handleExpirationSuccess = useCallback(() => {
         setActiveScreen('expirationSuccess');
-    }, []);
+        onUpdate?.();
+    }, [onUpdate]);
 
     const handleNavigationToDetailsAfterExpiration = useCallback(() => {
         setActiveScreen('details');
         refetch();
-        onUpdate?.();
-    }, [onUpdate, refetch]);
+    }, [refetch]);
 
     const handleNavigationToListAfterExpiration = useCallback(() => {
-        onDismiss?.(true);
+        onDismiss?.();
     }, [onDismiss]);
 
     const { withinModal } = useModalContext();
