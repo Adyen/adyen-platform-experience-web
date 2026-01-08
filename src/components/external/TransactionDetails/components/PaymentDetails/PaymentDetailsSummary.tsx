@@ -33,7 +33,6 @@ const isAmount = (value: any): value is IAmount => {
 const ADJUSTMENTS_TOOLTIP_CONTENT: Record<`transactions.details.summary.adjustments.types.${string}`, TranslationKey> = {
     'transactions.details.summary.adjustments.types.tip': 'transactions.details.summary.adjustments.types.tip.information',
     'transactions.details.summary.adjustments.types.surcharge': 'transactions.details.summary.adjustments.types.surcharge.information',
-    'transactions.details.summary.adjustments.types.fee': 'transactions.details.summary.adjustments.types.fee.information',
 };
 
 const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
