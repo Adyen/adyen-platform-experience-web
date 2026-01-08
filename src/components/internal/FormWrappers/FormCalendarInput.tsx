@@ -11,10 +11,9 @@ interface FormCalendarInputProps<TFieldValues> {
     clearable?: boolean;
     fieldName: FieldValues<TFieldValues>;
     label: string;
-    timezone?: string;
 }
 
-export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label, timezone }: FormCalendarInputProps<TFieldValues>) {
+export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label }: FormCalendarInputProps<TFieldValues>) {
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
 
     const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
@@ -36,7 +35,6 @@ export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label, t
                                     onInput={field.onInput}
                                     isInvalid={!!fieldState.error && fieldState.isTouched}
                                     clearable={clearable}
-                                    timezone={timezone}
                                 />
                                 {fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
                             </div>

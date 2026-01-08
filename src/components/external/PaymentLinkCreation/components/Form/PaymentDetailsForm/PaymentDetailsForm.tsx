@@ -10,11 +10,10 @@ import './PaymentDetailsForm.scss';
 import { IPaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
 
 interface PaymentDetailsFormProps {
-    timezone?: string;
     configuration?: IPaymentLinkConfiguration;
 }
 
-export const PaymentDetailsForm = ({ timezone, configuration }: PaymentDetailsFormProps) => {
+export const PaymentDetailsForm = ({ configuration }: PaymentDetailsFormProps) => {
     const { i18n } = useCoreContext();
     return (
         <div className="adyen-pe-payment-link-creation-form__fields-container">
@@ -37,7 +36,6 @@ export const PaymentDetailsForm = ({ timezone, configuration }: PaymentDetailsFo
                 clearable
                 fieldName="deliverAt"
                 label={i18n.get('payByLink.creation.fields.deliverAt.label')}
-                timezone={timezone}
             />
         </div>
     );
