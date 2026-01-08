@@ -2,6 +2,6 @@
 @use '../../../../style/breakpoints' as breakpoints;
 @use '../../../../style';
 
-.adyen-pe-payment-link-overview {
+.adyen-pe-payment-links-overview {
     @include adyen-pe-data-overview;
 }

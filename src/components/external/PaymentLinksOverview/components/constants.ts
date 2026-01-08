@@ -2,7 +2,7 @@ import { TranslationKey } from '../../../../translations';
 import { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '../../../../types';
 import { TabComponentProps } from '../../../internal/Tabs/types';
 
-export const BASE_CLASS = 'adyen-pe-payment-link-overview';
+export const BASE_CLASS = 'adyen-pe-payment-links-overview';
 export const BASE_DETAILS_CLASS = 'adyen-pe-payment-link-details';
 export const BASE_TABLE_GRID_CLASS = 'adyen-pe-payment-link-table';
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
