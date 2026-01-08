@@ -348,7 +348,7 @@ export const PaymentLinksOverview = ({
         setShowFiltersAlert(false);
     }, [setShowFiltersAlert]);
 
-    const hasActionButtons = getPayByLinkSettings || createPBLPaymentLink;
+    const hasActionButtons = !!(getPayByLinkSettings || createPBLPaymentLink);
 
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
