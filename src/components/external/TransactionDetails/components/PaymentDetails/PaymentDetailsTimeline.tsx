@@ -29,7 +29,7 @@ const PaymentDetailsTimeline = ({ transaction }: PaymentDetailsTimelineProps) =>
 
     const defaultTimestamp = useMemo<TimelineTimestamp>(
         () => ({
-            format: TimelineDateFormat.FULL_DATE_EXACT_TIME_WITHOUT_PERIOD,
+            format: TimelineDateFormat.FULL_DATE_EXACT_TIME_WITHOUT_SECONDS,
             date: new Date(createdAt),
             timezone,
         }),

@@ -29,6 +29,7 @@ import './TransactionsExport.scss';
 import { EndpointDownloadStreamData } from '../../../../../types/api/endpoints';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
+import { Tag } from '../../../../internal/Tag/Tag';
 
 const sharedAnalyticsEventProperties = {
     category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -134,11 +135,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     const activeFiltersTitle = useMemo(() => i18n.get('transactions.overview.export.filters.title'), [i18n]);
     const exportColumnsTitle = useMemo(() => i18n.get('transactions.overview.export.columns.title'), [i18n]);
     const exportColumnsTitleId = useMemo(uniqueId, []);
-
-    const activeFiltersList = useMemo(() => {
-        const listFormatter = new Intl.ListFormat(i18n.locale, { type: 'conjunction', style: 'narrow' });
-        return listFormatter.format(activeFilters.map(key => i18n.get(key)));
-    }, [i18n, activeFilters]);
 
     const columnSwitches = useMemo(
         () =>
@@ -257,6 +253,15 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         })();
     }, []);
 
+    const renderAlertError = useCallback(
+        () => (
+            <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
+                <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
+            </Alert>
+        ),
+        [i18n]
+    );
+
     return canDownloadTransactions ? (
         <div className={classes.root}>
             <FilterButton
@@ -291,10 +296,10 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                     <div className={classes.popover}>
                         <div className={classes.popoverSections}>
                             <div className={cx(classes.popoverSection, classes.filtersSection)}>
-                                <SectionTitle>{activeFiltersTitle}</SectionTitle>
-                                <div className={classes.popoverSectionContent}>
-                                    <Text>{activeFiltersList}</Text>
-                                </div>
+                                <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
+                                {activeFilters.map(filter => (
+                                    <Tag label={i18n.get(filter)} key={filter} />
+                                ))}
                             </div>
 
                             <div className={cx(classes.popoverSection, classes.columnsSection)}>
@@ -308,6 +313,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                             checked={masterSwitchChecked}
                                             onChange={onExportColumnChange}
                                             id={masterSwitchId}
+                                            disabled={isFetching}
                                         >
                                             {masterSwitchLabel}
                                         </ExportColumn>
@@ -319,6 +325,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                                 value={value}
                                                 key={value}
                                                 id={id}
+                                                disabled={isFetching}
                                             >
                                                 {label}
                                             </ExportColumn>
@@ -328,11 +335,7 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                             </div>
                         </div>
                         <div className={classes.popoverActions}>
-                            {error && (
-                                <Alert className={classes.popoverActionError} type={AlertTypeOption.CRITICAL}>
-                                    <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
-                                </Alert>
-                            )}
+                            {error && renderAlertError()}
                             <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
                     </div>
