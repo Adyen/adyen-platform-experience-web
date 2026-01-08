@@ -1,5 +1,4 @@
 import cx from 'classnames';
-
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';

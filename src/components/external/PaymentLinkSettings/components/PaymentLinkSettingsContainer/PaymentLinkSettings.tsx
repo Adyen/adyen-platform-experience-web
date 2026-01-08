@@ -21,6 +21,7 @@ import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
 import { useMemo } from 'preact/hooks';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import SettingsError from './components/SettingsError/SettingsError';
+import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from './utils/getSettingsErrorMessage';
 
 const ERROR_MESSAGE_KEY = 'payByLink.settings.errors.couldNotLoadSettings' as const;
 
@@ -68,9 +69,7 @@ const PaymentLinkSettings = ({
     const noStoresError = useMemo(() => {
         if (!allStores || allStores.length > 0 || isLoadingStores) return undefined;
         return {
-            message: 'No stores configured',
-            name: 'Account misconfiguration',
-            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            errorCode: ACCOUNT_MISCONFIGURATION,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
@@ -79,9 +78,7 @@ const PaymentLinkSettings = ({
     const storesFilteredError = useMemo(() => {
         if ((allStores && allStores?.length > 0 && filteredStores?.length !== 0) || isLoadingStores) return undefined;
         return {
-            message: 'No stores configured',
-            name: 'Account misconfiguration',
-            errorCode: 'ACCOUNT_MISCONFIGURATION',
+            errorCode: WRONG_STORE_IDS,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
