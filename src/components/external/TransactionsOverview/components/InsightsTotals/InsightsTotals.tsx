@@ -13,14 +13,16 @@ import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import './InsightsTotals.scss';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
 export interface InsightsTotalsProps {
     currency?: string;
     loadingTotals: boolean;
     totals: ReturnType<typeof useTransactionsTotals>['totalsLookup'];
+    error?: Error;
 }
 
-const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals }: InsightsTotalsProps) => {
+const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals, error }: InsightsTotalsProps) => {
     const { i18n } = useCoreContext();
     const data = (insightsCurrency && totals[insightsCurrency]) || undefined;
 
@@ -52,22 +54,42 @@ const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals }: I
 
     return (
         <div className={classes.root}>
-            <AmountDisplay amount={data.total} currency={data.currency} label={i18n.get('transactions.overview.totals.tags.periodResult')} large />
+            {error ? (
+                <div className={classes.errorContainer}>
+                    <ErrorMessageDisplay
+                        title={'common.errors.somethingWentWrong'}
+                        message={['common.errors.retry']}
+                        absolutePosition={false}
+                        outlined={false}
+                        withImage
+                        refreshComponent
+                    />
+                </div>
+            ) : (
+                <>
+                    <AmountDisplay
+                        amount={data.total}
+                        currency={data.currency}
+                        label={i18n.get('transactions.overview.totals.tags.periodResult')}
+                        large
+                    />
 
-            <div className={classes.breakdowns}>
-                <InsightsTotals.Breakdown
-                    amount={data.incomings}
-                    breakdown={data.breakdown.incomings}
-                    currency={data.currency}
-                    label={i18n.get('transactions.overview.totals.tags.incoming')}
-                />
-                <InsightsTotals.Breakdown
-                    amount={data.expenses}
-                    breakdown={data.breakdown.expenses}
-                    currency={data.currency}
-                    label={i18n.get('transactions.overview.totals.tags.outgoing')}
-                />
-            </div>
+                    <div className={classes.breakdowns}>
+                        <InsightsTotals.Breakdown
+                            amount={data.incomings}
+                            breakdown={data.breakdown.incomings}
+                            currency={data.currency}
+                            label={i18n.get('transactions.overview.totals.tags.incoming')}
+                        />
+                        <InsightsTotals.Breakdown
+                            amount={data.expenses}
+                            breakdown={data.breakdown.expenses}
+                            currency={data.currency}
+                            label={i18n.get('transactions.overview.totals.tags.outgoing')}
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 };

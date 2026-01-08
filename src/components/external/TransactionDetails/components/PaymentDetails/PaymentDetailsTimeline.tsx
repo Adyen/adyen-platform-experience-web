@@ -69,7 +69,6 @@ PaymentDetailsTimeline.Item = memo(({ defaultTimestamp, event }: PaymentDetailsT
 
     const timestamp = useMemo<TimelineTimestamp>(() => ({ ...defaultTimestamp, date: new Date(createdAt) }), [defaultTimestamp, createdAt]);
     const formattedType = useMemo(() => getTransactionTimelineTxType(i18n, type)!, [i18n, type]);
-
     const items = useMemo<StructuredListItem[]>(() => {
         const { currency, value } = amount;
         const formattedAmount = `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;
@@ -80,8 +79,11 @@ PaymentDetailsTimeline.Item = memo(({ defaultTimestamp, event }: PaymentDetailsT
         ] as const;
     }, [i18n, amount, status]);
 
+    // [TODO] - Remove this harcoded type once the team reviews all statuses and types and have less number of different strings, and more friendly ones.
+    const fixedType = status.toLowerCase().includes('refund') ? 'Refund' : status.toLowerCase().includes('auth') ? 'Capture' : formattedType;
+
     return (
-        <TimelineItem title={formattedType} timestamp={timestamp}>
+        <TimelineItem title={fixedType} timestamp={timestamp}>
             <StructuredList
                 align="start"
                 layout="3-9"

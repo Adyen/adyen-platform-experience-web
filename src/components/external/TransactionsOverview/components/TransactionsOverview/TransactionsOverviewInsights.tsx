@@ -15,10 +15,10 @@ interface TransactionsOverviewInsightsProps {
 }
 
 const TransactionsOverviewInsights = ({ currency, transactionsTotalsResult }: TransactionsOverviewInsightsProps) => {
-    const { isWaiting: loadingTotals, totalsLookup: totals } = transactionsTotalsResult;
+    const { isWaiting: loadingTotals, totalsLookup: totals, error } = transactionsTotalsResult;
     useLandedPageEvent(sharedAnalyticsEventProperties);
     useDurationEvent(sharedAnalyticsEventProperties);
-    return <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} />;
+    return <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} error={error} />;
 };
 
 export default TransactionsOverviewInsights;

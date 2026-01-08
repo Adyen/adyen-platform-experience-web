@@ -45,4 +45,8 @@
             @include skeleton.adyen-pe-skeleton-animation();
         }
     }
+
+    &__error-container {
+        margin: 0 auto;
+    }
 }
