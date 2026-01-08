@@ -52,7 +52,11 @@ export default function StructuredList({
                     })}
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
-                        {renderLabel ? renderLabel(item.label, item.key) : <Typography variant={typographyVariant}>{item.label}</Typography>}
+                        {renderLabel ? (
+                            renderLabel(item.label, item.key, item.rawValue)
+                        ) : (
+                            <Typography variant={typographyVariant}>{item.label}</Typography>
+                        )}
                     </dt>
                     <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
                         {item.render ? (

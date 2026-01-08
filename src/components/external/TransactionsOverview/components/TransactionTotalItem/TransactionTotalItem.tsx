@@ -56,7 +56,7 @@ export const TransactionTotalItem = ({
                 getValue: () => total?.currency,
             },
         ];
-    }, [total, hiddenField, i18n]);
+    }, [incomingsElemId, expensesElemId, hiddenField, total, i18n]);
 
     return (
         <SummaryItem

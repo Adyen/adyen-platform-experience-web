@@ -77,7 +77,7 @@ test.describe('Tabbed details', () => {
     };
 
     const expectSamePaymentTimelineRendering = async (page: Page) => {
-        for (const text of ['Aug 29, 2022, 09:47:03', 'Amount', 'Status']) {
+        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
             const elems = page.getByText(text, { exact: true });
             const allElems = await elems.all();
 
@@ -97,7 +97,7 @@ test.describe('Tabbed details', () => {
         await expect(showMoreButton).toBeHidden();
         await expect(page.getByRole('button', { name: 'Show less', exact: true })).toBeVisible();
 
-        for (const text of ['Aug 29, 2022, 09:47:03', 'Amount', 'Status']) {
+        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
             const elems = page.getByText(text, { exact: true });
             const allElems = await elems.all();
 
@@ -112,7 +112,7 @@ test.describe('Tabbed details', () => {
         await expect(showMoreButton).toBeVisible();
         await expect(showMoreButton).toBeEnabled();
 
-        for (const text of ['Aug 29, 2022, 09:47:03', 'Amount', 'Status']) {
+        for (const text of ['Aug 29, 2022, 09:47', 'Amount', 'Status']) {
             const elems = page.getByText(text, { exact: true });
             const allElems = await elems.all();
 

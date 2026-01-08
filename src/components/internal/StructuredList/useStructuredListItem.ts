@@ -11,9 +11,10 @@ export const useStructuredListItems = (items: StructuredListItem[]) => {
                 key: item.key,
                 value: item.value,
                 id: item.id || uuid(),
-                label: i18n.get(item.key),
+                label: item.label ?? i18n.get(item.key),
                 type: item.type,
                 config: item.config,
+                rawValue: item.rawValue,
                 render: item.render,
             };
         });
