@@ -11,7 +11,7 @@
         - Insights: A visual breakdown of period totals, incomings, and expenses to help users track their performance at a glance.
     - In the Capital components, analytic events are now available for critical flows. These are enabled by default, providing the flexibility to opt out as needed.
 
-    PATCH
+### Patch Changes
     - Across applicable components, we implemented lossless and accurate analytics data collection. This feature is enabled by default, providing the flexibility to opt out as needed.
     - Across all components, we implemented consistent toggle behavior for filter dropdowns.
 
