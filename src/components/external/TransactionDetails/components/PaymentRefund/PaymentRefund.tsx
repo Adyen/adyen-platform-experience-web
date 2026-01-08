@@ -22,7 +22,7 @@ import Alert from '../../../../internal/Alert/Alert';
 import Button from '../../../../internal/Button/Button';
 import Typography from '../../../../internal/Typography/Typography';
 import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDetails } from '../../types';
-import { TypographyModifier, TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyModifier, TypographyVariant } from '../../../../internal/Typography/types';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { ILineItem, IRefundMode } from '../../../../../types';
@@ -153,7 +153,13 @@ PaymentRefund.Form = memo(
                     value={amount}
                 />
 
-                {maxAmountAlert && <Alert variant={AlertVariantOption.TIP} type={AlertTypeOption.HIGHLIGHT} description={maxAmountAlert} />}
+                {maxAmountAlert && (
+                    <Alert variant={AlertVariantOption.TIP} type={AlertTypeOption.HIGHLIGHT}>
+                        <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                            {maxAmountAlert}
+                        </Typography>
+                    </Alert>
+                )}
 
                 <PaymentRefundActions
                     beginRefund={beginRefund}

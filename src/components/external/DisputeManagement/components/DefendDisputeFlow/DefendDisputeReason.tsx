@@ -194,8 +194,8 @@ export const DefendDisputeReason = () => {
                 )}
             </div>
             {showAlert && (
-                <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
-                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} closeButton>
+                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.CAPTION} wide>
                         {i18n.get('disputes.management.defend.chargeback.feeInfo')}
                     </Typography>
                 </Alert>
