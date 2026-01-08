@@ -1,9 +1,5 @@
 @use '../../../../../style';
 
-.adyen-pe-component__container {
-    min-width: fit-content;
-}
-
 .adyen-pe-payment-link-settings {
     &__container {
         display: flex;
@@ -27,7 +23,6 @@
         width: 100%;
 
         &--alert {
-            align-items: center;
             align-self: stretch;
             display: flex;
             gap: style.token(spacer-060);

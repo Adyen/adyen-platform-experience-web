@@ -13,7 +13,7 @@ import {
     PAYMENT_LINK_TYPES,
     TABS_CONTAINER_CLASS,
 } from './constants';
-import { ExternalUIComponentProps, FilterParam, PaymentLinkOverviewComponentProps } from '../../../types';
+import { ExternalUIComponentProps, FilterParam, PaymentLinksOverviewComponentProps } from '../../../types';
 import { IPaymentLinkFilters, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType, IPaymentLinkItem } from '../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
 import { FilterBar, FilterBarMobileSwitch, useFilterBarState } from '../../../internal/FilterBar';
@@ -28,11 +28,11 @@ import { useConfigContext } from '../../../../core/ConfigContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
 import useModalDetails from '../../../../hooks/useModalDetails';
-import { PaymentLinkTable } from './PaymentLinkTable';
+import { PaymentLinksTable } from './PaymentLinksTable';
 import TextFilter from '../../../internal/FilterBar/filters/TextFilter';
 import Tabs from '../../../internal/Tabs/Tabs';
 import { TabComponentProps } from '../../../internal/Tabs/types';
-import './PaymentLinkOverview.scss';
+import './PaymentLinksOverview.scss';
 import cx from 'classnames';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import Select from '../../../internal/FormFields/Select';
@@ -40,11 +40,11 @@ import { AriaAttributes } from 'preact/compat';
 import { PopoverContainerSize } from '../../../internal/Popover/types';
 import * as RangePreset from '../../../internal/Calendar/calendar/timerange/presets';
 import { PaymentLinkDetailsModal } from './PaymentLinkDetailsModal/PaymentLinkDetailsModal';
-import { PaymentLinkOverviewModalType, StoreData } from './types';
+import { PaymentLinksOverviewModalType, StoreData } from './types';
 import Button from '../../../internal/Button';
 import { ButtonVariant } from '../../../internal/Button/types';
 import Icon from '../../../internal/Icon';
-import { PaymentLinkOverviewModal } from './PaymentLinkOverviewModal';
+import { PaymentLinksOverviewModal } from './PaymentLinksOverviewModal';
 import Alert from '../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../internal/Alert/types';
 import {
@@ -58,7 +58,7 @@ const PAYMENT_LINK_STORES_FILTER_PARAM = 'storeIds';
 const LAST_REFRESH_TIMESTAMP_PARAM = '_t';
 const PAYMENT_LINK_STATUSES_FILTER_VALUES = Object.keys(PAYMENT_LINK_STATUSES) as IPaymentLinkStatus[];
 
-const PaymentLinkOverviewTabsDropdown = ({
+const PaymentLinksOverviewTabsDropdown = ({
     ['aria-label']: ariaLabel,
     activeTab,
     onChange,
@@ -96,7 +96,7 @@ interface PaymentLinksPageRequestParams extends Record<FilterParam | 'cursor', s
     [LAST_REFRESH_TIMESTAMP_PARAM]: DOMHighResTimeStamp;
 }
 
-export const PaymentLinkOverview = ({
+export const PaymentLinksOverview = ({
     onFiltersChanged,
     allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
@@ -107,18 +107,20 @@ export const PaymentLinkOverview = ({
     isFiltersLoading,
     filterParams,
     stores,
+    allStores,
     paymentLinkCreation,
     paymentLinkSettings,
     storeIds,
     filterError,
     storeError,
 }: ExternalUIComponentProps<
-    PaymentLinkOverviewComponentProps & {
+    PaymentLinksOverviewComponentProps & {
         filterParams?: IPaymentLinkFilters;
         stores?: StoreData[];
         isFiltersLoading: boolean;
         filterError?: AdyenPlatformExperienceError | undefined;
         storeError?: AdyenPlatformExperienceError | undefined;
+        allStores?: StoreData[];
     }
 >) => {
     const { i18n } = useCoreContext();
@@ -302,7 +304,7 @@ export const PaymentLinkOverview = ({
     }, []);
 
     const [isModalVisible, setModalVisible] = useState(false);
-    const [modalType, setModalType] = useState<PaymentLinkOverviewModalType | undefined>(undefined);
+    const [modalType, setModalType] = useState<PaymentLinksOverviewModalType | undefined>(undefined);
 
     const openPaymentLinkModal = useCallback(() => {
         setModalType('Creation');
@@ -353,7 +355,7 @@ export const PaymentLinkOverview = ({
             </Header>
             <div className={TABS_CONTAINER_CLASS}>
                 {isMobileContainer ? (
-                    <PaymentLinkOverviewTabsDropdown
+                    <PaymentLinksOverviewTabsDropdown
                         aria-label={statusGroupAriaLabel}
                         activeTab={statusGroupActiveTab ?? statusGroup}
                         onChange={onStatusGroupChange}
@@ -470,11 +472,12 @@ export const PaymentLinkOverview = ({
                 resetDetails={resetDetails}
                 onUpdate={refreshPaymentLinkList}
             >
-                <PaymentLinkTable
+                <PaymentLinksTable
                     stores={stores}
                     storeError={storeError}
                     error={error as AdyenPlatformExperienceError}
                     limit={limit}
+                    allStores={allStores}
                     limitOptions={limitOptions}
                     loading={statusGroupFetchPending || fetching || isFiltersLoading}
                     onContactSupport={onContactSupport}
@@ -485,7 +488,7 @@ export const PaymentLinkOverview = ({
                     {...paginationProps}
                 />
             </PaymentLinkDetailsModal>
-            <PaymentLinkOverviewModal
+            <PaymentLinksOverviewModal
                 modalType={modalType}
                 isModalVisible={isModalVisible}
                 onCloseModal={onCloseModal}

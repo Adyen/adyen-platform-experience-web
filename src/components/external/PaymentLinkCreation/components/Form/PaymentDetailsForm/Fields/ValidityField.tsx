@@ -110,7 +110,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
         if (!durationQuantity) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.validity.customDuration.error.missingDurationValue') };
         }
-        if (qty <= 0) {
+        if (isNaN(qty) || qty <= 0) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.validity.customDuration.error.invalidDurationValue') };
         }
         if (!durationUnit) {
@@ -186,7 +186,8 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                         {validityValue === FLEXIBLE_ID && (
                                             <FormField label={i18n.get('payByLink.creation.fields.validity.customDuration.label')} optional={false}>
                                                 <InputBase
-                                                    dropdown={{ items: dropdownItems, value: customDurationUnit || '' }}
+                                                    {...durationQuantityField}
+                                                    dropdown={{ items: dropdownItems, value: customDurationUnit || '', name: durationUnitField.name }}
                                                     onDropdownInput={handleCustomDurationUnitChange}
                                                     dropdownPosition="end"
                                                     value={customDurationQuantity}
