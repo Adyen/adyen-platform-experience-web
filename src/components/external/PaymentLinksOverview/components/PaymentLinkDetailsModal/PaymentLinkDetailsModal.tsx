@@ -45,7 +45,13 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail.modalSize || 'large'}
                 >
-                    <PaymentLinkDetails id={selectedDetail.selection.data} onUpdate={handlePaymentLinkUpdate} onDismiss={handleDismiss} hideTitle />
+                    <PaymentLinkDetails
+                        id={selectedDetail.selection.data}
+                        onUpdate={handlePaymentLinkUpdate}
+                        onDismiss={handleDismiss}
+                        hideTitle
+                        isDismissButtonHidden
+                    />
                 </Modal>
             )}
         </div>

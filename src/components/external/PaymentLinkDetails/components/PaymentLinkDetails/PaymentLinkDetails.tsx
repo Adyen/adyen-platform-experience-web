@@ -29,11 +29,11 @@ const CLASSNAMES = {
     expirationSuccessIcon: 'adyen-pe-payment-link-details__expiration-success-icon',
 };
 
-type PaymentLinkDetailsProps = Omit<ExternalUIComponentProps<PaymentLinkDetailsElementProps>, 'onDismiss'> & {
-    onDismiss?: () => void;
+type PaymentLinkDetailsProps = ExternalUIComponentProps<PaymentLinkDetailsElementProps> & {
+    isDismissButtonHidden?: boolean;
 };
 
-export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: PaymentLinkDetailsProps) => {
+export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss, isDismissButtonHidden }: PaymentLinkDetailsProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getPayByLinkPaymentLinkById } = useConfigContext().endpoints;
     const {
@@ -214,6 +214,15 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                           },
                       ]
                     : []),
+                ...(!isDismissButtonHidden && onDismiss
+                    ? [
+                          {
+                              title: i18n.get('payByLink.common.actions.goBack'),
+                              event: onDismiss,
+                              variant: ButtonVariant.SECONDARY,
+                          },
+                      ]
+                    : []),
             ];
 
             return (
@@ -238,6 +247,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         isCopiedIndicatorVisible,
         handleCopyLink,
         handleExpireNow,
+        isDismissButtonHidden,
     ]);
 
     return (
