@@ -705,6 +705,7 @@
     "disputes.overview.ongoingAndClosed.limitSelect.a11y.label": "Disputes per page",
     "payByLink.common.actions.goBack": "Go back",
     "payByLink.common.errors.accountConfiguration": "Looks like there is a problem with your account configuration.",
+    "payByLink.common.errors.storeID": "Looks like there is a problem with the store ID.",
     "payByLink.common.fields.optional.label": "optional",
     "payByLink.common.linkType.open": "Open",
     "payByLink.common.linkType.singleUse": "Single use",

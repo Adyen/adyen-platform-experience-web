@@ -1,5 +1,4 @@
 import cx from 'classnames';
-
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
@@ -17,7 +16,7 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
     const { i18n } = useCoreContext();
 
     const [copied, setCopied] = useState(false);
-    const copiedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => {
         return () => {

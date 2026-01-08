@@ -107,6 +107,7 @@ export const PaymentLinksOverview = ({
     isFiltersLoading,
     filterParams,
     stores,
+    allStores,
     paymentLinkCreation,
     paymentLinkSettings,
     storeIds,
@@ -119,6 +120,7 @@ export const PaymentLinksOverview = ({
         isFiltersLoading: boolean;
         filterError?: AdyenPlatformExperienceError | undefined;
         storeError?: AdyenPlatformExperienceError | undefined;
+        allStores?: StoreData[];
     }
 >) => {
     const { i18n } = useCoreContext();
@@ -475,6 +477,7 @@ export const PaymentLinksOverview = ({
                     storeError={storeError}
                     error={error as AdyenPlatformExperienceError}
                     limit={limit}
+                    allStores={allStores}
                     limitOptions={limitOptions}
                     loading={statusGroupFetchPending || fetching || isFiltersLoading}
                     onContactSupport={onContactSupport}
