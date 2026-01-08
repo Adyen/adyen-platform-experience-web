@@ -1,19 +1,19 @@
-import { PaymentLinkOverview } from '../../src';
+import { PaymentLinksOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { PaymentLinksOverviewMeta } from '../components/paymentLinksOverview';
 import { PayByLinkOverviewMockedResponses } from '../../mocks/mock-server/payByLink';
 
-const meta: Meta<ElementProps<typeof PaymentLinkOverview>> = { ...PaymentLinksOverviewMeta, title: 'Mocked/Payment Links Overview' };
+const meta: Meta<ElementProps<typeof PaymentLinksOverview>> = { ...PaymentLinksOverviewMeta, title: 'Mocked/Payment Links Overview' };
 
-export const Default: ElementStory<typeof PaymentLinkOverview> = {
+export const Default: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Default',
     args: {
         mockedApi: true,
     },
 };
 
-export const WithPropsToSubComponents: ElementStory<typeof PaymentLinkOverview> = {
+export const WithPropsToSubComponents: ElementStory<typeof PaymentLinksOverview> = {
     name: 'With props to sub-components',
     args: {
         mockedApi: true,
@@ -30,7 +30,7 @@ export const WithPropsToSubComponents: ElementStory<typeof PaymentLinkOverview> 
     },
 };
 
-export const EmptyList: ElementStory<typeof PaymentLinkOverview> = {
+export const EmptyList: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Empty List',
     args: {
         mockedApi: true,
@@ -42,7 +42,7 @@ export const EmptyList: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const TooManyStores: ElementStory<typeof PaymentLinkOverview> = {
+export const TooManyStores: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Too Many Stores',
     args: {
         mockedApi: true,
@@ -54,7 +54,7 @@ export const TooManyStores: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const StoresMisconfiguration: ElementStory<typeof PaymentLinkOverview> = {
+export const StoresMisconfiguration: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Stores Not Configured',
     args: {
         mockedApi: true,
@@ -66,7 +66,7 @@ export const StoresMisconfiguration: ElementStory<typeof PaymentLinkOverview> = 
     },
 };
 
-export const StoreNetworkError: ElementStory<typeof PaymentLinkOverview> = {
+export const StoreNetworkError: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Stores Network Error',
     args: {
         mockedApi: true,
@@ -78,7 +78,7 @@ export const StoreNetworkError: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const ErrorFiltersGeneric: ElementStory<typeof PaymentLinkOverview> = {
+export const ErrorFiltersGeneric: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Filters - Generic',
     args: {
         mockedApi: true,

@@ -1,1 +1,1 @@
-export { default as PaymentLinkOverview } from './PaymentLinksOverviewElement';
+export { default as PaymentLinksOverview } from './PaymentLinksOverviewElement';

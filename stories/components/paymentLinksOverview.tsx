@@ -1,9 +1,9 @@
 import { Meta } from '@storybook/preact';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
-import { PaymentLinkOverview } from '../../src';
+import { PaymentLinksOverview } from '../../src';
 import { ElementProps } from '../utils/types';
 
-export const PaymentLinksOverviewMeta: Meta<ElementProps<typeof PaymentLinkOverview>> = {
+export const PaymentLinksOverviewMeta: Meta<ElementProps<typeof PaymentLinksOverview>> = {
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onRecordSelection: enabledDisabledCallbackRadioControls('onRecordSelection'),
@@ -15,7 +15,7 @@ export const PaymentLinksOverviewMeta: Meta<ElementProps<typeof PaymentLinkOverv
     },
     args: {
         allowLimitSelection: true,
-        component: PaymentLinkOverview,
+        component: PaymentLinksOverview,
     },
     parameters: {
         controls: {
