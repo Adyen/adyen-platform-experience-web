@@ -90,18 +90,21 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
         return listItems.filter(Boolean);
     }, [i18n, transaction]);
 
-    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>((label, key, value) => {
-        const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as keyof typeof ADJUSTMENTS_TOOLTIP_CONTENT];
+    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>(
+        (label, key, value) => {
+            const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as keyof typeof ADJUSTMENTS_TOOLTIP_CONTENT];
 
-        if (value && isAmount(value) && value.value < 0 && tooltipContent) {
-            return (
-                <Tooltip content={i18n.get(tooltipContent)} key={key} isUnderlineVisible>
-                    <span className={cx(TX_DATA_LABEL)}>{label}</span>
-                </Tooltip>
-            );
-        }
-        return <div className={cx(TX_DATA_LABEL)}>{label}</div>;
-    }, []);
+            if (value && isAmount(value) && value.value < 0 && tooltipContent) {
+                return (
+                    <Tooltip content={i18n.get(tooltipContent)} key={key} isUnderlineVisible>
+                        <span className={cx(TX_DATA_LABEL)}>{label}</span>
+                    </Tooltip>
+                );
+            }
+            return <div className={cx(TX_DATA_LABEL)}>{label}</div>;
+        },
+        [i18n]
+    );
 
     const renderListPropertyValue = useCallback<NonNullable<StructuredListProps['renderValue']>>((val, key) => {
         const strongest = key === paymentAmountKeys.netAmount;
