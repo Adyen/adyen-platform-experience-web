@@ -21,16 +21,13 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
     const [isPaymentLinkUpdated, setIsPaymentLinkUpdated] = useState(false);
     const isModalOpen = !!selectedDetail;
 
-    const handleDismiss = useCallback(
-        (withUpdate = false) => {
-            if (isPaymentLinkUpdated || withUpdate) {
-                setIsPaymentLinkUpdated(false);
-                onUpdate();
-            }
-            resetDetails();
-        },
-        [isPaymentLinkUpdated, setIsPaymentLinkUpdated, onUpdate, resetDetails]
-    );
+    const handleDismiss = useCallback(() => {
+        if (isPaymentLinkUpdated) {
+            setIsPaymentLinkUpdated(false);
+            onUpdate();
+        }
+        resetDetails();
+    }, [isPaymentLinkUpdated, onUpdate, resetDetails]);
 
     const handlePaymentLinkUpdate = useCallback(() => {
         setIsPaymentLinkUpdated(true);
@@ -48,7 +45,13 @@ export const PaymentLinkDetailsModal: FC<PaymentLinkDetailsModalProps> = ({
                     headerWithBorder={false}
                     size={selectedDetail.modalSize || 'large'}
                 >
-                    <PaymentLinkDetails id={selectedDetail.selection.data} onUpdate={handlePaymentLinkUpdate} onDismiss={handleDismiss} hideTitle />
+                    <PaymentLinkDetails
+                        id={selectedDetail.selection.data}
+                        onUpdate={handlePaymentLinkUpdate}
+                        onDismiss={handleDismiss}
+                        hideTitle
+                        isDismissButtonHidden
+                    />
                 </Modal>
             )}
         </div>
