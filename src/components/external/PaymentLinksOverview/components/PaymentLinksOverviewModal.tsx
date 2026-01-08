@@ -2,25 +2,25 @@ import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { popoverUtil } from '../../../internal/Popover/utils/popoverUtil';
 import Modal from '../../../internal/Modal';
-import { PaymentLinkOverviewModalType } from './types';
+import { PaymentLinksOverviewModalType } from './types';
 import PaymentLinkCreationContainer from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer';
 import PaymentLinkSettingsContainer from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer/PaymentLinkSettingsContainer';
-import { PaymentLinkOverviewComponentProps } from '../../../types';
+import { PaymentLinksOverviewComponentProps } from '../../../types';
 import { StoreIds } from '../types';
 import { PaymentLinkCreationFormValues } from '../../PaymentLinkCreation/components/types';
 
-export interface PaymentLinkOverviewModalProps {
+export interface PaymentLinksOverviewModalProps {
     isModalVisible: boolean;
     onCloseModal: () => void;
     onContactSupport?: () => void;
-    modalType?: PaymentLinkOverviewModalType;
-    paymentLinkCreation: PaymentLinkOverviewComponentProps['paymentLinkCreation'];
-    paymentLinkSettings: PaymentLinkOverviewComponentProps['paymentLinkSettings'];
+    modalType?: PaymentLinksOverviewModalType;
+    paymentLinkCreation: PaymentLinksOverviewComponentProps['paymentLinkCreation'];
+    paymentLinkSettings: PaymentLinksOverviewComponentProps['paymentLinkSettings'];
     storeIds?: StoreIds;
     refreshPaymentLinkList?: () => void;
 }
 
-export const PaymentLinkOverviewModal = ({
+export const PaymentLinksOverviewModal = ({
     isModalVisible,
     onCloseModal,
     modalType,
@@ -29,7 +29,7 @@ export const PaymentLinkOverviewModal = ({
     storeIds,
     onContactSupport,
     refreshPaymentLinkList,
-}: PaymentLinkOverviewModalProps) => {
+}: PaymentLinksOverviewModalProps) => {
     const { i18n } = useCoreContext();
     const [hasToRefresh, setHasToRefresh] = useState(false);
 

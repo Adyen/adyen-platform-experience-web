@@ -185,10 +185,15 @@ export const PaymentLinkSettingsProvider = memo(
             }
         }, []);
 
-        const setSelectedMenuItem = useCallback((item: SecondaryNavItem<PaymentLinkSettingsItem>) => {
-            setLoading(true);
-            setActiveMenuItem(item.value);
-        }, []);
+        const setSelectedMenuItem = useCallback(
+            (item: SecondaryNavItem<PaymentLinkSettingsItem>) => {
+                if (activeMenuItem !== item.value) {
+                    setLoading(true);
+                    setActiveMenuItem(item.value);
+                }
+            },
+            [activeMenuItem]
+        );
 
         const contentLoading = loading || loadingThemes || loadingTermsAndConditions || isLoadingStores;
 

@@ -148,6 +148,7 @@ function InputBase(
         () =>
             dropdown ? (
                 <Select
+                    name={dropdown.name}
                     buttonVariant={ButtonVariant.TERTIARY}
                     items={dropdown.items}
                     selected={dropdown.value}

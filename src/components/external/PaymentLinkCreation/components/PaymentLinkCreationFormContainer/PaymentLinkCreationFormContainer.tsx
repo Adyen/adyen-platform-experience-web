@@ -37,6 +37,8 @@ type PaymentLinkCreationFormContainerProps = {
     embeddedInOverview?: boolean;
 };
 
+const FIELD_LABEL_AND_MARGIN_OFFSET = 28;
+
 const LoadingSkeleton = () => (
     <div className="adyen-pe-payment-link-creation-form__skeleton">
         <div className="adyen-pe-payment-link-creation-form__skeleton-item adyen-pe-payment-link-creation-form__skeleton-item--large" />
@@ -65,6 +67,7 @@ export const PaymentLinkCreationFormContainer = ({
 }: PaymentLinkCreationFormContainerProps) => {
     const [showFormValidationError, setShowFormValidationError] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
     const selectedStoreNavigationCache = useRef<string>('');
@@ -102,8 +105,10 @@ export const PaymentLinkCreationFormContainer = ({
         async (index: number) => {
             if (!isLastStep) {
                 const isValid = await validateStep(index);
-                if (!isValid && isXsAndDownContainer) {
-                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors));
+                if (!isValid) {
+                    const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
+                    const offsetTop = isXsAndDownContainer ? headerHeight + FIELD_LABEL_AND_MARGIN_OFFSET : FIELD_LABEL_AND_MARGIN_OFFSET;
+                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors), offsetTop);
                     return;
                 }
                 await nextStep();
@@ -297,7 +302,7 @@ export const PaymentLinkCreationFormContainer = ({
 
     return (
         <div className="adyen-pe-payment-link-creation-form__component" ref={containerRef}>
-            <div className="adyen-pe-payment-link-creation-form__header">
+            <div className="adyen-pe-payment-link-creation-form__header" ref={headerRef}>
                 <Typography variant={TypographyVariant.SUBTITLE} stronger>
                     {i18n.get('payByLink.creation.form.title')}
                 </Typography>

@@ -1,5 +1,5 @@
 import { IPaymentLinkItem } from '../../../../types';
-import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinkTable';
+import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinksTable';
 import { StringWithAutocompleteOptions } from '../../../../utils/types';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../internal/Pagination/types';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
@@ -22,4 +22,4 @@ export interface PaymentLinkTableProps extends WithPaginationLimitSelection<Pagi
 
 export type StoreData = IStore & { name?: string };
 
-export type PaymentLinkOverviewModalType = 'Creation' | 'Settings';
+export type PaymentLinksOverviewModalType = 'Creation' | 'Settings';

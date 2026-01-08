@@ -3,7 +3,7 @@ import PaymentLinkThemeContainer from '../../../PaymentLinkThemeContainer/Paymen
 import { MenuItem } from '../../context/constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
 import Alert from '../../../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../../../internal/Alert/types';
+import { AlertTypeOption, AlertVariantOption } from '../../../../../../internal/Alert/types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import usePaymentLinkSettingsContext from '../../context/context';
 import PaymentLinkSettingsContentLoading from '../PaymentLinkSettingsContentLoading/PaymentLinkSettingsContentLoading';
@@ -39,6 +39,7 @@ const PaymentLinkSettingsContent = ({ activeMenuItem, isLoadingContent, navigate
             {isSaveSuccess && !navigateBack && (
                 <Alert
                     type={AlertTypeOption.SUCCESS}
+                    variant={AlertVariantOption.TIP}
                     onClose={() => setIsSaveSuccess(false)}
                     description={i18n.get('payByLink.settings.common.alerts.saveSuccess')}
                     className={'adyen-pe-payment-link-settings__content-item--alert'}
@@ -47,6 +48,7 @@ const PaymentLinkSettingsContent = ({ activeMenuItem, isLoadingContent, navigate
             {isSaveError && (
                 <Alert
                     type={AlertTypeOption.CRITICAL}
+                    variant={AlertVariantOption.TIP}
                     onClose={() => setIsSaveError(false)}
                     description={i18n.get('payByLink.settings.common.alerts.saveError')}
                     className={'adyen-pe-payment-link-settings__content-item--alert'}
