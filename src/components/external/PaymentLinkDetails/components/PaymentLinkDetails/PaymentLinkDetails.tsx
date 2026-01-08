@@ -103,7 +103,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout> | undefined;
         if (isCopiedIndicatorVisible) {
-            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 1000);
+            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 3000);
         }
 
         return () => clearTimeout(timeout);
@@ -198,7 +198,6 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                     title: i18n.get(isCopiedIndicatorVisible ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
                     event: handleCopyLink,
                     variant: ButtonVariant.PRIMARY,
-                    disabled: isCopiedIndicatorVisible,
                     iconLeft: (
                         <Icon
                             className="adyen-pe-payment-link-creation-form-success__button-icon"
