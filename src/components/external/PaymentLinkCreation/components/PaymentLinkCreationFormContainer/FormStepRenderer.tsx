@@ -21,7 +21,6 @@ type FormStepRendererProps = {
         name: string;
     }[];
     termsAndConditionsProvisioned: boolean;
-    timezone?: string;
     configurationData?: IPaymentLinkConfiguration;
     isSeparateAddress: boolean;
     setIsSeparateAddress: Dispatch<SetStateAction<boolean>>;
@@ -41,7 +40,6 @@ export const FormStepRenderer = ({
     storesData,
     selectItems,
     termsAndConditionsProvisioned,
-    timezone,
     configurationData,
     isSeparateAddress,
     setIsSeparateAddress,
@@ -63,7 +61,7 @@ export const FormStepRenderer = ({
                 />
             );
         case 'payment':
-            return <PaymentDetailsForm timezone={timezone} configuration={configurationData} />;
+            return <PaymentDetailsForm configuration={configurationData} />;
         case 'customer':
             return (
                 <CustomerDetailsForm

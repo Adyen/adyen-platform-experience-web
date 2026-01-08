@@ -65,6 +65,7 @@ export const PaymentLinkCreationFormContainer = ({
     onContactSupport,
     embeddedInOverview,
 }: PaymentLinkCreationFormContainerProps) => {
+    const [showFormValidationError, setShowFormValidationError] = useState<boolean>(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
@@ -179,12 +180,10 @@ export const PaymentLinkCreationFormContainer = ({
     }, [setShowTermsAndConditions, setSelectedStore]);
 
     const onError = (errors: any) => {
-        console.log(errors);
-        // TODO - Define errorHandling
+        // Form validation errors, should not happen since last step
+        // (summary) does not include any validations
+        setShowFormValidationError(true);
     };
-
-    // TODO - Define where to get timezone
-    const timezone = undefined;
 
     const isNextStepLoading = submitMutation.isLoading || isDataLoading;
 
@@ -336,7 +335,6 @@ export const PaymentLinkCreationFormContainer = ({
                                 storesData={storesData}
                                 selectItems={storesSelectorItems}
                                 termsAndConditionsProvisioned={termsAndConditionsProvisioned}
-                                timezone={timezone}
                                 configurationData={configurationData}
                                 isSeparateAddress={isSeparateAddress}
                                 setIsSeparateAddress={setIsSeparateAddress}
@@ -347,7 +345,7 @@ export const PaymentLinkCreationFormContainer = ({
                             />
                         </div>
 
-                        {displayConfigurationError && (
+                        {(displayConfigurationError || showFormValidationError) && (
                             <ErrorMessageDisplay
                                 condensed
                                 title={'common.errors.somethingWentWrong'}
