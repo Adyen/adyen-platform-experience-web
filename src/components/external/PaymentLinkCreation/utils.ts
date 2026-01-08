@@ -18,7 +18,7 @@ export interface FormStepConfig {
     isOptional?: boolean;
 }
 
-export const scrollToFirstErrorField = (errorFields: string[]): void => {
+export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number): void => {
     const errorElements = errorFields.map(field => document.querySelector(`[name="${field}"]`)).filter((el): el is Element => el !== null);
 
     const firstElement = errorElements.sort((a, b) => {
@@ -27,7 +27,15 @@ export const scrollToFirstErrorField = (errorFields: string[]): void => {
         return rectA.top - rectB.top;
     })[0];
 
-    firstElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!firstElement) return;
+
+    const rect = firstElement.getBoundingClientRect();
+    const isInViewport = rect.top >= visibilityOffset && rect.bottom <= window.innerHeight;
+
+    if (!isInViewport) {
+        const top = Math.max(0, window.scrollY + rect.top - visibilityOffset);
+        window.scrollTo({ top, behavior: 'smooth' });
+    }
 };
 
 export const getFormSteps = ({
