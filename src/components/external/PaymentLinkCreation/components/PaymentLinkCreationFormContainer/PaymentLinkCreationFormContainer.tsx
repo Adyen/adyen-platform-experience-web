@@ -177,7 +177,6 @@ export const PaymentLinkCreationFormContainer = ({
     const onError = (errors: any) => {
         // Form validation errors, should not happen since last step
         // (summary) does not include any validations
-        console.log(errors);
         setShowFormValidationError(true);
     };
 
