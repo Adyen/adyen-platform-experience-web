@@ -29,11 +29,11 @@ const CLASSNAMES = {
     expirationSuccessIcon: 'adyen-pe-payment-link-details__expiration-success-icon',
 };
 
-type PaymentLinkDetailsProps = Omit<ExternalUIComponentProps<PaymentLinkDetailsElementProps>, 'onDismiss'> & {
-    onDismiss?: (withUpdate?: boolean) => void;
+type PaymentLinkDetailsProps = ExternalUIComponentProps<PaymentLinkDetailsElementProps> & {
+    isDismissButtonHidden?: boolean;
 };
 
-export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss }: PaymentLinkDetailsProps) => {
+export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, onDismiss, isDismissButtonHidden }: PaymentLinkDetailsProps) => {
     const { i18n, getCdnDataset } = useCoreContext();
     const { getPayByLinkPaymentLinkById } = useConfigContext().endpoints;
     const {
@@ -103,7 +103,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout> | undefined;
         if (isCopiedIndicatorVisible) {
-            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 1000);
+            timeout = setTimeout(() => setCopiedIndicatorVisible(false), 3000);
         }
 
         return () => clearTimeout(timeout);
@@ -126,16 +126,16 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
 
     const handleExpirationSuccess = useCallback(() => {
         setActiveScreen('expirationSuccess');
-    }, []);
+        onUpdate?.();
+    }, [onUpdate]);
 
     const handleNavigationToDetailsAfterExpiration = useCallback(() => {
         setActiveScreen('details');
         refetch();
-        onUpdate?.();
-    }, [onUpdate, refetch]);
+    }, [refetch]);
 
     const handleNavigationToListAfterExpiration = useCallback(() => {
-        onDismiss?.(true);
+        onDismiss?.();
     }, [onDismiss]);
 
     const { withinModal } = useModalContext();
@@ -198,7 +198,6 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                     title: i18n.get(isCopiedIndicatorVisible ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
                     event: handleCopyLink,
                     variant: ButtonVariant.PRIMARY,
-                    disabled: isCopiedIndicatorVisible,
                     iconLeft: (
                         <Icon
                             className="adyen-pe-payment-link-creation-form-success__button-icon"
@@ -211,6 +210,15 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                           {
                               title: i18n.get('payByLink.details.actions.expire'),
                               event: handleExpireNow,
+                              variant: ButtonVariant.SECONDARY,
+                          },
+                      ]
+                    : []),
+                ...(!isDismissButtonHidden && onDismiss
+                    ? [
+                          {
+                              title: i18n.get('payByLink.common.actions.goBack'),
+                              event: onDismiss,
                               variant: ButtonVariant.SECONDARY,
                           },
                       ]
@@ -239,6 +247,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         isCopiedIndicatorVisible,
         handleCopyLink,
         handleExpireNow,
+        isDismissButtonHidden,
     ]);
 
     return (
