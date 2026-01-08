@@ -1,6 +1,6 @@
-import { TransactionTotalItemProps } from './types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useMemo, useRef } from 'preact/hooks';
+import { TransactionTotalItemProps } from './types';
 import { SummaryItemColumnConfig } from '../SummaryItem/types';
 import { SummaryItem } from '../SummaryItem/SummaryItem';
 
@@ -56,7 +56,7 @@ export const TransactionTotalItem = ({
                 getValue: () => total?.currency,
             },
         ];
-    }, [total, hiddenField, i18n]);
+    }, [incomingsElemId, expensesElemId, hiddenField, total, i18n]);
 
     return (
         <SummaryItem

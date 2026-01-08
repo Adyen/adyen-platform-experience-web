@@ -1,10 +1,23 @@
-import { JSX } from 'preact';
+import { ComponentChildren, JSX } from 'preact';
 import { TargetedEvent } from 'preact/compat';
-import { JSXInternal } from 'preact/src/jsx';
-import AriaRole = JSXInternal.AriaRole;
+import { SelectItem } from './Select/types';
+
+export type InputFieldElementPosition = 'start' | 'end';
+
+export interface InputFieldDropdownProps<T extends SelectItem = SelectItem> {
+    'aria-label'?: string;
+    disabled?: boolean;
+    filterable?: boolean;
+    items: readonly T[];
+    name?: string;
+    readonly?: boolean;
+    value?: T['id'] | readonly T['id'][];
+    placeholder?: string;
+}
 
 export interface InputBaseProps {
     autoCapitalize?: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
+    autoComplete?: 'off' | 'on';
     classNameModifiers?: string[];
     isInvalid?: boolean;
     isValid?: boolean;
@@ -15,8 +28,8 @@ export interface InputBaseProps {
     disabled?: boolean;
     onClick?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
-    onKeyDown?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
-    onKeyUp?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+    onKeyUp?: (e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
     onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onFocusHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
     onBlurHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
@@ -26,9 +39,16 @@ export interface InputBaseProps {
     placeholder?: string;
     value?: any;
     maxLength?: number;
+    minLength?: number;
     required?: boolean;
-    role?: AriaRole;
+    role?: JSX.HTMLAttributes<HTMLInputElement>['role'];
     min?: number;
     errorMessage?: string;
     lang?: HTMLInputElement['lang'];
+    iconBeforeSlot?: ComponentChildren;
+    iconAfterSlot?: ComponentChildren;
+    dropdown?: InputFieldDropdownProps;
+    dropdownPosition?: InputFieldElementPosition;
+    onDropdownInput?: (selectedValue: any) => void;
+    onUpdateDropdown?: (updatedDropdownProps: InputFieldDropdownProps) => void;
 }

@@ -9,6 +9,18 @@
     width: 100%;
 }
 
+.adyen-pe-component,
+.adyen-pe-popover,
+.adyen-pe-tooltip {
+    box-sizing: border-box;
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+}
+
 .adyen-pe-component__container {
     background: style.token(color-background-primary);
     padding: var(--adyen-pe-content-padding);

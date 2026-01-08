@@ -1,4 +1,5 @@
 @use '../../../style';
+@use '../../../style/breakpoints' as breakpoints;
 
 .adyen-pe-error-message-display {
     border-radius: style.token(border-radius-m);
@@ -6,8 +7,8 @@
     flex-direction: column;
     gap: style.token(spacer-060);
     left: style.token(spacer-050);
-    min-width: 400px;
-    padding: style.token(spacer-120);
+    min-width: 310px;
+    padding: style.token(spacer-090);
     text-align: center;
     top: style.token(spacer-050);
 
@@ -36,5 +37,24 @@
         display: flex;
         gap: style.token(spacer-040);
         justify-content: center;
+    }
+
+    &--with-header-offset {
+        top: 60px;
+    }
+
+    &--condensed {
+        padding: style.token(spacer-040);
+    }
+
+    /* stylelint-disable order/order */
+    @include breakpoints.adyen-pe-screen-sm-and-up {
+        max-width: 550px;
+        min-width: 400px;
+        padding: style.token(spacer-120);
+
+        &--condensed {
+            padding: style.token(spacer-040);
+        }
     }
 }

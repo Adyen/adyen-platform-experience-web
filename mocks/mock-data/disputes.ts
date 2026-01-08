@@ -9,6 +9,7 @@ import {
     IDisputeStatusGroup,
     IDisputeType,
 } from '../../src/types/api/models/disputes';
+import getDate from './utils/getDate';
 
 export const MAIN_BALANCE_ACCOUNT = BALANCE_ACCOUNTS.find(({ id }) => id === 'BA32272223222B5CTDQPM6W2H')!;
 
@@ -197,12 +198,6 @@ export const getAllowedDisputeDefenseReasons = <T extends Pick<IDispute, 'reason
 
 export const getApplicableDisputeDefenseDocuments = <T extends Pick<IDispute, 'reason'>>(dispute: T, defenseReason: string) => {
     return DEFENDABLE_CHARGEBACK_REASONS[dispute.reason.code]?.[defenseReason] || ([] as const);
-};
-
-export const getDate = (daysOffset = 0, originDate = new Date()) => {
-    const date = new Date(originDate);
-    date.setDate(date.getDate() + daysOffset);
-    return date.toISOString();
 };
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {

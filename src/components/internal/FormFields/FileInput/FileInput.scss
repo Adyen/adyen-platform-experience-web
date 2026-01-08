@@ -118,7 +118,8 @@
 
         // stylelint-disable selector-no-qualifying-type
         input[type='file']:focus-visible ~ & {
-            box-shadow: 0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+            box-shadow:
+                0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
                 0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
         }
 
@@ -195,5 +196,10 @@
     &__error-text,
     &__error-icon svg {
         color: style.token(color-label-critical);
+    }
+
+    &__supported-file-types,
+    &__max-file-size {
+        color: style.token(color-label-secondary);
     }
 }

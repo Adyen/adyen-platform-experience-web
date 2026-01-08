@@ -20,6 +20,7 @@ export const useClickOutside = <T extends Element = Element>(
     variant?: ClickOutsideVariant
 ) => {
     const ref = useRef<Nullable<T>>(null);
+    const mouseDownInsideRef = useRef(false);
 
     const handleClickOutside = useCallback(
         (e: Event) => {
@@ -50,20 +51,41 @@ export const useClickOutside = <T extends Element = Element>(
         [ref, callback, variant]
     );
 
+    const handleMouseDown = useCallback(
+        (e: MouseEvent) => {
+            if (!(ref && ref.current)) return;
+            mouseDownInsideRef.current = ref.current.contains(e.target as Node);
+        },
+        [ref]
+    );
+
+    const handleClick = useCallback(
+        (e: MouseEvent) => {
+            if (mouseDownInsideRef.current) {
+                mouseDownInsideRef.current = false;
+                return;
+            }
+            handleClickOutside(e);
+        },
+        [handleClickOutside]
+    );
+
     useEffect(() => {
         if (disableClickOutside) return;
 
-        document.addEventListener('click', handleClickOutside, true);
+        document.addEventListener('mousedown', handleMouseDown, true);
+        document.addEventListener('click', handleClick, true);
 
         if (variant === ClickOutsideVariant.POPOVER && ref.current instanceof Element) {
             popoverUtil.add(ref.current, callback);
         }
 
         return () => {
-            document.removeEventListener('click', handleClickOutside, true);
+            document.removeEventListener('mousedown', handleMouseDown, true);
+            document.removeEventListener('click', handleClick, true);
             if (ref.current) popoverUtil.remove(ref.current);
         };
-    }, [disableClickOutside, handleClickOutside, callback, variant, ref]);
+    }, [disableClickOutside, handleMouseDown, handleClick, callback, variant, ref]);
 
     return useReflex<T>(
         useCallback(

@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { HTMLProps } from 'preact/compat';
+import { HTMLProps, ReactNode } from 'preact/compat';
 import { TranslationKey } from '../../../translations';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
@@ -15,9 +15,10 @@ type CopyTextProps = {
     showCopyTextTooltip?: boolean;
     type?: 'Trimmed' | 'Text' | 'Default';
     textToCopy: string;
-    visibleText?: string;
+    visibleText?: string | ReactNode;
     onCopyText?: () => void;
-} & HTMLProps<HTMLSpanElement>;
+    stronger?: boolean;
+} & Omit<HTMLProps<HTMLSpanElement>, 'type'>;
 
 const BASE_CLASSNAME = 'adyen-pe-copy-text';
 
@@ -28,6 +29,7 @@ const classes = {
     information: BASE_CLASSNAME + '__information',
     label: BASE_CLASSNAME + '__label',
     text: BASE_CLASSNAME + '__text',
+    stronger: BASE_CLASSNAME + '--stronger',
 };
 
 const CopyText = ({
@@ -38,6 +40,7 @@ const CopyText = ({
     onCopyText,
     showCopyTextTooltip = true,
     type = 'Trimmed',
+    stronger,
     ...restProps
 }: CopyTextProps) => {
     const { i18n } = useCoreContext();
@@ -64,12 +67,13 @@ const CopyText = ({
                     [classes.label]: type !== 'Default',
                     [classes.information]: type === 'Trimmed',
                     [classes.text]: type === 'Text',
+                    [classes.stronger]: stronger,
                 })}
             >
                 {visibleText || textToCopy}
             </span>
         ),
-        [visibleText, textToCopy, type]
+        [type, stronger, visibleText, textToCopy]
     );
 
     return (

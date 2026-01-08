@@ -195,7 +195,7 @@ export const PayoutData = ({
                                 classNames={PD_EXTRA_DETAILS_CLASS}
                                 items={extraDetails}
                                 align="start"
-                                layout="5-7"
+                                layout="4-8"
                                 renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
                                 renderValue={(val, key, type, config) => {
                                     if (type === 'link' && config) {

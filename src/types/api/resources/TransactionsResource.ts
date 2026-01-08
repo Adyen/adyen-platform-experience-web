@@ -5,29 +5,101 @@
 
 export interface paths {
     '/v1/transactions/{transactionId}': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transaction details
          * @description Given a transaction ID, it retrieves its details
          */
         get: operations['getTransaction'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v1/transactions/totals': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transaction totals
          * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
          */
         get: operations['getTransactionTotals'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    '/v1/transactions/download': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Download transactions
+         * @description Given filters, downloads a file containing transactions matching the criteria
+         */
+        get: operations['downloadTransactions'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v1/transactions': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
         /**
          * Get transactions
          * @description Given filters, provides list of transactions for a balance account
          */
         get: operations['getTransactions'];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
     '/v1/transactions/{transactionId}/refundPayment': {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /** @description Add @Operation annotation to provide a description */
         post: operations['initiateRefund'];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
 }
 
@@ -36,11 +108,11 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes). */
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
             currency: string;
             /**
              * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes).
+             * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
         };
@@ -50,17 +122,30 @@ export interface components {
         };
         /** @enum {string} */
         Category: 'ATM' | 'Capital' | 'Correction' | 'Fee' | 'Payment' | 'Refund' | 'Chargeback' | 'Transfer' | 'Other';
+        DownloadTransactionsResponseDTO: Uint8Array;
         ExistingRefund: {
             amount: components['schemas']['Amount'];
             status: components['schemas']['RefundStatus'];
         };
+        /** @enum {string} */
+        ExportColumn:
+            'amountBeforeDeductions' |
+            'balanceAccountId' |
+            'category' |
+            'createdAt' |
+            'currency' |
+            'id' |
+            'netAmount' |
+            'paymentMethod' |
+            'paymentPspReference' |
+            'status';
         PaymentMethod: {
-            /** @description Last four digits of the card */
-            lastFourDigits?: string;
-            /** @description Payment method type code of the transaction f.e. klarna, visa, mc */
-            type: string;
-
+            /** @description Payment method name, such as PayPal, Mastercard etc. */
             description?: string;
+            /** @description Last four digits of the payment method used (e.g. a credit card, a debit card, an IBAN) */
+            lastFourDigits?: string;
+            /** @description Payment method type code of the transaction, e.g. 'klarna', 'visa', 'mc' */
+            type: string;
         };
         RefundDetails: {
             refundLocked?: boolean;
@@ -104,7 +189,7 @@ export interface components {
             originalAmount?: components['schemas']['Amount'];
             /** @description Payment method or payment instrument */
             paymentMethod?: components['schemas']['PaymentMethod'];
-            /** @description When Category is payment, this is the PSP reference of the PSP payment */
+            /** @description When applicable, the PSP reference of the PSP payment */
             paymentPspReference?: string;
             /** @description Additional data related to refund operations */
             refundDetails?: components['schemas']['RefundDetails'];
@@ -139,9 +224,9 @@ export interface components {
         };
         Links: {
             /** @description Link to a different page */
-            next: components['schemas']['Link'];
+            next?: components['schemas']['Link'];
             /** @description Link to a different page */
-            prev: components['schemas']['Link'];
+            prev?: components['schemas']['Link'];
         };
         TransactionsResponse: {
             /** @description Links */
@@ -153,8 +238,8 @@ export interface components {
         SortDirection: 'asc' | 'desc';
         RefundResponse: {
             amount: components['schemas']['Amount'];
-            refundReason?: string;
-            status?: string;
+            refundReason: string;
+            status: string;
         };
         RefundRequest: {
             amount: components['schemas']['Amount'];
@@ -173,29 +258,28 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-    /**
-     * Get transaction details
-     * @description Given a transaction ID, it retrieves its details
-     */
     getTransaction: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 transactionId: string;
             };
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['SingleTransaction'];
                 };
             };
         };
     };
-    /**
-     * Get transaction totals
-     * @description Given filters, provides total of incomings and expenses for all transactions matching the criteria
-     */
     getTransactionTotals: {
         parameters: {
             query: {
@@ -208,20 +292,23 @@ export interface operations {
                 minAmount?: number;
                 maxAmount?: number;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['TransactionTotalsResponse'];
                 };
             };
         };
     };
-    /**
-     * Get transactions
-     * @description Given filters, provides list of transactions for a balance account
-     */
     getTransactions: {
         parameters: {
             query: {
@@ -237,22 +324,61 @@ export interface operations {
                 sortDirection?: components['schemas']['SortDirection'];
                 limit?: number;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['TransactionsResponse'];
                 };
             };
         };
     };
-    /** @description Add @Operation annotation to provide a description */
+    downloadTransactions: {
+        parameters: {
+            query: {
+                balanceAccountId: string;
+                createdSince?: string;
+                createdUntil?: string;
+                categories?: components['schemas']['Category'][];
+                statuses?: components['schemas']['Status'][];
+                columns: components['schemas']['ExportColumn'][];
+                currencies?: string[];
+                paymentPspReference?: string;
+                sortDirection?: components['schemas']['SortDirection'];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK - the request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'text/csv': components['schemas']['DownloadTransactionsResponseDTO'];
+                };
+            };
+        };
+    };
     initiateRefund: {
         parameters: {
+            query?: never;
+            header?: never;
             path: {
                 transactionId: string;
             };
+            cookie?: never;
         };
         requestBody: {
             content: {
@@ -262,6 +388,9 @@ export interface operations {
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     'application/json': components['schemas']['RefundResponse'];
                 };

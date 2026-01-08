@@ -11,6 +11,7 @@ import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import Select from '../../../../internal/FormFields/Select';
+import { SelectChangeEvent } from '../../../../internal/FormFields/Select/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
@@ -61,6 +62,12 @@ export const DefendDisputeReason = () => {
         [selectedDefenseReason, defenseReasons]
     );
 
+    useEffect(() => {
+        if (selected) {
+            setSelectedDefenseReason(selected);
+        }
+    }, [selected, isReasonSubmitted]);
+
     const { getApplicableDefenseDocuments } = useConfigContext().endpoints;
 
     const fetchCallback = useCallback(async () => {
@@ -100,7 +107,7 @@ export const DefendDisputeReason = () => {
     }, [applicableDocuments, setFlowState]);
 
     const onChange = useCallback(
-        (param: any) => {
+        (param: SelectChangeEvent) => {
             if (selectedDefenseReason !== param.target.value && applicableDocuments?.length) setApplicableDocuments([]);
             if (param?.target?.value) setSelectedDefenseReason(param.target.value);
         },
@@ -187,8 +194,8 @@ export const DefendDisputeReason = () => {
                 )}
             </div>
             {showAlert && (
-                <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.DEFAULT}>
-                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                <Alert onClose={closeAlert} type={AlertTypeOption.HIGHLIGHT} variant={AlertVariantOption.TIP} closeButton>
+                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.CAPTION} wide>
                         {i18n.get('disputes.management.defend.chargeback.feeInfo')}
                     </Typography>
                 </Alert>
