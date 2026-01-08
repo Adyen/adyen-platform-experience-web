@@ -4,7 +4,6 @@ import usePaymentLinkFilters from '../../../../hooks/usePaymentLinkFilters';
 import './PaymentLinksOverview.scss';
 
 function PaymentLinksOverviewContainer({ ...props }: ExternalUIComponentProps<PaymentLinksOverviewComponentProps>) {
-    //TODO: Add error case
     const { filters, isFetching, stores, filterError, allStores, storeError } = usePaymentLinkFilters(props?.storeIds);
 
     return (
