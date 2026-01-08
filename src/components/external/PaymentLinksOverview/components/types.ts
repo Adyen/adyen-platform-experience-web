@@ -21,6 +21,6 @@ export interface PaymentLinkTableProps extends WithPaginationLimitSelection<Pagi
     allStores?: StoreData[];
 }
 
-export type StoreData = IStore & { name?: string };
+export type StoreData = IStore & { name?: string; id?: string };
 
 export type PaymentLinksOverviewModalType = 'Creation' | 'Settings';

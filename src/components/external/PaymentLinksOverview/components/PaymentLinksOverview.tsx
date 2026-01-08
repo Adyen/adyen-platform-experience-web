@@ -141,10 +141,12 @@ export const PaymentLinksOverview = ({
     const getPaymentLinksData = useCallback(
         async ({ [LAST_REFRESH_TIMESTAMP_PARAM]: _, ...pageRequestParams }: PaymentLinksPageRequestParams, signal?: AbortSignal) => {
             const requestOptions = { signal, errorLevel: 'error' } as const;
+            const filterStoreIds = listFrom<string>(pageRequestParams[FilterParam.STORE_IDS]);
+            const propStoreIds = storeIds ? listFrom<string>(storeIds) : undefined;
             return getPaymentLinks!(requestOptions, {
                 query: {
                     ...pageRequestParams,
-                    storeIds: listFrom<string>(pageRequestParams[FilterParam.STORE_IDS]),
+                    storeIds: filterStoreIds?.length ? filterStoreIds : propStoreIds,
                     statuses: listFrom<IPaymentLinkItem['status']>(pageRequestParams[FilterParam.STATUSES]),
                     linkTypes: listFrom<IPaymentLinkItem['linkType']>(pageRequestParams[FilterParam.LINK_TYPES]),
                     createdSince:
@@ -159,7 +161,7 @@ export const PaymentLinksOverview = ({
                 },
             });
         },
-        [defaultParams, getPaymentLinks]
+        [defaultParams, getPaymentLinks, storeIds]
     );
 
     // FILTERS
@@ -207,9 +209,9 @@ export const PaymentLinksOverview = ({
     });
 
     const storesTypesFilter = useMultiSelectionFilter({
-        mapFilterOptionName: useCallback((store: string) => store, []),
+        mapFilterOptionName: useCallback((storeId: string) => stores?.find(store => store.id === storeId)?.storeCode ?? storeId, [stores]),
         filterParam: PAYMENT_LINK_STORES_FILTER_PARAM,
-        filterValues: stores && stores?.length > 0 ? stores.map((store: StoreData) => store.storeCode!) : undefined,
+        filterValues: useMemo(() => (stores && stores.length > 0 ? stores.filter(store => store.id).map(store => store.id!) : undefined), [stores]),
         defaultFilters,
         updateFilters,
         filters,
