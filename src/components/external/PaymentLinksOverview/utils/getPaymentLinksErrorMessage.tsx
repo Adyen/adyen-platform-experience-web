@@ -33,7 +33,7 @@ export const getPaymentLinksErrorMessage = (
         case WRONG_STORE_IDS:
             return {
                 title: 'common.errors.somethingWentWrong',
-                message: ['paymentLinks.common.errors.storeID', 'common.errors.contactSupport'],
+                message: ['payByLink.common.errors.storeID', 'common.errors.contactSupport'],
                 translationValues,
                 onContactSupport,
             };
