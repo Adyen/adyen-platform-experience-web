@@ -91,7 +91,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
     }, [i18n, transaction]);
 
     const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>((label, key, value) => {
-        const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as any];
+        const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as keyof typeof ADJUSTMENTS_TOOLTIP_CONTENT];
 
         if (value && isAmount(value) && value.value < 0 && tooltipContent) {
             return (
