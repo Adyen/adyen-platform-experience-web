@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkOverview, PaymentLinkSettings } from '../../src';
+import { PaymentLinksOverview, PaymentLinkSettings } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { PaymentLinkSettingsMeta } from '../components/paymentLinkSettings';
 import {
@@ -17,7 +17,7 @@ export const Default: ElementStory<typeof PaymentLinkSettings> = {
     },
 };
 
-export const EmptyStores: ElementStory<typeof PaymentLinkOverview> = {
+export const EmptyStores: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Stores Not Configured',
     args: {
         mockedApi: true,
@@ -29,7 +29,7 @@ export const EmptyStores: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const ThemeError: ElementStory<typeof PaymentLinkOverview> = {
+export const ThemeError: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Theme Error',
     args: {
         mockedApi: true,
@@ -41,7 +41,7 @@ export const ThemeError: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const ThemesSaveError: ElementStory<typeof PaymentLinkOverview> = {
+export const ThemesSaveError: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Themes Save Error',
     args: {
         mockedApi: true,
@@ -53,7 +53,7 @@ export const ThemesSaveError: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const SettingsError: ElementStory<typeof PaymentLinkOverview> = {
+export const SettingsError: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Terms and Conditions Error',
     args: {
         mockedApi: true,
@@ -65,7 +65,7 @@ export const SettingsError: ElementStory<typeof PaymentLinkOverview> = {
     },
 };
 
-export const SettingsSaveError: ElementStory<typeof PaymentLinkOverview> = {
+export const SettingsSaveError: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Error - Terms and Conditions Save Error',
     args: {
         mockedApi: true,
