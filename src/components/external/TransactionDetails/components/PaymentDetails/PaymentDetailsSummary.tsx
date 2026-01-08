@@ -76,7 +76,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
                 key: `transactions.details.summary.adjustments.types.${type}` as TranslationKey,
                 value: getFormattedAmount(amount),
                 rawValue: amount,
-                label: getTransactionAmountAdjustmentType(i18n, type) as TranslationKey,
+                label: getTransactionAmountAdjustmentType(i18n, type),
             })) ?? []),
 
             // netAmount
