@@ -31,7 +31,7 @@ const AmountDisplay = ({ amount, currency, description, label, large }: AmountDi
         return [amountTypographyProps, currencyTypographyProps] as const;
     }, [large]);
 
-    const formattedAmount = useMemo(() => i18n.amount(amount, currency, { hideCurrency: true }), [i18n, amount, currency]);
+    const formattedAmount = useMemo(() => i18n.amount(amount, currency), [i18n, amount, currency]);
 
     return (
         <div className={classes.root}>

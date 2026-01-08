@@ -14,6 +14,8 @@ export const classes = {
     summaryItem: BASE_CLASS + '__summary-item',
     toolbar: BASE_CLASS + '__toolbar',
     details: DETAILS_CLASS,
+    filterBarSmall: BASE_CLASS + '__filter-bar-small',
+    totalsError: BASE_CLASS + '__totals-error',
 } as const;
 
 export const TRANSACTION_DATE_RANGES = Object.freeze({
