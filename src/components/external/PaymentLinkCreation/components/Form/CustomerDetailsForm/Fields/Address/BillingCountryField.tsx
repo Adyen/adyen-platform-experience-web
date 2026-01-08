@@ -25,14 +25,14 @@ export const BillingCountryField = ({
     const { fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const countriesListItems = useMemo(() => {
-        const countryCodeSubset = new Set((countriesData?.data ?? []).map(({ countryCode }: IPaymentLinkCountry) => countryCode).filter(Boolean));
-        const countriesTranslationDataset = countryDatasetData ?? [];
+        const allowedCodes = new Set((countriesData?.data ?? []).map(({ countryCode }: IPaymentLinkCountry) => countryCode).filter(Boolean));
+        const countries = countryDatasetData?.length
+            ? countryDatasetData
+            : (countriesData?.data?.map(({ countryCode, countryName }) => ({ id: countryCode, name: countryName })) ?? []);
 
-        const available = countryCodeSubset.size
-            ? countriesTranslationDataset.filter(({ id }) => countryCodeSubset.has(id))
-            : countriesTranslationDataset;
+        const allowedCountries = countries.filter(({ id }) => !allowedCodes.size || allowedCodes.has(id));
 
-        return available.map(({ id, name }) => ({ id, name })).sort(({ name: a }, { name: b }) => a.localeCompare(b));
+        return allowedCountries.sort((a, b) => a.name.localeCompare(b.name));
     }, [countriesData?.data, countryDatasetData]);
 
     const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');

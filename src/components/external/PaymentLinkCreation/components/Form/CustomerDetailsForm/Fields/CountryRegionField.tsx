@@ -17,14 +17,14 @@ export const CountryRegionField = ({ countriesData, isFetchingCountries, country
     const { fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const countriesListItems = useMemo(() => {
-        const countriesFromConfig = fieldsConfig?.['countryCode']?.options as string[] | undefined;
-        const countriesQueryData = (countriesData?.data ?? []).map(({ countryCode }) => countryCode);
+        const allowedCodes = new Set(fieldsConfig?.['countryCode']?.options ?? countriesData?.data?.map(({ countryCode }) => countryCode) ?? []);
+        const countries = countryDatasetData?.length
+            ? countryDatasetData
+            : (countriesData?.data?.map(({ countryCode, countryName }) => ({ id: countryCode, name: countryName })) ?? []);
 
-        const allowedCodes = new Set(countriesFromConfig ?? countriesQueryData);
-        const countriesTranslationDataset = countryDatasetData ?? [];
-        const available = allowedCodes.size ? countriesTranslationDataset.filter(({ id }) => allowedCodes.has(id)) : countriesTranslationDataset;
+        const allowedCountries = countries.filter(({ id }) => !allowedCodes.size || allowedCodes.has(id));
 
-        return available.sort((a, b) => a.name.localeCompare(b.name));
+        return allowedCountries.sort((a, b) => a.name.localeCompare(b.name));
     }, [countriesData?.data, countryDatasetData, fieldsConfig]);
 
     return (
