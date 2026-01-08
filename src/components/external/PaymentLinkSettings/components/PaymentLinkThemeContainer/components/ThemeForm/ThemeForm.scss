@@ -22,7 +22,9 @@
     }
 
     &__file-input {
-        display: block;
+        align-items: center;
+        display: flex;
+        gap: var(--adyen-sdk-spacer-020, 4px);
         margin-bottom: style.token(spacer-040);
     }
 
@@ -32,6 +34,11 @@
         &-container {
             margin-top: style.token(spacer-060);
         }
+    }
+
+    &__field-label-optional {
+        color: style.token(color-label-secondary);
+        font-weight: 400;
     }
 
     &__error {
