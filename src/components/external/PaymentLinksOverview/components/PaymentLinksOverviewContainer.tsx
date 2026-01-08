@@ -1,14 +1,14 @@
-import { PaymentLinkOverview } from './PaymentLinkOverview';
-import type { ExternalUIComponentProps, PaymentLinkOverviewComponentProps } from '../../../types';
+import { PaymentLinksOverview } from './PaymentLinksOverview';
+import type { ExternalUIComponentProps, PaymentLinksOverviewComponentProps } from '../../../types';
 import usePaymentLinkFilters from '../../../../hooks/usePaymentLinkFilters';
-import './PaymentLink.scss';
+import './PaymentLinksOverview.scss';
 
-function PaymentLinkOverviewContainer({ ...props }: ExternalUIComponentProps<PaymentLinkOverviewComponentProps>) {
+function PaymentLinksOverviewContainer({ ...props }: ExternalUIComponentProps<PaymentLinksOverviewComponentProps>) {
     //TODO: Add error case
     const { filters, isFetching, stores, filterError, storeError } = usePaymentLinkFilters(props?.storeIds);
 
     return (
-        <PaymentLinkOverview
+        <PaymentLinksOverview
             {...props}
             filterParams={filters}
             stores={stores}
@@ -19,4 +19,4 @@ function PaymentLinkOverviewContainer({ ...props }: ExternalUIComponentProps<Pay
     );
 }
 
-export default PaymentLinkOverviewContainer;
+export default PaymentLinksOverviewContainer;

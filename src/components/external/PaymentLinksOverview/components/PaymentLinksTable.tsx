@@ -76,7 +76,7 @@ const FIELDS_KEYS = {
 
 const ERROR_MESSAGE_KEY = 'payByLink.overview.errors.couldNotLoadLinks' as const;
 
-export const PaymentLinkTable: FC<PaymentLinkTableProps> = ({
+export const PaymentLinksTable: FC<PaymentLinkTableProps> = ({
     error,
     loading,
     onContactSupport,
