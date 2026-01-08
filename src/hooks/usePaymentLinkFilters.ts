@@ -23,7 +23,7 @@ const usePaymentLinkFilters = (storeIds?: string | string[], enabled?: boolean) 
         )
     );
 
-    const { filteredStores: stores, isFetching: isFetchingStores, error: storeError } = useStores(storeIds);
+    const { filteredStores: stores, allStores, isFetching: isFetchingStores, error: storeError } = useStores(storeIds);
 
     const isFetching = isFetchingStores || isFetchingFilters;
 
@@ -31,6 +31,7 @@ const usePaymentLinkFilters = (storeIds?: string | string[], enabled?: boolean) 
         filters,
         stores,
         isFetching,
+        allStores,
         filterError: filterError as AdyenPlatformExperienceError,
         storeError: storeError as AdyenPlatformExperienceError,
     } as const;
