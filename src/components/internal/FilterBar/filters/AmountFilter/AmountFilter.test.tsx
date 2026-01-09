@@ -3,35 +3,13 @@
  */
 import { FilterParam } from '../../../../types';
 import { AmountFilter } from './AmountFilter';
-import { beforeAll, expect, test, vi } from 'vitest';
-import { render, screen } from '@testing-library/preact';
+import { expect, test } from 'vitest';
+import { render, screen, within } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 
-beforeAll(() => {
-    window.matchMedia = vi.fn().mockImplementation(query => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-    }));
-    global.IntersectionObserver = vi.fn().mockImplementation((callback: IntersectionObserverCallback, options?: IntersectionObserverInit) => ({
-        root: options?.root || null,
-        rootMargin: options?.rootMargin || '',
-        thresholds: options?.threshold || [],
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn(),
-        takeRecords: vi.fn(),
-    }));
-});
+type AmountFilterState = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };
 
-type AmountFilter = { [FilterParam.MIN_AMOUNT]: string | undefined; [FilterParam.MAX_AMOUNT]: string | undefined };
-
-test.each([
+test.sequential.each([
     ['4.9', '490000'],
     ['5.1', '510000'],
     ['39.59', '3959000'],
@@ -39,14 +17,14 @@ test.each([
     ['4.5677', '456770'],
     ['39.59987', '3959987'],
 ])('handles floating point precision correctly when updating filter', async (input, expected) => {
-    let filters: AmountFilter = {
+    let filters: AmountFilterState = {
         [FilterParam.MIN_AMOUNT]: undefined,
         [FilterParam.MAX_AMOUNT]: undefined,
     };
     const updateFilters = (filter: any) => {
         filters = filter;
     };
-    const { rerender } = render(
+    const { rerender, container } = render(
         <AmountFilter
             availableCurrencies={['usd']}
             selectedCurrencies={['usd']}
@@ -58,9 +36,11 @@ test.each([
             onChange={updateFilters}
         />
     );
-    const amountButton = screen.getByRole('button', { name: 'Amount' });
+    const scope = within(container as HTMLElement);
+    const amountButton = scope.getByRole('button', { name: 'Amount' });
     amountButton.click();
 
+    // Popover content is rendered in a portal outside container, so use screen
     const inputElement = await screen.findByTestId('minValueFilter');
     await userEvent.type(inputElement, input);
 
