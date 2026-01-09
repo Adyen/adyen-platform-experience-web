@@ -16,13 +16,6 @@ interface PopoverContext {
 
 describe('Popover component', () => {
     beforeEach<PopoverContext>(context => {
-        window.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
-            this.observe = vi.fn();
-            this.unobserve = vi.fn();
-            this.disconnect = vi.fn();
-            this.takeRecords = vi.fn(() => []);
-        }) as unknown as typeof IntersectionObserver;
-
         context.dismiss = vi.fn();
         context.applyAction = vi.fn();
 
@@ -119,13 +112,6 @@ describe('Popover component', () => {
 
 describe('Popover component close', () => {
     beforeEach(() => {
-        window.IntersectionObserver = vi.fn(function (this: IntersectionObserver) {
-            this.observe = vi.fn();
-            this.unobserve = vi.fn();
-            this.disconnect = vi.fn();
-            this.takeRecords = vi.fn(() => []);
-        }) as unknown as typeof IntersectionObserver;
-
         const buttonEl = createRef();
 
         render(

@@ -31,15 +31,6 @@ describe('CalendarInput', () => {
         vi.useFakeTimers();
         vi.setSystemTime(1703520645123); // Dec 25, 2023, 4:10:45.123 PM UTC
 
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
-        window.IntersectionObserver = mockIntersectionObserver;
-
         const mockI18n = new Localization().i18n;
 
         const mockI18nWithGet = {
