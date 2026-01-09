@@ -22,6 +22,7 @@ const renderFallback = (() => {
     const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
         const { editAction, name, onChange, onValueUpdated } = props;
         const [currentValue, setCurrentValue] = useState(props.value);
+        const inputRef = useRef<HTMLInputElement>(null);
 
         const handleInput = useCallback(
             (e: Event) => {
@@ -31,6 +32,12 @@ const renderFallback = (() => {
             },
             [onValueUpdated]
         );
+
+        useEffect(() => {
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+        }, [inputRef]);
 
         useEffect(() => {
             if (editAction === CommitAction.CLEAR) {
@@ -45,7 +52,7 @@ const renderFallback = (() => {
             }
         }, [currentValue, editAction, onChange, onValueUpdated]);
 
-        return <InputText name={name} value={currentValue} onInput={handleInput} />;
+        return <InputText ref={inputRef} name={name} value={currentValue} onInput={handleInput} />;
     };
 
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
@@ -139,12 +146,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                             tabIndex={0}
                         >
                             <div className="adyen-pe-filter-button__default-container">
-                                <Typography
-                                    el={TypographyElement.SPAN}
-                                    variant={TypographyVariant.BODY}
-                                    stronger={true}
-                                    className="adyen-pe-filter-button__label"
-                                >
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-pe-filter-button__label">
                                     {props.label}
                                 </Typography>
                                 {!!props.appliedFilterAmount && (

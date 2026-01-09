@@ -23,6 +23,7 @@ export enum TimelineDateFormat {
     FULL_DATE_EXACT_TIME_WITHOUT_PERIOD = 'full-date-exact-time-without-period',
     SHORT_DATE = 'short-date',
     SHORT_DATE_TIME = 'short-date-time',
+    FULL_DATE_EXACT_TIME_WITHOUT_SECONDS = 'full-date-exact-time-without-seconds',
 }
 
 export interface TimelineTimestamp {

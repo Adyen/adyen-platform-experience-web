@@ -48,8 +48,6 @@ const usePageLimit = ({
         let limit = getClampedPageLimit(preferredLimit) || DEFAULT_PAGE_LIMIT;
 
         parsing: try {
-            if (cachedLimitOptions.current === options) break parsing;
-
             const uniqueOptions = new Set((cachedLimitOptions.current = options));
 
             if (uniqueOptions.size === 0) {

@@ -16,6 +16,7 @@ const AnchorButton = (props: AnchorButtonProps & BaseButtonProps, ref: Ref<HTMLA
         `${DEFAULT_BUTTON_CLASSNAME} ${BUTTON_ANCHOR_CLASSNAME}`,
         disabledValue,
         props,
+        'button',
         onClick
     );
 

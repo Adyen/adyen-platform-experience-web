@@ -61,7 +61,7 @@ function DataGridTable<
         .filter(column => column.visible !== false)
         .map(column => ({ ...column, minWidth: getMinWidthByColumn(column.key) }));
 
-    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + 40}px, ${col.flex || 1}fr)`).join(' ');
+    const cellWidths = visibleCols.map(col => `minmax(${(col.minWidth || 100) + (props.narrowColumns ? 0 : 40)}px, ${col.flex || 1}fr)`).join(' ');
 
     return (
         <div
@@ -96,9 +96,11 @@ function DataGridTable<
                 {showMessage &&
                     (emptyBody && !props.error ? (
                         <ErrorMessageDisplay
+                            withHeaderOffset
                             title={props.emptyTableMessage?.title ?? 'common.errors.noResults'}
                             message={props.emptyTableMessage?.message}
-                            imageDesktop={getImageAsset?.({ name: 'no-data-female' })}
+                            imageDesktop={getImageAsset?.({ name: 'no-results-found' })}
+                            imageMobile={getImageAsset?.({ name: 'no-results-found', subFolder: 'images/small' })}
                             centered
                         />
                     ) : props.error && errorDisplay ? (

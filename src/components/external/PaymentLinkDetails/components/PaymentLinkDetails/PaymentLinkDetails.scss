@@ -1,0 +1,33 @@
+@use '../../../../../style';
+
+.adyen-pe-payment-link-details {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__expiration-success-container {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        justify-content: center;
+        min-height: 218px;
+        text-align: center;
+    }
+
+    &__expiration-success-icon {
+        color: style.token(color-background-success-strong);
+        font-size: style.token(spacer-110);
+        padding: style.token(spacer-040);
+
+        svg {
+            display: block;
+        }
+    }
+}

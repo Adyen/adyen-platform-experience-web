@@ -14,12 +14,14 @@ const ENV = ENVS[environment] || ENVS.test;
 sessionAwareTest('/transactions endpoint for refunded payment should return consistent data', async ({ requestContext, headers }) => {
     const getTransaction = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/transactions/{transactionId}',
             params: {
                 path: {
                     transactionId: ENV.transactionId,
                 },
             },
+            version: 1,
         }),
         { headers }
     );
@@ -34,12 +36,14 @@ sessionAwareTest('/transactions endpoint for refunded payment should return cons
 sessionAwareTest('/transactions endpoint for refund should return consistent data', async ({ requestContext, headers }) => {
     const getTransaction = await requestContext.get(
         getRequestURL({
+            method: 'get',
             endpoint: '/transactions/{transactionId}',
             params: {
                 path: {
                     transactionId: ENV.refundTransactionId,
                 },
             },
+            version: 1,
         }),
         { headers }
     );

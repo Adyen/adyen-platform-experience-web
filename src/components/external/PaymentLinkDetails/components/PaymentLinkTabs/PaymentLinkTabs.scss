@@ -1,0 +1,44 @@
+@use '../../../../../style';
+
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../style/breakpoints';
+
+.adyen-pe-payment-link-tabs {
+    padding-bottom: style.token(spacer-070);
+
+    &__list {
+        gap: style.token(spacer-080);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+
+        @include adyen-pe-screen-sm-and-up {
+            gap: 0;
+            padding: 0;
+        }
+
+        .adyen-pe-structured-list__item {
+            flex-direction: column;
+
+            @include adyen-pe-screen-sm-and-up {
+                flex-direction: row;
+            }
+        }
+    }
+
+    &__list-heading {
+        padding-bottom: style.token(spacer-040);
+        padding-top: style.token(spacer-060);
+    }
+
+    &__list-label,
+    &__list-value {
+        @include adyen-pe-screen-sm-and-up {
+            padding-bottom: style.token(spacer-030);
+            padding-top: style.token(spacer-030);
+        }
+    }
+
+    &__list-label {
+        color: style.token(color-label-secondary);
+    }
+}

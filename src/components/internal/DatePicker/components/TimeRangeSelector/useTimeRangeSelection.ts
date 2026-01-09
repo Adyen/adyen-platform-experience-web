@@ -7,7 +7,22 @@ import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 
 export type TimeRangeOptions = 'last7Days' | 'last30Days' | 'last90Days' | 'thisWeek' | 'lastWeek' | 'thisMonth' | 'lastMonth' | 'yearToDate';
 
+export const TIME_RANGE_SELECTION_PRESET_OPTION_KEYS = Object.freeze({
+    LAST_7_DAYS: 'common.filters.types.date.rangeSelect.options.last7Days',
+    LAST_30_DAYS: 'common.filters.types.date.rangeSelect.options.last30Days',
+    LAST_90_DAYS: 'common.filters.types.date.rangeSelect.options.last90Days',
+    THIS_WEEK: 'common.filters.types.date.rangeSelect.options.thisWeek',
+    LAST_WEEK: 'common.filters.types.date.rangeSelect.options.lastWeek',
+    THIS_MONTH: 'common.filters.types.date.rangeSelect.options.thisMonth',
+    LAST_MONTH: 'common.filters.types.date.rangeSelect.options.lastMonth',
+    YEAR_TO_DATE: 'common.filters.types.date.rangeSelect.options.yearToDate',
+} as const);
+
+export type TimeRangeSelectionPresetOptionKey =
+    (typeof TIME_RANGE_SELECTION_PRESET_OPTION_KEYS)[keyof typeof TIME_RANGE_SELECTION_PRESET_OPTION_KEYS];
+
 export type UseTimeRangeSelectionConfig = {
+    clearable?: boolean;
     now?: RangeTimestamp;
     options: Readonly<Partial<{ [P in TimeRangeOptions as `common.filters.types.date.rangeSelect.options.${P}`]: RangeTimestamps }>>;
     selectedOption?: string;
@@ -16,17 +31,27 @@ export type UseTimeRangeSelectionConfig = {
 
 export type UseTimeRangeSelectionData = ReturnType<typeof useTimeRangeSelection>;
 
-export const getTimeRangeSelectionDefaultPresetOptions = (): Required<UseTimeRangeSelectionConfig['options']> =>
-    Object.freeze({
-        'common.filters.types.date.rangeSelect.options.last7Days': RangePreset.lastNDays(7),
-        'common.filters.types.date.rangeSelect.options.last30Days': RangePreset.lastNDays(30),
-        'common.filters.types.date.rangeSelect.options.last90Days': RangePreset.lastNDays(90),
-        'common.filters.types.date.rangeSelect.options.thisWeek': RangePreset.thisWeek(),
-        'common.filters.types.date.rangeSelect.options.lastWeek': RangePreset.lastWeek(),
-        'common.filters.types.date.rangeSelect.options.thisMonth': RangePreset.thisMonth(),
-        'common.filters.types.date.rangeSelect.options.lastMonth': RangePreset.lastMonth(),
-        'common.filters.types.date.rangeSelect.options.yearToDate': RangePreset.yearToDate(),
-    }) satisfies Readonly<Partial<Record<TranslationKey, RangeTimestamps>>>;
+export const getTimeRangeSelectionDefaultPresetOptions = ({
+    exclude = [],
+}: { exclude?: TimeRangeSelectionPresetOptionKey[] } = {}): UseTimeRangeSelectionConfig['options'] => {
+    const allOptions = {
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_7_DAYS]: RangePreset.lastNDays(7),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS]: RangePreset.lastNDays(30),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_90_DAYS]: RangePreset.lastNDays(90),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_WEEK]: RangePreset.thisWeek(),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_WEEK]: RangePreset.lastWeek(),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_MONTH]: RangePreset.thisMonth(),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_MONTH]: RangePreset.lastMonth(),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE]: RangePreset.yearToDate(),
+    } satisfies Readonly<Partial<Record<TranslationKey, RangeTimestamps>>>;
+
+    if (!exclude?.length) return Object.freeze(allOptions) as UseTimeRangeSelectionConfig['options'];
+
+    const excludeSet = new Set(exclude);
+    return Object.freeze(
+        Object.fromEntries(Object.entries(allOptions).filter(([key]) => !excludeSet.has(key as TimeRangeSelectionPresetOptionKey)))
+    ) as UseTimeRangeSelectionConfig['options'];
+};
 
 export const useTimeRangeSelection = ({
     now = Date.now(),

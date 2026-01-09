@@ -52,7 +52,6 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
     return (
         <Alert
             type={AlertTypeOption.HIGHLIGHT}
-            variant={AlertVariantOption.TIP}
             description={
                 <div className={DISPUTE_DATA_ISSUER_COMMENTS_ALERT}>
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>

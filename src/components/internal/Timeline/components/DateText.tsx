@@ -27,6 +27,15 @@ function getDateFormatOptions(format?: TimelineDateFormat): Intl.DateTimeFormatO
                 second: '2-digit',
                 hour12: false,
             };
+        case TimelineDateFormat.FULL_DATE_EXACT_TIME_WITHOUT_SECONDS:
+            return {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            };
         case TimelineDateFormat.SHORT_DATE:
             return {
                 year: 'numeric',
