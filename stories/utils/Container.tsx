@@ -8,7 +8,7 @@ import './styles.scss';
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
     componentConfiguration: Omit<ConstructorParameters<T>[0], 'core'>;
-    context: StoryContext<any>;
+    context: StoryContext;
     mockedApi?: boolean;
     locale?: string;
 }
