@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'preact/compat';
-import { StoryContext } from '@storybook/types';
-import { PreactRenderer } from '@storybook/preact';
+import { StoryContext } from '@storybook/preact';
 import { AdyenPlatformExperience } from '../../src';
 import BaseElement from '../../src/components/external/BaseElement';
 import sessionRequest from './sessionRequest';
@@ -9,7 +8,7 @@ import './styles.scss';
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
     componentConfiguration: Omit<ConstructorParameters<T>[0], 'core'>;
-    context: StoryContext<PreactRenderer, any>;
+    context: StoryContext<any>;
     mockedApi?: boolean;
     locale?: string;
 }

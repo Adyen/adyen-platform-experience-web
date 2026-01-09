@@ -1,4 +1,4 @@
-import { buildDevStandalone } from '@storybook/core-server';
+import { buildDevStandalone } from 'storybook/internal/core-server';
 
 const STORYBOOK_DIR = __dirname;
 
