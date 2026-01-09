@@ -6,7 +6,7 @@ import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '
 import type { DeepReadonly, Promised } from '../../utils/types';
 
 export type _Params<T extends Record<string, any>> = T['parameters'];
-type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params';
+type _ExcludedHttpOptions = 'loadingContext' | 'path' | 'method' | 'params' | 'apiVersion';
 type _SetupHttpOptions = Omit<HttpOptions, _ExcludedHttpOptions>;
 
 type IsEmptyParameters<T> = T extends {
@@ -32,19 +32,18 @@ type RequestBodyContent<Path extends keyof EndpointsOperations> = EndpointsOpera
     ? Content
     : never;
 
-type RequestBodyTypes<Path extends keyof EndpointsOperations> = RequestBodyContent<Path> extends never
-    ? undefined
-    : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
+type RequestBodyTypes<Path extends keyof EndpointsOperations> =
+    RequestBodyContent<Path> extends never ? undefined : RequestBodyContent<Path>[keyof RequestBodyContent<Path>];
 
-type ParametersIfRequired<Endpoint extends EndpointName> = _RequiresParameter<EndpointsOperations[Endpoint]> extends true
-    ? IsEmptyParameters<EndpointsOperations[Endpoint]['parameters']> extends true
-        ? []
-        : [_Params<EndpointsOperations[Endpoint]>]
-    : [];
+type ParametersIfRequired<Endpoint extends EndpointName> =
+    _RequiresParameter<EndpointsOperations[Endpoint]> extends true
+        ? IsEmptyParameters<EndpointsOperations[Endpoint]['parameters']> extends true
+            ? []
+            : [_Params<EndpointsOperations[Endpoint]>]
+        : [];
 
-type RequestBodyIfRequired<Endpoint extends EndpointName> = _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true
-    ? [RequestBodyTypes<Endpoint>]
-    : [];
+type RequestBodyIfRequired<Endpoint extends EndpointName> =
+    _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true ? [RequestBodyTypes<Endpoint>] : [];
 
 type _EndpointHttpCallable<Endpoint extends EndpointName> = (
     options: _RequiresRequestBody<EndpointsOperations[Endpoint]> extends true

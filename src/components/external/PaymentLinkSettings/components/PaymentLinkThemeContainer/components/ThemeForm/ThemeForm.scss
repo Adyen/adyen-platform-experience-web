@@ -1,0 +1,75 @@
+@use '../../../../../../../style';
+
+.adyen-pe-payment-link-theme-form {
+    align-items: flex-start;
+    align-self: stretch;
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
+    gap: var(--spacing-padding-margin-gap-spacer-070, 16px);
+    padding: var(--spacing-padding-margin-gap-spacer-000, 0);
+
+    &-container {
+        align-items: flex-start;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__brand-input {
+        display: block;
+    }
+
+    &__file-input {
+        align-items: center;
+        display: flex;
+        gap: var(--adyen-sdk-spacer-020, 4px);
+        margin-bottom: style.token(spacer-040);
+    }
+
+    &__file-info {
+        color: style.token(color-label-secondary);
+
+        &-container {
+            margin-top: style.token(spacer-060);
+        }
+    }
+
+    &__field-label-optional {
+        color: style.token(color-label-secondary);
+        font-weight: 400;
+    }
+
+    &__error {
+        align-items: flex-start;
+        display: flex;
+        gap: style.token(spacer-040);
+        margin-top: style.token(spacer-040);
+    }
+
+    &__preview--remove {
+        width: fit-content;
+    }
+
+    &__preview--image {
+        width: fit-content;
+    }
+
+    &__preview--conteiner {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        width: fit-content;
+    }
+
+    &__error-icon {
+        bottom: calc((1em - #{style.token(text-body-line-height)}) / 2);
+        position: relative;
+    }
+
+    &__error-text,
+    &__error-icon svg {
+        color: style.token(color-label-critical);
+    }
+}

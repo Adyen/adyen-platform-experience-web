@@ -3,7 +3,7 @@ import { AMOUNT_CLASS, BASE_CLASS, BODY_CLASS, LABEL_CLASS, PLACEHOLDER_CLASS } 
 import { SummaryItemLabel } from './SummaryItemLabel';
 import { SummaryItemColumnConfig, SummaryItemProps } from './types';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import classNames from 'classnames';
@@ -14,7 +14,7 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 export const SummaryItem = ({
     columnConfigs,
     isHeader = false,
-    isHovered = false,
+    showLabelUnderline = false,
     isSkeletonVisible = false,
     isLoading = false,
     widths,
@@ -50,24 +50,28 @@ export const SummaryItem = ({
         <div className={classNames(BASE_CLASS, { [BODY_CLASS]: !isHeader })}>
             {columnConfigs.map((config, index) => {
                 const value = config.getValue();
-                const isLongValue = !!value && value.length > 12;
+                const isLongValue = !!value && value.length > 15;
                 return (
                     <div key={index}>
-                        {isHeader &&
-                            (config.tooltipLabel ? (
-                                <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isContainerHovered={isHovered}>
+                        {isHeader && (
+                            <div role="presentation">
+                                {config.tooltipLabel ? (
+                                    <Tooltip content={i18n.get(`${config.tooltipLabel}`)} isUnderlineVisible={showLabelUnderline}>
+                                        <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
+                                    </Tooltip>
+                                ) : (
                                     <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                                </Tooltip>
-                            ) : (
-                                <SummaryItemLabel config={config} i18n={i18n} isSkeletonVisible={isSkeletonVisible} />
-                            ))}
+                                )}
+                            </div>
+                        )}
                         {isSkeletonVisible ? (
                             <AmountSkeleton isLoading={isLoading} hasMargin={config.hasSkeletonMargin} width={config.skeletonWidth + 'px'} />
                         ) : isEmpty ? (
                             <span className={classNames([BASE_CLASS, PLACEHOLDER_CLASS])}></span>
                         ) : (
-                            <div ref={config.ref} style={getColumnStyle(index)}>
+                            <div id={config.elemId} ref={config.ref} style={getColumnStyle(index)} aria-label={config.ariaLabel} role="presentation">
                                 <Typography
+                                    el={TypographyElement.SPAN}
                                     variant={typographyVariant(config, isLongValue)}
                                     className={classNames({ [LABEL_CLASS]: config.valueHasLabelStyle, [AMOUNT_CLASS]: !config.valueHasLabelStyle })}
                                 >

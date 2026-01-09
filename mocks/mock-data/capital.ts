@@ -1,4 +1,4 @@
-import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, IUSCapitalFundsCollection } from '../../src';
+import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -24,20 +24,29 @@ export const CAD_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
-export const GRANT_US_ACCOUNT = {
-    region: 'US',
-    accountNumber: '123456789012',
-    routingNumber: '012345678',
-    order: ['accountNumber', 'routingNumber', 'region'],
-} satisfies NonNullable<IUSCapitalFundsCollection>;
+export const GRANT_NL_ACCOUNT = {
+    beneficiaryName: 'Adyen N.V.',
+    iban: 'NL69RABO1319778291',
+    region: 'NL',
+    order: ['iban', 'beneficiaryName', 'region'],
+} satisfies NonNullable<INLCapitalFundsCollection>;
 
 export const GRANT_GB_ACCOUNT = {
-    region: 'GB',
     accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. London Branch',
     iban: 'GB01ADYB01234567890123',
+    region: 'GB',
     sortCode: '012345678',
-    order: ['iban', 'accountNumber', 'sortCode', 'region'],
+    order: ['iban', 'accountNumber', 'sortCode', 'beneficiaryName', 'region'],
 } satisfies NonNullable<IGBCapitalFundsCollection>;
+
+export const GRANT_US_ACCOUNT = {
+    accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. San Francisco Branch',
+    region: 'US',
+    routingNumber: '012345678',
+    order: ['accountNumber', 'routingNumber', 'beneficiaryName', 'region'],
+} satisfies NonNullable<IUSCapitalFundsCollection>;
 
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
@@ -90,6 +99,7 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
+    transferInstruments: [{ accountIdentifier: 'NL**INGB******8101' }, { accountIdentifier: 'NL**INGB******4151' }],
     unscheduledRepaymentAccounts: [],
     // revocationAccount: (account here),
 };

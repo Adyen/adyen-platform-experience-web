@@ -1,12 +1,13 @@
 import cx from 'classnames';
 import { h } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
-import { isFunction, listFrom } from '../../../../../utils';
+import { isFunction, listFrom, noop } from '../../../../../utils';
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
@@ -47,12 +48,13 @@ const DISPUTE_STATUS_GROUPS_TABS = Object.entries(DISPUTE_STATUS_GROUPS).map(([s
 })) satisfies TabComponentProps<IDisputeStatusGroup>['tabs'];
 
 const DisputesOverviewTabsDropdown = ({
+    ['aria-label']: ariaLabel,
     activeTab,
     onChange,
 }: {
     activeTab: IDisputeStatusGroup;
     onChange: NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>;
-}) => {
+} & Pick<AriaAttributes, 'aria-label'>) => {
     const { i18n } = useCoreContext();
     const [statusGroup, setStatusGroup] = useState(activeTab);
 
@@ -72,9 +74,10 @@ const DisputesOverviewTabsDropdown = ({
 
     return (
         <Select
+            aria-label={ariaLabel}
             items={selectItems}
             selected={statusGroup}
-            onChange={({ target }) => setStatusGroup(target.value)}
+            onChange={({ target }) => setStatusGroup(target.value as IDisputeStatusGroup)}
             showOverlay={true}
             multiSelect={false}
             filterable={false}
@@ -103,8 +106,11 @@ export const DisputesOverview = ({
 >) => {
     const { i18n } = useCoreContext();
     const { getDisputeList: getDisputesCall } = useConfigContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts, true);
-    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount);
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection({
+        balanceAccounts,
+        allowAllSelection: true,
+    });
+    const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('disputes', activeBalanceAccount, 'last90Days');
 
     const [modalVisible, setModalVisible] = useState(false);
     const [mobileStyleOverrides, setMobileStyleOverrides] = useState<h.JSX.CSSProperties | undefined>();
@@ -116,6 +122,8 @@ export const DisputesOverview = ({
     // set to undefined, in which case it has no effect on the status group tab state
     // (will not cause the active status group tab to change).
     const [statusGroupActiveTab, setStatusGroupActiveTab] = useState<IDisputeStatusGroup | undefined>(statusGroup);
+
+    const statusGroupAriaLabel = useMemo(() => i18n.get('disputes.overview.common.filters.types.statusGroup'), [i18n]);
 
     const disputeDetails = useMemo(
         () => ({
@@ -272,7 +280,7 @@ export const DisputesOverview = ({
 
     return (
         <div style={mobileStyleOverrides} className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
-            <Header hideTitle={hideTitle} titleKey="disputes.title">
+            <Header hideTitle={hideTitle} titleKey="disputes.overview.common.title">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
 
@@ -280,13 +288,22 @@ export const DisputesOverview = ({
                 <div>
                     <div className={TABS_CONTAINER_CLASS}>
                         {isMobileContainer ? (
-                            <DisputesOverviewTabsDropdown activeTab={statusGroupActiveTab ?? statusGroup} onChange={onStatusGroupChange} />
+                            <DisputesOverviewTabsDropdown
+                                aria-label={statusGroupAriaLabel}
+                                activeTab={statusGroupActiveTab ?? statusGroup}
+                                onChange={onStatusGroupChange}
+                            />
                         ) : (
-                            <Tabs tabs={DISPUTE_STATUS_GROUPS_TABS} activeTab={statusGroupActiveTab} onChange={onStatusGroupChange} />
+                            <Tabs
+                                aria-label={statusGroupAriaLabel}
+                                tabs={DISPUTE_STATUS_GROUPS_TABS}
+                                activeTab={statusGroupActiveTab}
+                                onChange={onStatusGroupChange}
+                            />
                         )}
                     </div>
 
-                    <FilterBar {...filterBarState}>
+                    <FilterBar {...filterBarState} ariaLabelKey="disputes.overview.common.filters.a11y.label">
                         <BalanceAccountSelector
                             activeBalanceAccount={activeBalanceAccount}
                             balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -302,12 +319,21 @@ export const DisputesOverview = ({
                             timezone={activeBalanceAccount?.timeZone}
                             updateFilters={updateFilters}
                         />
-                        <MultiSelectionFilter {...disputeSchemesFilter} placeholder={i18n.get('disputes.paymentMethod')} />
+                        <MultiSelectionFilter
+                            {...disputeSchemesFilter}
+                            placeholder={i18n.get('disputes.overview.common.filters.types.paymentMethod')}
+                            onResetAction={noop}
+                        />
                         {statusGroup !== 'FRAUD_ALERTS' && (
-                            <MultiSelectionFilter {...disputeReasonsFilter} placeholder={i18n.get('disputes.disputeReason')} />
+                            <MultiSelectionFilter
+                                {...disputeReasonsFilter}
+                                placeholder={i18n.get('disputes.overview.common.filters.types.disputeReason')}
+                                onResetAction={noop}
+                            />
                         )}
                     </FilterBar>
                 </div>
+
                 <DisputeManagementModal
                     dataCustomization={dataCustomization?.details && { details: dataCustomization?.details }}
                     selectedDetail={selectedDetail as ReturnType<typeof useModalDetails>['selectedDetail']}

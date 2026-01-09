@@ -1,6 +1,7 @@
 import { isNullish } from '../../utils';
+import { API_VERSION } from './constants';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError, { InvalidField } from '../Errors/AdyenPlatformExperienceError';
 
 const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
 
@@ -33,6 +34,11 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
     }
 };
 
+export const getApiVersion = (options: HttpOptions) => {
+    const [, version] = String(options.apiVersion).match(/^v?([1-9]\d*)$/i) ?? [];
+    return version ? `v${version}` : API_VERSION;
+};
+
 export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];
 
 export const getResponseDownloadFilename = (response: Response): string | undefined => {
@@ -41,7 +47,7 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
-export const getRequestBodyForContentType = (body: any, contentType: string) => {
+export const getRequestBodyForContentType = (body: any, contentType?: string) => {
     switch (contentType) {
         case 'application/json':
             return JSON.stringify(body);
@@ -54,8 +60,8 @@ export const getRequestBodyForContentType = (body: any, contentType: string) => 
 
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
-    const SDKVersion = process.env.VITE_VERSION;
-    const contentType = options.contentType?.toLowerCase() ?? 'application/json';
+    const SDKVersion = !options.versionless && process.env.VITE_VERSION;
+    const contentType = options.skipContentType ? undefined : (options.contentType?.toLowerCase() ?? 'application/json');
 
     return {
         method,
@@ -74,6 +80,7 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
         },
         redirect: 'follow',
         signal: options.signal,
+        keepalive: options.keepalive,
         referrerPolicy: 'no-referrer-when-downgrade',
         ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType) }),
     };
@@ -85,6 +92,7 @@ export function handleFetchError({
     errorCode,
     type = ErrorTypes.NETWORK_ERROR,
     requestId,
+    invalidFields,
 }: {
     message: string;
     level: ErrorLevel | undefined;
@@ -92,6 +100,7 @@ export function handleFetchError({
     type?: ErrorTypes;
     requestId?: string;
     status?: number;
+    invalidFields?: InvalidField[];
 }) {
     switch (level) {
         case 'silent': {
@@ -103,7 +112,7 @@ export function handleFetchError({
             break;
         case 'error':
         default:
-            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode);
+            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode, invalidFields);
     }
 }
 

@@ -7,6 +7,7 @@ export interface HttpOptions {
     contentType?: string;
     errorMessage?: string;
     headers?: HeadersInit;
+    keepalive?: boolean;
     loadingContext?: string;
     clientKey?: string;
     method: HttpMethod;
@@ -16,6 +17,9 @@ export interface HttpOptions {
     signal?: AbortSignal;
     origin?: string;
     body?: any;
+    apiVersion?: number;
+    versionless?: boolean;
+    skipContentType?: boolean;
 }
 
 export type AdyenErrorResponse = {

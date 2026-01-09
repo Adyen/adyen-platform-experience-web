@@ -1,9 +1,15 @@
 import cx from 'classnames';
+import { Fragment } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { AccountDetail } from './AccountDetail';
-import { Fragment, FunctionalComponent, h } from 'preact';
 import { AccountDetailsProps, BankAccountField } from './types';
-import { getAccountFieldFormattedValue, getAccountFieldTextToCopy, getAccountFieldTranslationKey } from './utils';
+import {
+    getAccountFieldCopyButtonLabelKey,
+    getAccountFieldFormattedValue,
+    getAccountFieldTextToCopy,
+    getAccountFieldTranslationKey,
+    isAccountFieldPrimary,
+} from './utils';
 import './AccountDetails.scss';
 
 const BASE_CLASS = 'adyen-pe-capital-account-details';
@@ -14,7 +20,7 @@ const CLASS_NAMES = {
     detailLabel: `${BASE_CLASS}__detail-label`,
 };
 
-export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankAccount, className }) => {
+export const AccountDetails = ({ bankAccount, className, ...ariaAttributes }: AccountDetailsProps) => {
     const orderedBankAccountFields = useMemo(() => {
         const { accountNumber, iban, order, region, ...accountDetails } = bankAccount;
         const accountFields = Object.keys({ iban, accountNumber, ...accountDetails, region });
@@ -23,7 +29,7 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
     }, [bankAccount]);
 
     return (
-        <dl className={cx(BASE_CLASS, className)}>
+        <dl className={cx(BASE_CLASS, className)} {...ariaAttributes}>
             {orderedBankAccountFields.map(field => {
                 const fieldValue = bankAccount[field as BankAccountField];
                 return fieldValue ? (
@@ -31,8 +37,10 @@ export const AccountDetails: FunctionalComponent<AccountDetailsProps> = ({ bankA
                         <AccountDetail
                             className={CLASS_NAMES.detail}
                             contentClassName={CLASS_NAMES.detailContent}
+                            isPrimary={isAccountFieldPrimary(field)}
                             labelClassName={CLASS_NAMES.detailLabel}
                             label={getAccountFieldTranslationKey(field)}
+                            copyButtonLabel={getAccountFieldCopyButtonLabelKey(field)}
                             content={getAccountFieldFormattedValue(field, fieldValue)!}
                             textToCopy={getAccountFieldTextToCopy(field, fieldValue)}
                         />

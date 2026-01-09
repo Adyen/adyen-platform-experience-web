@@ -16,17 +16,8 @@ interface PopoverContext {
 
 describe('Popover component', () => {
     beforeEach<PopoverContext>(context => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
         context.dismiss = vi.fn();
         context.applyAction = vi.fn();
-
-        window.IntersectionObserver = mockIntersectionObserver;
 
         const buttonEl = createRef();
 
@@ -37,7 +28,6 @@ describe('Popover component', () => {
                     <Popover
                         targetElement={buttonEl}
                         title={'Test Popover'}
-                        aria-label={'popover-test'}
                         open={true}
                         disableFocusTrap={true}
                         dismiss={context.dismiss}
@@ -122,21 +112,12 @@ describe('Popover component', () => {
 
 describe('Popover component close', () => {
     beforeEach(() => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
-        window.IntersectionObserver = mockIntersectionObserver;
-
         const buttonEl = createRef();
 
         render(
             <div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
-                <Popover targetElement={buttonEl} aria-label={'popover-test'}>
+                <Popover targetElement={buttonEl}>
                     <input data-testid="mock-textbox" type="text" />
                 </Popover>
             </div>

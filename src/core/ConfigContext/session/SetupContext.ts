@@ -1,5 +1,5 @@
 import Core from '../../core';
-import { SETUP_ENDPOINT_PATH } from './constants';
+import { SETUP_ENDPOINT_PATH, SETUP_ENDPOINTS_API_VERSIONS } from './constants';
 import { parseSearchParams } from '../../Http/utils';
 import { SessionContext } from '../../../primitives/context/session';
 import { createPromisor } from '../../../primitives/async/promisor';
@@ -17,7 +17,8 @@ import {
 } from '../../../utils';
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../types';
 import type { EndpointName, SetupEndpoint } from '../../../types/api/endpoints';
-import type { HttpMethod } from '../../Http/types';
+import type { HttpMethod, HttpOptions } from '../../Http/types';
+import { encodeAnalyticsEvent } from '../../Analytics/analytics/utils';
 
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
@@ -35,8 +36,10 @@ export class SetupContext {
         return this._fetchSetupEndpoint(abortSignal);
     });
 
-    public declare loadingContext?: Core<any>['loadingContext'];
-    public declare readonly refresh: (signal: AbortSignal) => Promise<void>;
+    declare public loadingContext?: Core<any>['loadingContext'];
+    declare public analyticsPayload?: Array<URLSearchParams> | undefined;
+    declare public analyticsEnabled?: boolean;
+    declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
         let _refreshPromise: Promise<void> | undefined;
@@ -50,6 +53,11 @@ export class SetupContext {
                     this._resetEndpoints();
                     ({ proxy: this._endpoints, revoke: this._revokeEndpointsProxy } = this._getEndpointsProxy(endpoints));
                     this._extraConfig = deepFreeze(rest);
+                    if (this.analyticsEnabled) {
+                        this._setAnalyticsUserProfile()?.then(() => {
+                            this.setCustomTranslationsAnalytics();
+                        });
+                    }
                 }));
         };
     }
@@ -72,6 +80,44 @@ export class SetupContext {
         }) as Promise<SetupResponse>;
     }
 
+    private async _setAnalyticsUserProfile() {
+        const data = encodeAnalyticsEvent([{}]);
+        if (this._endpoints.sendEngageEvent && data) {
+            return this._endpoints.sendEngageEvent(
+                {
+                    body: data,
+                    contentType: 'application/x-www-form-urlencoded',
+                    keepalive: true,
+                },
+                EMPTY_OBJECT
+            );
+        }
+        return;
+    }
+
+    private async setCustomTranslationsAnalytics() {
+        if (this.analyticsPayload && this.analyticsPayload?.length > 0 && this._endpoints && this._endpoints.sendTrackEvent) {
+            const retryPayload: URLSearchParams[] = [];
+            Promise.all(
+                this.analyticsPayload.map((payload: URLSearchParams) => {
+                    return this._endpoints.sendTrackEvent!(
+                        {
+                            body: payload,
+                            contentType: 'application/x-www-form-urlencoded',
+                            keepalive: true,
+                        },
+                        EMPTY_OBJECT
+                    ).catch(() => {
+                        retryPayload.push(payload);
+                    });
+                })
+            ).finally(() => {
+                this.analyticsPayload = retryPayload.length > 0 ? retryPayload : undefined;
+            });
+        }
+        return;
+    }
+
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
         const availableEndpoints: Set<EndpointName> = new Set(Object.keys(endpoints) as (keyof typeof endpoints)[]);
         const sessionAwareEndpoints: SetupContextObject['endpoints'] = struct();
@@ -84,12 +130,18 @@ export class SetupContext {
                         return Reflect.get(target, endpoint, receiver);
                     }
 
+                    const apiVersion = SETUP_ENDPOINTS_API_VERSIONS[endpoint];
+                    const overrideHttpOptions: Partial<HttpOptions> = apiVersion ? { apiVersion } : EMPTY_OBJECT;
+
                     sessionAwareEndpoints[endpoint] ??= (() => {
                         const { method = 'GET', url } = endpoints[endpoint];
                         if (isUndefined(url || undefined)) return;
 
                         return ((...args: Parameters<EndpointHttpCallables>) => {
-                            const httpOptions = this._getHttpOptions(method as HttpMethod, url!, ...args);
+                            const httpOptions = {
+                                ...this._getHttpOptions(method as HttpMethod, url!, ...args),
+                                ...overrideHttpOptions,
+                            };
                             return this._session.http(this._beforeHttp, httpOptions) as Promise<EndpointSuccessResponse<Endpoint>>;
                         }) as EndpointHttpCallables<Endpoint>;
                     })()!;

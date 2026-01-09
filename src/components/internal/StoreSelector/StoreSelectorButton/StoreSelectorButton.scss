@@ -1,0 +1,35 @@
+@use '../../../../style';
+
+.adyen-pe-store-selector-button {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: style.token(spacer-040);
+    justify-content: space-between;
+    width: 100%;
+
+    &__labels {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        white-space: normal;
+        width: 100%;
+        word-wrap: break-word;
+    }
+
+    &__name,
+    &__description {
+        overflow: hidden;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+    }
+
+    &__icon {
+        font-size: 16px;
+    }
+}

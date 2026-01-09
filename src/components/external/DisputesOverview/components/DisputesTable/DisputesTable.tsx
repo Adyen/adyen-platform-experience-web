@@ -10,13 +10,14 @@ import Alert from '../../../../internal/Alert/Alert';
 import Icon from '../../../../internal/Icon';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import DataGrid from '../../../../internal/DataGrid';
+import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
+import { getDisputeReason } from '../../../../utils/translation/getters';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
-import { DISPUTE_REASON_CATEGORIES } from '../../../../utils/disputes/constants';
 import { DATE_FORMAT_DISPUTES, DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import DataOverviewError from '../../../../internal/DataOverviewError/DataOverviewError';
 import Pagination from '../../../../internal/Pagination';
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import Typography from '../../../../internal/Typography/Typography';
 import { BASE_CLASS } from './constants';
 import { CustomColumn } from '../../../../types';
@@ -28,29 +29,31 @@ import PaymentMethodCell from '../../../TransactionsOverview/components/Transact
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { Translation } from '../../../../internal/Translation';
 import './DisputesTable.scss';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-import { DAY_MS } from '../../../../internal/Calendar/calendar/constants';
 
 export type DisputesTableFields = keyof typeof FIELD_KEYS;
 
 export const FIELD_KEYS = {
-    status: 'disputes.status',
-    respondBy: 'disputes.respondBy',
-    createdAt: 'disputes.openedOn',
-    paymentMethod: 'disputes.paymentMethod',
-    disputeReason: 'disputes.disputeReason',
-    reason: 'disputes.reason',
-    currency: 'disputes.currency',
-    disputedAmount: 'disputes.disputedAmount',
-    totalPaymentAmount: 'disputes.totalPaymentAmount',
+    status: 'disputes.overview.common.fields.status',
+    respondBy: 'disputes.overview.common.fields.respondBy',
+    createdAt: 'disputes.overview.common.fields.openedOn',
+    paymentMethod: 'disputes.overview.common.fields.paymentMethod',
+    disputeReason: 'disputes.overview.common.fields.disputeReason',
+    reason: 'disputes.overview.common.fields.reason',
+    currency: 'disputes.overview.common.fields.currency',
+    disputedAmount: 'disputes.overview.common.fields.disputedAmount',
+    totalPaymentAmount: 'disputes.overview.common.fields.totalPaymentAmount',
 } as const satisfies Record<string, TranslationKey>;
 
 export const EMPTY_TABLE_MESSAGE_KEYS = {
-    CHARGEBACKS: { title: 'disputes.empty.noChargebacksFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewChargebacks' },
-    FRAUD_ALERTS: { title: 'disputes.empty.noFraudAlertsFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewFraudAlerts' },
-    ONGOING_AND_CLOSED: { title: 'disputes.empty.noDisputesFound', message: 'disputes.empty.tryDifferentSearchOrCheckAgainLaterForNewDisputes' },
+    CHARGEBACKS: { title: 'disputes.overview.chargebacks.errors.listEmpty', message: 'disputes.overview.chargebacks.errors.updateFilters' },
+    FRAUD_ALERTS: { title: 'disputes.overview.fraudAlerts.errors.listEmpty', message: 'disputes.overview.fraudAlerts.errors.updateFilters' },
+    ONGOING_AND_CLOSED: {
+        title: 'disputes.overview.ongoingAndClosed.errors.listEmpty',
+        message: 'disputes.overview.ongoingAndClosed.errors.updateFilters',
+    },
 } as const satisfies Record<IDisputeStatusGroup, { title: TranslationKey; message: TranslationKey }>;
 
 export const FIELDS = Object.keys(FIELD_KEYS) as readonly DisputesTableFields[];
@@ -59,9 +62,9 @@ const classes = {
     cellContent: `${BASE_CLASS}__cell-content`,
     cellContentVStack: `${BASE_CLASS}__cell-content--vstack`,
     cellTextGrey: `${BASE_CLASS}__cell-text--grey`,
+    dateContentUrgent: `${BASE_CLASS}__date-content--urgent`,
     statusContent: `${BASE_CLASS}__status-content`,
     statusContentUrgent: `${BASE_CLASS}__status-content--urgent`,
-    dateContentUrgent: `${BASE_CLASS}__date-content--urgent`,
 };
 
 export interface DisputesTableProps extends WithPaginationLimitSelection<PaginationProps> {
@@ -97,6 +100,22 @@ export const DisputesTable: FC<DisputesTableProps> = ({
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
     const isMobileContainer = useResponsiveContainer(containerQueries.down.xs);
+
+    let limitSelectAriaLabelKey: TranslationKey | undefined = undefined;
+
+    if (showPagination) {
+        switch (statusGroup) {
+            case 'CHARGEBACKS':
+                limitSelectAriaLabelKey = 'disputes.overview.chargebacks.limitSelect.a11y.label';
+                break;
+            case 'FRAUD_ALERTS':
+                limitSelectAriaLabelKey = 'disputes.overview.fraudAlerts.limitSelect.a11y.label';
+                break;
+            case 'ONGOING_AND_CLOSED':
+                limitSelectAriaLabelKey = 'disputes.overview.ongoingAndClosed.limitSelect.a11y.label';
+                break;
+        }
+    }
 
     const columns = useTableColumns({
         fields: FIELDS,
@@ -151,8 +170,8 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             const formattedDate = dateFormat(dueDate, { ...DATE_FORMAT_RESPONSE_DEADLINE, weekday: undefined });
 
             return diffInDays <= 1
-                ? i18n.get('disputes.respondToday', { values: { date: formattedDate } })
-                : i18n.get('disputes.xDaysToRespond', { values: { days: diffInDays, date: formattedDate } });
+                ? i18n.get('disputes.overview.common.actionNeeded.respondToday', { values: { date: formattedDate } })
+                : i18n.get('disputes.overview.common.actionNeeded.respondDays', { values: { days: diffInDays, date: formattedDate } });
         },
         [dateFormat, i18n]
     );
@@ -164,7 +183,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
 
     const errorDisplay = useMemo(
         () => () => (
-            <DataOverviewError error={error} errorMessage={'disputes.error.weCouldNotLoadYourDisputes'} onContactSupport={onContactSupport} />
+            <DataOverviewError error={error} errorMessage={'disputes.overview.common.errors.listUnavailable'} onContactSupport={onContactSupport} />
         ),
         [error, onContactSupport]
     );
@@ -208,17 +227,19 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                             isUrgent && isActionableDispute ? (
                                 <Tooltip content={getTimeToDeadline(item.dueDate!)}>
                                     <span className={classes.dateContentUrgent}>
-                                        {formattedDate}
+                                        <time dateTime={item.dueDate!}>{formattedDate}</time>
                                         {<Icon name={'warning-filled'} />}
                                     </span>
                                 </Tooltip>
                             ) : (
-                                <>{formattedDate}</>
+                                <time dateTime={item.dueDate!}>{formattedDate}</time>
                             );
+
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
                                 {item.dueDate ? (
                                     <Typography
+                                        el={TypographyElement.SPAN}
                                         variant={TypographyVariant.BODY}
                                         className={cx(classes.statusContent, {
                                             [classes.cellTextGrey]: isMobileContainer && !isUrgent,
@@ -226,7 +247,10 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                                         })}
                                     >
                                         {isMobileContainer ? (
-                                            <Translation translationKey="disputes.gridCell.dueDate" fills={{ dueDate: renderDueDate }} />
+                                            <Translation
+                                                translationKey="disputes.overview.common.actionNeeded.dueDate"
+                                                fills={{ dueDate: renderDueDate }}
+                                            />
                                         ) : (
                                             renderDueDate()
                                         )}
@@ -242,7 +266,7 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     disputedAmount: ({ item }) => {
                         return (
                             item.amount && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
@@ -251,24 +275,26 @@ export const DisputesTable: FC<DisputesTableProps> = ({
                     createdAt: ({ item }) => {
                         return (
                             <div className={cx(classes.cellContent, { [classes.cellContentVStack]: isMobileContainer })}>
-                                <Typography
-                                    variant={TypographyVariant.BODY}
+                                <time
+                                    dateTime={item.createdAt}
                                     className={cx(classes.statusContent, {
                                         [classes.cellTextGrey]: isMobileContainer,
                                     })}
                                 >
-                                    {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
-                                </Typography>
+                                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                        {dateFormat(item.createdAt, DATE_FORMAT_DISPUTES)}
+                                    </Typography>
+                                </time>
                                 {isMobileContainer && <PaymentMethodCell paymentMethod={item.paymentMethod} />}
                             </div>
                         );
                     },
                     paymentMethod: ({ item }) => <PaymentMethodCell paymentMethod={item.paymentMethod} />,
-                    disputeReason: ({ item }) => <span>{i18n.get(DISPUTE_REASON_CATEGORIES[item.reason.category])}</span>,
+                    disputeReason: ({ item }) => <span>{getDisputeReason(i18n, item.reason.category)}</span>,
                     totalPaymentAmount: ({ item }) => {
                         return (
                             item && (
-                                <Typography variant={TypographyVariant.BODY} stronger>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(item.amount.value, item.amount.currency, { hideCurrency: false })}
                                 </Typography>
                             )
@@ -278,7 +304,11 @@ export const DisputesTable: FC<DisputesTableProps> = ({
             >
                 {showPagination && (
                     <DataGrid.Footer>
-                        <Pagination {...paginationProps} />
+                        <Pagination
+                            {...paginationProps}
+                            ariaLabelKey="disputes.overview.common.pagination.a11y.label"
+                            limitSelectAriaLabelKey={limitSelectAriaLabelKey}
+                        />
                     </DataGrid.Footer>
                 )}
             </DataGrid>

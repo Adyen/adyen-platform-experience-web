@@ -32,7 +32,6 @@ const Card = ({
     children,
     expandable = false,
     footer,
-    el,
     renderHeader,
     renderFooter,
     filled,
@@ -42,7 +41,6 @@ const Card = ({
     testId,
     compact,
 }: PropsWithChildren<CardProps>) => {
-    const Tag = el || 'header';
     const [showContent, setShowContent] = useState(false);
     const cardId = useMemo(() => uuid(), []);
 
@@ -79,7 +77,7 @@ const Card = ({
     }, [expandable, showContent, cardId, onKeyDown, toggleExpansion]);
 
     return (
-        <section
+        <div
             data-testid={testId}
             className={classNames(CARD_BASE_CLASS, classNameModifiers, {
                 [CARD_FILLED]: filled,
@@ -91,13 +89,13 @@ const Card = ({
             {...cardContainerAttributes}
         >
             {(title || renderHeader) && (
-                <Tag className={classNames(CARD_HEADER)}>
+                <div className={classNames(CARD_HEADER)}>
                     <div className={classNames(CARD_HEADER_CONTENT)}>
                         {expandable && <Icon name={showContent ? 'chevron-up' : 'chevron-down'} className={CARD_TOGGLE_CLASS} role="presentation" />}
                         {renderHeader ? renderHeader : <span className={CARD_TITLE}>{title}</span>}
                         {subTitle && <div className={CARD_SUBTITLE}>{subTitle}</div>}
                     </div>
-                </Tag>
+                </div>
             )}
             {(!expandable || showContent) && (
                 <div
@@ -109,8 +107,8 @@ const Card = ({
                     {children}
                 </div>
             )}
-            {(footer || renderFooter) && <footer className={CARD_FOOTER}>{renderFooter ? renderFooter : footer}</footer>}
-        </section>
+            {(footer || renderFooter) && <div className={CARD_FOOTER}>{renderFooter ? renderFooter : footer}</div>}
+        </div>
     );
 };
 

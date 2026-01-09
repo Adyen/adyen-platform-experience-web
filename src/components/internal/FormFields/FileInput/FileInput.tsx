@@ -19,14 +19,17 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
         (error: ValidationError): string => {
             switch (error) {
                 case validationErrors.DISALLOWED_FILE_TYPE:
-                    return i18n.get('inputError.disallowedFileType');
+                    return i18n.get('common.inputs.file.errors.disallowedType');
                 case validationErrors.FILE_REQUIRED:
-                    return i18n.get('inputError.fileRequired');
+                    return i18n.get('common.inputs.file.errors.required');
                 case validationErrors.TOO_MANY_FILES:
-                    return i18n.get('inputError.tooManyFiles');
+                    return i18n.get('common.inputs.file.errors.tooMany');
                 case validationErrors.VERY_LARGE_FILE:
-                    return i18n.get('inputError.veryLargeFile');
+                    return i18n.get('common.inputs.file.errors.tooLarge');
+                case validationErrors.MAX_DIMENSIONS:
+                    return i18n.get('common.inputs.file.errors.maxDimensions');
             }
+            return '';
         },
         [i18n]
     );

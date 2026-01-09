@@ -28,7 +28,7 @@ export const sessionAwareTest = base.extend<TestFixtures>({
         const apiContext = await request.newContext({
             timeout: 60000,
             ignoreHTTPSErrors: true,
-            baseURL: `${resolveEnvironment(environment)}`,
+            baseURL: `${resolveEnvironment(environment).apiUrl}`,
         });
         try {
             await use(apiContext);

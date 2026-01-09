@@ -17,6 +17,7 @@ const SelectList = fixedForwardRef(
             active,
             commitActions,
             items,
+            disableFocusTrap,
             multiSelect,
             onKeyDown,
             onSelect,
@@ -31,6 +32,8 @@ const SelectList = fixedForwardRef(
             showOverlay,
             fitPosition,
             fixedPopoverPositioning,
+            activeIndex,
+            filterable,
         }: SelectListProps<T>,
         ref: ForwardedRef<HTMLUListElement>
     ) => {
@@ -46,7 +49,7 @@ const SelectList = fixedForwardRef(
             <PopoverContainer
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
-                disableFocusTrap={true}
+                disableFocusTrap={disableFocusTrap}
                 divider={true}
                 dismiss={dismissPopover}
                 dismissible={false}
@@ -63,7 +66,7 @@ const SelectList = fixedForwardRef(
             >
                 <ul className={listClassName} id={selectListId} ref={ref} role="listbox" aria-multiselectable={multipleSelection}>
                     {filteredItems.length ? (
-                        filteredItems.map(item => {
+                        filteredItems.map((item, index) => {
                             return (
                                 <SelectListItem
                                     item={item}
@@ -73,11 +76,12 @@ const SelectList = fixedForwardRef(
                                     onSelect={onSelect}
                                     renderListItem={renderSelectOption}
                                     selected={active.includes(item)}
+                                    isKeyboardActive={filterable && activeIndex === index}
                                 />
                             );
                         })
                     ) : (
-                        <div className={noOptionsClassName}>{i18n.get('select.noOptionsFound')}</div>
+                        <div className={noOptionsClassName}>{i18n.get('common.inputs.select.errors.noOptions')}</div>
                     )}
                 </ul>
             </PopoverContainer>

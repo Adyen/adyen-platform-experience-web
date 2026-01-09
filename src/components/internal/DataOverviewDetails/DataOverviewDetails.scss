@@ -2,7 +2,7 @@
 @use '../../../style';
 
 .adyen-pe-overview-details {
-    &--title {
+    .adyen-pe-header__title {
         margin-bottom: style.token(spacer-070);
     }
 

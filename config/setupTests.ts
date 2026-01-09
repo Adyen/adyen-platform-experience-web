@@ -16,5 +16,26 @@ beforeAll(() => {
             addEventListener: vi.fn(),
             removeEventListener: vi.fn(),
         }));
+
+        if (!HTMLElement.prototype.scrollIntoView) {
+            HTMLElement.prototype.scrollIntoView = vi.fn();
+        }
+
+        if (!window.IntersectionObserver) {
+            window.IntersectionObserver = vi.fn(function (
+                this: IntersectionObserver,
+                _callback: IntersectionObserverCallback,
+                options?: IntersectionObserverInit
+            ) {
+                const self = this as unknown as Record<string, unknown>;
+                self.root = options?.root ?? null;
+                self.rootMargin = options?.rootMargin ?? '';
+                self.thresholds = Array.isArray(options?.threshold) ? options.threshold : [options?.threshold ?? 0];
+                self.observe = vi.fn();
+                self.unobserve = vi.fn();
+                self.disconnect = vi.fn();
+                self.takeRecords = vi.fn(() => []);
+            }) as unknown as typeof IntersectionObserver;
+        }
     }
 });
