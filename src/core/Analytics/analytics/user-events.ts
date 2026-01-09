@@ -51,7 +51,14 @@ export interface AdditionalEventProperties {
  * Name of the tracked event
  * Can be either a custom name or one of the pre-defined values
  */
-export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filter' | 'Category filter' | 'Currency filter' | 'Status filter';
+export type FilterType =
+    | 'Date filter'
+    | 'Amount filter'
+    | 'Balance account filter'
+    | 'Category filter'
+    | 'Currency filter'
+    | 'PSP reference filter'
+    | 'Status filter';
 
 /**
  * Name of the tracked event
@@ -60,6 +67,7 @@ export type FilterType = 'Date filter' | 'Amount filter' | 'Balance account filt
 export type EventName =
     | 'Landed on page'
     | 'Clicked button'
+    | 'Clicked link'
     | 'Modified filter'
     | 'Encountered error'
     | (string & {})
@@ -74,12 +82,19 @@ export type EventQueueItem = {
     properties?: AnalyticsEventPayload;
 };
 
+export type EmbeddedEventItem = {
+    event: string;
+    properties: AnalyticsEventPayload | Record<string, MixpanelProperty>;
+};
+
 type UserEventCallback = (eventQueueItem: EventQueueItem) => void;
 
 export class UserEvents {
     private readonly queue: EventQueueItem[] = [];
-
     private readonly subscriptions: Set<UserEventCallback> = new Set();
+
+    /* function to be called when there is at least one subscriber */
+    private doneWaitingForSubscribers: (() => void) | undefined;
 
     /** payload of commmon props sent in every event */
     private baseTrackingPayload: BaseEventProperties;
@@ -104,11 +119,17 @@ export class UserEvents {
     }
 
     protected notifySubscribers() {
-        while (this.queue.length > 0) {
-            const lastEvent = this.queue.pop()!;
-
-            this.subscriptions.forEach((callback: UserEventCallback) => {
-                return callback(lastEvent);
+        if (this.subscriptions.size > 0) {
+            while (this.queue.length > 0) {
+                const nextEvent = this.queue.shift()!;
+                this.subscriptions.forEach((callback: UserEventCallback) => callback(nextEvent));
+            }
+        } else if (this.doneWaitingForSubscribers === undefined) {
+            new Promise<void>(resolve => {
+                this.doneWaitingForSubscribers = resolve;
+            }).then(() => {
+                this.doneWaitingForSubscribers = undefined;
+                this.notifySubscribers();
             });
         }
     }
@@ -117,7 +138,7 @@ export class UserEvents {
      * Adds an analytics event with all base event properties.
      */
     public addEvent(eventName: EventName, properties: AdditionalEventProperties) {
-        const completeEvent = { ...this.baseTrackingPayload, ...properties } as AnalyticsEventPayload;
+        const completeEvent = { ...this.baseTrackingPayload, time: Date.now(), ...properties } as AnalyticsEventPayload;
         this.add({
             name: eventName,
             // type: 'add_event',
@@ -129,10 +150,10 @@ export class UserEvents {
     /**
      * Adds an event with context specific to
      */
-    public addModifyFilterEvent(properties: Omit<AdditionalEventProperties, 'subCategory' | 'label'> & { label?: FilterType }) {
+    public addModifyFilterEvent(properties: Omit<AdditionalEventProperties, 'subCategory' | 'label'> & { label?: FilterType; subCategory?: string }) {
         this.addEvent('Modified filter', {
             ...properties,
-            subCategory: 'Filter',
+            subCategory: properties.subCategory ?? 'Filter',
         } as AdditionalEventProperties);
     }
 
@@ -178,6 +199,7 @@ export class UserEvents {
      * ```
      */
     public subscribe(callback: UserEventCallback) {
+        this.doneWaitingForSubscribers?.();
         this.subscriptions.add(callback);
     }
 

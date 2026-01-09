@@ -1,6 +1,7 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_MISSING_ACTION } from '../../../../../constants';
 import { GRANT_ACTION_CLASS_NAMES } from './constants';
@@ -16,6 +17,7 @@ import { IGrant } from '../../../../../types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 
 type ActionType = NonNullable<IGrant['missingActions']>[number]['type'];
 
@@ -28,6 +30,8 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const { endpoints } = useConfigContext();
 
+    const userEvents = useAnalyticsContext();
+
     const ACTION_CONFIG = useMemo(
         () =>
             ({
@@ -39,6 +43,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                               })
                             : i18n.get('capital.overview.grants.item.alerts.signTermsAndConditions'),
                     buttonLabelKey: 'capital.overview.grants.item.actions.viewTermsAndConditions',
+                    eventLabel: 'Go to terms & conditions button clicked',
                 },
                 AnaCredit: {
                     getTitle: (formattedDate: string | undefined) =>
@@ -48,6 +53,7 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                               })
                             : i18n.get('capital.overview.grants.item.alerts.actionNeeded'),
                     buttonLabelKey: 'capital.overview.grants.item.actions.submitInformation',
+                    eventLabel: 'Submit information for AnaCredit button',
                 },
             }) as const,
         [i18n]
@@ -102,6 +108,17 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
         [dateFormat, offerExpiresAt]
     );
 
+    const logMissingActionEvent = useCallback(
+        (label: string) => {
+            userEvents.addEvent?.('Clicked link', {
+                ...sharedCapitalOverviewAnalyticsEventProperties,
+                subCategory: 'Missing action',
+                label,
+            });
+        },
+        [userEvents]
+    );
+
     if (actionMutation.error) {
         return (
             <Alert
@@ -139,8 +156,12 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                                             className={GRANT_ACTION_CLASS_NAMES.button}
                                             // Set the loading action before mutating
                                             onClick={() => {
-                                                setLoadingAction(action.type);
-                                                void actionMutation.mutate(action.type);
+                                                try {
+                                                    setLoadingAction(action.type);
+                                                    void actionMutation.mutate(action.type);
+                                                } finally {
+                                                    logMissingActionEvent(config.eventLabel);
+                                                }
                                             }}
                                             // Disable all if any is loading
                                             disabled={isLoading || actionMutation.isLoading}
@@ -177,8 +198,12 @@ export const GrantActions: FunctionalComponent<{ missingActions: IGrant['missing
                 <Button
                     className={GRANT_ACTION_CLASS_NAMES.button}
                     onClick={() => {
-                        setLoadingAction(singleAction.type);
-                        void actionMutation.mutate(singleAction.type);
+                        try {
+                            setLoadingAction(singleAction.type);
+                            void actionMutation.mutate(singleAction.type);
+                        } finally {
+                            logMissingActionEvent(config.eventLabel);
+                        }
                     }}
                     disabled={!!loadingAction}
                     state={loadingAction ? 'loading' : undefined}

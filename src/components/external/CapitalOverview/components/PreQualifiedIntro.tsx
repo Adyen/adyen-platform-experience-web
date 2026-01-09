@@ -1,11 +1,19 @@
-import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../constants';
+import { useCallback } from 'preact/hooks';
+import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
+import { useLandedPageEvent } from '../../../../hooks/useAnalytics/useLandedPageEvent';
 import InfoBox from '../../../internal/InfoBox';
 import Button from '../../../internal/Button/Button';
+import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOffersConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Typography from '../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../internal/Typography/types';
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOverviewAnalyticsEventProperties,
+    subCategory: 'Prequalified',
+} as const;
 
 const PreQualifiedIntro = ({
     dynamicOfferConfig,
@@ -17,6 +25,17 @@ const PreQualifiedIntro = ({
     onOfferOptionsRequest: () => void;
 }) => {
     const { i18n } = useCoreContext();
+    const userEvents = useAnalyticsContext();
+
+    const onOfferOptionsRequestWithTracking = useCallback<typeof onOfferOptionsRequest>(() => {
+        try {
+            return onOfferOptionsRequest();
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'See options' });
+        }
+    }, [onOfferOptionsRequest, userEvents]);
+
+    useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital overview' });
 
     return (
         <>
@@ -36,7 +55,7 @@ const PreQualifiedIntro = ({
                         </strong>
                     </Typography>
                 </InfoBox>
-                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequest}>
+                <Button className={CAPITAL_OVERVIEW_CLASS_NAMES.preQualifiedGrantButton} onClick={onOfferOptionsRequestWithTracking}>
                     {i18n.get('capital.overview.prequalified.actions.seeOptions')}
                 </Button>
             </div>

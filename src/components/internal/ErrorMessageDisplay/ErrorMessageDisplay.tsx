@@ -17,6 +17,8 @@ const classes = {
     base_centered: BASE_CLASS + '--centered',
     base_outlined: BASE_CLASS + '--outlined',
     base_withBackground: BASE_CLASS + '--with-background',
+    base_withHeaderOffset: BASE_CLASS + '--with-header-offset',
+    base_condensed: BASE_CLASS + '--condensed',
     button: BASE_CLASS + '__button',
     illustration: BASE_CLASS + '__illustration',
 };
@@ -35,6 +37,8 @@ type ErrorMessageDisplayProps = {
     outlined?: boolean;
     renderSecondaryButton?: () => JSXInternal.Element;
     withBackground?: boolean;
+    withHeaderOffset?: boolean;
+    condensed?: boolean;
 };
 
 const ErrorMessageSeparator = () => (
@@ -59,6 +63,8 @@ export const ErrorMessageDisplay = ({
     outlined = true,
     renderSecondaryButton,
     withBackground,
+    withHeaderOffset,
+    condensed,
 }: ErrorMessageDisplayProps) => {
     const { i18n, updateCore, getImageAsset } = useCoreContext();
 
@@ -83,14 +89,20 @@ export const ErrorMessageDisplay = ({
                 [classes.base_centered]: centered,
                 [classes.base_outlined]: outlined,
                 [classes.base_withBackground]: withBackground !== false && !outlined,
+                [classes.base_withHeaderOffset]: withHeaderOffset,
+                [classes.base_condensed]: condensed,
             })}
         >
             {(imageDesktop || imageMobile || withImage) && (
                 <div className={classes.illustration}>
                     <picture>
                         <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`} srcSet={imageDesktop} />
-                        <source type="image/svg+xml" media={`(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`} srcSet={imageMobile} />
-                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'no-results' })} alt="" />
+                        <source
+                            type="image/svg+xml"
+                            media={`(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`}
+                            srcSet={imageMobile ?? getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' })}
+                        />
+                        <img srcSet={imageDesktop ?? getImageAsset?.({ name: 'wrong-environment' })} alt="" />
                     </picture>
                 </div>
             )}

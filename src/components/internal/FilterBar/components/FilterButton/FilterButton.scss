@@ -54,6 +54,14 @@
         outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
     }
 
+    &:disabled {
+        background-color: style.token(color-background-disabled);
+        border: 0;
+        color: style.token(color-label-disabled);
+        cursor: not-allowed;
+        outline: none;
+    }
+
     &__footer {
         .adyen-pe-button:first-child {
             margin-left: auto;

@@ -1,0 +1,54 @@
+@use '../../../style';
+
+.adyen-pe-checkbox {
+    &__icon {
+        align-self: baseline;
+        display: flex;
+        margin-top: style.token(spacer-010);
+
+        &--error {
+            color: style.token(color-outline-critical);
+        }
+    }
+
+    &__label {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        gap: style.token(spacer-060);
+
+        input:disabled ~ & {
+            cursor: not-allowed;
+
+            > .adyen-pe-checkbox__icon {
+                color: style.token(color-background-disabled);
+                position: relative;
+            }
+
+            > .adyen-pe-checkbox__icon::before {
+                background: style.token(color-label-disabled);
+                border: style.token(color-outline-disabled) solid style.token(border-width-m);
+                border-radius: style.token(border-radius-xs);
+                content: '';
+                inset: 0;
+                position: absolute;
+                z-index: -1;
+            }
+        }
+
+        input:focus-visible ~ & {
+            > .adyen-pe-checkbox__icon {
+                outline: -webkit-focus-ring-color auto 1px;
+            }
+        }
+    }
+
+    &__label-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+    }
+}

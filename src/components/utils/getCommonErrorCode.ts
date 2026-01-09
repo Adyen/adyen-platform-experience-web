@@ -8,6 +8,10 @@ export type ErrorMessage = {
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    images?: {
+        desktop?: string;
+        mobile?: string;
+    };
 };
 
 export const UNDEFINED_ERROR = {
