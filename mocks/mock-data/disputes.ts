@@ -9,6 +9,7 @@ import {
     IDisputeStatusGroup,
     IDisputeType,
 } from '../../src/types/api/models/disputes';
+import getDate from './utils/getDate';
 
 export const MAIN_BALANCE_ACCOUNT = BALANCE_ACCOUNTS.find(({ id }) => id === 'BA32272223222B5CTDQPM6W2H')!;
 
@@ -70,7 +71,7 @@ const DEFENDABLE_CHARGEBACK_REASONS: Record<string, Record<string, readonly IDis
     '4853': {
         AirlineFlightProvided: [
             { documentTypeCode: 'FlightTicketUsed', requirementLevel: 'ONE_OR_MORE' } as const,
-            { documentTypeCode: 'FlightTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
+            { documentTypeCode: 'FligthTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
             { documentTypeCode: 'PaperAirlineTicket', requirementLevel: 'ONE_OR_MORE' } as const,
         ] as const,
         CancellationOrReturns: [
@@ -108,6 +109,73 @@ const DEFENDABLE_CHARGEBACK_REASONS: Record<string, Record<string, readonly IDis
             { documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const,
         ] as const,
     },
+
+    // NEW ENTRIES FROM V2
+    '12.6.2': {
+        NotPaidByOtherMeans: [{ documentTypeCode: 'MerchandiseDescription', requirementLevel: 'REQUIRED' } as const] as const,
+        TwoDifferentTIDs: [{ documentTypeCode: 'TwoDifferentTIDs', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    '13.3': {
+        GoodsRepairedOrReplaced: [{ documentTypeCode: 'GoodsRepairedOrReplaced', requirementLevel: 'REQUIRED' } as const] as const,
+        GoodsWereAsDescribed: [{ documentTypeCode: 'GoodsWereAsDescribed', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    '4541': {
+        CancellationTermsFailed: [{ documentTypeCode: 'InvalidCancellationEvidence', requirementLevel: 'REQUIRED' } as const] as const,
+        NotCancelled: [{ documentTypeCode: 'Non-CancellationEvidence', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    '4752': {
+        CardholderParticipated: [
+            { documentTypeCode: 'EvidenceOfPayment', requirementLevel: 'REQUIRED' } as const,
+            { documentTypeCode: 'OtherDocumentationType', requirementLevel: 'OPTIONAL' } as const,
+            { documentTypeCode: 'TransactionReceipt', requirementLevel: 'REQUIRED' } as const,
+        ] as const,
+        GoodsOrServicesProvided: [
+            { documentTypeCode: 'ProofOfDelivery', requirementLevel: 'OPTIONAL' } as const,
+            { documentTypeCode: 'ServicesReceivedEvidence', requirementLevel: 'REQUIRED' } as const,
+        ] as const,
+    },
+    '4834': {
+        CompellingEvidence: [{ documentTypeCode: 'CardholderIdentification', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    '4841': {
+        ServicesProvidedAfterCancellation: [{ documentTypeCode: 'InvalidChargeback', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    '4855': {
+        AirlineFlightProvided: [
+            { documentTypeCode: 'FlightTicketUsed', requirementLevel: 'ONE_OR_MORE' } as const,
+            { documentTypeCode: 'FligthTookPlace', requirementLevel: 'ONE_OR_MORE' } as const,
+            { documentTypeCode: 'PaperAirlineTicket', requirementLevel: 'ONE_OR_MORE' } as const,
+        ] as const,
+        GoodsOrServicesProvided: [{ documentTypeCode: 'ProofOfAbilityToProvideServices', requirementLevel: 'ONE_OR_MORE' } as const] as const,
+    },
+    '4860': {
+        CancellationOrReturns: [
+            { documentTypeCode: 'CancellationNeverAccepted', requirementLevel: 'ONE_OR_MORE' } as const,
+            { documentTypeCode: 'GoodsNotReturned', requirementLevel: 'ONE_OR_MORE' } as const,
+        ] as const,
+        CreditOrCancellationPolicyProperlyDisclosed: [
+            { documentTypeCode: 'DisclosureAtPointOfInteraction', requirementLevel: 'REQUIRED' } as const,
+        ] as const,
+        SupplyDefenseMaterial: [{ documentTypeCode: 'TIDorInvoice', requirementLevel: 'OPTIONAL' } as const] as const,
+    },
+    '7030': {
+        CardholderParticipated: [{ documentTypeCode: 'EvidenceOfCardholderParticipation', requirementLevel: 'REQUIRED' } as const] as const,
+        ShippedToAVSAdditionalInformation: [
+            { documentTypeCode: 'OriginalAmount', requirementLevel: 'OPTIONAL' } as const,
+            { documentTypeCode: 'PositiveAVS', requirementLevel: 'REQUIRED' } as const,
+            { documentTypeCode: 'ShippedToAVS', requirementLevel: 'REQUIRED' } as const,
+            { documentTypeCode: 'ShipToAddress', requirementLevel: 'OPTIONAL' } as const,
+        ] as const,
+    },
+    C05: {
+        SupplyDefenseMaterial: [{ documentTypeCode: 'DefenseMaterial', requirementLevel: 'REQUIRED' } as const] as const,
+    },
+    C08: {
+        MerchandiseReceived: [
+            { documentTypeCode: 'DateMerchandiseShipped', requirementLevel: 'REQUIRED' } as const,
+            { documentTypeCode: 'ProofOfGoodsOrServicesProvided', requirementLevel: 'REQUIRED' } as const,
+        ] as const,
+    },
 };
 
 export const ACCEPTED_DISPUTES = new WeakMap<IDisputeListItem, { acceptedOn: string }>();
@@ -130,12 +198,6 @@ export const getAllowedDisputeDefenseReasons = <T extends Pick<IDispute, 'reason
 
 export const getApplicableDisputeDefenseDocuments = <T extends Pick<IDispute, 'reason'>>(dispute: T, defenseReason: string) => {
     return DEFENDABLE_CHARGEBACK_REASONS[dispute.reason.code]?.[defenseReason] || ([] as const);
-};
-
-export const getDate = (daysOffset = 0, originDate = new Date()) => {
-    const date = new Date(originDate);
-    date.setDate(date.getDate() + daysOffset);
-    return date.toISOString();
 };
 
 const DEFAULT_DETAIL_DEFENSE: IDisputeDetail['defense'] = {
@@ -398,6 +460,23 @@ export const RFI_ACCEPTED: IDisputeDetail = {
         defensibility: 'NOT_ACTIONABLE',
         acceptedDate: '2025-06-05T12:46:54.000+00:00',
         dueDate: undefined,
+    },
+};
+
+export const RFI_DEFENDABLE: IDisputeDetail = {
+    ...DEFAULT_DISPUTE_DETAIL,
+    dispute: {
+        ...DEFAULT_DETAIL_DISPUTE,
+        pspReference: 'a1b2c3d4-e5f6-4789-rfi-000000000000',
+        allowedDefenseReasons: [...getAllowedDisputeDefenseReasons({ reason: { category: 'REQUEST_FOR_INFORMATION', code: 'C08', title: '' } })],
+        reason: {
+            category: 'REQUEST_FOR_INFORMATION',
+            code: 'C08',
+            title: 'Proof showing that the goods or services of the merchant were provided to the card holder',
+        },
+        status: 'UNRESPONDED',
+        type: 'REQUEST_FOR_INFORMATION',
+        defensibility: 'DEFENDABLE',
     },
 };
 
@@ -824,7 +903,18 @@ export const FRAUD_ALERTS = [
     },
 ] satisfies Readonly<IDisputeListItem[]>;
 
-export const DISPUTES = [...CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS] as Readonly<IDisputeListItem[]>;
+const RFI_LIST = [
+    {
+        disputePspReference: RFI_DEFENDABLE.dispute.pspReference,
+        status: 'UNRESPONDED',
+        createdAt: getDate(-8),
+        paymentMethod: { type: 'amex', lastFourDigits: '0026', description: 'American Express' },
+        reason: { category: 'REQUEST_FOR_INFORMATION', code: RFI_DEFENDABLE.dispute.reason.code, title: '' },
+        amount: { currency: 'USD', value: 488600 },
+    },
+] satisfies IDisputeListItem[];
+
+export const DISPUTES = [...CHARGEBACKS, ...ALL_DISPUTES, ...FRAUD_ALERTS, ...RFI_LIST] as Readonly<IDisputeListItem[]>;
 
 export const getDisputesByStatusGroup = (status: IDisputeStatusGroup) => {
     switch (status) {
@@ -887,8 +977,8 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
     const disputeType: IDisputeType = FRAUD_ALERTS.includes(dispute as any)
         ? 'NOTIFICATION_OF_FRAUD'
         : RFI_ONLY_STATUSES.includes(disputeStatus) || disputeCategory === 'REQUEST_FOR_INFORMATION'
-        ? 'REQUEST_FOR_INFORMATION'
-        : 'CHARGEBACK';
+          ? 'REQUEST_FOR_INFORMATION'
+          : 'CHARGEBACK';
 
     const disputeModificationDate = getDate(1, new Date(dispute.createdAt));
 
@@ -908,7 +998,7 @@ export const getAdditionalDisputeDetails = <T extends IDisputeListItem>(dispute:
     let defensibility: IDisputeDetail['dispute']['defensibility'] = isFraudAlert ? 'DEFENDABLE_EXTERNALLY' : 'NOT_ACTIONABLE';
 
     if (actionNeeded) {
-        if (isRequestForInformation) defensibility = 'DEFENDABLE_EXTERNALLY';
+        if (isRequestForInformation) defensibility = 'DEFENDABLE';
         else if (isDefendableThroughComponent) defensibility = 'DEFENDABLE';
         else if (isAcceptableChargeback) defensibility = 'ACCEPTABLE';
         else defensibility = 'DEFENDABLE_EXTERNALLY';

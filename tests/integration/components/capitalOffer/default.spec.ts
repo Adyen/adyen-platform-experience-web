@@ -74,7 +74,9 @@ test.describe('Default', () => {
     test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {
         await page.getByRole('button', { name: 'Review offer' }).click();
         await page.getByText('Repayment threshold').hover();
-        await expect(page.getByText('Minimum repayment every 30 days to repay the financing on time')).toBeVisible();
+        const tooltip = page.getByText('Minimum repayment every 30 days to repay the financing on time');
+        await tooltip.waitFor();
+        await expect(tooltip).toBeVisible();
     });
 
     test('should go back to offer selection screen when "Back" button in offer summary screen is clicked', async ({ page }) => {

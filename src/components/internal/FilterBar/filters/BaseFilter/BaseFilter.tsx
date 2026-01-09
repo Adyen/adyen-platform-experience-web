@@ -5,12 +5,11 @@ import { PopoverContainerPosition, PopoverContainerVariant } from '../../../Popo
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import Typography from '../../../Typography/Typography';
 import useCommitAction, { CommitAction } from '../../../../../hooks/useCommitAction';
-import useUniqueIdentifier from '../../../../../hooks/element/useUniqueIdentifier';
 import { isEmptyString, isNull } from '../../../../../utils';
 import { memo } from 'preact/compat';
-import { MutableRef, useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { Ref } from 'preact';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useBooleanState from '../../../../../hooks/useBooleanState';
+import useUniqueId from '../../../../../hooks/useUniqueId';
 import '../../../FormFields';
 import InputText from '../../../FormFields/InputText';
 import { BaseFilterProps, FilterEditModalRenderProps, FilterProps } from './types';
@@ -23,6 +22,7 @@ const renderFallback = (() => {
     const DefaultEditModalBody = <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => {
         const { editAction, name, onChange, onValueUpdated } = props;
         const [currentValue, setCurrentValue] = useState(props.value);
+        const inputRef = useRef<HTMLInputElement>(null);
 
         const handleInput = useCallback(
             (e: Event) => {
@@ -32,6 +32,12 @@ const renderFallback = (() => {
             },
             [onValueUpdated]
         );
+
+        useEffect(() => {
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+        }, [inputRef]);
 
         useEffect(() => {
             if (editAction === CommitAction.CLEAR) {
@@ -46,13 +52,13 @@ const renderFallback = (() => {
             }
         }, [currentValue, editAction, onChange, onValueUpdated]);
 
-        return <InputText name={name} value={currentValue} onInput={handleInput} />;
+        return <InputText ref={inputRef} name={name} value={currentValue} onInput={handleInput} />;
     };
 
     return <T extends BaseFilterProps>(props: FilterEditModalRenderProps<T>) => <DefaultEditModalBody<T> {...props} />;
 })();
 
-const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...props }: FilterProps<T>) => {
+const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['aria-label']: ariaLabel, ...props }: FilterProps<T>) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const [editMode, _updateEditMode] = useBooleanState(false);
     const [editModalMounting, updateEditModalMounting] = useBooleanState(false);
@@ -61,8 +67,9 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const [hasInitialValue, updateHasInitialValue] = useBooleanState(false);
     const [valueChanged, updateValueChanged] = useBooleanState(false);
     const [disabledApply, updateDisabledApply] = useBooleanState(isValueEmpty(props.value));
-    const targetElement = useUniqueIdentifier() as NonNullable<MutableRef<Element | null>>;
+    const targetElement = useRef<HTMLButtonElement | null>(null);
 
+    const filterButtonId = `elem-${useUniqueId()}`;
     const renderModalBody = useMemo(() => render ?? renderFallback<T>, [render]);
 
     const onValueUpdated = useCallback(
@@ -78,11 +85,14 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         applyDisabled: disabledApply || !valueChanged,
         resetDisabled: hasEmptyValue,
+        onResetAction: props?.onResetAction,
     });
+
+    const editModeActive = useRef(false);
 
     const [closeEditDialog, openEditDialog] = useMemo(() => {
         const updateEditMode = (mode: boolean) => () => {
-            if (mode === editMode) return;
+            if (mode === editMode || (mode && editModeActive.current)) return;
 
             if (mode) {
                 resetCommitAction();
@@ -108,8 +118,12 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
 
     useEffect(() => {
         committing && closeEditDialog();
-        updateHasEmptyValue(hasEmptyValue);
-    }, [committing, closeEditDialog, updateHasEmptyValue, hasEmptyValue]);
+    }, [committing, closeEditDialog]);
+
+    useEffect(() => {
+        editModeActive.current = editMode;
+    }, [editMode]);
+
     const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
     const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
@@ -125,17 +139,14 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                                 ...(editMode ? ['active'] : []),
                                 ...(hasEmptyValue ? [] : ['has-selection']),
                             ]}
+                            aria-label={ariaLabel}
+                            id={filterButtonId}
                             onClick={editMode ? closeEditDialog : openEditDialog}
+                            ref={targetElement}
                             tabIndex={0}
-                            ref={targetElement as Ref<HTMLButtonElement>}
                         >
                             <div className="adyen-pe-filter-button__default-container">
-                                <Typography
-                                    el={TypographyElement.SPAN}
-                                    variant={TypographyVariant.BODY}
-                                    stronger={true}
-                                    className="adyen-pe-filter-button__label"
-                                >
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className="adyen-pe-filter-button__label">
                                     {props.label}
                                 </Typography>
                                 {!!props.appliedFilterAmount && (
@@ -172,7 +183,6 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ...pr
                     variant={PopoverContainerVariant.POPOVER}
                     modifiers={['filter']}
                     open={editMode}
-                    aria-label={`${props.label}`}
                     dismiss={closeEditDialog}
                     dismissible={false}
                     withContentPadding={props.withContentPadding ?? true}

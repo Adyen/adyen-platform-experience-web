@@ -1,3 +1,5 @@
+import { BaseEventProperties } from '../../../core/Analytics/analytics/user-events';
+
 export const CAPITAL_OVERVIEW_CLASS_NAMES = {
     base: 'adyen-pe-capital-overview',
     title: 'adyen-pe-capital-overview__title',
@@ -8,3 +10,8 @@ export const CAPITAL_OVERVIEW_CLASS_NAMES = {
     preQualifiedGrantButton: 'adyen-pe-capital-overview__pre-qualified-grant-review-button',
     errorContainer: 'adyen-pe-capital-overview__error-container',
 };
+
+export const sharedCapitalOverviewAnalyticsEventProperties = {
+    componentName: 'capitalOverview' satisfies BaseEventProperties['componentName'],
+    category: 'Capital overview component',
+} as const;

@@ -29,7 +29,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        EndpointName: "getTransactions" | "getTransaction" | "getTransactionTotals" | "getBalances" | "getBalanceAccounts" | "getPayouts" | "getPayout" | "getReports" | "downloadReport" | "getNetworkTokenActivationData" | "createNetworkTokenActivationData" | "getDynamicGrantOffersConfiguration" | "getDynamicGrantOffer" | "createGrantOffer" | "getGrants" | "requestFunds" | "signToSActionDetails" | "anaCreditActionDetails" | "initiateRefund" | "getDisputeList" | "getDisputeDetail" | "getApplicableDefenseDocuments" | "acceptDispute" | "defendDispute" | "downloadDefenseDocument";
+        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "countries" | "createGrantOffer" | "createNetworkTokenActivationData" | "currencies" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "expirePayByLinkPaymentLink" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPaymentLinks" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "registerSdk" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails" | "getPayByLinkStores" | "payByLinkFilters" | "getPayByLinkSettings" | "savePayByLinkSettings" | "getPayByLinkTheme" | "updatePayByLinkTheme" | "createPBLPaymentLink" | "getPayByLinkConfiguration" | "getPayByLinkPaymentLinkById" | "downloadTransactions";
         LegalEntitySetupResponseDTO: {
             countryCode: string;
             regions: components["schemas"]["RegionDTO"][];
@@ -43,6 +43,7 @@ export interface components {
         SetupEndpointResponse: {
             method?: string;
             url?: string;
+            versions?: number[];
         };
         SetupResponse: {
             /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */

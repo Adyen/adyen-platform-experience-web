@@ -1,17 +1,7 @@
-import type { StrictUnion } from '../../../utils/types';
-import { IBalanceAccountBase, ILineItem, ITransactionWithDetails } from '../../../types';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from './components/constants';
-import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
+import { IBalanceAccountBase, ILineItem, IRefundReason, ITransactionWithDetails } from '../../../types';
+import { CustomDataRetrieved, DetailsDataCustomizationObject, ExternalUIComponentProps } from '../../types';
 
-export interface DetailsWithoutIdProps {
-    data: TransactionDetailData;
-}
-
-export interface DetailsWithIdProps {
-    id: string;
-}
-
-export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved>;
+export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
 
 export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<any, any, any>> {
     dataCustomization?: {
@@ -19,25 +9,84 @@ export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<a
     };
 }
 
-export type DetailsComponentProps = StrictUnion<DetailsWithoutIdProps | DetailsWithIdProps>;
-
-export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProps;
-
-export interface BalanceAccountProps {
+export type TransactionDetails = ITransactionWithDetails & {
     balanceAccount?: IBalanceAccountBase;
+    lineItems?: ILineItem[];
+};
+
+export type TransactionDetailsProps = ExternalUIComponentProps<{
+    dataCustomization?: { details?: TransactionDetailsCustomization };
+    id: string;
+}>;
+
+export type TransactionDetailsFields =
+    | 'account'
+    | 'amount'
+    | 'amountBeforeDeductions'
+    | 'balanceAccount'
+    | 'balanceAccountId'
+    | 'bankAccount'
+    | 'category'
+    | 'createdAt'
+    | 'currency'
+    | 'deductedAmount'
+    | 'description'
+    | 'grossAmount'
+    | 'id'
+    | 'lineItems'
+    | 'merchantReference'
+    | 'netAmount'
+    | 'originalAmount'
+    | 'paymentMethod'
+    | 'paymentPspReference'
+    | 'pspReference'
+    | 'refundDetails'
+    | 'refundMetadata'
+    | 'refundPspReference'
+    | 'refundReason'
+    | 'status'
+    | 'transactionType';
+
+export const enum ActiveView {
+    DETAILS = 'details',
+    REFUND = 'refund',
 }
 
-export interface TransactionDataProps {
-    error?: boolean;
-    isFetching?: boolean;
-    transaction?: TransactionDetailData & { lineItems?: ILineItem[] };
-    dataCustomization?: { details?: DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetailData, CustomDataRetrieved> };
-    // TODO - Unify this parameter with dataCustomization
-    extraFields: Record<string, any> | undefined;
+export const enum DetailsTab {
+    DETAILS = 'details',
+    SUMMARY = 'summary',
+    TIMELINE = 'timeline',
 }
 
-const _fields = [...TX_DETAILS_RESERVED_FIELDS_SET];
+export const enum RefundedState {
+    INDETERMINATE,
+    PARTIAL,
+    FULL,
+}
 
-export type TransactionDetailsFields = (typeof _fields)[number];
+export const enum RefundMode {
+    NON_REFUNDABLE = 'non_refundable',
+    PARTIAL_AMOUNT = 'partially_refundable_any_amount',
+    PARTIAL_LINE_ITEMS = 'partially_refundable_with_line_items_required',
+    FULL_AMOUNT = 'fully_refundable_only',
+}
 
-export type TransactionDetailsProps = DetailsComponentProps & DetailsWithExtraData<TransactionDetailsCustomization>;
+export const enum RefundType {
+    PARTIAL = 'partial',
+    FULL = 'full',
+}
+
+export type RefundReason = IRefundReason;
+export type RefundResult = 'done' | 'error';
+
+export type RefundLineItem = Readonly<{
+    id: ILineItem['id'];
+    amount: ILineItem['amountIncludingTax']['value'];
+    quantity: ILineItem['availableQuantity'];
+}>;
+
+export type RefundLineItemUpdates = Readonly<{
+    id: ILineItem['id'];
+    amount?: ILineItem['amountIncludingTax']['value'];
+    quantity: ILineItem['availableQuantity'];
+}>[];

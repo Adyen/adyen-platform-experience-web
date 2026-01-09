@@ -1,6 +1,6 @@
 {
   "translationSourcePaths": [
-    "src/translations/en-US.json"
+    "src/assets/translations/en-US.json"
   ],
   "locales": [
     "da-DK",

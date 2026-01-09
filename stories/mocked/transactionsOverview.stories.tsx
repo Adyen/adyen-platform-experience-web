@@ -8,10 +8,32 @@ import { getCustomTransactionDataById, getMyCustomData } from './utils/customDat
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
+
 export const Default: ElementStory<typeof TransactionsOverview> = {
     name: 'Default',
-    args: {
-        mockedApi: true,
+    args: { mockedApi: true },
+};
+
+export const ErrorNoTotals: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - No Totals',
+    args: { mockedApi: true },
+    parameters: {
+        msw: {
+            handlers: [
+                http.get(endpoints('mock').transactionsTotals, () => {
+                    return HttpResponse.error();
+                }),
+                http.get(endpoints('mock').transactions, () => {
+                    return HttpResponse.json({
+                        data: [
+                            { ...TRANSACTIONS[0], createdAt: Date.now() },
+                            { ...TRANSACTIONS[6], createdAt: Date.now() },
+                        ],
+                        _links: {},
+                    });
+                }),
+            ],
+        },
     },
 };
 
@@ -31,9 +53,11 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
         }),
     ],
 };
+
 export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     name: 'Data customization',
     args: {
+        mockedApi: true,
         coreOptions: {
             translations: {
                 en_US: {
@@ -46,7 +70,6 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                 },
             },
         },
-        mockedApi: true,
         dataCustomization: {
             list: {
                 fields: [

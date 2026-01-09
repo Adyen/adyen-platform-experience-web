@@ -10,24 +10,36 @@ const MultiSelectionFilter = memo(
         selection,
         selectionOptions,
         updateSelection,
-    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> & Pick<SelectProps<any>, 'placeholder'>) => {
+        onResetAction,
+        readonly,
+        isInvalid,
+    }: ReturnType<typeof useMultiSelectionFilter<FilterParam, FilterValue>> &
+        Required<Pick<SelectProps<any>, 'placeholder'>> & { readonly?: boolean; isInvalid?: boolean; onResetAction?: () => void }) => {
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
         const isOnlySmContainer = useResponsiveContainer(containerQueries.only.sm);
         const isOnlyMdContainer = useResponsiveContainer(containerQueries.only.md);
 
-        return selectionOptions && selectionOptions.length > 1 ? (
-            <Select
-                onChange={updateSelection}
-                filterable={false}
-                multiSelect={true}
-                placeholder={placeholder}
-                selected={selection}
-                withoutCollapseIndicator={true}
-                items={selectionOptions}
-                showOverlay={isSmContainer}
-                fitPosition={isOnlyMdContainer || isOnlySmContainer}
-            />
-        ) : null;
+        const canRenderSelector = (selectionOptions && selectionOptions.length > 1) || readonly;
+
+        return (
+            canRenderSelector && (
+                <Select
+                    readonly={readonly}
+                    isInvalid={isInvalid}
+                    onResetAction={onResetAction}
+                    onChange={updateSelection}
+                    filterable={false}
+                    multiSelect={true}
+                    placeholder={placeholder}
+                    selected={selection}
+                    withoutCollapseIndicator={true}
+                    items={selectionOptions ?? []}
+                    showOverlay={isSmContainer}
+                    fitPosition={isOnlyMdContainer || isOnlySmContainer}
+                    aria-label={placeholder}
+                />
+            )
+        );
     }
 );
 

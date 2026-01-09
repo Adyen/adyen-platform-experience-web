@@ -5,17 +5,20 @@ import StructuredList from '../../../../internal/StructuredList';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { useEffect } from 'preact/compat';
+import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
-import { debounce, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
+import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
+import { getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { debounce } from '../../../../utils/utils';
 
 type CapitalOfferSelectionProps = {
     dynamicOffersConfig: IDynamicOffersConfig | undefined;
@@ -26,6 +29,11 @@ type CapitalOfferSelectionProps = {
     onOfferSelect: (data: IGrantOfferResponseDTO) => void;
     requestedAmount: number | undefined;
 };
+
+const sharedAnalyticsEventProperties = {
+    ...sharedCapitalOfferAnalyticsEventProperties,
+    subCategory: 'Business financing offer',
+} as const;
 
 const LoadingSkeleton = () => (
     <div className="adyen-pe-capital-offer-selection__loading-container">
@@ -46,7 +54,7 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
                 {expectedRepaymentDate &&
-                    i18n.get('capital.youWillNeedToRepayAMinimumOfXEveryXDaysToPayOffTheFunds', {
+                    i18n.get('capital.offer.common.repaymentInfo', {
                         values: {
                             amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
                             days: CAPITAL_REPAYMENT_FREQUENCY,
@@ -66,16 +74,16 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
                     </Typography>
                 )}
                 items={[
-                    { key: 'capital.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
+                    { key: 'capital.common.fields.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
                     {
-                        key: 'capital.dailyRepaymentRate',
-                        value: `${i18n.get('capital.xPercent', {
+                        key: 'capital.common.fields.dailyRepaymentRate',
+                        value: `${i18n.get('capital.common.values.percentage', {
                             values: { percentage: getPercentage(data.repaymentRate) },
                         })}`,
                     },
                     {
-                        key: 'capital.expectedRepaymentPeriod',
-                        value: i18n.get('capital.xDays', { values: { days: data.expectedRepaymentPeriodDays } }),
+                        key: 'capital.common.fields.expectedRepaymentPeriod',
+                        value: i18n.get('capital.common.values.numberOfDays', { values: { days: data.expectedRepaymentPeriodDays } }),
                     },
                 ]}
             />
@@ -93,6 +101,7 @@ export const CapitalOfferSelection = ({
     requestedAmount,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
+    const userEvents = useAnalyticsContext();
 
     const initialValue = useMemo(() => {
         if (dynamicOffersConfig)
@@ -130,14 +139,18 @@ export const CapitalOfferSelection = ({
     });
 
     const onReview = useCallback(() => {
-        void reviewOfferMutation.mutate({
-            body: {
-                amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
-                currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
-            },
-            contentType: 'application/json',
-        });
-    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation]);
+        try {
+            void reviewOfferMutation.mutate({
+                body: {
+                    amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
+                    currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
+                },
+                contentType: 'application/json',
+            });
+        } finally {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
+        }
+    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation, userEvents]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -146,7 +159,7 @@ export const CapitalOfferSelection = ({
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const debouncedGetOfferCall = debounce(getOffer, 300);
+    const debouncedGetOfferCall = useMemo(() => debounce(getOffer, 300), [getOffer]);
 
     const onChangeHandler = useCallback(
         (val: number) => {
@@ -157,7 +170,21 @@ export const CapitalOfferSelection = ({
         [debouncedGetOfferCall]
     );
 
-    const handleSliderRelease = (val: number) => debouncedGetOfferCall(val);
+    const handleSliderRelease = useCallback(
+        (val: number) => {
+            try {
+                return debouncedGetOfferCall(val);
+            } finally {
+                userEvents.addEvent?.('Changed capital offer slider', {
+                    ...sharedAnalyticsEventProperties,
+                    label: 'Slider changed',
+                    currency: currency!,
+                    value: val,
+                });
+            }
+        },
+        [debouncedGetOfferCall, userEvents]
+    );
 
     useEffect(() => {
         if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !requestedValue) {
@@ -172,6 +199,8 @@ export const CapitalOfferSelection = ({
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
+
+    useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
         <div className="adyen-pe-capital-offer-selection">
@@ -202,7 +231,7 @@ export const CapitalOfferSelection = ({
                     <div className="adyen-pe-capital-offer-selection__buttons">
                         {onOfferDismiss && (
                             <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
-                                {i18n.get('back')}
+                                {i18n.get('capital.common.actions.goBack')}
                             </Button>
                         )}
                         <Button
@@ -210,8 +239,13 @@ export const CapitalOfferSelection = ({
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
                             disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
+                            aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >
-                            {i18n.get(loadingButtonState ? 'loading' : 'capital.reviewOffer')}
+                            {i18n.get(
+                                loadingButtonState
+                                    ? 'capital.offer.selection.actions.reviewOffer.states.loading'
+                                    : 'capital.offer.selection.actions.reviewOffer'
+                            )}
                         </Button>
                     </div>
                 </>

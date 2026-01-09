@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../translations';
@@ -9,7 +10,7 @@ import Card from '../../../internal/Card/Card';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '../../../../constants';
 import StructuredList from '../../../internal/StructuredList';
 import { ListValue, StructuredListProps } from '../../../internal/StructuredList/types';
-import { TypographyVariant } from '../../../internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
 import Typography from '../../../internal/Typography/Typography';
 import DataOverviewDetailsSkeleton from '../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
@@ -29,8 +30,8 @@ import {
     PD_SECTION_NET_AMOUNT_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
-    PD_TITLE_CONTAINER_CLASS,
     PD_TITLE_CLASS_WITH_EXTRA_DETAILS,
+    PD_TITLE_CONTAINER_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
 import { Tag } from '../../../internal/Tag/Tag';
@@ -38,11 +39,12 @@ import { TagVariant } from '../../../internal/Tag/types';
 import Link from '../../../internal/Link/Link';
 import Icon from '../../../internal/DataGrid/components/Icon';
 import { isCustomDataObject } from '../../../internal/DataGrid/components/TableCells';
-import cx from 'classnames';
 import { ButtonVariant } from '../../../internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../internal/Button/ButtonActions/types';
 import ButtonActions from '../../../internal/Button/ButtonActions/ButtonActions';
 import { PayoutDetailsCustomization } from '../types';
+import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '../../../utils/translation/getters';
+import { TranslationFactoryFunction } from '../../../utils/translation/factory';
 
 export const PayoutData = ({
     balanceAccountId,
@@ -64,17 +66,14 @@ export const PayoutData = ({
     const adjustments = useMemo(() => {
         const data = payoutData?.amountBreakdowns?.adjustmentBreakdown?.reduce(
             (accumulator, currentValue) => {
-                const payoutValue =
-                    currentValue?.amount?.value && currentValue?.amount?.currency
-                        ? i18n.amount(currentValue?.amount?.value, currentValue?.amount?.currency, { hideCurrency: true })
-                        : (currentValue?.amount?.value ?? '').toString();
-                const translationKey = `${currentValue?.category}` as TranslationKey;
-                const categoryTranslation = i18n.get(translationKey);
-                const categoryLabel = currentValue?.category && categoryTranslation !== translationKey ? categoryTranslation : currentValue?.category;
+                if (currentValue.category && currentValue.amount?.value) {
+                    const { currency, value: amount } = currentValue.amount;
+                    const targetObj = accumulator[amount && amount < 0 ? 'subtractions' : 'additions'];
 
-                if (currentValue?.category && payoutValue && categoryLabel) {
-                    const targetObj = accumulator[currentValue?.amount?.value && currentValue?.amount?.value < 0 ? 'subtractions' : 'additions'];
-                    targetObj.push({ key: categoryLabel as TranslationKey, value: payoutValue });
+                    targetObj.push({
+                        key: currentValue.category as TranslationKey,
+                        value: i18n.amount(amount, currency, { hideCurrency: true }),
+                    });
                 }
                 return accumulator;
             },
@@ -86,28 +85,44 @@ export const PayoutData = ({
     }, [i18n, payoutData]);
 
     const fundsCaptured = useMemo(() => {
-        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce((items, breakdown) => {
-            if (breakdown?.amount?.value === 0) return items;
-            if (breakdown?.amount?.value && breakdown.category) {
-                items.push({
-                    key: breakdown.category as TranslationKey,
-                    value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
-                });
-            }
-            return items;
-        }, [] as { key: TranslationKey; value: ListValue }[]);
+        const data = payoutData?.amountBreakdowns?.fundsCapturedBreakdown?.reduce(
+            (items, breakdown) => {
+                if (breakdown?.amount?.value === 0) return items;
+                if (breakdown?.amount?.value && breakdown.category) {
+                    items.push({
+                        key: breakdown.category as TranslationKey,
+                        value: i18n.amount(breakdown?.amount?.value, breakdown?.amount?.currency, { hideCurrency: true }),
+                    });
+                }
+                return items;
+            },
+            [] as { key: TranslationKey; value: ListValue }[]
+        );
         data?.sort((a, b) => {
-            if (a.key === 'capture') return -1;
-            if (b.key === 'capture') return 1;
+            const captureType = 'capture' as TranslationKey;
+            if (a.key === captureType) return -1;
+            if (b.key === captureType) return 1;
             return a.key.localeCompare(b.key);
         });
         return data;
     }, [payoutData, i18n]);
 
-    const creationDate = useMemo(
-        () => (payout?.createdAt ? dateFormat(new Date(payout?.createdAt), DATE_FORMAT_PAYOUT_DETAILS) : ''),
-        [payout, dateFormat]
-    );
+    const { payoutAdjustmentTypeLabelRenderer, payoutFundsCapturedTypeLabelRenderer } = useMemo(() => {
+        const payoutBreakdownTypeLabelRenderer =
+            (translationFn: TranslationFactoryFunction): StructuredListProps['renderLabel'] =>
+            (_, type) => {
+                return (
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                        {translationFn(i18n, type)}
+                    </Typography>
+                );
+            };
+
+        return {
+            payoutAdjustmentTypeLabelRenderer: payoutBreakdownTypeLabelRenderer(getPayoutAdjustmentType),
+            payoutFundsCapturedTypeLabelRenderer: payoutBreakdownTypeLabelRenderer(getPayoutFundsCapturedType),
+        } as const;
+    }, [i18n]);
 
     const extraDetails: StructuredListProps['items'] =
         Object.entries(extraFields || {})
@@ -147,16 +162,24 @@ export const PayoutData = ({
                     >
                         <div className={PD_TITLE_CONTAINER_CLASS}>
                             <Typography variant={TypographyVariant.SUBTITLE} stronger>
-                                {i18n.get('netPayout')}
+                                {i18n.get('payouts.details.tags.netPayout')}
                             </Typography>
-                            {payout.isSumOfSameDayPayouts && <Tag variant={TagVariant.BLUE} label={i18n.get('sumOfSameDayPayouts')}></Tag>}
+                            {payout.isSumOfSameDayPayouts && (
+                                <Tag variant={TagVariant.BLUE} label={i18n.get('payouts.details.tags.sameDaySum')}></Tag>
+                            )}
                         </div>
                         <Typography variant={TypographyVariant.TITLE} large>
                             {`${i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency, {
                                 hideCurrency: true,
                             })} ${payout.payoutAmount.currency}`}
                         </Typography>
-                        <Typography variant={TypographyVariant.BODY}>{creationDate}</Typography>
+                        {payout?.createdAt && (
+                            <time dateTime={payout.createdAt}>
+                                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    {dateFormat(payout.createdAt, DATE_FORMAT_PAYOUT_DETAILS)}
+                                </Typography>
+                            </time>
+                        )}
                         <div className={PD_SECTION_CLASS}>
                             {balanceAccountDescription && (
                                 <Typography variant={TypographyVariant.CAPTION} stronger wide>
@@ -172,7 +195,7 @@ export const PayoutData = ({
                                 classNames={PD_EXTRA_DETAILS_CLASS}
                                 items={extraDetails}
                                 align="start"
-                                layout="5-7"
+                                layout="4-8"
                                 renderLabel={label => <div className={PD_EXTRA_DETAILS_LABEL}>{label}</div>}
                                 renderValue={(val, key, type, config) => {
                                     if (type === 'link' && config) {
@@ -205,7 +228,11 @@ export const PayoutData = ({
                             {payout?.fundsCapturedAmount &&
                                 (fundsCaptured && Object.keys(fundsCaptured).length > 0 ? (
                                     <Accordion
-                                        header={<Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>}
+                                        header={
+                                            <Typography variant={TypographyVariant.BODY}>
+                                                {i18n.get('payouts.details.breakdown.fields.fundsCaptured')}
+                                            </Typography>
+                                        }
                                         headerInformation={
                                             <Typography variant={TypographyVariant.BODY}>
                                                 {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
@@ -216,7 +243,7 @@ export const PayoutData = ({
                                             {
                                                 <div className={PD_CARD_CLASS}>
                                                     <Card noPadding>
-                                                        <StructuredList items={fundsCaptured} />
+                                                        <StructuredList items={fundsCaptured} renderLabel={payoutFundsCapturedTypeLabelRenderer} />
                                                     </Card>
                                                 </div>
                                             }
@@ -224,7 +251,9 @@ export const PayoutData = ({
                                     </Accordion>
                                 ) : (
                                     <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                        <Typography variant={TypographyVariant.BODY}>{i18n.get('fundsCaptured')}</Typography>
+                                        <Typography variant={TypographyVariant.BODY}>
+                                            {i18n.get('payouts.details.breakdown.fields.fundsCaptured')}
+                                        </Typography>
                                         <Typography variant={TypographyVariant.BODY}>
                                             {i18n.amount(payout.fundsCapturedAmount.value, payout.fundsCapturedAmount.currency)}
                                         </Typography>
@@ -235,7 +264,11 @@ export const PayoutData = ({
                             {(adjustments?.subtractions && Object.keys(adjustments?.subtractions).length > 0) ||
                             (adjustments?.additions && Object.keys(adjustments?.additions).length > 0) ? (
                                 <Accordion
-                                    header={<Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>}
+                                    header={
+                                        <Typography variant={TypographyVariant.BODY}>
+                                            {i18n.get('payouts.details.breakdown.fields.adjustments')}
+                                        </Typography>
+                                    }
                                     headerInformation={
                                         <Typography variant={TypographyVariant.BODY}>
                                             {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
@@ -248,11 +281,11 @@ export const PayoutData = ({
                                                 noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
-                                                        {i18n.get('additions')}
+                                                        {i18n.get('payouts.details.breakdown.fields.additions')}
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.additions} />
+                                                <StructuredList items={adjustments?.additions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
                                             </Card>
                                         </div>
                                     )}
@@ -262,18 +295,20 @@ export const PayoutData = ({
                                                 noPadding
                                                 renderHeader={
                                                     <Typography className={PD_CARD_TITLE_CLASS} variant={TypographyVariant.CAPTION} stronger>
-                                                        {i18n.get('subtractions')}
+                                                        {i18n.get('payouts.details.breakdown.fields.subtractions')}
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.subtractions} />
+                                                <StructuredList items={adjustments?.subtractions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
                                             </Card>
                                         </div>
                                     )}
                                 </Accordion>
                             ) : (
                                 <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
-                                    <Typography variant={TypographyVariant.BODY}>{i18n.get('adjustments')}</Typography>
+                                    <Typography variant={TypographyVariant.BODY}>
+                                        {i18n.get('payouts.details.breakdown.fields.adjustments')}
+                                    </Typography>
                                     <Typography variant={TypographyVariant.BODY}>
                                         {i18n.amount(payout.adjustmentAmount.value, payout.adjustmentAmount.currency)}
                                     </Typography>
@@ -283,7 +318,7 @@ export const PayoutData = ({
                         <div className={classnames(PD_SECTION_CLASS)}>
                             <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
-                                    {i18n.get('netPayout')}
+                                    {i18n.get('payouts.details.breakdown.fields.netPayout')}
                                 </Typography>
                                 <Typography variant={TypographyVariant.BODY} stronger>
                                     {i18n.amount(payout.payoutAmount.value, payout.payoutAmount.currency)}
@@ -293,7 +328,7 @@ export const PayoutData = ({
                     </div>
                     {payoutData?.payout?.unpaidAmount && (
                         <div className={PD_UNPAID_AMOUNT}>
-                            <Typography variant={TypographyVariant.BODY}>{i18n.get('remainingAmount')}</Typography>
+                            <Typography variant={TypographyVariant.BODY}>{i18n.get('payouts.details.breakdown.fields.remainingAmount')}</Typography>
                             <Typography variant={TypographyVariant.BODY}>
                                 {i18n.amount(payoutData.payout.unpaidAmount.value, payoutData.payout.unpaidAmount.currency)}
                             </Typography>

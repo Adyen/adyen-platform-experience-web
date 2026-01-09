@@ -1,10 +1,12 @@
 import classNames from 'classnames';
 import { VNode } from 'preact';
+import { AriaAttributes } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { EndpointName } from '../../../../types/api/endpoints';
+import { DownloadStreamEndpoint } from '../../../../types/api/endpoints';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
+import { downloadBlob } from '../../../../utils';
 import Spinner from '../../Spinner';
 import Icon from '../../Icon';
 import Button from '../Button';
@@ -15,30 +17,13 @@ import './DownloadButton.scss';
 interface DownloadButtonProps {
     requestParams: any;
     iconButton?: boolean;
-    endpointName: EndpointName;
+    endpointName: DownloadStreamEndpoint;
     className?: string;
     disabled?: boolean;
     onDownloadRequested?: () => void;
     setError?: (error?: AdyenPlatformExperienceError) => any;
     errorDisplay?: VNode<any>;
     errorMessage?: (error: any) => VNode<any>;
-}
-
-function downloadBlob({ blob, filename }: { blob: Blob; filename: string }) {
-    const a = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-
-    a.href = url;
-    a.download = filename || 'download';
-
-    const clickHandler = () => {
-        setTimeout(() => {
-            URL.revokeObjectURL(url);
-        }, 150);
-    };
-
-    a.addEventListener('click', clickHandler, { once: true });
-    a.click();
 }
 
 function DownloadButton({
@@ -51,29 +36,23 @@ function DownloadButton({
     onDownloadRequested,
     iconButton = false,
     errorMessage,
-}: DownloadButtonProps) {
+    ...ariaAttributeProps
+}: DownloadButtonProps & Pick<AriaAttributes, 'aria-describedby' | 'aria-label' | 'aria-labelledby'>) {
     const { i18n } = useCoreContext();
     const [fetchData, setFetchData] = useState(false);
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const { data, error, isFetching } = useDownload(endpointName, requestParams, fetchData);
 
     useEffect(() => {
-        if (fetchData) {
-            setFetchData(false);
-        }
+        if (fetchData) setFetchData(false);
     }, [fetchData]);
 
     useEffect(() => {
-        if (data) {
-            // TODO: Fix the types to use type inference here
-            downloadBlob(data as { blob: Blob; filename: string });
-        }
+        if (data) downloadBlob(data);
     }, [data]);
 
     useEffect(() => {
-        if (setError && error) {
-            setError(error as AdyenPlatformExperienceError);
-        }
+        if (setError && error) setError(error as AdyenPlatformExperienceError);
     }, [error, setError]);
 
     const onClick = () => {
@@ -87,7 +66,7 @@ function DownloadButton({
         if (iconButton) {
             return buttonIcon;
         } else {
-            return isFetching ? `${i18n.get('downloading')}..` : i18n.get('download');
+            return isFetching ? `${i18n.get('common.actions.download.labels.inProgress')}..` : i18n.get('common.actions.download.labels.default');
         }
     }, [buttonIcon, i18n, isFetching, iconButton]);
 
@@ -99,7 +78,7 @@ function DownloadButton({
                 })}
             >
                 {isSmContainer ? (
-                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick}>
+                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...ariaAttributeProps}>
                         {buttonIcon}
                     </Button>
                 ) : (
@@ -113,6 +92,7 @@ function DownloadButton({
                         variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
                         onClick={onClick}
                         {...(!iconButton && { iconLeft: buttonIcon })}
+                        {...ariaAttributeProps}
                     >
                         {buttonLabel}
                     </Button>

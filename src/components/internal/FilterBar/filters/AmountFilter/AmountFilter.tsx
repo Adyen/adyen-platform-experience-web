@@ -1,65 +1,107 @@
 import BaseFilter from '../BaseFilter';
-import { FilterProps } from '../BaseFilter/types';
-import { RangeFilterProps } from './types';
+import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
+import { RangeFilterBody, RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { EMPTY_OBJECT, isUndefined } from '../../../../../utils';
 import { PopoverContainerSize } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AMOUNT_MULTIPLIER } from './constants';
 
+const enum AmountFormat {
+    ALL = 0,
+    BETWEEN,
+    EXACT,
+    MAX,
+    MIN,
+}
+
+const determineAmountFormat = (minAmount: number | undefined, maxAmount: number | undefined): AmountFormat => {
+    if (!isUndefined(maxAmount) && maxAmount >= 0) {
+        if (!isUndefined(minAmount) && minAmount > maxAmount) {
+            return AmountFormat.ALL;
+        } else if (minAmount === maxAmount || maxAmount === 0) {
+            return AmountFormat.EXACT;
+        } else if (minAmount && minAmount > 0) {
+            return AmountFormat.BETWEEN;
+        } else {
+            return AmountFormat.MAX;
+        }
+    } else if (isUndefined(maxAmount) && minAmount && minAmount > 0) {
+        return AmountFormat.MIN;
+    }
+    return AmountFormat.ALL;
+};
+
+const renderAmountFilter = (props: FilterEditModalRenderProps<RangeFilterBody>) => <RangeSelection {...props} />;
+
 export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurrencies, ...props }: FilterProps<RangeFilterProps>) => {
     const { i18n } = useCoreContext();
-    const [value, setValue] = useState<{ minAmount: number | undefined; maxAmount: number | undefined } | undefined>();
-    const [formattedValue, setValueFormattedValue] = useState<string | undefined>();
+    const [formattedValue, setFormattedValue] = useState<string | undefined>();
+    const [value, setValue] = useState<{ minAmount: number | undefined; maxAmount: number | undefined }>();
 
-    const showCurrencySymbol = useMemo(() => {
-        return selectedCurrencies?.length === 1 || availableCurrencies?.length === 1;
-    }, [availableCurrencies?.length, selectedCurrencies?.length]);
+    const formatAmount = useMemo(() => {
+        const currency = selectedCurrencies?.[0] || availableCurrencies?.[0];
+        const showCurrencySymbol = availableCurrencies?.length === 1 || selectedCurrencies?.length === 1;
 
-    const formatAmount = useCallback(
-        (amount: number, showSymbol: boolean) => {
-            const currencyCode = selectedCurrencies?.[0] || availableCurrencies?.[0];
-            const options =
-                showSymbol && currencyCode
-                    ? ({
-                          style: 'currency',
-                          currency: currencyCode,
-                          currencyDisplay: 'symbol',
-                      } as const)
-                    : undefined;
-            return amount.toLocaleString(i18n.locale, options);
-        },
-        [availableCurrencies, i18n, selectedCurrencies]
-    );
+        const formatOptions: Intl.NumberFormatOptions | undefined =
+            showCurrencySymbol && currency ? { currency, currencyDisplay: 'symbol', style: 'currency' } : undefined;
 
-    const onFilterChange = useCallback(
-        (params: { minAmount: number | undefined; maxAmount: number | undefined; filterValue: string | undefined }) => {
-            const { minAmount, maxAmount } = params ?? EMPTY_OBJECT;
+        return (amount: number) => amount.toLocaleString(i18n.locale, formatOptions);
+    }, [i18n, availableCurrencies, selectedCurrencies]);
+
+    const onChange = useCallback(
+        (params?: { minAmount: number | undefined; maxAmount: number | undefined }) => {
+            let { minAmount, maxAmount } = params ?? (EMPTY_OBJECT as NonNullable<typeof params>);
+
+            minAmount = isUndefined(minAmount) ? minAmount : Number(minAmount);
+            maxAmount = isUndefined(maxAmount) ? maxAmount : Number(maxAmount);
             setValue({ minAmount, maxAmount });
 
-            if (isUndefined(minAmount) && isUndefined(maxAmount)) setValueFormattedValue(undefined);
+            if (isUndefined(minAmount) && isUndefined(maxAmount)) setFormattedValue(undefined);
+
             updateFilters({
-                minAmount: !isUndefined(minAmount) ? String(Math.round(minAmount * AMOUNT_MULTIPLIER)) : undefined,
-                maxAmount: !isUndefined(maxAmount) ? String(Math.round(maxAmount * AMOUNT_MULTIPLIER)) : undefined,
+                minAmount: isUndefined(minAmount) ? minAmount : String(Math.round(minAmount * AMOUNT_MULTIPLIER)),
+                maxAmount: isUndefined(maxAmount) ? maxAmount : String(Math.round(maxAmount * AMOUNT_MULTIPLIER)),
             });
         },
         [updateFilters]
     );
-    if (value && (value.minAmount || value.maxAmount)) {
+
+    useEffect(() => {
         const { minAmount, maxAmount } = value ?? {};
-        if (!isUndefined(minAmount) && !isUndefined(maxAmount) && minAmount <= maxAmount) {
-            setValueFormattedValue(
-                `${formatAmount(minAmount, showCurrencySymbol)} ${i18n.get('to').toLowerCase()} ${formatAmount(maxAmount, showCurrencySymbol)}`
-            );
-        } else if (!isUndefined(minAmount) && isUndefined(maxAmount) && minAmount >= 0) {
-            setValueFormattedValue(`${i18n.get('from')} ${formatAmount(minAmount, showCurrencySymbol)}`);
-        } else if (isUndefined(minAmount) && !isUndefined(maxAmount)) {
-            setValueFormattedValue(`${i18n.get('to')} ${formatAmount(maxAmount, showCurrencySymbol)}`);
-        } else {
-            setValueFormattedValue(undefined);
+        const amountFormat = determineAmountFormat(minAmount, maxAmount);
+        const formattedMaxAmount = isUndefined(maxAmount) ? maxAmount : formatAmount(maxAmount);
+        const formattedMinAmount = isUndefined(minAmount) ? minAmount : formatAmount(minAmount);
+
+        let formattedValue: string | undefined = undefined;
+
+        switch (amountFormat) {
+            case AmountFormat.BETWEEN:
+                formattedValue = i18n.get('common.filters.types.amount.range.between', {
+                    values: { minAmount: formattedMinAmount, maxAmount: formattedMaxAmount },
+                });
+                break;
+
+            case AmountFormat.EXACT:
+                formattedValue = i18n.get('common.filters.types.amount.range.only', { values: { amount: formattedMaxAmount } });
+                break;
+
+            case AmountFormat.MAX:
+                formattedValue = i18n.get('common.filters.types.amount.range.max', { values: { amount: formattedMaxAmount } });
+                break;
+
+            case AmountFormat.MIN:
+                formattedValue = i18n.get('common.filters.types.amount.range.min', { values: { amount: formattedMinAmount } });
+                break;
+
+            case AmountFormat.ALL:
+            default:
+                break;
         }
-    }
+
+        setFormattedValue(formattedValue);
+    }, [i18n, value]);
 
     return (
         <BaseFilter<RangeFilterProps>
@@ -67,14 +109,15 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
             updateFilters={updateFilters}
             minAmount={props.minAmount}
             maxAmount={props.maxAmount}
-            onChange={onFilterChange}
+            onChange={onChange}
             value={formattedValue}
             label={formattedValue ? formattedValue : props.label}
             type={'text'}
             containerSize={PopoverContainerSize.MEDIUM}
             selectedCurrencies={selectedCurrencies}
             availableCurrencies={availableCurrencies}
-            render={RangeSelection}
+            render={renderAmountFilter}
+            aria-label={props.label}
         />
     );
 };

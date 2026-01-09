@@ -1,5 +1,6 @@
 import {
     ErrorTypes,
+    getApiVersion,
     getErrorType,
     getRequestObject,
     getResponseContentType,
@@ -7,7 +8,7 @@ import {
     handleFetchError,
     isAdyenErrorResponse,
 } from './utils';
-import { API_VERSION } from './constants';
+import { EndpointDownloadStreamData } from '../../types/api/endpoints';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
 import { HttpOptions } from './types';
 import { onErrorHandler } from '../types';
@@ -23,8 +24,12 @@ const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
 
 export async function http<T>(options: HttpOptions): Promise<T> {
     const { errorLevel, loadingContext = '', path } = options;
+    const versionless = options.versionless || false;
+    const apiVersion = getApiVersion(options);
     const request = getRequestObject(options);
-    const url = new URL(`${normalizeLoadingContext(loadingContext)}${API_VERSION}${normalizeUrl(path)}`);
+    const baseUrl = normalizeLoadingContext(loadingContext);
+    const versionPath = versionless ? '' : apiVersion;
+    const url = new URL(`${baseUrl}${versionPath}${normalizeUrl(path)}`);
 
     if (options.params) {
         options.params.forEach((value, param) => {
@@ -59,14 +64,19 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                     //TODO: when backend is ready double check this logic
                     switch (contentType) {
                         case 'application/json':
-                            // This could throw an exception in one of these two cases:
-                            //   (1) if response has no body content
-                            //   (2) if response body content is not valid JSON
-                            return await res.json(); // (!!)
+                            // This could throw an exception if response body content is not valid JSON
+                            const text = await res.clone().text();
+                            if (!text) {
+                                if (process.env.VITE_MODE === 'development') {
+                                    console.warn(`Response from ${url} has an empty body. Review the API response.`);
+                                }
+                                return null;
+                            }
+                            return await res.json();
                         default:
                             const blob = await res.blob();
                             const filename = getResponseDownloadFilename(res);
-                            return { blob, filename } as const;
+                            return { blob, filename } as const satisfies EndpointDownloadStreamData;
                     }
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).
@@ -96,6 +106,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                 error.message = response.detail;
                 error.errorCode = response.errorCode;
                 error.status = response.status;
+                error.invalidFields = response.invalidFields;
             }
             errorHandlerHelper(options.errorHandler, error);
         } catch (ex) {

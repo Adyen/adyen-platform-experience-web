@@ -9,6 +9,8 @@ import { PayoutsTableFields } from './external/PayoutsOverview/components/Payout
 import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
+import { PaymentLinkCreationFormValues } from './external/PaymentLinkCreation/components/types';
+import { StoreIds } from './external/PaymentLinksOverview/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -24,6 +26,7 @@ export const enum InteractionKeyCode {
     PAGE_UP = 'PageUp',
     SPACE = 'Space',
     TAB = 'Tab',
+    DELETE = 'Delete',
 }
 
 export interface BaseElementProps {
@@ -183,6 +186,16 @@ export interface TransactionOverviewComponentProps
         >,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
+
+export interface PaymentLinksOverviewComponentProps
+    extends _DataOverviewComponentProps,
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
+    paymentLinkCreation?: PaymentLinkOverviewSubComponentProps<PaymentLinkCreationComponentProps>;
+    paymentLinkSettings?: PaymentLinkOverviewSubComponentProps<PaymentLinkSettingsComponentProps>;
+    storeIds?: StoreIds;
+}
+
 export interface PayoutsOverviewComponentProps
     extends _DataOverviewComponentProps,
         _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
@@ -193,6 +206,25 @@ export interface DisputeOverviewComponentProps
         _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
         _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
 
+export type DeepPartial<T> = T extends object
+    ? {
+          [K in keyof T]?: DeepPartial<T[K]>;
+      }
+    : T;
+
+export interface PaymentLinkCreationComponentProps extends UIElementProps {
+    fieldsConfig?: {
+        data: DeepPartial<PaymentLinkCreationFormValues>;
+    };
+    storeIds?: StoreIds;
+    onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
+    onCreationDismiss?: () => void;
+}
+
+export interface PaymentLinkSettingsComponentProps extends UIElementProps {
+    storeIds?: string[] | string;
+}
+
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',
     CATEGORIES = 'categories',
@@ -202,15 +234,23 @@ export const enum FilterParam {
     STATUSES = 'statuses',
     MIN_AMOUNT = 'minAmount',
     MAX_AMOUNT = 'maxAmount',
+    LINK_TYPES = 'linkTypes',
+    MERCHANT_REFERENCE = 'merchantReference',
+    PAYMENT_LINK_ID = 'paymentLinkId',
+    STORE_IDS = 'storeIds',
 }
 
 export type ExternalComponentType =
-    | 'transactions'
-    | 'transactionDetails'
-    | 'payouts'
-    | 'payoutDetails'
-    | 'reports'
     | 'capitalOverview'
     | 'capitalOffer'
     | 'disputes'
-    | 'disputesManagement';
+    | 'disputesManagement'
+    | 'paymentLinkCreation'
+    | 'paymentLinkDetails'
+    | 'paymentLinksOverview'
+    | 'paymentLinkSettings'
+    | 'payouts'
+    | 'payoutDetails'
+    | 'reports'
+    | 'transactions'
+    | 'transactionDetails';

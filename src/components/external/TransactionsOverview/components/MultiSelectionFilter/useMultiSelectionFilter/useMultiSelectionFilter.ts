@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { listFrom } from '../../../../../../utils';
 import { selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
+import type { SelectChangeEvent } from '../../../../../internal/FormFields/Select/types';
 
 export const useMultiSelectionFilter = <FilterParam extends string = string, FilterValue extends string = string>({
     filterParam,
@@ -21,7 +22,7 @@ export const useMultiSelectionFilter = <FilterParam extends string = string, Fil
     );
 
     const updateSelection = useCallback(
-        ({ target }: any) => {
+        ({ target }: SelectChangeEvent) => {
             updateFilters?.({ [filterParam]: target?.value || '' });
         },
         [updateFilters, filterParam]
@@ -35,6 +36,7 @@ export const useMultiSelectionFilterWithoutValues = <FilterParam extends string 
 ) => {
     const [filterValues, updateFilterValues] = useState<SelectionOptionsList<FilterValue>>();
     const useMultiSelectionFilterProperties = useMultiSelectionFilter({ ...config, filterValues });
+
     return { ...useMultiSelectionFilterProperties, filterValues, updateFilterValues } as const;
 };
 

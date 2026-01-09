@@ -1,9 +1,11 @@
 import type { CoreOptions, onErrorHandler } from './types';
-import { FALLBACK_ENV, resolveEnvironment } from './utils';
+import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import { AuthSession } from './ConfigContext/session/AuthSession';
 import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
+import { AssetOptions, Assets } from './Assets/Assets';
+import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -13,21 +15,45 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     public localization: Localization;
     public loadingContext: string;
+    public analyticsEnabled: boolean;
     public session = new AuthSession();
     public onError?: onErrorHandler;
+    public getImageAsset: (props: AssetOptions) => string;
+    public getDatasetAsset: (props: AssetOptions) => string;
+    public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
+    public getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+
+    private readyCustomTranslationsAnalytics: boolean;
 
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
         this.options = { environment: FALLBACK_ENV, ...options };
+        const { cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl, apiUrl } = resolveEnvironment(this.options.environment);
 
-        this.localization = new Localization(options.locale, options.availableTranslations);
-        this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || resolveEnvironment(this.options.environment);
+        this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
+        this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
+        this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
+        this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
+        this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
+        this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
+        this.readyCustomTranslationsAnalytics = false;
+        this.analyticsEnabled = options?.analytics?.enabled ?? true;
+        this.session.analyticsEnabled = this.analyticsEnabled;
         this.setOptions(options);
     }
 
     async initialize(): Promise<this> {
-        return Promise.all([this.localization.ready]).then(() => this);
+        return Promise.all([this.localization.ready]).then(() => {
+            if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
+                const analyticsPayload = this.setTranslationsPayload();
+                if (analyticsPayload.length > 0) {
+                    this.session.analyticsPayload = analyticsPayload;
+                    this.readyCustomTranslationsAnalytics = true;
+                }
+            }
+            return this;
+        });
     }
 
     /**
@@ -88,6 +114,13 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
         return this;
     };
+
+    private setTranslationsPayload() {
+        if (this.localization) {
+            return getCustomTranslationsAnalyticsPayload(this.localization.i18n.customTranslations);
+        }
+        return [];
+    }
 
     /**
      * @internal

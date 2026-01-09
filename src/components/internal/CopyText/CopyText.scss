@@ -4,11 +4,11 @@
     $adyen-pe-root: &;
     align-items: center;
     display: inline-flex;
+    margin-top: style.token(spacer-010);
     text-decoration: none;
 
     &__text {
         color: style.token(color-label-primary);
-        cursor: pointer;
     }
 
     &__label {
@@ -17,7 +17,6 @@
     }
 
     &__information {
-        color: style.token(color-label-highlight);
         display: block;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
@@ -29,7 +28,7 @@
     }
 
     &__container {
-        align-items: center;
+        align-items: start;
         display: inline-flex;
         gap: style.token(spacer-020);
     }
@@ -43,23 +42,13 @@
         }
     }
 
-    &__container--information,
-    &__icon--information {
-        color: style.token(color-label-highlight);
-
-        &:hover {
-            color: style.token(color-label-highlight);
-        }
-    }
-
-    &__icon--information span {
-        cursor: pointer;
-        display: flex;
-    }
-
     &:hover {
         background-color: inherit;
         color: inherit;
         cursor: default;
+    }
+
+    &--stronger {
+        font-weight: style.token(text-body-strongest-font-weight);
     }
 }

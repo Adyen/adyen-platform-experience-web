@@ -35,7 +35,7 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
     useLayoutEffect(() => {
         if (commentsGroupRef.current) {
             const commentsGroup = commentsGroupRef.current;
-            const firstComment = commentsGroup.querySelector(`.${DISPUTE_DATA_ISSUER_COMMENT}`);
+            const firstComment = commentsGroup.querySelector(`:scope .${DISPUTE_DATA_ISSUER_COMMENT}`);
             const lineHeight = firstComment ? parseInt(getComputedStyle(firstComment).getPropertyValue('line-height')) : 0;
 
             const minimumHeight = Math.min(firstComment?.clientHeight || Infinity, lineHeight * 3); // first 3 lines
@@ -52,11 +52,10 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
     return (
         <Alert
             type={AlertTypeOption.HIGHLIGHT}
-            variant={AlertVariantOption.TIP}
             description={
                 <div className={DISPUTE_DATA_ISSUER_COMMENTS_ALERT}>
                     <Typography el={TypographyElement.DIV} variant={TypographyVariant.BODY} strongest>
-                        {i18n.get('disputes.issuerComment.title')}
+                        {i18n.get('disputes.management.details.issuerComment')}
                     </Typography>
 
                     <div
@@ -83,7 +82,11 @@ export const DisputeIssuerComments = ({ issuerComments }: { issuerComments: stri
 
                     {isTruncated && (
                         <Button variant={ButtonVariant.TERTIARY} onClick={onButtonClick}>
-                            {i18n.get(isExpanded ? 'disputes.issuerComment.showLess' : 'disputes.issuerComment.showMore')}
+                            {i18n.get(
+                                isExpanded
+                                    ? 'disputes.management.details.issuerComment.showLess'
+                                    : 'disputes.management.details.issuerComment.showMore'
+                            )}
                         </Button>
                     )}
                 </div>

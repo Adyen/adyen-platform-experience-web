@@ -1,6 +1,6 @@
 {
   "name": "@adyen/adyen-platform-experience-web",
-  "version": "1.7.1",
+  "version": "1.10.0",
   "keywords": [
     "adyen",
     "adyen-pe",
@@ -48,6 +48,8 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
     "build:publish": "npm run build && npm pack",
     "changeset": "changeset",
@@ -58,9 +60,9 @@
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "npm run storybook",
     "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'vite-node --mode development .storybook/runStorybook.ts' ",
-    "storybook:build": "vite-node ./.storybook/buildStorybook.ts",
-    "storybook:static": "vite-node --mode development ./.storybook/buildStorybook.ts && vite serve storybook-static --config vite.config.ts",
-    "test": "vitest --config vite.config.ts",
+    "storybook:build": "cross-env USE_TEST_CDN=true vite-node ./.storybook/buildStorybook.ts",
+    "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 vite-node --mode development ./.storybook/buildStorybook.ts && vite serve storybook-static --config vite.config.ts",
+    "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:e2e": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome-e2e",
@@ -81,10 +83,10 @@
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "^2.28.1",
+    "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
-    "@playwright/test": "^1.48.2",
-    "@preact/preset-vite": "^2.9.3",
+    "@playwright/test": "^1.56.0",
+    "@preact/preset-vite": "^2.10.2",
     "@storybook/addon-essentials": "8.6.4",
     "@storybook/core": "8.6.4",
     "@storybook/core-server": "8.6.4",
@@ -98,7 +100,7 @@
     "@types/node": "^20.4.7",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.8.1",
-    "@vitest/coverage-v8": "3.1.1",
+    "@vitest/coverage-v8": "4.0.10",
     "autoprefixer": "^10.4.20",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
@@ -112,7 +114,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-testing-library": "^7.1.1",
     "file-loader": "^6.2.0",
-    "http-server": "^14.1.1",
     "husky": "^7.0.4",
     "jsdom": "^26.1.0",
     "lint-staged": "^13.0.1",
@@ -133,11 +134,11 @@
     "stylelint-scss": "^4.2.0",
     "ts-loader": "^9.2.6",
     "typescript": "5.8.3",
-    "vite": "^6.3.4",
+    "vite": "^7.2.4",
     "vite-node": "^3.0.5",
     "vite-plugin-checker": "^0.5.6",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "3.1.1"
+    "vitest": "4.0.10"
   },
   "msw": {
     "workerDirectory": [
