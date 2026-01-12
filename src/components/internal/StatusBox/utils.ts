@@ -1,5 +1,5 @@
 import { IBankAccount, IPaymentMethod } from '../../../types';
-import { parsePaymentMethodType } from '../../external/TransactionsOverview/components/utils';
+import { parsePaymentMethodType } from '../../external/Transactions/TransactionsOverview/components/utils';
 
 type PaymentOptionsType = {
     paymentMethod?: IPaymentMethod;

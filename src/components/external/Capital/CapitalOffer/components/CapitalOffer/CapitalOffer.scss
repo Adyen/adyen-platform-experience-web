@@ -1,0 +1,10 @@
+@use '../../../../../../style';
+
+.adyen-pe-capital-offer {
+    &__error-container {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+    }
+}

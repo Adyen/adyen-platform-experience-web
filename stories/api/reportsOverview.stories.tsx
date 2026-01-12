@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { ReportsOverview } from '../../src';
-import { ReportsOverviewMeta } from '../components/reportsOverview';
+import { ReportsOverviewMeta } from '../components/Reports/reportsOverview';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'API-connected/Reports/Reports Overview' };

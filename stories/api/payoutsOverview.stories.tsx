@@ -1,7 +1,7 @@
 import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { PayoutsOverviewMeta } from '../components/payoutsOverview';
+import { PayoutsOverviewMeta } from '../components/Payouts/payoutsOverview';
 import { Meta } from '@storybook/preact';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'API-connected/Payouts/Payouts Overview' };

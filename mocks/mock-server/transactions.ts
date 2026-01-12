@@ -26,7 +26,7 @@ import {
 import Localization from '../../src/core/Localization';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
-import { parsePaymentMethodType } from '../../src/components/external/TransactionsOverview/components/utils';
+import { parsePaymentMethodType } from '../../src/components/external/Transactions/TransactionsOverview/components/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from './utils/utils';
 import { clamp, getMappedValue } from '../../src/utils';
 import { setupBasicResponse } from './setup';

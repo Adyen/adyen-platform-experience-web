@@ -1,0 +1,83 @@
+@use '../../../../../../style';
+
+.adyen-pe-disputes-table {
+    &-alert {
+        border: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    &-date-report-type {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+
+        &--date {
+            color: style.token(color-label-secondary);
+        }
+    }
+
+    &__cell-content {
+        align-items: center;
+        display: flex;
+
+        &--vstack {
+            align-items: stretch;
+            flex-direction: column;
+            gap: style.token(spacer-040);
+            justify-content: flex-start;
+        }
+    }
+
+    &__cell-text {
+        &--grey {
+            color: style.token(color-label-secondary);
+        }
+    }
+
+    &__status-content {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+
+        &--urgent {
+            color: style.token(color-label-critical);
+        }
+    }
+
+    &__date-content {
+        &--urgent {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-030);
+        }
+    }
+
+    .adyen-pe-download {
+        &__error {
+            align-items: center;
+            color: style.token(color-background-warning-strong);
+            display: flex;
+            padding-left: style.token(spacer-060);
+        }
+    }
+
+    .adyen-pe-data-grid__skeleton-cell {
+        &-content {
+            margin: 0;
+            width: var(--adyen-pe-grid-cell-skeleton-width, 80%);
+        }
+
+        &:first-of-type {
+            --adyen-pe-grid-cell-skeleton-width: 80%;
+            justify-content: flex-start;
+        }
+
+        &:last-of-type {
+            --adyen-pe-grid-cell-skeleton-width: 50%;
+            justify-content: flex-end;
+        }
+    }
+}

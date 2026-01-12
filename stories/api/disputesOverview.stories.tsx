@@ -1,7 +1,7 @@
 import { DisputesOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { DisputesOverviewMeta } from '../components/disputesOverview';
+import { DisputesOverviewMeta } from '../components/Disputes/disputesOverview';
 import { Meta } from '@storybook/preact';
 
 const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'API-connected/Disputes/Disputes Overview' };

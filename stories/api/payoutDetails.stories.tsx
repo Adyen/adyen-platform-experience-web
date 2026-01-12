@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { PayoutDetails } from '../../src';
-import { PayoutDetailsMeta } from '../components/payoutDetails';
+import { PayoutDetailsMeta } from '../components/Payouts/payoutDetails';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 

@@ -1,0 +1,11 @@
+@use '../../../../../../style';
+
+.adyen-pe-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        padding-top: style.token(spacer-020);
+        width: 100%;
+    }
+}

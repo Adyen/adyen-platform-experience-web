@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { capitalOfferMeta } from '../components/capitalOffer';
+import { capitalOfferMeta } from '../components/Capital/capitalOffer';
 import { CapitalOffer } from '../../src';
 
 const meta: Meta<ElementProps<typeof CapitalOffer>> = { ...capitalOfferMeta, title: 'API-connected/Capital/Capital Offer' };

@@ -6,7 +6,7 @@ import {
     TimeRangeOptions,
     UseTimeRangeSelectionConfig,
 } from '../components/internal/DatePicker/components/TimeRangeSelector';
-import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/TransactionsOverview/components/MultiSelectionFilter';
+import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../components/external/Transactions/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../components/types';
 
 const getDefaultFilterParams = (

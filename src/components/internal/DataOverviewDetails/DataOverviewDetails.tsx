@@ -6,16 +6,16 @@ import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExpe
 import { useFetch } from '../../../hooks/useFetch';
 import { IPayoutDetails } from '../../../types';
 import { EMPTY_OBJECT } from '../../../utils';
-import { PayoutData } from '../../external/PayoutDetails/components/PayoutData';
+import { PayoutData } from '../../external/Payouts/PayoutDetails/components/PayoutData';
 import useBalanceAccounts from '../../../hooks/useBalanceAccounts';
 import { CustomColumn, ExternalUIComponentProps } from '../../types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
 import { DetailsComponentProps } from './types';
 import useDataOverviewDetailsTitle from './useDataOverviewDetailsTitle';
-import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/TransactionDetails/constants';
-import { PAYOUT_TABLE_FIELDS } from '../../external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
-import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
+import { TX_DETAILS_RESERVED_FIELDS_SET } from '../../external/Transactions/TransactionDetails/constants';
+import { PAYOUT_TABLE_FIELDS } from '../../external/Payouts/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { PayoutDetailsCustomization } from '../../external/Payouts/PayoutDetails/types';
 import { TranslationKey } from '../../../translations';
 import { Header } from '../Header';
 
