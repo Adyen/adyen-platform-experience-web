@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--unprocessable-entity-error';
+const STORY_ID = 'mocked-disputes-dispute-management--unprocessable-entity-error';
 
 test.describe('Error - Unprocessable entity', () => {
     test('should render an error message', async ({ page }) => {

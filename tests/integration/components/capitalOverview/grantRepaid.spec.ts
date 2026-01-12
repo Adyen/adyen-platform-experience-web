@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--grant-repaid';
+const STORY_ID = 'mocked-capital-capital-overview--grant-repaid';
 
 test.describe('Grant: Repaid', () => {
     test('should render repaid grant', async ({ page }) => {
