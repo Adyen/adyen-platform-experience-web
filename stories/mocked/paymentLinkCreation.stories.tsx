@@ -6,7 +6,7 @@ import { PaymentLinkCreationComponentProps } from '../../src/components/types';
 import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../mocks/mock-server/payByLink';
 import { action } from 'storybook/actions';
 
-const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'Mocked/Pay By Link/Payment Link Creation' };
+const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'Mocked/Pay by Link/Payment Link Creation' };
 
 const fieldsConfig = {
     data: {

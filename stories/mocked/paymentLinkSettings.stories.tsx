@@ -8,7 +8,7 @@ import {
     PaymentLinkThemesMockedResponses,
 } from '../../mocks/mock-server/payByLink';
 
-const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'Mocked/Pay By Link/Payment Link Settings' };
+const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'Mocked/Pay by Link/Payment Link Settings' };
 
 export const Default: ElementStory<typeof PaymentLinkSettings> = {
     name: 'Default',

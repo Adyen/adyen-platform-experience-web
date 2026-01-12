@@ -5,7 +5,7 @@ import { PaymentLinkCreationMeta } from '../components/paymentLinkCreation';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 import { PaymentLinkCreationComponentProps } from '../../src/components/types';
 
-const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'API-connected/Pay By Link/Payment Link Creation' };
+const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'API-connected/Pay by Link/Payment Link Creation' };
 
 const fieldsConfig = {
     data: {
