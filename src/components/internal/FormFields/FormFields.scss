@@ -272,6 +272,10 @@
     border-color: style.token(color-outline-critical-hover);
 }
 
+.adyen-pe-input--invalid {
+    border-width: style.token(border-width-attention);
+}
+
 .adyen-pe-input::placeholder {
     color: style.token(color-label-secondary);
     font-weight: style.token(text-body-font-weight);
@@ -281,12 +285,12 @@
     padding-right: 30px;
 }
 
-.adyen-pe-input:active,
-.adyen-pe-input:focus,
-.adyen-pe-input--focus,
-.adyen-pe-input:active:hover,
-.adyen-pe-input:focus:hover,
-.adyen-pe-input--focus:hover {
+.adyen-pe-input:active:not(.adyen-pe-input--invalid),
+.adyen-pe-input:focus:not(.adyen-pe-input--invalid),
+.adyen-pe-input--focus:not(.adyen-pe-input--invalid),
+.adyen-pe-input:active:hover:not(.adyen-pe-input--invalid),
+.adyen-pe-input:focus:hover:not(.adyen-pe-input--invalid),
+.adyen-pe-input--focus:hover:not(.adyen-pe-input--invalid) {
     background: style.token(color-background-primary);
     outline: 1px solid style.token(color-outline-selected);
 }
