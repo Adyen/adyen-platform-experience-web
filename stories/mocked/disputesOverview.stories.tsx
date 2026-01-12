@@ -5,7 +5,7 @@ import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes Overview' };
+const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes/Disputes Overview' };
 
 export const Default: ElementStory<typeof DisputesOverview> = {
     name: 'Default',

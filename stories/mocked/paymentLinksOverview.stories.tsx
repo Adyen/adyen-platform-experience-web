@@ -4,7 +4,7 @@ import { Meta } from '@storybook/preact';
 import { PaymentLinksOverviewMeta } from '../components/paymentLinksOverview';
 import { PayByLinkOverviewMockedResponses } from '../../mocks/mock-server/payByLink';
 
-const meta: Meta<ElementProps<typeof PaymentLinksOverview>> = { ...PaymentLinksOverviewMeta, title: 'Mocked/Payment Links Overview' };
+const meta: Meta<ElementProps<typeof PaymentLinksOverview>> = { ...PaymentLinksOverviewMeta, title: 'Mocked/Pay By Link/Payment Links Overview' };
 
 export const Default: ElementStory<typeof PaymentLinksOverview> = {
     name: 'Default',

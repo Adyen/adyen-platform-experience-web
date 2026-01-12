@@ -4,7 +4,7 @@ import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { PaymentLinkSettingsMeta } from '../components/paymentLinkSettings';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'API-Connected/Payment Link Settings' };
+const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'API-connected/Pay By Link/Payment Link Settings' };
 
 export const Default: ElementStory<typeof PaymentLinkSettings, SessionControls> = {
     name: 'Default',
