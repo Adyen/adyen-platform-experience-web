@@ -115,6 +115,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
 
     const openRequirements = useCallback(() => {
         setIsShowingRequirements(true);
+        setRequirementsCheckedOnce(true);
     }, [setIsShowingRequirements]);
 
     const checkboxLabel = useMemo(() => {
