@@ -4,8 +4,8 @@ import { EMPTY_SETUP_LEGAL_ENTITY_OBJECT } from '../utils/constants';
 import { ElementProps, SetupControls } from '../utils/types';
 import { CapitalOffer } from '../../src';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { action } from '@storybook/addon-actions';
 import { enabledDisabledCallbackRadioControls } from '../utils/controls';
+import { action } from 'storybook/actions';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     argTypes: {

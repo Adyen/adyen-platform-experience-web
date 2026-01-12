@@ -1,4 +1,4 @@
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 export const enabledDisabledCallbackRadioControls = (actionName: string, optionsLabels?: [string, string]) => {
     return {
