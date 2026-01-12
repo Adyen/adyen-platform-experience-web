@@ -64,6 +64,10 @@
         justify-content: flex-end;
     }
 
+    ul {
+        margin: 0;
+    }
+
     &__list {
         display: flex;
         flex-direction: column;
@@ -71,6 +75,12 @@
         list-style: none;
         margin-top: style.token(spacer-080);
         padding: 0;
+    }
+
+    &--sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
     }
 
     &--sidebar-mobile {
