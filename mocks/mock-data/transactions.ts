@@ -1,5 +1,5 @@
 import type { IAmount, IPaymentMethod, ITransaction, ITransactionRefundDetails, ITransactionWithDetails } from '../../src';
-import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/TransactionsOverview/constants';
+import { TRANSACTION_DATE_RANGE_MAX_YEARS } from '../../src/components/external/Transactions/TransactionsOverview/constants';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 const getCreatedAt = (() => {

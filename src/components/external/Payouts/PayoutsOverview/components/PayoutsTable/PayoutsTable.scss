@@ -1,0 +1,10 @@
+@use '../../../../../../style';
+
+.adyen-pe-payouts-table {
+    &__net-payout {
+        &--strong {
+            font-size: style.token(text-title-font-size);
+            font-weight: style.token(text-body-strongest-font-weight);
+        }
+    }
+}

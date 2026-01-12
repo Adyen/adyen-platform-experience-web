@@ -1,16 +1,16 @@
-import UIElement from './external/UIElement/UIElement';
+import UIElement from './base/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
-import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
+import { TransactionsTableFields } from './external/Transactions/TransactionsOverview/components/TransactionsTable/types';
 import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
-import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
+import { ReportsTableFields } from './external/Reports/ReportsOverview/components/ReportsTable/ReportsTable';
 import { StringWithAutocompleteOptions } from '../utils/types';
-import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
+import { PayoutsTableFields } from './external/Payouts/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
-import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
-import { PaymentLinkCreationFormValues } from './external/PaymentLinkCreation/components/types';
-import { StoreIds } from './external/PaymentLinksOverview/types';
+import { DisputesTableFields } from './external/Disputes/DisputesOverview/components/DisputesTable/DisputesTable';
+import { PaymentLinkCreationFormValues } from './external/PayByLink/PaymentLinkCreation/components/types';
+import { StoreIds } from './external/PayByLink/PaymentLinksOverview/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',

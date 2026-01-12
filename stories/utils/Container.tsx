@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/preact';
 import { AdyenPlatformExperience } from '../../src';
-import BaseElement from '../../src/components/external/BaseElement';
+import BaseElement from '../../src/components/Base/BaseElement';
 import sessionRequest from './sessionRequest';
 import './styles.scss';
 

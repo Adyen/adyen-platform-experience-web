@@ -1,0 +1,46 @@
+@use '../../../../../../style';
+//stylelint-disable no-invalid-position-at-import-rule
+@import '../../../../../../style/breakpoints';
+
+.adyen-pe-summary-item {
+    align-items: center;
+    display: flex;
+    gap: style.token(spacer-080);
+    justify-content: space-between;
+    width: 100%;
+
+    @include adyen-pe-screen-sm-and-up {
+        gap: style.token(spacer-120);
+    }
+
+    &--body {
+        border-top: style.token(border-width-s) solid style.token(color-outline-disabled);
+        margin-top: style.token(spacer-040);
+        padding-top: style.token(spacer-040);
+    }
+
+    &__label-container {
+        display: inline-block;
+        width: fit-content;
+
+        &--loading {
+            display: block;
+        }
+    }
+
+    &__label {
+        color: style.token(color-label-secondary);
+        width: fit-content;
+    }
+
+    &__amount {
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-strongest-font-weight);
+        white-space: nowrap;
+    }
+
+    &__placeholder {
+        display: inline-block;
+        height: style.token(spacer-060);
+    }
+}

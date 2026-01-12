@@ -1,0 +1,11 @@
+@use '../../../../../internal/DataOverviewDisplay/styles' as *;
+@use '../../../../../../style';
+
+.adyen-pe-reports-overview {
+    @include adyen-pe-data-overview;
+
+    .adyen-pe-data-overview-header__description {
+        color: style.token(color-label-primary);
+        margin-bottom: style.token(spacer-030);
+    }
+}

@@ -1,7 +1,7 @@
 import type { CoreOptions, onErrorHandler } from './types';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import { AuthSession } from './ConfigContext/session/AuthSession';
-import BaseElement from '../components/external/BaseElement';
+import BaseElement from '../components/base/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';

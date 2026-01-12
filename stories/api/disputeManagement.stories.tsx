@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { DisputeManagement } from '../../src';
-import { DisputeManagementMeta } from '../components/disputeManagement';
+import { DisputeManagementMeta } from '../components/Disputes/disputeManagement';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 

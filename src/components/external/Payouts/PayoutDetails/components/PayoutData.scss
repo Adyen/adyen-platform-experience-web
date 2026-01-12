@@ -1,0 +1,104 @@
+@use '../../../../../style';
+
+.adyen-pe-payout-data {
+    &__title-container {
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
+    &__title {
+        display: grid;
+        gap: style.token(spacer-020);
+        padding-bottom: style.token(spacer-090);
+
+        &--ba-id {
+            color: style.token(color-label-secondary);
+        }
+
+        &--with-extra-details {
+            padding-bottom: style.token(spacer-070);
+        }
+
+        .adyen-pe-payout-data__content--section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            &:last-child {
+                padding-top: style.token(spacer-040);
+            }
+        }
+    }
+
+    &__content {
+        background-color: style.token(color-background-secondary);
+        margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
+        padding: style.token(spacer-040) var(--adyen-pe-data-details-padding);
+
+        .adyen-pe-card__header {
+            background-color: style.token(color-background-secondary);
+        }
+
+        &--card-title {
+            color: style.token(color-label-secondary);
+            padding: style.token(spacer-000);
+        }
+
+        &--section {
+            &-amount {
+                display: flex;
+                justify-content: space-between;
+                padding: style.token(spacer-070) 0;
+            }
+        }
+
+        &--card:not(:first-child) {
+            margin-top: style.token(spacer-060);
+        }
+    }
+
+    .adyen-pe-structured-list {
+        &__item {
+            padding: style.token(spacer-040) style.token(spacer-070);
+        }
+    }
+
+    &--unpaid-amount {
+        border-radius: style.token(border-radius-xl);
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: style.token(spacer-020);
+        margin-top: style.token(spacer-080);
+        outline: style.token(color-outline-tertiary) 1px dashed;
+        padding: style.token(spacer-040) style.token(spacer-070);
+    }
+
+    &__extra-details {
+        margin-bottom: style.token(spacer-090);
+
+        .adyen-pe-structured-list__item {
+            padding: style.token(spacer-000);
+        }
+    }
+
+    &__extra-details-label {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+    }
+
+    &__extra-details-icon {
+        img {
+            width: style.token(spacer-070);
+        }
+    }
+
+    &__button-actions {
+        display: flex;
+        justify-content: end;
+        margin-top: style.token(spacer-080);
+    }
+}

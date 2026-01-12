@@ -1,0 +1,30 @@
+@use '../../../../../../style';
+
+.adyen-pe-reports-table {
+    &-alert {
+        border: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    &-date-report-type {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+
+        &--date {
+            color: style.token(color-label-secondary);
+        }
+    }
+
+    .adyen-pe-download {
+        &__error {
+            align-items: center;
+            color: style.token(color-background-warning-strong);
+            display: flex;
+            padding-left: style.token(spacer-060);
+        }
+    }
+}

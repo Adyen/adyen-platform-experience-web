@@ -1,0 +1,97 @@
+/* stylelint-disable selector-no-qualifying-type */
+@use '../../../../../../style';
+
+.adyen-pe-transactions-export {
+    margin-bottom: auto;
+    margin-left: auto;
+    padding-top: style.token(spacer-010);
+}
+
+.adyen-pe-transactions-export__button {
+    .adyen-pe-filter-button__label {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+    }
+}
+
+.adyen-pe-transactions-export__popover {
+    $adyen-pe-self: &;
+
+    min-width: calc(320px);
+    overflow: hidden;
+    padding: 0 style.token(spacer-070) style.token(spacer-060);
+
+    &-sections {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        margin: style.token(spacer-060) 0;
+    }
+
+    &-section {
+        width: 320px;
+
+        &--filters {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: style.token(spacer-020);
+            padding-bottom: style.token(spacer-040);
+            position: relative;
+
+            &::after {
+                border-bottom: style.token(border-width-s) solid style.token(color-separator-primary);
+                content: '';
+                inset: auto calc(#{style.token(spacer-080)} * -1) calc(#{style.token(spacer-020)} * -1);
+                margin: style.token(spacer-020) 0;
+                position: absolute;
+            }
+        }
+
+        &--columns {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: calc(#{style.token(spacer-040)} * -1);
+        }
+    }
+
+    &-section-title + &-section-content {
+        margin: style.token(spacer-040) 0;
+    }
+
+    &-column {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-040) 0;
+        width: 100%;
+
+        .adyen-pe-toggle-switch__label {
+            flex: 1 0 0;
+        }
+
+        &--all {
+            position: relative;
+
+            &::before {
+                background: style.token(color-background-secondary);
+                border-radius: style.token(border-radius-m);
+                content: '';
+                inset: 0 calc(#{style.token(spacer-040)} * -1);
+                position: absolute;
+                z-index: -1;
+            }
+        }
+    }
+
+    &-actions {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &-actions-alert {
+        padding: style.token(spacer-050);
+    }
+}

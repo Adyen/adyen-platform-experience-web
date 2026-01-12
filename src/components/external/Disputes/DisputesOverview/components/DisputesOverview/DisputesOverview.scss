@@ -1,0 +1,27 @@
+@use '../../../../../mixins';
+@use '../../../../../../style';
+
+.adyen-pe-disputes-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &--xs {
+        gap: style.token(spacer-080);
+
+        .adyen-pe-header {
+            align-items: center;
+        }
+
+        .adyen-pe-data-grid__cell {
+            padding-bottom: style.token(spacer-060);
+            padding-top: style.token(spacer-060);
+        }
+    }
+
+    &__tabs-container {
+        .adyen-pe-tabpanels {
+            display: none;
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import { TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
-import { TransactionsOverviewMeta } from '../components/transactionsOverview';
+import { TransactionsOverviewMeta } from '../components/Transactions/transactionsOverview';
 import { Meta } from '@storybook/preact';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = {

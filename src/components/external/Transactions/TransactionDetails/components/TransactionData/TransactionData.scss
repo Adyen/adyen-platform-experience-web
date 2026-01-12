@@ -1,0 +1,275 @@
+@use '../../../../../../style';
+
+.adyen-pe-transaction-data {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    &__status-box {
+        margin-top: style.token(spacer-060);
+    }
+
+    .adyen-pe-timeline-item__content {
+        align-items: initial;
+
+        .adyen-pe-structured-list {
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-020);
+        }
+    }
+
+    &__timeline-label {
+        color: style.token(color-label-secondary);
+    }
+
+    &__timeline-value {
+        color: style.token(color-label-primary);
+    }
+
+    &__action-bar {
+        flex-direction: row;
+        width: 100%;
+
+        .adyen-pe-button__label {
+            gap: style.token(spacer-040);
+        }
+
+        .adyen-pe-icon {
+            font-size: style.$adyen-pe-svg-icon-size-base;
+        }
+    }
+
+    &__list {
+        .adyen-pe-structured-list {
+            &__label,
+            &__content {
+                padding-bottom: style.token(spacer-030);
+                padding-top: style.token(spacer-030);
+            }
+        }
+    }
+
+    &__list-icon-value {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+
+        .adyen-pe-data-grid__icon-container {
+            width: style.token(spacer-070);
+        }
+    }
+
+    &__amount {
+        color: style.token(color-label-primary);
+        font-size: style.token(text-title-l-font-size);
+        font-weight: style.token(text-title-l-font-weight);
+        line-height: style.token(text-title-l-line-height);
+    }
+
+    &__amount--error {
+        color: style.token(color-label-critical);
+    }
+
+    &__amount--pending {
+        color: style.token(color-label-secondary);
+    }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+        line-height: 1;
+    }
+
+    &__payment-method-detail {
+        font-weight: style.token(text-caption-stronger-font-weight);
+    }
+
+    &__payment-method-logo-container {
+        height: style.token(spacer-090);
+        width: style.token(spacer-100);
+    }
+
+    &__payment-method-logo {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    &__tags {
+        display: flex;
+        gap: style.token(spacer-020);
+    }
+
+    &__input-container {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        position: relative;
+        width: 100%;
+
+        > label,
+        > .adyen-pe-dropdown {
+            display: flex;
+            width: 100%;
+        }
+
+        &--short {
+            > label,
+            > .adyen-pe-dropdown {
+                width: 62.5%;
+            }
+        }
+
+        .adyen-pe-tag,
+        .adyen-pe-input,
+        .adyen-pe-dropdown__button {
+            font-size: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+        }
+
+        .adyen-pe-tag {
+            margin: style.token(spacer-020);
+            padding: style.token(spacer-020) style.token(spacer-030);
+        }
+    }
+
+    &__input-container--text-input {
+        > label {
+            background: style.token(color-background-primary);
+            border: style.token(border-width-s) solid style.token(color-outline-secondary);
+            border-radius: style.token(border-radius-m);
+            outline: none;
+            overflow: hidden;
+
+            &:focus-within,
+            &:focus-within:hover {
+                border-color: style.token(color-outline-primary-active);
+                box-shadow: none !important;
+                outline: style.token(border-width-s) solid style.token(color-outline-primary-active);
+            }
+        }
+
+        .adyen-pe-input {
+            &,
+            &:active,
+            &:focus,
+            &:hover,
+            &:active:hover,
+            &:focus:hover {
+                background: transparent;
+                border-style: none;
+                flex: 1;
+                height: auto;
+                outline: none;
+                resize: none;
+            }
+
+            &:disabled {
+                color: style.token(color-label-disabled);
+            }
+
+            &-wrapper {
+                flex: 1;
+            }
+        }
+    }
+
+    &__input-container--with-error {
+        > label {
+            &,
+            &:focus-within,
+            &:focus-within:hover {
+                border-color: style.token(color-outline-critical);
+                outline-color: style.token(color-outline-critical);
+            }
+        }
+
+        .adyen-pe-input__refund-invalid-value,
+        .adyen-pe-input__invalid-value {
+            align-items: center;
+            color: style.token(color-label-critical);
+            display: flex;
+            gap: style.token(spacer-040);
+            margin-top: style.token(spacer-040);
+        }
+
+        .adyen-pe-icon {
+            font-size: style.$adyen-pe-svg-icon-size-base;
+
+            svg {
+                display: block;
+            }
+        }
+    }
+
+    &__input {
+        $adyen-pe-self: &;
+        $adyen-pe-textarea: #{$adyen-pe-self}--textarea;
+
+        &#{$adyen-pe-textarea} {
+            padding: style.token(spacer-040) style.token(spacer-060);
+        }
+    }
+
+    &__input-head {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: style.token(spacer-030);
+    }
+
+    &__input-chars-counter {
+        color: style.token(color-label-secondary);
+    }
+
+    &__label {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+    }
+
+    &__refund-statuses-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &__refund {
+        &-response {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            gap: style.token(spacer-070);
+            padding: style.token(spacer-100) 0;
+            text-align: center;
+        }
+
+        &-response-icon {
+            height: style.token(spacer-100);
+            width: style.token(spacer-100);
+
+            &--success {
+                color: style.token(color-background-success-strong);
+            }
+
+            &--error {
+                color: style.token(color-background-critical-strong);
+            }
+
+            svg {
+                height: inherit;
+                width: inherit;
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import { DetailsWithExtraData } from '../../external';
 import { DetailsDataCustomizationObject } from '../../types';
 import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
-import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
+import { PayoutDetailsCustomization } from '../../external/Payouts/PayoutDetails/types';
 
 export interface PayoutDetailsWithIdProps {
     id: string;

@@ -1,0 +1,40 @@
+@use '../../../../../../style';
+
+.adyen-pe-grant-repayment-details {
+    gap: style.token(spacer-090);
+
+    &__instruction-list {
+        list-style: inherit;
+        padding-left: style.token(spacer-090);
+    }
+
+    &__notice {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        padding-bottom: style.token(spacer-070);
+    }
+
+    &__verified-bank-account-details {
+        color: style.token(color-label-secondary);
+    }
+
+    &__repayment-account {
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(spacer-040);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        padding: style.token(spacer-060) style.token(spacer-080);
+        width: 100%;
+    }
+
+    &__transfer-instrument-item {
+        list-style: none;
+        padding: style.token(spacer-030) 0;
+    }
+
+    &__transfer-instrument-list {
+        padding-left: style.token(spacer-060);
+    }
+}
