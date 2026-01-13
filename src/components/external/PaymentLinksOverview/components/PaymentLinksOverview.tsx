@@ -361,7 +361,7 @@ export const PaymentLinksOverview = ({
                     {isMobileContainer && createPBLPaymentLink && (
                         <Button
                             iconButton
-                            aria-label={i18n.get('payByLink.overview.actions.creation.a11y.label')}
+                            aria-label={i18n.get('payByLink.overview.list.actions.createPaymentLink')}
                             className={ACTION_BUTTON_MOBILE_CLASS}
                             onClick={openPaymentLinkModal}
                         >
