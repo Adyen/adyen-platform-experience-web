@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-transaction-details--default';
+const STORY_ID = 'mocked-transactions-transaction-details--default';
 
 test.describe('Default', () => {
     const expectSamePaymentStatusBoxRendering = async (page: Page) => {

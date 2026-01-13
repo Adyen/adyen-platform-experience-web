@@ -4,7 +4,7 @@ import { TransactionDetailsMeta } from '../components/transactionDetails';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'API-connected/Transaction Details' };
+const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'API-connected/Transactions/Transaction Details' };
 
 export const Default: ElementStory<typeof TransactionDetails, SessionControls> = {
     name: 'Default',

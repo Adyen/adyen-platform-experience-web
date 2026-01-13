@@ -4,7 +4,10 @@ import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 import { TransactionsOverviewMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'API-connected/Transactions Overview' };
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
+    ...TransactionsOverviewMeta,
+    title: 'API-connected/Transactions/Transactions Overview',
+};
 
 export const Default: ElementStory<typeof TransactionsOverview, SessionControls> = {
     name: 'Default',
