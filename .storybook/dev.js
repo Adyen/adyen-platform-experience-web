@@ -10,7 +10,7 @@ const envPath = existsSync(resolve(rootDir, 'envs/.env')) ? resolve(rootDir, 'en
 
 // Parse env file manually to avoid dotenv v17 stdout banner
 const envContent = readFileSync(envPath, 'utf8');
-const match = envContent.match(/^\s*PLAYGROUND_PORT\s*=\s*(\d+)/m);
+const match = envContent.match(/^\s*PLAYGROUND_PORT\s*=\s*(\d+)\s*(?:#.*)?$/m);
 const port = match ? match[1] : '6006';
 
 const result = spawnSync('npx', ['storybook', 'dev', '-p', port, '--no-open'], {
