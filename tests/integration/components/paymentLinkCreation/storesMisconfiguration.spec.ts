@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-payment-link-creation--stores-misconfiguration';
+const STORY_ID = 'mocked-pay-by-link-payment-link-creation--stores-misconfiguration';
 
 test.describe('Payment link creation - Stores misconfiguration', () => {
     test('should display account configuration problem alert when there are no stores', async ({ page }) => {

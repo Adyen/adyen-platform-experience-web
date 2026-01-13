@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 import { waitFor } from '@testing-library/preact';
 
-const STORY_ID = 'mocked-capital-overview--grant-written-off';
+const STORY_ID = 'mocked-capital-capital-overview--grant-written-off';
 
 test.describe('Grant: Written off', () => {
     test.beforeEach(async ({ page }) => {

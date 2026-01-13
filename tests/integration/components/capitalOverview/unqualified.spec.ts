@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--unqualified';
+const STORY_ID = 'mocked-capital-capital-overview--unqualified';
 
 test.describe('Unqualified', () => {
     test('should render unqualified screen', async ({ page }) => {

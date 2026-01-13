@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--server-error';
+const STORY_ID = 'mocked-disputes-dispute-management--server-error';
 
 test.describe('Error - Server Error', () => {
     test('should render an error message', async ({ page }) => {

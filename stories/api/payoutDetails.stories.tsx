@@ -4,7 +4,7 @@ import { PayoutDetailsMeta } from '../components/payoutDetails';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'API-connected/Payout Details' };
+const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'API-connected/Payouts/Payout Details' };
 
 export const Default: ElementStory<typeof PayoutDetails, SessionControls> = {
     name: 'Default',
