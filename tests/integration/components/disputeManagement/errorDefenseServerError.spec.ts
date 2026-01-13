@@ -3,7 +3,7 @@ import { goToStory } from '../../../utils/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const STORY_ID = 'mocked-dispute-management--defense-server-error';
+const STORY_ID = 'mocked-disputes-dispute-management--defense-server-error';
 
 test.describe('Error - Defense server error', () => {
     test('should render an error message', async ({ page }) => {
