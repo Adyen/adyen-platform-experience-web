@@ -359,7 +359,12 @@ export const PaymentLinksOverview = ({
             <Header hideTitle={hideTitle} titleKey="payByLink.overview.title">
                 <div className={BASE_ACTIONS_CLASS}>
                     {isMobileContainer && createPBLPaymentLink && (
-                        <Button iconButton className={ACTION_BUTTON_MOBILE_CLASS} onClick={openPaymentLinkModal}>
+                        <Button
+                            iconButton
+                            aria-label={i18n.get('payByLink.overview.actions.creation.a11y.label')}
+                            className={ACTION_BUTTON_MOBILE_CLASS}
+                            onClick={openPaymentLinkModal}
+                        >
                             <Icon name={'plus'} />
                         </Button>
                     )}

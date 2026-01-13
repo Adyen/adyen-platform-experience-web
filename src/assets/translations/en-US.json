@@ -875,6 +875,7 @@
     "payByLink.details.tabs.linkInformation": "Link information",
     "payByLink.details.tabs.shopperInformation": "Shopper information",
     "payByLink.details.title": "Payment link details",
+    "payByLink.overview.actions.creation.a11y.label": "Create payment link",
     "payByLink.overview.actions.settings.a11y.label": "Open link settings",
     "payByLink.overview.common.actionNeeded.expiresAt": "Expires: %{date}",
     "payByLink.overview.common.actionNeeded.expiresDays": "%{days} days to expire (%{date})",
