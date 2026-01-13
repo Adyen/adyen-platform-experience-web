@@ -2,9 +2,9 @@ import { Meta } from '@storybook/preact';
 import { PaymentLinkCreation } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { PaymentLinkCreationMeta } from '../components/paymentLinkCreation';
-import { action } from '@storybook/addon-actions';
 import { PaymentLinkCreationComponentProps } from '../../src/components/types';
 import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../mocks/mock-server/payByLink';
+import { action } from 'storybook/actions';
 
 const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'Mocked/Payment Link Creation' };
 
