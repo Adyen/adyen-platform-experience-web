@@ -19,22 +19,22 @@ export interface FormStepConfig {
 }
 
 export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number): void => {
-    const errorElements = errorFields.map(field => document.querySelector(`[name="${field}"]`)).filter((el): el is Element => el !== null);
-
-    const firstElement = errorElements.sort((a, b) => {
-        const rectA = a.getBoundingClientRect();
-        const rectB = b.getBoundingClientRect();
-        return rectA.top - rectB.top;
-    })[0];
+    const firstElement = errorFields
+        .map(field => document.querySelector<HTMLElement>(`[name="${field}"]`))
+        .filter((el): el is HTMLElement => el !== null)
+        .reduce<HTMLElement | null>((topmost, el) => {
+            if (!topmost) return el;
+            return el.getBoundingClientRect().top < topmost.getBoundingClientRect().top ? el : topmost;
+        }, null);
 
     if (!firstElement) return;
 
     const rect = firstElement.getBoundingClientRect();
-    const isInViewport = rect.top >= visibilityOffset && rect.bottom <= window.innerHeight;
+    const isVisible = rect.top >= visibilityOffset && rect.bottom <= window.innerHeight;
 
-    if (!isInViewport) {
-        const top = Math.max(0, window.scrollY + rect.top - visibilityOffset);
-        window.scrollTo({ top, behavior: 'smooth' });
+    if (!isVisible) {
+        firstElement.style.scrollMarginTop = `${visibilityOffset}px`;
+        firstElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 };
 

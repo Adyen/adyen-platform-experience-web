@@ -66,7 +66,6 @@ export const PaymentLinkCreationFormContainer = ({
     embeddedInOverview,
 }: PaymentLinkCreationFormContainerProps) => {
     const [showFormValidationError, setShowFormValidationError] = useState<boolean>(false);
-    const containerRef = useRef<HTMLDivElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
@@ -116,13 +115,6 @@ export const PaymentLinkCreationFormContainer = ({
         },
         [isLastStep, nextStep, validateStep, wizardForm.formState.errors, isXsAndDownContainer]
     );
-
-    useEffect(() => {
-        // Scroll to top of the form on each step change
-        if (isXsAndDownContainer) {
-            containerRef.current?.scrollIntoView({ block: 'start' });
-        }
-    }, [currentStep, isXsAndDownContainer]);
 
     const onClickStep = useCallback(
         (index: number) => {
@@ -300,7 +292,7 @@ export const PaymentLinkCreationFormContainer = ({
     }
 
     return (
-        <div className="adyen-pe-payment-link-creation-form__component" ref={containerRef}>
+        <div className="adyen-pe-payment-link-creation-form__component">
             <div className="adyen-pe-payment-link-creation-form__header" ref={headerRef}>
                 <Typography variant={TypographyVariant.SUBTITLE} stronger>
                     {i18n.get('payByLink.creation.form.title')}

@@ -71,6 +71,13 @@ export const ShopperPhoneField = () => {
 
     const isRequired = useMemo(() => fieldsConfig['telephoneNumber']?.required, [fieldsConfig]);
 
+    const shouldHideField = useMemo(() => {
+        const hasDataset = (phonesDatasetQuery.data?.length ?? 0) > 0;
+        const hasValue = !!displayValue || !!currentValue;
+
+        return !phonesDatasetQuery.isFetching && !hasDataset && !isRequired && !hasValue;
+    }, [phonesDatasetQuery.data, phonesDatasetQuery.isFetching, isRequired, displayValue, currentValue]);
+
     const validate = useCallback(() => {
         if (!isRequired && !phoneCode && !phoneNumberWithoutPhoneCode) return { valid: true };
         if (!phoneCode) {
@@ -82,6 +89,8 @@ export const ShopperPhoneField = () => {
         }
         return { valid: true };
     }, [phoneCode, phoneNumberWithoutPhoneCode]);
+
+    if (shouldHideField) return null;
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name="telephoneNumber">
