@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--new-offer';
+const STORY_ID = 'mocked-capital-capital-overview--new-offer';
 
 const requestFunds = async (page: Page) => {
     await page.getByRole('button', { name: 'See new offer' }).click();

@@ -4,7 +4,7 @@ import { Meta } from '@storybook/preact';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payout Details' };
+const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payouts/Payout Details' };
 
 export const Default: ElementStory<typeof PayoutDetails> = {
     name: 'Default',

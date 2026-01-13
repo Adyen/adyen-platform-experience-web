@@ -4,7 +4,7 @@ import { CapitalOverview } from '../../src';
 import { CapitalOverviewMeta } from '../components/capitalOverview';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'API-connected/Capital Overview' };
+const meta: Meta<ElementProps<typeof CapitalOverview>> = { ...CapitalOverviewMeta, title: 'API-connected/Capital/Capital Overview' };
 
 export const Default: ElementStory<typeof CapitalOverview, SessionControls> = {
     name: 'Default',
