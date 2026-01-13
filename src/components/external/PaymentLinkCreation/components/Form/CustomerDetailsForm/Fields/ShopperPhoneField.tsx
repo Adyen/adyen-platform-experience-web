@@ -76,7 +76,7 @@ export const ShopperPhoneField = () => {
         const hasValue = !!displayValue || !!currentValue;
 
         return !phonesDatasetQuery.isFetching && !hasDataset && !isRequired && !hasValue;
-    }, [phonesDatasetQuery.data, phonesDatasetQuery.isFetching, isRequired, displayValue, currentValue]);
+    }, [phonesDatasetQuery.data?.length, phonesDatasetQuery.isFetching, isRequired, displayValue, currentValue]);
 
     const validate = useCallback(() => {
         if (!isRequired && !phoneCode && !phoneNumberWithoutPhoneCode) return { valid: true };
