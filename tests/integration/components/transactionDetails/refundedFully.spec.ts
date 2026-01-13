@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-transaction-details--refunded-fully';
+const STORY_ID = 'mocked-transactions-transaction-details--refunded-fully';
 
 test.describe('Refunded - Fully', () => {
     test.beforeEach(async ({ page }) => {
