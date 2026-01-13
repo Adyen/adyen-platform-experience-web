@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-disputes-overview--empty-list';
+const STORY_ID = 'mocked-disputes-disputes-overview--empty-list';
 
 test.describe('Empty list', () => {
     test('should render a message for an empty list response', async ({ page }) => {

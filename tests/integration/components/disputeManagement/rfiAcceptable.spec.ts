@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--rfi-acceptable';
+const STORY_ID = 'mocked-disputes-dispute-management--rfi-acceptable';
 
 test.describe('Request for information - Acceptable', () => {
     test.beforeEach(async ({ page }) => {

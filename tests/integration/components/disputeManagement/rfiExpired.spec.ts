@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--rfi-expired';
+const STORY_ID = 'mocked-disputes-dispute-management--rfi-expired';
 
 test.describe('Request for information - Expired', () => {
     test.beforeEach(async ({ page }) => {

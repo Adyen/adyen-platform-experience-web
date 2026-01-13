@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--unsupported-region';
+const STORY_ID = 'mocked-capital-capital-overview--unsupported-region';
 
 test.describe('Unsupported region', () => {
     test('should render unsupported region screen', async ({ page }) => {

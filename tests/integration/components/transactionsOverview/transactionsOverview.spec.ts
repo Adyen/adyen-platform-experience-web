@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
 
-const COMPONENT_PREFIX = 'mocked-transactions-overview';
+const COMPONENT_PREFIX = 'mocked-transactions-transactions-overview';
 
 const test = base.extend<{
     transactionsOverviewPage: TransactionsOverviewPage;

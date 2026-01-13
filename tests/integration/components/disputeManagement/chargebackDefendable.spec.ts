@@ -3,7 +3,7 @@ import { goToStory } from '../../../utils/utils';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-const STORY_ID = 'mocked-dispute-management--chargeback-defendable';
+const STORY_ID = 'mocked-disputes-dispute-management--chargeback-defendable';
 
 test.describe('Chargeback - Defendable', () => {
     test('should render button to accept and alert for defending the chargeback', async ({ page }) => {

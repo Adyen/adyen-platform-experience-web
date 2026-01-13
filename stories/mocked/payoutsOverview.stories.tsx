@@ -8,7 +8,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts Overview' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview> = {
     name: 'Default',
