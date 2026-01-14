@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import useTransactionsList from '../../hooks/useTransactionsList';
-import useTransactionsTotals from '../../hooks/useTransactionsTotals';
+import useTransactionsTotals, { GetQueryParams } from '../../hooks/useTransactionsTotals';
 import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import TransactionsOverviewList from './TransactionsOverviewList';
@@ -16,6 +16,13 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { compareTransactionsFilters } from '../utils';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
+
+const getTransactionsListTotalsQuery: GetQueryParams = allQueryParams => allQueryParams;
+
+const getTransactionsInsightsTotalsQuery: GetQueryParams = allQueryParams => {
+    const { balanceAccountId, createdSince, createdUntil } = allQueryParams;
+    return { balanceAccountId, createdSince, createdUntil };
+};
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -58,10 +65,19 @@ export const TransactionsOverview = ({
         preferredLimit,
     });
 
-    const transactionsTotalsResult = useTransactionsTotals({
+    const transactionsListTotalsResult = useTransactionsTotals({
         currencies: accountBalancesResult.currencies,
         fetchEnabled: !!balanceAccount?.id,
         loadingBalances: accountBalancesResult.isWaiting,
+        getQueryParams: getTransactionsListTotalsQuery,
+        filters,
+    });
+
+    const transactionsInsightsTotalsResult = useTransactionsTotals({
+        currencies: accountBalancesResult.currencies,
+        fetchEnabled: !!balanceAccount?.id,
+        loadingBalances: accountBalancesResult.isWaiting,
+        getQueryParams: getTransactionsInsightsTotalsQuery,
         filters,
     });
 
@@ -127,10 +143,10 @@ export const TransactionsOverview = ({
                     onRecordSelection={onRecordSelection}
                     showDetails={showDetails}
                     transactionsListResult={transactionsListResult}
-                    transactionsTotalsResult={transactionsTotalsResult}
+                    transactionsTotalsResult={transactionsListTotalsResult}
                 />
             ) : (
-                <TransactionsOverviewInsights currency={insightsCurrency} transactionsTotalsResult={transactionsTotalsResult} />
+                <TransactionsOverviewInsights currency={insightsCurrency} transactionsTotalsResult={transactionsInsightsTotalsResult} />
             )}
         </div>
     );
