@@ -562,12 +562,11 @@ const getTransactionJson = (() => {
             currentHandlersIndex = handlersIndex;
             refundedTransactions.clear();
         }
-        if (refundedTransactions.has(transaction.id)) {
-            const { refundDetails, ...transactionDetails } = transaction;
+        if (refundedTransactions.has(transaction.id) && transaction.refundDetails) {
             return HttpResponse.json({
-                ...transactionDetails,
+                ...transaction,
                 refundDetails: {
-                    ...refundDetails,
+                    ...transaction.refundDetails,
                     refundLocked: true,
                 },
             });
