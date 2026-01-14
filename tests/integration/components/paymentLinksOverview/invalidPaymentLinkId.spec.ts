@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-payment-links-overview--default';
+const STORY_ID = 'mocked-pay-by-link-payment-links-overview--default';
 
 test.describe('PayByLinkOverview - Invalid Payment Link ID', () => {
     test('should display empty list message (not an error) when filtering by paymentLinkId with invalid characters', async ({ page }) => {

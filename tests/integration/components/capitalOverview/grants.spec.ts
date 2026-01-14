@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--grants';
+const STORY_ID = 'mocked-capital-capital-overview--grants';
 
 test.describe('Grants', () => {
     test.beforeEach(async ({ page }) => {

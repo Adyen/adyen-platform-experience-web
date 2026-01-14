@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-transaction-details--partial-refund';
+const STORY_ID = 'mocked-transactions-transaction-details--partial-refund';
 
 test.describe('Partial refund', () => {
     const expectExactRefundDetailsRendering = async (page: Page) => {

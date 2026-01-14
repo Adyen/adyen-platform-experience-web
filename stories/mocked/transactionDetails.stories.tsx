@@ -5,7 +5,7 @@ import { TRANSACTION_DETAILS_HANDLERS } from '../../mocks/mock-server/transactio
 import { TransactionDetailsMeta } from '../components/transactionDetails';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transaction Details' };
+const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transactions/Transaction Details' };
 const sharedArgs = { id: '4B7N9Q2Y6R1W5M8T', mockedApi: true };
 
 export const Default: ElementStory<typeof TransactionDetails> = {

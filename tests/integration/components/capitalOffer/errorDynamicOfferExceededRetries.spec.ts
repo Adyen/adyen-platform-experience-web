@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-offer--error-dynamic-offer-exceeded-retries';
+const STORY_ID = 'mocked-capital-capital-offer--error-dynamic-offer-exceeded-retries';
 
 test.describe('Error - Dynamic offer - Exceeded retries', () => {
     test.beforeEach(async ({ page }) => {

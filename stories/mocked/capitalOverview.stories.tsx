@@ -6,7 +6,10 @@ import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';
 import { CapitalOverviewMockedResponses } from '../../mocks/mock-server/capital';
 import { useEffect } from 'preact/compat';
 
-const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = { ...CapitalOverviewWithSetupMeta, title: 'Mocked/Capital Overview' };
+const meta: Meta<ElementProps<typeof CapitalOverview> & SetupControls> = {
+    ...CapitalOverviewWithSetupMeta,
+    title: 'Mocked/Capital/Capital Overview',
+};
 
 export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
     name: 'Unsupported region',

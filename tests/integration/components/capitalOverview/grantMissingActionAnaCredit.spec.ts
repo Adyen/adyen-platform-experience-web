@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--grant-missing-action-anacredit';
+const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-anacredit';
 
 test.describe('Grant: Missing Action Anacredit', () => {
     test.beforeEach(async ({ page }) => {

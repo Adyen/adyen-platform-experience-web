@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--error-missing-actions-generic';
+const STORY_ID = 'mocked-capital-capital-overview--error-missing-actions-generic';
 
 test.describe('Error - Missing actions - Generic', () => {
     test('should render an error message when "Go to Terms & Conditions" button in clicked', async ({ page }) => {

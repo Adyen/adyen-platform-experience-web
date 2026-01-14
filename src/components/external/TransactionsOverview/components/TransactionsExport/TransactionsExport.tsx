@@ -213,37 +213,35 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         if (!(popoverOpenRef.current = popoverOpen)) {
             setExportColumns(DEFAULT_EXPORT_COLUMNS);
         }
-    }, [popoverOpen, userEvents]);
+    }, [popoverOpen]);
 
     useEffect(() => {
         if (exportStarted) {
             setExportStarted(false);
 
-            if (isFetching) {
-                let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
-                let exportingDefaultColumns = true;
-                let exportingAllColumns = true;
+            let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
+            let exportingOnlyDefaultFields = true;
+            let exportingAllFields = true;
 
-                EXPORT_COLUMNS.forEach(column => {
-                    const isExportedColumn = exportColumns.includes(column);
-                    const isDefaultColumn = DEFAULT_EXPORT_COLUMNS.includes(column);
-                    exportingDefaultColumns &&= isExportedColumn ? isDefaultColumn : !isDefaultColumn;
-                    exportingAllColumns &&= isExportedColumn;
-                });
+            EXPORT_COLUMNS.forEach(column => {
+                const isExportedField = exportColumns.includes(column);
+                const isDefaultField = DEFAULT_EXPORT_COLUMNS.includes(column);
+                exportingOnlyDefaultFields &&= isExportedField ? isDefaultField : !isDefaultField;
+                exportingAllFields &&= isExportedField;
+            });
 
-                if (exportingAllColumns) {
-                    exportedFields = 'All';
-                } else if (exportingDefaultColumns) {
-                    exportedFields = 'Default';
-                }
-
-                userEvents.addEvent?.('Completed export', {
-                    ...sharedAnalyticsEventProperties,
-                    exportedFields,
-                });
+            if (exportingAllFields) {
+                exportedFields = 'All';
+            } else if (exportingOnlyDefaultFields) {
+                exportedFields = 'Default';
             }
+
+            userEvents.addEvent?.('Completed export', {
+                ...sharedAnalyticsEventProperties,
+                exportedFields,
+            });
         }
-    }, [exportColumns, exportStarted, dismissPopover, isFetching, userEvents]);
+    }, [exportColumns, exportStarted, userEvents]);
 
     useEffect(() => {
         (function attemptFocusCapture() {
