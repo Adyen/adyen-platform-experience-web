@@ -4,7 +4,7 @@ import { DisputeManagementMeta } from '../components/disputeManagement';
 import { ElementProps, ElementStory, SessionControls } from '../utils/types';
 import { EMPTY_SESSION_OBJECT } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'API-connected/Dispute Management' };
+const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'API-connected/Disputes/Dispute Management' };
 
 export const Default: ElementStory<typeof DisputeManagement, SessionControls> = {
     name: 'Default',

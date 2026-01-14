@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-payment-link-creation--configuration-error';
+const STORY_ID = 'mocked-pay-by-link-payment-link-creation--configuration-error';
 
 test.describe('Payment link creation - Configuration error', () => {
     test('Should show error message if configuration endpoint fails', async ({ page }) => {
