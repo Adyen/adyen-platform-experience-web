@@ -17,6 +17,7 @@ export interface UseTransactionsListProps
     extends Pick<TransactionOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
     fetchEnabled: boolean;
     filters: Readonly<TransactionsFilters>;
+    now: number;
 }
 
 const useTransactionsList = ({
@@ -25,11 +26,12 @@ const useTransactionsList = ({
     dataCustomization,
     fetchEnabled,
     filters,
+    now,
     onFiltersChanged,
 }: UseTransactionsListProps) => {
     const { getTransactions } = useConfigContext().endpoints;
 
-    const filterParams = useMemo(() => getTransactionsFilterParams(filters), [filters]);
+    const filterParams = useMemo(() => getTransactionsFilterParams(filters, now), [filters, now]);
     const initialFilterParams = useRef(filterParams).current;
     const cachedFilterParams = useRef(initialFilterParams);
     const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
@@ -38,13 +40,13 @@ const useTransactionsList = ({
         async (requestParams: Pick<Parameters<NonNullable<typeof getTransactions>>[1]['query'], 'limit' | 'cursor'>, signal?: AbortSignal) => {
             const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
                 ...requestParams,
-                ...getTransactionsFilterQueryParams(filters),
+                ...getTransactionsFilterQueryParams(filters, now),
                 sortDirection: 'desc' as const,
             } as const;
 
             return getTransactions!({ signal }, { query });
         },
-        [filters, getTransactions]
+        [filters, getTransactions, now]
     );
 
     const {
