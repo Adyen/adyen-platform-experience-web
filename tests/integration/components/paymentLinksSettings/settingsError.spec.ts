@@ -4,7 +4,7 @@ import { goToStory } from '../../../utils/utils';
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--settings-error';
 
 test.describe('Error - Terms and Conditions Error', () => {
-    test('Should display error when theme endpoint fails', async ({ page }) => {
+    test('Should display error when fetching terms and conditions fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
         const component = page.locator('div').locator('[class="adyen-pe-component"]');
