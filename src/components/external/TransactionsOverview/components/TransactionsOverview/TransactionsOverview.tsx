@@ -50,8 +50,6 @@ export const TransactionsOverview = ({
     const { isMobileContainer } = filterBarState;
     const { i18n } = useCoreContext();
 
-    const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
-
     const hasChangedFilters = useMemo(
         () => ({
             list: compareTransactionsFilters(filters, cachedListFilters.current),
@@ -60,9 +58,12 @@ export const TransactionsOverview = ({
         [filters]
     );
 
-    const canFetchTransactions = isTransactionsView && !!balanceAccount?.id && hasChangedFilters.list && cachedListFilters.current !== filters;
-    const canFetchTransactionsInsights =
-        !isTransactionsView && !!balanceAccount?.id && hasChangedFilters.insights && cachedInsightsFilters.current !== filters;
+    const shouldFetchTransactions = !!balanceAccount?.id && hasChangedFilters.list && cachedListFilters.current !== filters;
+    const shouldFetchTransactionsInsights = !!balanceAccount?.id && hasChangedFilters.insights && cachedInsightsFilters.current !== filters;
+
+    const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
+    const canFetchTransactions = isTransactionsView && shouldFetchTransactions;
+    const canFetchTransactionsInsights = !isTransactionsView && shouldFetchTransactionsInsights;
 
     const listFilters = canFetchTransactions ? (cachedListFilters.current = filters) : cachedListFilters.current;
     const insightsFilters = canFetchTransactionsInsights ? (cachedInsightsFilters.current = filters) : cachedInsightsFilters.current;
