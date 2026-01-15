@@ -5,7 +5,7 @@ import useTransaction from '../../hooks/useTransaction';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
 import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { sharedTransactionDetailsEventProperties } from '../../constants';
 import { EMPTY_ARRAY } from '../../../../../utils';
@@ -29,8 +29,6 @@ export const TransactionDataContent = ({
     transactionNavigator,
 }: TransactionDataContentProps) => {
     const [activeView, setActiveView] = useState(ActiveView.DETAILS);
-    const [locked, setLocked] = useState(false);
-
     const { withinModal } = useModalContext();
 
     const {
@@ -45,11 +43,8 @@ export const TransactionDataContent = ({
         refundedState,
         refundMode,
         refundLocked,
+        lockRefund,
     } = useRefundMetadata(transaction);
-
-    const cachedRefundLocked = useRef(refundLocked);
-    const refundIsLocked = useMemo(() => refundLocked || locked, [refundLocked, locked]);
-    const refundIsDisabled = useMemo(() => refundDisabled || refundIsLocked, [refundDisabled, refundIsLocked]);
 
     const lineItems = useMemo<readonly ILineItem[]>(() => Object.freeze(transaction.lineItems ?? EMPTY_ARRAY), [transaction.lineItems]);
 
@@ -57,15 +52,6 @@ export const TransactionDataContent = ({
         ...sharedTransactionDetailsEventProperties,
         ...(withinModal && { fromPage: 'Transactions overview' }),
     });
-
-    useEffect(() => {
-        if ((cachedRefundLocked.current = refundLocked)) {
-            // Refund has been locked while a refund is still in progress
-            // Rely only on the refundLocked state
-            // Reset the local locked state
-            setLocked(false);
-        }
-    }, [refundLocked]);
 
     if (fetchingTransaction) {
         return <DataOverviewDetailsSkeleton skeletonRowNumber={5} />;
@@ -76,15 +62,15 @@ export const TransactionDataContent = ({
             return (
                 <PaymentRefund
                     currency={refundCurrency}
-                    disabled={refundIsDisabled}
+                    disabled={refundDisabled}
                     lineItems={lineItems}
+                    lockRefund={lockRefund}
                     maxAmount={refundableAmount}
                     mode={refundMode}
                     refreshTransaction={refreshTransaction}
                     refundedAmount={refundedAmount}
                     refundingAmounts={refundAmounts.in_progress ?? EMPTY_ARRAY}
                     setActiveView={setActiveView}
-                    setLocked={setLocked}
                     transaction={transaction}
                 />
             );
@@ -99,10 +85,10 @@ export const TransactionDataContent = ({
                     refundAmounts={refundAmounts}
                     refundAvailable={refundAvailable}
                     refundCurrency={refundCurrency}
-                    refundDisabled={refundIsDisabled}
+                    refundDisabled={refundDisabled}
                     refundedAmount={refundedAmount}
                     refundedState={refundedState}
-                    refundLocked={refundIsLocked}
+                    refundLocked={refundLocked}
                     setActiveView={setActiveView}
                     transaction={transaction}
                     transactionNavigator={transactionNavigator}

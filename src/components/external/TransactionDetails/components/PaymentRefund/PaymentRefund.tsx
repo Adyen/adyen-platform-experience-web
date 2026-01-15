@@ -35,17 +35,17 @@ export interface PaymentRefundProps {
     currency: string;
     disabled: boolean;
     lineItems: readonly ILineItem[];
+    lockRefund: () => void;
     maxAmount: number;
     mode: IRefundMode;
     refreshTransaction: () => void;
     refundedAmount: number;
     refundingAmounts: readonly number[];
     setActiveView: (activeView: ActiveView) => void;
-    setLocked: (locked: boolean) => void;
     transaction: TransactionDetails;
 }
 
-interface PaymentRefundFormProps extends Omit<PaymentRefundProps, 'disabled' | 'refreshTransaction' | 'setActiveView' | 'setLocked'> {
+interface PaymentRefundFormProps extends Omit<PaymentRefundProps, 'disabled' | 'lockRefund' | 'refreshTransaction' | 'setActiveView'> {
     beginRefund: () => void;
     setRefundResult: (result: RefundResult) => void;
     showDetails: () => void;
@@ -56,10 +56,9 @@ interface PaymentRefundResultProps extends Pick<PaymentRefundProps, 'refreshTran
     showDetails: () => void;
 }
 
-const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked, ...formProps }: PaymentRefundProps) => {
+const PaymentRefund = ({ disabled, lockRefund, refreshTransaction, setActiveView, ...formProps }: PaymentRefundProps) => {
     const [refundResult, setRefundResult] = useState<RefundResult>();
     const beginRefund = useCallback(() => void (initiatedRefund.current = true), []);
-    const lockRefunds = useCallback(() => setLocked(true), [setLocked]);
     const showDetails = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
 
     const { duration } = useComponentTiming();
@@ -76,8 +75,8 @@ const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked,
 
     useEffect(() => {
         if (disabled && !refundResult) showDetails();
-        if (refundResult === 'done') lockRefunds();
-    }, [disabled, lockRefunds, refundResult, showDetails]);
+        if (refundResult === 'done') lockRefund();
+    }, [disabled, lockRefund, refundResult, showDetails]);
 
     useEffect(() => {
         return () => {

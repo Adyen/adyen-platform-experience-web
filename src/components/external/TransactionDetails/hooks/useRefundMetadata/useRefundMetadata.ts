@@ -1,27 +1,35 @@
-import { useMemo } from 'preact/hooks';
+import refundLockManager from './refundLockManager/refundLockManager';
 import { boolOrFalse, isFunction } from '../../../../../utils';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { RefundMode, RefundedState, TransactionDetails } from '../../types';
 import { IRefundMode } from '../../../../../types';
 import { REFUND_STATUSES } from '../../constants';
 
 export const useRefundMetadata = (transaction?: TransactionDetails) => {
-    const details = transaction?.refundDetails;
-    const refundMode: IRefundMode = details?.refundMode ?? RefundMode.FULL_AMOUNT;
-    const refundLocked = boolOrFalse(details?.refundLocked);
+    const transactionId = transaction?.id;
+    const refundDetails = transaction?.refundDetails;
+    const [locked, setLocked] = useState(() => !!transactionId && refundLockManager.isLocked(transactionId));
+
+    const refundMode: IRefundMode = refundDetails?.refundMode ?? RefundMode.FULL_AMOUNT;
+    const refundLockedState = boolOrFalse(refundDetails?.refundLocked);
+    const refundLocked = refundLockedState || locked;
     const refundable = refundMode !== RefundMode.NON_REFUNDABLE;
 
-    const refundableAmount = useMemo(() => (transaction ? Math.max(0, details?.refundableAmount?.value ?? 0) : 0), [details, transaction]);
+    const refundableAmount = useMemo(
+        () => (transaction ? Math.max(0, refundDetails?.refundableAmount?.value ?? 0) : 0),
+        [refundDetails, transaction]
+    );
 
     const refundAuthorization = isFunction(useConfigContext().endpoints.initiateRefund);
     const refundAvailable = refundAuthorization && refundable && refundableAmount > 0;
-    const refundCurrency = details?.refundableAmount?.currency ?? transaction?.netAmount.currency ?? '';
+    const refundCurrency = refundDetails?.refundableAmount?.currency ?? transaction?.netAmount.currency ?? '';
     const refundDisabled = !refundAvailable || refundLocked;
 
     const refundAmounts = useMemo(() => {
         let latestNonFailedRefundIndex = -1;
 
-        return (details?.refundStatuses ?? []).reduceRight(
+        return (refundDetails?.refundStatuses ?? []).reduceRight(
             (refundAmounts, { amount, status }, index) => {
                 if (amount.value !== 0 && REFUND_STATUSES.includes(status)) {
                     const isNonFailedRefund = status !== 'failed';
@@ -40,7 +48,7 @@ export const useRefundMetadata = (transaction?: TransactionDetails) => {
             },
             {} as Readonly<Record<(typeof REFUND_STATUSES)[number], readonly number[] | undefined>>
         );
-    }, [details?.refundStatuses]);
+    }, [refundDetails?.refundStatuses]);
 
     const { fullRefundFailed, fullRefundInProgress, refundedAmount } = useMemo(() => {
         let fullRefundFailed = false;
@@ -73,6 +81,28 @@ export const useRefundMetadata = (transaction?: TransactionDetails) => {
         return RefundedState.INDETERMINATE;
     }, [refundableAmount, refundedAmount, refundMode]);
 
+    const lockRefund = useCallback(() => {
+        if (transactionId) {
+            refundLockManager.lock(transactionId);
+            setLocked(refundLockManager.isLocked(transactionId));
+        }
+    }, [transactionId]);
+
+    const cachedRefundLockedState = useRef(refundLockedState);
+
+    useEffect(() => {
+        if (transactionId && (cachedRefundLockedState.current = refundLockedState)) {
+            // Refund locked status is now active for this transaction
+            // Remove the local lock, and rely on the refund locked state
+            refundLockManager.unlock(transactionId);
+        }
+
+        // Recompute locked state whenever transaction changes
+        setLocked(!!transactionId && refundLockManager.isLocked(transactionId));
+
+        refundLockManager.sync();
+    }, [refundLockedState, transactionId]);
+
     return {
         fullRefundFailed, // whether the last (and only) refund that failed is the full refundable amount
         fullRefundInProgress, // whether the only refund in progress is the full refundable amount
@@ -87,6 +117,7 @@ export const useRefundMetadata = (transaction?: TransactionDetails) => {
         refundedState, // whether the payment is yet to be, partially or fully refunded
         refundLocked, // whether refund action for the payment is temporarily locked
         refundMode, // the refund mode of the payment
+        lockRefund, // locally lock the refund action
     } as const;
 };
 

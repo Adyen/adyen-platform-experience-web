@@ -2,20 +2,28 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { renderHook } from '@testing-library/preact';
+import { act, renderHook } from '@testing-library/preact';
 import { useRefundMetadata } from './useRefundMetadata';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { RefundMode, RefundedState, TransactionDetails } from '../../types';
 import { IRefundStatus } from '../../../../../types';
+import refundLockManager from './refundLockManager/refundLockManager';
 
 vi.mock('../../../../../core/ConfigContext');
+vi.mock('./refundLockManager/refundLockManager');
 
 describe('useRefundMetadata', () => {
     const mockUseConfigContext = vi.mocked(useConfigContext);
+    const mockRefundLockManager = vi.mocked(refundLockManager);
     const mockInitiateRefund = vi.fn();
 
-    const createTransaction = (refundDetails: Partial<TransactionDetails['refundDetails']> = {}, netAmountCurrency = 'EUR'): TransactionDetails => {
+    const createTransaction = (
+        refundDetails: Partial<TransactionDetails['refundDetails']> = {},
+        netAmountCurrency = 'EUR',
+        id = 'tx'
+    ): TransactionDetails => {
         return {
+            id,
             netAmount: { currency: netAmountCurrency, value: 1000 },
             refundDetails: {
                 refundMode: RefundMode.FULL_AMOUNT,
@@ -32,6 +40,7 @@ describe('useRefundMetadata', () => {
         mockUseConfigContext.mockReturnValue({
             endpoints: { initiateRefund: mockInitiateRefund },
         } as any);
+        mockRefundLockManager.isLocked.mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -56,6 +65,7 @@ describe('useRefundMetadata', () => {
                 refundedState: RefundedState.INDETERMINATE,
                 refundLocked: false,
                 refundMode: RefundMode.FULL_AMOUNT,
+                lockRefund: expect.any(Function),
             });
         });
 
@@ -77,6 +87,7 @@ describe('useRefundMetadata', () => {
                 refundedState: RefundedState.INDETERMINATE,
                 refundLocked: false,
                 refundMode: RefundMode.FULL_AMOUNT,
+                lockRefund: expect.any(Function),
             });
         });
     });
@@ -301,6 +312,70 @@ describe('useRefundMetadata', () => {
             const { result } = renderHook(() => useRefundMetadata(transaction));
 
             expect(result.current.refundedState).toBe(RefundedState.INDETERMINATE);
+        });
+    });
+
+    describe('Refund Lock Manager Integration', () => {
+        test('should initialize locked state from refundLockManager', () => {
+            mockRefundLockManager.isLocked.mockReturnValue(true);
+            const transaction = createTransaction();
+            const { result } = renderHook(() => useRefundMetadata(transaction));
+
+            expect(result.current.refundLocked).toBe(true);
+            expect(mockRefundLockManager.isLocked).toHaveBeenCalledWith(transaction.id);
+        });
+
+        test('should lock refund locally when lockRefund is called', () => {
+            const transaction = createTransaction();
+            const { result } = renderHook(() => useRefundMetadata(transaction));
+
+            // Setup isLocked to return true after lock is called
+            mockRefundLockManager.isLocked.mockReturnValue(true);
+
+            act(() => result.current.lockRefund());
+
+            expect(mockRefundLockManager.lock).toHaveBeenCalledWith(transaction.id);
+            expect(result.current.refundLocked).toBe(true);
+        });
+
+        test('should sync refundLockManager on mount/update', () => {
+            const transaction = createTransaction();
+            renderHook(() => useRefundMetadata(transaction));
+            expect(mockRefundLockManager.sync).toHaveBeenCalled();
+        });
+
+        test('should unlock in manager when refundLockedState becomes true', () => {
+            // Initial render with refundLocked=false
+            const transaction = createTransaction({ refundLocked: false });
+            const { rerender } = renderHook(props => useRefundMetadata(props), { initialProps: transaction });
+
+            // Update with refundLocked=true
+            const updatedTransaction = createTransaction({ refundLocked: true });
+            rerender(updatedTransaction);
+
+            expect(mockRefundLockManager.unlock).toHaveBeenCalledWith(transaction.id);
+        });
+
+        test('should unlock in manager if initially refundLockedState is true', () => {
+            const transaction = createTransaction({ refundLocked: true });
+            renderHook(() => useRefundMetadata(transaction));
+            expect(mockRefundLockManager.unlock).toHaveBeenCalledWith(transaction.id);
+        });
+
+        test('should recheck locked state when transaction changes', () => {
+            const transaction1 = createTransaction({}, 'EUR', 'tx1');
+            const { result, rerender } = renderHook(props => useRefundMetadata(props), { initialProps: transaction1 });
+
+            expect(mockRefundLockManager.isLocked).toHaveBeenCalledWith('tx1');
+
+            // Change mock to return true for next call
+            mockRefundLockManager.isLocked.mockReturnValue(true);
+
+            const transaction2 = createTransaction({}, 'EUR', 'tx2');
+            rerender(transaction2);
+
+            expect(mockRefundLockManager.isLocked).toHaveBeenCalledWith('tx2');
+            expect(result.current.refundLocked).toBe(true);
         });
     });
 });
