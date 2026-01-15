@@ -68,7 +68,7 @@ const useTransactionsTotals = ({ currencies, fetchEnabled, filters, getQueryPara
         totalsLookup,
         error,
         isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || loadingBalances || (canGetTransactionTotals && !fetchEnabled),
+        isWaiting: isFetching || loadingBalances || (canGetTransactionTotals && !fetchEnabled && !data),
     } as const;
 };
 

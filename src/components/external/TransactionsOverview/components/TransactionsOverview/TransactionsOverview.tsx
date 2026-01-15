@@ -11,8 +11,8 @@ import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedCon
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { classes, INITIAL_FILTERS, TRANSACTIONS_VIEW_TABS } from '../../constants';
 import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
-import { TransactionOverviewProps, TransactionsView } from '../../types';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { TransactionOverviewProps, TransactionsView, TransactionsFilters as Filters } from '../../types';
+import { useMemo, useRef, useState } from 'preact/hooks';
 import { compareTransactionsFilters } from '../utils';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
@@ -23,6 +23,8 @@ const getTransactionsInsightsTotalsQuery: GetQueryParams = allQueryParams => {
     const { balanceAccountId, createdSince, createdUntil } = allQueryParams;
     return { balanceAccountId, createdSince, createdUntil };
 };
+
+const transactionsInsightsFilterSet = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -36,12 +38,13 @@ export const TransactionsOverview = ({
     hideTitle,
     dataCustomization,
 }: TransactionOverviewProps) => {
-    const cachedFilters = useRef(INITIAL_FILTERS);
-    const filterBarState = useFilterBarState();
-
-    const [filters, setFilters] = useState(cachedFilters.current);
+    const [filters, setFilters] = useState(INITIAL_FILTERS);
     const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
+
+    const cachedListFilters = useRef(filters);
+    const cachedInsightsFilters = useRef(filters);
+    const filterBarState = useFilterBarState();
 
     const { balanceAccount } = filters;
     const { isMobileContainer } = filterBarState;
@@ -49,10 +52,20 @@ export const TransactionsOverview = ({
 
     const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
 
-    const canFetchTransactions = useMemo(
-        () => isTransactionsView && !!balanceAccount?.id && compareTransactionsFilters(filters, cachedFilters.current),
-        [isTransactionsView, balanceAccount, filters]
+    const hasChangedFilters = useMemo(
+        () => ({
+            list: compareTransactionsFilters(filters, cachedListFilters.current),
+            insights: compareTransactionsFilters(filters, cachedInsightsFilters.current, transactionsInsightsFilterSet),
+        }),
+        [filters]
     );
+
+    const canFetchTransactions = isTransactionsView && !!balanceAccount?.id && hasChangedFilters.list && cachedListFilters.current !== filters;
+    const canFetchTransactionsInsights =
+        !isTransactionsView && !!balanceAccount?.id && hasChangedFilters.insights && cachedInsightsFilters.current !== filters;
+
+    const listFilters = canFetchTransactions ? (cachedListFilters.current = filters) : cachedListFilters.current;
+    const insightsFilters = canFetchTransactionsInsights ? (cachedInsightsFilters.current = filters) : cachedInsightsFilters.current;
 
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
@@ -60,25 +73,25 @@ export const TransactionsOverview = ({
         fetchEnabled: canFetchTransactions,
         allowLimitSelection,
         dataCustomization,
-        filters,
+        filters: listFilters,
         onFiltersChanged,
         preferredLimit,
     });
 
     const transactionsListTotalsResult = useTransactionsTotals({
         currencies: accountBalancesResult.currencies,
-        fetchEnabled: !!balanceAccount?.id,
+        fetchEnabled: canFetchTransactions,
         loadingBalances: accountBalancesResult.isWaiting,
         getQueryParams: getTransactionsListTotalsQuery,
-        filters,
+        filters: listFilters,
     });
 
     const transactionsInsightsTotalsResult = useTransactionsTotals({
         currencies: accountBalancesResult.currencies,
-        fetchEnabled: !!balanceAccount?.id,
+        fetchEnabled: canFetchTransactionsInsights,
         loadingBalances: accountBalancesResult.isWaiting,
         getQueryParams: getTransactionsInsightsTotalsQuery,
-        filters,
+        filters: insightsFilters,
     });
 
     const exportButton = useMemo(
@@ -101,12 +114,6 @@ export const TransactionsOverview = ({
             ) : null,
         [activeView, i18n]
     );
-
-    useEffect(() => {
-        if (canFetchTransactions) {
-            cachedFilters.current = filters;
-        }
-    }, [canFetchTransactions, filters]);
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
