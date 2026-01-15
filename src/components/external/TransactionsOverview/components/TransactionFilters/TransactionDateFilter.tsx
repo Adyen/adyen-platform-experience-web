@@ -1,7 +1,15 @@
 import {
     TRANSACTION_DATE_RANGE_CUSTOM,
     TRANSACTION_DATE_RANGE_DEFAULT,
+    TRANSACTION_DATE_RANGE_LAST_30_DAYS,
+    TRANSACTION_DATE_RANGE_LAST_6_MONTHS,
+    TRANSACTION_DATE_RANGE_LAST_7_DAYS,
+    TRANSACTION_DATE_RANGE_LAST_MONTH,
+    TRANSACTION_DATE_RANGE_LAST_WEEK,
     TRANSACTION_DATE_RANGE_MAX_YEARS,
+    TRANSACTION_DATE_RANGE_THIS_MONTH,
+    TRANSACTION_DATE_RANGE_THIS_WEEK,
+    TRANSACTION_DATE_RANGE_YEAR_TO_DATE,
     TRANSACTION_DATE_RANGES,
 } from '../../constants';
 import { TransactionsDateRange } from '../../types';
@@ -12,7 +20,6 @@ import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../inter
 import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
 import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '../../../../internal/DatePicker/components/TimeRangeSelector';
 
 export interface TransactionDateFilterProps {
     createdDate: RangeTimestamps;
@@ -24,21 +31,23 @@ export interface TransactionDateFilterProps {
 
 const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRange) => {
     switch (dateRangeSelection) {
-        case 'common.filters.types.date.rangeSelect.options.custom':
+        case TRANSACTION_DATE_RANGE_CUSTOM:
             return 'Custom';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_7_DAYS:
+        case TRANSACTION_DATE_RANGE_LAST_7_DAYS:
             return 'Last 7 days';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS:
+        case TRANSACTION_DATE_RANGE_LAST_30_DAYS:
             return 'Last 30 days';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_WEEK:
+        case TRANSACTION_DATE_RANGE_THIS_WEEK:
             return 'This week';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_WEEK:
+        case TRANSACTION_DATE_RANGE_LAST_WEEK:
             return 'Last week';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_MONTH:
+        case TRANSACTION_DATE_RANGE_THIS_MONTH:
             return 'This month';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_MONTH:
+        case TRANSACTION_DATE_RANGE_LAST_MONTH:
             return 'Last month';
-        case TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE:
+        case TRANSACTION_DATE_RANGE_LAST_6_MONTHS:
+            return 'Last 6 months';
+        case TRANSACTION_DATE_RANGE_YEAR_TO_DATE:
             return 'Year to date';
         default:
             return unreachable(dateRangeSelection);
