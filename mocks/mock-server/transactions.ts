@@ -44,7 +44,7 @@ const TRANSACTIONS_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_PERIOD_CACHE = new Map<string, ITransaction[]>();
 const TRANSACTIONS_TOTALS_CACHE = new Map<string, Map<string, _ITransactionTotals>>();
 const TRANSACTIONS_DETAILS_CACHE = new Map<string, ITransactionWithDetails>();
-const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<ITransactionWithDetails>>();
+const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<ITransactionWithDetails, number>();
 
 const ALL_TRANSACTIONS: ITransactionWithDetails[] = [];
 const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
@@ -350,10 +350,12 @@ const fetchTransactionsForRequest = (req: Request) => {
 };
 
 const passThroughRefundLockDeadlineCheckpoint = () => {
-    for (const [deadline, transactions] of TRANSACTIONS_REFUND_LOCKED_DEADLINES) {
-        if (deadline > Date.now()) return;
-        transactions.forEach(tx => void (tx.refundDetails!.refundLocked = false));
-        TRANSACTIONS_REFUND_LOCKED_DEADLINES.delete(deadline);
+    const now = Date.now();
+
+    for (const [transaction, deadline] of TRANSACTIONS_REFUND_LOCKED_DEADLINES) {
+        if (deadline > now) return;
+        TRANSACTIONS_REFUND_LOCKED_DEADLINES.delete(transaction);
+        transaction.refundDetails!.refundLocked = false;
     }
 };
 
@@ -529,9 +531,9 @@ export const transactionsMocks = [
 
             if (transaction) {
                 const lockDeadline = Date.now() + 2 * 60 * 1000; // 2 minutes
-                const deadlineTransactions = getMappedValue(lockDeadline, TRANSACTIONS_REFUND_LOCKED_DEADLINES, () => new Set())!;
 
-                deadlineTransactions.add(transaction);
+                TRANSACTIONS_REFUND_LOCKED_DEADLINES.delete(transaction);
+                TRANSACTIONS_REFUND_LOCKED_DEADLINES.set(transaction, lockDeadline);
                 transaction.refundDetails!.refundLocked = true;
 
                 return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
