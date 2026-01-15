@@ -124,4 +124,22 @@ export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
     },
 };
 
+export const CountryDatasetFallback: ElementStory<typeof PaymentLinkCreation> = {
+    name: 'Country Dataset Fallback',
+    args: {
+        mockedApi: true,
+        coreOptions: {
+            locale: 'es-ES',
+        },
+        onPaymentLinkCreated: action('Payment link created'),
+        storeIds: ['STORE_NY_001'],
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.countryDatasetError,
+        },
+    },
+};
+
 export default meta;

@@ -54,12 +54,12 @@ export const PAY_BY_LINK_ERRORS = {
         'c1687a5dab2d374ba9e1831aa88f3288',
         'he request is missing required fields or contains invalid data.',
         '29_001',
-        [{ name: 'amount', value: '', message: 'amount_too_high' }],
+        [{ name: 'amount', value: '', message: 'invalid_amount' }],
         '422'
     ),
 };
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const mockPayByLinkEndpoints = mockEndpoints.payByLink;
 const networkError = false;
 const defaultPaginationLimit = 10;
@@ -90,7 +90,7 @@ export const PayByLinkOverviewMockedResponses = {
         ],
     },
     storeNetworkError: {
-        handlers: [http.get(endpoints('mock').stores, async () => HttpResponse.error())],
+        handlers: [http.get(endpoints().stores, async () => HttpResponse.error())],
     },
     filtersNetworkError: {
         handlers: [http.get(mockPayByLinkEndpoints.filters, async () => HttpResponse.error())],
@@ -117,7 +117,7 @@ export const PayByLinkOverviewMockedResponses = {
 export const PaymentLinkCreationMockedResponses = {
     submitNetworkError: {
         handlers: [
-            http.post(mockEndpoints.payByLink.list, async () => {
+            http.post(mockPayByLinkEndpoints.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -125,7 +125,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     submitInvalidFields: {
         handlers: [
-            http.post(mockEndpoints.payByLink.list, async () => {
+            http.post(mockPayByLinkEndpoints.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json(PAY_BY_LINK_ERRORS.INVALID_FIELDS, { status: 422 });
             }),
@@ -134,6 +134,14 @@ export const PaymentLinkCreationMockedResponses = {
     configError: {
         handlers: [
             http.get(mockPayByLinkEndpoints.configuration, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    countryDatasetError: {
+        handlers: [
+            http.get(mockEndpoints.datasets.countries, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -419,3 +427,6 @@ export const payByLinkMocks = [
         return HttpResponse.json(PAY_BY_LINK_FILTERS);
     }),
 ];
+
+// fallback de country
+// Check de billing & shipping separate

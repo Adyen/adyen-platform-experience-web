@@ -49,7 +49,7 @@ const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<ITransactionWit
 const ALL_TRANSACTIONS: ITransactionWithDetails[] = [];
 const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const networkError = false;
 const serverError = false;
 

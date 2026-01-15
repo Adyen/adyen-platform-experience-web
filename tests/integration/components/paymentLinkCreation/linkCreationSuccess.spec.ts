@@ -78,9 +78,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await page.getByRole('option', { name: 'United States' }).first().click();
 
         // Delivery address
-        await page.locator('input[name="deliveryAddress.street"]').click();
         await page.locator('input[name="deliveryAddress.street"]').fill('Test Street');
-        await page.locator('input[name="deliveryAddress.houseNumberOrName"]').click();
         await page.locator('input[name="deliveryAddress.houseNumberOrName"]').fill('123');
         await page.locator('div[name="deliveryAddress.country"]').click();
         await page
@@ -88,24 +86,18 @@ test.describe('Payment link creation - Link creation success', () => {
             .getByRole('option')
             .filter({ hasText: /^United States$/ })
             .click();
-        await page.locator('input[name="deliveryAddress.city"]').click();
         await page.locator('input[name="deliveryAddress.city"]').fill('Gaithersburg');
-        await page.locator('input[name="deliveryAddress.postalCode"]').click();
         await page.locator('input[name="deliveryAddress.postalCode"]').fill('20878');
 
         // Enable separate billing address
         await page.getByText('Billing and shipping are').click();
 
         // Billing address
-        await page.locator('input[name="billingAddress.street"]').click();
         await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
-        await page.locator('input[name="billingAddress.houseNumberOrName"]').click();
         await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
         await page.locator('div[name="billingAddress.country"]').click();
         await page.getByRole('option', { name: 'Mexico' }).click();
-        await page.locator('input[name="billingAddress.city"]').click();
         await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
-        await page.locator('input[name="billingAddress.postalCode"]').click();
         await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
 
         // Language

@@ -40,7 +40,8 @@ test.describe('Payment link creation - Link creation validation', () => {
         const descriptionField = page.locator('input[name="description"]');
         await expect(getFieldErrorMessage(descriptionField)).toHaveText('This field is required');
 
-        await amountField.fill('3000');
+        await amountField.fill('8403218043128031280312803218031283021');
+        await expect(amountField).toHaveValue('10000000000000');
         await referenceField.fill('MERCH00001');
         await linkTypeField.click();
         await page.getByRole('option', { name: 'Open' }).click();

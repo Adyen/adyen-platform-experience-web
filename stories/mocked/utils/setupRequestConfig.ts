@@ -10,7 +10,7 @@ const worker = getWorker();
 export const legaEntityDecorator: Decorator = (Story, context) => {
     const legalEntity = context.args.legalEntity ?? {};
     worker.use(
-        http.post(endpoints('mock').setup, async () => {
+        http.post(endpoints().setup, async () => {
             await delay(200);
             return HttpResponse.json({
                 ...setupBasicResponse,

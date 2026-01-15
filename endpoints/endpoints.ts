@@ -1,18 +1,18 @@
-export const endpoints = (mode: 'netlify' | 'mock') => {
-    const baseUrl = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
-    const matchVariable = mode === 'netlify' ? '(.*)' : ':id';
+const baseUrl = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
+const datasetBaseUrl = 'http://localhost:3030/src/assets/datasets';
 
-    return {
+export const endpoints = () =>
+    ({
         balanceAccounts: `${baseUrl}/balanceAccounts`,
-        balances: `${baseUrl}/balanceAccounts/${matchVariable}/balances`,
+        balances: `${baseUrl}/balanceAccounts/:id/balances`,
         payouts: `${baseUrl}/payouts`,
         payout: `${baseUrl}/payouts/breakdown`,
         transactions: `${baseUrl}/transactions`,
-        transaction: `${baseUrl}/transactions/${matchVariable}`,
-        initiateRefund: `${baseUrl}/transactions/${matchVariable}/refund`,
+        transaction: `${baseUrl}/transactions/:id`,
+        initiateRefund: `${baseUrl}/transactions/:id/refund`,
         transactionsTotals: `${baseUrl}/transactions/totals`,
         downloadTransactions: `${baseUrl}/transactions/download`,
-        sessions: `/api/authe/api/v1/sessions`,
+        sessions: '/api/authe/api/v1/sessions',
         setup: `${baseUrl}/setup`,
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
@@ -25,28 +25,30 @@ export const endpoints = (mode: 'netlify' | 'mock') => {
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
             dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
             grants: `${baseUrl}/capital/grants`,
-            requestFunds: `${baseUrl}/capital/grants/${matchVariable}`,
+            requestFunds: `${baseUrl}/capital/grants/:id`,
             signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
         },
         disputes: {
-            accept: `${baseUrl}/disputes/${matchVariable}/accept`,
-            defend: `${baseUrl}/disputes/${matchVariable}/defend`,
-            details: `${baseUrl}/disputes/${matchVariable}`,
-            documents: `${baseUrl}/disputes/${matchVariable}/documents`,
-            download: `${baseUrl}/disputes/${matchVariable}/documents/download`,
+            accept: `${baseUrl}/disputes/:id/accept`,
+            defend: `${baseUrl}/disputes/:id/defend`,
+            details: `${baseUrl}/disputes/:id`,
+            documents: `${baseUrl}/disputes/:id/documents`,
+            download: `${baseUrl}/disputes/:id/documents/download`,
             list: `${baseUrl}/disputes`,
         },
         payByLink: {
             configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
             countries: `${baseUrl}/paybylink/countries`,
             currencies: `${baseUrl}/paybylink/currencies`,
-            details: `${baseUrl}/paybylink/paymentLinks/${matchVariable}`,
-            expire: `${baseUrl}/paybylink/paymentLinks/${matchVariable}/expire`,
+            details: `${baseUrl}/paybylink/paymentLinks/:id`,
+            expire: `${baseUrl}/paybylink/paymentLinks/:id/expire`,
             filters: `${baseUrl}/paybylink/filters`,
             installments: `${baseUrl}/paybylink/installments`,
             list: `${baseUrl}/paybylink/paymentLinks`,
             settings: `${baseUrl}/paybylink/settings/:storeId`,
-            themes: `${baseUrl}/paybylink/themes/${matchVariable}`,
+            themes: `${baseUrl}/paybylink/themes/:id`,
         },
-    } as const;
-};
+        datasets: {
+            countries: `${datasetBaseUrl}/countries/es-ES.json?import`,
+        },
+    }) as const;
