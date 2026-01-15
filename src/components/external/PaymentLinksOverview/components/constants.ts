@@ -6,6 +6,7 @@ export const BASE_CLASS = 'adyen-pe-payment-links-overview';
 export const BASE_DETAILS_CLASS = 'adyen-pe-payment-link-details';
 export const BASE_TABLE_GRID_CLASS = 'adyen-pe-payment-link-table';
 export const BASE_XS_CLASS = `${BASE_CLASS}--xs`;
+export const BASE_ACTIONS_CLASS = `${BASE_CLASS}__actions-container`;
 export const TABS_CONTAINER_CLASS = `${BASE_CLASS}__tabs-container`;
 export const MOBILE_TABLE_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-cell`;
 export const MOBILE_AMOUNT_CELL_CLASS = `${BASE_TABLE_GRID_CLASS}__mobile-amount-cell`;
@@ -14,6 +15,7 @@ export const FILTERS_CONTAINER_CLASS = `${BASE_CLASS}__filters-container`;
 export const ACTION_BUTTONS_CONTAINER_CLASS = `${BASE_CLASS}__action-buttons-container`;
 export const FILTERS_ALERT_CONTAINER_CLASS = `${BASE_CLASS}__filters-alert-container`;
 export const ACTION_BUTTON_CLASS = `${BASE_CLASS}__action-button`;
+export const ACTION_BUTTON_MOBILE_CLASS = `${BASE_CLASS}__action-button--xs`;
 
 export const EARLIEST_PAYMENT_LINK_DATE = 90;
 

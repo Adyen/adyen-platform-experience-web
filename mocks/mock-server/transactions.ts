@@ -552,9 +552,33 @@ export const transactionsMocks = [
     }),
 ];
 
+const refundedTransactions = new Set<string>();
+
+const getTransactionJson = (() => {
+    let currentHandlersIndex: number;
+
+    return (transaction: ITransactionWithDetails, handlersIndex: number) => {
+        if (currentHandlersIndex !== handlersIndex) {
+            currentHandlersIndex = handlersIndex;
+            refundedTransactions.clear();
+        }
+        if (refundedTransactions.has(transaction.id) && transaction.refundDetails) {
+            return HttpResponse.json({
+                ...transaction,
+                refundDetails: {
+                    ...transaction.refundDetails,
+                    refundLocked: true,
+                },
+            });
+        }
+        return HttpResponse.json(transaction);
+    };
+})();
+
 const sharedMockEndpointsHandlers = [
-    http.post(mockEndpoints.initiateRefund, async ({ request }) => {
+    http.post<{ id: string }>(mockEndpoints.initiateRefund, async ({ request, params }) => {
         await mswDelay(2000);
+        params.id && refundedTransactions.add(params.id);
         const { amount, refundReason } = (await request.json()) as ITransactionRefundPayload;
         return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
     }),
@@ -563,42 +587,42 @@ const sharedMockEndpointsHandlers = [
 export const TRANSACTION_DETAILS_HANDLERS = {
     default: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 0);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     completeDetails: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...COMPLETE_TRANSACTION_DETAILS, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...COMPLETE_TRANSACTION_DETAILS, id: params.id }, 1);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     fullRefund: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
                 const transaction = params.id === ORIGINAL_PAYMENT_ID ? FULLY_REFUNDED_TRANSACTION : FULL_REFUND_TRANSACTION;
-                return HttpResponse.json({ ...transaction, id: params.id });
+                return getTransactionJson({ ...transaction, id: params.id }, 2);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     partialRefund: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
                 const transaction = params.id === ORIGINAL_PAYMENT_ID ? PARTIALLY_REFUNDED_TRANSACTION : PARTIAL_REFUND_TRANSACTION;
-                return HttpResponse.json({ ...transaction, id: params.id });
+                return getTransactionJson({ ...transaction, id: params.id }, 3);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundNotAvailable: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...BASE_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 4);
             }),
             http.post(mockEndpoints.setup, () => {
                 const { initiateRefund, ...endpoints } = setupBasicResponse.endpoints;
@@ -609,18 +633,18 @@ export const TRANSACTION_DETAILS_HANDLERS = {
     },
     refundLocked: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...REFUND_LOCKED_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...REFUND_LOCKED_TRANSACTION, id: params.id }, 5);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundFails: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 6);
             }),
-            http.post(mockEndpoints.initiateRefund, () => {
+            http.post<{ id: string }>(mockEndpoints.initiateRefund, () => {
                 return HttpResponse.error();
             }),
             ...sharedMockEndpointsHandlers,
@@ -628,48 +652,48 @@ export const TRANSACTION_DETAILS_HANDLERS = {
     },
     refundableFullAmount: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...FULLY_REFUNDABLE_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...FULLY_REFUNDABLE_TRANSACTION, id: params.id }, 7);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundablePartialAmount: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...PARTIALLY_REFUNDABLE_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...PARTIALLY_REFUNDABLE_TRANSACTION, id: params.id }, 8);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     notRefundable: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...BASE_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 9);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundedFully: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...FULLY_REFUNDED_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...FULLY_REFUNDED_TRANSACTION, id: params.id }, 10);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundedPartially: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 11);
             }),
             ...sharedMockEndpointsHandlers,
         ],
     },
     refundedPartiallyWithStatuses: {
         handlers: [
-            http.get(mockEndpoints.transaction, ({ params }) => {
-                return HttpResponse.json({ ...PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES, id: params.id });
+            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES, id: params.id }, 12);
             }),
             ...sharedMockEndpointsHandlers,
         ],
