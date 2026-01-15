@@ -1,8 +1,8 @@
 import {
     TRANSACTION_DATE_RANGE_CUSTOM,
     TRANSACTION_DATE_RANGE_DEFAULT,
+    TRANSACTION_DATE_RANGE_LAST_180_DAYS,
     TRANSACTION_DATE_RANGE_LAST_30_DAYS,
-    TRANSACTION_DATE_RANGE_LAST_6_MONTHS,
     TRANSACTION_DATE_RANGE_LAST_7_DAYS,
     TRANSACTION_DATE_RANGE_LAST_MONTH,
     TRANSACTION_DATE_RANGE_LAST_WEEK,
@@ -15,6 +15,7 @@ import {
 import { TransactionsDateRange } from '../../types';
 import { EMPTY_OBJECT, unreachable } from '../../../../../utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { getDateRangeTimestamps } from '../../../../internal/Calendar/calendar/timerange/utils';
 import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
 import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
 import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
@@ -27,6 +28,7 @@ export interface TransactionDateFilterProps {
     eventSubCategory?: string;
     setCreatedDate: (createdDate: RangeTimestamps) => void;
     timezone?: string;
+    now: number;
 }
 
 const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRange) => {
@@ -37,6 +39,8 @@ const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRan
             return 'Last 7 days';
         case TRANSACTION_DATE_RANGE_LAST_30_DAYS:
             return 'Last 30 days';
+        case TRANSACTION_DATE_RANGE_LAST_180_DAYS:
+            return 'Last 180 days';
         case TRANSACTION_DATE_RANGE_THIS_WEEK:
             return 'This week';
         case TRANSACTION_DATE_RANGE_LAST_WEEK:
@@ -45,8 +49,6 @@ const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRan
             return 'This month';
         case TRANSACTION_DATE_RANGE_LAST_MONTH:
             return 'Last month';
-        case TRANSACTION_DATE_RANGE_LAST_6_MONTHS:
-            return 'Last 6 months';
         case TRANSACTION_DATE_RANGE_YEAR_TO_DATE:
             return 'Year to date';
         default:
@@ -54,7 +56,7 @@ const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRan
     }
 };
 
-const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
+const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, now, setCreatedDate, timezone }: TransactionDateFilterProps) => {
     const { i18n } = useCoreContext();
 
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
@@ -65,10 +67,10 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
     const [selectedDateRange, setSelectedDateRange] = useState(defaultDateRange);
     const [pendingResetAction, setPendingResetAction] = useState(false);
 
-    const { from, to, since, until, now } = useMemo(() => {
-        const now = Date.now();
-        const fromDate = new Date(createdDate.from);
-        const toDate = new Date(createdDate.to);
+    const { from, to, since, until } = useMemo(() => {
+        const { from, to } = getDateRangeTimestamps(createdDate, now, timezone);
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
         const sinceDate = new Date(now);
         const untilDate = new Date(now);
 
@@ -79,9 +81,8 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
             to: toDate.toISOString(),
             since: sinceDate.toISOString(),
             until: untilDate.toISOString(),
-            now,
         } as const;
-    }, [createdDate]);
+    }, [createdDate, now, timezone]);
 
     const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: 'Date filter' });
 
@@ -98,8 +99,8 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
                     const until = params[DateRangeFilterParam.TO];
 
                     nextCreatedDate = createRangeTimestampsFactory({
-                        from: since ? new Date(since).getTime() : createdDate.from,
-                        to: until ? new Date(until).getTime() : createdDate.to,
+                        from: new Date(since || from).getTime(),
+                        to: new Date(until || to).getTime(),
                     })();
                 } else {
                     [selectedDateRangeKey, nextCreatedDate] = (
@@ -117,7 +118,7 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
                 logEvent?.('update', eventValue);
             }
         },
-        [i18n, createdDate, customDateRange, defaultDateRange, selectedDateRange, logEvent]
+        [i18n, from, to, customDateRange, defaultDateRange, selectedDateRange, logEvent]
     );
 
     const onFilterResetAction = useCallback(() => setPendingResetAction(true), []);

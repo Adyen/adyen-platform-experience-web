@@ -21,23 +21,23 @@ export const classes = {
 export const TRANSACTION_DATE_RANGE_CUSTOM = 'common.filters.types.date.rangeSelect.options.custom' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_LAST_7_DAYS = 'common.filters.types.date.rangeSelect.options.last7Days' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_LAST_30_DAYS = 'common.filters.types.date.rangeSelect.options.last30Days' satisfies TransactionsDateRange;
+export const TRANSACTION_DATE_RANGE_LAST_180_DAYS = 'common.filters.types.date.rangeSelect.options.last180Days' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_THIS_WEEK = 'common.filters.types.date.rangeSelect.options.thisWeek' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_LAST_WEEK = 'common.filters.types.date.rangeSelect.options.lastWeek' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_THIS_MONTH = 'common.filters.types.date.rangeSelect.options.thisMonth' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_LAST_MONTH = 'common.filters.types.date.rangeSelect.options.lastMonth' satisfies TransactionsDateRange;
-export const TRANSACTION_DATE_RANGE_LAST_6_MONTHS = 'common.filters.types.date.rangeSelect.options.last6Months' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_YEAR_TO_DATE = 'common.filters.types.date.rangeSelect.options.yearToDate' satisfies TransactionsDateRange;
 
-export const TRANSACTION_DATE_RANGE_DEFAULT = TRANSACTION_DATE_RANGE_LAST_6_MONTHS;
+export const TRANSACTION_DATE_RANGE_DEFAULT = TRANSACTION_DATE_RANGE_LAST_180_DAYS;
 
 export const TRANSACTION_DATE_RANGES = Object.freeze({
     [TRANSACTION_DATE_RANGE_LAST_7_DAYS]: RangePreset.lastNDays(7),
     [TRANSACTION_DATE_RANGE_LAST_30_DAYS]: RangePreset.lastNDays(30),
+    [TRANSACTION_DATE_RANGE_LAST_180_DAYS]: RangePreset.lastNDays(180),
     [TRANSACTION_DATE_RANGE_THIS_WEEK]: RangePreset.thisWeek(),
     [TRANSACTION_DATE_RANGE_LAST_WEEK]: RangePreset.lastWeek(),
     [TRANSACTION_DATE_RANGE_THIS_MONTH]: RangePreset.thisMonth(),
     [TRANSACTION_DATE_RANGE_LAST_MONTH]: RangePreset.lastMonth(),
-    [TRANSACTION_DATE_RANGE_LAST_6_MONTHS]: RangePreset.lastNMonths(6),
     [TRANSACTION_DATE_RANGE_YEAR_TO_DATE]: RangePreset.yearToDate(),
 } as const);
 

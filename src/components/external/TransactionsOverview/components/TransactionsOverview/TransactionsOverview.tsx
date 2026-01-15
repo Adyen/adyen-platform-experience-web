@@ -41,6 +41,7 @@ export const TransactionsOverview = ({
     const [filters, setFilters] = useState(INITIAL_FILTERS);
     const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
+    const [nowTimestamp, setNowTimestamp] = useState(Date.now());
 
     const cachedListFilters = useRef(filters);
     const cachedInsightsFilters = useRef(filters);
@@ -72,9 +73,10 @@ export const TransactionsOverview = ({
 
     const transactionsListResult = useTransactionsList({
         fetchEnabled: canFetchTransactions,
+        filters: listFilters,
+        now: nowTimestamp,
         allowLimitSelection,
         dataCustomization,
-        filters: listFilters,
         onFiltersChanged,
         preferredLimit,
     });
@@ -85,6 +87,7 @@ export const TransactionsOverview = ({
         loadingBalances: accountBalancesResult.isWaiting,
         getQueryParams: getTransactionsListTotalsQuery,
         filters: listFilters,
+        now: nowTimestamp,
     });
 
     const transactionsInsightsTotalsResult = useTransactionsTotals({
@@ -93,14 +96,19 @@ export const TransactionsOverview = ({
         loadingBalances: accountBalancesResult.isWaiting,
         getQueryParams: getTransactionsInsightsTotalsQuery,
         filters: insightsFilters,
+        now: nowTimestamp,
     });
 
     const exportButton = useMemo(
         () =>
             isTransactionsView ? (
-                <TransactionsExport disabled={transactionsListResult.records.length < 1 || transactionsListResult.fetching} filters={filters} />
+                <TransactionsExport
+                    disabled={transactionsListResult.records.length < 1 || transactionsListResult.fetching}
+                    filters={filters}
+                    now={nowTimestamp}
+                />
             ) : null,
-        [filters, isTransactionsView, transactionsListResult.fetching, transactionsListResult.records]
+        [filters, isTransactionsView, nowTimestamp, transactionsListResult.fetching, transactionsListResult.records]
     );
 
     const viewSwitcher = useMemo(
@@ -147,6 +155,8 @@ export const TransactionsOverview = ({
                     balanceAccounts={balanceAccounts}
                     isTransactionsView={isTransactionsView}
                     setInsightsCurrency={setInsightsCurrency}
+                    setNowTimestamp={setNowTimestamp}
+                    nowTimestamp={nowTimestamp}
                     onChange={setFilters}
                 />
                 {!isMobileContainer && <>{exportButton}</>}
