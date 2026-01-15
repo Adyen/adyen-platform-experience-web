@@ -421,7 +421,7 @@ export const transactionsMocks = [
         });
     }),
 
-    http.get(mockEndpoints.transactionsTotals, ({ request }) => {
+    http.get(mockEndpoints.transactionsTotals, async ({ request }) => {
         const { periodHash, periodTransactions, transactions } = fetchTransactionsForRequest(request);
         const isTotalsForPeriod = periodTransactions.length === transactions.length;
         let totals = isTotalsForPeriod ? TRANSACTIONS_TOTALS_CACHE.get(periodHash) : undefined;
@@ -472,12 +472,14 @@ export const transactionsMocks = [
             }
         }
 
+        const responseDelay = 500 + Math.round(Math.floor(Math.random() * 201) / 50) * 50;
         const data: (_ITransactionTotals & { currency: string })[] = [];
 
         for (const [currency, currencyTotals] of totals) {
             data.push({ currency, ...currencyTotals });
         }
 
+        await delay(responseDelay);
         return HttpResponse.json({ data });
     }),
 
