@@ -12,7 +12,7 @@ import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/F
 import { classes, INITIAL_FILTERS, TRANSACTIONS_VIEW_TABS } from '../../constants';
 import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
 import { TransactionOverviewProps, TransactionsView, TransactionsFilters as Filters } from '../../types';
-import { useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { compareTransactionsFilters } from '../utils';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
@@ -65,8 +65,8 @@ export const TransactionsOverview = ({
     const canFetchTransactions = isTransactionsView && shouldFetchTransactions;
     const canFetchTransactionsInsights = !isTransactionsView && shouldFetchTransactionsInsights;
 
-    const listFilters = canFetchTransactions ? (cachedListFilters.current = filters) : cachedListFilters.current;
-    const insightsFilters = canFetchTransactionsInsights ? (cachedInsightsFilters.current = filters) : cachedInsightsFilters.current;
+    const listFilters = canFetchTransactions ? filters : cachedListFilters.current;
+    const insightsFilters = canFetchTransactionsInsights ? filters : cachedInsightsFilters.current;
 
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
@@ -115,6 +115,18 @@ export const TransactionsOverview = ({
             ) : null,
         [activeView, i18n]
     );
+
+    useEffect(() => {
+        if (canFetchTransactions) {
+            cachedListFilters.current = filters;
+        }
+    }, [canFetchTransactions, filters]);
+
+    useEffect(() => {
+        if (canFetchTransactionsInsights) {
+            cachedInsightsFilters.current = filters;
+        }
+    }, [canFetchTransactionsInsights, filters]);
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
