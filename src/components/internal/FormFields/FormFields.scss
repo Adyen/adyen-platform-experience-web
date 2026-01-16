@@ -285,14 +285,16 @@
     padding-right: 30px;
 }
 
-.adyen-pe-input:active:not(.adyen-pe-input--invalid),
-.adyen-pe-input:focus:not(.adyen-pe-input--invalid),
-.adyen-pe-input--focus:not(.adyen-pe-input--invalid),
-.adyen-pe-input:active:hover:not(.adyen-pe-input--invalid),
-.adyen-pe-input:focus:hover:not(.adyen-pe-input--invalid),
-.adyen-pe-input--focus:hover:not(.adyen-pe-input--invalid) {
-    background: style.token(color-background-primary);
-    outline: 1px solid style.token(color-outline-selected);
+.adyen-pe-input:active,
+.adyen-pe-input:focus,
+.adyen-pe-input--focus,
+.adyen-pe-input:active:hover,
+.adyen-pe-input:focus:hover,
+.adyen-pe-input--focus:hover {
+    &:not(.adyen-pe-input--invalid) {
+        background: style.token(color-background-primary);
+        outline: 1px solid style.token(color-outline-selected);
+    }
 }
 
 .adyen-pe-input[readonly],
