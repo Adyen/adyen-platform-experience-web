@@ -586,7 +586,7 @@
     "transactions.overview.export.filters.types.status": "Will be displayed as label for the transaction status filter",
     "transactions.overview.filters.label": "Used as label for a group of controls for filtering the list of transactions.",
     "transactions.overview.filters.types.amount.label": "Used as label for a filter control that allows the user to specify a range of amounts.",
-    "transactions.overview.filters.types.paymentPspReference.errors.invalidLength": "Will displayed as error message when the length of the provided input doesn't match the expected length (specified by the %{length} placeholder)",
+    "transactions.overview.filters.types.paymentPspReference.errors.invalidLength": "Will be displayed as error message when the length of the provided input doesn't match the expected length (specified by the %{length} placeholder)",
     "transactions.overview.filters.types.paymentPspReference.fromDateInfo": "Informative text displayed to the user to inform them about the date limitations of the filter.",
     "transactions.overview.filters.types.paymentPspReference.label": "Used as label for a filter control that allows the user to specify an exact or partial payment (PSP) reference. Do not translate PSP.",
     "transactions.overview.filters.types.paymentPspReference.placeholder": "Placeholder text for input that allows the user to specify an exact or partial payment (PSP) reference. Do not translate PSP.",
