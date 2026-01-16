@@ -4,6 +4,7 @@ import { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 
 const allFilters = Object.keys(INITIAL_FILTERS) as readonly (keyof TransactionsFilters)[];
+const allFiltersSet = new Set(allFilters);
 
 const PAYMENT_METHODS = Object.freeze({
     klarna: 'Klarna',
@@ -40,18 +41,24 @@ export const getTransactionsFilterParams = <T extends TransactionsFilters>(filte
     } as const;
 };
 
-export const compareTransactionsFilters = <T extends TransactionsFilters>(filtersA: T, filtersB: T) => {
+export const compareTransactionsFilters = <T extends TransactionsFilters>(
+    filtersA: T,
+    filtersB: T,
+    filtersSet: Set<keyof TransactionsFilters> = allFiltersSet
+) => {
     return allFilters.some(filterName => {
-        const filterValueA = filtersA[filterName];
-        const filterValueB = filtersB[filterName];
+        if (filtersSet.has(filterName)) {
+            const filterValueA = filtersA[filterName];
+            const filterValueB = filtersB[filterName];
 
-        switch (filterName) {
-            case 'categories':
-            case 'currencies':
-            case 'statuses':
-                return String(filterValueA) !== String(filterValueB);
-            default:
-                return filterValueA !== filterValueB;
+            switch (filterName) {
+                case 'categories':
+                case 'currencies':
+                case 'statuses':
+                    return String(filterValueA) !== String(filterValueB);
+                default:
+                    return filterValueA !== filterValueB;
+            }
         }
     });
 };

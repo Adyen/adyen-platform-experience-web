@@ -17,14 +17,19 @@ const ZERO_TOTALS = {
     } as const,
 } as const satisfies Omit<ITransactionTotal, 'currency'>;
 
+type AllQueryParams = ReturnType<typeof getTransactionsFilterQueryParams>;
+type TotalsQueryParams = Partial<AllQueryParams> & Pick<AllQueryParams, 'balanceAccountId'>;
+export type GetQueryParams = (allQueryParams: AllQueryParams) => TotalsQueryParams;
+
 export interface UseTransactionsTotalsProps {
     currencies: readonly string[];
     fetchEnabled: boolean;
     filters: Readonly<TransactionsFilters>;
+    getQueryParams: GetQueryParams;
     loadingBalances: boolean;
 }
 
-const useTransactionsTotals = ({ currencies, fetchEnabled, filters, loadingBalances }: UseTransactionsTotalsProps) => {
+const useTransactionsTotals = ({ currencies, fetchEnabled, filters, getQueryParams, loadingBalances }: UseTransactionsTotalsProps) => {
     const { getTransactionTotals } = useConfigContext().endpoints;
     const abortable = useRef(createAbortable()).current;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
@@ -34,16 +39,14 @@ const useTransactionsTotals = ({ currencies, fetchEnabled, filters, loadingBalan
         if (canFetchTransactionTotals) {
             const { signal } = abortable.refresh(true);
             try {
-                const { balanceAccountId, createdSince, createdUntil } = getTransactionsFilterQueryParams(filters);
-                const query = { balanceAccountId, createdSince, createdUntil } as const;
+                const query = getQueryParams(getTransactionsFilterQueryParams(filters));
                 const json = await getTransactionTotals({ signal }, { query });
-
                 if (!signal.aborted) return json?.data;
             } catch (error) {
                 if (!signal.aborted) throw error;
             }
         }
-    }, [abortable, canFetchTransactionTotals, filters, getTransactionTotals]);
+    }, [abortable, canFetchTransactionTotals, filters, getQueryParams, getTransactionTotals]);
 
     const { data, error, isFetching } = useFetch({
         fetchOptions: { enabled: canFetchTransactionTotals },
@@ -65,7 +68,7 @@ const useTransactionsTotals = ({ currencies, fetchEnabled, filters, loadingBalan
         totalsLookup,
         error,
         isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || loadingBalances || (canGetTransactionTotals && !fetchEnabled),
+        isWaiting: isFetching || loadingBalances || (canGetTransactionTotals && !fetchEnabled && !data),
     } as const;
 };
 
