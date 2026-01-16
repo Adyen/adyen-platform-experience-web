@@ -14,6 +14,32 @@
         color: style.token(color-label-secondary);
     }
 
+    &__input {
+        &--with-error#{&} > input {
+            &,
+            &:hover,
+            &:active {
+                border-color: style.token(color-outline-critical);
+                outline-color: style.token(color-outline-critical);
+            }
+        }
+    }
+
+    &__input-error {
+        align-items: center;
+        color: style.token(color-label-critical);
+        display: flex;
+        gap: style.token(spacer-040);
+
+        .adyen-pe-icon {
+            font-size: style.$adyen-pe-svg-icon-size-base;
+
+            svg {
+                display: block;
+            }
+        }
+    }
+
     label {
         display: flex;
         margin-bottom: calc(#{style.token(spacer-060)} - #{style.token(spacer-040)});

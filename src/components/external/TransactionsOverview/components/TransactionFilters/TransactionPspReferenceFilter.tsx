@@ -1,5 +1,7 @@
+import cx from 'classnames';
 import { h } from 'preact';
 import { uniqueId } from '../../../../../utils';
+import { ARIA_ERROR_SUFFIX } from '../../../../../core/Errors/constants';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { CommitAction } from '../../../../../hooks/useCommitAction';
 import { TextFilterProps } from '../../../../internal/FilterBar/filters/TextFilter/types';
@@ -10,14 +12,18 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import TextFilter from '../../../../internal/FilterBar/filters/TextFilter';
 import Typography from '../../../../internal/Typography/Typography';
 import InputBase from '../../../../internal/FormFields/InputBase';
+import Icon from '../../../../internal/Icon';
 import './TransactionPspReferenceFilter.scss';
 
 const BASE_CLASS = 'adyen-pe-psp-reference-filter';
+const FIXED_CHARACTERS_LENGTH = 16;
 
 const classes = {
     root: BASE_CLASS,
     info: BASE_CLASS + '__info',
     input: BASE_CLASS + '__input',
+    inputError: BASE_CLASS + '__input-error',
+    inputWithError: BASE_CLASS + '__input--with-error',
     title: BASE_CLASS + '__title',
 } as const;
 
@@ -83,6 +89,12 @@ TransactionPspReferenceFilter.EditModal = ({
     const inputId = useMemo(uniqueId, []);
     const labelId = useMemo(uniqueId, []);
 
+    const invalidLengthError = useMemo(() => {
+        const values = { length: FIXED_CHARACTERS_LENGTH };
+        return i18n.get('transactions.overview.filters.types.paymentPspReference.errors.invalidLength', { values });
+    }, [i18n]);
+
+    const errorMessage = currentValue && currentValue.length < FIXED_CHARACTERS_LENGTH ? invalidLengthError : undefined;
     const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
     const placeholder = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.placeholder'), [i18n]);
 
@@ -91,7 +103,7 @@ TransactionPspReferenceFilter.EditModal = ({
         const selectionEnd = inputElement.selectionEnd;
         const value = inputElement.value
             .replace(/[^a-z\d]/gi, '')
-            .slice(0, 16)
+            .slice(0, FIXED_CHARACTERS_LENGTH)
             .toUpperCase();
 
         inputElement.value = value;
@@ -99,9 +111,12 @@ TransactionPspReferenceFilter.EditModal = ({
 
         if (value !== currentValue) {
             setCurrentValue(value || undefined);
-            onValueUpdated(value || undefined);
         }
     };
+
+    useEffect(() => {
+        onValueUpdated(errorMessage ? value || undefined : currentValue);
+    }, [currentValue, errorMessage, onValueUpdated, value]);
 
     useEffect(() => {
         switch (editAction) {
@@ -129,7 +144,7 @@ TransactionPspReferenceFilter.EditModal = ({
                     </Typography>
                 </label>
             </div>
-            <div className={classes.input}>
+            <div className={cx(classes.input, { [classes.inputWithError]: errorMessage })}>
                 <InputBase
                     autoComplete="off"
                     uniqueId={inputId}
@@ -142,6 +157,14 @@ TransactionPspReferenceFilter.EditModal = ({
                     onInput={handleInput}
                 />
             </div>
+            {errorMessage && (
+                <div className={classes.inputError} id={`${inputId}${ARIA_ERROR_SUFFIX}`}>
+                    <Icon name="cross-circle-fill" />
+                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                        {errorMessage}
+                    </Typography>
+                </div>
+            )}
         </div>
     );
 };
