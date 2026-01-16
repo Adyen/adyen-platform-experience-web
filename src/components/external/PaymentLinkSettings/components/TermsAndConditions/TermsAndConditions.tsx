@@ -97,25 +97,25 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
         [setPayload]
     );
 
-    const [requirementsCheckedOnce, setRequirementsCheckedOnce] = useState<boolean>(false);
+    const [requirementsOpenedOnce, setRequirementsOpenedOnce] = useState<boolean>(false);
 
     const onCheckboxInput = useCallback(
         (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
             e.preventDefault();
             if (e.currentTarget?.checked) setShowNotCheckedRequirementsError(false);
-            if (!userRequirementsInput.current && e.currentTarget?.checked && !requirementsCheckedOnce) {
+            if (!userRequirementsInput.current && e.currentTarget?.checked && !requirementsOpenedOnce) {
                 setIsShowingRequirements(true);
-                setRequirementsCheckedOnce(true);
+                setRequirementsOpenedOnce(true);
             }
             userRequirementsInput.current = e.currentTarget?.checked;
             setIsRequirementsChecked(e.currentTarget?.checked);
         },
-        [requirementsCheckedOnce, setIsShowingRequirements]
+        [requirementsOpenedOnce, setIsShowingRequirements]
     );
 
     const openRequirements = useCallback(() => {
         setIsShowingRequirements(true);
-        setRequirementsCheckedOnce(true);
+        setRequirementsOpenedOnce(true);
     }, [setIsShowingRequirements]);
 
     const checkboxLabel = useMemo(() => {
