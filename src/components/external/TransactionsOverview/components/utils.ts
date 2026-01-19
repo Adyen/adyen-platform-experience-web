@@ -1,3 +1,4 @@
+import { getDateRangeTimestamps } from '../../../internal/Calendar/calendar/timerange/utils';
 import { IPaymentMethod } from '../../../../types';
 import { EMPTY_OBJECT } from '../../../../utils';
 import { TransactionsFilters } from '../types';
@@ -18,20 +19,21 @@ export const parsePaymentMethodType = (paymentMethod: NonNullable<IPaymentMethod
     return description || PAYMENT_METHODS[type as keyof typeof PAYMENT_METHODS] || type;
 };
 
-export const getTransactionsFilterQueryParams = <T extends TransactionsFilters>(filters: T) => {
+export const getTransactionsFilterQueryParams = <T extends TransactionsFilters>(filters: T, now: number) => {
+    const { from, to } = getDateRangeTimestamps(filters.createdDate, now, filters.balanceAccount?.timeZone);
     return {
         balanceAccountId: filters.balanceAccount?.id!, // using null assertion to ensure correct type inference
         categories: filters.categories as (typeof filters.categories)[number][],
-        createdSince: new Date(filters.createdDate.from).toISOString(),
-        createdUntil: new Date(filters.createdDate.to).toISOString(),
+        createdSince: new Date(from).toISOString(),
+        createdUntil: new Date(to).toISOString(),
         currencies: filters.currencies as (typeof filters.currencies)[number][],
         paymentPspReference: filters.paymentPspReference,
         statuses: filters.statuses as (typeof filters.statuses)[number][],
     } as const;
 };
 
-export const getTransactionsFilterParams = <T extends TransactionsFilters>(filters: T) => {
-    const { balanceAccountId, categories, currencies, statuses, ...restFilterParams } = getTransactionsFilterQueryParams(filters);
+export const getTransactionsFilterParams = <T extends TransactionsFilters>(filters: T, now: number) => {
+    const { balanceAccountId, categories, currencies, statuses, ...restFilterParams } = getTransactionsFilterQueryParams(filters, now);
     return {
         ...restFilterParams,
         balanceAccountId: balanceAccountId || undefined,
