@@ -19,8 +19,7 @@ test.describe('Error - Terms and Conditions Save Error', () => {
         await saveButton.click();
 
         await expect(page.getByRole('alert')).toBeVisible();
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
+        await expect(page.locator('.adyen-pe-alert__icon')).toBeVisible();
 
         await expect(page.getByText('The changes have not been saved. Please try again.')).toBeVisible();
     });
