@@ -28,7 +28,7 @@ test.describe('Tabbed details', () => {
 
     const expectSamePaymentSummaryRendering = async (page: Page) => {
         await expect(page.getByText('Original amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€642.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('642.00 EUR', { exact: true })).toBeVisible();
 
         for (const labelText of ['Tip amount', 'Surcharge amount']) {
             const labels = page.getByText(labelText, { exact: true });
@@ -41,23 +41,24 @@ test.describe('Tabbed details', () => {
             }
         }
 
-        await expect(page.getByText('€1.50', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €1.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('1.50 EUR', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 1.50 EUR', { exact: true })).toBeVisible();
 
-        await expect(page.getByText('€15.00', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €15.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('15.00 EUR', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 15.00 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Gross amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€658.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('658.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Fees', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €9.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 9.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Split payment', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €25.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 25.00 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Net amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€607.50', { exact: true })).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('607.50 EUR', { exact: true })).toHaveCount(2);
     };
 
     const expectSamePaymentDetailsRendering = async (page: Page) => {
