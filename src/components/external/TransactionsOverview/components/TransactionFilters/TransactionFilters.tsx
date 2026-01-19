@@ -28,16 +28,20 @@ export interface TransactionsFiltersProps extends Omit<FilterBarState, 'setShowi
     availableCurrencies: readonly string[];
     balanceAccounts?: IBalanceAccountBase[];
     isTransactionsView: boolean;
+    nowTimestamp: number;
     onChange?: (filters: Readonly<Filters>) => void;
     setInsightsCurrency?: (currency?: string) => void;
+    setNowTimestamp?: (now: number) => void;
 }
 
 const TransactionsFilters = ({
     availableCurrencies,
     balanceAccounts,
     isTransactionsView,
+    nowTimestamp,
     onChange,
     setInsightsCurrency,
+    setNowTimestamp,
     ...filterBarProps
 }: TransactionsFiltersProps) => {
     const { i18n } = useCoreContext();
@@ -58,6 +62,7 @@ const TransactionsFilters = ({
         [balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses]
     );
 
+    const cachedCurrentFilters = useRef<typeof currentFilters>();
     const canResetFilters = useMemo(() => compareTransactionsFilters(currentFilters, initialFilters.current), [currentFilters]);
 
     const resetFilters = useCallback(() => {
@@ -97,7 +102,14 @@ const TransactionsFilters = ({
     });
 
     useEffect(() => setCurrencies(initialFilters.current.currencies), [availableCurrencies]);
-    useEffect(() => onChange?.(currentFilters), [onChange, currentFilters]);
+
+    useEffect(() => {
+        if (cachedCurrentFilters.current !== currentFilters) {
+            cachedCurrentFilters.current = currentFilters;
+            setNowTimestamp?.(Date.now());
+            onChange?.(currentFilters);
+        }
+    }, [onChange, currentFilters, setNowTimestamp]);
 
     useEffect(() => {
         if (!initialFilters.current.balanceAccount && balanceAccount) {
@@ -120,6 +132,7 @@ const TransactionsFilters = ({
                 eventSubCategory={eventSubCategory}
                 setCreatedDate={setCreatedDate}
                 timezone={balanceAccountFilterProps.activeBalanceAccount?.timeZone}
+                now={nowTimestamp}
             />
             {isTransactionsView ? (
                 <>

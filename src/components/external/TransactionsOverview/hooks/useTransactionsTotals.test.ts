@@ -13,6 +13,7 @@ vi.mock('../../../../core/ConfigContext');
 describe('useTransactionsTotals', () => {
     const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);
     const getQueryParams: GetQueryParams = allQueryParams => allQueryParams;
+    const now = Date.now();
 
     const getMockTransactionTotalsEndpoint = () => {
         const mockTransactionTotalsEndpoint = vi.fn();
@@ -64,6 +65,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -89,6 +91,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: false,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -114,6 +117,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: true,
+                now,
             })
         );
 
@@ -153,6 +157,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -201,6 +206,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -229,6 +235,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
@@ -243,6 +250,7 @@ describe('useTransactionsTotals', () => {
             fetchEnabled: true,
             filters: newFilters,
             loadingBalances: false,
+            now,
         });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(2);
@@ -264,6 +272,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -287,6 +296,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
@@ -302,6 +312,7 @@ describe('useTransactionsTotals', () => {
             fetchEnabled: true,
             filters: defaultFilters,
             loadingBalances: false,
+            now,
         });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1);
@@ -322,6 +333,7 @@ describe('useTransactionsTotals', () => {
                 fetchEnabled: false,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
@@ -333,6 +345,7 @@ describe('useTransactionsTotals', () => {
             fetchEnabled: true,
             filters: defaultFilters,
             loadingBalances: false,
+            now,
         });
 
         await waitFor(() => expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1));

@@ -1,4 +1,3 @@
-import { clamp, enumerable, getter, hasOwnProperty, isBitSafeInteger, isFunction, isNullish, isUndefined, struct } from '../../../../../utils';
 import type {
     RangeTimestamp,
     RangeTimestampOffsets,
@@ -12,6 +11,7 @@ import type {
     RangeTimestampsConfigWithoutOffsets,
 } from './types';
 import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '../../../../../core/Localization/datetime/restamper';
+import { clamp, enumerable, getter, hasOwnProperty, isBitSafeInteger, isFunction, isNullish, isUndefined, noop, struct } from '../../../../../utils';
 
 export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
     Object.freeze({
@@ -92,5 +92,25 @@ export const parseRangeTimestamp = (timestamp: Date | RangeTimestamp): RangeTime
         return isNaN(parsedTimestamp) ? undefined : parsedTimestamp;
     } catch {
         /* ignore any parsing exception and implicitly return `undefined` */
+    }
+};
+
+export const getDateRangeTimestamps = (range: RangeTimestamps, now: number, timezone?: string) => {
+    let restoreRangeState = noop;
+    try {
+        const timestampToRestore = range.now;
+        const timezoneToRestore = range.timezone;
+
+        restoreRangeState = () => {
+            range.now = timestampToRestore;
+            range.timezone = timezoneToRestore;
+        };
+
+        range.now = now;
+        range.timezone = timezone;
+        const { from, to } = range;
+        return { from, to } as const;
+    } finally {
+        restoreRangeState();
     }
 };
