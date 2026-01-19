@@ -73,6 +73,16 @@
         padding: 0;
     }
 
+    &__menu-list {
+        margin: 0;
+    }
+
+    &--sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
     &--sidebar-mobile {
         width: 100%;
     }
