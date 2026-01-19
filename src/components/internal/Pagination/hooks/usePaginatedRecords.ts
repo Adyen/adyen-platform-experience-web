@@ -101,7 +101,8 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
             pagination === PaginationType.CURSOR
                 ? [parseCursorPaginatedResponseData, useCursorPagination]
                 : [parseOffsetPaginatedResponseData, useOffsetPagination],
-        [pagination]
+        // [TODO] - Fix missing dependencies
+        []
     );
 
     const updateLimit = useCallback((limit: number) => setPreferredPageLimit(limit), []);
@@ -141,7 +142,8 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                     console.error(err);
                 }
             },
-            [$mounted, $recordsFilters, dataField, fetchRecords, filters, initialize, parsePaginatedResponseData, updateFetching]
+            // [TODO] - Fix missing dependencies
+            [fetchRecords, filters, limit]
         ) as RequestPageCallback<PaginationType>,
         limit
     );
@@ -163,7 +165,8 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     useEffect(() => {
         onFiltersChanged?.(filters);
-    }, [filters, onFiltersChanged]);
+        // [TODO] - Fix missing dependencies
+    }, [filters]);
 
     return { error, fetching, filters, goto, limitOptions, page, pages, records, updateFilters, updateLimit, ...filtersProps, ...paginationProps };
 };
