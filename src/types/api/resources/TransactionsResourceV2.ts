@@ -298,6 +298,10 @@ export interface operations {
                 balanceAccountId: string;
                 createdSince?: string;
                 createdUntil?: string;
+                categories?: components['schemas']['Category'][];
+                statuses?: components['schemas']['Status'][];
+                currencies?: string[];
+                paymentPspReference?: string;
             };
             header?: never;
             path?: never;
