@@ -5,7 +5,7 @@ import FilterBarPage from '../internal-components/filterBar';
 
 // Duplicated from src/ to avoid importing runtime code that pulls in SCSS/JSON
 const TRANSACTION_DATE_RANGE_MAX_YEARS = 2;
-const DATE_FILTER_LABEL_KEY = 'common.filters.types.date.rangeSelect.options.last30Days';
+const DATE_FILTER_LABEL_KEY = 'common.filters.types.date.rangeSelect.options.last180Days';
 
 export class TransactionsOverviewPage {
     private readonly _applyDateFilter;
