@@ -221,19 +221,19 @@ test.describe('Payment Links Overview', () => {
         test('should filter by Payment Link ID', async ({ page }) => {
             await expect(page.getByText('Payment links')).toBeVisible();
 
-            // Click Merchant Reference filter
+            // Click Payment Link ID filter
             await page.getByRole('button', { name: 'Payment Link ID' }).click();
 
             const paymentId = 'PLTEST001';
 
-            // Enter a merchant reference
+            // Enter a payment link ID
             await page.getByRole('textbox').fill(paymentId);
             await page.getByRole('button', { name: 'Apply' }).click();
 
             await expect(page.getByRole('cell', { name: 'Payment link ID' }).first()).toHaveText(paymentId);
 
-            // Verify every row has Single use type
-            const rows = page.getByRole('row');
+            // Verify table shows only one result
+            const rows = page.getByRole('table').locator('tbody tr');
             const rowCount = await rows.count();
             expect(rowCount).toBe(1);
         });
