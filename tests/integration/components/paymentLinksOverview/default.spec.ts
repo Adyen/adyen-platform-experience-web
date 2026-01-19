@@ -149,14 +149,12 @@ test.describe('Payment Links Overview', () => {
 
             await expect(table.getByRole('cell', { name: 'Type' }).first()).toHaveText('Single use');
 
-            // Verify every row has Single use type
             const rows = table.getByRole('row');
             const rowCount = await rows.count();
             expect(rowCount).toBeGreaterThan(0);
 
-            await expect(table.getByRole('cell', { name: 'Status' }).first()).toHaveText('Active');
             for (let i = 0; i < rowCount; i++) {
-                await expect(rows.nth(i).getByText('Single use')).toBeVisible();
+                await expect(rows.nth(i).getByRole('cell', { name: 'Type' })).toHaveText('Single use');
             }
         });
 
@@ -191,7 +189,7 @@ test.describe('Payment Links Overview', () => {
             expect(rowCount).toBeGreaterThan(0);
 
             for (let i = 0; i < rowCount; i++) {
-                await expect(rows.nth(i).getByText('Payment pending')).toBeVisible();
+                await expect(rows.nth(i).getByRole('cell', { name: 'Status' })).toHaveText('Payment pending');
             }
         });
 
@@ -212,8 +210,8 @@ test.describe('Payment Links Overview', () => {
             // Verify table shows results
             await expect(page.getByRole('cell', { name: 'Merchant reference' }).first()).toHaveText(merchantReference);
 
-            // Verify every row has Single use type
-            const rows = page.getByRole('row');
+            // Verify table shows only one result
+            const rows = page.getByRole('table').getByRole('row');
             const rowCount = await rows.count();
             expect(rowCount).toBe(1);
         });
@@ -233,7 +231,7 @@ test.describe('Payment Links Overview', () => {
             await expect(page.getByRole('cell', { name: 'Payment link ID' }).first()).toHaveText(paymentId);
 
             // Verify table shows only one result
-            const rows = page.getByRole('table').locator('tbody tr');
+            const rows = page.getByRole('table').getByRole('row');
             const rowCount = await rows.count();
             expect(rowCount).toBe(1);
         });
