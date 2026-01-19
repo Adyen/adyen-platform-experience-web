@@ -18,14 +18,18 @@ export interface FormStepConfig {
     isOptional?: boolean;
 }
 
-export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number): void => {
-    const firstElement = errorFields
-        .map(field => document.querySelector<HTMLElement>(`[name="${field}"]`))
-        .filter((el): el is HTMLElement => el !== null)
-        .reduce<HTMLElement | null>((topmost, el) => {
-            if (!topmost) return el;
-            return el.getBoundingClientRect().top < topmost.getBoundingClientRect().top ? el : topmost;
-        }, null);
+export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number, scope?: ParentNode | null): void => {
+    if (errorFields.length === 0) return;
+
+    const queryScope = scope ?? document;
+
+    const errorFieldsSelector = errorFields.map(field => `[name="${field}"]`).join(',');
+    const elements = queryScope.querySelectorAll<HTMLElement>(errorFieldsSelector);
+
+    const firstElement = Array.from(elements).reduce<HTMLElement | null>((topmost, el) => {
+        if (!topmost) return el;
+        return el.getBoundingClientRect().top < topmost.getBoundingClientRect().top ? el : topmost;
+    }, null);
 
     if (!firstElement) return;
 

@@ -65,6 +65,7 @@ export const PaymentLinkCreationFormContainer = ({
     onContactSupport,
     embeddedInOverview,
 }: PaymentLinkCreationFormContainerProps) => {
+    const formRef = useRef<HTMLFormElement>(null);
     const [showFormValidationError, setShowFormValidationError] = useState<boolean>(false);
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
@@ -107,7 +108,7 @@ export const PaymentLinkCreationFormContainer = ({
                 if (!isValid) {
                     const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
                     const offsetTop = isXsAndDownContainer ? headerHeight + FIELD_LABEL_AND_MARGIN_OFFSET : FIELD_LABEL_AND_MARGIN_OFFSET;
-                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors), offsetTop);
+                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors), offsetTop, formRef.current);
                     return;
                 }
                 await nextStep();
@@ -317,6 +318,7 @@ export const PaymentLinkCreationFormContainer = ({
                             e.preventDefault();
                             wizardForm.handleSubmit(onSubmit, onError)(e);
                         }}
+                        ref={formRef}
                     >
                         <div>
                             <FormStepRenderer
