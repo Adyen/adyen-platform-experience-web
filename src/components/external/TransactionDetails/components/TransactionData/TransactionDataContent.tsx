@@ -48,8 +48,8 @@ export const TransactionDataContent = ({
     } = useRefundMetadata(transaction);
 
     const cachedRefundLocked = useRef(refundLocked);
-    const refundIsDisabled = useMemo(() => refundDisabled || locked, [refundDisabled, locked]);
     const refundIsLocked = useMemo(() => refundLocked || locked, [refundLocked, locked]);
+    const refundIsDisabled = useMemo(() => refundDisabled || refundIsLocked, [refundDisabled, refundIsLocked]);
 
     const lineItems = useMemo<readonly ILineItem[]>(() => Object.freeze(transaction.lineItems ?? EMPTY_ARRAY), [transaction.lineItems]);
 

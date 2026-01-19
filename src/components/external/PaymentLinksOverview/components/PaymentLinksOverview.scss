@@ -34,6 +34,12 @@
         }
     }
 
+    &__actions-container {
+        display: flex;
+        flex-direction: row;
+        gap: style.token(spacer-040);
+    }
+
     &__filters-container {
         display: flex;
         flex-wrap: wrap;
@@ -48,6 +54,14 @@
 
     &__action-button {
         height: 100%;
+
+        &--xs {
+            --icon-size: 16px;
+
+            font-size: var(--icon-size);
+            padding: 0;
+            width: calc(#{style.token(spacer-060)} * 3);
+        }
     }
 
     &__filters-alert-container {
