@@ -7,7 +7,7 @@ test.describe('Error - Theme Save Error', () => {
     test('Should display error when theme endpoint fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const component = page.locator('div').locator('[class="adyen-pe-component"]');
+        const component = page.locator('.adyen-pe-component');
 
         await expect(component.getByText('Settings', { exact: true })).toBeVisible();
 
