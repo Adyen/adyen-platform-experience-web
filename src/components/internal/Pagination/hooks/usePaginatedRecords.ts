@@ -84,7 +84,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
     enabled,
 }: BasePaginatedRecordsInitOptions<T, DataField, FilterValue, FilterParam>): UsePaginatedRecords<T, FilterValue, FilterParam> => {
     const [records, setRecords] = useState<T[]>([]);
-    const [fetching, updateFetching] = useBooleanState(true);
+    const [fetching, updateFetching] = useBooleanState(enabled !== undefined ? enabled : true);
     const [error, setError] = useState<AdyenPlatformExperienceError>();
     const [preferredPageLimit, setPreferredPageLimit] = useState(preferredLimit);
 
@@ -101,7 +101,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
             pagination === PaginationType.CURSOR
                 ? [parseCursorPaginatedResponseData, useCursorPagination]
                 : [parseOffsetPaginatedResponseData, useOffsetPagination],
-        []
+        [pagination]
     );
 
     const updateLimit = useCallback((limit: number) => setPreferredPageLimit(limit), []);
@@ -141,7 +141,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
                     console.error(err);
                 }
             },
-            [fetchRecords, filters, limit]
+            [$mounted, $recordsFilters, dataField, fetchRecords, filters, initialize, parsePaginatedResponseData, updateFetching]
         ) as RequestPageCallback<PaginationType>,
         limit
     );
@@ -163,7 +163,7 @@ const usePaginatedRecords = <T, DataField extends string, FilterValue extends st
 
     useEffect(() => {
         onFiltersChanged?.(filters);
-    }, [filters]);
+    }, [filters, onFiltersChanged]);
 
     return { error, fetching, filters, goto, limitOptions, page, pages, records, updateFilters, updateLimit, ...filtersProps, ...paginationProps };
 };

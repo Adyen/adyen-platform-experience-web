@@ -189,7 +189,7 @@ export const PaymentLinksOverview = ({
             onFiltersChanged: _onFiltersChanged,
             preferredLimit,
             preferredLimitOptions,
-            enabled: !!getPaymentLinks,
+            enabled: !!getPaymentLinks && !!allStores?.length,
         });
 
     const linkStatusFilter = useMultiSelectionFilter({
