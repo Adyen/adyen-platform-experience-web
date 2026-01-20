@@ -58,7 +58,7 @@
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
-    "start": "ppnpm run storybook",
+    "start": "pnpm run storybook",
     "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'node .storybook/dev.js'",
     "storybook:build": "cross-env USE_TEST_CDN=true storybook build",
     "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 storybook build && vite serve storybook-static --config vite.config.ts",
