@@ -11,35 +11,22 @@ runs:
   using: composite
 
   steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 10
+
     - name: Set up Node
       uses: actions/setup-node@v4
       with:
         node-version: 22.x
+        cache: 'pnpm'
 
     - name: Set up Git user
       shell: bash
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-
-    - name: Cache node modules
-      uses: actions/cache@v3
-      id: cache-pnpm
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
-    - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-      name: List the state of node modules
-      shell: bash
-      run: pnpm list
-      continue-on-error: true
 
     - name: Install dependencies
       shell: bash
