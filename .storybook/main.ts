@@ -29,57 +29,6 @@ const config: StorybookConfig = {
             ],
             build: {
                 target: 'esnext',
-                chunkSizeWarningLimit: 800,
-                rollupOptions: {
-                    output: {
-                        manualChunks: (id: string) => {
-                            // Split vendor dependencies
-                            if (id.includes('node_modules')) {
-                                if (id.includes('preact') || id.includes('preact/hooks')) {
-                                    return 'vendor-react';
-                                }
-                                if (id.includes('@storybook')) {
-                                    return 'vendor-storybook';
-                                }
-                                if (id.includes('@testing-library')) {
-                                    return 'vendor-testing';
-                                }
-                                if (id.includes('classnames')) {
-                                    return 'vendor-utils';
-                                }
-                                return 'vendor-other';
-                            }
-                            // Split component groups
-                            if (id.includes('/components/internal/')) {
-                                if (id.includes('/FormFields/')) {
-                                    return 'components-formfields';
-                                }
-                                if (id.includes('/Calendar/')) {
-                                    return 'components-calendar';
-                                }
-                                return 'components-internal';
-                            }
-                            if (id.includes('/stories/')) {
-                                if (id.includes('/stories/api/')) {
-                                    return 'stories-api';
-                                }
-                                if (id.includes('/stories/components/Capital/')) {
-                                    return 'stories-capital';
-                                }
-                                if (id.includes('/stories/components/Disputes/')) {
-                                    return 'stories-disputes';
-                                }
-                                if (id.includes('/stories/components/PayByLink/')) {
-                                    return 'stories-paybylink';
-                                }
-                                if (id.includes('/stories/mocked/')) {
-                                    return 'stories-mocked';
-                                }
-                                return 'stories-other';
-                            }
-                        },
-                    },
-                },
             },
         });
     },
