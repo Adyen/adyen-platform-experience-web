@@ -28,10 +28,13 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Install dependencies
+    - name: Set npm registry
       shell: bash
       run: |
         pnpm config set registry=https://registry.npmjs.org/
-        pnpm install
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
       env:
         HUSKY: "0"
