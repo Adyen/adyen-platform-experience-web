@@ -1,5 +1,5 @@
 const baseUrl = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
-const datasetBaseUrl = 'http://localhost:3030/src/assets/datasets';
+const datasetBaseUrl = '/src/assets/datasets';
 
 export const endpoints = () =>
     ({
