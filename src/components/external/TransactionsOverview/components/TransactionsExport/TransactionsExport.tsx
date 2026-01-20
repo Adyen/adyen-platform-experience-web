@@ -68,7 +68,7 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
     </Text>
 );
 
-const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters: Readonly<TransactionsFilters> }) => {
+const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; filters: Readonly<TransactionsFilters>; now: number }) => {
     const { i18n } = useCoreContext();
     const userEvents = useAnalyticsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -92,12 +92,12 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         ] as const;
 
         const exportParams = {
-            ...getTransactionsFilterQueryParams(filters),
+            ...getTransactionsFilterQueryParams(filters, now),
             sortDirection: 'desc' as const,
         };
 
         return [activeFilters, exportParams];
-    }, [filters]);
+    }, [filters, now]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);
