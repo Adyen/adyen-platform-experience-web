@@ -184,14 +184,11 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
     );
 
     const togglePopover = useCallback(() => {
-        setPopoverOpen(prev => {
-            // only log when opening the popover
-            if (!prev) {
-                userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
-            }
-            return !prev;
-        });
-    }, [userEvents]);
+        if (!popoverOpen) {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+        }
+        setPopoverOpen(prev => !prev);
+    }, [popoverOpen, userEvents]);
 
     const cancelAction = useMemo<ButtonActionObject>(
         () => ({
