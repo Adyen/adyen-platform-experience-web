@@ -24,7 +24,7 @@ export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset:
     const queryScope = scope ?? document;
 
     const errorFieldsSelector = errorFields.map(field => `[name="${field}"]`).join(',');
-    const elements = queryScope.querySelectorAll<HTMLElement>(errorFieldsSelector);
+    const elements = queryScope.querySelectorAll<HTMLElement>(`:scope ${errorFieldsSelector}`);
 
     const firstElement = Array.from(elements).reduce<HTMLElement | null>((topmost, el) => {
         if (!topmost) return el;

@@ -68,7 +68,7 @@ const calculateOffset = ({
             translateX = fullWidth ? toCenterFullWidth : isTooltip ? toCenterX : targetPosition.x;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 if (!fullWidth) {
                     translateX += scrollX;
                 }
@@ -79,7 +79,7 @@ const calculateOffset = ({
             translateX = isTooltip ? toCenterX : targetPosition.x;
             translateY = targetPosition.y - (popoverHeight + offset[0]);
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
@@ -88,7 +88,7 @@ const calculateOffset = ({
             translateX = targetPosition.x + targetPosition.width + offset[2];
             translateY = isTooltip ? toCenterY : targetPosition.y - targetPosition.height / 2;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
@@ -97,7 +97,7 @@ const calculateOffset = ({
             translateX = targetPosition.x - (popoverWidth + offset[3]);
             translateY = isTooltip ? toCenterY : targetPosition.y - targetPosition.height / 2;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
@@ -106,7 +106,7 @@ const calculateOffset = ({
             translateX = fitPosition ? targetPosition.x : 5;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
@@ -115,7 +115,7 @@ const calculateOffset = ({
             translateX = fitPosition ? targetPosition.x : -5;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX = fitPosition ? targetPosition.x + scrollX : scrollX - (bodyPosition.width - targetPosition.right);
                 translateY += scrollY;
             }
@@ -124,7 +124,7 @@ const calculateOffset = ({
             translateX = fitPosition ? targetPosition.x : POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
@@ -133,7 +133,7 @@ const calculateOffset = ({
             translateX = fitPosition ? targetPosition.x : -POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX = fitPosition ? targetPosition.x + scrollX : translateX + scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
