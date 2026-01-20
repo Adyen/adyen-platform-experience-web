@@ -49,6 +49,6 @@ export const endpoints = () =>
             themes: `${baseUrl}/paybylink/themes/:id`,
         },
         datasets: {
-            countries: `${datasetBaseUrl}/countries/es-ES.json?import`,
+            countries: `${datasetBaseUrl}/countries/:locale.json?import`,
         },
     }) as const;

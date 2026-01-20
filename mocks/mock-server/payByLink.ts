@@ -427,6 +427,3 @@ export const payByLinkMocks = [
         return HttpResponse.json(PAY_BY_LINK_FILTERS);
     }),
 ];
-
-// fallback de country
-// Check de billing & shipping separate
