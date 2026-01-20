@@ -55,7 +55,7 @@
     "changeset": "changeset",
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
-    "prepare": "node prepare.cjs && bash ./scripts/process-package-lock.sh",
+    "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "ppnpm run storybook",
