@@ -3,8 +3,6 @@ name: Setup
 description: Setup Node.js, cache and install dependencies
 
 inputs:
-  NPM_TOKEN:
-    description: 'NPM token used to authenticate'
   GITHUB_TOKEN:
     description: 'Github token used to checkout repo'
     default: ${{ github.token }}
@@ -26,7 +24,7 @@ runs:
 
     - name: Cache node modules
       uses: actions/cache@v3
-      id: cache-npm
+      id: cache-pnpm
       env:
         cache-name: cache-node-modules
       with:
@@ -37,16 +35,16 @@ runs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+    - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
       name: List the state of node modules
       shell: bash
-      run: npm list
+      run: pnpm list
       continue-on-error: true
 
     - name: Install dependencies
       shell: bash
       run: |
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_READ_TOKEN }}
-        npm install
+        pnpm config set registry=https://registry.npmjs.org/
+        pnpm install
       env:
         HUSKY: "0"

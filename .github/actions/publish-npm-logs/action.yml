@@ -1,11 +1,11 @@
-name: Publish npm logs
+name: Publish pnpm logs
 
-description: Publish npm logs as build artifacts
+description: Publish pnpm logs as build artifacts
 runs:
   using: composite
   steps:
-    - name: Archive npm failure logs
+    - name: Archive pnpm failure logs
       uses: actions/upload-artifact@v4
       with:
-        name: npm-logs
-        path: ~/.npm/_logs
+        name: pnpm-logs
+        path: ~/.pnpm/_logs
