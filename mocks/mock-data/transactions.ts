@@ -2500,6 +2500,7 @@ export const BASE_TRANSACTION: ITransactionWithDetails = {
     category: 'Payment',
     createdAt: '2022-08-29T12:47:03.216Z',
     id: ORIGINAL_PAYMENT_ID,
+    merchantReference: 'TX-F9X2V8L7P1K6W',
     netAmount: { ...amount },
     paymentMethod: { ...paymentMethod },
     paymentPspReference: 'PSP0000000000990',
@@ -2641,7 +2642,6 @@ export const COMPLETE_TRANSACTION_DETAILS: ITransactionWithDetails = {
     ],
     amountBeforeDeductions: { ...amount, value: 65850 },
     originalAmount: { ...amount, value: 64200 },
-    merchantReference: 'TX-F9X2V8L7P1K6W',
     events: [
         {
             amount: { ...amount },

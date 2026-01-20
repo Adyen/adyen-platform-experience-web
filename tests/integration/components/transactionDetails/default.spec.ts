@@ -1,5 +1,18 @@
-import { expect, test, type Page } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, getClipboardContent, goToStory } from '../../../utils/utils';
+
+const sharedAnalyticsEventProperties = {
+    componentName: 'transactionDetails',
+    category: 'Transaction component',
+    subCategory: 'Transaction details',
+} as const;
+
+const sharedCopyButtonAnalyticsEventProperties = {
+    ...sharedAnalyticsEventProperties,
+    sectionName: 'Details',
+    label: 'Copy button',
+} as const;
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
 
@@ -46,14 +59,18 @@ test.describe('Default', () => {
         await expect(page.getByText('Reference ID', { exact: true })).toBeVisible();
         await expect(page.getByText('4B7N9Q2Y6R1W5M8T', { exact: true })).toBeVisible();
 
+        await expect(page.getByText('Merchant reference', { exact: true })).toBeVisible();
+        await expect(page.getByText('TX-F9X2V8L7P1K6W', { exact: true })).toBeVisible();
+
         await expect(page.getByText('PSP reference', { exact: true })).toBeVisible();
         await expect(page.getByText('PSP0000000000990', { exact: true })).toBeVisible();
 
-        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
+        await expect(page.getByTestId('copy-icon')).toHaveCount(3);
     };
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
     });
 
     test.describe('render', () => {
@@ -63,8 +80,44 @@ test.describe('Default', () => {
             await expectBeforePaymentRefundDetailsRendering(page);
         });
 
-        test('should switch to payment refund view and back', async ({ page }) => {
+        test('should copy transaction details', async ({ page, context, analyticsEvents }) => {
+            // Grant clipboard permissions to browser context
+            await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+            await page.getByRole('button', { name: 'Copy reference ID', exact: true }).click();
+            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
+
+            await expectAnalyticsEvents(analyticsEvents, [
+                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'Reference ID' }],
+            ]);
+
+            const copiedReferenceID = await getClipboardContent(page);
+            expect(copiedReferenceID).toBe('4B7N9Q2Y6R1W5M8T');
+
+            await page.getByRole('button', { name: 'Copy merchant reference', exact: true }).click();
+            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
+
+            await expectAnalyticsEvents(analyticsEvents, [
+                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'Merchant reference' }],
+            ]);
+
+            const copiedMerchantReference = await getClipboardContent(page);
+            expect(copiedMerchantReference).toBe('TX-F9X2V8L7P1K6W');
+
+            await page.getByRole('button', { name: 'Copy PSP reference', exact: true }).click();
+            await expect(page.getByText('Copied', { exact: true })).toBeVisible();
+
+            await expectAnalyticsEvents(analyticsEvents, [
+                ['Clicked button', { ...sharedCopyButtonAnalyticsEventProperties, subSectionName: 'PSP reference' }],
+            ]);
+
+            const copiedPSPReference = await getClipboardContent(page);
+            expect(copiedPSPReference).toBe('PSP0000000000990');
+        });
+
+        test('should switch to payment refund view and back', async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await expectAnalyticsEvents(analyticsEvents, [['Switched to refund view', sharedAnalyticsEventProperties]]);
             await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
 
             const refundNotice = 'Refunds can take up to 40 days depending on the payment method. Fees are included.';
@@ -99,6 +152,7 @@ test.describe('Default', () => {
             await expect(refundButton).toBeEnabled();
 
             await backButton.click();
+            await expectAnalyticsEvents(analyticsEvents, [['Cancelled refund', sharedAnalyticsEventProperties]]);
 
             // Back to payment details
             await expectSamePaymentStatusBoxRendering(page);
@@ -108,8 +162,9 @@ test.describe('Default', () => {
     });
 
     test.describe('refund', () => {
-        test.beforeEach(async ({ page }) => {
+        test.beforeEach(async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+            await expectAnalyticsEvents(analyticsEvents, [['Switched to refund view', sharedAnalyticsEventProperties]]);
             await expect(page.getByRole('button', { name: 'Refund €133.75', exact: true })).toBeVisible();
         });
 
@@ -200,8 +255,9 @@ test.describe('Default', () => {
             await expect(refundButton).toHaveText('In progress..');
         });
 
-        test('should refund payment', async ({ page }) => {
+        test('should refund payment', async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Refund €133.75', exact: true }).click();
+            await expectAnalyticsEvents(analyticsEvents, [['Completed refund', sharedAnalyticsEventProperties]]);
 
             const successMessage =
                 'Your customer will receive the money in a maximum of 40 days. When the refund is successful you will see a new Refund transaction on your list.';
