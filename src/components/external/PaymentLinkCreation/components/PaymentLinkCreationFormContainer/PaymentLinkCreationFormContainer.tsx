@@ -65,8 +65,8 @@ export const PaymentLinkCreationFormContainer = ({
     onContactSupport,
     embeddedInOverview,
 }: PaymentLinkCreationFormContainerProps) => {
+    const formRef = useRef<HTMLFormElement>(null);
     const [showFormValidationError, setShowFormValidationError] = useState<boolean>(false);
-    const containerRef = useRef<HTMLDivElement>(null);
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledBillingAddress = !!fieldsConfig?.data?.billingAddress;
     const [isSeparateAddress, setIsSeparateAddress] = useState<boolean>(hasPrefilledBillingAddress);
@@ -108,7 +108,7 @@ export const PaymentLinkCreationFormContainer = ({
                 if (!isValid) {
                     const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 0;
                     const offsetTop = isXsAndDownContainer ? headerHeight + FIELD_LABEL_AND_MARGIN_OFFSET : FIELD_LABEL_AND_MARGIN_OFFSET;
-                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors), offsetTop);
+                    scrollToFirstErrorField(Object.keys(wizardForm.formState.errors), offsetTop, formRef.current);
                     return;
                 }
                 await nextStep();
@@ -116,13 +116,6 @@ export const PaymentLinkCreationFormContainer = ({
         },
         [isLastStep, nextStep, validateStep, wizardForm.formState.errors, isXsAndDownContainer]
     );
-
-    useEffect(() => {
-        // Scroll to top of the form on each step change
-        if (isXsAndDownContainer) {
-            containerRef.current?.scrollIntoView({ block: 'start' });
-        }
-    }, [currentStep, isXsAndDownContainer]);
 
     const onClickStep = useCallback(
         (index: number) => {
@@ -300,7 +293,7 @@ export const PaymentLinkCreationFormContainer = ({
     }
 
     return (
-        <div className="adyen-pe-payment-link-creation-form__component" ref={containerRef}>
+        <div className="adyen-pe-payment-link-creation-form__component">
             <div className="adyen-pe-payment-link-creation-form__header" ref={headerRef}>
                 <Typography variant={TypographyVariant.SUBTITLE} stronger>
                     {i18n.get('payByLink.creation.form.title')}
@@ -325,6 +318,7 @@ export const PaymentLinkCreationFormContainer = ({
                             e.preventDefault();
                             wizardForm.handleSubmit(onSubmit, onError)(e);
                         }}
+                        ref={formRef}
                     >
                         <div>
                             <FormStepRenderer
