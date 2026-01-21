@@ -1,10 +1,11 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
-import { useMemo } from 'preact/hooks';
+import { useMemo, useCallback } from 'preact/hooks';
 import { FormSelect } from '../../../../../../../internal/FormWrappers/FormSelect';
 import { PaymentLinkCreationFormValues } from '../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 import { IPaymentLinkCountry } from '../../../../../../../../types';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
+import { SelectChangeEvent } from '../../../../../../../internal/FormFields/Select/types';
 
 interface BillingCountryFieldProps {
     countriesData?: { data?: IPaymentLinkCountry[] };
@@ -12,6 +13,8 @@ interface BillingCountryFieldProps {
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
     isFetchingCountryDataset: boolean;
+    isSeparateAddress?: boolean;
+    showBillingFirst?: boolean;
 }
 
 export const BillingCountryField = ({
@@ -20,9 +23,11 @@ export const BillingCountryField = ({
     isFetchingCountries,
     countryDatasetData,
     isFetchingCountryDataset,
+    isSeparateAddress = true,
+    showBillingFirst = false,
 }: BillingCountryFieldProps) => {
     const { i18n } = useCoreContext();
-    const { fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
+    const { fieldsConfig, setValue } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const countriesListItems = useMemo(() => {
         const allowedCodes = new Set((countriesData?.data ?? []).map(({ countryCode }: IPaymentLinkCountry) => countryCode).filter(Boolean));
@@ -35,6 +40,15 @@ export const BillingCountryField = ({
         return allowedCountries.sort((a, b) => a.name.localeCompare(b.name));
     }, [countriesData?.data, countryDatasetData]);
 
+    const handleChange = useCallback(
+        (e: SelectChangeEvent) => {
+            if (showBillingFirst && !isSeparateAddress) {
+                setValue('deliveryAddress.country', (e.target as HTMLSelectElement).value);
+            }
+        },
+        [isSeparateAddress, setValue, showBillingFirst]
+    );
+
     const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');
 
     return (
@@ -46,6 +60,7 @@ export const BillingCountryField = ({
             label={i18n.get('payByLink.creation.fields.billingAddress.country.label')}
             items={countriesListItems}
             readonly={isFetchingCountries || isFetchingCountryDataset}
+            onChange={handleChange}
             hideOptionalLabel
             isRequired={isRequired}
         />
