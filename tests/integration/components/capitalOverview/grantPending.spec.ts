@@ -1,11 +1,19 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+
+const sharedAnalyticsEventProperties = {
+    componentName: 'capitalOverview',
+    category: 'Capital overview component',
+    subCategory: 'Grants overview',
+    label: 'Capital overview',
+} as const;
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-pending';
 
 test.describe('Grant: Pending', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
     });
 
     test('should render pending grant', async ({ page }) => {

@@ -1,11 +1,19 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+
+const sharedAnalyticsEventProperties = {
+    componentName: 'capitalOverview',
+    category: 'Capital overview component',
+    subCategory: 'Grants overview',
+    label: 'Capital overview',
+} as const;
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-sign-tos';
 
 test.describe('Grant: Missing Action Sign TOS', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {
@@ -27,8 +35,15 @@ test.describe('Grant: Missing Action Sign TOS', () => {
         await expect(tooltip).toBeVisible();
     });
 
-    test('should go to terms and conditions page when "Go to Terms & Conditions" button in clicked', async ({ page }) => {
+    test('should go to terms and conditions page when "Go to Terms & Conditions" button in clicked', async ({ page, analyticsEvents }) => {
+        const analyticsEventProperties = {
+            ...sharedAnalyticsEventProperties,
+            subCategory: 'Missing action',
+            label: 'Go to terms & conditions button clicked',
+        };
+
         await page.getByText('Go to Terms & Conditions').click();
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
         const redirectionURL = 'https://www.adyen.com/';
         await page.waitForURL(redirectionURL);
         expect(page.url()).toBe(redirectionURL);
