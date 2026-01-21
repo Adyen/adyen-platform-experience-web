@@ -11,23 +11,38 @@ import { uuid } from '../../../../../../../utils';
 interface BillingAndShippingCheckboxFieldProps {
     isSeparateAddress: boolean;
     setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    showBillingFirst?: boolean;
 }
 
-export const BillingAndShippingCheckboxField = ({ isSeparateAddress, setIsSeparateAddress }: BillingAndShippingCheckboxFieldProps) => {
+export const BillingAndShippingCheckboxField = ({
+    isSeparateAddress,
+    setIsSeparateAddress,
+    showBillingFirst = false,
+}: BillingAndShippingCheckboxFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, getValues } = useWizardFormContext<PaymentLinkCreationFormValues>();
     const isSeparateAddressInputId = uuid();
 
     const toggleBillingAndDeliveryAddress = useCallback(() => {
         setIsSeparateAddress(prev => {
-            setValue('billingAddress.street', !prev ? undefined : getValues('deliveryAddress.street'));
-            setValue('billingAddress.houseNumberOrName', !prev ? undefined : getValues('deliveryAddress.houseNumberOrName'));
-            setValue('billingAddress.postalCode', !prev ? undefined : getValues('deliveryAddress.postalCode'));
-            setValue('billingAddress.city', !prev ? undefined : getValues('deliveryAddress.city'));
-            setValue('billingAddress.country', !prev ? undefined : getValues('deliveryAddress.country'));
+            if (showBillingFirst) {
+                // When billing is shown first, copy billing to delivery when unchecking
+                setValue('deliveryAddress.street', !prev ? undefined : getValues('billingAddress.street'));
+                setValue('deliveryAddress.houseNumberOrName', !prev ? undefined : getValues('billingAddress.houseNumberOrName'));
+                setValue('deliveryAddress.postalCode', !prev ? undefined : getValues('billingAddress.postalCode'));
+                setValue('deliveryAddress.city', !prev ? undefined : getValues('billingAddress.city'));
+                setValue('deliveryAddress.country', !prev ? undefined : getValues('billingAddress.country'));
+            } else {
+                // Default behavior: copy delivery to billing when unchecking
+                setValue('billingAddress.street', !prev ? undefined : getValues('deliveryAddress.street'));
+                setValue('billingAddress.houseNumberOrName', !prev ? undefined : getValues('deliveryAddress.houseNumberOrName'));
+                setValue('billingAddress.postalCode', !prev ? undefined : getValues('deliveryAddress.postalCode'));
+                setValue('billingAddress.city', !prev ? undefined : getValues('deliveryAddress.city'));
+                setValue('billingAddress.country', !prev ? undefined : getValues('deliveryAddress.country'));
+            }
             return !prev;
         });
-    }, [getValues, setIsSeparateAddress, setValue]);
+    }, [getValues, setIsSeparateAddress, setValue, showBillingFirst]);
 
     return (
         <div>
