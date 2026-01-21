@@ -4,7 +4,6 @@ import { Divider } from '../Divider/Divider';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import { useCallback } from 'preact/hooks';
 import { VNode } from 'preact';
-import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
 import Button from '../Button/Button';
 import Typography from '../Typography/Typography';
@@ -85,7 +84,7 @@ export const SecondaryNav = <T extends SecondaryNavItem>({
                 {(!contentVisible || !isSmContainer) && (
                     <aside className={cx('adyen-pe-secondary-nav--sidebar', { 'adyen-pe-secondary-nav--sidebar-mobile': isSmContainer })}>
                         {renderHeader()}
-                        <ul className="adyen-pe-secondary-nav__list">
+                        <ul className={cx('adyen-pe-secondary-nav__list', 'adyen-pe-secondary-nav__menu-list')}>
                             {items.map(item => (
                                 <li key={item.label} className="adyen-pe-secondary-nav__list-item">
                                     <Button
