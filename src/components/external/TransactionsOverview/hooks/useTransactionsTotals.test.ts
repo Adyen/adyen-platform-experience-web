@@ -4,7 +4,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/preact';
 import * as ConfigContext from '../../../../core/ConfigContext';
-import useTransactionsTotals, { UseTransactionsTotalsProps } from './useTransactionsTotals';
+import useTransactionsTotals, { GetQueryParams, UseTransactionsTotalsProps } from './useTransactionsTotals';
 import { ITransactionTotal } from '../../../../types';
 import { TransactionsFilters } from '../types';
 
@@ -12,6 +12,8 @@ vi.mock('../../../../core/ConfigContext');
 
 describe('useTransactionsTotals', () => {
     const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);
+    const getQueryParams: GetQueryParams = allQueryParams => allQueryParams;
+    const now = Date.now();
 
     const getMockTransactionTotalsEndpoint = () => {
         const mockTransactionTotalsEndpoint = vi.fn();
@@ -59,9 +61,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -83,9 +87,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: false,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -107,9 +113,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: true,
+                now,
             })
         );
 
@@ -145,9 +153,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -192,9 +202,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -218,10 +230,12 @@ describe('useTransactionsTotals', () => {
 
         const { rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
             initialProps: {
+                getQueryParams,
                 currencies: ['USD'],
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
@@ -231,10 +245,12 @@ describe('useTransactionsTotals', () => {
         const newFilters = { ...defaultFilters };
 
         rerender({
+            getQueryParams,
             currencies: ['USD'],
             fetchEnabled: true,
             filters: newFilters,
             loadingBalances: false,
+            now,
         });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(2);
@@ -252,9 +268,11 @@ describe('useTransactionsTotals', () => {
         const { result } = renderHook(() =>
             useTransactionsTotals({
                 currencies,
+                getQueryParams,
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             })
         );
 
@@ -273,10 +291,12 @@ describe('useTransactionsTotals', () => {
 
         const { result, rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
             initialProps: {
+                getQueryParams,
                 currencies: ['USD'],
                 fetchEnabled: true,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
@@ -287,10 +307,12 @@ describe('useTransactionsTotals', () => {
         expect(result.current.totalsLookup).not.toHaveProperty('EUR');
 
         rerender({
+            getQueryParams,
             currencies: ['USD', 'EUR'],
             fetchEnabled: true,
             filters: defaultFilters,
             loadingBalances: false,
+            now,
         });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1);
@@ -306,20 +328,24 @@ describe('useTransactionsTotals', () => {
 
         const { rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
             initialProps: {
+                getQueryParams,
                 currencies: ['USD'],
                 fetchEnabled: false,
                 filters: defaultFilters,
                 loadingBalances: false,
+                now,
             },
         });
 
         expect(mockTransactionTotalsEndpoint).not.toHaveBeenCalled();
 
         rerender({
+            getQueryParams,
             currencies: ['USD'],
             fetchEnabled: true,
             filters: defaultFilters,
             loadingBalances: false,
+            now,
         });
 
         await waitFor(() => expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1));

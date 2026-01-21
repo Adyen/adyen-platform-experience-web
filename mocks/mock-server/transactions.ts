@@ -421,12 +421,13 @@ export const transactionsMocks = [
         });
     }),
 
-    http.get(mockEndpoints.transactionsTotals, ({ request }) => {
-        const { periodHash, periodTransactions } = fetchTransactionsForRequest(request);
-        let totals = TRANSACTIONS_TOTALS_CACHE.get(periodHash);
+    http.get(mockEndpoints.transactionsTotals, async ({ request }) => {
+        const { periodHash, periodTransactions, transactions } = fetchTransactionsForRequest(request);
+        const isTotalsForPeriod = periodTransactions.length === transactions.length;
+        let totals = isTotalsForPeriod ? TRANSACTIONS_TOTALS_CACHE.get(periodHash) : undefined;
 
         if (totals === undefined) {
-            totals = periodTransactions.reduce((currencyTotalsMap, transaction) => {
+            totals = transactions.reduce((currencyTotalsMap, transaction) => {
                 const { value: amount, currency } = transaction.netAmount;
                 const type = amount >= 0 ? 'incomings' : 'expenses';
                 let currencyTotals = currencyTotalsMap.get(currency);
@@ -466,15 +467,19 @@ export const transactionsMocks = [
                 return currencyTotalsMap;
             }, new Map<string, _ITransactionTotals>());
 
-            TRANSACTIONS_TOTALS_CACHE.set(periodHash, totals);
+            if (isTotalsForPeriod) {
+                TRANSACTIONS_TOTALS_CACHE.set(periodHash, totals);
+            }
         }
 
+        const responseDelay = 500 + Math.round(Math.floor(Math.random() * 201) / 50) * 50;
         const data: (_ITransactionTotals & { currency: string })[] = [];
 
         for (const [currency, currencyTotals] of totals) {
             data.push({ currency, ...currencyTotals });
         }
 
+        await delay(responseDelay);
         return HttpResponse.json({ data });
     }),
 
