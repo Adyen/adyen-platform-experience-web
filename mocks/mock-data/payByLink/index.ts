@@ -1,5 +1,6 @@
-import { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails } from '../../../src';
+import { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails, IShopperInformation } from '../../../src';
 import getDate from '../utils/getDate';
+import { redactShopperInformation } from './utils';
 
 export interface IPaymentLinksListResponse {
     _links?: {
@@ -13,7 +14,7 @@ export interface IPaymentLinksListResponse {
     data: IPaymentLinkItem[];
 }
 
-const SHOPPERS = [
+const SHOPPERS: IShopperInformation[] = [
     {
         billingAddress: {
             city: 'New York',
@@ -1227,8 +1228,19 @@ export const getPaymentLinkItemsByStatusGroup = (status: IPaymentLinkStatusGroup
     );
 };
 
-export const getPaymentLinkDetails = (paymentLinkId: string): IPaymentLinkDetails | undefined => {
-    return PAYMENT_LINKS.find(link => link.linkInformation.paymentLinkId === paymentLinkId);
+export const getPaymentLinkDetails = (paymentLinkId: string, redacted?: boolean): IPaymentLinkDetails | undefined => {
+    const paymentLink = PAYMENT_LINKS.find(link => link.linkInformation.paymentLinkId === paymentLinkId);
+
+    if (!paymentLink) {
+        return undefined;
+    }
+
+    return {
+        ...paymentLink,
+        ...(paymentLink.shopperInformation
+            ? { shopperInformation: redacted ? redactShopperInformation(paymentLink.shopperInformation) : paymentLink.shopperInformation }
+            : {}),
+    };
 };
 
 export const expirePaymentLink = (paymentLinkId: string): void => {
