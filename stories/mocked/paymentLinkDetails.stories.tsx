@@ -64,7 +64,7 @@ export const ErrorDetails: ElementStory<typeof PaymentLinkDetails> = {
     },
 };
 
-export const ErrorExpiration: ElementStory<typeof PaymentLinkDetails> = {
+export const ErrorExpire: ElementStory<typeof PaymentLinkDetails> = {
     name: 'Error - Expire',
     args: {
         id: 'PLTEST001',
