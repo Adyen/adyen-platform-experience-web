@@ -63,6 +63,21 @@ test.describe('Payment link creation - Link creation validation', () => {
         const languageField = page.locator('div[name="shopperLocale"], button[name="shopperLocale"]').first();
         await expect(getFieldErrorMessage(languageField)).toHaveText('This field is required');
 
+        const billingStreetField = page.locator('input[name="billingAddress.street"]');
+        await expect(getFieldErrorMessage(billingStreetField)).toHaveText('This field is required');
+
+        const billingHouseNumberField = page.locator('input[name="billingAddress.houseNumberOrName"]');
+        await expect(getFieldErrorMessage(billingHouseNumberField)).toHaveText('This field is required');
+
+        const billingCountryField = page.locator('div[name="billingAddress.country"], button[name="billingAddress.country"]').first();
+        await expect(getFieldErrorMessage(billingCountryField)).toHaveText('This field is required');
+
+        const billingCityField = page.locator('input[name="billingAddress.city"]');
+        await expect(getFieldErrorMessage(billingCityField)).toHaveText('This field is required');
+
+        const billingPostalCodeField = page.locator('input[name="billingAddress.postalCode"]');
+        await expect(getFieldErrorMessage(billingPostalCodeField)).toHaveText('This field is required');
+
         await shopperReferenceField.fill('SHP000001');
         await page.locator('input[name="shopperEmail"]').fill('john.doe@adyen.com');
 
@@ -78,6 +93,14 @@ test.describe('Payment link creation - Link creation validation', () => {
         await countryField.click();
         await page.getByRole('combobox', { name: 'Select option' }).first().fill('united');
         await page.getByRole('option', { name: 'United States' }).first().click();
+
+        // Billing address
+        await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
+        await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
+        await page.locator('div[name="billingAddress.country"]').click();
+        await page.getByRole('option', { name: 'Mexico' }).click();
+        await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
+        await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
 
         await languageField.click();
         await page.getByRole('combobox', { name: 'Select option' }).fill('spa');

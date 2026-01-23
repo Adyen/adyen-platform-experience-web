@@ -77,6 +77,17 @@ test.describe('Payment link creation - Link creation success', () => {
         await page.getByRole('combobox', { name: 'Select option' }).first().fill('united');
         await page.getByRole('option', { name: 'United States' }).first().click();
 
+        // Billing address
+        await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
+        await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
+        await page.locator('div[name="billingAddress.country"]').click();
+        await page.getByRole('option', { name: 'Mexico' }).click();
+        await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
+        await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
+
+        // Enable separate billing address
+        await page.getByText('Billing and shipping are').click();
+
         // Delivery address
         await page.locator('input[name="deliveryAddress.street"]').fill('Test Street');
         await page.locator('input[name="deliveryAddress.houseNumberOrName"]').fill('123');
@@ -88,17 +99,6 @@ test.describe('Payment link creation - Link creation success', () => {
             .click();
         await page.locator('input[name="deliveryAddress.city"]').fill('Gaithersburg');
         await page.locator('input[name="deliveryAddress.postalCode"]').fill('20878');
-
-        // Enable separate billing address
-        await page.getByText('Billing and shipping are').click();
-
-        // Billing address
-        await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
-        await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
-        await page.locator('div[name="billingAddress.country"]').click();
-        await page.getByRole('option', { name: 'Mexico' }).click();
-        await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
-        await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
 
         // Language
         await page.getByTitle('Select option').click();
