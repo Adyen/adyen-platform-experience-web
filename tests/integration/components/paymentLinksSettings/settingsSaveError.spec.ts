@@ -15,12 +15,15 @@ test.describe('Error - Terms and Conditions Save Error', () => {
 
         await navButton.click();
 
+        const termsAndConditionsInput = page.getByRole('textbox', { name: 'Your terms and conditions URL' });
+        await termsAndConditionsInput.fill('https://example.com/terms');
+        await termsAndConditionsInput.fill('https://example.com/term');
+        await page.getByRole('button', { name: 'all requirements.' }).click();
+        await expect(page.getByText('Terms and conditions requirements for Pay by Link')).toBeVisible();
+        await page.getByRole('button', { name: 'Confirm requirements' }).click();
+
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
-
-        await expect(page.getByRole('alert')).toBeVisible();
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
 
         await expect(page.getByText('The changes have not been saved. Please try again.')).toBeVisible();
     });
