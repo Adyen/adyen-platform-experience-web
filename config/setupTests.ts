@@ -1,8 +1,6 @@
 import matchers from '@testing-library/jest-dom/matchers';
 import { beforeEach, beforeAll, expect, vi } from 'vitest';
 import { cleanup } from '@testing-library/preact';
-import '@testing-library/jest-dom';
-import '@testing-library/jest-dom/vitest';
 
 expect.extend(matchers);
 
