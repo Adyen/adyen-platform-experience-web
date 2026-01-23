@@ -1,0 +1,3 @@
+registry=https://registry.npmjs.org/
+verify-store-integrity=false
+strict-peer-dependencies=false
