@@ -112,4 +112,4 @@ export const setTime = async (page: Page) => {
     await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };
 
-export const getComponentRoot = (page: Page) => page.locator('#component-root');
+export const getComponentRoot = (page: Page) => page.locator('.adyen-pe-component');
