@@ -34,7 +34,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --no-frozen-lockfile --registry=https://registry.npmjs.org/ --config.resolution-mode=highest --verify-store-integrity=false
+      run: pnpm install --registry=https://registry.npmjs.org/
       env:
         HUSKY: "0"
 
