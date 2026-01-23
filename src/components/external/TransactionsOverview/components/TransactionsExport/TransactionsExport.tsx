@@ -183,11 +183,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         [masterSwitchId]
     );
 
-    const openPopover = useCallback(() => {
-        if (popoverOpenRef.current) return;
-        setPopoverOpen(true);
-        userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
-    }, [userEvents]);
+    const togglePopover = useCallback(() => {
+        if (!popoverOpen) {
+            userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+        }
+        setPopoverOpen(prev => !prev);
+    }, [popoverOpen, userEvents]);
 
     const cancelAction = useMemo<ButtonActionObject>(
         () => ({
@@ -268,7 +269,7 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
                 className={classes.button}
                 classNameModifiers={popoverOpen ? ['active'] : undefined}
                 disabled={disabled || isFetching}
-                onClick={openPopover}
+                onClick={togglePopover}
                 tabIndex={0}
             >
                 <div className="adyen-pe-filter-button__default-container">

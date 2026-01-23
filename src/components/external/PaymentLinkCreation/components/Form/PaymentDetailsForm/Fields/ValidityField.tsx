@@ -180,14 +180,14 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                                 onChange={onSelectInput}
                                                 items={validitySelectItems}
                                                 isValid={isValid}
-                                                isInvalid={isInvalid}
+                                                isInvalid={!validityValue}
                                             />
                                         </FormField>
                                         {validityValue === FLEXIBLE_ID && (
                                             <FormField label={i18n.get('payByLink.creation.fields.validity.customDuration.label')} optional={false}>
                                                 <InputBase
                                                     {...durationQuantityField}
-                                                    dropdown={{ items: dropdownItems, value: customDurationUnit || '', name: durationUnitField.name }}
+                                                    dropdown={{ ...durationUnitField, items: dropdownItems, value: customDurationUnit || '' }}
                                                     onDropdownInput={handleCustomDurationUnitChange}
                                                     dropdownPosition="end"
                                                     value={customDurationQuantity}
