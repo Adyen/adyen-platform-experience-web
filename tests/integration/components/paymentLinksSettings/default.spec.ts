@@ -63,11 +63,26 @@ test.describe('Default', () => {
         // Check the correct files specifications for uploads
         const fullSizeUpload = page.locator('input[type="file"]').first();
         await fullSizeUpload.setInputFiles(fullWidthIcon);
-        await expect(page.getByText('Image dimensions must be 200x200 pixels. Please upload an image with the correct resolution.')).toBeVisible();
+
+        const fullSizeValidationError = page.getByText(
+            'Image dimensions must be 200x200 pixels. Please upload an image with the correct resolution.'
+        );
+        await expect(fullSizeValidationError).toBeVisible();
 
         const fullWidthUpload = page.locator('input[type="file"]').nth(1);
         await fullWidthUpload.setInputFiles(fullSizeIcon);
-        await expect(page.getByText('Image dimensions must be 300x30 pixels. Please upload an image with the correct resolution.')).toBeVisible();
+
+        const fullWidthValidationError = page.getByText(
+            'Image dimensions must be 300x30 pixels. Please upload an image with the correct resolution.'
+        );
+        await expect(fullWidthValidationError).toBeVisible();
+
+        // Check that the messages disappear when submitting right files
+        await fullSizeUpload.setInputFiles(fullSizeIcon);
+        await page.locator('input[type="file"]').first().setInputFiles(fullWidthIcon);
+
+        await expect(fullSizeValidationError).not.toBeVisible();
+        await expect(fullWidthValidationError).not.toBeVisible();
     });
 
     test('should validate fields for terms and conditions changes', async ({ page }) => {
@@ -80,7 +95,20 @@ test.describe('Default', () => {
         const saveButton = page.getByRole('button', { name: 'Save' });
         await saveButton.click();
 
-        await expect(page.getByText('You must confirm acceptance of the terms to continue')).toBeVisible();
-        await expect(page.getByText('Please enter a valid URL.')).toBeVisible();
+        const confirmErrorMessage = page.getByText('You must confirm acceptance of the terms to continue');
+        const validUrlErrorMessage = page.getByText('Please enter a valid URL.');
+        await expect(confirmErrorMessage).toBeVisible();
+        await expect(validUrlErrorMessage).toBeVisible();
+
+        // Check that the messages disappear when submitting right information
+        await termsAndConditionsInput.fill('https://example.com/term');
+        await page.getByRole('button', { name: 'all requirements.' }).click();
+        await expect(page.getByText('Terms and conditions requirements for Pay by Link')).toBeVisible();
+        await page.getByRole('button', { name: 'Confirm requirements' }).click();
+
+        await saveButton.click();
+
+        await expect(confirmErrorMessage).not.toBeVisible();
+        await expect(validUrlErrorMessage).not.toBeVisible();
     });
 });
