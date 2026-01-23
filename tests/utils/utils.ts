@@ -1,5 +1,6 @@
 import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
-import type { Page } from '@playwright/test';
+import type { PageAnalyticsEvent } from '../fixtures/analytics/events';
+import { expect, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
@@ -81,6 +82,47 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
             : {}),
     });
     await page.goto(`/iframe.html?${queryParams.toString()}`);
+};
+
+export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
+    analyticsEvents: T[],
+    expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][],
+    options?: { waitDuration?: number }
+) => {
+    // Waiting for analytics events for at least `waitDuration` milliseconds
+    await new Promise<void>(resolve => {
+        const startTime = performance.now();
+        const { waitDuration = 1000 } = options ?? {};
+
+        (function waitForAnalyticsEvents() {
+            const waitingTime = performance.now() - startTime;
+            waitingTime < waitDuration ? setTimeout(waitForAnalyticsEvents, 25) : resolve();
+        })();
+    });
+
+    // create a promise to resolve all the analytics events that have been sent
+    const actualEventsPromise = Promise.all(analyticsEvents);
+
+    // and then drain the analytics events
+    analyticsEvents.length = 0;
+
+    const actualEvents = await actualEventsPromise;
+    const numberOfEvents = expectedEvents.length;
+
+    // required to match against all sent events
+    expect(actualEvents).toHaveLength(numberOfEvents);
+
+    for (let i = 0; i < numberOfEvents; i++) {
+        const [event, properties] = expectedEvents[i]!;
+        const data = actualEvents[i]!;
+        expect(data.event).toBe(event);
+        expect(data.properties).toEqual(expect.objectContaining(properties));
+    }
+};
+
+export const getClipboardContent = async (page: Page) => {
+    const handle = await page.evaluateHandle(() => navigator.clipboard.readText());
+    return handle.jsonValue();
 };
 
 export const setTime = async (page: Page) => {

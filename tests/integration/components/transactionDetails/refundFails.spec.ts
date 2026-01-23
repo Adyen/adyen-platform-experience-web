@@ -1,11 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+
+const sharedAnalyticsEventProperties = {
+    componentName: 'transactionDetails',
+    category: 'Transaction component',
+    subCategory: 'Transaction details',
+} as const;
 
 const STORY_ID = 'mocked-transactions-transaction-details--refund-fails';
 
 test.describe('Refund - Fails', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
     });
 
     test('should render payment transaction', async ({ page }) => {
@@ -15,9 +22,12 @@ test.describe('Refund - Fails', () => {
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
     });
 
-    test('should fail to refund payment', async ({ page }) => {
+    test('should fail to refund payment', async ({ page, analyticsEvents }) => {
         await page.getByRole('button', { name: 'Refund payment', exact: true }).click();
+        await expectAnalyticsEvents(analyticsEvents, [['Switched to refund view', sharedAnalyticsEventProperties]]);
+
         await page.getByRole('button', { name: 'Refund €133.75', exact: true }).click();
+        await expectAnalyticsEvents(analyticsEvents, [['Completed refund', sharedAnalyticsEventProperties]]);
 
         await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
         await expect(page.getByText('We couldn’t process the refund. Try again later.', { exact: true })).toBeVisible();
