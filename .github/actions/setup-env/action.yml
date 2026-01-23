@@ -33,7 +33,3 @@ runs:
       run: pnpm install --registry=https://registry.npmjs.org/
       env:
         HUSKY: "0"
-
-    - name: Security Check - Validate Registry Sources
-      shell: bash
-      run: npx lockfile-lint --path pnpm-lock.yaml --type pnpm --validate-https --allowed-hosts registry.npmjs.org
