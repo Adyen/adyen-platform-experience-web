@@ -28,10 +28,6 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Prepare npmrc for CI
-      shell: bash
-      run: cp .npmrc.ci .npmrc
-
     - name: Install dependencies
       shell: bash
       run: pnpm install --registry=https://registry.npmjs.org/
