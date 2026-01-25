@@ -88,13 +88,9 @@ export const TransactionsOverview = ({
     const exportButton = useMemo(
         () =>
             isTransactionsView ? (
-                <TransactionsExport
-                    disabled={transactionsListResult.records.length < 1 || transactionsListResult.fetching}
-                    filters={filters}
-                    now={lastFiltersChangeTimestamp}
-                />
+                <TransactionsExport disabled={!transactionsListResult.page} filters={filters} now={lastFiltersChangeTimestamp} />
             ) : null,
-        [filters, isTransactionsView, lastFiltersChangeTimestamp, transactionsListResult.fetching, transactionsListResult.records]
+        [filters, isTransactionsView, lastFiltersChangeTimestamp, transactionsListResult.page]
     );
 
     const viewSwitcher = useMemo(
