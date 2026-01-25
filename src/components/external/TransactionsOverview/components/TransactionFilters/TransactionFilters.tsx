@@ -28,20 +28,16 @@ export interface TransactionsFiltersProps extends Omit<FilterBarState, 'setShowi
     availableCurrencies: readonly string[];
     balanceAccounts?: IBalanceAccountBase[];
     isTransactionsView: boolean;
-    nowTimestamp: number;
     onChange?: (filters: Readonly<Filters>) => void;
     setInsightsCurrency?: (currency?: string) => void;
-    setNowTimestamp?: (now: number) => void;
 }
 
 const TransactionsFilters = ({
     availableCurrencies,
     balanceAccounts,
     isTransactionsView,
-    nowTimestamp,
     onChange,
     setInsightsCurrency,
-    setNowTimestamp,
     ...filterBarProps
 }: TransactionsFiltersProps) => {
     const { i18n } = useCoreContext();
@@ -106,10 +102,9 @@ const TransactionsFilters = ({
     useEffect(() => {
         if (cachedCurrentFilters.current !== currentFilters) {
             cachedCurrentFilters.current = currentFilters;
-            setNowTimestamp?.(Date.now());
             onChange?.(currentFilters);
         }
-    }, [onChange, currentFilters, setNowTimestamp]);
+    }, [onChange, currentFilters]);
 
     useEffect(() => {
         if (!initialFilters.current.balanceAccount && balanceAccount) {
@@ -132,7 +127,6 @@ const TransactionsFilters = ({
                 eventSubCategory={eventSubCategory}
                 setCreatedDate={setCreatedDate}
                 timezone={balanceAccountFilterProps.activeBalanceAccount?.timeZone}
-                now={nowTimestamp}
             />
             {isTransactionsView ? (
                 <>

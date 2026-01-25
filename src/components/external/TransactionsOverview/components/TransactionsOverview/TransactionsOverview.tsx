@@ -11,7 +11,7 @@ import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import { TransactionOverviewProps, TransactionsFilters as Filters, TransactionsView } from '../../types';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { classes, INITIAL_FILTERS } from '../../constants';
 import { compareTransactionsFilters } from '../utils';
 import { Header } from '../../../../internal/Header';
@@ -99,6 +99,11 @@ export const TransactionsOverview = ({
         now: nowTimestamp,
     });
 
+    const onFiltersChange = useCallback((currentFilters: Readonly<Filters>) => {
+        setNowTimestamp(Date.now());
+        setFilters(currentFilters);
+    }, []);
+
     const exportButton = useMemo(
         () =>
             isTransactionsView ? (
@@ -155,9 +160,7 @@ export const TransactionsOverview = ({
                     balanceAccounts={balanceAccounts}
                     isTransactionsView={isTransactionsView}
                     setInsightsCurrency={setInsightsCurrency}
-                    setNowTimestamp={setNowTimestamp}
-                    nowTimestamp={nowTimestamp}
-                    onChange={setFilters}
+                    onChange={onFiltersChange}
                 />
                 {!isMobileContainer && <>{exportButton}</>}
             </div>
