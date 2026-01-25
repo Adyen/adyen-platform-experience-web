@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import useTransactionsList from '../../hooks/useTransactionsList';
+import useTransactionsViewSwitcher from '../../hooks/useTransactionsViewSwitcher';
 import useTransactionsTotals, { GetQueryParams } from '../../hooks/useTransactionsTotals';
 import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -9,10 +10,9 @@ import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { classes, INITIAL_FILTERS, TRANSACTIONS_VIEW_TABS } from '../../constants';
-import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
-import { TransactionOverviewProps, TransactionsView, TransactionsFilters as Filters } from '../../types';
+import { TransactionOverviewProps, TransactionsFilters as Filters, TransactionsView } from '../../types';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { classes, INITIAL_FILTERS } from '../../constants';
 import { compareTransactionsFilters } from '../utils';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
@@ -39,7 +39,6 @@ export const TransactionsOverview = ({
     dataCustomization,
 }: TransactionOverviewProps) => {
     const [filters, setFilters] = useState(INITIAL_FILTERS);
-    const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
     const [nowTimestamp, setNowTimestamp] = useState(Date.now());
 
@@ -49,6 +48,7 @@ export const TransactionsOverview = ({
 
     const { balanceAccount } = filters;
     const { isMobileContainer } = filterBarState;
+    const { activeView, onViewChange, viewTabs } = useTransactionsViewSwitcher();
     const { i18n } = useCoreContext();
 
     const hasChangedFilters = useMemo(
@@ -113,15 +113,15 @@ export const TransactionsOverview = ({
 
     const viewSwitcher = useMemo(
         () =>
-            TRANSACTIONS_VIEW_TABS.length > 1 ? (
+            viewTabs.length > 1 ? (
                 <SegmentedControl
                     aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
                     activeItem={activeView}
-                    items={TRANSACTIONS_VIEW_TABS}
-                    onChange={({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id)}
+                    items={viewTabs}
+                    onChange={onViewChange}
                 />
             ) : null,
-        [activeView, i18n]
+        [activeView, onViewChange, viewTabs, i18n]
     );
 
     useEffect(() => {
