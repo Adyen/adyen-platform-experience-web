@@ -1,19 +1,13 @@
 import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
-
-const sharedAnalyticsEventProperties = {
-    componentName: 'capitalOverview',
-    category: 'Capital overview component',
-    subCategory: 'Grants overview',
-    label: 'Capital overview',
-} as const;
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-anacredit';
 
 test.describe('Grant: Missing Action Anacredit', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {
@@ -30,7 +24,7 @@ test.describe('Grant: Missing Action Anacredit', () => {
 
     test('should go to Business Financing task when button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
-            ...sharedAnalyticsEventProperties,
+            ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
             label: 'Submit information for AnaCredit button',
         };

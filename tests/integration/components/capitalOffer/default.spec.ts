@@ -1,22 +1,11 @@
 import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
-
-const sharedCapitalOfferAnalyticsEventProperties = {
-    componentName: 'capitalOffer',
-    category: 'Capital offer component',
-    subCategory: 'Capital offer',
-} as const;
-
-const sharedCapitalOfferSelectionAnalyticsEventProperties = {
-    ...sharedCapitalOfferAnalyticsEventProperties,
-    subCategory: 'Business financing offer',
-} as const;
-
-const sharedCapitalOfferSummaryAnalyticsEventProperties = {
-    ...sharedCapitalOfferAnalyticsEventProperties,
-    subCategory: 'Business financing summary',
-} as const;
+import {
+    sharedCapitalOfferAnalyticsEventProperties,
+    sharedCapitalOfferSelectionAnalyticsEventProperties,
+    sharedCapitalOfferSummaryAnalyticsEventProperties,
+} from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--default';
 

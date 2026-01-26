@@ -1,12 +1,6 @@
 import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
-
-const sharedAnalyticsEventProperties = {
-    componentName: 'capitalOverview',
-    category: 'Capital overview component',
-    subCategory: 'Grants overview',
-    label: 'Capital overview',
-} as const;
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-active';
 
@@ -14,7 +8,7 @@ test.describe('Grant: Active', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render active grant', async ({ page }) => {
