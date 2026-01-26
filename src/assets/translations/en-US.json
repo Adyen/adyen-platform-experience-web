@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Timeline",
     "transactions.details.viewSelect.a11y.label": "Transaction details views",
     "transactions.overview.balances.currency.label": "Currency",
+    "transactions.overview.balances.error": "Something went wrong, we couldn’t load the account balances.",
     "transactions.overview.balances.labels.available": "Show all available balances",
     "transactions.overview.balances.labels.default": "Show all account balances",
     "transactions.overview.balances.labels.reserved": "Show all reserved balances",
