@@ -7,12 +7,18 @@ const engagePath = endpoints('mock').sendEngageEvent;
 const networkError = false;
 
 export const analyticsMock = [
-    http.post(trackPath, async () => {
+    http.post(trackPath, async ({ request }) => {
         if (networkError) {
             return HttpResponse.error();
         }
+
         await delay(200);
-        return HttpResponse.json({});
+
+        const formData = await request.formData();
+        const data = formData.get('data');
+        const buffer = Uint8Array.from(atob(data as string), m => m.codePointAt(0)!);
+
+        return HttpResponse.json(JSON.parse(new TextDecoder().decode(buffer)));
     }),
 
     http.post(engagePath, async () => {
