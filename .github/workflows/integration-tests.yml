@@ -68,7 +68,7 @@ jobs:
           chrome-version: stable
 
       - name: Run tests
-        run: npm run test:integration
+        run: pnpm run test:integration
 
       - name: Upload Playwright report (on failure)
         if: failure()

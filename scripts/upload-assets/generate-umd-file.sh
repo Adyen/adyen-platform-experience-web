@@ -23,7 +23,7 @@ CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
 
 echo "Running the build process from directory: $(pwd)"
-npm run "$BUILD_SCRIPT"
+pnpm run "$BUILD_SCRIPT"
 echo "Build complete"
 
 if [ ! -f "$UMD_FILE" ]; then
