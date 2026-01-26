@@ -397,8 +397,6 @@ const Select = <T extends SelectItem>({
         [setTextFilter]
     );
 
-    const showingList = useRef(false);
-
     /**
      * Toggles the selectList and focuses in either the filter input or in the selectList button
      * @param e - Event
@@ -406,9 +404,7 @@ const Select = <T extends SelectItem>({
     const toggleList = useCallback(
         (e: Event) => {
             e.preventDefault();
-            if (!showingList.current) {
-                setShowList(showList => !showList);
-            }
+            setShowList(showList => !showList);
             showList && resetSelection(cachedSelectedItems.current);
         },
         [setShowList, showList, resetSelection]
@@ -416,10 +412,14 @@ const Select = <T extends SelectItem>({
 
     useEffect(() => {
         if (showList && filterable) {
-            filterInputRef.current?.focus();
+            // Use requestAnimationFrame to ensure focus happens after any parent
+            // focus traps (e.g., Modal) have completed their focus management
+            const frame = requestAnimationFrame(() => {
+                filterInputRef.current?.focus();
+            });
             setActiveIndex(-1);
+            return () => cancelAnimationFrame(frame);
         }
-        showingList.current = showList;
     }, [filterable, showList]);
 
     const handleClear = useCallback(
