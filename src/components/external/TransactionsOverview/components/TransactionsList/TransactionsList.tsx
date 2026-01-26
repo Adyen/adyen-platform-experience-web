@@ -9,8 +9,8 @@ import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyt
 import useModalDetails from '../../../../../hooks/useModalDetails/useModalDetails';
 
 const TransactionsList = ({
-    accountBalancesResult,
     balanceAccount,
+    currenciesLookupResult,
     dataCustomization,
     loadingBalanceAccounts,
     onContactSupport,
@@ -19,7 +19,7 @@ const TransactionsList = ({
     transactionsListResult,
 }: TransactionsListProps) => {
     const userEvents = useAnalyticsContext();
-    const { currencies: availableCurrencies } = accountBalancesResult;
+    const { sortedCurrencies } = currenciesLookupResult;
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails({
         transaction: {
@@ -67,9 +67,9 @@ const TransactionsList = ({
         >
             <TransactionsTable
                 activeBalanceAccount={balanceAccount}
-                availableCurrencies={availableCurrencies as (typeof availableCurrencies)[number][]}
+                availableCurrencies={sortedCurrencies as (typeof sortedCurrencies)[number][]}
                 error={transactionsError as AdyenPlatformExperienceError}
-                hasMultipleCurrencies={accountBalancesResult.isMultiCurrency}
+                hasMultipleCurrencies={sortedCurrencies.length > 1}
                 loading={loadingBalanceAccounts || loadingTransactions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={onLimitSelection}

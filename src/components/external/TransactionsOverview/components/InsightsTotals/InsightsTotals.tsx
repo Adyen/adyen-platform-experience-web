@@ -7,26 +7,23 @@ import { ITransactionCategory } from '../../../../../types';
 import { getTransactionCategory } from '../../../../utils/translation/getters';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import { TransactionsOverviewInsightsProps } from '../TransactionsOverview/TransactionsOverviewInsights';
+import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AmountDisplay, { AmountDisplayProps } from '../AmountDisplay/AmountDisplay';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import './InsightsTotals.scss';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 
-export interface InsightsTotalsProps {
-    currency?: string;
-    loadingTotals: boolean;
-    totals: ReturnType<typeof useTransactionsTotals>['totalsLookup'];
-    error?: Error;
-}
+export interface InsightsTotalsProps extends TransactionsOverviewInsightsProps {}
 
-const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals, error }: InsightsTotalsProps) => {
+const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsResult }: InsightsTotalsProps) => {
     const { i18n } = useCoreContext();
-    const data = (insightsCurrency && totals[insightsCurrency]) || undefined;
+    const { currenciesDictionary } = currenciesLookupResult;
 
-    if (loadingTotals || !data) {
+    const data = (currency && currenciesDictionary[currency]?.totals) || undefined;
+
+    if (transactionsTotalsResult.isWaiting || !data) {
         const breakdownArray = Array.from({ length: 2 });
         const breakdownListArray = Array.from({ length: 3 });
         const className = cx(classes.skeleton, classes.skeletonLoading);
@@ -54,7 +51,7 @@ const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals, err
 
     return (
         <div className={classes.root}>
-            {error ? (
+            {transactionsTotalsResult.error ? (
                 <div className={classes.errorContainer}>
                     <ErrorMessageDisplay
                         title={'common.errors.somethingWentWrong'}
@@ -63,6 +60,7 @@ const InsightsTotals = ({ currency: insightsCurrency, loadingTotals, totals, err
                         outlined={false}
                         withImage
                         refreshComponent
+                        onRefreshComponent={transactionsTotalsResult.refresh}
                     />
                 </div>
             ) : (

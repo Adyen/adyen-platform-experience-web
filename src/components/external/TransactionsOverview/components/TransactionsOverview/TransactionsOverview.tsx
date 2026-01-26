@@ -1,28 +1,25 @@
 import cx from 'classnames';
 import useTransactionsList from '../../hooks/useTransactionsList';
-import useTransactionsFilters from '../../hooks/useTransactionsFilters';
 import useTransactionsViewSwitcher from '../../hooks/useTransactionsViewSwitcher';
 import useTransactionsTotals, { GetQueryParams } from '../../hooks/useTransactionsTotals';
 import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 import TransactionsOverviewList from './TransactionsOverviewList';
 import TransactionsOverviewInsights from './TransactionsOverviewInsights';
 import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { TransactionOverviewProps, TransactionsView } from '../../types';
+import { TransactionOverviewProps, TransactionsFilters as Filters, TransactionsView } from '../../types';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { classes, INITIAL_FILTERS } from '../../constants';
 import { Header } from '../../../../internal/Header';
-import { useMemo, useState } from 'preact/hooks';
-import { classes } from '../../constants';
 import './TransactionsOverview.scss';
 
-const getTransactionsListTotalsQuery: GetQueryParams = allQueryParams => allQueryParams;
-
-const getTransactionsInsightsTotalsQuery: GetQueryParams = allQueryParams => {
-    const { balanceAccountId, createdSince, createdUntil } = allQueryParams;
-    return { balanceAccountId, createdSince, createdUntil };
-};
+const INSIGHTS_FILTERS_SET = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
+const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({ balanceAccountId, createdSince, createdUntil });
+const getTransactionsTotalsQueryParams: GetQueryParams = allQueryParams => allQueryParams;
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -36,18 +33,9 @@ export const TransactionsOverview = ({
     hideTitle,
     dataCustomization,
 }: TransactionOverviewProps) => {
+    const [filters, setFilters] = useState(INITIAL_FILTERS);
+    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(Date.now());
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
-    const { activeView, onViewChange, viewTabs } = useTransactionsViewSwitcher();
-    const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
-
-    const {
-        filters,
-        onFiltersChange,
-        lastFiltersChangeTimestamp,
-        insightsFiltersPendingRefresh,
-        transactionsFiltersChanged,
-        transactionsFiltersPendingRefresh,
-    } = useTransactionsFilters({ activeView });
 
     const filterBarState = useFilterBarState();
 
@@ -55,10 +43,34 @@ export const TransactionsOverview = ({
     const { isMobileContainer } = filterBarState;
     const { i18n } = useCoreContext();
 
+    const { activeView, onViewChange, viewTabs } = useTransactionsViewSwitcher();
+    const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
+    const hasActiveBalanceAccount = !!balanceAccount?.id;
+
+    const onFiltersChange = useCallback((filters: Readonly<Filters>) => {
+        setLastFiltersChangeTimestamp(Date.now());
+        setFilters(filters);
+    }, []);
+
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
+    const insightsTotalsResult = useTransactionsTotals({
+        fetchEnabled: !isTransactionsView && hasActiveBalanceAccount,
+        getQueryParams: getInsightsTotalsQueryParams,
+        applicableFilters: INSIGHTS_FILTERS_SET,
+        now: lastFiltersChangeTimestamp,
+        filters,
+    });
+
+    const transactionsTotalsResult = useTransactionsTotals({
+        fetchEnabled: isTransactionsView && hasActiveBalanceAccount,
+        getQueryParams: getTransactionsTotalsQueryParams,
+        now: lastFiltersChangeTimestamp,
+        filters,
+    });
+
     const transactionsListResult = useTransactionsList({
-        fetchEnabled: transactionsFiltersChanged,
+        fetchEnabled: hasActiveBalanceAccount,
         now: lastFiltersChangeTimestamp,
         allowLimitSelection,
         dataCustomization,
@@ -67,22 +79,10 @@ export const TransactionsOverview = ({
         filters,
     });
 
-    const transactionsListTotalsResult = useTransactionsTotals({
-        currencies: accountBalancesResult.currencies,
-        fetchEnabled: transactionsFiltersPendingRefresh,
-        loadingBalances: accountBalancesResult.isWaiting,
-        getQueryParams: getTransactionsListTotalsQuery,
-        now: lastFiltersChangeTimestamp,
-        filters,
-    });
-
-    const transactionsInsightsTotalsResult = useTransactionsTotals({
-        currencies: accountBalancesResult.currencies,
-        fetchEnabled: insightsFiltersPendingRefresh,
-        loadingBalances: accountBalancesResult.isWaiting,
-        getQueryParams: getTransactionsInsightsTotalsQuery,
-        now: lastFiltersChangeTimestamp,
-        filters,
+    const currenciesLookupResult = useCurrenciesLookup({
+        defaultCurrency: balanceAccount?.defaultCurrencyCode,
+        balances: accountBalancesResult.balances,
+        totals: (isTransactionsView ? transactionsTotalsResult : insightsTotalsResult).totals,
     });
 
     const exportButton = useMemo(
@@ -121,7 +121,7 @@ export const TransactionsOverview = ({
             <div role="toolbar" className={classes.toolbar}>
                 <TransactionsFilters
                     {...filterBarState}
-                    availableCurrencies={accountBalancesResult.currencies}
+                    availableCurrencies={currenciesLookupResult.sortedCurrencies}
                     balanceAccounts={balanceAccounts}
                     isTransactionsView={isTransactionsView}
                     setInsightsCurrency={setInsightsCurrency}
@@ -135,16 +135,21 @@ export const TransactionsOverview = ({
                     accountBalancesResult={accountBalancesResult}
                     balanceAccount={balanceAccount}
                     balanceAccounts={balanceAccounts}
+                    currenciesLookupResult={currenciesLookupResult}
                     dataCustomization={dataCustomization}
                     isLoadingBalanceAccount={isLoadingBalanceAccount}
                     onContactSupport={onContactSupport}
                     onRecordSelection={onRecordSelection}
                     showDetails={showDetails}
                     transactionsListResult={transactionsListResult}
-                    transactionsTotalsResult={transactionsListTotalsResult}
+                    transactionsTotalsResult={transactionsTotalsResult}
                 />
             ) : (
-                <TransactionsOverviewInsights currency={insightsCurrency} transactionsTotalsResult={transactionsInsightsTotalsResult} />
+                <TransactionsOverviewInsights
+                    currency={insightsCurrency}
+                    currenciesLookupResult={currenciesLookupResult}
+                    transactionsTotalsResult={insightsTotalsResult}
+                />
             )}
         </div>
     );
