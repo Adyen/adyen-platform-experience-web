@@ -18,7 +18,10 @@ test.describe('Data Customization', () => {
         await expect(page.getByText('Reference ID', { exact: true })).toBeHidden();
         await expect(page.getByText('4B7N9Q2Y6R1W5M8T', { exact: true })).toBeHidden();
 
-        await expect(page.getByTestId('copy-icon')).toHaveCount(1);
+        await expect(page.getByText('Merchant reference', { exact: true })).toBeVisible();
+        await expect(page.getByText('TX-F9X2V8L7P1K6W', { exact: true })).toBeVisible();
+
+        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
     });
 
     test('should render payment transaction details with custom data fields', async ({ page }) => {
