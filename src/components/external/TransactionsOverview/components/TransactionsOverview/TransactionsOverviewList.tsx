@@ -41,8 +41,8 @@ const TransactionsOverviewList = ({
     ...transactionsListProps
 }: TransactionsOverviewListProps) => {
     const { i18n, updateCore } = useCoreContext();
-    const { isWaiting: loadingBalances, balances } = accountBalancesResult;
-    const { isWaiting: loadingTotals, totals, error } = transactionsTotalsResult;
+    const { error: balancesError, isWaiting: loadingBalances, balances } = accountBalancesResult;
+    const { error: totalsError, isWaiting: loadingTotals, totals } = transactionsTotalsResult;
     const defaultCurrencyCode = balanceAccount?.defaultCurrencyCode;
 
     const defaultCurrencyFirstSortFn = useCallback(
@@ -65,26 +65,41 @@ const TransactionsOverviewList = ({
     return (
         <>
             <div className={classes.summary}>
-                {error ? (
-                    <Alert
-                        className={classes.totalsError}
-                        type={AlertTypeOption.WARNING}
-                        title={i18n.get('transactions.overview.totals.error')}
-                        description={
-                            <div>
-                                <Button variant={ButtonVariant.TERTIARY} onClick={updateCore}>
-                                    {i18n.get('common.actions.refresh.labels.default')}
-                                </Button>
-                            </div>
-                        }
-                    />
-                ) : (
-                    <div className={classes.summaryItem}>
-                        <TransactionTotals totals={sortedTotals} loadingTotals={loadingTotals} />
-                    </div>
-                )}
                 <div className={classes.summaryItem}>
-                    <Balances balances={sortedBalances} loadingBalances={loadingBalances} />
+                    {totalsError ? (
+                        <Alert
+                            className={classes.totalsError}
+                            type={AlertTypeOption.WARNING}
+                            title={i18n.get('transactions.overview.totals.error')}
+                            description={
+                                <div>
+                                    <Button variant={ButtonVariant.TERTIARY} onClick={updateCore}>
+                                        {i18n.get('common.actions.refresh.labels.default')}
+                                    </Button>
+                                </div>
+                            }
+                        />
+                    ) : (
+                        <TransactionTotals totals={sortedTotals} loadingTotals={loadingTotals} />
+                    )}
+                </div>
+                <div className={classes.summaryItem}>
+                    {balancesError ? (
+                        <Alert
+                            className={classes.totalsError}
+                            type={AlertTypeOption.WARNING}
+                            title={i18n.get('transactions.overview.balances.error')}
+                            description={
+                                <div>
+                                    <Button variant={ButtonVariant.TERTIARY} onClick={updateCore}>
+                                        {i18n.get('common.actions.refresh.labels.default')}
+                                    </Button>
+                                </div>
+                            }
+                        />
+                    ) : (
+                        <Balances balances={sortedBalances} loadingBalances={loadingBalances} />
+                    )}
                 </div>
             </div>
 
