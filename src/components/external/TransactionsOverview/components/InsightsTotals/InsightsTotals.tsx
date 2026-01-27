@@ -15,9 +15,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import './InsightsTotals.scss';
 
-export interface InsightsTotalsProps extends TransactionsOverviewInsightsProps {}
-
-const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsResult }: InsightsTotalsProps) => {
+const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsResult }: TransactionsOverviewInsightsProps) => {
     const { i18n } = useCoreContext();
     const { currenciesDictionary } = currenciesLookupResult;
 

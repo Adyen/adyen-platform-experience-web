@@ -124,6 +124,7 @@ export const TransactionsOverview = ({
                     availableCurrencies={currenciesLookupResult.sortedCurrencies}
                     balanceAccounts={balanceAccounts}
                     isTransactionsView={isTransactionsView}
+                    insightsCurrency={insightsCurrency}
                     setInsightsCurrency={setInsightsCurrency}
                     onChange={onFiltersChange}
                 />
