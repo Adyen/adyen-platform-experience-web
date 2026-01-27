@@ -1,5 +1,5 @@
+import type { HTMLAttributes } from 'preact';
 import type { SpinButtonCalibrationConfigProps, SpinButtonRecord } from './internal/types';
-import type { HTMLProps } from 'preact/compat';
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes
 type ExcludedSpinButtonInputProps =
@@ -36,7 +36,7 @@ export const enum SpinButtonControl {
 }
 
 export interface SpinButtonProps
-    extends Omit<HTMLProps<HTMLInputElement>, ExcludedSpinButtonInputProps | keyof SpinButtonCalibrationConfigProps>,
+    extends Omit<HTMLAttributes<HTMLInputElement>, ExcludedSpinButtonInputProps | keyof SpinButtonCalibrationConfigProps>,
         SpinButtonCalibrationConfigProps {
     disabled?: boolean;
     onStatePush?: NonNullable<SpinButtonRecord['onStatePush']>;
