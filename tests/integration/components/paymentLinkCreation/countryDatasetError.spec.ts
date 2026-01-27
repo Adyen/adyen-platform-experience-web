@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-pay-by-link-payment-link-creation--country-dataset-fallback';
+const STORY_ID = 'mocked-pay-by-link-payment-link-creation--country-dataset-error';
 
-test.describe('Payment link creation - Country dataset fallback', () => {
+test.describe('Payment link creation - Country dataset error', () => {
     test('Should display country options in English when CDN country dataset fetch fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 

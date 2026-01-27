@@ -124,8 +124,8 @@ export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
     },
 };
 
-export const CountryDatasetFallback: ElementStory<typeof PaymentLinkCreation> = {
-    name: 'Error - Country dataset',
+export const CountryDatasetError: ElementStory<typeof PaymentLinkCreation> = {
+    name: 'Error - Country Dataset Error',
     args: {
         mockedApi: true,
         coreOptions: {
