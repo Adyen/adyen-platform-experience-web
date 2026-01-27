@@ -29,10 +29,12 @@ test.describe('Grant: Missing Action Anacredit', () => {
             label: 'Submit information for AnaCredit button',
         };
 
-        await page.getByText('Submit information').click();
-        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
         const redirectionURL = 'https://www.adyen.com/capital';
+
+        await page.getByText('Submit information').click();
         await page.waitForURL(redirectionURL);
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
+
         expect(page.url()).toBe(redirectionURL);
     });
 });

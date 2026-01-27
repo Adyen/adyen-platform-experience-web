@@ -11,19 +11,38 @@ const pageAnalyticsEventsMap = new WeakMap<Page, PageAnalyticsEvent[]>();
 export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
     analyticsEvents: async ({ page }, use) => {
         let analyticsEvents = pageAnalyticsEventsMap.get(page);
+        let abort: (() => void) | undefined = undefined;
 
         if (analyticsEvents === undefined) {
-            page.on('request', request => {
-                if (request.url().includes('/uxdsclient/track')) {
-                    analyticsEvents?.push(
-                        (async () => {
-                            const response = await request.response();
-                            const data = await response?.json();
-                            return data as PageAnalyticsEvent;
-                        })()
-                    );
-                }
+            const abortController = new AbortController();
+            const { signal } = abortController;
+
+            const abortPromise = new Promise<void>(resolve => {
+                signal.addEventListener('abort', () => resolve(), { once: true });
             });
+
+            abort = abortController.abort.bind(abortController);
+
+            (function captureNextAnalyticsRequest() {
+                if (signal.aborted) {
+                    abort = undefined;
+                } else {
+                    const nextRequestPromise = page.waitForRequest(/uxdsclient\/track/);
+
+                    Promise.race([nextRequestPromise, abortPromise]).then(request => {
+                        if (!request) return;
+                        captureNextAnalyticsRequest();
+                        analyticsEvents?.push(
+                            (async () => {
+                                const response = await request.response();
+                                const data = await response?.json();
+                                return data as PageAnalyticsEvent;
+                            })()
+                        );
+                    });
+                }
+            })();
+
             pageAnalyticsEventsMap.set(page, (analyticsEvents = []));
         }
 
@@ -31,6 +50,7 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
         await use(analyticsEvents);
 
         // cleanup after the test
+        abort?.();
         analyticsEvents.length = 0;
         pageAnalyticsEventsMap.delete(page);
     },
