@@ -111,7 +111,7 @@ export const SubmitInvalidFieldError: ElementStory<typeof PaymentLinkCreation> =
 };
 
 export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
-    name: 'Error -Configuration Error',
+    name: 'Error - Configuration Error',
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
@@ -125,7 +125,7 @@ export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
 };
 
 export const CountryDatasetFallback: ElementStory<typeof PaymentLinkCreation> = {
-    name: 'Country Dataset Fallback',
+    name: 'Error - Country dataset',
     args: {
         mockedApi: true,
         coreOptions: {

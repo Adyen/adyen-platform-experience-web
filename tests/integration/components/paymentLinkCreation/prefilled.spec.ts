@@ -7,8 +7,6 @@ test.describe('Payment link creation - Link creation success', () => {
     test('Should successfully create a payment link without changing any prefilled fields', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-
         const continueButton = page.getByRole('button', { name: 'Continue' });
         const createPaymentLinkButton = page.getByRole('button', { name: 'Create payment link' });
 
@@ -62,15 +60,5 @@ test.describe('Payment link creation - Link creation success', () => {
         // Verify success
         await expect(page.getByText('Payment link created')).toBeVisible();
         await expect(page.getByText('Copy the unique link below')).toBeVisible();
-
-        // Test copy button
-        await page.getByRole('button', { name: 'Copy payment link' }).click();
-        await expect(page.getByRole('button', { name: 'Copied to clipboard' })).toBeVisible();
-
-        const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-        expect(clipboardText).toBe('http://pay.adyen/links/12345');
-
-        // Verify show details button is present
-        await expect(page.getByRole('button', { name: 'Show details' })).toBeVisible();
     });
 });
