@@ -1,5 +1,6 @@
+import { HTMLAttributes } from 'preact';
+import { FC } from 'preact/compat';
 import cx from 'classnames';
-import { FC, HTMLProps } from 'preact/compat';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import useComponentHeadingElement, { ComponentHeadingType } from '../../../hooks/useComponentHeadingElement';
@@ -11,7 +12,7 @@ import './Header.scss';
 
 export const BASE_CLASS = 'adyen-pe-header';
 
-export interface HeaderProps extends HTMLProps<HTMLHeadingElement> {
+export interface HeaderProps extends HTMLAttributes<HTMLHeadingElement> {
     baseClassName?: string;
     forwardedToRoot?: boolean;
     hasDivider?: boolean;
