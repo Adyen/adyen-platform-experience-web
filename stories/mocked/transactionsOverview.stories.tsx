@@ -63,14 +63,6 @@ export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const NetworkError: ElementStory<typeof TransactionsOverview> = {
-    name: 'Error - Network',
-    args: { mockedApi: true },
-    parameters: {
-        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.networkError },
-    },
-};
-
 export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     name: 'Data customization',
     args: {

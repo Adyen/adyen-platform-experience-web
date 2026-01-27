@@ -824,21 +824,5 @@ export const TRANSACTIONS_OVERVIEW_HANDLERS = (() => {
                 }),
             ],
         },
-        networkError: {
-            handlers: [
-                http.get(mockEndpoints.balances, () => {
-                    return HttpResponse.error();
-                }),
-                http.get(mockEndpoints.transactions, () => {
-                    return HttpResponse.error();
-                }),
-                http.get(mockEndpoints.transactionsTotals, () => {
-                    return HttpResponse.error();
-                }),
-                http.get(mockEndpoints.downloadTransactions, () => {
-                    return HttpResponse.error();
-                }),
-            ],
-        },
     };
 })();
