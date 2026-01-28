@@ -27,21 +27,26 @@ const useCurrencySelection = ({
         [availableCurrencies]
     );
 
-    const getCurrencyIndex = useCallback(
-        (currency?: string) => (currency ? (availableCurrencies?.findIndex(currentCurrency => currentCurrency === currency) ?? -1) : -1),
+    const getCurrencyIfAvailable = useCallback(
+        (currency?: string) => {
+            const currencyIndex = currency ? (availableCurrencies?.findIndex(currentCurrency => currentCurrency === currency) ?? -1) : -1;
+            return availableCurrencies?.[currencyIndex];
+        },
         [availableCurrencies]
     );
 
+    const [activeCurrency, setActiveCurrency] = useState(() => getCurrencyIfAvailable(selectedCurrency));
+
     const onCurrencySelection = useCallback(
         ({ target }: { target?: { value: string } }) => {
-            const selectedIndex = getCurrencyIndex(target?.value);
-            if (selectedIndex >= 0) setSelectedCurrencyIndex(selectedIndex);
+            const selectedCurrency = getCurrencyIfAvailable(target?.value);
+            if (selectedCurrency) {
+                cachedActiveCurrencyRef.current = activeCurrency;
+                setActiveCurrency(selectedCurrency);
+            }
         },
-        [getCurrencyIndex]
+        [getCurrencyIfAvailable, activeCurrency]
     );
-
-    const [selectedCurrencyIndex, setSelectedCurrencyIndex] = useState(() => getCurrencyIndex(selectedCurrency));
-    const activeCurrency = useMemo(() => availableCurrencies?.[selectedCurrencyIndex], [availableCurrencies, selectedCurrencyIndex]);
 
     const cachedActiveCurrencyRef = useRef<string | undefined>();
     const cachedAvailableCurrencies = useRef(availableCurrencies);
@@ -52,9 +57,9 @@ const useCurrencySelection = ({
             cachedAvailableCurrencies.current = availableCurrencies;
             cachedSelectedCurrency.current = selectedCurrency;
             cachedActiveCurrencyRef.current = undefined;
-            setSelectedCurrencyIndex(getCurrencyIndex(selectedCurrency));
+            setActiveCurrency(getCurrencyIfAvailable(selectedCurrency));
         }
-    }, [getCurrencyIndex, selectedCurrency]);
+    }, [getCurrencyIfAvailable, selectedCurrency]);
 
     useEffect(() => {
         const cachedActiveCurrency = cachedActiveCurrencyRef.current;

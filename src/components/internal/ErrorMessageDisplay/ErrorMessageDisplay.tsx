@@ -32,6 +32,7 @@ type ErrorMessageDisplayProps = {
     centered?: boolean;
     refreshComponent?: boolean;
     onContactSupport?: () => void;
+    onRefreshComponent?: () => void;
     translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
     absolutePosition?: boolean;
     outlined?: boolean;
@@ -57,6 +58,7 @@ export const ErrorMessageDisplay = ({
     withImage,
     centered,
     refreshComponent,
+    onRefreshComponent,
     onContactSupport,
     translationValues,
     absolutePosition = true,
@@ -118,7 +120,7 @@ export const ErrorMessageDisplay = ({
                     {renderSecondaryButton && renderSecondaryButton()}
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('common.actions.contactSupport.labels.reachOut')}</Button>}
                     {!onContactSupport && refreshComponent && (
-                        <Button onClick={updateCore}>{i18n.get('common.actions.refresh.labels.default')}</Button>
+                        <Button onClick={onRefreshComponent ?? updateCore}>{i18n.get('common.actions.refresh.labels.default')}</Button>
                     )}
                 </div>
             )}
