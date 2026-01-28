@@ -1,5 +1,4 @@
-import { ComponentChildren } from 'preact';
-import { JSXInternal } from 'preact/src/jsx';
+import { ComponentChildren, HTMLAttributes } from 'preact';
 
 export type ModalSize = 'fluid' | 'small' | 'large' | 'extra-large' | 'full-screen';
 
@@ -15,4 +14,4 @@ interface ModalBaseProps {
     dismissible?: boolean;
 }
 
-export type ModalProps = ModalBaseProps & Pick<JSXInternal.HTMLAttributes<HTMLElement>, 'aria-label'>;
+export type ModalProps = ModalBaseProps & Pick<HTMLAttributes<HTMLElement>, 'aria-label'>;

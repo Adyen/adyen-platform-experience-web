@@ -1,6 +1,5 @@
 import cx from 'classnames';
-import { JSXInternal } from 'preact/src/jsx';
-import { createRef, RefObject } from 'preact';
+import { createRef, RefObject, JSX } from 'preact';
 import { BaseElementProps, ExternalComponentType, IUIElement, UIElementProps, UIElementStatus } from '../../types';
 import { AnalyticsProvider } from '../../../core/Context/analytics/AnalyticsProvider';
 import { ConfigProvider } from '../../../core/ConfigContext';
@@ -11,7 +10,7 @@ import './UIElement.scss';
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
 
-    public componentToRender: (() => JSXInternal.Element) | null = null;
+    public componentToRender: (() => JSX.Element) | null = null;
     public compRef: RefObject<HTMLDivElement>;
     public customClassNames: string | undefined;
     public elementRef: UIElement<P> | null;

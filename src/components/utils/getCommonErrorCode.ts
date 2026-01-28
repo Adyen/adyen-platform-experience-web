@@ -1,13 +1,13 @@
+import { JSX } from 'preact';
 import AdyenPlatformExperienceError from '../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../translations';
-import { JSXInternal } from 'preact/src/jsx';
 
 export type ErrorMessage = {
     title: TranslationKey;
     message?: TranslationKey | TranslationKey[];
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    translationValues?: { [k in TranslationKey]?: JSX.Element | null };
     images?: {
         desktop?: string;
         mobile?: string;

@@ -1,7 +1,7 @@
+import { JSX } from 'preact';
 import cx from 'classnames';
 import { memo } from 'preact/compat';
 import './StatusBox.scss';
-import { JSXInternal } from 'preact/src/jsx';
 import { Image } from '../Image/Image';
 import {
     STATUS_BOX_CLASS,
@@ -15,7 +15,7 @@ import {
 } from './constants';
 import useStatusBoxData from './useStatusBox';
 
-export type StatusBoxProps = ReturnType<typeof useStatusBoxData> & { tag?: JSXInternal.Element };
+export type StatusBoxProps = ReturnType<typeof useStatusBoxData> & { tag?: JSX.Element };
 
 export type StatusBoxKeys = keyof StatusBoxProps;
 

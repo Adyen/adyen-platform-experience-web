@@ -1,5 +1,5 @@
-import { JSXInternal } from 'preact/src/jsx';
+import { SignalLike } from 'preact';
 import { boolify } from '../value/bool';
 
-export const parseBooleanProp = (prop: boolean | JSXInternal.SignalLike<boolean | undefined> | undefined): boolean =>
-    boolify(prop, (prop as JSXInternal.SignalLike<boolean | undefined>)?.value ?? prop);
+export const parseBooleanProp = (prop: boolean | SignalLike<boolean | undefined> | undefined): boolean =>
+    boolify(prop, (prop as SignalLike<boolean | undefined>)?.value ?? prop);
