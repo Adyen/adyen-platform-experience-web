@@ -32,9 +32,9 @@ test.describe('Grant: Missing Action Anacredit', () => {
         const redirectionURL = 'https://www.adyen.com/capital';
 
         await page.getByText('Submit information').click();
-        await page.waitForURL(redirectionURL);
-        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
-
+        await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
     });
 });

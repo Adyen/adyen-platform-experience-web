@@ -39,9 +39,9 @@ test.describe('Grant: Missing Action Sign TOS', () => {
         const redirectionURL = 'https://www.adyen.com/';
 
         await page.getByRole('button', { name: 'Go to Terms & Conditions', exact: true }).click();
-        await page.waitForURL(redirectionURL);
-        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
-
+        await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
     });
 });
