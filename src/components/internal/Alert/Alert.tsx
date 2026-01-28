@@ -22,6 +22,10 @@ export const Alert = ({
     variant = AlertVariantOption.DEFAULT,
 }: AlertProps) => {
     const { i18n } = useCoreContext();
+
+    console.log(actions);
+    console.log(!!actions?.length && actions?.length > 0);
+
     return (
         <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
             <AlertIcon type={type} className="adyen-pe-alert__icon" />
@@ -44,7 +48,7 @@ export const Alert = ({
                     )}
                     {children}
                 </div>
-                {actions?.length && (
+                {!!actions?.length && (
                     <div className="adyen-pe-alert__actions">
                         {actions?.map((action, index) => (
                             <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>
