@@ -1,7 +1,7 @@
-import { JSXInternal } from 'preact/src/jsx';
+import { JSX } from 'preact';
 
 export interface AccordionProps {
     classNames?: string;
-    header?: JSXInternal.Element | string; //controller?
-    headerInformation?: JSXInternal.Element | string; //controller?
+    header?: JSX.Element | string; //controller?
+    headerInformation?: JSX.Element | string; //controller?
 }

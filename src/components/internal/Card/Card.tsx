@@ -1,6 +1,6 @@
+import { HTMLAttributes } from 'preact';
 import classNames from 'classnames';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { JSXInternal } from 'preact/src/jsx';
 import { uuid } from '../../../utils';
 import { InteractionKeyCode } from '../../types';
 import Icon from '../Icon';
@@ -24,7 +24,7 @@ import { CardProps } from './types';
 import { PropsWithChildren } from 'preact/compat';
 import './Card.scss';
 
-type AriaRole = JSXInternal.HTMLAttributes<HTMLDivElement>['role'];
+type AriaRole = HTMLAttributes<HTMLDivElement>['role'];
 
 const Card = ({
     title,
