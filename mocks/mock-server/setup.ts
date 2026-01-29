@@ -5,7 +5,7 @@ import { EndpointName } from '../../src/types/api/endpoints';
 import { HttpMethod } from '../../src/core/Http/types';
 
 const networkError = false;
-const path = endpoints('mock').setup;
+const path = endpoints().setup;
 
 export const setupBasicResponse = {
     endpoints: {
