@@ -126,7 +126,7 @@ export const PaymentLinksOverview = ({
     }
 >) => {
     const { i18n } = useCoreContext();
-    const { getPaymentLinks, createPBLPaymentLink, getPayByLinkSettings } = useConfigContext().endpoints;
+    const { getPaymentLinks, createPBLPaymentLink, savePayByLinkSettings } = useConfigContext().endpoints;
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions({ exclude: [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE] });
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams(
         'paymentLinks',
@@ -352,7 +352,7 @@ export const PaymentLinksOverview = ({
         setShowFiltersAlert(false);
     }, [setShowFiltersAlert]);
 
-    const hasActionButtons = !!(getPayByLinkSettings || createPBLPaymentLink);
+    const hasActionButtons = !!(savePayByLinkSettings || createPBLPaymentLink);
 
     return (
         <div className={cx(BASE_CLASS, { [BASE_XS_CLASS]: isMobileContainer })}>
@@ -369,7 +369,7 @@ export const PaymentLinksOverview = ({
                         </Button>
                     )}
                     <FilterBarMobileSwitch {...filterBarState} />
-                    {isMobileContainer && getPayByLinkSettings && (
+                    {isMobileContainer && savePayByLinkSettings && (
                         <Button
                             iconButton
                             aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
@@ -477,7 +477,7 @@ export const PaymentLinksOverview = ({
                                         {i18n.get('payByLink.overview.list.actions.createPaymentLink')}
                                     </Button>
                                 )}
-                                {getPayByLinkSettings && (
+                                {savePayByLinkSettings && (
                                     <Button
                                         aria-label={i18n.get('payByLink.overview.actions.settings.a11y.label')}
                                         variant={ButtonVariant.SECONDARY}
