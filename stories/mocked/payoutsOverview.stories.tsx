@@ -19,7 +19,7 @@ export const Default: ElementStory<typeof PayoutsOverview> = {
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints('mock').payouts, () => {
+        http.get(endpoints().payouts, () => {
             return HttpResponse.json({
                 data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
                 _links: {},

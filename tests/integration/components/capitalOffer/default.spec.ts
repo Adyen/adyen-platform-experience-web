@@ -1,12 +1,27 @@
-import { test, expect } from '@playwright/test';
-import { goToStory, setTime } from '../../../utils/utils';
+import type { Page } from '@playwright/test';
+import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
+import {
+    sharedCapitalOfferAnalyticsEventProperties,
+    sharedCapitalOfferSelectionAnalyticsEventProperties,
+    sharedCapitalOfferSummaryAnalyticsEventProperties,
+} from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--default';
 
+const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
+    await page.getByRole('button', { name: 'Review offer' }).click();
+    await expectAnalyticsEvents(analyticsEvents, [
+        ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
+        ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
+    ]);
+};
+
 test.describe('Default', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
     });
 
     test('should render offer selection screen', async ({ page }) => {
@@ -32,21 +47,34 @@ test.describe('Default', () => {
         await expect(page.getByRole('button', { name: 'Review offer' })).toBeVisible();
     });
 
-    test('should update offer details when slider value is changed', async ({ page }) => {
+    test('should update offer details when slider value is changed', async ({ page, analyticsEvents }) => {
         const slider = page.getByRole('slider');
         await slider.dragTo(slider, { targetPosition: { x: 0, y: 0 } });
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            [
+                'Changed capital offer slider',
+                {
+                    ...sharedCapitalOfferSelectionAnalyticsEventProperties,
+                    label: 'Slider changed',
+                    currency: 'EUR',
+                    value: 100000,
+                },
+            ],
+        ]);
+
         await expect(page.getByRole('status')).toHaveText('€1,000');
         await expect(page.getByText('€185.00')).toBeVisible();
         await expect(page.getByText('€110.00')).toBeVisible();
     });
 
-    test('should go to offer summary screen when "Review offer" button is clicked', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+    test('should go to offer summary screen when "Review offer" button is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         await expect(page.getByText('Business financing summary')).toBeVisible();
     });
 
-    test('should render offer summary screen', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+    test('should render offer summary screen', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         await expect(page.getByText('Business financing summary')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('You’re requesting funding of €12,500.')).toBeVisible();
@@ -71,47 +99,67 @@ test.describe('Default', () => {
         await expect(page.getByRole('button', { name: 'Request funds' })).toBeVisible();
     });
 
-    test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+    test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         await page.getByText('Repayment threshold').hover();
         const tooltip = page.getByText('Minimum repayment every 30 days to repay the financing on time');
         await tooltip.waitFor();
         await expect(tooltip).toBeVisible();
     });
 
-    test('should go back to offer selection screen when "Back" button in offer summary screen is clicked', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+    test('should go back to offer selection screen when "Back" button in offer summary screen is clicked', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Back to slider view' }],
+            ['Duration', sharedCapitalOfferSummaryAnalyticsEventProperties],
+        ]);
+
         await expect(page.getByText('Business financing offer')).toBeVisible();
     });
 
-    test('should disable "Request funds" button after funds request call succeeds', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+    test('should disable "Request funds" button after funds request call succeeds', async ({ page, analyticsEvents }) => {
+        await goToOfferSummary(page, analyticsEvents);
         const requestFundsButton = page.getByRole('button', { name: 'Request funds' });
         await requestFundsButton.click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
+        ]);
+
         await expect(requestFundsButton).toBeDisabled();
     });
 });
 
 test.describe('onOfferDismiss argument', () => {
-    test('should render "Back" button when argument is set', async ({ page }) => {
+    test('should render "Back" button when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
 
 test.describe('onOfferSelect argument', () => {
-    test('should not go to offer summary screen when argument is set', async ({ page }) => {
+    test('should not go to offer summary screen when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferSelect: 'Enabled' } });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+
         await page.getByRole('button', { name: 'Review offer' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
+        ]);
+
         await expect(page.getByText('Business financing summary')).toBeHidden();
     });
 });
 
 test.describe('legalEntity from the US', () => {
-    test('should render right legal text with email link', async ({ page }) => {
+    test('should render right legal text with email link', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { ['legalEntity.countryCode']: 'US' } });
-        await page.getByRole('button', { name: 'Review offer' }).click();
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await goToOfferSummary(page, analyticsEvents);
 
         // Verify creditor and address
         await expect(page.getByText('Creditor: Adyen N.V. – San Francisco Branch')).toBeVisible();
