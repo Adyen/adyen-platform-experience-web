@@ -1,26 +1,28 @@
 import { setupWorker } from 'msw/browser';
 import { getMockHandlers } from './utils/utils';
-import { balanceAccountMock } from './balanceAccounts';
-import { payoutsMocks } from './payouts';
-import { transactionsMocks } from './transactions';
-import { reportsMock } from './reports';
-import { sessionsMock } from './sessions';
 import { analyticsMock } from './analytics';
-import { setupMock } from './setup';
+import { balanceAccountMock } from './balanceAccounts';
 import { capitalMock } from './capital';
 import { disputesMocks } from './disputes';
+import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from './payByLink';
+import { payoutsMocks } from './payouts';
+import { reportsMock } from './reports';
+import { sessionsMock } from './sessions';
+import { setupMock } from './setup';
+import { transactionsMocks } from './transactions';
 
 export const mocks = [
-    balanceAccountMock,
-    payoutsMocks,
-    transactionsMocks,
     analyticsMock,
-    sessionsMock,
-    setupMock,
-    reportsMock,
+    balanceAccountMock,
     capitalMock,
     disputesMocks,
+    onboardingMocks,
     payByLinkMocks,
+    payoutsMocks,
+    reportsMock,
+    sessionsMock,
+    setupMock,
+    transactionsMocks,
 ];
 export const mockWorker = setupWorker(...getMockHandlers(mocks));
