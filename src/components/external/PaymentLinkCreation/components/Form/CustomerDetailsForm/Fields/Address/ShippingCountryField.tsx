@@ -11,7 +11,7 @@ interface ShippingCountryFieldProps {
     countriesData?: { data?: IPaymentLinkCountry[] };
     isAddressFieldRequired: AddressFieldRequiredChecker;
     isFetchingCountries: boolean;
-    isSeparateAddress: boolean;
+    isSameAddress: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
     isFetchingCountryDataset: boolean;
 }
@@ -20,7 +20,7 @@ export const ShippingCountryField = ({
     countriesData,
     isAddressFieldRequired,
     isFetchingCountries,
-    isSeparateAddress,
+    isSameAddress,
     countryDatasetData,
     isFetchingCountryDataset,
 }: ShippingCountryFieldProps) => {
@@ -40,11 +40,11 @@ export const ShippingCountryField = ({
 
     const handleChange = useCallback(
         (e: SelectChangeEvent) => {
-            if (!isSeparateAddress) {
+            if (isSameAddress) {
                 setValue('billingAddress.country', (e.target as HTMLSelectElement).value);
             }
         },
-        [isSeparateAddress, setValue]
+        [isSameAddress, setValue]
     );
 
     const isRequired = fieldsConfig['deliveryAddress.country']?.required || isAddressFieldRequired('deliveryAddress.country');

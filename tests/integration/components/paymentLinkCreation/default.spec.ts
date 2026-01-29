@@ -86,7 +86,7 @@ test.describe('Payment link creation - Link creation success', () => {
         await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
 
         // Enable separate billing address
-        await page.getByText('Billing and shipping are').click();
+        await page.getByText('Shipping and billing addresses are the same').click();
 
         // Delivery address
         await page.locator('input[name="deliveryAddress.street"]').fill('Test Street');
