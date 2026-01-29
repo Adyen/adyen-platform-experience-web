@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Timeline",
     "transactions.details.viewSelect.a11y.label": "Visualizzazioni dei dettagli delle transazioni",
     "transactions.overview.balances.currency.label": "Valuta",
+    "transactions.overview.balances.error": "Si è verificato un errore, non è stato possibile caricare i saldi degli account.",
     "transactions.overview.balances.labels.available": "Mostra tutti i saldi disponibili",
     "transactions.overview.balances.labels.default": "Mostra tutti i saldi dei conti",
     "transactions.overview.balances.labels.reserved": "Mostra tutti i saldi riservati",

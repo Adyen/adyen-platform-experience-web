@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Zeitplan",
     "transactions.details.viewSelect.a11y.label": "Ansichten der Transaktionsdetails",
     "transactions.overview.balances.currency.label": "Währung",
+    "transactions.overview.balances.error": "Es ist ein Fehler aufgetreten. Die Kontostände konnten nicht geladen werden.",
     "transactions.overview.balances.labels.available": "Alle verfügbaren Salden anzeigen",
     "transactions.overview.balances.labels.default": "Alle Kontostände anzeigen",
     "transactions.overview.balances.labels.reserved": "Alle reservierten Guthaben anzeigen",

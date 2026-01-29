@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Calendario",
     "transactions.details.viewSelect.a11y.label": "Vistas de detalles de la transacción",
     "transactions.overview.balances.currency.label": "Divisa",
+    "transactions.overview.balances.error": "Ha habido un problema y no hemos podido cargar los saldos de cuenta.",
     "transactions.overview.balances.labels.available": "Mostrar todos los saldos disponibles",
     "transactions.overview.balances.labels.default": "Mostrar todos los saldos de cuenta",
     "transactions.overview.balances.labels.reserved": "Mostrar todos los saldos reservados",

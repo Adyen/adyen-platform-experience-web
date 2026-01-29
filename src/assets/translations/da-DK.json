@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Tidslinje",
     "transactions.details.viewSelect.a11y.label": "Visninger af transaktioner",
     "transactions.overview.balances.currency.label": "Valuta",
+    "transactions.overview.balances.error": "Noget gik galt. Vi kunne ikke indlæse kontosaldi.",
     "transactions.overview.balances.labels.available": "Vis alle tilgængelige saldi",
     "transactions.overview.balances.labels.default": "Vis alle kontosaldi",
     "transactions.overview.balances.labels.reserved": "Vis alle reserverede saldi",

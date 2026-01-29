@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Cronograma",
     "transactions.details.viewSelect.a11y.label": "Navegação pelos detalhes da transação",
     "transactions.overview.balances.currency.label": "Moeda",
+    "transactions.overview.balances.error": "Ocorreu um erro, não foi possível carregar os saldos da conta.",
     "transactions.overview.balances.labels.available": "Exibir todos os saldos disponíveis",
     "transactions.overview.balances.labels.default": "Mostrar todos os saldos da conta",
     "transactions.overview.balances.labels.reserved": "Mostrar todos os saldos reservados",

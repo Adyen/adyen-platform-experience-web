@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Calendrier",
     "transactions.details.viewSelect.a11y.label": "Vues des informations de la transaction",
     "transactions.overview.balances.currency.label": "Devise",
+    "transactions.overview.balances.error": "Une erreur s'est produite lors du chargement des soldes de comptes.",
     "transactions.overview.balances.labels.available": "Afficher tous les soldes disponibles",
     "transactions.overview.balances.labels.default": "Afficher tous les soldes de comptes",
     "transactions.overview.balances.labels.reserved": "Afficher tous les soldes réservés",
