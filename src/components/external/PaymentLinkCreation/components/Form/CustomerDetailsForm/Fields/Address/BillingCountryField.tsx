@@ -13,7 +13,7 @@ interface BillingCountryFieldProps {
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
     isFetchingCountryDataset: boolean;
-    isSeparateAddress?: boolean;
+    isSameAddress?: boolean;
     showBillingFirst?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const BillingCountryField = ({
     isFetchingCountries,
     countryDatasetData,
     isFetchingCountryDataset,
-    isSeparateAddress = true,
+    isSameAddress = false,
     showBillingFirst = false,
 }: BillingCountryFieldProps) => {
     const { i18n } = useCoreContext();
@@ -42,11 +42,11 @@ export const BillingCountryField = ({
 
     const handleChange = useCallback(
         (e: SelectChangeEvent) => {
-            if (showBillingFirst && !isSeparateAddress) {
+            if (showBillingFirst && isSameAddress) {
                 setValue('deliveryAddress.country', (e.target as HTMLSelectElement).value);
             }
         },
-        [isSeparateAddress, setValue, showBillingFirst]
+        [isSameAddress, setValue, showBillingFirst]
     );
 
     const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');

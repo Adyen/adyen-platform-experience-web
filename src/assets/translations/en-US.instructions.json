@@ -279,6 +279,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Validation error message displayed when the phone number field is empty but required.",
     "payByLink.creation.fields.sendLinkToShopper.label": "Label for a checkbox or option to automatically send the payment link to the shopper's email address.",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Label for a checkbox or option to send a payment confirmation email to the shopper after successful payment.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Label for a checkbox that allows the user to specify that billing and shipping addresses are the same.",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Validation error message displayed when the entered email address format is invalid.",
     "payByLink.creation.fields.shopperEmail.label": "Label for the shopper's email address input field.",
     "payByLink.creation.fields.shopperLastName.label": "Label for the shopper's last name input field.",

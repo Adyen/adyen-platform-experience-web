@@ -18,8 +18,8 @@ import { IPaymentLinkCountry } from '../../../../../../types';
 import { useAddressChecker } from './useAddressChecker';
 
 interface CustomerDetailsFormProps {
-    isSeparateAddress: boolean;
-    setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    isSameAddress: boolean;
+    setIsSameAddress: Dispatch<StateUpdater<boolean>>;
     countriesData?: { data?: IPaymentLinkCountry[] };
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
@@ -27,8 +27,8 @@ interface CustomerDetailsFormProps {
 }
 
 export const CustomerDetailsForm = ({
-    isSeparateAddress,
-    setIsSeparateAddress,
+    isSameAddress,
+    setIsSameAddress,
     countriesData,
     isFetchingCountries,
     countryDatasetData,
@@ -90,7 +90,7 @@ export const CustomerDetailsForm = ({
             {isDeliveryAddressVisible && !showBillingFirst && (
                 <>
                     <DeliveryAddressSection
-                        isSeparateAddress={isSeparateAddress}
+                        isSameAddress={isSameAddress}
                         isAddressFieldRequired={isAddressFieldRequired}
                         isOptional={isDeliveryAddressOptional}
                         countriesData={countriesData}
@@ -98,15 +98,13 @@ export const CustomerDetailsForm = ({
                         countryDatasetData={countryDatasetData}
                         isFetchingCountryDataset={isFetchingCountryDataset}
                     />
-                    {isBillingAddressVisible && (
-                        <BillingAndShippingCheckboxField isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
-                    )}
+                    {isBillingAddressVisible && <BillingAndShippingCheckboxField isSameAddress={isSameAddress} setIsSameAddress={setIsSameAddress} />}
                 </>
             )}
-            {/* Billing address shown in default case (when isSeparateAddress or only billing visible) */}
-            {!showBillingFirst && (isSeparateAddress || (!isDeliveryAddressVisible && isBillingAddressVisible)) && (
+            {/* Billing address shown in default case (when !isSameAddress or only billing visible) */}
+            {!showBillingFirst && (!isSameAddress || (!isDeliveryAddressVisible && isBillingAddressVisible)) && (
                 <BillingAddressSection
-                    isSeparateAddress={isSeparateAddress}
+                    isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     isOptional={isBillingAddressOptional}
                     countriesData={countriesData}
@@ -119,7 +117,7 @@ export const CustomerDetailsForm = ({
             {showBillingFirst && (
                 <>
                     <BillingAddressSection
-                        isSeparateAddress={isSeparateAddress}
+                        isSameAddress={isSameAddress}
                         isAddressFieldRequired={isAddressFieldRequired}
                         showBillingFirst={showBillingFirst}
                         countriesData={countriesData}
@@ -128,13 +126,13 @@ export const CustomerDetailsForm = ({
                         isFetchingCountryDataset={isFetchingCountryDataset}
                     />
                     <BillingAndShippingCheckboxField
-                        isSeparateAddress={isSeparateAddress}
-                        setIsSeparateAddress={setIsSeparateAddress}
+                        isSameAddress={isSameAddress}
+                        setIsSameAddress={setIsSameAddress}
                         showBillingFirst={showBillingFirst}
                     />
-                    {isSeparateAddress && (
+                    {!isSameAddress && (
                         <DeliveryAddressSection
-                            isSeparateAddress={isSeparateAddress}
+                            isSameAddress={isSameAddress}
                             isAddressFieldRequired={isAddressFieldRequired}
                             isOptional
                             countriesData={countriesData}

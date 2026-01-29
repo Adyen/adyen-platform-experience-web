@@ -8,22 +8,22 @@ import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
 interface BillingHouseNumberFieldProps {
-    isSeparateAddress: boolean;
+    isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
     showBillingFirst?: boolean;
 }
 
-export const BillingHouseNumberField = ({ isSeparateAddress, isAddressFieldRequired, showBillingFirst = false }: BillingHouseNumberFieldProps) => {
+export const BillingHouseNumberField = ({ isSameAddress, isAddressFieldRequired, showBillingFirst = false }: BillingHouseNumberFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            if (showBillingFirst && !isSeparateAddress) {
+            if (showBillingFirst && isSameAddress) {
                 setValue('deliveryAddress.houseNumberOrName', e.currentTarget.value);
             }
         },
-        [isSeparateAddress, setValue, showBillingFirst]
+        [isSameAddress, setValue, showBillingFirst]
     );
 
     const isRequired = fieldsConfig['billingAddress.houseNumberOrName']?.required || isAddressFieldRequired('billingAddress.houseNumberOrName');
