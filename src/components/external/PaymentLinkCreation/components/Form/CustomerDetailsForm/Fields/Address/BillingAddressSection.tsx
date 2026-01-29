@@ -10,7 +10,7 @@ import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 import { IPaymentLinkCountry } from '../../../../../../../../types';
 
 interface BillingAddressSectionProps {
-    isSeparateAddress: boolean;
+    isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
     isOptional?: boolean;
     showBillingFirst?: boolean;
@@ -21,7 +21,7 @@ interface BillingAddressSectionProps {
 }
 
 export const BillingAddressSection = ({
-    isSeparateAddress,
+    isSameAddress,
     isAddressFieldRequired,
     isOptional = false,
     showBillingFirst = false,
@@ -55,12 +55,12 @@ export const BillingAddressSection = ({
             </div>
             <div>
                 <BillingStreetField
-                    isSeparateAddress={isSeparateAddress}
+                    isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
                 />
                 <BillingHouseNumberField
-                    isSeparateAddress={isSeparateAddress}
+                    isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
                 />
@@ -72,16 +72,12 @@ export const BillingAddressSection = ({
                     isFetchingCountries={isFetchingCountries}
                     countryDatasetData={countryDatasetData}
                     isFetchingCountryDataset={isFetchingCountryDataset}
-                    isSeparateAddress={isSeparateAddress}
+                    isSameAddress={isSameAddress}
                     showBillingFirst={showBillingFirst}
                 />
-                <BillingCityField
-                    isSeparateAddress={isSeparateAddress}
-                    isAddressFieldRequired={isAddressFieldRequired}
-                    showBillingFirst={showBillingFirst}
-                />
+                <BillingCityField isSameAddress={isSameAddress} isAddressFieldRequired={isAddressFieldRequired} showBillingFirst={showBillingFirst} />
                 <BillingPostalCodeField
-                    isSeparateAddress={isSeparateAddress}
+                    isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
                 />

@@ -33,7 +33,7 @@ import {
 } from '../mock-data/disputes';
 import getDate from '../mock-data/utils/getDate';
 
-const mockEndpoints = endpoints('mock').disputes;
+const mockEndpoints = endpoints().disputes;
 const networkError = false;
 const downloadFileError = false;
 const defaultPaginationLimit = 10;
@@ -269,14 +269,14 @@ const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac7
 const DISPUTES_LIST_ERRORS = {
     internalServerError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.list, () => {
+            httpGetInternalError(endpoints().disputes.list, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
     networkError: {
         handlers: [
-            http.get(endpoints('mock').disputes.list, () => {
+            http.get(endpoints().disputes.list, () => {
                 return HttpResponse.error();
             }),
         ],
@@ -286,7 +286,7 @@ const DISPUTES_LIST_ERRORS = {
 export const DISPUTES_LIST_HANDLERS = {
     emptyList: {
         handlers: [
-            httpGetList(endpoints('mock').disputes.list, () => {
+            httpGetList(endpoints().disputes.list, () => {
                 return HttpResponse.json({ data: [], _links: { next: { cursor: '' }, prev: { cursor: '' } } });
             }),
         ],
@@ -297,21 +297,21 @@ export const DISPUTES_LIST_HANDLERS = {
 const DISPUTE_DETAILS_ERRORS = {
     internalServerError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.details, () => {
+            httpGetInternalError(endpoints().disputes.details, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
     networkError: {
         handlers: [
-            http.get(endpoints('mock').disputes.details, () => {
+            http.get(endpoints().disputes.details, () => {
                 return HttpResponse.error();
             }),
         ],
     },
     unprocessableEntityError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.details, () => {
+            httpGetInternalError(endpoints().disputes.details, () => {
                 const adyenError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, '7ac77fd1d7ac77fd1d', 'Message', '30_112');
 
                 return getErrorHandler({ ...adyenError }, 422);
@@ -320,10 +320,10 @@ const DISPUTE_DETAILS_ERRORS = {
     },
     downloadServerError: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_LOST);
             }),
-            httpGetInternalError(endpoints('mock').disputes.download, async () => {
+            httpGetInternalError(endpoints().disputes.download, async () => {
                 await delay(400);
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
@@ -331,14 +331,14 @@ const DISPUTE_DETAILS_ERRORS = {
     },
     acceptServerError: {
         handlers: [
-            httpGetInternalError(endpoints('mock').disputes.accept, () => {
+            httpGetInternalError(endpoints().disputes.accept, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
     },
     defendServerError: {
         handlers: [
-            httpPostInternalError(endpoints('mock').disputes.defend, () => {
+            httpPostInternalError(endpoints().disputes.defend, () => {
                 return getErrorHandler({ ...genericError500 }, 500);
             }),
         ],
@@ -348,105 +348,105 @@ const DISPUTE_DETAILS_ERRORS = {
 export const DISPUTE_DETAILS_HANDLERS = {
     chargebackAutoDefended: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_AUTO_DEFENDED);
             }),
         ],
     },
     chargebackDefendableExternally: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE_EXTERNALLY);
             }),
         ],
     },
     chargebackDefended: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDED);
             }),
         ],
     },
     chargebackLostNotDefended: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_LOST_NO_ACTION);
             }),
         ],
     },
     chargebackNotDefendable: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_NOT_DEFENDABLE);
             }),
         ],
     },
     notificationOfFraud: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(NOTIFICATION_OF_FRAUD);
             }),
         ],
     },
     rfiExpired: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(RFI_EXPIRED);
             }),
         ],
     },
     rfiAcceptable: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(RFI_ACCEPTABLE);
             }),
         ],
     },
     rfiAccepted: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(RFI_ACCEPTED);
             }),
         ],
     },
     rfiDefendable: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(RFI_DEFENDABLE);
             }),
         ],
     },
     rfiUnresponded: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(RFI_UNRESPONDED);
             }),
         ],
     },
     chargebackAcceptable: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_ACCEPTABLE);
             }),
         ],
     },
     chargebackDefendable: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_DEFENDABLE);
             }),
         ],
     },
     chargebackLost: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_LOST);
             }),
         ],
     },
     chargebackLostWithFeedback: {
         handlers: [
-            httpGetDetails(endpoints('mock').disputes.details, () => {
+            httpGetDetails(endpoints().disputes.details, () => {
                 return HttpResponse.json(CHARGEBACK_LOST_WITH_ISSUER_FEEDBACK);
             }),
         ],
