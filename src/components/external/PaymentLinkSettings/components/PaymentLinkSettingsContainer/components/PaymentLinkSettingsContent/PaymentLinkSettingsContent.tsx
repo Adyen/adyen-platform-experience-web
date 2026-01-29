@@ -7,6 +7,14 @@ import { AlertTypeOption, AlertVariantOption } from '../../../../../../internal/
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import usePaymentLinkSettingsContext from '../../context/context';
 import PaymentLinkSettingsContentLoading from '../PaymentLinkSettingsContentLoading/PaymentLinkSettingsContentLoading';
+import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';
+import SettingsError from '../SettingsError/SettingsError';
+import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
+import { useMemo } from 'preact/hooks';
+import { PERMISSION_ERROR } from '../../utils/getSettingsErrorMessage';
+
+const THEME_ERROR_MESSAGE_KEY = 'payByLink.settings.theme.errors.couldNotLoad';
+const TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY = 'payByLink.settings.termsAndConditions.errors.couldNotLoad';
 
 type PaymentLinkSettingsContentProps = {
     activeMenuItem: string | null;
@@ -15,14 +23,30 @@ type PaymentLinkSettingsContentProps = {
 };
 
 const PaymentLinkSettingsContentItem = ({ activeMenuItem, isLoadingContent }: PaymentLinkSettingsContentProps) => {
+    const { themeViewEnabled, termsAndConditionsViewEnabled } = useSettingsPermission();
+
+    const permissionError = useMemo(() => {
+        if (themeViewEnabled && termsAndConditionsViewEnabled) return undefined;
+        return {
+            errorCode: PERMISSION_ERROR,
+            type: 'error',
+            requestId: '',
+        } as AdyenPlatformExperienceError;
+    }, [themeViewEnabled, termsAndConditionsViewEnabled]);
+
     if (isLoadingContent) {
         return <PaymentLinkSettingsContentLoading activeMenuItem={activeMenuItem} />;
     }
     switch (activeMenuItem) {
-        case MenuItem.theme:
+        case MenuItem.theme: {
+            if (!themeViewEnabled) return <SettingsError error={permissionError} errorMessage={THEME_ERROR_MESSAGE_KEY} />;
             return <PaymentLinkThemeContainer />;
-        case MenuItem.termsAndConditions:
+        }
+        case MenuItem.termsAndConditions: {
+            if (!termsAndConditionsViewEnabled)
+                return <SettingsError error={permissionError} errorMessage={TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY} />;
             return <TermsAndConditionsContainer />;
+        }
         default:
             return null;
     }

@@ -9,16 +9,24 @@ import './SettingsActionButton.scss';
 import { ButtonVariant } from '../../../../../../internal/Button/types';
 import cx from 'classnames';
 import Icon from '../../../../../../internal/Icon';
+import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';
+import { MenuItem } from '../../context/constants';
 
 const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
-    const { onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePayByLinkSettingsContext();
+    const { activeMenuItem, onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePayByLinkSettingsContext();
+    const { canSaveTheme, canSaveTermsAndConditions } = useSettingsPermission();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const isLoading = isLoadingContent || isLoadingStores;
 
+    const isSaveEnabled = useMemo(() => {
+        if (!activeMenuItem) return false;
+        return activeMenuItem === MenuItem.theme ? canSaveTheme : canSaveTermsAndConditions;
+    }, [activeMenuItem, canSaveTermsAndConditions, canSaveTheme]);
+
     const saveButton = useMemo(() => {
         return {
-            disabled: boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess)),
+            disabled: !isSaveEnabled || boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess)),
             event: onSave,
             iconLeft:
                 navigateBack && isSaveSuccess ? (
@@ -29,7 +37,7 @@ const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: 
             state: boolOrFalse(isSaving && !(navigateBack && isSaveSuccess)) ? 'loading' : 'default',
             classNames: isSmContainer ? ['adyen-pe-payment-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isLoading]);
+    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isLoading, isSaveEnabled]);
 
     const goBackButton = useMemo(() => {
         return {
