@@ -13,6 +13,6 @@ test.describe('Redacted', () => {
         await page.getByRole('tab', { name: 'Shopper information' }).click();
         await expect(page.getByText('CUST-001')).toBeVisible();
         await expect(page.getByText('United States')).toBeVisible();
-        await expect(page.getByText('********')).toHaveCount(4);
+        await expect(page.getByText('********')).toHaveCount(5);
     });
 });

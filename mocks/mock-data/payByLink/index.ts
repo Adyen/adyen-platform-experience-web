@@ -24,6 +24,7 @@ const SHOPPERS: IShopperInformation[] = [
             street: '5th Avenue',
             stateOrProvince: 'NY',
         },
+        shippingAddress: { city: 'Paris', country: 'FR', houseNumberOrName: '45', postalCode: '75001', street: 'Champs-Élysées' },
         shopperCountry: 'US',
         shopperEmail: 'john.doe@example.com',
         shopperName: { firstName: 'John', lastName: 'Doe' },
