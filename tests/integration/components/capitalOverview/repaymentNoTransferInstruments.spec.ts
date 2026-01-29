@@ -1,12 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { goToStory, setTime } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties, sharedSendRepaymentButtonAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--repayment-no-transfer-instruments';
 
 test.describe('Repayment - No transfer instruments', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render send repayment button', async ({ page }) => {
@@ -20,11 +22,12 @@ test.describe('Repayment - No transfer instruments', () => {
     });
 
     test.describe('Send repayment view', () => {
-        test.beforeEach(async ({ page }) => {
+        test.beforeEach(async ({ page, analyticsEvents }) => {
             const sendRepaymentButton = page.getByRole('button', { name: 'Send repayment', exact: true }).first();
 
             // switching to send repayment view
             await sendRepaymentButton.click();
+            await expectAnalyticsEvents(analyticsEvents, [['Clicked button', sharedSendRepaymentButtonAnalyticsEventProperties]]);
             await sendRepaymentButton.waitFor({ state: 'detached' });
         });
 
