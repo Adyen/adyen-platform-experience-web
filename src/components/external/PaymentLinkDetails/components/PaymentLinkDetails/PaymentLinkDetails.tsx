@@ -129,8 +129,6 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     const [activeScreen, setActiveScreen] = useState<'details' | 'expirationConfirmation' | 'expirationSuccess'>('details');
     const [isCopiedIndicatorVisible, setCopiedIndicatorVisible] = useState(false);
 
-    console.log('>>', paymentLinkData, paymentLink);
-
     useEffect(() => {
         let timeout: ReturnType<typeof setTimeout> | undefined;
         if (isCopiedIndicatorVisible) {
