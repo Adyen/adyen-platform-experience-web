@@ -11,7 +11,7 @@ const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMet
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints('mock').reports, () => {
+        http.get(endpoints().reports, () => {
             return HttpResponse.json({
                 data: [
                     { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[0], createdAt: Date.now() },
