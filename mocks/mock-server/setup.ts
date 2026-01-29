@@ -79,6 +79,11 @@ export const setupBasicResponse = {
             url: 'capital/grants',
             versions: [1],
         },
+        getOnboardingConfiguration: {
+            method: 'POST',
+            url: 'capital/onboardingConfiguration',
+            versions: [1],
+        },
         getDynamicGrantOffersConfiguration: {
             method: 'GET',
             url: 'capital/grantOffers/dynamic/configuration',
