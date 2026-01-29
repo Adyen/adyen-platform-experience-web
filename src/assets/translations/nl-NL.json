@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Tijdlijn",
     "transactions.details.viewSelect.a11y.label": "Details van de transactie bekijken",
     "transactions.overview.balances.currency.label": "Valuta",
+    "transactions.overview.balances.error": "Er is iets misgegaan, we konden het rekeningsaldo niet laden.",
     "transactions.overview.balances.labels.available": "Alle beschikbare saldi weergeven",
     "transactions.overview.balances.labels.default": "Alle rekeningsaldi weergeven",
     "transactions.overview.balances.labels.reserved": "Alle gereserveerde saldi weergeven",

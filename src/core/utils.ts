@@ -78,12 +78,15 @@ export const getDatasetFromCdn = ({ url }: { url: string }) => {
         subFolder?: string;
         fallback?: Fallback;
     }) => {
-        // If VITE_LOCAL_ASSETS is enabled load from local assets/datasets folder
+        // If VITE_LOCAL_ASSETS is enabled, fetch from local /datasets static path
         if (process.env.VITE_LOCAL_ASSETS) {
             try {
-                const datasetPath = `../assets/datasets${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
-                const module = await import(/* @vite-ignore */ datasetPath);
-                return (module.default || module) as Fallback;
+                const datasetPath = `/datasets${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
+                const response = await fetch(datasetPath);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${datasetPath}: ${response.status}`);
+                }
+                return (await response.json()) as Fallback;
             } catch (error) {
                 console.warn(error);
                 return fallback as Fallback;
@@ -101,15 +104,7 @@ export const getDatasetFromCdn = ({ url }: { url: string }) => {
             })) as Fallback;
         } catch (error) {
             console.warn(error);
-            // Try dynamic import of local dataset as a fallback
-            try {
-                const datasetPath = `../assets/datasets${subFolder ? `/${subFolder}` : ''}/${name}.${extension}`;
-                const module = await import(/* @vite-ignore */ datasetPath);
-                return (module.default || module) as Fallback;
-            } catch (localError) {
-                console.warn(localError);
-                return fallback as Fallback;
-            }
+            return fallback as Fallback;
         }
     };
 };
