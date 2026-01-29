@@ -60,7 +60,7 @@ export const PaymentLinkSettingsProvider = memo(
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
-        const { getPayByLinkSettings, getPayByLinkTheme } = useConfigContext().endpoints;
+        const { getPayByLinkSettings, savePayByLinkSettings, getPayByLinkTheme, updatePayByLinkTheme } = useConfigContext().endpoints;
 
         const menuItemPreSelect = useMemo(() => {
             if (isSmContainer && menuItems.length > 1) return;
@@ -199,8 +199,10 @@ export const PaymentLinkSettingsProvider = memo(
 
         const hasPermission = useMemo(() => {
             if (!activeMenuItem) return false;
-            return activeMenuItem === MenuItem.theme ? !!getPayByLinkTheme : !!getPayByLinkSettings;
-        }, [activeMenuItem, getPayByLinkTheme, getPayByLinkSettings]);
+            return activeMenuItem === MenuItem.theme
+                ? !!getPayByLinkTheme && !!updatePayByLinkTheme
+                : !!getPayByLinkSettings && !!savePayByLinkSettings;
+        }, [activeMenuItem, getPayByLinkTheme, getPayByLinkSettings, savePayByLinkSettings, updatePayByLinkTheme]);
 
         const contentLoading = useMemo(() => {
             if (!hasPermission) return false;

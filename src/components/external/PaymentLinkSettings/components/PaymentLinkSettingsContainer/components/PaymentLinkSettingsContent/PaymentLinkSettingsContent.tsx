@@ -23,28 +23,27 @@ type PaymentLinkSettingsContentProps = {
 };
 
 const PaymentLinkSettingsContentItem = ({ activeMenuItem, isLoadingContent }: PaymentLinkSettingsContentProps) => {
-    const { themeViewEnabled, termsAndConditionsViewEnabled } = useSettingsPermission();
+    const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
 
     const permissionError = useMemo(() => {
-        if (themeViewEnabled && termsAndConditionsViewEnabled) return undefined;
+        if (themeEnabled && termsAndConditionsEnabled) return undefined;
         return {
             errorCode: PERMISSION_ERROR,
             type: 'error',
             requestId: '',
         } as AdyenPlatformExperienceError;
-    }, [themeViewEnabled, termsAndConditionsViewEnabled]);
+    }, [themeEnabled, termsAndConditionsEnabled]);
 
     if (isLoadingContent) {
         return <PaymentLinkSettingsContentLoading activeMenuItem={activeMenuItem} />;
     }
     switch (activeMenuItem) {
         case MenuItem.theme: {
-            if (!themeViewEnabled) return <SettingsError error={permissionError} errorMessage={THEME_ERROR_MESSAGE_KEY} />;
+            if (!themeEnabled) return <SettingsError error={permissionError} errorMessage={THEME_ERROR_MESSAGE_KEY} />;
             return <PaymentLinkThemeContainer />;
         }
         case MenuItem.termsAndConditions: {
-            if (!termsAndConditionsViewEnabled)
-                return <SettingsError error={permissionError} errorMessage={TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY} />;
+            if (!termsAndConditionsEnabled) return <SettingsError error={permissionError} errorMessage={TERMS_AND_CONDITIONS_ERROR_MESSAGE_KEY} />;
             return <TermsAndConditionsContainer />;
         }
         default:

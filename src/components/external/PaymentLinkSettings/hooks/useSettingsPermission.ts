@@ -4,9 +4,7 @@ export const useSettingsPermission = () => {
     const { savePayByLinkSettings, getPayByLinkSettings, getPayByLinkTheme, updatePayByLinkTheme } = useConfigContext().endpoints;
 
     return {
-        themeViewEnabled: !!getPayByLinkTheme && !!updatePayByLinkTheme,
-        termsAndConditionsViewEnabled: !!getPayByLinkSettings && !!savePayByLinkSettings,
-        canSaveTheme: !!updatePayByLinkTheme,
-        canSaveTermsAndConditions: !!savePayByLinkSettings,
+        themeEnabled: !!getPayByLinkTheme && !!updatePayByLinkTheme,
+        termsAndConditionsEnabled: !!getPayByLinkSettings && !!savePayByLinkSettings,
     };
 };

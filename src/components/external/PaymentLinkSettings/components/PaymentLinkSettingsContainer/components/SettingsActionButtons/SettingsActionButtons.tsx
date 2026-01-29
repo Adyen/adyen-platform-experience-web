@@ -15,14 +15,14 @@ import { MenuItem } from '../../context/constants';
 const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
     const { i18n } = useCoreContext();
     const { activeMenuItem, onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePayByLinkSettingsContext();
-    const { canSaveTheme, canSaveTermsAndConditions } = useSettingsPermission();
+    const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const isLoading = isLoadingContent || isLoadingStores;
 
     const isSaveEnabled = useMemo(() => {
         if (!activeMenuItem) return false;
-        return activeMenuItem === MenuItem.theme ? canSaveTheme : canSaveTermsAndConditions;
-    }, [activeMenuItem, canSaveTermsAndConditions, canSaveTheme]);
+        return activeMenuItem === MenuItem.theme ? themeEnabled : termsAndConditionsEnabled;
+    }, [activeMenuItem, termsAndConditionsEnabled, themeEnabled]);
 
     const saveButton = useMemo(() => {
         return {
