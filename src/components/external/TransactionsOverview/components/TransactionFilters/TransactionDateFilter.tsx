@@ -28,7 +28,6 @@ export interface TransactionDateFilterProps {
     eventSubCategory?: string;
     setCreatedDate: (createdDate: RangeTimestamps) => void;
     timezone?: string;
-    now: number;
 }
 
 const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRange) => {
@@ -56,7 +55,7 @@ const getDateRangeSelectionEventValue = (dateRangeSelection: TransactionsDateRan
     }
 };
 
-const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, now, setCreatedDate, timezone }: TransactionDateFilterProps) => {
+const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, setCreatedDate, timezone }: TransactionDateFilterProps) => {
     const { i18n } = useCoreContext();
 
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
@@ -67,22 +66,26 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, n
     const [selectedDateRange, setSelectedDateRange] = useState(defaultDateRange);
     const [pendingResetAction, setPendingResetAction] = useState(false);
 
-    const { from, to, since, until } = useMemo(() => {
-        const { from, to } = getDateRangeTimestamps(createdDate, now, timezone);
-        const fromDate = new Date(from);
-        const toDate = new Date(to);
-        const sinceDate = new Date(now);
-        const untilDate = new Date(now);
+    const { from, to, since, until, now } = useMemo(() => {
+        const timeShiftMs = 1; // time shift for differentiating equivalent time ranges
+        const currentTime = Date.now() + timeShiftMs;
+        const untilDate = new Date(currentTime);
+        const sinceDate = new Date(untilDate);
 
         sinceDate.setFullYear(sinceDate.getFullYear() - TRANSACTION_DATE_RANGE_MAX_YEARS);
+
+        const { from, to } = getDateRangeTimestamps(createdDate, currentTime, timezone);
+        const fromDate = new Date(from);
+        const toDate = new Date(to);
 
         return {
             from: fromDate.toISOString(),
             to: toDate.toISOString(),
             since: sinceDate.toISOString(),
             until: untilDate.toISOString(),
+            now: currentTime - timeShiftMs, // remove time shift
         } as const;
-    }, [createdDate, now, timezone]);
+    }, [createdDate, timezone]);
 
     const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: 'Date filter' });
 

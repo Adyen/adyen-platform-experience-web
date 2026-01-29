@@ -5,13 +5,27 @@
     margin-bottom: auto;
     margin-left: auto;
     padding-top: style.token(spacer-010);
-}
 
-.adyen-pe-transactions-export__button {
-    .adyen-pe-filter-button__label {
+    &__button {
+        .adyen-pe-filter-button__label {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-040);
+        }
+    }
+
+    &__error-alert {
         align-items: center;
-        display: flex;
-        gap: style.token(spacer-040);
+        border: 0;
+        padding: style.token(spacer-050);
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+
+        .adyen-pe-alert__icon {
+            height: auto;
+        }
     }
 }
 

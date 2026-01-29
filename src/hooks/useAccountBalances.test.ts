@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/preact';
+import { act, renderHook, waitFor } from '@testing-library/preact';
 import useAccountBalances from './useAccountBalances';
 import * as ConfigContext from '../core/ConfigContext';
 import { IBalanceAccountBase } from '../types';
@@ -29,13 +29,11 @@ describe('useAccountBalances', () => {
     test('should return correct initial state when balances endpoint is not available', () => {
         const expectedResult = {
             balances: [],
-            balancesLookup: {},
-            currencies: [],
             error: undefined,
+            canRefresh: false,
             isAvailable: false,
-            isEmpty: true,
-            isMultiCurrency: false,
             isWaiting: false,
+            refresh: expect.any(Function),
         };
 
         mockUseConfigContext.mockReturnValue({
@@ -54,16 +52,16 @@ describe('useAccountBalances', () => {
     test('should return correct initial state when balances endpoint is available', async () => {
         const expectedResult = {
             balances: [],
-            balancesLookup: {},
-            currencies: [],
             error: undefined,
+            canRefresh: false,
             isAvailable: true,
-            isEmpty: true,
-            isMultiCurrency: false,
             isWaiting: true,
+            refresh: expect.any(Function),
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
+        mockBalancesEndpoint.mockResolvedValue({ data: [] });
+
         const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         expect(result.current).toStrictEqual(expectedResult);
@@ -81,22 +79,22 @@ describe('useAccountBalances', () => {
         expect(mockBalancesEndpoint).toHaveBeenCalledOnce();
         expect(mockBalancesEndpoint.mock.lastCall?.[1]?.path).toStrictEqual({ balanceAccountId: 'ID' });
 
-        await waitFor(() => expect(result.current).toStrictEqual({ ...expectedResult, isWaiting: false }));
+        await waitFor(() => expect(result.current).toStrictEqual({ ...expectedResult, isWaiting: false, canRefresh: true }));
     });
 
     test('should return same state for same balance account ID', async () => {
         const expectedResult = {
             balances: [],
-            balancesLookup: {},
-            currencies: [],
             error: undefined,
+            canRefresh: true,
             isAvailable: true,
-            isEmpty: true,
-            isMultiCurrency: false,
             isWaiting: false,
+            refresh: expect.any(Function),
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
+        mockBalancesEndpoint.mockResolvedValue({ data: [] });
+
         const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         for (let i = 0; i < 3; i++) {
@@ -110,6 +108,8 @@ describe('useAccountBalances', () => {
     test('should abort previous signal before initiating latest fetch request', async () => {
         const abortSignals: AbortSignal[] = [];
         const mockBalancesEndpoint = getMockBalancesEndpoint();
+        mockBalancesEndpoint.mockResolvedValue({ data: [] });
+
         const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
 
         ['ID_1', 'ID_2', 'ID_1'].forEach((id, index) => {
@@ -133,13 +133,11 @@ describe('useAccountBalances', () => {
         await waitFor(() =>
             expect(result.current).toStrictEqual({
                 balances: [],
-                balancesLookup: {},
-                currencies: [],
                 error: undefined,
+                canRefresh: true,
                 isAvailable: true,
-                isEmpty: true,
-                isMultiCurrency: false,
                 isWaiting: false,
+                refresh: expect.any(Function),
             })
         );
 
@@ -149,13 +147,11 @@ describe('useAccountBalances', () => {
     test('should return correct state for unexpected balances response', async () => {
         const expectedResult = {
             balances: [],
-            balancesLookup: {},
-            currencies: [],
             error: undefined,
+            canRefresh: true,
             isAvailable: true,
-            isEmpty: true,
-            isMultiCurrency: false,
             isWaiting: false,
+            refresh: expect.any(Function),
         };
 
         const mockBalancesEndpoint = getMockBalancesEndpoint();
@@ -196,18 +192,11 @@ describe('useAccountBalances', () => {
         await waitFor(() =>
             expect(result.current).toStrictEqual({
                 balances: balances,
-                balancesLookup: {
-                    AUD: { currency: 'AUD', reservedValue: 15, value: 100 },
-                    CAD: { currency: 'CAD', reservedValue: 15, value: 100 },
-                    EUR: { currency: 'EUR', reservedValue: 10, value: 100 },
-                    USD: { currency: 'USD', reservedValue: 30, value: 150 },
-                },
-                currencies: ['AUD', 'CAD', 'EUR', 'USD'],
                 error: undefined,
+                canRefresh: true,
                 isAvailable: true,
-                isEmpty: false,
-                isMultiCurrency: true,
                 isWaiting: false,
+                refresh: expect.any(Function),
             })
         );
     });
@@ -227,14 +216,50 @@ describe('useAccountBalances', () => {
         await waitFor(() =>
             expect(result.current).toStrictEqual({
                 balances: [],
-                balancesLookup: {},
-                currencies: [],
                 error: 'unknown_error',
+                canRefresh: true,
                 isAvailable: true,
-                isEmpty: true,
-                isMultiCurrency: false,
                 isWaiting: false,
+                refresh: expect.any(Function),
             })
         );
+    });
+
+    test('should refresh balances when refresh is called', async () => {
+        const mockBalancesEndpoint = getMockBalancesEndpoint();
+        mockBalancesEndpoint.mockResolvedValue({ data: [] });
+
+        const { result } = renderHook(() => useAccountBalances({ balanceAccount: { id: 'ID' } as IBalanceAccountBase }));
+
+        await waitFor(() => expect(result.current.isWaiting).toBe(false));
+        expect(mockBalancesEndpoint).toHaveBeenCalledTimes(1);
+
+        await act(() => result.current.refresh());
+        await waitFor(() => expect(mockBalancesEndpoint).toHaveBeenCalledTimes(2));
+    });
+
+    test('should update balances when balance account changes', async () => {
+        const balancesA = [{ currency: 'USD', reservedValue: 0, value: 100 }];
+        const balancesB = [{ currency: 'EUR', reservedValue: 0, value: 200 }];
+
+        const mockBalancesEndpoint = getMockBalancesEndpoint();
+
+        mockBalancesEndpoint.mockImplementation(async (_signal, { path }) => {
+            if (path?.balanceAccountId === 'AccountA') {
+                return { data: balancesA };
+            }
+            if (path?.balanceAccountId === 'AccountB') {
+                return { data: balancesB };
+            }
+            return { data: [] };
+        });
+
+        const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
+
+        rerender({ id: 'AccountA' } as IBalanceAccountBase);
+        await waitFor(() => expect(result.current.balances).toStrictEqual(balancesA));
+
+        rerender({ id: 'AccountB' } as IBalanceAccountBase);
+        await waitFor(() => expect(result.current.balances).toStrictEqual(balancesB));
     });
 });

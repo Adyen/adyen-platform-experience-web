@@ -1,43 +1,39 @@
 import { useFetch } from '../../../../hooks/useFetch';
-import { useCallback, useMemo, useRef } from 'preact/hooks';
 import { useConfigContext } from '../../../../core/ConfigContext';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { compareTransactionsFilters, getTransactionsFilterQueryParams } from '../components/utils';
 import { createAbortable } from '../../../../primitives/async/abortable';
-import { getTransactionsFilterQueryParams } from '../components/utils';
-import { EMPTY_ARRAY, isFunction } from '../../../../utils';
+import { isFunction } from '../../../../utils';
 import { ITransactionTotal } from '../../../../types';
 import { TransactionsFilters } from '../types';
-
-const ZERO_TOTALS = {
-    expenses: 0,
-    incomings: 0,
-    total: 0,
-    breakdown: {
-        expenses: [] as const,
-        incomings: [] as const,
-    } as const,
-} as const satisfies Omit<ITransactionTotal, 'currency'>;
 
 type AllQueryParams = ReturnType<typeof getTransactionsFilterQueryParams>;
 type TotalsQueryParams = Partial<AllQueryParams> & Pick<AllQueryParams, 'balanceAccountId'>;
 export type GetQueryParams = (allQueryParams: AllQueryParams) => TotalsQueryParams;
 
 export interface UseTransactionsTotalsProps {
-    currencies: readonly string[];
     fetchEnabled: boolean;
     filters: Readonly<TransactionsFilters>;
+    applicableFilters?: Set<keyof TransactionsFilters>;
     getQueryParams: GetQueryParams;
-    loadingBalances: boolean;
     now: number;
 }
 
-const useTransactionsTotals = ({ currencies, fetchEnabled, filters, getQueryParams, loadingBalances, now }: UseTransactionsTotalsProps) => {
-    const { getTransactionTotals } = useConfigContext().endpoints;
+const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
+    const [pendingRefresh, setPendingRefresh] = useState(false);
+    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
+    const fetchTimestampRef = useRef<number>();
+
     const abortable = useRef(createAbortable()).current;
+    const cachedFilters = useRef(filters);
+
+    const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
     const canFetchTransactionTotals = canGetTransactionTotals && fetchEnabled;
+    const shouldFetchTransactionTotals = canFetchTransactionTotals && fetchTimestampRef.current !== fetchTimestamp;
 
     const fetchTransactionTotals = useCallback(async () => {
-        if (canFetchTransactionTotals) {
+        if (shouldFetchTransactionTotals) {
             const { signal } = abortable.refresh(true);
             try {
                 const query = getQueryParams(getTransactionsFilterQueryParams(filters, now));
@@ -47,29 +43,58 @@ const useTransactionsTotals = ({ currencies, fetchEnabled, filters, getQueryPara
                 if (!signal.aborted) throw error;
             }
         }
-    }, [abortable, canFetchTransactionTotals, filters, getQueryParams, getTransactionTotals, now]);
+    }, [abortable, filters, getQueryParams, getTransactionTotals, now, shouldFetchTransactionTotals]);
 
     const { data, error, isFetching } = useFetch({
-        fetchOptions: { enabled: canFetchTransactionTotals },
+        fetchOptions: { enabled: shouldFetchTransactionTotals },
         queryFn: fetchTransactionTotals,
     });
 
-    const { totals, totalsLookup } = useMemo(() => {
-        const records = Array.isArray(data) ? data : EMPTY_ARRAY;
-        const totals: readonly Readonly<ITransactionTotal>[] = currencies.map((currentCurrency): Readonly<ITransactionTotal> => {
-            const record = records.find(({ currency }) => currency === currentCurrency);
-            return record ?? { ...ZERO_TOTALS, currency: currentCurrency };
-        });
-        const totalsLookup: Readonly<Record<string, (typeof totals)[number]>> = Object.fromEntries(totals.map(record => [record.currency, record]));
-        return { totals, totalsLookup } as const;
-    }, [data, currencies]);
+    const cachedIsFetching = useRef(isFetching);
+    const canRefresh = !isFetching && canFetchTransactionTotals;
+    const totals = useMemo<readonly Readonly<ITransactionTotal>[]>(() => (Array.isArray(data) ? data : []), [data]);
+
+    const refresh = useCallback(() => {
+        if (canRefresh) setPendingRefresh(true);
+    }, [canRefresh, isFetching]);
+
+    useEffect(() => {
+        if (cachedFilters.current === filters) return;
+
+        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFilters.current, applicableFilters);
+
+        if (applicableFiltersDidChange) {
+            // The applicable filters have changed,
+            // hence a new fetch request is required
+            setFetchTimestamp(performance.now());
+            cachedFilters.current = filters;
+        }
+    }, [filters, applicableFilters]);
+
+    useEffect(() => {
+        if (pendingRefresh) {
+            // A new fetch request is required
+            setPendingRefresh(false);
+            setFetchTimestamp(performance.now());
+        }
+    }, [pendingRefresh]);
+
+    useEffect(() => {
+        if (cachedIsFetching.current && !isFetching) {
+            // Last fetch request has finished,
+            // update fetch timestamp
+            fetchTimestampRef.current = fetchTimestamp;
+        }
+        cachedIsFetching.current = isFetching;
+    }, [isFetching, fetchTimestamp]);
 
     return {
         totals,
-        totalsLookup,
         error,
+        canRefresh,
+        refresh,
         isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || loadingBalances || (canGetTransactionTotals && !fetchEnabled && !data),
+        isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
     } as const;
 };
 
