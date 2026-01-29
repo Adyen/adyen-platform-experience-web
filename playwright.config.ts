@@ -74,7 +74,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'npm run storybook:static',
+        command: 'pnpm run storybook:static',
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? app.port : undefined,

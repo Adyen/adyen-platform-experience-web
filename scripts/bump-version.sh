@@ -13,11 +13,11 @@ if [ "$current_branch" != "main" ]; then
   exit 1
 fi
 
-npm run changeset -- version
+pnpm run changeset -- version
 
 new_version=$(jq -r '.version' package.json)
 
-npm install
+pnpm install
 git add .
 git commit -m "Bump to version $new_version"
 git push origin "HEAD:bump/$new_version"
