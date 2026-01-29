@@ -276,6 +276,7 @@ export const payByLinkMocks = [
         return HttpResponse.json({
             url,
             expireAt: expiration.toISOString(),
+            paymentLinkId: 'PLTEST001',
         });
     }),
 
