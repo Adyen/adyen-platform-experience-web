@@ -1109,6 +1109,7 @@
     "transactions.details.views.timeline": "Tidslinje",
     "transactions.details.viewSelect.a11y.label": "Visninger av transasksjonsopplysninger",
     "transactions.overview.balances.currency.label": "Valuta",
+    "transactions.overview.balances.error": "Noe gikk galt, så vi kunne ikke laste kontosaldoene.",
     "transactions.overview.balances.labels.available": "Vis alle tilgjengelige saldoer",
     "transactions.overview.balances.labels.default": "Vis alle kontosaldoer",
     "transactions.overview.balances.labels.reserved": "Vis alle reserverte saldoer",
