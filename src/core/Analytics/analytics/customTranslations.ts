@@ -811,6 +811,7 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
             } else {
                 const translations = customTranslations?.[locale];
                 const keys = translations ? Object.keys(translations) : [];
+
                 if (keys?.length > 0) {
                     const oldCustomizedKeys = keys.filter(key => oldTranslationKeys.has(key));
                     // This event is a temporary event that tracks platforms that are still using old translations.
@@ -835,18 +836,20 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                     const matchingCustomizedKeys = keys.filter(key => currentTranslationKeys.has(key));
 
                     // This event is permanent to keep track of all the customizations that user made to translations
-                    const allTranslationsEvent = encodeAnalyticsEvent({
-                        event: 'Customized translation',
-                        properties: {
-                            category: 'PIE',
-                            subCategory: 'Core',
-                            locale: locale,
-                            keys: matchingCustomizedKeys,
-                            userAgent: navigator.userAgent,
-                        },
-                    });
-                    if (allTranslationsEvent) {
-                        payloads.push(allTranslationsEvent);
+                    if (matchingCustomizedKeys.length > 0) {
+                        const allTranslationsEvent = encodeAnalyticsEvent({
+                            event: 'Customized translation',
+                            properties: {
+                                category: 'PIE',
+                                subCategory: 'Core',
+                                locale: locale,
+                                keys: matchingCustomizedKeys,
+                                userAgent: navigator.userAgent,
+                            },
+                        });
+                        if (allTranslationsEvent) {
+                            payloads.push(allTranslationsEvent);
+                        }
                     }
                 }
             }
