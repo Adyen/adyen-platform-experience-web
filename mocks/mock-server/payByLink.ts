@@ -17,6 +17,16 @@ import {
 } from '../mock-data';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
+import {
+    CapitalComponentManage,
+    DisputesComponentManage,
+    PayByLinkComponentManageLinks,
+    PayByLinkComponentView,
+    PayoutsOverviewComponentView,
+    ReportsOverviewComponentView,
+    TransactionsOverviewComponentManageRefunds,
+    TransactionsOverviewComponentView,
+} from './utils/rolesToEndpointsMapping';
 
 const DELAY_TIME = 300;
 
@@ -216,6 +226,26 @@ export const PaymentLinkSettingsMockedResponses = {
             http.post(mockEndpoints.payByLink.settings, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
+            }),
+        ],
+    },
+
+    permissionError: {
+        handlers: [
+            http.post(mockEndpoints.setup, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json({
+                    endpoints: {
+                        ...TransactionsOverviewComponentView,
+                        ...TransactionsOverviewComponentManageRefunds,
+                        ...ReportsOverviewComponentView,
+                        ...PayoutsOverviewComponentView,
+                        ...CapitalComponentManage,
+                        ...DisputesComponentManage,
+                        ...PayByLinkComponentView,
+                        ...PayByLinkComponentManageLinks,
+                    },
+                });
             }),
         ],
     },
