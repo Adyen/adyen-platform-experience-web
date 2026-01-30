@@ -1,3 +1,5 @@
+import { parseDate } from '../../../utils';
+
 export function bytesToBase64(bytes: Uint8Array) {
     const binString = Array.from(bytes, (byte: number) => String.fromCodePoint(byte)).join('');
     return btoa(binString);
@@ -16,6 +18,6 @@ export const encodeAnalyticsEvent = (event: any) => {
 };
 
 export const getEventTime = (time?: number | string | Date) => {
-    const timestamp = time == undefined ? Date.now() : new Date(time).getTime();
+    const timestamp = parseDate(time) ?? Date.now();
     return Math.floor(timestamp / 1000); // time in seconds
 };
