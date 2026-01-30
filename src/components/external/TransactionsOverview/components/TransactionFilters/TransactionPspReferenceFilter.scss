@@ -16,7 +16,7 @@
 
     &__input {
         // [TODO]: Consider moving this error styling overrides to the input component to foster reusability
-        &--with-error#{&} > input {
+        &--with-error#{&} > input:nth-child(n) {
             &,
             &:hover,
             &:active {
