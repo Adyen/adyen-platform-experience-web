@@ -1,6 +1,6 @@
+import { SuccessResponse } from '../../../../src/types/api/endpoints';
 import process from 'node:process';
 import dotenv from 'dotenv';
-import { SuccessResponse } from '../../../src/types/api/endpoints';
 
 dotenv.config({ path: './envs/.env' });
 

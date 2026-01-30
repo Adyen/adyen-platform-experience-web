@@ -1,12 +1,12 @@
 import { test as base, APIRequestContext, request } from '@playwright/test';
-import process from 'node:process';
-import { getHeaders } from './utils';
-import dotenv from 'dotenv';
 import { resolveEnvironment } from '../../../src/core/utils';
+import { getHeaders } from './utils';
+import process from 'node:process';
+import dotenv from 'dotenv';
+
 dotenv.config({ path: './envs/.env' });
 
 const environment = process.env.NODE_ENV as 'live' | 'test';
-
 const SESSION_ROLES = ['Transactions Overview Component: View', 'Payouts Overview Component: View', 'Reports Overview Component: View'];
 
 export const SESSION = {
@@ -71,14 +71,10 @@ export const sessionAwareTest = base.extend<TestFixtures>({
 
         const sessionData = await tokenResponse.json();
         const token = sessionData.token;
-
         await use(token);
     },
-
     headers: async ({ token }, use) => {
-        const headers = {
-            ...getHeaders({ token }).headers,
-        };
+        const headers = { ...getHeaders({ token }).headers };
         await use(headers);
     },
 });
