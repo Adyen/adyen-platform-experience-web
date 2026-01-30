@@ -50,8 +50,8 @@ export const TransactionsOverviewComponentView = {
 export const TransactionsOverviewComponentManageRefunds = {
     ...TransactionsOverviewComponentView,
     initiateRefund: {
-        method: 'POST' as HttpMethod,
-        url: 'transactions/{transactionId}/refundPayment',
+        method: 'POST',
+        url: 'transactions/{transactionId}/refund',
         versions: [1],
     },
 };
@@ -156,7 +156,7 @@ export const DisputesComponentManage = {
     },
     getApplicableDefenseDocuments: {
         method: 'GET' as HttpMethod,
-        url: 'disputes/{disputePspReference}/documents/required',
+        url: 'disputes/{disputePspReference}/documents',
         versions: [1],
     },
     getBalanceAccounts: {
@@ -225,7 +225,7 @@ export const PayByLinkComponentManageLinks = {
     },
     createPBLPaymentLink: {
         method: 'POST' as HttpMethod,
-        url: 'paybylink/paymentLinks/{storeId}',
+        url: 'paybylink/paymentLinks',
         versions: [1],
     },
     getPayByLinkConfiguration: {
