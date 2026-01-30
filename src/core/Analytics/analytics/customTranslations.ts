@@ -1,7 +1,7 @@
 import Localization from '../../Localization';
 import currentTranslations from '../../../assets/translations/en-US.json';
 import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
-import { encodeAnalyticsEvent } from './utils';
+import { encodeAnalyticsEvent, getEventTime } from './utils';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -802,6 +802,8 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                         category: 'PIE',
                         subCategory: 'Core',
                         locale: locale,
+                        sdkVersion: process.env.VITE_VERSION,
+                        time: getEventTime(),
                         userAgent: navigator.userAgent,
                     },
                 });
@@ -824,6 +826,8 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                                 subCategory: 'Core',
                                 locale: locale,
                                 keys: oldCustomizedKeys,
+                                sdkVersion: process.env.VITE_VERSION,
+                                time: getEventTime(),
                                 userAgent: navigator.userAgent,
                             },
                         });
@@ -842,6 +846,8 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                             subCategory: 'Core',
                             locale: locale,
                             keys: matchingCustomizedKeys,
+                            sdkVersion: process.env.VITE_VERSION,
+                            time: getEventTime(),
                             userAgent: navigator.userAgent,
                         },
                     });

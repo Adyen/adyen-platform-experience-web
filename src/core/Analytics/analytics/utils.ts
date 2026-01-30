@@ -14,3 +14,8 @@ export const encodeAnalyticsEvent = (event: any) => {
         return null;
     }
 };
+
+export const getEventTime = (time?: number | string | Date) => {
+    const timestamp = time == undefined ? Date.now() : new Date(time).getTime();
+    return Math.floor(timestamp / 1000); // time in seconds
+};
