@@ -19,14 +19,15 @@ const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: 
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const isLoading = isLoadingContent || isLoadingStores;
 
-    const isSaveEnabled = useMemo(() => {
+    const isSaveDisabled = useMemo(() => {
         if (!activeMenuItem) return false;
-        return activeMenuItem === MenuItem.theme ? themeEnabled : termsAndConditionsEnabled;
-    }, [activeMenuItem, termsAndConditionsEnabled, themeEnabled]);
+        const isActiveMenuItemEnabled = MenuItem.theme ? themeEnabled : termsAndConditionsEnabled;
+        return !isActiveMenuItemEnabled || boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess));
+    }, [activeMenuItem, termsAndConditionsEnabled, themeEnabled, isSaving, isLoading, navigateBack, isSaveSuccess]);
 
     const saveButton = useMemo(() => {
         return {
-            disabled: !isSaveEnabled || boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess)),
+            disabled: isSaveDisabled,
             event: onSave,
             iconLeft:
                 navigateBack && isSaveSuccess ? (
@@ -37,7 +38,7 @@ const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: 
             state: boolOrFalse(isSaving && !(navigateBack && isSaveSuccess)) ? 'loading' : 'default',
             classNames: isSmContainer ? ['adyen-pe-payment-link-settings__cta--mobile'] : [],
         } as ButtonActionObject;
-    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isLoading, isSaveEnabled]);
+    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isSaveDisabled]);
 
     const goBackButton = useMemo(() => {
         return {
