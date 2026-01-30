@@ -1,5 +1,6 @@
+import { HTMLAttributes } from 'preact';
+import { ReactNode } from 'preact/compat';
 import cx from 'classnames';
-import { HTMLProps, ReactNode } from 'preact/compat';
 import { TranslationKey } from '../../../translations';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../core/Context/useCoreContext';
@@ -18,7 +19,7 @@ type CopyTextProps = {
     visibleText?: string | ReactNode;
     onCopyText?: () => void;
     stronger?: boolean;
-} & Omit<HTMLProps<HTMLSpanElement>, 'type'>;
+} & Omit<HTMLAttributes<HTMLSpanElement>, 'type'>;
 
 const BASE_CLASSNAME = 'adyen-pe-copy-text';
 

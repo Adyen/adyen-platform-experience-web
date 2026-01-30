@@ -1,6 +1,6 @@
+import { MouseEventHandler } from 'preact';
 import { getModifierClasses } from '../../../../utils/preact';
 import { useCallback, useMemo } from 'preact/hooks';
-import { JSXInternal } from 'preact/src/jsx';
 import cx from 'classnames';
 import {
     BUTTON_LABEL_CENTERED_CLASSNAME,
@@ -26,7 +26,7 @@ const useButton = (
     disabled: boolean,
     props: PropsWithChildren<BaseButtonProps>,
     type: RegularButtonProps['type'],
-    onClick?: JSXInternal.MouseEventHandler<HTMLButtonElement> | JSXInternal.MouseEventHandler<HTMLAnchorElement>
+    onClick?: MouseEventHandler<HTMLButtonElement> | MouseEventHandler<HTMLAnchorElement>
 ) => {
     const { children, iconLeft, iconRight, iconButton = false, fullWidth, condensed, state = 'default' } = props;
 

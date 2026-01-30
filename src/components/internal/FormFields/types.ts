@@ -1,5 +1,4 @@
-import { ComponentChildren, JSX } from 'preact';
-import { TargetedEvent } from 'preact/compat';
+import { ComponentChildren, JSX, TargetedEvent, TargetedKeyboardEvent } from 'preact';
 import { SelectItem } from './Select/types';
 
 export type InputFieldElementPosition = 'start' | 'end';
@@ -28,13 +27,13 @@ export interface InputBaseProps {
     uniqueId?: string;
     isCollatingErrors?: boolean;
     disabled?: boolean;
-    onClick?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    onClick?: (e: TargetedEvent<HTMLInputElement>) => void;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>, field?: string) => void;
-    onKeyDown?: (e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
-    onKeyUp?: (e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
-    onBlur?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
-    onFocusHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
-    onBlurHandler?: (e: JSX.TargetedEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: TargetedKeyboardEvent<HTMLInputElement>) => void;
+    onKeyUp?: (e: TargetedKeyboardEvent<HTMLInputElement>) => void;
+    onBlur?: (e: TargetedEvent<HTMLInputElement>) => void;
+    onFocusHandler?: (e: TargetedEvent<HTMLInputElement>) => void;
+    onBlurHandler?: (e: TargetedEvent<HTMLInputElement>) => void;
     trimOnBlur?: boolean;
     className?: string;
     name?: string;
