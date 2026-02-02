@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-overview--error-dynamic-offer-config-no-capability';
+const STORY_ID = 'mocked-capital-capital-overview--error-dynamic-offer-config-no-capability';
 
 test.describe('Error - Dynamic offer config - No capability', () => {
     test.beforeEach(async ({ page }) => {

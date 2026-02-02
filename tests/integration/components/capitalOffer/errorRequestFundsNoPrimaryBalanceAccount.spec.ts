@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-offer--error-request-funds-no-primary-balance-account';
+const STORY_ID = 'mocked-capital-capital-offer--error-request-funds-no-primary-balance-account';
 
 test.describe('Error - Request funds - No primary balance account', () => {
     test.beforeEach(async ({ page }) => {

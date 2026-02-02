@@ -8,7 +8,7 @@ import {
     PaymentLinkThemesMockedResponses,
 } from '../../mocks/mock-server/payByLink';
 
-const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'Mocked/Payment Link Settings' };
+const meta: Meta<ElementProps<typeof PaymentLinkSettings>> = { ...PaymentLinkSettingsMeta, title: 'Mocked/Pay by Link/Payment Link Settings' };
 
 export const Default: ElementStory<typeof PaymentLinkSettings> = {
     name: 'Default',
@@ -73,6 +73,18 @@ export const SettingsSaveError: ElementStory<typeof PaymentLinksOverview> = {
     parameters: {
         msw: {
             ...PaymentLinkSettingsMockedResponses.saveSettingsError,
+        },
+    },
+};
+
+export const SettingsRoleNotAssigned: ElementStory<typeof PaymentLinksOverview> = {
+    name: 'Error - Role not assigned',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkSettingsMockedResponses.permissionError,
         },
     },
 };

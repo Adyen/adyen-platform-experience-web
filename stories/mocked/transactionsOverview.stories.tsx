@@ -7,7 +7,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions Overview' };
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions/Transactions Overview' };
 
 export const Default: ElementStory<typeof TransactionsOverview> = {
     name: 'Default',
@@ -20,10 +20,10 @@ export const ErrorNoTotals: ElementStory<typeof TransactionsOverview> = {
     parameters: {
         msw: {
             handlers: [
-                http.get(endpoints('mock').transactionsTotals, () => {
+                http.get(endpoints().transactionsTotals, () => {
                     return HttpResponse.error();
                 }),
-                http.get(endpoints('mock').transactions, () => {
+                http.get(endpoints().transactions, () => {
                     return HttpResponse.json({
                         data: [
                             { ...TRANSACTIONS[0], createdAt: Date.now() },
@@ -39,7 +39,7 @@ export const ErrorNoTotals: ElementStory<typeof TransactionsOverview> = {
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints('mock').transactions, () => {
+        http.get(endpoints().transactions, () => {
             return HttpResponse.json({
                 data: [
                     { ...TRANSACTIONS[0], createdAt: Date.now() },

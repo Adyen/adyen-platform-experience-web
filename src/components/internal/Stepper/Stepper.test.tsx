@@ -20,7 +20,7 @@ const TEST_ARIA_LABEL = 'Test Aria Label';
 
 const renderStepper = (props: {
     activeIndex: number;
-    onChange: ReturnType<typeof vi.fn>;
+    onChange: (index: number) => void;
     variant?: 'vertical' | 'horizontal';
     ariaLabel?: string;
 }) => {

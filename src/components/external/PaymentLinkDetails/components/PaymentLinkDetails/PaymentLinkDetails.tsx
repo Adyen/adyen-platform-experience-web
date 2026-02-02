@@ -79,7 +79,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
     const getCountryName = useCallback(
         (countryCode: string) => {
             const country = countries?.find(country => country.id === countryCode);
-            return country?.name;
+            return country?.name || countryCode;
         },
         [countries]
     );
@@ -89,11 +89,40 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
         () =>
             paymentLinkData && {
                 ...paymentLinkData,
-                shopperInformation: {
-                    ...paymentLinkData?.shopperInformation,
-                    shopperCountry:
-                        paymentLinkData?.shopperInformation?.shopperCountry && getCountryName(paymentLinkData?.shopperInformation.shopperCountry),
-                },
+                ...(paymentLinkData.shopperInformation
+                    ? {
+                          shopperInformation: {
+                              ...paymentLinkData?.shopperInformation,
+                              ...(paymentLinkData?.shopperInformation?.shopperCountry
+                                  ? {
+                                        shopperCountry:
+                                            paymentLinkData?.shopperInformation?.shopperCountry &&
+                                            getCountryName(paymentLinkData?.shopperInformation.shopperCountry),
+                                    }
+                                  : {}),
+                              ...(paymentLinkData?.shopperInformation?.billingAddress
+                                  ? {
+                                        billingAddress: paymentLinkData?.shopperInformation?.billingAddress && {
+                                            ...paymentLinkData?.shopperInformation.billingAddress,
+                                            country:
+                                                paymentLinkData?.shopperInformation?.billingAddress?.country &&
+                                                getCountryName(paymentLinkData?.shopperInformation.billingAddress.country),
+                                        },
+                                    }
+                                  : {}),
+                              ...(paymentLinkData?.shopperInformation?.shippingAddress
+                                  ? {
+                                        shippingAddress: paymentLinkData?.shopperInformation?.shippingAddress && {
+                                            ...paymentLinkData?.shopperInformation.shippingAddress,
+                                            country:
+                                                paymentLinkData?.shopperInformation?.shippingAddress?.country &&
+                                                getCountryName(paymentLinkData?.shopperInformation.shippingAddress.country),
+                                        },
+                                    }
+                                  : {}),
+                          },
+                      }
+                    : {}),
             },
         [paymentLinkData, getCountryName]
     );

@@ -1,21 +1,15 @@
 import { ShopperEmailField } from './Fields/ShopperEmailField';
 import { ShopperPhoneField } from './Fields/ShopperPhoneField';
 import { CountryRegionField } from './Fields/CountryRegionField';
-import { ShippingStreetField } from './Fields/Address/ShippingStreetField';
 import { LanguageField } from './Fields/LanguageField';
 import { BillingAndShippingCheckboxField } from './Fields/BillingAndShippingCheckboxField';
 import { StateUpdater } from 'preact/hooks';
 import { FormTextInput } from '../../../../../internal/FormWrappers/FormTextInput';
 import { PaymentLinkCreationFormValues } from '../../types';
 // import { EmailDependentCheckboxField } from './Fields/EmailDependentCheckboxField';
-import { ShippingHouseNumberField } from './Fields/Address/ShippingHouseNumberField';
-import { ShippingCountryField } from './Fields/Address/ShippingCountryField';
-import { ShippingCityField } from './Fields/Address/ShippingCityField';
-import { ShippingPostalCodeField } from './Fields/Address/ShippingPostalCodeField';
-import { BillingCountryField } from './Fields/Address/BillingCountryField';
-import { TypographyElement, TypographyVariant } from '../../../../../internal/Typography/types';
+import { DeliveryAddressSection } from './Fields/Address/DeliveryAddressSection';
+import { BillingAddressSection } from './Fields/Address/BillingAddressSection';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import Typography from '../../../../../internal/Typography/Typography';
 import './CustomerDetailsForm.scss';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../constants';
 import { useWizardFormContext } from '../../../../../../hooks/form/wizard/WizardFormContext';
@@ -24,8 +18,8 @@ import { IPaymentLinkCountry } from '../../../../../../types';
 import { useAddressChecker } from './useAddressChecker';
 
 interface CustomerDetailsFormProps {
-    isSeparateAddress: boolean;
-    setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    isSameAddress: boolean;
+    setIsSameAddress: Dispatch<StateUpdater<boolean>>;
     countriesData?: { data?: IPaymentLinkCountry[] };
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
@@ -33,8 +27,8 @@ interface CustomerDetailsFormProps {
 }
 
 export const CustomerDetailsForm = ({
-    isSeparateAddress,
-    setIsSeparateAddress,
+    isSameAddress,
+    setIsSameAddress,
     countriesData,
     isFetchingCountries,
     countryDatasetData,
@@ -49,6 +43,9 @@ export const CustomerDetailsForm = ({
     const isDeliveryAddressOptional = !fieldsConfig['deliveryAddress.street']?.required;
     const isBillingAddressVisible = fieldsConfig['billingAddress.street']?.visible;
     const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
+
+    // When billing is required and delivery is optional, show billing first
+    const showBillingFirst = isBillingAddressVisible && isDeliveryAddressVisible && !isBillingAddressOptional && isDeliveryAddressOptional;
 
     return (
         <div className="adyen-pe-payment-link-creation-form__fields-container">
@@ -89,118 +86,62 @@ export const CustomerDetailsForm = ({
                 countryDatasetData={countryDatasetData}
                 isFetchingCountryDataset={isFetchingCountryDataset}
             />
-            {isDeliveryAddressVisible && (
+            {/* Delivery address shown first (default case: delivery required or both optional/required equally) */}
+            {isDeliveryAddressVisible && !showBillingFirst && (
                 <>
-                    <div className="adyen-pe-payment-link-creation-form__shipping-address-container">
-                        <div className="adyen-pe-payment-link-creation-form__shipping-address-title-container">
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.SUBTITLE}
-                                stronger
-                                className="adyen-pe-payment-link-creation-form__billing-address-title"
-                            >
-                                {i18n.get('payByLink.creation.sections.deliveryAddress.label')}
-                            </Typography>
-                            {isDeliveryAddressOptional && (
-                                <Typography
-                                    el={TypographyElement.SPAN}
-                                    variant={TypographyVariant.BODY}
-                                    className="adyen-pe-payment-link-creation-form__field-label-optional"
-                                >
-                                    {`(${i18n.get('payByLink.common.fields.optional.label')})`}
-                                </Typography>
-                            )}
-                        </div>
-                        <div>
-                            <ShippingStreetField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
-                            <ShippingHouseNumberField isSeparateAddress={isSeparateAddress} isAddressFieldRequired={isAddressFieldRequired} />
-                        </div>
-                        <div>
-                            <ShippingCountryField
-                                countriesData={countriesData}
-                                isAddressFieldRequired={isAddressFieldRequired}
-                                isFetchingCountries={isFetchingCountries}
-                                isSeparateAddress={isSeparateAddress}
-                                countryDatasetData={countryDatasetData}
-                                isFetchingCountryDataset={isFetchingCountryDataset}
-                            />
-                            <ShippingCityField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
-                            <ShippingPostalCodeField isAddressFieldRequired={isAddressFieldRequired} isSeparateAddress={isSeparateAddress} />
-                        </div>
-                    </div>
-                    {isBillingAddressVisible && (
-                        <BillingAndShippingCheckboxField isSeparateAddress={isSeparateAddress} setIsSeparateAddress={setIsSeparateAddress} />
-                    )}
+                    <DeliveryAddressSection
+                        isSameAddress={isSameAddress}
+                        isAddressFieldRequired={isAddressFieldRequired}
+                        isOptional={isDeliveryAddressOptional}
+                        countriesData={countriesData}
+                        isFetchingCountries={isFetchingCountries}
+                        countryDatasetData={countryDatasetData}
+                        isFetchingCountryDataset={isFetchingCountryDataset}
+                    />
+                    {isBillingAddressVisible && <BillingAndShippingCheckboxField isSameAddress={isSameAddress} setIsSameAddress={setIsSameAddress} />}
                 </>
             )}
-            {(isSeparateAddress || (!isDeliveryAddressVisible && isBillingAddressVisible)) && (
-                <div className="adyen-pe-payment-link-creation-form__billing-address-container">
-                    <div className="adyen-pe-payment-link-creation-form__billing-address-title-container">
-                        <Typography
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.SUBTITLE}
-                            stronger
-                            className="adyen-pe-payment-link-creation-form__billing-address-title"
-                        >
-                            {i18n.get('payByLink.creation.sections.billingAddress.label')}
-                        </Typography>
-                        {isBillingAddressOptional && (
-                            <Typography
-                                el={TypographyElement.SPAN}
-                                variant={TypographyVariant.BODY}
-                                className="adyen-pe-payment-link-creation-form__field-label-optional"
-                            >
-                                {`(${i18n.get('payByLink.common.fields.optional.label')})`}
-                            </Typography>
-                        )}
-                    </div>
-                    <div>
-                        <FormTextInput<PaymentLinkCreationFormValues>
-                            maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.billingAddress.street.max}
-                            className="adyen-pe-payment-link-creation-form__billing-address-field--large"
-                            fieldName="billingAddress.street"
-                            label={i18n.get('payByLink.creation.fields.billingAddress.street.label')}
-                            hideOptionalLabel
-                            isRequired={fieldsConfig['billingAddress.street']?.required || isAddressFieldRequired('billingAddress.street')}
-                        />
-                        <FormTextInput<PaymentLinkCreationFormValues>
-                            maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.billingAddress.houseNumberOrName.max}
-                            className="adyen-pe-payment-link-creation-form__billing-address-field--small"
-                            fieldName="billingAddress.houseNumberOrName"
-                            label={i18n.get('payByLink.creation.fields.billingAddress.houseNumberOrName.label')}
-                            hideOptionalLabel
-                            isRequired={
-                                fieldsConfig['billingAddress.houseNumberOrName']?.required ||
-                                isAddressFieldRequired('billingAddress.houseNumberOrName')
-                            }
-                        />
-                    </div>
-                    <div>
-                        <BillingCountryField
-                            countriesData={countriesData}
+            {/* Billing address shown in default case (when !isSameAddress or only billing visible) */}
+            {!showBillingFirst && (!isSameAddress || (!isDeliveryAddressVisible && isBillingAddressVisible)) && (
+                <BillingAddressSection
+                    isSameAddress={isSameAddress}
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    isOptional={isBillingAddressOptional}
+                    countriesData={countriesData}
+                    isFetchingCountries={isFetchingCountries}
+                    countryDatasetData={countryDatasetData}
+                    isFetchingCountryDataset={isFetchingCountryDataset}
+                />
+            )}
+            {/* Billing address shown first (when billing required and delivery optional) */}
+            {showBillingFirst && (
+                <>
+                    <BillingAddressSection
+                        isSameAddress={isSameAddress}
+                        isAddressFieldRequired={isAddressFieldRequired}
+                        showBillingFirst={showBillingFirst}
+                        countriesData={countriesData}
+                        isFetchingCountries={isFetchingCountries}
+                        countryDatasetData={countryDatasetData}
+                        isFetchingCountryDataset={isFetchingCountryDataset}
+                    />
+                    <BillingAndShippingCheckboxField
+                        isSameAddress={isSameAddress}
+                        setIsSameAddress={setIsSameAddress}
+                        showBillingFirst={showBillingFirst}
+                    />
+                    {!isSameAddress && (
+                        <DeliveryAddressSection
+                            isSameAddress={isSameAddress}
                             isAddressFieldRequired={isAddressFieldRequired}
+                            isOptional
+                            countriesData={countriesData}
                             isFetchingCountries={isFetchingCountries}
                             countryDatasetData={countryDatasetData}
                             isFetchingCountryDataset={isFetchingCountryDataset}
                         />
-                        <FormTextInput<PaymentLinkCreationFormValues>
-                            maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.billingAddress.city.max}
-                            className="adyen-pe-payment-link-creation-form__billing-address-field--medium"
-                            fieldName="billingAddress.city"
-                            label={i18n.get('payByLink.creation.fields.billingAddress.city.label')}
-                            hideOptionalLabel
-                            isRequired={fieldsConfig['billingAddress.city']?.required || isAddressFieldRequired('billingAddress.city')}
-                        />
-                        <FormTextInput<PaymentLinkCreationFormValues>
-                            maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.billingAddress.postalCode.max}
-                            className="adyen-pe-payment-link-creation-form__billing-address-field--small"
-                            fieldName="billingAddress.postalCode"
-                            label={i18n.get('payByLink.creation.fields.billingAddress.postalCode.label')}
-                            hideOptionalLabel
-                            isRequired={fieldsConfig['billingAddress.postalCode']?.required || isAddressFieldRequired('billingAddress.postalCode')}
-                        />
-                    </div>
-                </div>
+                    )}
+                </>
             )}
             <LanguageField />
         </div>

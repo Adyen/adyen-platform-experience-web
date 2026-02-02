@@ -121,12 +121,18 @@ export class SetupContext {
     private _getEndpointsProxy(endpoints: SetupEndpoint) {
         const availableEndpoints: Set<EndpointName> = new Set(Object.keys(endpoints) as (keyof typeof endpoints)[]);
         const sessionAwareEndpoints: SetupContextObject['endpoints'] = struct();
+        let isActive = true;
 
-        return Proxy.revocable(
+        const revoke = () => {
+            isActive = false;
+            availableEndpoints.clear();
+        };
+
+        const proxy = new Proxy(
             EMPTY_OBJECT as typeof sessionAwareEndpoints,
             withFreezeProxyHandlers({
                 get: <Endpoint extends EndpointName>(target: typeof sessionAwareEndpoints, endpoint: Endpoint, receiver: any) => {
-                    if (!availableEndpoints.has(endpoint)) {
+                    if (!isActive || !availableEndpoints.has(endpoint)) {
                         return Reflect.get(target, endpoint, receiver);
                     }
 
@@ -150,6 +156,8 @@ export class SetupContext {
                 },
             })
         );
+
+        return { proxy, revoke };
     }
 
     private _getHttpOptions(method: HttpMethod, path: string, ...args: Parameters<EndpointHttpCallables>) {

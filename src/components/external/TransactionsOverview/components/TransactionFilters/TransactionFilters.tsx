@@ -24,10 +24,19 @@ import Select from '../../../../internal/FormFields/Select';
 
 const eventCategory = TRANSACTION_ANALYTICS_CATEGORY;
 
+const balanceAccountFilterChangedCallback = (() => {
+    const filtersSet = new Set(['balanceAccount'] as const);
+    return () => {
+        let cachedFilters = {} as Readonly<Filters>;
+        return (currentFilters: Readonly<Filters>) => compareTransactionsFilters(cachedFilters, (cachedFilters = currentFilters), filtersSet);
+    };
+})();
+
 export interface TransactionsFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
     availableCurrencies: readonly string[];
     balanceAccounts?: IBalanceAccountBase[];
     isTransactionsView: boolean;
+    insightsCurrency?: string;
     onChange?: (filters: Readonly<Filters>) => void;
     setInsightsCurrency?: (currency?: string) => void;
 }
@@ -37,6 +46,7 @@ const TransactionsFilters = ({
     balanceAccounts,
     isTransactionsView,
     onChange,
+    insightsCurrency,
     setInsightsCurrency,
     ...filterBarProps
 }: TransactionsFiltersProps) => {
@@ -58,6 +68,8 @@ const TransactionsFilters = ({
         [balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses]
     );
 
+    const cachedAvailableCurrencies = useRef<typeof availableCurrencies>();
+    const cachedCurrentFilters = useRef<typeof currentFilters>();
     const canResetFilters = useMemo(() => compareTransactionsFilters(currentFilters, initialFilters.current), [currentFilters]);
 
     const resetFilters = useCallback(() => {
@@ -79,6 +91,8 @@ const TransactionsFilters = ({
     const currenciesFilterPlaceholder = useMemo(() => i18n.get('transactions.overview.filters.types.currency.label'), [i18n]);
     const currencyFilterEventLabel = 'Currency filter';
 
+    const balanceAccountFilterChanged = useRef(balanceAccountFilterChangedCallback()).current;
+
     const { resetBalanceAccountSelection, ...balanceAccountFilterProps } = useBalanceAccountSelection({
         allowAllSelection: false,
         onUpdateSelection: setBalanceAccount,
@@ -90,14 +104,27 @@ const TransactionsFilters = ({
     const { activeCurrency, currencySelectionOptions, onCurrencySelection } = useCurrencySelection({
         eventLabel: currencyFilterEventLabel,
         onUpdateSelection: setInsightsCurrency,
-        selectedCurrency: balanceAccount?.defaultCurrencyCode,
+        selectedCurrency: insightsCurrency ?? balanceAccount?.defaultCurrencyCode,
         availableCurrencies,
         eventCategory,
         eventSubCategory,
     });
 
-    useEffect(() => setCurrencies(initialFilters.current.currencies), [availableCurrencies]);
-    useEffect(() => onChange?.(currentFilters), [onChange, currentFilters]);
+    useEffect(() => {
+        if (cachedAvailableCurrencies.current === availableCurrencies) return;
+        if (balanceAccountFilterChanged(currentFilters)) {
+            setCurrencies(initialFilters.current.currencies);
+            setInsightsCurrency?.(currentFilters.balanceAccount?.defaultCurrencyCode);
+        }
+        cachedAvailableCurrencies.current = availableCurrencies;
+    }, [availableCurrencies, currentFilters, balanceAccountFilterChanged, setInsightsCurrency]);
+
+    useEffect(() => {
+        if (cachedCurrentFilters.current !== currentFilters) {
+            cachedCurrentFilters.current = currentFilters;
+            onChange?.(currentFilters);
+        }
+    }, [onChange, currentFilters]);
 
     useEffect(() => {
         if (!initialFilters.current.balanceAccount && balanceAccount) {

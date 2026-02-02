@@ -4,7 +4,7 @@ import { capitalOfferWithSetupMeta } from '../components/capitalOffer';
 import { CapitalOffer, CapitalOverview, ILegalEntity } from '../../src';
 import { CapitalOfferMockedResponses } from '../../mocks/mock-server/capital';
 
-const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital Offer' };
+const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital/Capital Offer' };
 
 export const Default: ElementStory<typeof CapitalOffer> = {
     name: 'Default',

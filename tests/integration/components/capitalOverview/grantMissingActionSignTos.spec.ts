@@ -1,11 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-overview--grant-missing-action-sign-tos';
+const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-sign-tos';
 
 test.describe('Grant: Missing Action Sign TOS', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {
@@ -27,10 +29,19 @@ test.describe('Grant: Missing Action Sign TOS', () => {
         await expect(tooltip).toBeVisible();
     });
 
-    test('should go to terms and conditions page when "Go to Terms & Conditions" button in clicked', async ({ page }) => {
-        await page.getByText('Go to Terms & Conditions').click();
+    test('should go to terms and conditions page when "Go to Terms & Conditions" button in clicked', async ({ page, analyticsEvents }) => {
+        const analyticsEventProperties = {
+            ...sharedGrantsOverviewAnalyticsEventProperties,
+            subCategory: 'Missing action',
+            label: 'Go to terms & conditions button clicked',
+        };
+
         const redirectionURL = 'https://www.adyen.com/';
-        await page.waitForURL(redirectionURL);
+
+        await page.getByRole('button', { name: 'Go to Terms & Conditions', exact: true }).click();
+        await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
     });
 });

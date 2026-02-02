@@ -23,17 +23,18 @@ export function CalendarInputPopover({ isOpen, onClose, originDate, onHighlight,
 
     return (
         <Popover
-            open={isOpen}
+            containerSize={PopoverContainerSize.MEDIUM}
             dismiss={() => {
                 onClose();
             }}
-            variant={PopoverContainerVariant.POPOVER}
-            containerSize={PopoverContainerSize.MEDIUM}
-            targetElement={targetElement}
-            withContentPadding={true}
-            position={PopoverContainerPosition.TOP}
-            fixedPositioning={false}
             dismissible={false}
+            divider
+            fitPosition
+            open={isOpen}
+            position={PopoverContainerPosition.BOTTOM}
+            targetElement={targetElement}
+            withContentPadding
+            variant={PopoverContainerVariant.POPOVER}
         >
             <div
                 ref={controlsContainerRef}

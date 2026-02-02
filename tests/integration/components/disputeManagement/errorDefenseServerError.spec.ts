@@ -3,7 +3,7 @@ import { goToStory } from '../../../utils/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const STORY_ID = 'mocked-dispute-management--defense-server-error';
+const STORY_ID = 'mocked-disputes-dispute-management--defense-server-error';
 
 test.describe('Error - Defense server error', () => {
     test('should render an error message', async ({ page }) => {
@@ -19,6 +19,7 @@ test.describe('Error - Defense server error', () => {
         const __dirname = path.dirname(__filename);
         const fixture = path.resolve(__dirname, '../../../fixtures/files/test-file.pdf');
         const fileInput = page.locator('input[type="file"]');
+        await expect(fileInput).toBeEnabled();
         await fileInput.setInputFiles(fixture);
 
         await page.getByRole('button', { name: 'Submit' }).click();

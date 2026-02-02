@@ -1,21 +1,25 @@
 import cx from 'classnames';
 import useTransactionsList from '../../hooks/useTransactionsList';
-import useTransactionsTotals from '../../hooks/useTransactionsTotals';
+import useTransactionsViewSwitcher from '../../hooks/useTransactionsViewSwitcher';
+import useTransactionsTotals, { GetQueryParams } from '../../hooks/useTransactionsTotals';
 import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 import TransactionsOverviewList from './TransactionsOverviewList';
 import TransactionsOverviewInsights from './TransactionsOverviewInsights';
 import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { classes, INITIAL_FILTERS, TRANSACTIONS_VIEW_TABS } from '../../constants';
-import { SegmentedControlItem } from '../../../../internal/SegmentedControl/types';
-import { TransactionOverviewProps, TransactionsView } from '../../types';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { compareTransactionsFilters } from '../utils';
+import { TransactionOverviewProps, TransactionsFilters as Filters, TransactionsView } from '../../types';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { classes, INITIAL_FILTERS } from '../../constants';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
+
+const INSIGHTS_FILTERS_SET = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
+const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({ balanceAccountId, createdSince, createdUntil });
+const getTransactionsTotalsQueryParams: GetQueryParams = allQueryParams => allQueryParams;
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -29,68 +33,78 @@ export const TransactionsOverview = ({
     hideTitle,
     dataCustomization,
 }: TransactionOverviewProps) => {
-    const cachedFilters = useRef(INITIAL_FILTERS);
-    const filterBarState = useFilterBarState();
-
-    const [filters, setFilters] = useState(cachedFilters.current);
-    const [activeView, setActiveView] = useState(TransactionsView.TRANSACTIONS);
+    const [filters, setFilters] = useState(INITIAL_FILTERS);
+    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(Date.now());
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
+
+    const filterBarState = useFilterBarState();
 
     const { balanceAccount } = filters;
     const { isMobileContainer } = filterBarState;
     const { i18n } = useCoreContext();
 
+    const { activeView, onViewChange, viewTabs } = useTransactionsViewSwitcher();
     const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
+    const hasActiveBalanceAccount = !!balanceAccount?.id;
 
-    const canFetchTransactions = useMemo(
-        () => isTransactionsView && !!balanceAccount?.id && compareTransactionsFilters(filters, cachedFilters.current),
-        [isTransactionsView, balanceAccount, filters]
-    );
+    const onFiltersChange = useCallback((filters: Readonly<Filters>) => {
+        setLastFiltersChangeTimestamp(Date.now());
+        setFilters(filters);
+    }, []);
 
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
-    const transactionsListResult = useTransactionsList({
-        fetchEnabled: canFetchTransactions,
-        allowLimitSelection,
-        dataCustomization,
+    const insightsTotalsResult = useTransactionsTotals({
+        fetchEnabled: !isTransactionsView && hasActiveBalanceAccount,
+        getQueryParams: getInsightsTotalsQueryParams,
+        applicableFilters: INSIGHTS_FILTERS_SET,
+        now: lastFiltersChangeTimestamp,
         filters,
-        onFiltersChanged,
-        preferredLimit,
     });
 
     const transactionsTotalsResult = useTransactionsTotals({
-        currencies: accountBalancesResult.currencies,
-        fetchEnabled: !!balanceAccount?.id,
-        loadingBalances: accountBalancesResult.isWaiting,
+        fetchEnabled: isTransactionsView && hasActiveBalanceAccount,
+        getQueryParams: getTransactionsTotalsQueryParams,
+        now: lastFiltersChangeTimestamp,
         filters,
+    });
+
+    const transactionsListResult = useTransactionsList({
+        fetchEnabled: hasActiveBalanceAccount,
+        now: lastFiltersChangeTimestamp,
+        allowLimitSelection,
+        dataCustomization,
+        onFiltersChanged,
+        preferredLimit,
+        filters,
+    });
+
+    const currenciesLookupResult = useCurrenciesLookup({
+        defaultCurrency: balanceAccount?.defaultCurrencyCode,
+        balances: accountBalancesResult.balances,
+        totals: (isTransactionsView ? transactionsTotalsResult : insightsTotalsResult).totals,
     });
 
     const exportButton = useMemo(
         () =>
             isTransactionsView ? (
-                <TransactionsExport disabled={transactionsListResult.records.length < 1 || transactionsListResult.fetching} filters={filters} />
+                <TransactionsExport disabled={!transactionsListResult.page} filters={filters} now={lastFiltersChangeTimestamp} />
             ) : null,
-        [filters, isTransactionsView, transactionsListResult.fetching, transactionsListResult.records]
+        [filters, isTransactionsView, lastFiltersChangeTimestamp, transactionsListResult.page]
     );
 
     const viewSwitcher = useMemo(
         () =>
-            TRANSACTIONS_VIEW_TABS.length > 1 ? (
+            viewTabs.length > 1 ? (
                 <SegmentedControl
                     aria-label={i18n.get('transactions.overview.viewSelect.a11y.label')}
                     activeItem={activeView}
-                    items={TRANSACTIONS_VIEW_TABS}
-                    onChange={({ id }: SegmentedControlItem<TransactionsView>) => setActiveView(id)}
+                    items={viewTabs}
+                    onChange={onViewChange}
                 />
             ) : null,
-        [activeView, i18n]
+        [activeView, onViewChange, viewTabs, i18n]
     );
-
-    useEffect(() => {
-        if (canFetchTransactions) {
-            cachedFilters.current = filters;
-        }
-    }, [canFetchTransactions, filters]);
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
@@ -107,11 +121,12 @@ export const TransactionsOverview = ({
             <div role="toolbar" className={classes.toolbar}>
                 <TransactionsFilters
                     {...filterBarState}
-                    availableCurrencies={accountBalancesResult.currencies}
+                    availableCurrencies={currenciesLookupResult.sortedCurrencies}
                     balanceAccounts={balanceAccounts}
                     isTransactionsView={isTransactionsView}
+                    insightsCurrency={insightsCurrency}
                     setInsightsCurrency={setInsightsCurrency}
-                    onChange={setFilters}
+                    onChange={onFiltersChange}
                 />
                 {!isMobileContainer && <>{exportButton}</>}
             </div>
@@ -121,6 +136,7 @@ export const TransactionsOverview = ({
                     accountBalancesResult={accountBalancesResult}
                     balanceAccount={balanceAccount}
                     balanceAccounts={balanceAccounts}
+                    currenciesLookupResult={currenciesLookupResult}
                     dataCustomization={dataCustomization}
                     isLoadingBalanceAccount={isLoadingBalanceAccount}
                     onContactSupport={onContactSupport}
@@ -130,7 +146,11 @@ export const TransactionsOverview = ({
                     transactionsTotalsResult={transactionsTotalsResult}
                 />
             ) : (
-                <TransactionsOverviewInsights currency={insightsCurrency} transactionsTotalsResult={transactionsTotalsResult} />
+                <TransactionsOverviewInsights
+                    currency={insightsCurrency}
+                    currenciesLookupResult={currenciesLookupResult}
+                    transactionsTotalsResult={insightsTotalsResult}
+                />
             )}
         </div>
     );

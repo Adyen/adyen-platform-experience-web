@@ -2,6 +2,7 @@ import { h } from 'preact';
 import cx from 'classnames';
 import Icon from '../../../../internal/Icon';
 import Spinner from '../../../../internal/Spinner';
+import Alert from '../../../../internal/Alert/Alert';
 import Popover from '../../../../internal/Popover/Popover';
 import Typography from '../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -10,26 +11,24 @@ import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyt
 import ToggleSwitch, { ToggleSwitchProps } from '../../../../internal/ToggleSwitch/ToggleSwitch';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import FilterButton from '../../../../internal/FilterBar/components/FilterButton/FilterButton';
+import { DEFAULT_EXPORT_COLUMNS, EXPORT_COLUMNS, TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '../../constants';
 import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { downloadBlob, EMPTY_ARRAY, isFunction, uniqueId } from '../../../../../utils';
-import { DEFAULT_EXPORT_COLUMNS, EXPORT_COLUMNS, TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '../../constants';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { fixedForwardRef } from '../../../../../utils/preact';
 import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '../../../../../translations';
+import { Tag } from '../../../../internal/Tag/Tag';
 import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
-import { EndpointDownloadStreamData } from '../../../../../types/api/endpoints';
-import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import { Tag } from '../../../../internal/Tag/Tag';
 
 const sharedAnalyticsEventProperties = {
     category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -68,16 +67,15 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
     </Text>
 );
 
-const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters: Readonly<TransactionsFilters> }) => {
+const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; filters: Readonly<TransactionsFilters>; now: number }) => {
     const { i18n } = useCoreContext();
     const userEvents = useAnalyticsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const [popoverOpen, setPopoverOpen] = useState(false);
+    const [exportError, setExportError] = useState<Error>();
     const [exportStarted, setExportStarted] = useState(false);
     const [exportColumns, setExportColumns] = useState([] as readonly (typeof EXPORT_COLUMNS)[number][]);
-
-    const popoverOpenRef = useRef(popoverOpen);
 
     const [activeFilters, exportParams] = useMemo(() => {
         const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
@@ -92,39 +90,22 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         ] as const;
 
         const exportParams = {
-            ...getTransactionsFilterQueryParams(filters),
+            ...getTransactionsFilterQueryParams(filters, now),
             sortDirection: 'desc' as const,
         };
 
         return [activeFilters, exportParams];
-    }, [filters]);
+    }, [filters, now]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);
     const canExportTransactions = canDownloadTransactions && popoverOpen && exportStarted && !!exportColumns.length;
 
-    const dismissPopover = useCallback(
-        (exportCancelled = true) => {
-            setPopoverOpen(false);
-            if (!exportCancelled) return;
-            userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
-        },
-        [userEvents]
-    );
-
-    const onExportSuccess = useCallback(
-        (data: EndpointDownloadStreamData) => {
-            downloadBlob(data);
-            dismissPopover(false);
-        },
-        [dismissPopover]
-    );
-
     const { error, isFetching } = useDownload(
         'downloadTransactions',
         { query: { ...exportParams, columns: exportColumns } },
         canExportTransactions,
-        onExportSuccess
+        downloadBlob
     );
 
     const exportButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -183,11 +164,30 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
         [masterSwitchId]
     );
 
-    const openPopover = useCallback(() => {
-        if (popoverOpenRef.current) return;
-        setPopoverOpen(true);
-        userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
-    }, [userEvents]);
+    const sendPopoverToggleEvent = useCallback(
+        (popoverOpen: boolean) => {
+            popoverOpen
+                ? userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties)
+                : userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+        },
+        [userEvents]
+    );
+
+    const dismissPopover = useCallback(
+        (exportCancelled = true) => {
+            setPopoverOpen(false);
+            if (!exportCancelled) return;
+            sendPopoverToggleEvent(true);
+        },
+        [sendPopoverToggleEvent]
+    );
+
+    const togglePopover = useCallback(() => {
+        setPopoverOpen(prev => !prev);
+        sendPopoverToggleEvent(popoverOpen);
+    }, [popoverOpen, sendPopoverToggleEvent]);
+
+    const dismissExportError = useCallback(() => setExportError(undefined), []);
 
     const cancelAction = useMemo<ButtonActionObject>(
         () => ({
@@ -204,46 +204,50 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
             event: () => setExportStarted(true),
             variant: ButtonVariant.PRIMARY,
             title: downloadButtonLabel,
-            state: isFetching ? 'loading' : 'default',
         }),
-        [downloadButtonLabel, exportColumns.length, isFetching]
+        [downloadButtonLabel, exportColumns.length]
     );
 
     useEffect(() => {
-        if (!(popoverOpenRef.current = popoverOpen)) {
+        setExportError(error);
+    }, [error]);
+
+    useEffect(() => {
+        if (popoverOpen) {
+            dismissExportError();
+        } else {
             setExportColumns(DEFAULT_EXPORT_COLUMNS);
         }
-    }, [popoverOpen, userEvents]);
+    }, [popoverOpen, dismissExportError]);
 
     useEffect(() => {
         if (exportStarted) {
             setExportStarted(false);
+            dismissPopover(false);
 
-            if (isFetching) {
-                let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
-                let exportingDefaultColumns = true;
-                let exportingAllColumns = true;
+            let exportedFields: 'All' | 'Custom' | 'Default' = 'Custom';
+            let exportingOnlyDefaultFields = true;
+            let exportingAllFields = true;
 
-                EXPORT_COLUMNS.forEach(column => {
-                    const isExportedColumn = exportColumns.includes(column);
-                    const isDefaultColumn = DEFAULT_EXPORT_COLUMNS.includes(column);
-                    exportingDefaultColumns &&= isExportedColumn ? isDefaultColumn : !isDefaultColumn;
-                    exportingAllColumns &&= isExportedColumn;
-                });
+            EXPORT_COLUMNS.forEach(column => {
+                const isExportedField = exportColumns.includes(column);
+                const isDefaultField = DEFAULT_EXPORT_COLUMNS.includes(column);
+                exportingOnlyDefaultFields &&= isExportedField ? isDefaultField : !isDefaultField;
+                exportingAllFields &&= isExportedField;
+            });
 
-                if (exportingAllColumns) {
-                    exportedFields = 'All';
-                } else if (exportingDefaultColumns) {
-                    exportedFields = 'Default';
-                }
-
-                userEvents.addEvent?.('Completed export', {
-                    ...sharedAnalyticsEventProperties,
-                    exportedFields,
-                });
+            if (exportingAllFields) {
+                exportedFields = 'All';
+            } else if (exportingOnlyDefaultFields) {
+                exportedFields = 'Default';
             }
+
+            userEvents.addEvent?.('Completed export', {
+                ...sharedAnalyticsEventProperties,
+                exportedFields,
+            });
         }
-    }, [exportColumns, exportStarted, dismissPopover, isFetching, userEvents]);
+    }, [exportColumns, exportStarted, dismissPopover, userEvents]);
 
     useEffect(() => {
         (function attemptFocusCapture() {
@@ -255,31 +259,34 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
 
     const renderAlertError = useCallback(
         () => (
-            <Alert className={classes.popoverActionsAlert} type={AlertTypeOption.CRITICAL}>
+            <Alert onClose={dismissExportError} className={classes.errorAlert} type={AlertTypeOption.CRITICAL}>
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
             </Alert>
         ),
-        [i18n]
+        [i18n, dismissExportError]
     );
 
     return canDownloadTransactions ? (
         <div className={classes.root}>
-            <FilterButton
-                aria-label={exportButtonLabel}
-                ref={exportButtonRef}
-                className={classes.button}
-                classNameModifiers={popoverOpen ? ['active'] : undefined}
-                disabled={disabled || isFetching}
-                onClick={openPopover}
-                tabIndex={0}
-            >
-                <div className="adyen-pe-filter-button__default-container">
-                    <Text className="adyen-pe-filter-button__label">
-                        {isFetching ? <Spinner size="x-small" /> : <Icon name="download" />}
-                        {!isSmContainer && <span>{isFetching ? exportingButtonLabel : exportButtonLabel}</span>}
-                    </Text>
-                </div>
-            </FilterButton>
+            <>
+                <FilterButton
+                    aria-label={exportButtonLabel}
+                    ref={exportButtonRef}
+                    className={classes.button}
+                    classNameModifiers={popoverOpen ? ['active'] : undefined}
+                    disabled={disabled || isFetching}
+                    onClick={togglePopover}
+                    tabIndex={0}
+                >
+                    <div className="adyen-pe-filter-button__default-container">
+                        <Text className="adyen-pe-filter-button__label">
+                            {isFetching ? <Spinner size="x-small" /> : <Icon name="download" />}
+                            {!isSmContainer && <span>{isFetching ? exportingButtonLabel : exportButtonLabel}</span>}
+                        </Text>
+                    </div>
+                </FilterButton>
+                {exportError && renderAlertError()}
+            </>
 
             {popoverOpen && (
                 <Popover
@@ -313,7 +320,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                             checked={masterSwitchChecked}
                                             onChange={onExportColumnChange}
                                             id={masterSwitchId}
-                                            disabled={isFetching}
                                         >
                                             {masterSwitchLabel}
                                         </ExportColumn>
@@ -325,7 +331,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                                 value={value}
                                                 key={value}
                                                 id={id}
-                                                disabled={isFetching}
                                             >
                                                 {label}
                                             </ExportColumn>
@@ -340,7 +345,6 @@ const TransactionsExport = ({ disabled, filters }: { disabled?: boolean; filters
                                 className={classes.popoverActionsAlert}
                                 title={i18n.get('transactions.overview.export.actions.download.info')}
                             />
-                            {error && renderAlertError()}
                             <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
                         </div>
                     </div>

@@ -4,15 +4,15 @@ import { isNullish } from '../../../../../utils';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TransactionDetails } from '../../types';
 import { TranslationKey } from '../../../../../translations';
+import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { TX_DATA_LABEL, TX_DATA_LIST } from '../../constants';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { getTransactionAmountAdjustmentType } from '../../../../utils/translation/getters';
+import { getTransactionAmountAdjustmentType, getTransactionAmountAdjustmentTypeInformation } from '../../../../utils/translation/getters';
 import { StructuredListProps } from '../../../../internal/StructuredList/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import cx from 'classnames';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 
 const paymentAmountKeys = {
     grossAmount: 'transactions.details.summary.fields.grossAmount',
@@ -26,15 +26,6 @@ export interface PaymentDetailsSummaryProps {
     transaction: TransactionDetails;
 }
 
-const isAmount = (value: any): value is IAmount => {
-    return value && typeof value === 'object' && 'value' in value;
-};
-
-const ADJUSTMENTS_TOOLTIP_CONTENT: Record<`transactions.details.summary.adjustments.types.${string}`, TranslationKey> = {
-    'transactions.details.summary.adjustments.types.tip': 'transactions.details.summary.adjustments.types.tip.information',
-    'transactions.details.summary.adjustments.types.surcharge': 'transactions.details.summary.adjustments.types.surcharge.information',
-};
-
 const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
     const { i18n } = useCoreContext();
 
@@ -44,7 +35,7 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
         const getFormattedAmount = (amount?: IAmount) => {
             if (isNullish(amount)) return null;
             const { value, currency } = amount;
-            return i18n.amount(value, currency);
+            return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;
         };
 
         const listItems: StructuredListProps['items'] = [
@@ -72,10 +63,9 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
 
             // deductions
             ...(deductions?.map(({ type, ...amount }) => ({
-                key: `transactions.details.summary.adjustments.types.${type}` as TranslationKey,
+                key: getTransactionAmountAdjustmentType(i18n, type) as TranslationKey,
                 value: getFormattedAmount(amount),
-                rawValue: amount,
-                label: getTransactionAmountAdjustmentType(i18n, type),
+                rawValue: getTransactionAmountAdjustmentTypeInformation(i18n, type), // tooltip content
             })) ?? []),
 
             // netAmount
@@ -90,12 +80,10 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
     }, [i18n, transaction]);
 
     const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>(
-        (label, key, value) => {
-            const tooltipContent = ADJUSTMENTS_TOOLTIP_CONTENT[key as keyof typeof ADJUSTMENTS_TOOLTIP_CONTENT];
-
-            if (value && isAmount(value) && value.value < 0 && tooltipContent) {
+        (label, key, rawValue) => {
+            if (rawValue) {
                 return (
-                    <Tooltip content={i18n.get(tooltipContent)} key={key} isUnderlineVisible>
+                    <Tooltip content={rawValue} isUnderlineVisible>
                         <span className={cx(TX_DATA_LABEL)}>{label}</span>
                     </Tooltip>
                 );

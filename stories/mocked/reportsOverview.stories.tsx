@@ -7,11 +7,11 @@ import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { REPORTS } from '../../mocks/mock-data';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports Overview' };
+const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports/Reports Overview' };
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints('mock').reports, () => {
+        http.get(endpoints().reports, () => {
             return HttpResponse.json({
                 data: [
                     { ...REPORTS['BA32272223222B5CTDQPM6W2H']?.[0], createdAt: Date.now() },

@@ -2500,6 +2500,7 @@ export const BASE_TRANSACTION: ITransactionWithDetails = {
     category: 'Payment',
     createdAt: '2022-08-29T12:47:03.216Z',
     id: ORIGINAL_PAYMENT_ID,
+    merchantReference: 'TX-F9X2V8L7P1K6W',
     netAmount: { ...amount },
     paymentMethod: { ...paymentMethod },
     paymentPspReference: 'PSP0000000000990',
@@ -2507,7 +2508,7 @@ export const BASE_TRANSACTION: ITransactionWithDetails = {
     status: 'Booked',
 };
 
-export const FULLY_REFUNDABLE_TRANSACTION = {
+export const FULLY_REFUNDABLE_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         ...refundDetails,
@@ -2516,7 +2517,7 @@ export const FULLY_REFUNDABLE_TRANSACTION = {
     },
 };
 
-export const FULLY_REFUNDED_TRANSACTION = {
+export const FULLY_REFUNDED_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         ...refundDetails,
@@ -2529,7 +2530,7 @@ export const FULLY_REFUNDED_TRANSACTION = {
     },
 };
 
-export const PARTIALLY_REFUNDABLE_TRANSACTION = {
+export const PARTIALLY_REFUNDABLE_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         ...refundDetails,
@@ -2538,7 +2539,7 @@ export const PARTIALLY_REFUNDABLE_TRANSACTION = {
     },
 };
 
-export const PARTIALLY_REFUNDED_TRANSACTION = {
+export const PARTIALLY_REFUNDED_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         ...refundDetails,
@@ -2553,7 +2554,7 @@ export const PARTIALLY_REFUNDED_TRANSACTION = {
     },
 };
 
-export const PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES = {
+export const PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         ...refundDetails,
@@ -2596,7 +2597,7 @@ export const PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES = {
     },
 };
 
-export const REFUND_LOCKED_TRANSACTION = {
+export const REFUND_LOCKED_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     refundDetails: {
         refundableAmount: { ...amount, value: 13375 },
@@ -2611,7 +2612,7 @@ export const REFUND_LOCKED_TRANSACTION = {
     },
 };
 
-export const FULL_REFUND_TRANSACTION = {
+export const FULL_REFUND_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     category: 'Refund',
     amountBeforeDeductions: { ...refundFullAmount },
@@ -2619,7 +2620,7 @@ export const FULL_REFUND_TRANSACTION = {
     refundMetadata: { ...refundMetadata },
 };
 
-export const PARTIAL_REFUND_TRANSACTION = {
+export const PARTIAL_REFUND_TRANSACTION: ITransactionWithDetails = {
     ...BASE_TRANSACTION,
     category: 'Refund',
     amountBeforeDeductions: { ...refundPartialAmount },
@@ -2627,7 +2628,7 @@ export const PARTIAL_REFUND_TRANSACTION = {
     refundMetadata: { ...refundMetadata, refundType: 'partial' },
 };
 
-export const COMPLETE_TRANSACTION_DETAILS = {
+export const COMPLETE_TRANSACTION_DETAILS: ITransactionWithDetails = {
     ...PARTIALLY_REFUNDED_TRANSACTION,
     additions: [
         { ...amount, value: 150, type: 'tip' },
@@ -2641,7 +2642,6 @@ export const COMPLETE_TRANSACTION_DETAILS = {
     ],
     amountBeforeDeductions: { ...amount, value: 65850 },
     originalAmount: { ...amount, value: 64200 },
-    merchantReference: 'TX-F9X2V8L7P1K6W',
     events: [
         {
             amount: { ...amount },

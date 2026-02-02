@@ -18,6 +18,12 @@ export const getReportType = createDynamicTranslationFactory(reportTypeKeyFactor
 const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
 export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);
 
+const txAmountAdjustmentInformationKeyFactory = createKeyFactoryFromConfig({
+    prefix: 'transactions.details.summary.adjustments.types.',
+    suffix: '.information',
+});
+export const getTransactionAmountAdjustmentTypeInformation = createDynamicTranslationFactory(txAmountAdjustmentInformationKeyFactory);
+
 const txCategoryKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.' });
 export const getTransactionCategory = createDynamicTranslationFactory(txCategoryKeyFactory, originalValueFallback);
 

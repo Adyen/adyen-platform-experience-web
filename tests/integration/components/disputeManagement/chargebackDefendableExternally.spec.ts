@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-dispute-management--chargeback-defendable-externally';
+const STORY_ID = 'mocked-disputes-dispute-management--chargeback-defendable-externally';
 
 test.describe('Chargeback - Defendable externally', () => {
     test.beforeEach(async ({ page }) => {

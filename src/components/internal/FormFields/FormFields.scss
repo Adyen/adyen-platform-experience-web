@@ -125,18 +125,13 @@
             outline: none;
         }
 
-        &:focus,
-        &:active {
+        &:is(:focus, :active):not(.adyen-pe-input--invalid) {
             background: transparent;
             border: 0;
             outline: none;
         }
 
-        &:focus:hover {
-            outline: none;
-        }
-
-        &:active:hover {
+        &:is(:focus, :active):hover:not(.adyen-pe-input--invalid) {
             outline: none;
         }
     }
@@ -272,6 +267,10 @@
     border-color: style.token(color-outline-critical-hover);
 }
 
+.adyen-pe-input--invalid {
+    border-width: style.token(border-width-attention);
+}
+
 .adyen-pe-input::placeholder {
     color: style.token(color-label-secondary);
     font-weight: style.token(text-body-font-weight);
@@ -287,8 +286,10 @@
 .adyen-pe-input:active:hover,
 .adyen-pe-input:focus:hover,
 .adyen-pe-input--focus:hover {
-    background: style.token(color-background-primary);
-    outline: 1px solid style.token(color-outline-selected);
+    &:not(.adyen-pe-input--invalid) {
+        background: style.token(color-background-primary);
+        outline: 1px solid style.token(color-outline-selected);
+    }
 }
 
 .adyen-pe-input[readonly],

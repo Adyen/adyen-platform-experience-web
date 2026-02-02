@@ -1,12 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
-import { waitFor } from '@testing-library/preact';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-overview--grant-written-off';
+const STORY_ID = 'mocked-capital-capital-overview--grant-written-off';
 
 test.describe('Grant: Written off', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render written off grant', async ({ page }) => {

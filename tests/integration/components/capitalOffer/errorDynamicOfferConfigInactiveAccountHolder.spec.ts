@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-capital-offer--error-dynamic-offer-config-inactive-account-holder';
+const STORY_ID = 'mocked-capital-capital-offer--error-dynamic-offer-config-inactive-account-holder';
 
 test.describe('Error - Dynamic offer config - Inactive account holder', () => {
     test.beforeEach(async ({ page }) => {

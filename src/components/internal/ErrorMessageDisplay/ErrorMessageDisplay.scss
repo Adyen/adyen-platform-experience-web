@@ -39,6 +39,11 @@
         justify-content: center;
     }
 
+    &__illustration {
+        display: flex;
+        justify-content: center;
+    }
+
     &--with-header-offset {
         top: 60px;
     }

@@ -22,8 +22,8 @@ type FormStepRendererProps = {
     }[];
     termsAndConditionsProvisioned: boolean;
     configurationData?: IPaymentLinkConfiguration;
-    isSeparateAddress: boolean;
-    setIsSeparateAddress: Dispatch<SetStateAction<boolean>>;
+    isSameAddress: boolean;
+    setIsSameAddress: Dispatch<SetStateAction<boolean>>;
     countriesData?: {
         data: IPaymentLinkCountry[];
     };
@@ -41,8 +41,8 @@ export const FormStepRenderer = ({
     selectItems,
     termsAndConditionsProvisioned,
     configurationData,
-    isSeparateAddress,
-    setIsSeparateAddress,
+    isSameAddress,
+    setIsSameAddress,
     countriesData,
     isFetchingCountries,
     countryDatasetData,
@@ -65,8 +65,8 @@ export const FormStepRenderer = ({
         case 'customer':
             return (
                 <CustomerDetailsForm
-                    isSeparateAddress={isSeparateAddress}
-                    setIsSeparateAddress={setIsSeparateAddress}
+                    isSameAddress={isSameAddress}
+                    setIsSameAddress={setIsSameAddress}
                     countriesData={countriesData}
                     isFetchingCountries={isFetchingCountries}
                     countryDatasetData={countryDatasetData}

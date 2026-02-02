@@ -1,13 +1,14 @@
 import { paths as BalanceAccountPaths } from '../../../src/types/api/resources/BalanceAccountsResource';
 import { paths as PayoutsPaths } from '../../../src/types/api/resources/PayoutsResource';
 import { paths as TransactionsPaths } from '../../../src/types/api/resources/TransactionsResource';
+import { paths as TransactionsPathsV2 } from '../../../src/types/api/resources/TransactionsResourceV2';
 import { paths as ReportsPaths } from '../../../src/types/api/resources/ReportsResource';
 import { _RequiresParameter } from '../../../src/core/ConfigContext';
 
 export type AllowedHttpMethods = 'get' | 'post';
 export type AvailableVersions = 1 | 2;
 
-type _EndpointUrl = ReportsPaths & TransactionsPaths & PayoutsPaths & BalanceAccountPaths;
+type _EndpointUrl = ReportsPaths & TransactionsPaths & TransactionsPathsV2 & PayoutsPaths & BalanceAccountPaths;
 type _StripVersion<T extends keyof Record<string, any>> = T extends `/v${number}/${infer Rest}` ? `/${Rest}` : T;
 type _WithVersion<T extends string, V extends AvailableVersions = 1> = T extends `${infer Rest}` ? `/v${V}${Rest}` : `/v${V}${T}`;
 

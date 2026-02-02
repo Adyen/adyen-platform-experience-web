@@ -8,7 +8,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts Overview' };
+const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview> = {
     name: 'Default',
@@ -19,7 +19,7 @@ export const Default: ElementStory<typeof PayoutsOverview> = {
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints('mock').payouts, () => {
+        http.get(endpoints().payouts, () => {
             return HttpResponse.json({
                 data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
                 _links: {},
