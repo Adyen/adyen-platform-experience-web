@@ -1,3 +1,4 @@
+import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Card from '../../../../internal/Card/Card';
 import { Tag } from '../../../../internal/Tag/Tag';
@@ -38,6 +39,12 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
         }
     };
 
+    const formattedAmount = useMemo(() => {
+        if (!paymentLink?.linkInformation.amount) return null;
+        const { value, currency } = paymentLink.linkInformation.amount;
+        return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;
+    }, [i18n, paymentLink?.linkInformation.amount]);
+
     return (
         <Card classNameModifiers={[CLASSNAMES.root]}>
             <div className={CLASSNAMES.content}>
@@ -47,7 +54,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
                         : paymentLink?.linkInformation.status}
                 </Tag>
                 <Typography variant={TypographyVariant.TITLE} large>
-                    {`${i18n.amount(paymentLink?.linkInformation.amount.value, paymentLink?.linkInformation.amount.currency)} ${paymentLink?.linkInformation.amount.currency}`}
+                    {formattedAmount}
                 </Typography>
                 <div>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={CLASSNAMES.expiresLabel}>
