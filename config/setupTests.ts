@@ -21,6 +21,10 @@ beforeAll(() => {
             HTMLElement.prototype.scrollIntoView = vi.fn();
         }
 
+        if (!HTMLElement.prototype.scrollTo) {
+            HTMLElement.prototype.scrollTo = vi.fn();
+        }
+
         if (!window.IntersectionObserver) {
             window.IntersectionObserver = vi.fn(function (
                 this: IntersectionObserver,
