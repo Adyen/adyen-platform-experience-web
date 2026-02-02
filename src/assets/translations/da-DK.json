@@ -742,6 +742,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Du skal angive et telefonnummer",
     "payByLink.creation.fields.sendLinkToShopper.label": "Send betalingsanmodningen til denne e-mailadresse",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Send betalingsbekræftelse til denne e-mailadresse.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Leverings- og faktureringsadresse er den samme",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Indtast en gyldig e-mailadresse",
     "payByLink.creation.fields.shopperEmail.label": "Kundens e-mail",
     "payByLink.creation.fields.shopperLastName.label": "Kundens efternavn",
