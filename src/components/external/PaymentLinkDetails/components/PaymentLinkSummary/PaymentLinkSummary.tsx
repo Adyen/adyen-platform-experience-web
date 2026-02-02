@@ -47,7 +47,7 @@ export const PaymentLinkSummary = ({ paymentLink }: PaymentLinkSummaryProps) => 
                         : paymentLink?.linkInformation.status}
                 </Tag>
                 <Typography variant={TypographyVariant.TITLE} large>
-                    {`${i18n.amount(paymentLink?.linkInformation.amount.value, paymentLink?.linkInformation.amount.currency)} ${paymentLink?.linkInformation.amount.currency}`}
+                    {`${i18n.amount(paymentLink?.linkInformation.amount.value, paymentLink?.linkInformation.amount.currency, { hideCurrency: true })} ${paymentLink?.linkInformation.amount.currency}`}
                 </Typography>
                 <div>
                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} className={CLASSNAMES.expiresLabel}>
