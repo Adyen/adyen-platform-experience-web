@@ -742,6 +742,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Vul een telefoonnummer in",
     "payByLink.creation.fields.sendLinkToShopper.label": "Stuur het betalingsverzoek naar dit e-mailadres",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Stuur een betalingsbevestiging naar dit e-mailadres.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Verzend- en factureringsadres zijn hetzelfde",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Voer een geldig e-mailadres in",
     "payByLink.creation.fields.shopperEmail.label": "E-mailadres klant",
     "payByLink.creation.fields.shopperLastName.label": "Achternaam klant",

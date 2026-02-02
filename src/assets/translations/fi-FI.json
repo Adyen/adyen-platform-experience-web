@@ -742,6 +742,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Sinun täytyy antaa puhelinnumero",
     "payByLink.creation.fields.sendLinkToShopper.label": "Lähetä maksupyyntö tähän sähköpostiosoitteeseen.",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Lähetä maksuvahvistus tähän sähköpostiosoitteeseen.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Toimitus- ja laskutusosoitteet ovat samat",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Anna kelvollinen sähköpostiosoite",
     "payByLink.creation.fields.shopperEmail.label": "Ostajan sähköposti",
     "payByLink.creation.fields.shopperLastName.label": "Ostajan sukunimi",

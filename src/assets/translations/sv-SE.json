@@ -742,6 +742,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Du måste ange ett telefonnummer",
     "payByLink.creation.fields.sendLinkToShopper.label": "Skicka betalningsbegäran till den här e-postadressen",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Skicka betalningsbekräftelse till den här e-postadressen.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Leveransadressen är samma som faktureringsadressen",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Ange en giltig e-postadress",
     "payByLink.creation.fields.shopperEmail.label": "Konsumentens e-postadress",
     "payByLink.creation.fields.shopperLastName.label": "Konsumentens efternamn",
