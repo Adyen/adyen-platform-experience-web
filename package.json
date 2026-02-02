@@ -82,7 +82,7 @@
     "preact": "^10.13.2"
   },
   "devDependencies": {
-    "@adyen/bento-design-tokens": "^1.7.1",
+    "@adyen/bento-design-tokens": "^1.80.0",
     "@changesets/cli": "^2.29.7",
     "@changesets/get-github-info": "^0.6.0",
     "@playwright/test": "^1.56.0",

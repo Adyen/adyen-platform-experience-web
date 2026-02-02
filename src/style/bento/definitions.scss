@@ -1,0 +1,97 @@
+$animation: (
+    'animation-easing-standard': cubic-bezier(0.2, 0, 0.4, 0.9),
+    'animation-easing-enter': cubic-bezier(0.12, 0.6, 0.4, 0.95),
+    'animation-easing-exit': cubic-bezier(0.4, 0, 1, 1),
+    'animation-easing-linear': linear,
+    'animation-duration-fast': 100ms,
+    'animation-duration-moderate': 150ms,
+    'animation-duration-slow': 250ms,
+) !default;
+
+$border: (
+    'border-radius-xs': 2px,
+    'border-radius-s': 4px,
+    'border-radius-m': 8px,
+    'border-radius-l': 12px,
+    'border-radius-xl': 24px,
+    'border-width-s': 1px,
+    'border-width-m': 2px,
+    'border-width-l': 3px,
+    'border-width-attention': 1.5px,
+) !default;
+
+$media-query: (
+    'media-query-xs-min': 0px,
+    'media-query-xs-max': 375px,
+    'media-query-s-min': 376px,
+    'media-query-s-max': 499px,
+    'media-query-m-min': 500px,
+    'media-query-m-max': 767px,
+    'media-query-l-min': 768px,
+    'media-query-l-max': 1279px,
+    'media-query-xl-min': 1280px,
+    'media-query-xl-max': 1535px,
+    'media-query-xxl': 1536px,
+) !default;
+
+$gradient: (
+    'gradient-data-grid-hover': linear-gradient(
+            270deg,
+            #f4f5f6 0%,
+            rgba(247, 247, 248, 0.82) 53.34%,
+            rgba(247, 247, 248, 0.75) 61.73%,
+            rgba(247, 247, 248, 0.11) 99.25%,
+            rgba(247, 247, 248, 0) 100%
+        ),
+    'gradient-data-grid-zebra-hover': linear-gradient(
+            270deg,
+            #ecedef 0%,
+            rgba(236, 237, 239, 0.82) 53.34%,
+            rgba(236, 237, 239, 0.75) 61.73%,
+            rgba(236, 237, 239, 0.11) 99.25%,
+            rgba(236, 237, 239, 0) 100%
+        ),
+    'gradient-data-grid-selected-hover': linear-gradient(
+            270deg,
+            #d4e6f9 0%,
+            rgba(212, 230, 249, 0.82) 53.34%,
+            rgba(212, 230, 249, 0.75) 61.73%,
+            rgba(212, 230, 249, 0.11) 99.25%,
+            rgba(212, 230, 249, 0) 100%
+        ),
+    'gradient-data-grid-highlighted-hover': linear-gradient(
+            270deg,
+            #ffecd0 0%,
+            rgba(255, 236, 208, 0.82) 53.34%,
+            rgba(255, 236, 208, 0.75) 61.73%,
+            rgba(255, 236, 208, 0.11) 99.25%,
+            rgba(255, 236, 208, 0) 100%
+        ),
+) !default;
+
+$shadow: (
+    'shadow-low': '0px 2px 4px rgba(0, 18, 34, 0.04), 0px 1px 2px rgba(0, 18, 34, 0.02)',
+    'shadow-medium': '0px 6px 12px rgba(0, 18, 34, 0.08), 0px 2px 4px rgba(0, 18, 34, 0.04)',
+    'shadow-high': '0px 18px 36px rgba(0, 18, 34, 0.12), 0px 4px 8px rgba(0, 18, 34, 0.06)',
+    'shadow-low-border': '0px 2px 4px rgba(0, 18, 34, 0.04), 0px 1px 2px rgba(0, 18, 34, 0.02), 0px 0px 0px 1px rgba(218, 221, 223, 1)',
+    'shadow-medium-border': '0px 6px 12px rgba(0, 18, 34, 0.08), 0px 2px 4px rgba(0, 18, 34, 0.04), 0px 0px 0px 1px rgba(218, 221, 223, 1)',
+    'shadow-high-border': '0px 18px 36px rgba(0, 18, 34, 0.12), 0px 4px 8px rgba(0, 18, 34, 0.06), 0px 0px 0px 1px rgba(218, 221, 223, 1)',
+) !default;
+
+$spacer: (
+    'spacer-100': 32px,
+    'spacer-110': 40px,
+    'spacer-120': 48px,
+    'spacer-130': 56px,
+    'spacer-140': 64px,
+    'spacer-000': 0px,
+    'spacer-010': 2px,
+    'spacer-020': 4px,
+    'spacer-030': 6px,
+    'spacer-040': 8px,
+    'spacer-050': 10px,
+    'spacer-060': 12px,
+    'spacer-070': 16px,
+    'spacer-080': 20px,
+    'spacer-090': 24px,
+) !default;
