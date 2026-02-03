@@ -40,7 +40,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
 
     return (
         <>
-            <div ref={container} id="component-root" className={`component-wrapper component-wrapper--${context.globals.theme}`} />
+            <div ref={container} id="component-root" />
         </>
     );
 };
