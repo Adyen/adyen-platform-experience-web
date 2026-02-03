@@ -14,6 +14,7 @@ const CoreProvider = ({
     children,
     commonProps: _commonProps,
     loadingContext: _loadingContext,
+    theme: _theme,
     updateCore,
     externalErrorHandler,
     componentRef,
@@ -25,6 +26,7 @@ const CoreProvider = ({
     const [ready, setReady] = useBooleanState(false);
     const commonProps = useMemo(() => _commonProps || {}, [_commonProps]);
     const loadingContext = useMemo(() => _loadingContext ?? '', [_loadingContext]);
+    const theme = useMemo(() => _theme ?? 'light', [_theme]);
 
     useEffect(() => {
         (async () => {
@@ -38,6 +40,7 @@ const CoreProvider = ({
             i18n,
             commonProps,
             loadingContext,
+            theme,
             updateCore,
             externalErrorHandler,
             componentRef,
@@ -52,6 +55,7 @@ const CoreProvider = ({
             externalErrorHandler,
             i18n,
             loadingContext,
+            theme,
             getImageAsset,
             getDatasetAsset,
             getCdnConfig,

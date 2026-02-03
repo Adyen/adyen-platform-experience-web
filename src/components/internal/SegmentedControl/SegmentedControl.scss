@@ -20,7 +20,9 @@
     }
 
     &__item {
+        background: inherit;
         border-radius: style.token(border-radius-m);
+        color: inherit;
         cursor: pointer;
         padding: style.token(spacer-020) style.token(spacer-080);
         text-align: center;
@@ -32,7 +34,6 @@
         &:hover:not(:disabled),
         &[aria-checked='true'] {
             background: style.token(color-background-primary);
-            color: inherit;
         }
 
         &:disabled {

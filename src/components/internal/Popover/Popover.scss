@@ -6,7 +6,7 @@
     &-popover {
         $adyen-pe-popover-component-root: &;
 
-        background: style.token(color-background-primary);
+        background: style.token(color-background-modal);
         border: unset;
         border-radius: style.token(spacer-040);
         box-shadow: style.token(shadow-medium);
@@ -41,7 +41,6 @@
 
         &--with-divider {
             #{$adyen-pe-popover-component-root}__footer {
-                background-color: style.token(color-background-primary);
                 border-top: style.token(border-width-s) solid style.token(color-outline-disabled);
                 padding-top: style.token(spacer-060);
             }

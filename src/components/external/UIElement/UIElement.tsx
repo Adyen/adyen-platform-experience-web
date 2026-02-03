@@ -97,6 +97,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}
                     updateCore={updateCore}
+                    theme={core.options.theme}
                 >
                     <AnalyticsProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
                         {this.componentToRender && (
