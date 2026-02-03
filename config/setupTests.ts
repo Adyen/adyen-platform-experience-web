@@ -17,12 +17,12 @@ beforeAll(() => {
             removeEventListener: vi.fn(),
         }));
 
-        if (!HTMLElement.prototype.scrollIntoView) {
-            HTMLElement.prototype.scrollIntoView = vi.fn();
+        if (!Element.prototype.scrollIntoView) {
+            Element.prototype.scrollIntoView = vi.fn();
         }
 
-        if (!HTMLElement.prototype.scrollTo) {
-            HTMLElement.prototype.scrollTo = vi.fn();
+        if (!Element.prototype.scrollTo) {
+            Element.prototype.scrollTo = vi.fn();
         }
 
         if (!window.IntersectionObserver) {
