@@ -9,4 +9,5 @@ export interface TooltipProps {
     showTooltip?: boolean;
     position?: PopoverContainerPosition;
     isUnderlineVisible?: boolean;
+    delay?: number;
 }

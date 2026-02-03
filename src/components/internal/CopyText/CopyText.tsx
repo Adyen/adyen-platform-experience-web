@@ -86,7 +86,7 @@ const CopyText = ({
                 visibleTextToCopy
             )}
 
-            <Tooltip content={i18n.get(isCopied ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default')}>
+            <Tooltip delay={0} content={i18n.get(isCopied ? 'common.actions.copy.labels.done' : 'common.actions.copy.labels.default')}>
                 <Button
                     variant={ButtonVariant.TERTIARY}
                     className={classes.base}

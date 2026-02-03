@@ -15,9 +15,9 @@ const isString = (content: string | VNode<any>) => {
     return typeof content === 'string';
 };
 
-export const Tooltip = ({ content, children, showTooltip, position, isUnderlineVisible = false }: PropsWithChildren<TooltipProps>) => {
+export const Tooltip = ({ content, children, showTooltip, position, isUnderlineVisible = false, delay }: PropsWithChildren<TooltipProps>) => {
     const [popoverElement, setPopoverElement] = useState<HTMLDivElement | null>(null);
-    const { isVisible, listeners } = useTooltipListeners();
+    const { isVisible, listeners } = useTooltipListeners(delay);
     const targetElementRef = useUniqueIdentifier();
     const canShowTooltip = isVisible || !!showTooltip;
 
