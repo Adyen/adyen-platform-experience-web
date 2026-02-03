@@ -9,16 +9,13 @@
         background: style.token(color-background-primary);
         border: unset;
         border-radius: style.token(spacer-040);
-        box-shadow:
-            0 6px 12px rgba(0, 17, 44, 0.08),
-            0 2px 4px rgba(0, 17, 44, 0.04),
-            0 0 0 1px rgba(0, 17, 44, 0.06);
+        box-shadow: style.token(shadow-medium);
         min-width: 200px;
         overflow: hidden;
         z-index: 10;
 
         &__overlay {
-            background: rgba(0, 17, 44, 0.5);
+            background: rgba(style.token(color-support-overlay), 0.5);
             height: 100%;
             left: 0;
             position: fixed;

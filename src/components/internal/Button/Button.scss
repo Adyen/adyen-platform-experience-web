@@ -7,7 +7,7 @@
     appearance: none;
     border: 0;
     border-radius: style.token(border-radius-m);
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
+    box-shadow: inset 0 0 0 1px transparent;
     cursor: pointer;
     display: inline-flex;
     font-family: inherit;
@@ -73,7 +73,7 @@
 
     &--secondary {
         background-color: style.token(color-background-primary);
-        box-shadow: inset 0 0 0 1px #c9cdd3;
+        box-shadow: inset 0 0 0 1px style.token(color-outline-secondary);
         color: style.token(color-label-primary);
 
         &:hover {
@@ -88,7 +88,7 @@
 
         &:active {
             background-color: style.token(color-background-tertiary);
-            box-shadow: inset 0 0 0 1px #c9cdd3;
+            box-shadow: inset 0 0 0 1px style.token(color-outline-secondary);
             color: style.token(color-label-primary-active);
         }
 
@@ -102,7 +102,7 @@
 
     &--tertiary {
         background-color: transparent;
-        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
+        box-shadow: inset 0 0 0 1px transparent;
         color: style.token(color-label-primary);
         height: auto;
         padding: style.token(spacer-000);

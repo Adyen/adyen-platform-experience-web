@@ -26,7 +26,14 @@
     @include adyen-sdk-print-css-variables(dark.$color);
 }
 
-$adyen-tokens-map: adyen-sdk-generate-css-variables(aliases.$color, aliases.$text, aliases.$focus-ring, definitions.$spacer, definitions.$border);
+$adyen-tokens-map: adyen-sdk-generate-css-variables(
+    aliases.$color,
+    aliases.$text,
+    aliases.$focus-ring,
+    definitions.$spacer,
+    definitions.$border,
+    definitions.$shadow
+);
 
 @function token($token) {
     @return map-get($adyen-tokens-map, '#{$token}');

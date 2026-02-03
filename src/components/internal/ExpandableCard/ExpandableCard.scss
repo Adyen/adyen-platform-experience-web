@@ -15,7 +15,7 @@
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
+            box-shadow: style.token(shadow-medium);
             position: absolute;
             top: 0;
             z-index: 100;
