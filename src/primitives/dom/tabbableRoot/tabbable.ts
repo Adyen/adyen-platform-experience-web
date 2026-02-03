@@ -17,7 +17,7 @@ export const SELECTORS = `:scope ${`
     textarea,
     [contenteditable],
     [tabindex]
-`.replace(/\s+/, '')}`;
+`.replace(/\s+/g, '')}`;
 
 const ATTRIBUTES = ['contenteditable', 'controls', 'disabled', 'hidden', 'href', 'inert', 'tabindex'];
 const CHECKED_RADIOS = new Map<HTMLFormElement, Map<string, HTMLInputElement | null>>();
@@ -61,6 +61,7 @@ const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
                         node instanceof Element &&
                         // Added node is a tabbable element
                         (isTabbable(node) ||
+                            node.shadowRoot ||
                             // At least one descendant of added node is a tabbable element
                             some(node.querySelectorAll(SELECTORS), isTabbable))
                 );
@@ -74,6 +75,7 @@ const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
                         node instanceof Element &&
                         // Removed node is a tabbable element
                         (tabbables.includes(node) ||
+                            node.shadowRoot ||
                             // At least one descendant of removed node is a tabbable element
                             some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node)))
                 );
@@ -89,11 +91,11 @@ export const focusIsWithin = (rootElement: Element = document.body, elementWithF
     if (isUndefined(rootElement)) return false;
     if (isNullish(elementWithFocus)) return !!document.activeElement && focusIsWithin(rootElement, document.activeElement);
 
-    let parentElement = elementWithFocus?.parentNode as Element | null;
+    let parentElement = elementWithFocus?.parentNode as Node | null;
 
     while (parentElement) {
         if (parentElement === rootElement) return true;
-        parentElement = parentElement?.parentNode as Element | null;
+        parentElement = parentElement instanceof ShadowRoot ? parentElement.host : parentElement?.parentNode || null;
     }
 
     return false;
@@ -142,10 +144,32 @@ export const withTabbableRoot = () => {
         (tabbables[currentIndex] as HTMLElement)?.focus();
     };
 
+    const findAllTabbables = (rootNode: Node) => {
+        observer.observe(rootNode, {
+            attributeFilter: ATTRIBUTES,
+            attributes: true,
+            childList: true,
+            subtree: true,
+        });
+
+        const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, {
+            acceptNode: () => NodeFilter.FILTER_ACCEPT,
+        });
+
+        let currentNode = walker.nextNode();
+
+        while (currentNode) {
+            const element = currentNode as Element;
+            if (isTabbable(element)) tabbables.push(element);
+            if (element.shadowRoot) findAllTabbables(element.shadowRoot);
+            currentNode = walker.nextNode();
+        }
+    };
+
     const getTabbables = () => {
         tabbables.length = 0;
-        if (!(root instanceof Element)) return;
-        root.querySelectorAll(SELECTORS).forEach(maybeTabbable => isTabbable(maybeTabbable) && tabbables.push(maybeTabbable));
+        if (!root) return;
+        findAllTabbables(root);
         if (!focusIsWithin(root)) return;
         tabbableRoot.current = document.activeElement;
     };
@@ -167,17 +191,6 @@ export const withTabbableRoot = () => {
 
                 root && observer.disconnect();
                 root = maybeElement instanceof Element ? maybeElement : null;
-                tabbables.length = 0;
-
-                if (!root) return;
-
-                observer.observe(root, {
-                    attributeFilter: ATTRIBUTES,
-                    attributes: true,
-                    childList: true,
-                    subtree: true,
-                });
-
                 getTabbables();
             },
         },
