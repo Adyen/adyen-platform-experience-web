@@ -24,12 +24,15 @@
         cursor: pointer;
         padding: style.token(spacer-020) style.token(spacer-080);
         text-align: center;
-        transition: background 150ms ease-in-out, transform 150ms ease;
+        transition:
+            background 150ms ease-in-out,
+            transform 150ms ease;
 
         &:focus,
         &:hover:not(:disabled),
         &[aria-checked='true'] {
             background: style.token(color-background-primary);
+            color: inherit;
         }
 
         &:disabled {

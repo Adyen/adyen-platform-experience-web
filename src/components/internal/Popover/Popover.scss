@@ -15,7 +15,7 @@
         z-index: 10;
 
         &__overlay {
-            background: rgba(style.token(color-support-overlay), 0.5);
+            background: color-mix(in srgb, style.token(color-support-overlay), transparent 50%);
             height: 100%;
             left: 0;
             position: fixed;

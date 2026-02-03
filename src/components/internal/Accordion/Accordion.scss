@@ -3,6 +3,7 @@
 .adyen-pe-accordion {
     &__header {
         align-items: center;
+        color: inherit;
         display: flex;
         justify-content: space-between;
         margin: style.token(spacer-060) style.token(spacer-000);
@@ -12,6 +13,7 @@
         &-container {
             background-color: transparent;
             border: style.token(spacer-000);
+            color: inherit;
             cursor: pointer;
             display: flex;
             padding: style.token(spacer-000);
@@ -36,6 +38,8 @@
     &__content {
         overflow: hidden;
         position: relative;
-        transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.6s linear;
+        transition:
+            max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.6s linear;
     }
 }

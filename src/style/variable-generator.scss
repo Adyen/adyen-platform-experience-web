@@ -26,6 +26,7 @@
     @include adyen-sdk-print-css-variables(dark.$color);
 }
 
+/* stylelint-disable */
 $adyen-tokens-map: adyen-sdk-generate-css-variables(
     aliases.$color,
     aliases.$text,

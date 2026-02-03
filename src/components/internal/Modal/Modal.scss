@@ -20,7 +20,7 @@ $adyen-icon-touch-size: style.token(spacer-110);
 
 .adyen-pe-modal-wrapper {
     align-items: center;
-    background: rgba(style.token(color-support-overlay), 0.5);
+    background: color-mix(in srgb, style.token(color-support-overlay), transparent 50%);
     bottom: 0;
     content: '';
     display: flex;

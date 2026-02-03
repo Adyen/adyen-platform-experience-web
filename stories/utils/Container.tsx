@@ -18,7 +18,6 @@ export const Container = <T extends new (args: any) => any>({ component, compone
 
     useEffect(() => {
         let Component: BaseElement<any>;
-
         void (async () => {
             const core = await AdyenPlatformExperience({
                 ...context.coreOptions,
@@ -28,6 +27,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
+                theme: context.globals.theme,
                 ...context.args.coreOptions,
             });
 
@@ -40,7 +40,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
 
     return (
         <>
-            <div ref={container} id="component-root" className="component-wrapper" />
+            <div ref={container} id="component-root" className={`component-wrapper component-wrapper--${context.globals.theme}`} />
         </>
     );
 };
