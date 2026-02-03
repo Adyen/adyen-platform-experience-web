@@ -174,8 +174,8 @@ function Popover({
 
     const classNamesByVariant =
         variant === PopoverContainerVariant.TOOLTIP
-            ? `${DEFAULT_TOOLTIP_CLASSNAME}${isDarkTheme ? ` ${DEFAULT_TOOLTIP_CLASSNAME}--dark` : ''}`
-            : `${DEFAULT_POPOVER_CLASSNAME} ${POPOVER_CONTAINER_CLASSNAME}${isDarkTheme ? ` ${DEFAULT_POPOVER_CLASSNAME}--dark` : ''}`;
+            ? classNames(DEFAULT_TOOLTIP_CLASSNAME, { [`${DEFAULT_TOOLTIP_CLASSNAME}--dark`]: isDarkTheme })
+            : classNames(DEFAULT_POPOVER_CLASSNAME, POPOVER_CONTAINER_CLASSNAME, { [`${DEFAULT_POPOVER_CLASSNAME}--dark`]: isDarkTheme });
     const classNamesContentByVariant = variant === PopoverContainerVariant.TOOLTIP ? TOOLTIP_CONTENT_CLASSNAME : `${POPOVER_CONTENT_CLASSNAME}`;
 
     return createPortal(
