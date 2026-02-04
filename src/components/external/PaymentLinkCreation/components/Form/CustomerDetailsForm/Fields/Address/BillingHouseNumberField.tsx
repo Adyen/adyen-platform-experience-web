@@ -11,19 +11,25 @@ interface BillingHouseNumberFieldProps {
     isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
     showBillingFirst?: boolean;
+    isSameAddressCheckboxShown?: boolean;
 }
 
-export const BillingHouseNumberField = ({ isSameAddress, isAddressFieldRequired, showBillingFirst = false }: BillingHouseNumberFieldProps) => {
+export const BillingHouseNumberField = ({
+    isSameAddress,
+    isAddressFieldRequired,
+    showBillingFirst = false,
+    isSameAddressCheckboxShown = false,
+}: BillingHouseNumberFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            if (showBillingFirst && isSameAddress) {
+            if (showBillingFirst && isSameAddressCheckboxShown && isSameAddress) {
                 setValue('deliveryAddress.houseNumberOrName', e.currentTarget.value);
             }
         },
-        [isSameAddress, setValue, showBillingFirst]
+        [isSameAddress, setValue, showBillingFirst, isSameAddressCheckboxShown]
     );
 
     const isRequired = fieldsConfig['billingAddress.houseNumberOrName']?.required || isAddressFieldRequired('billingAddress.houseNumberOrName');

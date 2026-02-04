@@ -17,6 +17,7 @@ interface FormSelectProps<TFieldValues> {
     hideOptionalLabel?: boolean;
     className?: string;
     isRequired?: boolean;
+    isReadOnly?: boolean;
     validate?: ValidationRules['validate'];
     onChange?: (e: SelectChangeEvent) => void;
     clearable?: boolean;
@@ -30,6 +31,7 @@ export function FormSelect<TFieldValues>({
     filterable,
     hideOptionalLabel,
     isRequired: isRequiredProp,
+    isReadOnly: isReadOnlyProp,
     items,
     label,
     onChange,
@@ -38,7 +40,8 @@ export function FormSelect<TFieldValues>({
     validate,
 }: FormSelectProps<TFieldValues>) {
     const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
-    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, isRequiredProp]);
+    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
+    const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
 
     useEffect(() => {
         if (!items.length) return;
@@ -84,7 +87,7 @@ export function FormSelect<TFieldValues>({
                                     clearable={clearable}
                                     name={fieldName}
                                     onChange={handleChange}
-                                    readonly={readonly}
+                                    readonly={readonly || isReadOnly}
                                     selected={field.value as string}
                                     fitPosition
                                 />

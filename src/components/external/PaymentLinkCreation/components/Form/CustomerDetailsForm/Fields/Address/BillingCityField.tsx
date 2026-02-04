@@ -11,19 +11,25 @@ interface BillingCityFieldProps {
     isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
     showBillingFirst?: boolean;
+    isSameAddressCheckboxShown?: boolean;
 }
 
-export const BillingCityField = ({ isSameAddress, isAddressFieldRequired, showBillingFirst = false }: BillingCityFieldProps) => {
+export const BillingCityField = ({
+    isSameAddress,
+    isAddressFieldRequired,
+    showBillingFirst = false,
+    isSameAddressCheckboxShown = false,
+}: BillingCityFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            if (showBillingFirst && isSameAddress) {
+            if (showBillingFirst && isSameAddressCheckboxShown && isSameAddress) {
                 setValue('deliveryAddress.city', e.currentTarget.value);
             }
         },
-        [isSameAddress, setValue, showBillingFirst]
+        [isSameAddress, setValue, showBillingFirst, isSameAddressCheckboxShown]
     );
 
     const isRequired = fieldsConfig['billingAddress.city']?.required || isAddressFieldRequired('billingAddress.city');

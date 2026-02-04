@@ -106,6 +106,15 @@
             background: style.token(color-background-primary);
             outline: 1px solid style.token(color-outline-selected);
         }
+
+        &--readonly {
+            &,
+            &:focus-within {
+                background-color: style.token(color-background-disabled);
+                border: 0;
+                outline: none;
+            }
+        }
     }
 
     &__container > * {
@@ -189,6 +198,14 @@
         padding: style.token(spacer-030) style.token(spacer-040);
     }
 
+    &--readonly {
+        background-color: style.token(color-background-disabled);
+
+        &:hover {
+            color: style.token(color-label-disabled);
+        }
+    }
+
     .adyen-pe-button--tertiary {
         font-weight: style.token(text-caption-font-weight);
         text-decoration: none;
@@ -201,13 +218,6 @@
 
 .adyen-pe-input:required {
     box-shadow: none;
-}
-
-.adyen-pe-input[readonly],
-.adyen-pe-input--disabled {
-    background: style.token(color-background-tertiary-active);
-    border-color: style.token(color-outline-primary);
-    cursor: not-allowed;
 }
 
 .adyen-pe-input--disabled:hover {
@@ -292,12 +302,27 @@
     }
 }
 
-.adyen-pe-input[readonly],
-.adyen-pe-input[readonly]:hover {
-    background-color: style.token(color-background-tertiary-active);
-    border-color: transparent;
-    color: style.token(color-label-primary-hover);
-    cursor: not-allowed;
+.adyen-pe-input.adyen-pe-input[readonly],
+.adyen-pe-input.adyen-pe-input[readonly]:hover {
+    &:not(.adyen-pe-input--invalid) {
+        background-color: style.token(color-background-disabled);
+        border-color: transparent;
+        color: style.token(color-label-disabled);
+        cursor: not-allowed;
+        outline: none;
+
+        .adyen-pe-dropdown--input-field {
+            background-color: style.token(color-background-disabled);
+
+            &:hover {
+                color: style.token(color-label-disabled);
+            }
+        }
+
+        &:focus-within {
+            outline: none;
+        }
+    }
 }
 
 /* stylelint-disable-next-line selector-no-qualifying-type */

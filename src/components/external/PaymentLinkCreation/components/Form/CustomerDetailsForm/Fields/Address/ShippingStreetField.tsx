@@ -7,21 +7,23 @@ import { FormTextInput } from '../../../../../../../internal/FormWrappers/FormTe
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingStreetField = ({
-    isSameAddress,
-    isAddressFieldRequired,
-}: {
+interface ShippingStreetFieldProps {
     isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
-}) => {
+    isSameAddressCheckboxShown?: boolean;
+}
+
+export const ShippingStreetField = ({ isSameAddress, isAddressFieldRequired, isSameAddressCheckboxShown = false }: ShippingStreetFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            isSameAddress && setValue('billingAddress.street', e.currentTarget.value);
+            if (isSameAddressCheckboxShown && isSameAddress) {
+                setValue('billingAddress.street', e.currentTarget.value);
+            }
         },
-        [isSameAddress, setValue]
+        [isSameAddress, setValue, isSameAddressCheckboxShown]
     );
 
     const isRequired = fieldsConfig['deliveryAddress.street']?.required || isAddressFieldRequired('deliveryAddress.street');

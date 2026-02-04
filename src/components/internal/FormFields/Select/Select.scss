@@ -48,7 +48,7 @@
         user-select: none;
         width: 100%;
 
-        &:hover {
+        &:hover:not(:disabled) &:hover:not([aria-disabled='true']) {
             background-color: style.token(color-background-primary-hover);
         }
 
@@ -159,17 +159,17 @@
         text-align: left;
     }
 
-    //&--readonly {
-    //    &,
-    //    &-active,
-    //    &:hover,
-    //    &:focus {
-    //        background: var(--adyen-pe-color-gray-light);
-    //        border-color: transparent;
-    //        color: var(--adyen-pe-color-black);
-    //        cursor: not-allowed;
-    //    }
-    //}
+    &--readonly {
+        &,
+        &-active,
+        &:hover,
+        &:focus {
+            background-color: style.token(color-background-disabled);
+            border-color: style.token(color-border-textbox-disabled);
+            color: style.token(color-label-disabled);
+            cursor: not-allowed;
+        }
+    }
 
     .adyen-pe-filter-input {
         background: transparent;

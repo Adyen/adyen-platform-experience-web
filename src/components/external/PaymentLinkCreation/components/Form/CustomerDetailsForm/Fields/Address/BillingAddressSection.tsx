@@ -14,6 +14,7 @@ interface BillingAddressSectionProps {
     isAddressFieldRequired: AddressFieldRequiredChecker;
     isOptional?: boolean;
     showBillingFirst?: boolean;
+    isSameAddressCheckboxShown?: boolean;
     countriesData?: { data?: IPaymentLinkCountry[] };
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
@@ -25,6 +26,7 @@ export const BillingAddressSection = ({
     isAddressFieldRequired,
     isOptional = false,
     showBillingFirst = false,
+    isSameAddressCheckboxShown = false,
     countriesData,
     isFetchingCountries,
     countryDatasetData,
@@ -58,11 +60,13 @@ export const BillingAddressSection = ({
                     isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                 />
                 <BillingHouseNumberField
                     isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                 />
             </div>
             <div>
@@ -74,12 +78,19 @@ export const BillingAddressSection = ({
                     isFetchingCountryDataset={isFetchingCountryDataset}
                     isSameAddress={isSameAddress}
                     showBillingFirst={showBillingFirst}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                 />
-                <BillingCityField isSameAddress={isSameAddress} isAddressFieldRequired={isAddressFieldRequired} showBillingFirst={showBillingFirst} />
+                <BillingCityField
+                    isSameAddress={isSameAddress}
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    showBillingFirst={showBillingFirst}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
+                />
                 <BillingPostalCodeField
                     isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     showBillingFirst={showBillingFirst}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                 />
             </div>
         </div>

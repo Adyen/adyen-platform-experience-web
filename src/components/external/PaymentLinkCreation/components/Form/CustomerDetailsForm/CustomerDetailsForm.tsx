@@ -16,6 +16,7 @@ import { useWizardFormContext } from '../../../../../../hooks/form/wizard/Wizard
 import { Dispatch } from 'preact/compat';
 import { IPaymentLinkCountry } from '../../../../../../types';
 import { useAddressChecker } from './useAddressChecker';
+import { useSameAddressCheckbox } from './useSameAddressCheckbox';
 
 interface CustomerDetailsFormProps {
     isSameAddress: boolean;
@@ -37,15 +38,13 @@ export const CustomerDetailsForm = ({
     const { i18n } = useCoreContext();
     const { fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
     const { isAddressFieldRequired } = useAddressChecker();
+    const { isSameAddressCheckboxShown, showBillingFirst } = useSameAddressCheckbox();
 
     const isNameVisible = fieldsConfig['shopperName.firstName']?.visible || fieldsConfig['shopperName.lastName']?.visible;
     const isBillingAddressOptional = !fieldsConfig['billingAddress.street']?.required;
     const isDeliveryAddressOptional = !fieldsConfig['deliveryAddress.street']?.required;
     const isBillingAddressVisible = fieldsConfig['billingAddress.street']?.visible;
     const isDeliveryAddressVisible = fieldsConfig['deliveryAddress.street']?.visible;
-
-    // When billing is required and delivery is optional, show billing first
-    const showBillingFirst = isBillingAddressVisible && isDeliveryAddressVisible && !isBillingAddressOptional && isDeliveryAddressOptional;
 
     return (
         <div className="adyen-pe-payment-link-creation-form__fields-container">
@@ -93,20 +92,24 @@ export const CustomerDetailsForm = ({
                         isSameAddress={isSameAddress}
                         isAddressFieldRequired={isAddressFieldRequired}
                         isOptional={isDeliveryAddressOptional}
+                        isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                         countriesData={countriesData}
                         isFetchingCountries={isFetchingCountries}
                         countryDatasetData={countryDatasetData}
                         isFetchingCountryDataset={isFetchingCountryDataset}
                     />
-                    {isBillingAddressVisible && <BillingAndShippingCheckboxField isSameAddress={isSameAddress} setIsSameAddress={setIsSameAddress} />}
+                    {isSameAddressCheckboxShown && (
+                        <BillingAndShippingCheckboxField isSameAddress={isSameAddress} setIsSameAddress={setIsSameAddress} />
+                    )}
                 </>
             )}
-            {/* Billing address shown in default case (when !isSameAddress or only billing visible) */}
-            {!showBillingFirst && (!isSameAddress || (!isDeliveryAddressVisible && isBillingAddressVisible)) && (
+            {/* Billing address shown in default case (when !isSameAddress, only billing visible, or checkbox hidden due to readOnly) */}
+            {!showBillingFirst && isBillingAddressVisible && (!isSameAddressCheckboxShown || !isSameAddress || !isDeliveryAddressVisible) && (
                 <BillingAddressSection
                     isSameAddress={isSameAddress}
                     isAddressFieldRequired={isAddressFieldRequired}
                     isOptional={isBillingAddressOptional}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                     countriesData={countriesData}
                     isFetchingCountries={isFetchingCountries}
                     countryDatasetData={countryDatasetData}
@@ -120,21 +123,25 @@ export const CustomerDetailsForm = ({
                         isSameAddress={isSameAddress}
                         isAddressFieldRequired={isAddressFieldRequired}
                         showBillingFirst={showBillingFirst}
+                        isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                         countriesData={countriesData}
                         isFetchingCountries={isFetchingCountries}
                         countryDatasetData={countryDatasetData}
                         isFetchingCountryDataset={isFetchingCountryDataset}
                     />
-                    <BillingAndShippingCheckboxField
-                        isSameAddress={isSameAddress}
-                        setIsSameAddress={setIsSameAddress}
-                        showBillingFirst={showBillingFirst}
-                    />
-                    {!isSameAddress && (
+                    {isSameAddressCheckboxShown && (
+                        <BillingAndShippingCheckboxField
+                            isSameAddress={isSameAddress}
+                            setIsSameAddress={setIsSameAddress}
+                            showBillingFirst={showBillingFirst}
+                        />
+                    )}
+                    {(!isSameAddressCheckboxShown || !isSameAddress) && (
                         <DeliveryAddressSection
                             isSameAddress={isSameAddress}
                             isAddressFieldRequired={isAddressFieldRequired}
                             isOptional
+                            isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                             countriesData={countriesData}
                             isFetchingCountries={isFetchingCountries}
                             countryDatasetData={countryDatasetData}

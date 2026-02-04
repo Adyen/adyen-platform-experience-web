@@ -15,6 +15,7 @@ interface BillingCountryFieldProps {
     isFetchingCountryDataset: boolean;
     isSameAddress?: boolean;
     showBillingFirst?: boolean;
+    isSameAddressCheckboxShown?: boolean;
 }
 
 export const BillingCountryField = ({
@@ -25,6 +26,7 @@ export const BillingCountryField = ({
     isFetchingCountryDataset,
     isSameAddress = false,
     showBillingFirst = false,
+    isSameAddressCheckboxShown = false,
 }: BillingCountryFieldProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig, setValue } = useWizardFormContext<PaymentLinkCreationFormValues>();
@@ -42,11 +44,11 @@ export const BillingCountryField = ({
 
     const handleChange = useCallback(
         (e: SelectChangeEvent) => {
-            if (showBillingFirst && isSameAddress) {
+            if (showBillingFirst && isSameAddressCheckboxShown && isSameAddress) {
                 setValue('deliveryAddress.country', (e.target as HTMLSelectElement).value);
             }
         },
-        [isSameAddress, setValue, showBillingFirst]
+        [isSameAddress, setValue, showBillingFirst, isSameAddressCheckboxShown]
     );
 
     const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');

@@ -12,6 +12,7 @@ interface ShippingCountryFieldProps {
     isAddressFieldRequired: AddressFieldRequiredChecker;
     isFetchingCountries: boolean;
     isSameAddress: boolean;
+    isSameAddressCheckboxShown?: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
     isFetchingCountryDataset: boolean;
 }
@@ -21,6 +22,7 @@ export const ShippingCountryField = ({
     isAddressFieldRequired,
     isFetchingCountries,
     isSameAddress,
+    isSameAddressCheckboxShown = false,
     countryDatasetData,
     isFetchingCountryDataset,
 }: ShippingCountryFieldProps) => {
@@ -40,11 +42,11 @@ export const ShippingCountryField = ({
 
     const handleChange = useCallback(
         (e: SelectChangeEvent) => {
-            if (isSameAddress) {
+            if (isSameAddressCheckboxShown && isSameAddress) {
                 setValue('billingAddress.country', (e.target as HTMLSelectElement).value);
             }
         },
-        [isSameAddress, setValue]
+        [isSameAddress, setValue, isSameAddressCheckboxShown]
     );
 
     const isRequired = fieldsConfig['deliveryAddress.country']?.required || isAddressFieldRequired('deliveryAddress.country');

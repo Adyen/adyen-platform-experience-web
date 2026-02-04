@@ -13,6 +13,7 @@ interface DeliveryAddressSectionProps {
     isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
     isOptional?: boolean;
+    isSameAddressCheckboxShown?: boolean;
     countriesData?: { data?: IPaymentLinkCountry[] };
     isFetchingCountries: boolean;
     countryDatasetData?: Array<{ id: string; name: string }>;
@@ -23,6 +24,7 @@ export const DeliveryAddressSection = ({
     isSameAddress,
     isAddressFieldRequired,
     isOptional = false,
+    isSameAddressCheckboxShown = false,
     countriesData,
     isFetchingCountries,
     countryDatasetData,
@@ -52,8 +54,16 @@ export const DeliveryAddressSection = ({
                 )}
             </div>
             <div>
-                <ShippingStreetField isSameAddress={isSameAddress} isAddressFieldRequired={isAddressFieldRequired} />
-                <ShippingHouseNumberField isSameAddress={isSameAddress} isAddressFieldRequired={isAddressFieldRequired} />
+                <ShippingStreetField
+                    isSameAddress={isSameAddress}
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
+                />
+                <ShippingHouseNumberField
+                    isSameAddress={isSameAddress}
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
+                />
             </div>
             <div>
                 <ShippingCountryField
@@ -61,11 +71,20 @@ export const DeliveryAddressSection = ({
                     isAddressFieldRequired={isAddressFieldRequired}
                     isFetchingCountries={isFetchingCountries}
                     isSameAddress={isSameAddress}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
                     countryDatasetData={countryDatasetData}
                     isFetchingCountryDataset={isFetchingCountryDataset}
                 />
-                <ShippingCityField isAddressFieldRequired={isAddressFieldRequired} isSameAddress={isSameAddress} />
-                <ShippingPostalCodeField isAddressFieldRequired={isAddressFieldRequired} isSameAddress={isSameAddress} />
+                <ShippingCityField
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    isSameAddress={isSameAddress}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
+                />
+                <ShippingPostalCodeField
+                    isAddressFieldRequired={isAddressFieldRequired}
+                    isSameAddress={isSameAddress}
+                    isSameAddressCheckboxShown={isSameAddressCheckboxShown}
+                />
             </div>
         </div>
     );

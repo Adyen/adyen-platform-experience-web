@@ -41,6 +41,10 @@ interface CurrencyInputProps {
     name?: string;
     onAmountChange: (amount: number) => void;
     onCurrencyChange: (value: string) => void;
+    readonly?: {
+        amount?: boolean;
+        currency?: boolean;
+    };
     selectedCurrencyCode?: string;
 }
 
@@ -55,6 +59,7 @@ export const CurrencyInput = ({
     name,
     onAmountChange,
     onCurrencyChange,
+    readonly,
     selectedCurrencyCode,
 }: CurrencyInputProps) => {
     const prevCurrency = useRef(currency);
@@ -157,7 +162,7 @@ export const CurrencyInput = ({
             dropdown: {
                 items: sortedCurrencyItems,
                 value: selectedCurrencyCode,
-                readonly: currenciesQuery.isFetching,
+                readonly: currenciesQuery.isFetching || readonly?.currency,
             },
         };
     }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
@@ -178,6 +183,7 @@ export const CurrencyInput = ({
                     onInput={onInput}
                     uniqueId={inputIdentifier.current}
                     value={displayValue}
+                    readonly={readonly?.amount}
                 />
             </label>
         </div>

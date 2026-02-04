@@ -46,6 +46,40 @@ const fieldsConfig = {
             quantity: 3,
         },
     },
+    visibility: {
+        amount: {
+            value: 'readOnly',
+            currency: 'readOnly',
+        },
+        deliveryAddress: {
+            city: 'readOnly',
+            country: 'readOnly',
+            houseNumberOrName: 'readOnly',
+            postalCode: 'readOnly',
+            street: 'readOnly',
+        },
+        billingAddress: {
+            city: 'readOnly',
+            country: 'readOnly',
+            houseNumberOrName: 'readOnly',
+            postalCode: 'readOnly',
+            street: 'readOnly',
+        },
+        description: 'readOnly',
+        reference: 'readOnly',
+        linkType: 'readOnly',
+        deliverAt: 'hidden',
+        shopperEmail: 'readOnly',
+        shopperLocale: 'readOnly',
+        shopperReference: 'readOnly',
+        shopperName: 'hidden',
+        countryCode: 'readOnly',
+        telephoneNumber: 'readOnly',
+        linkValidity: {
+            durationUnit: 'readOnly',
+            quantity: 'readOnly',
+        },
+    },
 } satisfies PaymentLinkCreationComponentProps['fieldsConfig'];
 
 export const Default: ElementStory<typeof PaymentLinkCreation> = {
@@ -60,6 +94,17 @@ export const Default: ElementStory<typeof PaymentLinkCreation> = {
 
 export const Prefilled: ElementStory<typeof PaymentLinkCreation> = {
     name: 'Prefilled',
+    args: {
+        fieldsConfig: { data: fieldsConfig.data },
+        mockedApi: true,
+        onPaymentLinkCreated: action('Payment link created'),
+        onCreationDismiss: action('Creation dismissed'),
+        storeIds: ['STORE_NY_001'],
+    },
+};
+
+export const WithReadOnlyFields: ElementStory<typeof PaymentLinkCreation> = {
+    name: 'With read-only fields',
     args: {
         fieldsConfig,
         mockedApi: true,
@@ -87,7 +132,7 @@ export const SubmitNetworkError: ElementStory<typeof PaymentLinkCreation> = {
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
-        fieldsConfig,
+        fieldsConfig: { data: fieldsConfig.data },
     },
     parameters: {
         msw: {
@@ -101,7 +146,7 @@ export const SubmitInvalidFieldError: ElementStory<typeof PaymentLinkCreation> =
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
-        fieldsConfig,
+        fieldsConfig: { data: fieldsConfig.data },
     },
     parameters: {
         msw: {
@@ -115,7 +160,7 @@ export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
-        fieldsConfig,
+        fieldsConfig: { data: fieldsConfig.data },
     },
     parameters: {
         msw: {
@@ -133,7 +178,7 @@ export const CountryDatasetError: ElementStory<typeof PaymentLinkCreation> = {
         },
         onPaymentLinkCreated: action('Payment link created'),
         storeIds: ['STORE_NY_001'],
-        fieldsConfig,
+        fieldsConfig: { data: fieldsConfig.data },
     },
     parameters: {
         msw: {

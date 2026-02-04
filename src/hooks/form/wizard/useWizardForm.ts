@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useMemo } from 'preact/hooks';
-import { getNestedValue, useForm } from '../useForm';
+import { getNestedValue, setNestedValue, useForm } from '../useForm';
 import { UseWizardFormOptions, UseWizardFormReturn, WizardState, WizardAction, WizardStep, WizardSummaryData } from './types';
 import { FieldValues } from '../types';
 
@@ -289,6 +289,32 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         return summary;
     }, [steps, getValues, wizardState.displayValues]);
 
+    const getApiPayloadValues = useCallback((): Partial<TFieldValues> => {
+        const values = getValues();
+        const result = {} as TFieldValues;
+
+        // Get all fields that are API visible
+        const apiVisibleFieldNames = new Set<string>();
+        steps.forEach(step => {
+            step.fields.forEach(field => {
+                // Include field if includeInApiPayload is true or undefined (default to true)
+                if (field.includeInApiPayload !== false) {
+                    apiVisibleFieldNames.add(field.fieldName as string);
+                }
+            });
+        });
+
+        // Build result object with only API-visible fields
+        apiVisibleFieldNames.forEach(fieldName => {
+            const value = getNestedValue(values, fieldName);
+            if (value !== undefined && value !== null && value !== '') {
+                setNestedValue(result, fieldName, value);
+            }
+        });
+
+        return result;
+    }, [steps, getValues]);
+
     const getDisplayValue = useCallback(
         (name: FieldValues<TFieldValues>): string | undefined => {
             return wizardState.displayValues.get(name);
@@ -320,6 +346,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
 
         // Summary data
         getSummaryData,
+        getApiPayloadValues,
 
         // Display values
         getDisplayValue,
