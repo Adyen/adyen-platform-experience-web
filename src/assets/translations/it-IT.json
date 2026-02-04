@@ -742,6 +742,7 @@
     "payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber": "Devi immettere un numero di telefono",
     "payByLink.creation.fields.sendLinkToShopper.label": "Invia la richiesta di pagamento a questo indirizzo e-mail",
     "payByLink.creation.fields.sendPaymentSuccessToShopper.label": "Invia la conferma del pagamento a questo indirizzo e-mail.",
+    "payByLink.creation.fields.shippingAndBillingSameAddress.label": "Gli indirizzi di spedizione e fatturazione coincidono",
     "payByLink.creation.fields.shopperEmail.error.validEmail": "Inserisci un indirizzo e-mail valido",
     "payByLink.creation.fields.shopperEmail.label": "E-mail del cliente",
     "payByLink.creation.fields.shopperLastName.label": "Cognome dell'acquirente",
