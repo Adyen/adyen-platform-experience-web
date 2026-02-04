@@ -78,7 +78,7 @@ describe('Tooltip', () => {
 
         // Even with 0, it is a setTimeout(..., 0), so we might need to run pending timers
         await act(async () => {
-            vi.advanceTimersByTime(10);
+            vi.runOnlyPendingTimers();
         });
 
         expect(screen.getByText('Instant Tooltip')).toBeInTheDocument();
