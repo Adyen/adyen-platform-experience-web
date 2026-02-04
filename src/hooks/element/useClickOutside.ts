@@ -33,15 +33,32 @@ export const useClickOutside = <T extends Element = Element>(
             } else {
                 let eventPathIndex = 0;
                 let samePath = false;
-                let currentElement: Element | null = eventPath[eventPathIndex] as Element;
+                let currentElement: Element | ShadowRoot | null = eventPath[eventPathIndex] as Element | ShadowRoot;
 
-                while (currentElement instanceof Element) {
-                    if ((samePath ||= currentElement?.isSameNode(ref.current))) break;
-                    currentElement = (eventPath[++eventPathIndex] as Element) ?? currentElement.parentElement;
+                while (currentElement instanceof Element || currentElement instanceof ShadowRoot) {
+                    if (currentElement instanceof ShadowRoot) {
+                        currentElement = currentElement.host;
+                    }
+
+                    if ((samePath ||= currentElement.isSameNode(ref.current))) break;
 
                     if ((currentElement as any)?.[CONTROL_ELEMENT_PROPERTY] instanceof Element) {
                         currentElement = (currentElement as any)[CONTROL_ELEMENT_PROPERTY];
                         eventPath.length = 0;
+                        continue;
+                    }
+
+                    const nextInPath = eventPath[++eventPathIndex] as Element | ShadowRoot | undefined;
+                    if (nextInPath) {
+                        currentElement = nextInPath;
+                    } else {
+                        if (currentElement.parentElement) {
+                            currentElement = currentElement.parentElement;
+                        } else if (currentElement.parentNode instanceof ShadowRoot) {
+                            currentElement = currentElement.parentNode;
+                        } else {
+                            currentElement = null;
+                        }
                     }
                 }
 
@@ -54,7 +71,25 @@ export const useClickOutside = <T extends Element = Element>(
     const handleMouseDown = useCallback(
         (e: MouseEvent) => {
             if (!(ref && ref.current)) return;
-            mouseDownInsideRef.current = ref.current.contains(e.target as Node);
+
+            const target = e.target as Node;
+
+            if (ref.current.contains(target)) {
+                mouseDownInsideRef.current = true;
+                return;
+            }
+
+            let current: Node | null = target;
+
+            while (current) {
+                if (current === ref.current) {
+                    mouseDownInsideRef.current = true;
+                    return;
+                }
+                current = current instanceof ShadowRoot ? current.host : current.parentNode;
+            }
+
+            mouseDownInsideRef.current = false;
         },
         [ref]
     );
