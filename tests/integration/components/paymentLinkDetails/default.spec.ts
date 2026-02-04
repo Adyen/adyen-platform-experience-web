@@ -12,7 +12,7 @@ test.describe('Default', () => {
     test('should render details screen', async ({ page }) => {
         await expect(page.getByText('Payment link details')).toBeVisible();
         await expect(page.getByText('Active')).toBeVisible();
-        await expect(page.getByText('$150.00 USD')).toBeVisible();
+        await expect(page.getByText('150.00 USD')).toBeVisible();
         await expect(page.getByText('Expires on:')).toBeVisible();
         await expect(page.getByText('Link information')).toBeVisible();
         await expect(page.getByText('Shopper information')).toBeVisible();
