@@ -3,6 +3,8 @@ import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationE
 import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import InsightsTotals from '../InsightsTotals/InsightsTotals';
+import EChartsDashboard from '../../../../../poc/components/EChartsDashboard';
+import VisxDashboard from '../../../../../poc/components/VisxDashboard';
 
 const sharedAnalyticsEventProperties = {
     category: TRANSACTION_ANALYTICS_CATEGORY,
@@ -18,7 +20,13 @@ const TransactionsOverviewInsights = ({ currency, transactionsTotalsResult }: Tr
     const { isWaiting: loadingTotals, totalsLookup: totals, error } = transactionsTotalsResult;
     useLandedPageEvent(sharedAnalyticsEventProperties);
     useDurationEvent(sharedAnalyticsEventProperties);
-    return <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} error={error} />;
+    return (
+        <>
+            <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} error={error} />
+            <EChartsDashboard />
+            <VisxDashboard />
+        </>
+    );
 };
 
 export default TransactionsOverviewInsights;

@@ -10,9 +10,27 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
         "importHelpers": true,
         "baseUrl": "./",
+        "paths": {
+            "react": [
+                "./node_modules/preact/compat"
+            ],
+            "react-dom": [
+                "./node_modules/preact/compat"
+            ],
+            "react/jsx-runtime": [
+                "./node_modules/preact/jsx-runtime"
+            ],
+            "react/jsx-dev-runtime": [
+                "./node_modules/preact/jsx-dev-runtime"
+            ]
+        },
         "declarationMap": true,
         "skipLibCheck": true,
         "noEmit": true,
@@ -22,9 +40,23 @@
         "declarationDir": "./dist/types",
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
-        "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
+        "types": [
+            "node",
+            "vitest/globals",
+            "@testing-library/jest-dom"
+        ],
         "stripInternal": true
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/translations/*.json", "tests/**/*.ts"],
-    "exclude": ["node_modules", "dist", "config/inject-css.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.d.ts",
+        "src/translations/*.json",
+        "tests/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "config/inject-css.ts"
+    ],
 }

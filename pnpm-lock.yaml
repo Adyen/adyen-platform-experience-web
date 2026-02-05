@@ -41,10 +41,10 @@ importers:
                 version: 2.10.2(@babel/core@7.26.10)(preact@10.26.4)(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))
             '@storybook/preact':
                 specifier: ^10.1.10
-                version: 10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+                version: 10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))
             '@storybook/preact-vite':
                 specifier: ^10.1.10
-                version: 10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(preact@10.26.4)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+                version: 10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(preact@10.26.4)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
             '@testing-library/jest-dom':
                 specifier: ^5.16.5
                 version: 5.17.0
@@ -66,6 +66,30 @@ importers:
             '@typescript-eslint/parser':
                 specifier: ^8.51.0
                 version: 8.51.0(eslint@9.39.2)(typescript@5.8.3)
+            '@visx/axis':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/curve':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/event':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/group':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/responsive':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/scale':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/shape':
+                specifier: ^3.12.0
+                version: 3.12.0
+            '@visx/tooltip':
+                specifier: ^3.12.0
+                version: 3.12.0
             '@vitest/coverage-v8':
                 specifier: 4.0.10
                 version: 4.0.10(vitest@4.0.10(@types/node@20.19.25)(jsdom@26.1.0)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))
@@ -81,9 +105,21 @@ importers:
             css-loader:
                 specifier: ^6.11.0
                 version: 6.11.0(webpack@5.98.0(esbuild@0.27.1))
+            d3-scale:
+                specifier: ^4.0.2
+                version: 4.0.2
+            d3-time-format:
+                specifier: ^4.1.0
+                version: 4.1.0
             dotenv:
                 specifier: ^17.2.3
                 version: 17.2.3
+            echarts:
+                specifier: ^6.0.0
+                version: 6.0.0
+            echarts-for-react:
+                specifier: ^3.0.6
+                version: 3.0.6(echarts@6.0.0)
             eslint:
                 specifier: ^9.39.2
                 version: 9.39.2
@@ -146,7 +182,7 @@ importers:
                 version: 12.6.0(sass@1.79.3)(webpack@5.98.0(esbuild@0.27.1))
             storybook:
                 specifier: ^10.1.10
-                version: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+                version: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)
             style-loader:
                 specifier: ^3.3.1
                 version: 3.3.4(webpack@5.98.0(esbuild@0.27.1))
@@ -1042,6 +1078,39 @@ packages:
     '@types/cookie@0.6.0':
         resolution: {}
 
+    '@types/d3-array@3.0.3':
+        resolution: {}
+
+    '@types/d3-color@3.1.0':
+        resolution: {}
+
+    '@types/d3-delaunay@6.0.1':
+        resolution: {}
+
+    '@types/d3-format@3.0.1':
+        resolution: {}
+
+    '@types/d3-geo@3.1.0':
+        resolution: {}
+
+    '@types/d3-interpolate@3.0.1':
+        resolution: {}
+
+    '@types/d3-path@1.0.11':
+        resolution: {}
+
+    '@types/d3-scale@4.0.2':
+        resolution: {}
+
+    '@types/d3-shape@1.3.12':
+        resolution: {}
+
+    '@types/d3-time-format@2.1.0':
+        resolution: {}
+
+    '@types/d3-time@3.0.0':
+        resolution: {}
+
     '@types/deep-eql@4.0.2':
         resolution: {}
 
@@ -1052,6 +1121,9 @@ packages:
         resolution: {}
 
     '@types/estree@1.0.8':
+        resolution: {}
+
+    '@types/geojson@7946.0.16':
         resolution: {}
 
     '@types/istanbul-lib-coverage@2.0.6':
@@ -1072,6 +1144,9 @@ packages:
     '@types/json5@0.0.29':
         resolution: {}
 
+    '@types/lodash@4.17.23':
+        resolution: {}
+
     '@types/minimist@1.2.5':
         resolution: {}
 
@@ -1088,6 +1163,14 @@ packages:
         resolution: {}
 
     '@types/parse-json@4.0.2':
+        resolution: {}
+
+    '@types/react-dom@19.2.3':
+        resolution: {}
+        peerDependencies:
+            '@types/react': ^19.2.0
+
+    '@types/react@19.2.10':
         resolution: {}
 
     '@types/stack-utils@2.0.3':
@@ -1191,6 +1274,58 @@ packages:
     '@typescript-eslint/visitor-keys@8.51.0':
         resolution: {}
         engines: { node: ^18.18.0 || ^20.9.0 || >=21.1.0 }
+
+    '@visx/axis@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/bounds@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+            react-dom: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/curve@3.12.0':
+        resolution: {}
+
+    '@visx/event@3.12.0':
+        resolution: {}
+
+    '@visx/group@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/point@3.12.0':
+        resolution: {}
+
+    '@visx/responsive@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.0.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/scale@3.12.0':
+        resolution: {}
+
+    '@visx/shape@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/text@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.3.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/tooltip@3.12.0':
+        resolution: {}
+        peerDependencies:
+            react: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
+            react-dom: ^16.8.0-0 || ^17.0.0-0 || ^18.0.0-0
+
+    '@visx/vendor@3.12.0':
+        resolution: {}
 
     '@vitest/coverage-v8@4.0.10':
         resolution: {}
@@ -1477,6 +1612,9 @@ packages:
         peerDependencies:
             '@babel/core': ^7.12.10
 
+    balanced-match@0.4.2:
+        resolution: {}
+
     balanced-match@1.0.2:
         resolution: {}
 
@@ -1724,6 +1862,59 @@ packages:
         resolution: {}
         engines: { node: '>=18' }
 
+    csstype@3.2.3:
+        resolution: {}
+
+    d3-array@3.2.1:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-array@3.2.4:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-color@3.1.0:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-delaunay@6.0.2:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-format@3.1.0:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-format@3.1.2:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-geo@3.1.0:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-interpolate@3.0.1:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-path@1.0.9:
+        resolution: {}
+
+    d3-scale@4.0.2:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-shape@1.3.7:
+        resolution: {}
+
+    d3-time-format@4.1.0:
+        resolution: {}
+        engines: { node: '>=12' }
+
+    d3-time@3.1.0:
+        resolution: {}
+        engines: { node: '>=12' }
+
     damerau-levenshtein@1.0.8:
         resolution: {}
 
@@ -1813,6 +2004,9 @@ packages:
         resolution: {}
         engines: { node: '>= 0.4' }
 
+    delaunator@5.0.1:
+        resolution: {}
+
     detect-indent@6.1.0:
         resolution: {}
         engines: { node: '>=8' }
@@ -1860,6 +2054,15 @@ packages:
         engines: { node: '>= 0.4' }
 
     eastasianwidth@0.2.0:
+        resolution: {}
+
+    echarts-for-react@3.0.6:
+        resolution: {}
+        peerDependencies:
+            echarts: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+            react: ^15.0.0 || >=16.0.0
+
+    echarts@6.0.0:
         resolution: {}
 
     electron-to-chromium@1.5.126:
@@ -2432,6 +2635,10 @@ packages:
         resolution: {}
         engines: { node: '>= 0.4' }
 
+    internmap@2.0.3:
+        resolution: {}
+        engines: { node: '>=12' }
+
     is-arguments@1.2.0:
         resolution: {}
         engines: { node: '>= 0.4' }
@@ -2840,6 +3047,9 @@ packages:
     map-obj@4.3.0:
         resolution: {}
         engines: { node: '>=8' }
+
+    math-expression-evaluator@1.4.0:
+        resolution: {}
 
     math-intrinsics@1.1.0:
         resolution: {}
@@ -3300,11 +3510,6 @@ packages:
     randombytes@2.1.0:
         resolution: {}
 
-    react-dom@19.2.0:
-        resolution: {}
-        peerDependencies:
-            react: ^19.2.0
-
     react-is@16.13.1:
         resolution: {}
 
@@ -3314,9 +3519,14 @@ packages:
     react-is@18.3.1:
         resolution: {}
 
-    react@19.2.0:
+    react-use-measure@2.1.7:
         resolution: {}
-        engines: { node: '>=0.10.0' }
+        peerDependencies:
+            react: '>=16.13'
+            react-dom: '>=16.13'
+        peerDependenciesMeta:
+            react-dom:
+                optional: true
 
     read-pkg-up@7.0.1:
         resolution: {}
@@ -3345,6 +3555,12 @@ packages:
     redent@3.0.0:
         resolution: {}
         engines: { node: '>=8' }
+
+    reduce-css-calc@1.3.0:
+        resolution: {}
+
+    reduce-function-call@1.0.3:
+        resolution: {}
 
     reflect.getprototypeof@1.0.10:
         resolution: {}
@@ -3402,6 +3618,9 @@ packages:
     rimraf@3.0.2:
         resolution: {}
         hasBin: true
+
+    robust-predicates@3.0.2:
+        resolution: {}
 
     rollup-plugin-visualizer@5.14.0:
         resolution: {}
@@ -3479,9 +3698,6 @@ packages:
     saxes@6.0.0:
         resolution: {}
         engines: { node: '>=v12.22.7' }
-
-    scheduler@0.27.0:
-        resolution: {}
 
     schema-utils@3.3.0:
         resolution: {}
@@ -3562,6 +3778,9 @@ packages:
         engines: { node: '>=14' }
 
     simple-code-frame@1.3.0:
+        resolution: {}
+
+    size-sensor@1.0.3:
         resolution: {}
 
     slash@3.0.0:
@@ -3900,6 +4119,9 @@ packages:
             webpack: ^5.0.0
 
     tsconfig-paths@3.15.0:
+        resolution: {}
+
+    tslib@2.3.0:
         resolution: {}
 
     tslib@2.8.1:
@@ -4310,6 +4532,9 @@ packages:
             zod: ^3.25.0 || ^4.0.0
 
     zod@4.2.1:
+        resolution: {}
+
+    zrender@6.0.0:
         resolution: {}
 
 snapshots:
@@ -5073,11 +5298,11 @@ snapshots:
 
     '@standard-schema/spec@1.0.0': {}
 
-    '@storybook/builder-vite@10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+    '@storybook/builder-vite@10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
         dependencies:
-            '@storybook/csf-plugin': 10.1.10(esbuild@0.27.1)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+            '@storybook/csf-plugin': 10.1.10(esbuild@0.27.1)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
             '@vitest/mocker': 3.2.4(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))
-            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)
             ts-dedent: 2.2.0
             vite: 7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0)
         transitivePeerDependencies:
@@ -5086,9 +5311,9 @@ snapshots:
             - rollup
             - webpack
 
-    '@storybook/csf-plugin@10.1.10(esbuild@0.27.1)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+    '@storybook/csf-plugin@10.1.10(esbuild@0.27.1)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
         dependencies:
-            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)
             unplugin: 2.3.11
         optionalDependencies:
             esbuild: 0.27.1
@@ -5098,17 +5323,14 @@ snapshots:
 
     '@storybook/global@5.0.0': {}
 
-    '@storybook/icons@2.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
-        dependencies:
-            react: 19.2.0
-            react-dom: 19.2.0(react@19.2.0)
+    '@storybook/icons@2.0.1': {}
 
-    '@storybook/preact-vite@10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(preact@10.26.4)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+    '@storybook/preact-vite@10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(preact@10.26.4)(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
         dependencies:
-            '@storybook/builder-vite': 10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
-            '@storybook/preact': 10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+            '@storybook/builder-vite': 10.1.10(esbuild@0.27.1)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(rollup@4.53.3)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))(vite@7.2.4(@types/node@20.19.25)(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+            '@storybook/preact': 10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))
             preact: 10.26.4
-            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)
         transitivePeerDependencies:
             - esbuild
             - msw
@@ -5116,11 +5338,11 @@ snapshots:
             - vite
             - webpack
 
-    '@storybook/preact@10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+    '@storybook/preact@10.1.10(preact@10.26.4)(storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2))':
         dependencies:
             '@storybook/global': 5.0.0
             preact: 10.26.4
-            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+            storybook: 10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)
             ts-dedent: 2.2.0
 
     '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.26.10)':
@@ -5243,6 +5465,36 @@ snapshots:
 
     '@types/cookie@0.6.0': {}
 
+    '@types/d3-array@3.0.3': {}
+
+    '@types/d3-color@3.1.0': {}
+
+    '@types/d3-delaunay@6.0.1': {}
+
+    '@types/d3-format@3.0.1': {}
+
+    '@types/d3-geo@3.1.0':
+        dependencies:
+            '@types/geojson': 7946.0.16
+
+    '@types/d3-interpolate@3.0.1':
+        dependencies:
+            '@types/d3-color': 3.1.0
+
+    '@types/d3-path@1.0.11': {}
+
+    '@types/d3-scale@4.0.2':
+        dependencies:
+            '@types/d3-time': 3.0.0
+
+    '@types/d3-shape@1.3.12':
+        dependencies:
+            '@types/d3-path': 1.0.11
+
+    '@types/d3-time-format@2.1.0': {}
+
+    '@types/d3-time@3.0.0': {}
+
     '@types/deep-eql@4.0.2': {}
 
     '@types/eslint-scope@3.7.7':
@@ -5256,6 +5508,8 @@ snapshots:
             '@types/json-schema': 7.0.15
 
     '@types/estree@1.0.8': {}
+
+    '@types/geojson@7946.0.16': {}
 
     '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -5276,6 +5530,8 @@ snapshots:
 
     '@types/json5@0.0.29': {}
 
+    '@types/lodash@4.17.23': {}
+
     '@types/minimist@1.2.5': {}
 
     '@types/node@12.20.55': {}
@@ -5291,6 +5547,14 @@ snapshots:
     '@types/normalize-package-data@2.4.4': {}
 
     '@types/parse-json@4.0.2': {}
+
+    '@types/react-dom@19.2.3(@types/react@19.2.10)':
+        dependencies:
+            '@types/react': 19.2.10
+
+    '@types/react@19.2.10':
+        dependencies:
+            csstype: 3.2.3
 
     '@types/stack-utils@2.0.3': {}
 
@@ -5435,6 +5699,106 @@ snapshots:
         dependencies:
             '@typescript-eslint/types': 8.51.0
             eslint-visitor-keys: 4.2.1
+
+    '@visx/axis@3.12.0':
+        dependencies:
+            '@types/react': 19.2.10
+            '@visx/group': 3.12.0
+            '@visx/point': 3.12.0
+            '@visx/scale': 3.12.0
+            '@visx/shape': 3.12.0
+            '@visx/text': 3.12.0
+            classnames: 2.5.1
+            prop-types: 15.8.1
+
+    '@visx/bounds@3.12.0':
+        dependencies:
+            '@types/react': 19.2.10
+            '@types/react-dom': 19.2.3(@types/react@19.2.10)
+            prop-types: 15.8.1
+
+    '@visx/curve@3.12.0':
+        dependencies:
+            '@types/d3-shape': 1.3.12
+            d3-shape: 1.3.7
+
+    '@visx/event@3.12.0':
+        dependencies:
+            '@types/react': 19.2.10
+            '@visx/point': 3.12.0
+
+    '@visx/group@3.12.0':
+        dependencies:
+            '@types/react': 19.2.10
+            classnames: 2.5.1
+            prop-types: 15.8.1
+
+    '@visx/point@3.12.0': {}
+
+    '@visx/responsive@3.12.0':
+        dependencies:
+            '@types/lodash': 4.17.23
+            '@types/react': 19.2.10
+            lodash: 4.17.21
+            prop-types: 15.8.1
+
+    '@visx/scale@3.12.0':
+        dependencies:
+            '@visx/vendor': 3.12.0
+
+    '@visx/shape@3.12.0':
+        dependencies:
+            '@types/d3-path': 1.0.11
+            '@types/d3-shape': 1.3.12
+            '@types/lodash': 4.17.23
+            '@types/react': 19.2.10
+            '@visx/curve': 3.12.0
+            '@visx/group': 3.12.0
+            '@visx/scale': 3.12.0
+            classnames: 2.5.1
+            d3-path: 1.0.9
+            d3-shape: 1.3.7
+            lodash: 4.17.21
+            prop-types: 15.8.1
+
+    '@visx/text@3.12.0':
+        dependencies:
+            '@types/lodash': 4.17.23
+            '@types/react': 19.2.10
+            classnames: 2.5.1
+            lodash: 4.17.21
+            prop-types: 15.8.1
+            reduce-css-calc: 1.3.0
+
+    '@visx/tooltip@3.12.0':
+        dependencies:
+            '@types/react': 19.2.10
+            '@visx/bounds': 3.12.0
+            classnames: 2.5.1
+            prop-types: 15.8.1
+            react-use-measure: 2.1.7
+
+    '@visx/vendor@3.12.0':
+        dependencies:
+            '@types/d3-array': 3.0.3
+            '@types/d3-color': 3.1.0
+            '@types/d3-delaunay': 6.0.1
+            '@types/d3-format': 3.0.1
+            '@types/d3-geo': 3.1.0
+            '@types/d3-interpolate': 3.0.1
+            '@types/d3-scale': 4.0.2
+            '@types/d3-time': 3.0.0
+            '@types/d3-time-format': 2.1.0
+            d3-array: 3.2.1
+            d3-color: 3.1.0
+            d3-delaunay: 6.0.2
+            d3-format: 3.1.0
+            d3-geo: 3.1.0
+            d3-interpolate: 3.0.1
+            d3-scale: 4.0.2
+            d3-time: 3.1.0
+            d3-time-format: 4.1.0
+            internmap: 2.0.3
 
     '@vitest/coverage-v8@4.0.10(vitest@4.0.10(@types/node@20.19.25)(jsdom@26.1.0)(msw@2.7.3(@types/node@20.19.25)(typescript@5.8.3))(sass@1.79.3)(terser@5.44.1)(yaml@2.7.0))':
         dependencies:
@@ -5787,6 +6151,8 @@ snapshots:
         dependencies:
             '@babel/core': 7.26.10
 
+    balanced-match@0.4.2: {}
+
     balanced-match@1.0.2: {}
 
     balanced-match@2.0.0: {}
@@ -6033,6 +6399,56 @@ snapshots:
             '@asamuzakjp/css-color': 3.2.0
             rrweb-cssom: 0.8.0
 
+    csstype@3.2.3: {}
+
+    d3-array@3.2.1:
+        dependencies:
+            internmap: 2.0.3
+
+    d3-array@3.2.4:
+        dependencies:
+            internmap: 2.0.3
+
+    d3-color@3.1.0: {}
+
+    d3-delaunay@6.0.2:
+        dependencies:
+            delaunator: 5.0.1
+
+    d3-format@3.1.0: {}
+
+    d3-format@3.1.2: {}
+
+    d3-geo@3.1.0:
+        dependencies:
+            d3-array: 3.2.1
+
+    d3-interpolate@3.0.1:
+        dependencies:
+            d3-color: 3.1.0
+
+    d3-path@1.0.9: {}
+
+    d3-scale@4.0.2:
+        dependencies:
+            d3-array: 3.2.4
+            d3-format: 3.1.2
+            d3-interpolate: 3.0.1
+            d3-time: 3.1.0
+            d3-time-format: 4.1.0
+
+    d3-shape@1.3.7:
+        dependencies:
+            d3-path: 1.0.9
+
+    d3-time-format@4.1.0:
+        dependencies:
+            d3-time: 3.1.0
+
+    d3-time@3.1.0:
+        dependencies:
+            d3-array: 3.2.4
+
     damerau-levenshtein@1.0.8: {}
 
     data-urls@5.0.0:
@@ -6131,6 +6547,10 @@ snapshots:
             has-property-descriptors: 1.0.2
             object-keys: 1.1.1
 
+    delaunator@5.0.1:
+        dependencies:
+            robust-predicates: 3.0.2
+
     detect-indent@6.1.0: {}
 
     diff-sequences@29.6.3: {}
@@ -6179,6 +6599,17 @@ snapshots:
             gopd: 1.2.0
 
     eastasianwidth@0.2.0: {}
+
+    echarts-for-react@3.0.6(echarts@6.0.0):
+        dependencies:
+            echarts: 6.0.0
+            fast-deep-equal: 3.1.3
+            size-sensor: 1.0.3
+
+    echarts@6.0.0:
+        dependencies:
+            tslib: 2.3.0
+            zrender: 6.0.0
 
     electron-to-chromium@1.5.126: {}
 
@@ -6908,6 +7339,8 @@ snapshots:
             hasown: 2.0.2
             side-channel: 1.1.0
 
+    internmap@2.0.3: {}
+
     is-arguments@1.2.0:
         dependencies:
             call-bound: 1.0.4
@@ -7347,6 +7780,8 @@ snapshots:
     map-obj@1.0.1: {}
 
     map-obj@4.3.0: {}
+
+    math-expression-evaluator@1.4.0: {}
 
     math-intrinsics@1.1.0: {}
 
@@ -7796,18 +8231,13 @@ snapshots:
         dependencies:
             safe-buffer: 5.2.1
 
-    react-dom@19.2.0(react@19.2.0):
-        dependencies:
-            react: 19.2.0
-            scheduler: 0.27.0
-
     react-is@16.13.1: {}
 
     react-is@17.0.2: {}
 
     react-is@18.3.1: {}
 
-    react@19.2.0: {}
+    react-use-measure@2.1.7: {}
 
     read-pkg-up@7.0.1:
         dependencies:
@@ -7847,6 +8277,16 @@ snapshots:
         dependencies:
             indent-string: 4.0.0
             strip-indent: 3.0.0
+
+    reduce-css-calc@1.3.0:
+        dependencies:
+            balanced-match: 0.4.2
+            math-expression-evaluator: 1.4.0
+            reduce-function-call: 1.0.3
+
+    reduce-function-call@1.0.3:
+        dependencies:
+            balanced-match: 1.0.2
 
     reflect.getprototypeof@1.0.10:
         dependencies:
@@ -7906,6 +8346,8 @@ snapshots:
     rimraf@3.0.2:
         dependencies:
             glob: 7.2.3
+
+    robust-predicates@3.0.2: {}
 
     rollup-plugin-visualizer@5.14.0(rollup@4.53.3):
         dependencies:
@@ -7996,8 +8438,6 @@ snapshots:
     saxes@6.0.0:
         dependencies:
             xmlchars: 2.2.0
-
-    scheduler@0.27.0: {}
 
     schema-utils@3.3.0:
         dependencies:
@@ -8097,6 +8537,8 @@ snapshots:
         dependencies:
             kolorist: 1.8.0
 
+    size-sensor@1.0.3: {}
+
     slash@3.0.0: {}
 
     slice-ansi@3.0.0:
@@ -8171,10 +8613,10 @@ snapshots:
         dependencies:
             internal-slot: 1.1.0
 
-    storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    storybook@10.1.10(@testing-library/dom@8.20.1)(prettier@3.6.2):
         dependencies:
             '@storybook/global': 5.0.0
-            '@storybook/icons': 2.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+            '@storybook/icons': 2.0.1
             '@testing-library/jest-dom': 6.9.1
             '@testing-library/user-event': 14.6.1(@testing-library/dom@8.20.1)
             '@vitest/expect': 3.2.4
@@ -8183,7 +8625,7 @@ snapshots:
             open: 10.2.0
             recast: 0.23.11
             semver: 7.7.3
-            use-sync-external-store: 1.6.0(react@19.2.0)
+            use-sync-external-store: 1.6.0
             ws: 8.18.1
         optionalDependencies:
             prettier: 3.6.2
@@ -8485,6 +8927,8 @@ snapshots:
             minimist: 1.2.8
             strip-bom: 3.0.0
 
+    tslib@2.3.0: {}
+
     tslib@2.8.1: {}
 
     type-check@0.4.0:
@@ -8575,9 +9019,7 @@ snapshots:
             querystringify: 2.2.0
             requires-port: 1.0.0
 
-    use-sync-external-store@1.6.0(react@19.2.0):
-        dependencies:
-            react: 19.2.0
+    use-sync-external-store@1.6.0: {}
 
     util-deprecate@1.0.2: {}
 
@@ -8895,3 +9337,7 @@ snapshots:
             zod: 4.2.1
 
     zod@4.2.1: {}
+
+    zrender@6.0.0:
+        dependencies:
+            tslib: 2.3.0
