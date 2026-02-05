@@ -9,6 +9,8 @@ import {
     ITransactionTotal,
 } from '../../src';
 import {
+    BALANCE_ACCOUNTS_SINGLE,
+    BALANCES,
     BASE_TRANSACTION,
     COMPLETE_TRANSACTION_DETAILS,
     FULL_REFUND_TRANSACTION,
@@ -49,7 +51,7 @@ const TRANSACTIONS_REFUND_LOCKED_DEADLINES = new Map<number, Set<ITransactionWit
 const ALL_TRANSACTIONS: ITransactionWithDetails[] = [];
 const KLARNA_OR_PAYPAL = ['klarna', 'paypal'];
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const networkError = false;
 const serverError = false;
 
@@ -557,150 +559,268 @@ export const transactionsMocks = [
     }),
 ];
 
-const refundedTransactions = new Set<string>();
+export const TRANSACTION_DETAILS_HANDLERS = (() => {
+    const refundedTransactions = new Set<string>();
 
-const getTransactionJson = (() => {
-    let currentHandlersIndex: number;
+    const getTransactionJson = (() => {
+        let currentHandlersIndex: number;
 
-    return (transaction: ITransactionWithDetails, handlersIndex: number) => {
-        if (currentHandlersIndex !== handlersIndex) {
-            currentHandlersIndex = handlersIndex;
-            refundedTransactions.clear();
-        }
-        if (refundedTransactions.has(transaction.id) && transaction.refundDetails) {
-            return HttpResponse.json({
-                ...transaction,
-                refundDetails: {
-                    ...transaction.refundDetails,
-                    refundLocked: true,
-                },
-            });
-        }
-        return HttpResponse.json(transaction);
-    };
+        return (transaction: ITransactionWithDetails, handlersIndex: number) => {
+            if (currentHandlersIndex !== handlersIndex) {
+                currentHandlersIndex = handlersIndex;
+                refundedTransactions.clear();
+            }
+            if (refundedTransactions.has(transaction.id) && transaction.refundDetails) {
+                return HttpResponse.json({
+                    ...transaction,
+                    refundDetails: {
+                        ...transaction.refundDetails,
+                        refundLocked: true,
+                    },
+                });
+            }
+            return HttpResponse.json(transaction);
+        };
+    })();
+
+    const sharedMockEndpointsHandlers = [
+        http.post<{ id: string }>(mockEndpoints.initiateRefund, async ({ request, params }) => {
+            await mswDelay(2000);
+            params.id && refundedTransactions.add(params.id);
+            const { amount, refundReason } = (await request.json()) as ITransactionRefundPayload;
+            return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
+        }),
+    ] as const;
+
+    return {
+        default: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 0);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        completeDetails: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...COMPLETE_TRANSACTION_DETAILS, id: params.id }, 1);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        fullRefund: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    const transaction = params.id === ORIGINAL_PAYMENT_ID ? FULLY_REFUNDED_TRANSACTION : FULL_REFUND_TRANSACTION;
+                    return getTransactionJson({ ...transaction, id: params.id }, 2);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        partialRefund: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    const transaction = params.id === ORIGINAL_PAYMENT_ID ? PARTIALLY_REFUNDED_TRANSACTION : PARTIAL_REFUND_TRANSACTION;
+                    return getTransactionJson({ ...transaction, id: params.id }, 3);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundNotAvailable: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 4);
+                }),
+                http.post(mockEndpoints.setup, () => {
+                    const { initiateRefund, ...endpoints } = setupBasicResponse.endpoints;
+                    return HttpResponse.json({ endpoints });
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundLocked: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...REFUND_LOCKED_TRANSACTION, id: params.id }, 5);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundFails: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 6);
+                }),
+                http.post<{ id: string }>(mockEndpoints.initiateRefund, () => {
+                    return HttpResponse.error();
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundableFullAmount: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...FULLY_REFUNDABLE_TRANSACTION, id: params.id }, 7);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundablePartialAmount: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...PARTIALLY_REFUNDABLE_TRANSACTION, id: params.id }, 8);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        notRefundable: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 9);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundedFully: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...FULLY_REFUNDED_TRANSACTION, id: params.id }, 10);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundedPartially: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 11);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+        refundedPartiallyWithStatuses: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES, id: params.id }, 12);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
+    } as const;
 })();
 
-const sharedMockEndpointsHandlers = [
-    http.post<{ id: string }>(mockEndpoints.initiateRefund, async ({ request, params }) => {
-        await mswDelay(2000);
-        params.id && refundedTransactions.add(params.id);
-        const { amount, refundReason } = (await request.json()) as ITransactionRefundPayload;
-        return HttpResponse.json({ amount, refundReason, status: 'received' } satisfies ITransactionRefundResponse);
-    }),
-] as const;
+export const TRANSACTIONS_OVERVIEW_HANDLERS = (() => {
+    const BASE_TRANSACTIONS_LIST = [
+        { ...TRANSACTIONS[0], createdAt: Date.now(), netAmount: { currency: 'USD', value: 3650 } },
+        { ...TRANSACTIONS[6], createdAt: Date.now() },
+    ];
 
-export const TRANSACTION_DETAILS_HANDLERS = {
-    default: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 0);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    completeDetails: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...COMPLETE_TRANSACTION_DETAILS, id: params.id }, 1);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    fullRefund: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                const transaction = params.id === ORIGINAL_PAYMENT_ID ? FULLY_REFUNDED_TRANSACTION : FULL_REFUND_TRANSACTION;
-                return getTransactionJson({ ...transaction, id: params.id }, 2);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    partialRefund: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                const transaction = params.id === ORIGINAL_PAYMENT_ID ? PARTIALLY_REFUNDED_TRANSACTION : PARTIAL_REFUND_TRANSACTION;
-                return getTransactionJson({ ...transaction, id: params.id }, 3);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundNotAvailable: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 4);
-            }),
-            http.post(mockEndpoints.setup, () => {
-                const { initiateRefund, ...endpoints } = setupBasicResponse.endpoints;
-                return HttpResponse.json({ endpoints });
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundLocked: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...REFUND_LOCKED_TRANSACTION, id: params.id }, 5);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundFails: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 6);
-            }),
-            http.post<{ id: string }>(mockEndpoints.initiateRefund, () => {
-                return HttpResponse.error();
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundableFullAmount: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...FULLY_REFUNDABLE_TRANSACTION, id: params.id }, 7);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundablePartialAmount: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...PARTIALLY_REFUNDABLE_TRANSACTION, id: params.id }, 8);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    notRefundable: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...BASE_TRANSACTION, id: params.id }, 9);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundedFully: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...FULLY_REFUNDED_TRANSACTION, id: params.id }, 10);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundedPartially: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION, id: params.id }, 11);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-    refundedPartiallyWithStatuses: {
-        handlers: [
-            http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
-                return getTransactionJson({ ...PARTIALLY_REFUNDED_TRANSACTION_WITH_STATUSES, id: params.id }, 12);
-            }),
-            ...sharedMockEndpointsHandlers,
-        ],
-    },
-};
+    const BASE_TRANSACTIONS_TOTALS = {
+        currency: 'USD',
+        expenses: -350,
+        incomings: 137350,
+        total: 137000,
+        breakdown: {
+            expenses: [{ category: 'Fee', value: -350 }],
+            incomings: [
+                { category: 'Transfer', value: 133350 },
+                { category: 'Payment', value: 4000 },
+            ],
+        },
+    };
+
+    const ZERO_TRANSACTIONS_TOTALS = {
+        currency: 'USD',
+        expenses: 0,
+        incomings: 0,
+        total: 0,
+        breakdown: {
+            expenses: [],
+            incomings: [],
+        },
+    };
+
+    const ERROR_JSON = {
+        type: 'https://docs.adyen.com/errors/forbidden',
+        errorCode: '00_500',
+        title: 'Forbidden',
+        detail: 'Balance Account does not belong to Account Holder',
+        requestId: '769ac4ce59f0f159ad672d38d3291e91',
+        status: 500,
+    };
+
+    return {
+        singleBalanceAccount: {
+            handlers: [
+                http.get(mockEndpoints.balanceAccounts, () => {
+                    return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+                }),
+            ],
+        },
+        singleBalanceCurrency: {
+            handlers: [
+                http.get(mockEndpoints.balanceAccounts, () => {
+                    return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+                }),
+                http.get(mockEndpoints.balances, () => {
+                    return HttpResponse.json({ data: BALANCES[BALANCE_ACCOUNTS_SINGLE[0]!.id]!.slice(0, 1) });
+                }),
+                http.get(mockEndpoints.transactions, () => {
+                    return HttpResponse.json({ data: BASE_TRANSACTIONS_LIST, _links: {} });
+                }),
+                http.get(mockEndpoints.transactionsTotals, () => {
+                    return HttpResponse.json({ data: [BASE_TRANSACTIONS_TOTALS] });
+                }),
+            ],
+        },
+        emptyList: {
+            handlers: [
+                http.get(mockEndpoints.transactions, () => {
+                    return HttpResponse.json({ data: [], _links: {} });
+                }),
+                http.get(mockEndpoints.transactionsTotals, () => {
+                    const currencies = ['USD', 'EUR'];
+                    return HttpResponse.json({ data: currencies.map(currency => ({ ...ZERO_TRANSACTIONS_TOTALS, currency })) });
+                }),
+                http.get(mockEndpoints.downloadTransactions, () => {
+                    return new HttpResponse(null, { status: 204 });
+                }),
+            ],
+        },
+        errorList: {
+            handlers: [
+                http.get(mockEndpoints.transactions, () => {
+                    return HttpResponse.json(ERROR_JSON, { status: 500 });
+                }),
+                http.get(mockEndpoints.transactionsTotals, () => {
+                    const currencies = ['USD', 'EUR'];
+                    return HttpResponse.json({ data: currencies.map(currency => ({ ...ZERO_TRANSACTIONS_TOTALS, currency })) });
+                }),
+                http.get(mockEndpoints.downloadTransactions, () => {
+                    return new HttpResponse(null, { status: 204 });
+                }),
+            ],
+        },
+        errorExport: {
+            handlers: [
+                http.get(mockEndpoints.downloadTransactions, () => {
+                    return HttpResponse.error();
+                }),
+            ],
+        },
+        errorBalances: {
+            handlers: [
+                http.get(mockEndpoints.balances, () => {
+                    return HttpResponse.error();
+                }),
+            ],
+        },
+        errorTotals: {
+            handlers: [
+                http.get(mockEndpoints.transactionsTotals, () => {
+                    return HttpResponse.error();
+                }),
+            ],
+        },
+    };
+})();

@@ -86,31 +86,14 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
 
 export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
     analyticsEvents: T[],
-    expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][],
-    options?: { waitDuration?: number }
+    expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][]
 ) => {
-    // Waiting for analytics events for at least `waitDuration` milliseconds
-    await new Promise<void>(resolve => {
-        const startTime = performance.now();
-        const { waitDuration = 1000 } = options ?? {};
-
-        (function waitForAnalyticsEvents() {
-            const waitingTime = performance.now() - startTime;
-            waitingTime < waitDuration ? setTimeout(waitForAnalyticsEvents, 25) : resolve();
-        })();
-    });
-
-    // create a promise to resolve all the analytics events that have been sent
-    const actualEventsPromise = Promise.all(analyticsEvents);
-
-    // and then drain the analytics events
-    analyticsEvents.length = 0;
-
-    const actualEvents = await actualEventsPromise;
     const numberOfEvents = expectedEvents.length;
+    await expect.poll(() => analyticsEvents.length).toBe(numberOfEvents);
+    const actualEvents = [...analyticsEvents];
 
-    // required to match against all sent events
-    expect(actualEvents).toHaveLength(numberOfEvents);
+    // drain the analytics events
+    analyticsEvents.length = 0;
 
     for (let i = 0; i < numberOfEvents; i++) {
         const [event, properties] = expectedEvents[i]!;
@@ -128,3 +111,5 @@ export const getClipboardContent = async (page: Page) => {
 export const setTime = async (page: Page) => {
     await page.clock.setFixedTime('2025-01-01T00:00:00.00Z');
 };
+
+export const getComponentRoot = (page: Page) => page.locator('.adyen-pe-component');

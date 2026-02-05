@@ -17,6 +17,16 @@ import {
 } from '../mock-data';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
+import {
+    CapitalComponentManage,
+    DisputesComponentManage,
+    PayByLinkComponentManageLinks,
+    PayByLinkComponentView,
+    PayoutsOverviewComponentView,
+    ReportsOverviewComponentView,
+    TransactionsOverviewComponentManageRefunds,
+    TransactionsOverviewComponentView,
+} from './utils/rolesToEndpointsMapping';
 
 const DELAY_TIME = 300;
 
@@ -54,12 +64,12 @@ export const PAY_BY_LINK_ERRORS = {
         'c1687a5dab2d374ba9e1831aa88f3288',
         'he request is missing required fields or contains invalid data.',
         '29_001',
-        [{ name: 'amount', value: '', message: 'amount_too_high' }],
+        [{ name: 'amount', value: '', message: 'invalid_amount' }],
         '422'
     ),
 };
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const mockPayByLinkEndpoints = mockEndpoints.payByLink;
 const networkError = false;
 const defaultPaginationLimit = 10;
@@ -90,7 +100,7 @@ export const PayByLinkOverviewMockedResponses = {
         ],
     },
     storeNetworkError: {
-        handlers: [http.get(endpoints('mock').stores, async () => HttpResponse.error())],
+        handlers: [http.get(endpoints().stores, async () => HttpResponse.error())],
     },
     filtersNetworkError: {
         handlers: [http.get(mockPayByLinkEndpoints.filters, async () => HttpResponse.error())],
@@ -117,7 +127,7 @@ export const PayByLinkOverviewMockedResponses = {
 export const PaymentLinkCreationMockedResponses = {
     submitNetworkError: {
         handlers: [
-            http.post(mockEndpoints.payByLink.list, async () => {
+            http.post(mockPayByLinkEndpoints.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -125,7 +135,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     submitInvalidFields: {
         handlers: [
-            http.post(mockEndpoints.payByLink.list, async () => {
+            http.post(mockPayByLinkEndpoints.list, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json(PAY_BY_LINK_ERRORS.INVALID_FIELDS, { status: 422 });
             }),
@@ -134,6 +144,46 @@ export const PaymentLinkCreationMockedResponses = {
     configError: {
         handlers: [
             http.get(mockPayByLinkEndpoints.configuration, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    countryDatasetError: {
+        handlers: [
+            http.get(mockEndpoints.datasets.countries, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+};
+
+export const PaymentLinkDetailsMockedResponses = {
+    redacted: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.details, async ({ params }) => {
+                await delay(DELAY_TIME);
+                const { id } = params;
+                if (!id) {
+                    return HttpResponse.json({ error: 'Payment link ID is required' }, { status: 400 });
+                }
+                const refinedId = Array.isArray(id) && id.length ? id[0] : id;
+                return HttpResponse.json(getPaymentLinkDetails(refinedId, true), { status: 200 });
+            }),
+        ],
+    },
+    errorDetails: {
+        handlers: [
+            http.get(mockPayByLinkEndpoints.details, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    errorExpiration: {
+        handlers: [
+            http.post(mockPayByLinkEndpoints.expire, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -176,6 +226,26 @@ export const PaymentLinkSettingsMockedResponses = {
             http.post(mockEndpoints.payByLink.settings, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
+            }),
+        ],
+    },
+
+    permissionError: {
+        handlers: [
+            http.post(mockEndpoints.setup, async () => {
+                await delay(DELAY_TIME);
+                return HttpResponse.json({
+                    endpoints: {
+                        ...TransactionsOverviewComponentView,
+                        ...TransactionsOverviewComponentManageRefunds,
+                        ...ReportsOverviewComponentView,
+                        ...PayoutsOverviewComponentView,
+                        ...CapitalComponentManage,
+                        ...DisputesComponentManage,
+                        ...PayByLinkComponentView,
+                        ...PayByLinkComponentManageLinks,
+                    },
+                });
             }),
         ],
     },
@@ -236,6 +306,7 @@ export const payByLinkMocks = [
         return HttpResponse.json({
             url,
             expireAt: expiration.toISOString(),
+            paymentLinkId: 'PLTEST001',
         });
     }),
 

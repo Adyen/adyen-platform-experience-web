@@ -34,9 +34,11 @@ const renderFallback = (() => {
         );
 
         useEffect(() => {
-            if (inputRef.current) {
-                inputRef.current.focus();
-            }
+            (function attemptFocusCapture() {
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                } else requestAnimationFrame(attemptFocusCapture);
+            })();
         }, [inputRef]);
 
         useEffect(() => {

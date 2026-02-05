@@ -77,4 +77,16 @@ export const SettingsSaveError: ElementStory<typeof PaymentLinksOverview> = {
     },
 };
 
+export const SettingsRoleNotAssigned: ElementStory<typeof PaymentLinksOverview> = {
+    name: 'Error - Role not assigned',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkSettingsMockedResponses.permissionError,
+        },
+    },
+};
+
 export default meta;

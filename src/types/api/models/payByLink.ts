@@ -24,3 +24,4 @@ export type IPaymentLinkTheme = Schema<components, 'ThemeDTO'>;
 export type IPaymentLinkType = Schema<components, 'PaymentLinkType'>;
 export type IPaymentLinkValidity = Schema<components, 'LinkValidity'>;
 export type IPaymentLinkShopperAddress = Schema<components, 'address'>;
+export type IShopperInformation = Schema<components, 'ShopperInformation'>;

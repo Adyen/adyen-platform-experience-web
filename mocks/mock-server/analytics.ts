@@ -2,8 +2,8 @@ import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils/utils';
 
-const trackPath = endpoints('mock').sendTrackEvent;
-const engagePath = endpoints('mock').sendEngageEvent;
+const trackPath = endpoints().sendTrackEvent;
+const engagePath = endpoints().sendEngageEvent;
 const networkError = false;
 
 export const analyticsMock = [
