@@ -39,59 +39,23 @@ const isCheckedRadio = (element: Element): element is HTMLInputElement => {
     return checkedRadio === element;
 };
 
-const shouldRefresh = (tabbables: Element[], records: MutationRecord[]) => {
-    let shouldRefreshTabbables = false;
-
-    for (const record of records) {
-        if (record.type === 'attributes') {
-            shouldRefreshTabbables ||=
-                record.target instanceof Element &&
-                // Target is a tabbable element (possibly due to attribute changes)
-                // For example, disabled set to false, tabindex set to a number, etc.
-                (isTabbable(record.target) ||
-                    // Target is already contained in the list of tabbables
-                    // Attribute changes could make it no longer tabbable (e.g. disabled set to true)
-                    tabbables.includes(record.target));
-        } else {
-            shouldRefreshTabbables ||=
-                // At least one tabbable node was added to the DOM tree of the root element
-                some(
-                    record.addedNodes,
-                    (node: Node) =>
-                        node instanceof Element &&
-                        // Added node is a tabbable element
-                        (isTabbable(node) ||
-                            node.shadowRoot ||
-                            // At least one descendant of added node is a tabbable element
-                            some(node.querySelectorAll(SELECTORS), isTabbable))
-                );
-
-            shouldRefreshTabbables ||=
-                // At least one tabbable node was removed from the DOM tree of the root element
-                // That is, removed from the list of tabbables for the root element
-                some(
-                    record.removedNodes,
-                    (node: Node) =>
-                        node instanceof Element &&
-                        // Removed node is a tabbable element
-                        (tabbables.includes(node) ||
-                            node.shadowRoot ||
-                            // At least one descendant of removed node is a tabbable element
-                            some(node.querySelectorAll(SELECTORS), node => tabbables.includes(node)))
-                );
-        }
-
-        if (shouldRefreshTabbables) break;
+export const getDeepActiveElement = (root: Document | ShadowRoot = document): Element | null => {
+    let activeEl = root.activeElement;
+    while (activeEl && activeEl.shadowRoot && activeEl.shadowRoot.activeElement) {
+        activeEl = activeEl.shadowRoot.activeElement;
     }
-
-    return shouldRefreshTabbables;
+    return activeEl;
 };
 
 export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {
     if (isUndefined(rootElement)) return false;
-    if (isNullish(elementWithFocus)) return !!document.activeElement && focusIsWithin(rootElement, document.activeElement);
 
-    let parentElement = elementWithFocus?.parentNode as Node | null;
+    if (isNullish(elementWithFocus)) {
+        const activeElement = getDeepActiveElement();
+        return !!activeElement && focusIsWithin(rootElement, activeElement);
+    }
+
+    let parentElement = elementWithFocus.parentNode as Node | null;
 
     while (parentElement) {
         if (parentElement === rootElement) return true;
@@ -131,7 +95,7 @@ export const isTabbable = (element: Element) =>
     );
 
 export const withTabbableRoot = () => {
-    const observer = new MutationObserver(records => shouldRefresh(tabbables, records) && getTabbables());
+    const observer = new MutationObserver(records => shouldRefresh(records) && getTabbables());
     const tabbables: Element[] = [];
 
     let currentIndex = -1;
@@ -144,34 +108,67 @@ export const withTabbableRoot = () => {
         (tabbables[currentIndex] as HTMLElement)?.focus();
     };
 
-    const findAllTabbables = (rootNode: Node) => {
-        observer.observe(rootNode, {
+    const getTabbables = () => {
+        tabbables.length = 0;
+        if (!root) return;
+
+        const observerConfig = {
             attributeFilter: ATTRIBUTES,
             attributes: true,
             childList: true,
             subtree: true,
-        });
+        };
 
-        const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, {
-            acceptNode: () => NodeFilter.FILTER_ACCEPT,
-        });
+        observer.observe(root, observerConfig);
 
-        let currentNode = walker.nextNode();
+        const walkAndObserve = (rootNode: Node) => {
+            const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT, {
+                acceptNode: () => NodeFilter.FILTER_ACCEPT,
+            });
 
-        while (currentNode) {
-            const element = currentNode as Element;
-            if (isTabbable(element)) tabbables.push(element);
-            if (element.shadowRoot) findAllTabbables(element.shadowRoot);
-            currentNode = walker.nextNode();
-        }
+            let currentNode = walker.nextNode();
+
+            while (currentNode) {
+                const element = currentNode as Element;
+                if (isTabbable(element)) tabbables.push(element);
+                if (element.shadowRoot) {
+                    observer.observe(element.shadowRoot, observerConfig);
+                    walkAndObserve(element.shadowRoot);
+                }
+                currentNode = walker.nextNode();
+            }
+        };
+
+        walkAndObserve(root);
+
+        if (!focusIsWithin(root)) return;
+        tabbableRoot.current = getDeepActiveElement();
     };
 
-    const getTabbables = () => {
-        tabbables.length = 0;
-        if (!root) return;
-        findAllTabbables(root);
-        if (!focusIsWithin(root)) return;
-        tabbableRoot.current = document.activeElement;
+    const shouldRefresh = (records: MutationRecord[]) => {
+        let shouldRefreshTabbables = false;
+
+        for (const record of records) {
+            if (record.type === 'attributes') {
+                shouldRefreshTabbables ||=
+                    record.target instanceof Element &&
+                    // Target is a tabbable element (possibly due to attribute changes)
+                    // For example, disabled set to false, tabindex set to a number, etc.
+                    (isTabbable(record.target) ||
+                        // Target is already contained in the list of tabbables
+                        // Attribute changes could make it no longer tabbable (e.g. disabled set to true)
+                        tabbables.includes(record.target));
+            } else {
+                shouldRefreshTabbables ||=
+                    // At least one element was added or removed from the DOM tree of the root element
+                    some(record.addedNodes, (node: Node) => node instanceof Element) ||
+                    some(record.removedNodes, (node: Node) => node instanceof Element);
+            }
+
+            if (shouldRefreshTabbables) break;
+        }
+
+        return shouldRefreshTabbables;
     };
 
     const tabbableRoot = Object.create(null, {

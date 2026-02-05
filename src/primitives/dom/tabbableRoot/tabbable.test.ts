@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import withTabbableRoot, { focusIsWithin, isTabbable } from './tabbable';
+import withTabbableRoot, { focusIsWithin, getDeepActiveElement, isTabbable } from './tabbable';
 
 describe('isTabbable', () => {
     let container: HTMLElement;
@@ -80,6 +80,53 @@ describe('isTabbable', () => {
     });
 });
 
+describe('getDeepActiveElement', () => {
+    let container: HTMLElement;
+
+    beforeEach(() => {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+    });
+
+    afterEach(() => {
+        document.body.removeChild(container);
+        vi.clearAllMocks();
+    });
+
+    test('returns active element in light DOM', () => {
+        const input = document.createElement('input');
+        container.appendChild(input);
+        input.focus();
+        expect(getDeepActiveElement()).toBe(input);
+    });
+
+    test('returns active element inside Shadow DOM', () => {
+        const host = document.createElement('div');
+        const shadow = host.attachShadow({ mode: 'open' });
+        const input = document.createElement('input');
+        shadow.appendChild(input);
+        container.appendChild(host);
+
+        input.focus();
+        expect(getDeepActiveElement()).toBe(input);
+    });
+
+    test('returns active element inside nested Shadow DOM', () => {
+        const host1 = document.createElement('div');
+        const shadow1 = host1.attachShadow({ mode: 'open' });
+        const host2 = document.createElement('div');
+        const shadow2 = host2.attachShadow({ mode: 'open' });
+        const input = document.createElement('input');
+
+        shadow2.appendChild(input);
+        shadow1.appendChild(host2);
+        container.appendChild(host1);
+
+        input.focus();
+        expect(getDeepActiveElement()).toBe(input);
+    });
+});
+
 describe('focusIsWithin', () => {
     let container: HTMLElement;
 
@@ -133,7 +180,7 @@ describe('withTabbableRoot', () => {
         vi.clearAllMocks();
     });
 
-    test('finds tabbable elements in standard DOM', () => {
+    test('finds tabbable elements in Light DOM', () => {
         const input1 = document.createElement('input');
         const button1 = document.createElement('button');
         const div = document.createElement('div');
@@ -233,6 +280,49 @@ describe('withTabbableRoot', () => {
         await new Promise(resolve => setTimeout(resolve, 0));
 
         expect(tabbableRoot.tabbables).toEqual([input]);
+    });
+
+    test('updates when a wrapper with Shadow DOM is added', async () => {
+        const tabbableRoot = withTabbableRoot();
+        tabbableRoot.root = container;
+
+        expect(tabbableRoot.tabbables).toEqual([]);
+
+        const wrapper = document.createElement('div');
+        const host = document.createElement('div');
+        const shadow = host.attachShadow({ mode: 'open' });
+        const input = document.createElement('input');
+        shadow.appendChild(input);
+        wrapper.appendChild(host);
+
+        container.appendChild(wrapper);
+
+        // Wait for MutationObserver
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(tabbableRoot.tabbables).toEqual([input]);
+    });
+
+    test('updates when a wrapper with Shadow DOM is removed', async () => {
+        const wrapper = document.createElement('div');
+        const host = document.createElement('div');
+        const shadow = host.attachShadow({ mode: 'open' });
+        const input = document.createElement('input');
+        shadow.appendChild(input);
+        wrapper.appendChild(host);
+        container.appendChild(wrapper);
+
+        const tabbableRoot = withTabbableRoot();
+        tabbableRoot.root = container;
+
+        expect(tabbableRoot.tabbables).toEqual([input]);
+
+        container.removeChild(wrapper);
+
+        // Wait for MutationObserver
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(tabbableRoot.tabbables).toEqual([]);
     });
 
     test('manages current focus index', () => {

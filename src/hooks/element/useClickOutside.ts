@@ -68,59 +68,45 @@ export const useClickOutside = <T extends Element = Element>(
         [ref, callback, variant]
     );
 
-    const handleMouseDown = useCallback(
-        (e: MouseEvent) => {
-            if (!(ref && ref.current)) return;
-
-            const target = e.target as Node;
-
-            if (ref.current.contains(target)) {
-                mouseDownInsideRef.current = true;
-                return;
-            }
-
-            let current: Node | null = target;
-
-            while (current) {
-                if (current === ref.current) {
-                    mouseDownInsideRef.current = true;
-                    return;
-                }
-                current = current instanceof ShadowRoot ? current.host : current.parentNode;
-            }
-
-            mouseDownInsideRef.current = false;
-        },
-        [ref]
-    );
+    const handleMouseDown = useCallback((e: MouseEvent) => {
+        if (ref.current) {
+            mouseDownInsideRef.current = e.composedPath().includes(ref.current);
+        }
+    }, []);
 
     const handleClick = useCallback(
         (e: MouseEvent) => {
             if (mouseDownInsideRef.current) {
                 mouseDownInsideRef.current = false;
-                return;
-            }
-            handleClickOutside(e);
+            } else handleClickOutside(e);
         },
         [handleClickOutside]
     );
 
     useEffect(() => {
-        if (disableClickOutside) return;
+        if (disableClickOutside || !ref.current) return;
 
-        document.addEventListener('mousedown', handleMouseDown, true);
-        document.addEventListener('click', handleClick, true);
+        const element = ref.current;
+        const target = element.getRootNode();
 
-        if (variant === ClickOutsideVariant.POPOVER && ref.current instanceof Element) {
-            popoverUtil.add(ref.current, callback);
+        if (target instanceof ShadowRoot || target instanceof Document) {
+            target.addEventListener('mousedown', handleMouseDown as EventListener, true);
+            target.addEventListener('click', handleClick as EventListener, true);
+
+            if (variant === ClickOutsideVariant.POPOVER) {
+                popoverUtil.add(element, callback);
+            }
+
+            return () => {
+                target.removeEventListener('mousedown', handleMouseDown as EventListener, true);
+                target.removeEventListener('click', handleClick as EventListener, true);
+
+                if (variant === ClickOutsideVariant.POPOVER) {
+                    popoverUtil.remove(element);
+                }
+            };
         }
-
-        return () => {
-            document.removeEventListener('mousedown', handleMouseDown, true);
-            document.removeEventListener('click', handleClick, true);
-            if (ref.current) popoverUtil.remove(ref.current);
-        };
-    }, [disableClickOutside, handleMouseDown, handleClick, callback, variant, ref]);
+    }, [disableClickOutside, variant, handleMouseDown, handleClick, callback]);
 
     return useReflex<T>(
         useCallback(
@@ -133,9 +119,11 @@ export const useClickOutside = <T extends Element = Element>(
                         current.addEventListener('focusout', onFocusout, false);
                         ref.current = current;
                     }
+                } else {
+                    ref.current = null;
                 }
             },
-            [disableClickOutside, variant]
+            [disableClickOutside]
         ),
         rootElementRef
     );

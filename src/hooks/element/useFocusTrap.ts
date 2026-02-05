@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
 import { InteractionKeyCode } from '../../components/types';
 import { isUndefined } from '../../utils';
-import withTabbableRoot, { focusIsWithin, isFocusable } from '../../primitives/dom/tabbableRoot/tabbable';
+import withTabbableRoot, { focusIsWithin, getDeepActiveElement, isFocusable } from '../../primitives/dom/tabbableRoot/tabbable';
 import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
@@ -160,7 +160,7 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                 }
 
                 // Automatically focus inside the trap if focus is not already within it
-                if (!focusIsWithin(current, document.activeElement)) {
+                if (!focusIsWithin(current, getDeepActiveElement())) {
                     if (current instanceof HTMLElement) {
                         current.focus();
                     }
