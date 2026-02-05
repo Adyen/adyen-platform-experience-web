@@ -13,14 +13,26 @@ if [ "$current_branch" != "main" ]; then
   exit 1
 fi
 
+# Check the current package version
+current_version=$(jq -r '.version' package.json)
+
 npm run changeset -- version
 
+# Check the newly bumped package version
 new_version=$(jq -r '.version' package.json)
+
+if [ "$new_version" == "$current_version" ]; then
+  echo -e "${RED}No version bump available.${NC}"
+  exit 1
+fi
+
+bump_branch="bump/$new_version"
 
 npm install
 git add .
 git commit -m "Bump to version $new_version"
-git push origin "HEAD:bump/$new_version"
+git push origin "HEAD:$bump_branch" || { echo -e "${RED}Failed to push to remote branch $bump_branch${NC}"; exit 1; }
+git reset --hard HEAD~1
 
 echo "Version bumped to $new_version"
-echo "Changes committed and pushed to remote branch bump/$new_version"
+echo "Changes committed and pushed to remote branch $bump_branch"
