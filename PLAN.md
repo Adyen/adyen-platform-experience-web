@@ -41,6 +41,13 @@ The following items capture the additional prompts/decisions discovered after mu
 
 ### Scope & Mapping Rules
 - **Map “Group A only”** semantic tokens: include neutral/primary‑derived tokens and exclude status/decorative tokens (critical, warning, success, spotlight, etc.).
+
+Map A) Neutral + primary-derived tokens (safe to map)
+
+Background: primary/secondary/tertiary/quaternary/modal/disabled, inverse, always-light/dark
+Label: primary/secondary/tertiary/disabled/on-color, inverse, always-light/dark
+Outline + separator: primary/secondary/tertiary/disabled/selected, inverse + separator-inverse
+Primary-derived accents (blue in Bento): color-link-primary*, color-background-selected*, color-background-highlight-*, color-label-highlight
 - **Source of truth:** `@adyen/bento-design-tokens` light theme aliases (`aliases.scss`). Match each semantic token to the nearest ramp step by **lightness**.
 
 ### Accent Color Handling (#001222)
@@ -105,20 +112,20 @@ src/
 
 ```ts
 export interface ThemeProps {
-  primary: string;
-  outline: string;
-  neutral: string;
-  background: string;
-  label: string;
+  primary?: string;
+  outline?: string;
+  neutral?: string;
+  background?: string;
+  label?: string;
   dark?: boolean;
 }
 
 export interface ColorRamps {
-  primary: Record<string, string>;
-  outline: Record<string, string>;
-  neutral: Record<string, string>;
-  background: Record<string, string>;
-  label: Record<string, string>;
+  primary?: Record<string, string>;
+  outline?: Record<string, string>;
+  neutral?: Record<string, string>;
+  background?: Record<string, string>;
+  label?: Record<string, string>;
 }
 
 export type ColorCategory = 'primary' | 'outline' | 'neutral' | 'background' | 'label';
@@ -129,7 +136,7 @@ export type ColorCategory = 'primary' | 'outline' | 'neutral' | 'background' | '
 **File**: `src/utils/ThemeGenerator/constants.ts`
 
 ```ts
-// For example: You need to extract the correct ones fron Colors.svg
+// For example: You need to extract the correct ones from Colors.svg
 export const LIGHTNESS_STEPS = {
   light: {
     10: 97,
@@ -274,6 +281,10 @@ export const LIGHTNESS_STEPS = {
 --adyen-sdk-color-separator-inverse-secondary → outline-70
 ```
 
+**Runtime overrides** (applied during CSS injection):
+- If `outline` is missing and `primary` is defined, outline active/selected tokens fall back to **primary‑60**.
+- If both `outline` and `primary` are defined, `color-outline-primary-active` uses **primary‑60**.
+
 
 
 ```
@@ -289,7 +300,7 @@ export const LIGHTNESS_STEPS = {
 | 30   | 87%            | 18%           |
 | 40   | 78%            | 25%           |
 | 50   | 65%            | 35%           |
-| 60   | 50%            | 50%           |
+| 60   | anchor (input) | anchor (input) |
 | 70   | 35%            | 65%           |
 | 80   | 25%            | 78%           |
 | 90   | 15%            | 87%           |
@@ -315,10 +326,9 @@ import { ThemeGenerator } from './utils/ThemeGenerator';
 
 const themeGen = new ThemeGenerator();
 
-// Create theme
+// Create theme (outline is optional; omitted here to trigger fallback behavior)
 themeGen.create({
   primary: '#2292bc',
-  outline: '#1e506a',
   neutral: '#2d3251',
   background: '#151726',
   label: '#ebebeb',
