@@ -120,8 +120,8 @@ export const CapitalComponentManage = {
         url: 'capital/grants',
         versions: [1],
     },
-    createOnboardingConfiguration: {
-        method: 'POST' as HttpMethod,
+    getOnboardingConfiguration: {
+        method: 'GET' as HttpMethod,
         url: 'capital/onboardingConfiguration',
         versions: [1],
     },
