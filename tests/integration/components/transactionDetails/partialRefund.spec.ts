@@ -1,12 +1,7 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
-
-const sharedAnalyticsEventProperties = {
-    componentName: 'transactionDetails',
-    category: 'Transaction component',
-    subCategory: 'Transaction details',
-} as const;
+import { sharedAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transaction-details--partial-refund';
 
