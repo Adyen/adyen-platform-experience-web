@@ -13,11 +13,22 @@ export class ThemeGenerator {
         const mode: ThemeMode = props.dark ? 'dark' : 'light';
         const categories: ColorCategory[] = ['primary', 'outline', 'neutral', 'background', 'label'];
 
-        this.ramps = {} as ColorRamps;
+        this.ramps = {};
 
         for (const category of categories) {
-            const inputColor = this.sanitizeColor(props[category]);
-            this.ramps[category] = this.generateRamp(inputColor, mode);
+            const inputColor = props[category];
+            if (!inputColor) {
+                continue;
+            }
+
+            const sanitizedColor = this.sanitizeColor(inputColor);
+            this.ramps[category] = this.generateRamp(sanitizedColor, mode);
+        }
+
+        if (Object.keys(this.ramps).length === 0) {
+            this.removeStyleElement();
+            this.ramps = null;
+            return;
         }
 
         this.injectCSS(this.ramps, mode);
@@ -74,22 +85,35 @@ export class ThemeGenerator {
         this.removeStyleElement();
 
         const variables: string[] = [];
-        const categories = Object.keys(ramps) as ColorCategory[];
+        const categories: ColorCategory[] = ['primary', 'outline', 'neutral', 'background', 'label'];
+        const outlineFallbackVariables = new Set([
+            'color-outline-primary-active',
+            'color-outline-secondary-active',
+            'color-outline-tertiary-active',
+            'color-outline-selected',
+        ]);
+        const shouldFallbackToPrimary = !ramps.outline && !!ramps.primary;
 
         // Numbered variables: --adyen-sdk-color-{category}-{step}
         for (const category of categories) {
+            const ramp = ramps[category];
+            if (!ramp) {
+                continue;
+            }
             for (const step of STEPS) {
                 const varName = `${CSS_VAR_PREFIX}color-${category}-${step}`;
-                variables.push(`${varName}: ${ramps[category][String(step)]};`);
+                variables.push(`${varName}: ${ramp[String(step)]};`);
             }
         }
 
         // Semantic variables
         for (const mapping of SEMANTIC_MAPPINGS) {
-            const ramp = ramps[mapping.category];
+            const usePrimaryFallback = shouldFallbackToPrimary && outlineFallbackVariables.has(mapping.variable);
+            const ramp = usePrimaryFallback ? ramps.primary : ramps[mapping.category];
             if (ramp) {
                 const varName = `${CSS_VAR_PREFIX}${mapping.variable}`;
-                variables.push(`${varName}: ${ramp[String(mapping.step)]};`);
+                const step = usePrimaryFallback ? ANCHOR_STEP : mapping.step;
+                variables.push(`${varName}: ${ramp[String(step)]};`);
             }
         }
 

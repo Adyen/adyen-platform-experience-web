@@ -26,10 +26,10 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 environment: 'test',
                 locale: locale || 'en-US',
                 theme: {
-                    primary: '#2292bc',
+                    primary: '#dd0000',
                     outline: '#1e506a',
                     neutral: '#2d3251',
-                    background: '#151726',
+                    background: '#dd0000',
                     label: '#ebebeb',
                     dark: false,
                 },

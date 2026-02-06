@@ -40,8 +40,9 @@ describe('ThemeGenerator', () => {
             const ramps = generator.getRamps()!;
 
             for (const category of CATEGORIES) {
-                const inputColor = LIGHT_THEME_PROPS[category] as string;
-                expect(ramps[category][String(ANCHOR_STEP)]).toBe(inputColor.toLowerCase());
+                const inputColor = LIGHT_THEME_PROPS[category]!;
+                const ramp = ramps[category]!;
+                expect(ramp[String(ANCHOR_STEP)]).toBe(inputColor.toLowerCase());
             }
         });
 
@@ -50,8 +51,9 @@ describe('ThemeGenerator', () => {
             const ramps = generator.getRamps()!;
 
             for (const category of CATEGORIES) {
-                const inputColor = DARK_THEME_PROPS[category] as string;
-                expect(ramps[category][String(ANCHOR_STEP)]).toBe(inputColor.toLowerCase());
+                const inputColor = DARK_THEME_PROPS[category]!;
+                const ramp = ramps[category]!;
+                expect(ramp[String(ANCHOR_STEP)]).toBe(inputColor.toLowerCase());
             }
         });
     });
@@ -63,8 +65,9 @@ describe('ThemeGenerator', () => {
 
             for (const category of CATEGORIES) {
                 for (const step of STEPS) {
-                    expect(ramps[category][String(step)]).toBeDefined();
-                    expect(ramps[category][String(step)]).toMatch(/^#[0-9a-f]{6}$/);
+                    const ramp = ramps[category]!;
+                    expect(ramp[String(step)]).toBeDefined();
+                    expect(ramp[String(step)]).toMatch(/^#[0-9a-f]{6}$/);
                 }
             }
         });
@@ -89,7 +92,8 @@ describe('ThemeGenerator', () => {
             const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
 
             for (const mapping of SEMANTIC_MAPPINGS) {
-                const expectedColor = ramps[mapping.category][String(mapping.step)];
+                const ramp = ramps[mapping.category]!;
+                const expectedColor = ramp[String(mapping.step)];
                 expect(style.textContent).toContain(`--adyen-sdk-${mapping.variable}: ${expectedColor}`);
             }
         });
@@ -97,7 +101,19 @@ describe('ThemeGenerator', () => {
         test('color-primary semantic token equals the exact input color', () => {
             generator.create(LIGHT_THEME_PROPS);
             const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
-            expect(style!.textContent).toContain(`--adyen-sdk-color-primary: ${LIGHT_THEME_PROPS.primary.toLowerCase()}`);
+            expect(style!.textContent).toContain(`--adyen-sdk-color-primary: ${LIGHT_THEME_PROPS.primary!.toLowerCase()}`);
+        });
+
+        test('outline active semantic tokens fall back to primary when outline is missing', () => {
+            const themeWithoutOutline: ThemeProps = { ...LIGHT_THEME_PROPS, outline: undefined };
+            generator.create(themeWithoutOutline);
+            const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
+            const expected = themeWithoutOutline.primary!.toLowerCase();
+
+            expect(style.textContent).toContain(`--adyen-sdk-color-outline-primary-active: ${expected}`);
+            expect(style.textContent).toContain(`--adyen-sdk-color-outline-secondary-active: ${expected}`);
+            expect(style.textContent).toContain(`--adyen-sdk-color-outline-tertiary-active: ${expected}`);
+            expect(style.textContent).toContain(`--adyen-sdk-color-outline-selected: ${expected}`);
         });
     });
 
@@ -105,11 +121,11 @@ describe('ThemeGenerator', () => {
         test('light and dark themes generate different lightness values for non-anchor steps', () => {
             generator.create(LIGHT_THEME_PROPS);
             const lightRamps = generator.getRamps()!;
-            const lightPrimary10 = lightRamps.primary['10']!;
+            const lightPrimary10 = lightRamps.primary!['10']!;
 
             generator.create(DARK_THEME_PROPS);
             const darkRamps = generator.getRamps()!;
-            const darkPrimary10 = darkRamps.primary['10']!;
+            const darkPrimary10 = darkRamps.primary!['10']!;
 
             expect(lightPrimary10).not.toBe(darkPrimary10);
 
@@ -126,8 +142,8 @@ describe('ThemeGenerator', () => {
             generator.create(LIGHT_THEME_PROPS);
             const ramps = generator.getRamps()!;
 
-            const l10 = chroma(ramps.primary['10']!).get('hsl.l');
-            const l100 = chroma(ramps.primary['100']!).get('hsl.l');
+            const l10 = chroma(ramps.primary!['10']!).get('hsl.l');
+            const l100 = chroma(ramps.primary!['100']!).get('hsl.l');
             expect(l10).toBeGreaterThan(l100);
         });
 
@@ -135,8 +151,8 @@ describe('ThemeGenerator', () => {
             generator.create(DARK_THEME_PROPS);
             const ramps = generator.getRamps()!;
 
-            const l10 = chroma(ramps.primary['10']!).get('hsl.l');
-            const l100 = chroma(ramps.primary['100']!).get('hsl.l');
+            const l10 = chroma(ramps.primary!['10']!).get('hsl.l');
+            const l100 = chroma(ramps.primary!['100']!).get('hsl.l');
             expect(l10).toBeLessThan(l100);
         });
     });
@@ -165,13 +181,14 @@ describe('ThemeGenerator', () => {
             const ramps = generator.getRamps()!;
 
             for (const category of CATEGORIES) {
-                const inputColor = LIGHT_THEME_PROPS[category] as string;
+                const inputColor = LIGHT_THEME_PROPS[category]!;
                 const [inputHue, inputSat] = chroma(inputColor).hsl();
 
                 for (const step of STEPS) {
                     if (step === ANCHOR_STEP) continue;
 
-                    const generatedColor = ramps[category][String(step)]!;
+                    const ramp = ramps[category]!;
+                    const generatedColor = ramp[String(step)]!;
                     const [genHue, genSat] = chroma(generatedColor).hsl();
 
                     // Hue should be preserved within a small tolerance.

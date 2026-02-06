@@ -1,18 +1,18 @@
 export interface ThemeProps {
-    primary: string;
-    outline: string;
-    neutral: string;
-    background: string;
-    label: string;
+    primary?: string;
+    outline?: string;
+    neutral?: string;
+    background?: string;
+    label?: string;
     dark?: boolean;
 }
 
 export interface ColorRamps {
-    primary: Record<string, string>;
-    outline: Record<string, string>;
-    neutral: Record<string, string>;
-    background: Record<string, string>;
-    label: Record<string, string>;
+    primary?: Record<string, string>;
+    outline?: Record<string, string>;
+    neutral?: Record<string, string>;
+    background?: Record<string, string>;
+    label?: Record<string, string>;
 }
 
 export type ColorCategory = 'primary' | 'outline' | 'neutral' | 'background' | 'label';
