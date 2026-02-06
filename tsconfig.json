@@ -2,7 +2,7 @@
     "compilerOptions": {
         "noEmitOnError": true,
         "allowJs": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "module": "esnext",
         "target": "esnext",
         "resolveJsonModule": true,

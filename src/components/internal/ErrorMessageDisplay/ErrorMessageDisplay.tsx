@@ -1,10 +1,10 @@
+import { JSX } from 'preact';
 import cx from 'classnames';
 import Button from '../Button';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { TranslationKey } from '../../../translations';
-import { JSXInternal } from 'preact/src/jsx';
 import { useCallback } from 'preact/hooks';
 import './ErrorMessageDisplay.scss';
 
@@ -33,10 +33,10 @@ type ErrorMessageDisplayProps = {
     refreshComponent?: boolean;
     onContactSupport?: () => void;
     onRefreshComponent?: () => void;
-    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    translationValues?: { [k in TranslationKey]?: JSX.Element | null };
     absolutePosition?: boolean;
     outlined?: boolean;
-    renderSecondaryButton?: () => JSXInternal.Element;
+    renderSecondaryButton?: () => JSX.Element;
     withBackground?: boolean;
     withHeaderOffset?: boolean;
     condensed?: boolean;
