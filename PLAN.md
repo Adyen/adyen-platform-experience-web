@@ -1,7 +1,7 @@
 # ThemeGenerator Utility Class 
 
 Create a TypeScript utility class that generates CSS color variables at runtime using chroma-js, matching the Bento design system structure while preserving input colors and generating semantic tokens.
-The basic idea is to get some basic colors from our users and replace the CSS variables that we use for some that adapt to their colors. For that, we need to map the current variables to the new values, values that make sense in the scale that is in Colors.svg
+The basic idea is to get some basic colors from our users and replace the CSS variables that we use for some that adapt to their colors. For that, we need to map the current variables to the new values, values that make sense in the scale that is in @Colors.svg
 ---
 
 ## Overview
@@ -33,6 +33,48 @@ The exact input color MUST appear in the generated scale. For example, if `prima
 In addition to numbered scales, generate semantic CSS variables that map to appropriate scale steps. For example:
 - `--adyen-sdk-color-primary` → maps to `primary-60` (the input color)
 - `--adyen-sdk-color-primary-hover` → maps to `primary-70` (lighter in light theme, darker in dark theme)
+
+---
+
+## Post‑Review Clarifications (Iteration Log)
+The following items capture the additional prompts/decisions discovered after multiple iterations. These are required to complete the task without further back‑and‑forth.
+
+### Scope & Mapping Rules
+- **Map “Group A only”** semantic tokens: include neutral/primary‑derived tokens and exclude status/decorative tokens (critical, warning, success, spotlight, etc.).
+- **Source of truth:** `@adyen/bento-design-tokens` light theme aliases (`aliases.scss`). Match each semantic token to the nearest ramp step by **lightness**.
+
+### Accent Color Handling (#001222)
+- Treat tokens using **#001222** as accent **when it makes sense**, using the **exact `theme.primary` value** (anchor step 60), not a derived ramp shade.
+- Explicit list requested:
+  - `color-background-inverse-primary`
+  - `color-background-always-dark-primary`
+  - `color-outline-selected`
+  - `color-outline-secondary-active`
+  - `color-outline-tertiary-active`
+  - `color-outline-primary-active`
+
+### Outline Behavior (Conditional Primary Fallback)
+- **If `outline` is missing** and `primary` is defined, then the outline active/selected semantic tokens must **fall back to `primary` at step 60**.
+- **If both `outline` and `primary` are defined**, then:
+  - `color-outline-primary-active` **must use the primary value** (anchor step 60).
+  - Other outline tokens continue using the outline ramp.
+
+### Theme Props Optionality
+- **Theme colors are optional**. Only generate ramps for provided colors; skip undefined categories.
+- If **no ramps are generated**, remove any injected style element and skip CSS injection.
+
+### Label Mapping Adjustments
+- Label extremes were too dark; adjust label semantic mappings to match Bento lightness more closely.
+- Use the closest step by lightness for label tokens like:
+  - `color-label-primary-active` → step 60
+  - `color-label-inverse-disabled` → step 60
+  - `color-label-always-light-secondary-active` → step 60
+  - `color-label-always-light-tertiary` / `-hover` → step 60
+
+### Testing Adjustments
+- Add tests for outline active/selected **fallback** when outline is missing.
+- Add test for `color-outline-primary-active` **using primary** when both outline and primary are present.
+- Hue drift in chroma HSL round‑trips can occur at extreme lightness steps; allow a small tolerance (<5°).
 
 ---
 
@@ -118,15 +160,119 @@ export const LIGHTNESS_STEPS = {
 ````
 **Semantic tokens** (mapped from ramp steps, following `src/style/bento/aliases.scss` patterns):
 ```
---adyen-sdk-color-background-primary         → background-10
---adyen-sdk-color-background-primary-hover   → background-20
---adyen-sdk-color-background-primary-active  → background-30
---adyen-sdk-color-label-primary              → label-100
---adyen-sdk-color-label-secondary            → label-70
---adyen-sdk-color-outline-primary            → outline-30
---adyen-sdk-color-outline-primary-hover      → outline-40
+# Primary (accent)
+--adyen-sdk-color-primary → primary-60
+--adyen-sdk-color-primary-hover → primary-70
+--adyen-sdk-color-primary-active → primary-80
+--adyen-sdk-color-background-selected → primary-20
+--adyen-sdk-color-background-selected-hover → primary-20
+--adyen-sdk-color-background-selected-active → primary-30
+--adyen-sdk-color-background-highlight-weak → primary-10
+--adyen-sdk-color-background-highlight-strong → primary-70
+--adyen-sdk-color-label-highlight → primary-70
+--adyen-sdk-color-link-primary → primary-70
+--adyen-sdk-color-link-primary-hover → primary-70
+--adyen-sdk-color-link-primary-active → primary-70
+--adyen-sdk-color-link-primary-disabled → primary-50
+
+# Background
+--adyen-sdk-color-background-primary → background-10
+--adyen-sdk-color-background-primary-hover → background-10
+--adyen-sdk-color-background-primary-active → background-20
+--adyen-sdk-color-background-secondary → background-10
+--adyen-sdk-color-background-secondary-hover → background-20
+--adyen-sdk-color-background-secondary-active → background-30
+--adyen-sdk-color-background-tertiary → background-20
+--adyen-sdk-color-background-tertiary-hover → background-30
+--adyen-sdk-color-background-tertiary-active → background-30
+--adyen-sdk-color-background-quaternary → background-40
+--adyen-sdk-color-background-quaternary-hover → background-40
+--adyen-sdk-color-background-quaternary-active → background-50
+--adyen-sdk-color-background-modal → background-10
+--adyen-sdk-color-background-modal-hover → background-10
+--adyen-sdk-color-background-modal-active → background-20
+--adyen-sdk-color-background-disabled → background-20
+--adyen-sdk-color-background-inverse-primary → primary-60
+--adyen-sdk-color-background-inverse-primary-hover → background-70
+--adyen-sdk-color-background-inverse-primary-active → background-70
+--adyen-sdk-color-background-inverse-secondary → background-90
+--adyen-sdk-color-background-inverse-secondary-hover → background-80
+--adyen-sdk-color-background-inverse-secondary-active → background-80
+--adyen-sdk-color-background-inverse-disabled → background-80
+--adyen-sdk-color-background-always-light → background-10
+--adyen-sdk-color-background-always-light-hover → background-10
+--adyen-sdk-color-background-always-light-active → background-20
+--adyen-sdk-color-background-always-light-disabled → background-20
+--adyen-sdk-color-background-always-light-selected → background-20
+--adyen-sdk-color-background-always-dark → background-100
+--adyen-sdk-color-background-always-dark-hover → background-70
+--adyen-sdk-color-background-always-dark-active → background-50
+--adyen-sdk-color-background-always-dark-disabled → background-20
+--adyen-sdk-color-background-always-dark-selected → background-90
+--adyen-sdk-color-background-always-dark-primary → primary-60
+--adyen-sdk-color-background-always-dark-primary-hover → background-90
+--adyen-sdk-color-background-always-dark-primary-active → background-90
+--adyen-sdk-color-background-always-dark-primary-disabled → background-20
+--adyen-sdk-color-background-always-dark-primary-selected → background-90
+--adyen-sdk-color-background-always-dark-secondary → background-90
+--adyen-sdk-color-background-always-dark-secondary-hover → background-80
+--adyen-sdk-color-background-always-dark-secondary-active → background-70
+--adyen-sdk-color-background-always-dark-secondary-disabled → background-20
+--adyen-sdk-color-background-always-dark-secondary-selected → background-90
+--adyen-sdk-color-background-always-dark-tertiary → background-80
+--adyen-sdk-color-background-always-dark-tertiary-hover → background-80
+--adyen-sdk-color-background-always-dark-tertiary-active → background-70
+--adyen-sdk-color-background-always-dark-tertiary-disabled → background-20
+--adyen-sdk-color-background-always-dark-tertiary-selected → background-90
+
+# Label
+--adyen-sdk-color-label-primary → label-100
+--adyen-sdk-color-label-primary-hover → label-70
+--adyen-sdk-color-label-primary-active → label-60
+--adyen-sdk-color-label-secondary → label-70
+--adyen-sdk-color-label-tertiary → label-50
+--adyen-sdk-color-label-disabled → label-50
+--adyen-sdk-color-label-on-color → label-10
+--adyen-sdk-color-label-inverse-primary → label-10
+--adyen-sdk-color-label-inverse-primary-hover → label-10
+--adyen-sdk-color-label-inverse-primary-active → label-20
+--adyen-sdk-color-label-inverse-secondary → label-50
+--adyen-sdk-color-label-inverse-disabled → label-60
+--adyen-sdk-color-label-always-light → label-10
+--adyen-sdk-color-label-always-light-primary → label-20
+--adyen-sdk-color-label-always-light-primary-hover → label-40
+--adyen-sdk-color-label-always-light-primary-active → label-50
+--adyen-sdk-color-label-always-light-secondary → label-50
+--adyen-sdk-color-label-always-light-secondary-hover → label-50
+--adyen-sdk-color-label-always-light-secondary-active → label-60
+--adyen-sdk-color-label-always-light-tertiary → label-60
+--adyen-sdk-color-label-always-light-tertiary-hover → label-60
+--adyen-sdk-color-label-always-light-tertiary-active → label-70
+--adyen-sdk-color-label-always-dark → label-100
+
+# Outline
+--adyen-sdk-color-outline-primary → outline-30
+--adyen-sdk-color-outline-primary-hover → outline-40
+--adyen-sdk-color-outline-primary-active → outline-100
+--adyen-sdk-color-outline-secondary → outline-40
+--adyen-sdk-color-outline-secondary-hover → outline-40
+--adyen-sdk-color-outline-secondary-active → outline-100
+--adyen-sdk-color-outline-tertiary → outline-50
+--adyen-sdk-color-outline-tertiary-hover → outline-70
+--adyen-sdk-color-outline-tertiary-active → outline-100
+--adyen-sdk-color-outline-disabled → outline-30
+--adyen-sdk-color-outline-selected → outline-100
+--adyen-sdk-color-outline-inverse-primary → outline-80
+--adyen-sdk-color-outline-inverse-primary-hover → outline-70
+--adyen-sdk-color-outline-inverse-primary-active → outline-50
+--adyen-sdk-color-outline-inverse-disabled → outline-70
+
+# Separator (mapped to outline)
+--adyen-sdk-color-separator-primary → outline-30
+--adyen-sdk-color-separator-secondary → outline-40
+--adyen-sdk-color-separator-inverse-primary → outline-80
+--adyen-sdk-color-separator-inverse-secondary → outline-70
 ```
-*(Full mapping to be defined during implementation)*
 
 
 
