@@ -1,9 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
-import { createContext, createRef } from 'preact';
+import { createContext, createRef, HTMLAttributes } from 'preact';
+import { PropsWithChildren } from 'preact/compat';
 import { MutableRef, useRef } from 'preact/hooks';
-import { HTMLProps, PropsWithChildren } from 'preact/compat';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/preact';
 import { ComponentHeadingType, useComponentHeadingElement, UseComponentHeadingElementProps } from './useComponentHeadingElement';
@@ -15,7 +15,7 @@ const coreProviderProps = {} as CoreProviderProps;
 
 const ComponentRoot = ({ children }: PropsWithChildren) => <CoreProvider {...coreProviderProps}>{children}</CoreProvider>;
 
-const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLProps<any> & UseComponentHeadingElementProps) => {
+const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLAttributes<any> & UseComponentHeadingElementProps) => {
     const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>({ headingType, forwardedToRoot });
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };

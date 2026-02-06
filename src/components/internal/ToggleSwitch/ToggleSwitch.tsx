@@ -1,20 +1,20 @@
-import { h } from 'preact';
-import { HTMLProps, PropsWithChildren } from 'preact/compat';
-import { fixedForwardRef } from '../../../utils/preact';
+import { InputHTMLAttributes, TargetedMouseEvent } from 'preact';
+import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
+import { fixedForwardRef } from '../../../utils/preact';
 import { classes } from './constants';
 import cx from 'classnames';
 import Icon from '../Icon';
 import './ToggleSwitch.scss';
 
-export interface ToggleSwitchProps extends PropsWithChildren<Omit<HTMLProps<HTMLInputElement>, 'readonly'>> {
+export interface ToggleSwitchProps extends PropsWithChildren<Omit<InputHTMLAttributes, 'readonly'>> {
     labelBeforeSwitch?: boolean;
 }
 
 const ToggleSwitch = fixedForwardRef<ToggleSwitchProps, HTMLInputElement>(
     ({ className, children, labelBeforeSwitch, onClick, readOnly, ...props }, ref) => {
         const handleClick = useCallback(
-            (evt: h.JSX.TargetedMouseEvent<HTMLInputElement>) => {
+            (evt: TargetedMouseEvent<HTMLInputElement>) => {
                 readOnly ? evt.preventDefault() : onClick?.(evt);
             },
             [readOnly, onClick]
