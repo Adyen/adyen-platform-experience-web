@@ -6,6 +6,7 @@ import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
+import { ThemeGenerator } from '../utils/ThemeGenerator';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -41,6 +42,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.analyticsEnabled = options?.analytics?.enabled ?? true;
         this.session.analyticsEnabled = this.analyticsEnabled;
         this.setOptions(options);
+        this.applyTheme(options.theme);
     }
 
     async initialize(): Promise<this> {
@@ -63,6 +65,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
      */
     public update = async (options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> => {
         this.setOptions(options);
+        this.applyTheme(options.theme);
         await this.initialize();
 
         this.components.forEach(component => {
@@ -113,6 +116,17 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         this.session.onSessionCreate = this.options.onSessionCreate;
 
         return this;
+    };
+
+    /**
+     * @internal
+     * Apply theme configuration using ThemeGenerator
+     */
+    private applyTheme = (theme: CoreOptions['theme']): void => {
+        console.log(theme);
+        if (theme) {
+            new ThemeGenerator().create(theme);
+        }
     };
 
     private setTranslationsPayload() {

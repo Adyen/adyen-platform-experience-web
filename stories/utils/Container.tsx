@@ -25,6 +25,14 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
                 locale: locale || 'en-US',
+                theme: {
+                    primary: '#2292bc',
+                    outline: '#1e506a',
+                    neutral: '#2d3251',
+                    background: '#151726',
+                    label: '#ebebeb',
+                    dark: false,
+                },
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },

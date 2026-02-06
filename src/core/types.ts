@@ -1,8 +1,11 @@
 import type { SessionRequest } from './ConfigContext';
 import type { CustomTranslations as Translations, TranslationSourceRecord } from '../translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '../utils/types';
+import type { ThemeProps as _ThemeProps } from '../utils/ThemeGenerator';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';
+
+export type ThemeProps = Partial<_ThemeProps>;
 
 type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceRecord[]> = T extends T
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
@@ -46,6 +49,12 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
     translations?: CustomTranslations extends Translations ? CustomTranslations : Translations;
 
     analytics?: AnalyticsConfig;
+
+    /**
+     * Theme configuration for customizing the color palette
+     * See ThemeGenerator for the full list of color categories
+     */
+    theme?: ThemeProps;
 
     /**
      * @internal
