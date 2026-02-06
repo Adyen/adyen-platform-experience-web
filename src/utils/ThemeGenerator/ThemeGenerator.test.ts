@@ -92,8 +92,10 @@ describe('ThemeGenerator', () => {
             const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
 
             for (const mapping of SEMANTIC_MAPPINGS) {
-                const ramp = ramps[mapping.category]!;
-                const expectedColor = ramp[String(mapping.step)];
+                const usePrimaryForOutlinePrimaryActive = mapping.variable === 'color-outline-primary-active' && ramps.primary && ramps.outline;
+                const ramp = usePrimaryForOutlinePrimaryActive ? ramps.primary! : ramps[mapping.category]!;
+                const step = usePrimaryForOutlinePrimaryActive ? ANCHOR_STEP : mapping.step;
+                const expectedColor = ramp[String(step)];
                 expect(style.textContent).toContain(`--adyen-sdk-${mapping.variable}: ${expectedColor}`);
             }
         });
@@ -114,6 +116,14 @@ describe('ThemeGenerator', () => {
             expect(style.textContent).toContain(`--adyen-sdk-color-outline-secondary-active: ${expected}`);
             expect(style.textContent).toContain(`--adyen-sdk-color-outline-tertiary-active: ${expected}`);
             expect(style.textContent).toContain(`--adyen-sdk-color-outline-selected: ${expected}`);
+        });
+
+        test('outline-primary-active uses primary when both primary and outline are defined', () => {
+            generator.create(LIGHT_THEME_PROPS);
+            const style = document.getElementById('adyen-sdk-theme-generator') as HTMLStyleElement;
+            const expected = LIGHT_THEME_PROPS.primary!.toLowerCase();
+
+            expect(style.textContent).toContain(`--adyen-sdk-color-outline-primary-active: ${expected}`);
         });
     });
 

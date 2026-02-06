@@ -93,6 +93,7 @@ export class ThemeGenerator {
             'color-outline-selected',
         ]);
         const shouldFallbackToPrimary = !ramps.outline && !!ramps.primary;
+        const shouldUsePrimaryForOutlinePrimaryActive = !!ramps.primary && !!ramps.outline;
 
         // Numbered variables: --adyen-sdk-color-{category}-{step}
         for (const category of categories) {
@@ -108,11 +109,13 @@ export class ThemeGenerator {
 
         // Semantic variables
         for (const mapping of SEMANTIC_MAPPINGS) {
+            const usePrimaryForOutlinePrimaryActive = shouldUsePrimaryForOutlinePrimaryActive && mapping.variable === 'color-outline-primary-active';
             const usePrimaryFallback = shouldFallbackToPrimary && outlineFallbackVariables.has(mapping.variable);
-            const ramp = usePrimaryFallback ? ramps.primary : ramps[mapping.category];
+            const usePrimary = usePrimaryForOutlinePrimaryActive || usePrimaryFallback;
+            const ramp = usePrimary ? ramps.primary : ramps[mapping.category];
             if (ramp) {
                 const varName = `${CSS_VAR_PREFIX}${mapping.variable}`;
-                const step = usePrimaryFallback ? ANCHOR_STEP : mapping.step;
+                const step = usePrimary ? ANCHOR_STEP : mapping.step;
                 variables.push(`${varName}: ${ramp[String(step)]};`);
             }
         }
