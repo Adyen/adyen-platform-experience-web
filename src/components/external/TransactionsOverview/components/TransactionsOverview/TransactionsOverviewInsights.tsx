@@ -4,6 +4,7 @@ import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedP
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import InsightsTotals from '../InsightsTotals/InsightsTotals';
 import EChartsDashboard from '../../../../../poc/components/EChartsDashboard';
+import LightweightChartsDashboard from '../../../../../poc/components/LightweightChartsDashboard';
 import VisxDashboard from '../../../../../poc/components/VisxDashboard';
 
 const sharedAnalyticsEventProperties = {
@@ -24,6 +25,7 @@ const TransactionsOverviewInsights = ({ currency, transactionsTotalsResult }: Tr
         <>
             <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} error={error} />
             <EChartsDashboard />
+            <LightweightChartsDashboard />
             <VisxDashboard />
         </>
     );

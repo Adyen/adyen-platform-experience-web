@@ -20,6 +20,9 @@ importers:
             core-js:
                 specifier: ^3.36.0
                 version: 3.41.0
+            lightweight-charts:
+                specifier: ^5.1.0
+                version: 5.1.0
             preact:
                 specifier: ^10.13.2
                 version: 10.26.4
@@ -2301,6 +2304,9 @@ packages:
     extendable-error@0.1.7:
         resolution: {}
 
+    fancy-canvas@2.1.0:
+        resolution: {}
+
     fast-deep-equal@3.1.3:
         resolution: {}
 
@@ -2946,6 +2952,9 @@ packages:
     levn@0.4.1:
         resolution: {}
         engines: { node: '>= 0.8.0' }
+
+    lightweight-charts@5.1.0:
+        resolution: {}
 
     lilconfig@2.0.5:
         resolution: {}
@@ -7022,6 +7031,8 @@ snapshots:
 
     extendable-error@0.1.7: {}
 
+    fancy-canvas@2.1.0: {}
+
     fast-deep-equal@3.1.3: {}
 
     fast-glob@3.3.3:
@@ -7669,6 +7680,10 @@ snapshots:
         dependencies:
             prelude-ls: 1.2.1
             type-check: 0.4.0
+
+    lightweight-charts@5.1.0:
+        dependencies:
+            fancy-canvas: 2.1.0
 
     lilconfig@2.0.5: {}
 
