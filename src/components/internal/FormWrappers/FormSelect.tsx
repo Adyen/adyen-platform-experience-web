@@ -87,6 +87,7 @@ export function FormSelect<TFieldValues>({
                                     readonly={readonly}
                                     selected={field.value as string}
                                     fitPosition
+                                    setToTargetWidth
                                 />
                                 {isInvalid && fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
                             </div>

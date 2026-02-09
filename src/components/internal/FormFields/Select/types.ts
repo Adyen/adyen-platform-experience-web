@@ -57,6 +57,7 @@ export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 
     fitPosition?: boolean;
     fixedPopoverPositioning?: boolean;
     onResetAction?: () => void;
+    popoverMaxHeight?: number;
 }
 
 export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
@@ -103,10 +104,9 @@ export interface SelectListProps<T extends SelectItem> {
     setToTargetWidth?: boolean;
     popoverClassNameModifiers?: string[];
     showOverlay?: boolean;
-    fitPosition?: boolean;
-    fixedPopoverPositioning?: boolean;
     activeIndex?: number;
     filterable?: boolean;
+    maxHeight?: number;
 }
 
 export interface SelectItemProps<T extends SelectItem> {

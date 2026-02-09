@@ -53,6 +53,7 @@ const PaymentRefundReason = ({ disabled, onChange, reason }: PaymentRefundReason
                     items={refundReasons}
                     onChange={onReasonChange}
                     selected={reason}
+                    setToTargetWidth
                 />
             </div>
         </div>
