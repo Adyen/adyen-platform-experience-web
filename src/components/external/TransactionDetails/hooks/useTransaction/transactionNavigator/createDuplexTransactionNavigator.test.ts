@@ -131,9 +131,11 @@ describe('createDuplexTransactionNavigator', () => {
     it('should handle partial empty strings in reset', () => {
         navigator.reset('tx1', '');
         expect(navigator.currentTransaction).toBeUndefined();
+        expect(onNavigationMock).not.toHaveBeenCalled();
 
         navigator.reset('', 'tx2');
         expect(navigator.currentTransaction).toBeUndefined();
+        expect(onNavigationMock).not.toHaveBeenCalled();
     });
 
     it('should trigger callback when setting a new callback function', () => {
@@ -157,5 +159,11 @@ describe('createDuplexTransactionNavigator', () => {
 
         navigator.onNavigation = undefined;
         expect(onNavigationMock).not.toHaveBeenCalled();
+    });
+
+    it('should not trigger callback when setting callback if current transaction is undefined', () => {
+        const newCallback = vi.fn();
+        navigator.onNavigation = newCallback;
+        expect(newCallback).not.toHaveBeenCalled();
     });
 });
