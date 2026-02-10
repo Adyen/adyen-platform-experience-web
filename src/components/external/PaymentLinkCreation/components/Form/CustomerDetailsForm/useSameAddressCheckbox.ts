@@ -26,7 +26,7 @@ interface AddressSectionState {
 }
 
 interface UseSameAddressCheckboxResult {
-    isSameAddressCheckboxShown: boolean;
+    isSameAddressCopyEnabled: boolean;
     showBillingFirst: boolean;
 }
 
@@ -65,7 +65,7 @@ export const useSameAddressCheckbox = (): UseSameAddressCheckboxResult => {
 
         // Checkbox requires both sections to be visible
         if (!billingState.isVisible || !deliveryState.isVisible) {
-            return { isSameAddressCheckboxShown: false, showBillingFirst: false };
+            return { isSameAddressCopyEnabled: false, showBillingFirst: false };
         }
 
         // Determine display order: billing first when billing is required and delivery is optional
@@ -81,14 +81,14 @@ export const useSameAddressCheckbox = (): UseSameAddressCheckboxResult => {
         // 1. Both sections have all fields locked - no interaction possible
         // 2. Target section has any readOnly field - copying would partially fail
         if (targetState.allFieldsReadOnly && sourceState.allFieldsReadOnly) {
-            return { isSameAddressCheckboxShown: false, showBillingFirst };
+            return { isSameAddressCopyEnabled: false, showBillingFirst };
         }
 
         if (targetState.hasAnyReadOnlyField) {
-            return { isSameAddressCheckboxShown: false, showBillingFirst };
+            return { isSameAddressCopyEnabled: false, showBillingFirst };
         }
 
         // Show checkbox: both visible and target has no readOnly fields
-        return { isSameAddressCheckboxShown: true, showBillingFirst };
+        return { isSameAddressCopyEnabled: true, showBillingFirst };
     }, [fieldsConfig]);
 };

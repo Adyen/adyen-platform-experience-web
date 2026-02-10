@@ -15,7 +15,7 @@ interface BillingCountryFieldProps {
     isFetchingCountryDataset: boolean;
     isSameAddress?: boolean;
     showBillingFirst?: boolean;
-    isSameAddressCheckboxShown?: boolean;
+    isSameAddressCopyEnabled?: boolean;
 }
 
 export const BillingCountryField = ({
@@ -26,7 +26,7 @@ export const BillingCountryField = ({
     isFetchingCountryDataset,
     isSameAddress = false,
     showBillingFirst = false,
-    isSameAddressCheckboxShown = false,
+    isSameAddressCopyEnabled = false,
 }: BillingCountryFieldProps) => {
     const { i18n } = useCoreContext();
     const { fieldsConfig, setValue } = useWizardFormContext<PaymentLinkCreationFormValues>();
@@ -44,11 +44,13 @@ export const BillingCountryField = ({
 
     const handleChange = useCallback(
         (e: SelectChangeEvent) => {
-            if (showBillingFirst && isSameAddressCheckboxShown && isSameAddress) {
+            // Only copy when the same-address checkbox is enabled.
+            // Prevents unintended copying when no address is prefilled and target fields are readOnly
+            if (showBillingFirst && isSameAddressCopyEnabled && isSameAddress) {
                 setValue('deliveryAddress.country', (e.target as HTMLSelectElement).value);
             }
         },
-        [isSameAddress, setValue, showBillingFirst, isSameAddressCheckboxShown]
+        [isSameAddress, setValue, showBillingFirst, isSameAddressCopyEnabled]
     );
 
     const isRequired = fieldsConfig['billingAddress.country']?.required || isAddressFieldRequired('billingAddress.country');

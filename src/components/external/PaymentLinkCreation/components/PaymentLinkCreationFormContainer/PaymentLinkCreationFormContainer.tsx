@@ -149,7 +149,7 @@ export const PaymentLinkCreationFormContainer = ({
     });
 
     const onSubmit = async () => {
-        // Use getApiVisibleValues to only include fields that come back from configuration
+        // Use getApiPayloadValues to only include fields that come back from configuration
         // This excludes fields that are not returned by the configuration endpoint
         // but includes fields that are hidden via visibility prop
         const apiPayloadData = wizardForm.getApiPayloadValues() as PaymentLinkCreationFormValues;
