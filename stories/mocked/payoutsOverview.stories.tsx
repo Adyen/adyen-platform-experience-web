@@ -1,4 +1,4 @@
-import { PayoutsOverview } from '../../src';
+import { PayoutsOverview, TransactionsOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { PayoutsOverviewMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
@@ -7,25 +7,37 @@ import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { PAYOUTS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/payouts';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts/Payouts Overview' };
 
 export const Default: ElementStory<typeof PayoutsOverview> = {
     name: 'Default',
-    args: {
-        mockedApi: true,
+    args: { mockedApi: true },
+};
+
+export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
+    name: 'Single balance account',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.singleBalanceAccount },
     },
 };
 
-const CUSTOM_COLUMNS_MOCK_HANDLER = {
-    handlers: [
-        http.get(endpoints().payouts, () => {
-            return HttpResponse.json({
-                data: [{ ...PAYOUTS_WITH_DETAILS[7]?.payout }],
-                _links: {},
-            });
-        }),
-    ],
+export const EmptyList: ElementStory<typeof TransactionsOverview> = {
+    name: 'Empty list',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.emptyList },
+    },
+};
+
+export const ErrorList: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - List',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...PAYOUTS_OVERVIEW_HANDLERS.errorList },
+    },
 };
 
 export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
@@ -93,7 +105,16 @@ export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
         },
     },
     parameters: {
-        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
+        msw: {
+            handlers: [
+                http.get(endpoints().payouts, () => {
+                    return HttpResponse.json({
+                        data: [{ ...PAYOUTS_WITH_DETAILS[0]?.payout }],
+                        _links: {},
+                    });
+                }),
+            ],
+        },
     },
 };
 

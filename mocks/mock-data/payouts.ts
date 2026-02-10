@@ -1,8 +1,16 @@
-import type { IPayout, IPayoutDetails } from '../../src';
+import type { IPayoutDetails } from '../../src';
+import { BALANCE_ACCOUNTS } from './balanceAccounts';
+import getDate from './utils/getDate';
+
+const getCreatedAt = (daysOffset: number) => {
+    const date = new Date(getDate(daysOffset));
+    date.setHours(0, 0, 0, 0); // start of day
+    return date.toISOString();
+};
 
 export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string })[] = [
     {
-        balanceAccountId: '1234567890123456',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -20,7 +28,8 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-01-10T00:00:00.000Z',
+            createdAt: getCreatedAt(0),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -44,10 +53,10 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: '1234567890123456',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
-                value: 300,
+                value: 100000,
                 currency: 'EUR',
             },
             adjustmentAmount: {
@@ -59,10 +68,11 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 currency: 'EUR',
             },
             unpaidAmount: {
-                value: 90000,
+                value: 91500,
                 currency: 'EUR',
             },
-            createdAt: '2024-06-09T00:00:00.000Z',
+            createdAt: getCreatedAt(-1),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -100,7 +110,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: '1234567890123456',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -118,7 +128,8 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-05-10T00:00:00.000Z',
+            createdAt: getCreatedAt(-1),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -156,10 +167,10 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: '1234567890123456',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
-                value: 800000,
+                value: 700000,
                 currency: 'USD',
             },
             adjustmentAmount: {
@@ -171,10 +182,10 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 currency: 'USD',
             },
             unpaidAmount: {
-                value: 100000,
+                value: 600000,
                 currency: 'USD',
             },
-            createdAt: '2024-05-13T10:00:00Z',
+            createdAt: getCreatedAt(-3),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -261,7 +272,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: '1234567890123456',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -279,7 +290,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-01-10T00:00:00.000Z',
+            createdAt: getCreatedAt(-4),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -303,7 +314,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -321,7 +332,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2021-07-10T00:00:00.000Z',
+            createdAt: getCreatedAt(-5),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -345,7 +356,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 100000,
@@ -363,7 +374,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-04-12T10:00:00.000Z',
+            createdAt: getCreatedAt(-6),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -387,7 +398,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 90000,
@@ -405,7 +416,8 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-05-13T10:00:00.000Z',
+            createdAt: getCreatedAt(-10),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -429,7 +441,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         payout: {
             fundsCapturedAmount: {
                 value: 50000,
@@ -447,7 +459,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-01-18T10:00:00.000Z',
+            createdAt: getCreatedAt(-10),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -471,7 +483,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 20000,
@@ -489,7 +501,8 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-20T10:00:00.000Z',
+            createdAt: getCreatedAt(-25),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -513,7 +526,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[1].id,
         payout: {
             fundsCapturedAmount: {
                 value: 1000000,
@@ -531,7 +544,8 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-11-21T10:00:00.000Z',
+            createdAt: getCreatedAt(-27),
+            isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -555,7 +569,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2G',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 30000,
@@ -573,7 +587,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2023-10-29T10:00:00.000Z',
+            createdAt: getCreatedAt(-28),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -604,7 +618,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
     {
-        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        balanceAccountId: BALANCE_ACCOUNTS[0].id,
         payout: {
             fundsCapturedAmount: {
                 value: 30000,
@@ -622,7 +636,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-02-02T10:00:00.000Z',
+            createdAt: getCreatedAt(-29),
             isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {
@@ -654,8 +668,3 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
         },
     },
 ];
-
-// TODO: Remove ts-ignore when OpenAPI contract changes payout field to non-optional
-// @ts-ignore
-export const getPayouts = balanceAccountId =>
-    PAYOUTS_WITH_DETAILS.filter(payout => balanceAccountId === payout.balanceAccountId).map(payout => payout.payout as IPayout);
