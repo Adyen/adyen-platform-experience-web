@@ -35,19 +35,82 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
             fundsCapturedBreakdown: [
                 {
                     amount: {
-                        value: -1000,
+                        value: 120000,
                         currency: 'EUR',
                     },
                     category: 'capture',
                 },
-            ],
-            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -30000,
+                        currency: 'EUR',
+                    },
+                    category: 'chargeback',
+                },
                 {
                     amount: {
                         value: -1000,
                         currency: 'EUR',
                     },
+                    category: 'correction',
+                },
+                {
+                    amount: {
+                        value: 11000,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: 1000,
+                        currency: 'EUR',
+                    },
+                    category: 'correction',
+                },
+                {
+                    amount: {
+                        value: -10000,
+                        currency: 'EUR',
+                    },
                     category: 'fee',
+                },
+                {
+                    amount: {
+                        value: -55000,
+                        currency: 'EUR',
+                    },
+                    category: 'grantIssued',
+                },
+                {
+                    amount: {
+                        value: 60000,
+                        currency: 'EUR',
+                    },
+                    category: 'grantRepayment',
+                },
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'other',
+                },
+                {
+                    amount: {
+                        value: 10000,
+                        currency: 'EUR',
+                    },
+                    category: 'refund',
+                },
+                {
+                    amount: {
+                        value: -15000,
+                        currency: 'EUR',
+                    },
+                    category: 'transfer',
                 },
             ],
         },
