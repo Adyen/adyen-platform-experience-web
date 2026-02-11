@@ -706,6 +706,20 @@ export const TRANSACTION_DETAILS_HANDLERS = (() => {
                 ...sharedMockEndpointsHandlers,
             ],
         },
+        unlinkedRefund: {
+            handlers: [
+                http.get<{ id: string }>(mockEndpoints.transaction, ({ params }) => {
+                    const transaction = params.id === ORIGINAL_PAYMENT_ID ? PARTIALLY_REFUNDED_TRANSACTION : PARTIAL_REFUND_TRANSACTION;
+                    const newTransaction = { ...transaction, id: params.id };
+                    if (newTransaction.refundMetadata) {
+                        const { originalPaymentId, ...refundMetadata } = newTransaction.refundMetadata;
+                        newTransaction.refundMetadata = refundMetadata;
+                    }
+                    return getTransactionJson(newTransaction, 13);
+                }),
+                ...sharedMockEndpointsHandlers,
+            ],
+        },
     } as const;
 })();
 

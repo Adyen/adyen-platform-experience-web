@@ -131,7 +131,7 @@ export interface components {
         /** @enum {string} */
         RefundStatus: 'in_progress' | 'completed' | 'failed';
         RefundTransactionDetails: {
-            originalPaymentId: string;
+            originalPaymentId?: string;
             refundPspReference: string;
             refundReason?: components['schemas']['RefundReason'];
             refundType: components['schemas']['RefundType'];
