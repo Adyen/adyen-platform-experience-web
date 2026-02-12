@@ -1,0 +1,982 @@
+[
+    {
+        "id": "AF",
+        "name": "Afganistan"
+    },
+    {
+        "id": "AX",
+        "name": "Alandy"
+    },
+    {
+        "id": "AL",
+        "name": "Albánsko"
+    },
+    {
+        "id": "DZ",
+        "name": "Alžírsko"
+    },
+    {
+        "id": "AS",
+        "name": "Americká Samoa"
+    },
+    {
+        "id": "VI",
+        "name": "Americké Panenské ostrovy"
+    },
+    {
+        "id": "AD",
+        "name": "Andorra"
+    },
+    {
+        "id": "AO",
+        "name": "Angola"
+    },
+    {
+        "id": "AI",
+        "name": "Anguilla"
+    },
+    {
+        "id": "AQ",
+        "name": "Antarktída"
+    },
+    {
+        "id": "AG",
+        "name": "Antigua a Barbuda"
+    },
+    {
+        "id": "AR",
+        "name": "Argentína"
+    },
+    {
+        "id": "AM",
+        "name": "Arménsko"
+    },
+    {
+        "id": "AW",
+        "name": "Aruba"
+    },
+    {
+        "id": "AU",
+        "name": "Austrália"
+    },
+    {
+        "id": "AZ",
+        "name": "Azerbajdžan"
+    },
+    {
+        "id": "BS",
+        "name": "Bahamy"
+    },
+    {
+        "id": "BH",
+        "name": "Bahrajn"
+    },
+    {
+        "id": "BD",
+        "name": "Bangladéš"
+    },
+    {
+        "id": "BB",
+        "name": "Barbados"
+    },
+    {
+        "id": "BE",
+        "name": "Belgicko"
+    },
+    {
+        "id": "BZ",
+        "name": "Belize"
+    },
+    {
+        "id": "BJ",
+        "name": "Benin"
+    },
+    {
+        "id": "BM",
+        "name": "Bermudy"
+    },
+    {
+        "id": "BT",
+        "name": "Bhután"
+    },
+    {
+        "id": "BY",
+        "name": "Bielorusko"
+    },
+    {
+        "id": "BO",
+        "name": "Bolívia"
+    },
+    {
+        "id": "BA",
+        "name": "Bosna a Hercegovina"
+    },
+    {
+        "id": "BW",
+        "name": "Botswana"
+    },
+    {
+        "id": "BV",
+        "name": "Bouvetov ostrov"
+    },
+    {
+        "id": "BR",
+        "name": "Brazília"
+    },
+    {
+        "id": "IO",
+        "name": "Britské indickooceánske územie"
+    },
+    {
+        "id": "VG",
+        "name": "Britské Panenské ostrovy"
+    },
+    {
+        "id": "BN",
+        "name": "Brunej"
+    },
+    {
+        "id": "BG",
+        "name": "Bulharsko"
+    },
+    {
+        "id": "BF",
+        "name": "Burkina Faso"
+    },
+    {
+        "id": "BI",
+        "name": "Burundi"
+    },
+    {
+        "id": "CK",
+        "name": "Cookove ostrovy"
+    },
+    {
+        "id": "CY",
+        "name": "Cyprus"
+    },
+    {
+        "id": "TD",
+        "name": "Čad"
+    },
+    {
+        "id": "CZ",
+        "name": "Česko"
+    },
+    {
+        "id": "ME",
+        "name": "Čierna Hora"
+    },
+    {
+        "id": "CL",
+        "name": "Čile"
+    },
+    {
+        "id": "CN",
+        "name": "Čína"
+    },
+    {
+        "id": "DK",
+        "name": "Dánsko"
+    },
+    {
+        "id": "DM",
+        "name": "Dominika"
+    },
+    {
+        "id": "DO",
+        "name": "Dominikánska republika"
+    },
+    {
+        "id": "DJ",
+        "name": "Džibutsko"
+    },
+    {
+        "id": "EG",
+        "name": "Egypt"
+    },
+    {
+        "id": "EC",
+        "name": "Ekvádor"
+    },
+    {
+        "id": "ER",
+        "name": "Eritrea"
+    },
+    {
+        "id": "EE",
+        "name": "Estónsko"
+    },
+    {
+        "id": "SZ",
+        "name": "Eswatini"
+    },
+    {
+        "id": "ET",
+        "name": "Etiópia"
+    },
+    {
+        "id": "FO",
+        "name": "Faerské ostrovy"
+    },
+    {
+        "id": "FK",
+        "name": "Falklandy"
+    },
+    {
+        "id": "FJ",
+        "name": "Fidži"
+    },
+    {
+        "id": "PH",
+        "name": "Filipíny"
+    },
+    {
+        "id": "FI",
+        "name": "Fínsko"
+    },
+    {
+        "id": "GF",
+        "name": "Francúzska Guyana"
+    },
+    {
+        "id": "PF",
+        "name": "Francúzska Polynézia"
+    },
+    {
+        "id": "TF",
+        "name": "Francúzske južné a antarktické územia"
+    },
+    {
+        "id": "FR",
+        "name": "Francúzsko"
+    },
+    {
+        "id": "GA",
+        "name": "Gabon"
+    },
+    {
+        "id": "GM",
+        "name": "Gambia"
+    },
+    {
+        "id": "GH",
+        "name": "Ghana"
+    },
+    {
+        "id": "GI",
+        "name": "Gibraltár"
+    },
+    {
+        "id": "GR",
+        "name": "Grécko"
+    },
+    {
+        "id": "GD",
+        "name": "Grenada"
+    },
+    {
+        "id": "GL",
+        "name": "Grónsko"
+    },
+    {
+        "id": "GE",
+        "name": "Gruzínsko"
+    },
+    {
+        "id": "GP",
+        "name": "Guadeloupe"
+    },
+    {
+        "id": "GU",
+        "name": "Guam"
+    },
+    {
+        "id": "GT",
+        "name": "Guatemala"
+    },
+    {
+        "id": "GG",
+        "name": "Guernsey"
+    },
+    {
+        "id": "GN",
+        "name": "Guinea"
+    },
+    {
+        "id": "GW",
+        "name": "Guinea-Bissau"
+    },
+    {
+        "id": "GY",
+        "name": "Guyana"
+    },
+    {
+        "id": "HT",
+        "name": "Haiti"
+    },
+    {
+        "id": "HM",
+        "name": "Heardov ostrov a Macdonaldove ostrovy"
+    },
+    {
+        "id": "NL",
+        "name": "Holandsko"
+    },
+    {
+        "id": "HN",
+        "name": "Honduras"
+    },
+    {
+        "id": "HK",
+        "name": "Hongkong – OAO Číny"
+    },
+    {
+        "id": "HR",
+        "name": "Chorvátsko"
+    },
+    {
+        "id": "IN",
+        "name": "India"
+    },
+    {
+        "id": "ID",
+        "name": "Indonézia"
+    },
+    {
+        "id": "IQ",
+        "name": "Irak"
+    },
+    {
+        "id": "IR",
+        "name": "Irán"
+    },
+    {
+        "id": "IE",
+        "name": "Írsko"
+    },
+    {
+        "id": "IS",
+        "name": "Island"
+    },
+    {
+        "id": "IL",
+        "name": "Izrael"
+    },
+    {
+        "id": "JM",
+        "name": "Jamajka"
+    },
+    {
+        "id": "JP",
+        "name": "Japonsko"
+    },
+    {
+        "id": "YE",
+        "name": "Jemen"
+    },
+    {
+        "id": "JE",
+        "name": "Jersey"
+    },
+    {
+        "id": "JO",
+        "name": "Jordánsko"
+    },
+    {
+        "id": "ZA",
+        "name": "Južná Afrika"
+    },
+    {
+        "id": "GS",
+        "name": "Južná Georgia a Južné Sandwichove ostrovy"
+    },
+    {
+        "id": "KR",
+        "name": "Južná Kórea"
+    },
+    {
+        "id": "KY",
+        "name": "Kajmanie ostrovy"
+    },
+    {
+        "id": "KH",
+        "name": "Kambodža"
+    },
+    {
+        "id": "CM",
+        "name": "Kamerun"
+    },
+    {
+        "id": "CA",
+        "name": "Kanada"
+    },
+    {
+        "id": "CV",
+        "name": "Kapverdy"
+    },
+    {
+        "id": "QA",
+        "name": "Katar"
+    },
+    {
+        "id": "KZ",
+        "name": "Kazachstan"
+    },
+    {
+        "id": "KE",
+        "name": "Keňa"
+    },
+    {
+        "id": "KG",
+        "name": "Kirgizsko"
+    },
+    {
+        "id": "KI",
+        "name": "Kiribati"
+    },
+    {
+        "id": "CC",
+        "name": "Kokosové ostrovy"
+    },
+    {
+        "id": "CO",
+        "name": "Kolumbia"
+    },
+    {
+        "id": "KM",
+        "name": "Komory"
+    },
+    {
+        "id": "CD",
+        "name": "Konžská demokratická republika"
+    },
+    {
+        "id": "CG",
+        "name": "Konžská republika"
+    },
+    {
+        "id": "XK",
+        "name": "Kosovo"
+    },
+    {
+        "id": "CR",
+        "name": "Kostarika"
+    },
+    {
+        "id": "CU",
+        "name": "Kuba"
+    },
+    {
+        "id": "KW",
+        "name": "Kuvajt"
+    },
+    {
+        "id": "LA",
+        "name": "Laos"
+    },
+    {
+        "id": "LS",
+        "name": "Lesotho"
+    },
+    {
+        "id": "LB",
+        "name": "Libanon"
+    },
+    {
+        "id": "LR",
+        "name": "Libéria"
+    },
+    {
+        "id": "LY",
+        "name": "Líbya"
+    },
+    {
+        "id": "LI",
+        "name": "Lichtenštajnsko"
+    },
+    {
+        "id": "LT",
+        "name": "Litva"
+    },
+    {
+        "id": "LV",
+        "name": "Lotyšsko"
+    },
+    {
+        "id": "LU",
+        "name": "Luxembursko"
+    },
+    {
+        "id": "MO",
+        "name": "Macao – OAO Číny"
+    },
+    {
+        "id": "MG",
+        "name": "Madagaskar"
+    },
+    {
+        "id": "HU",
+        "name": "Maďarsko"
+    },
+    {
+        "id": "MY",
+        "name": "Malajzia"
+    },
+    {
+        "id": "MW",
+        "name": "Malawi"
+    },
+    {
+        "id": "MV",
+        "name": "Maldivy"
+    },
+    {
+        "id": "ML",
+        "name": "Mali"
+    },
+    {
+        "id": "MT",
+        "name": "Malta"
+    },
+    {
+        "id": "MA",
+        "name": "Maroko"
+    },
+    {
+        "id": "MH",
+        "name": "Marshallove ostrovy"
+    },
+    {
+        "id": "MQ",
+        "name": "Martinik"
+    },
+    {
+        "id": "MU",
+        "name": "Maurícius"
+    },
+    {
+        "id": "MR",
+        "name": "Mauritánia"
+    },
+    {
+        "id": "YT",
+        "name": "Mayotte"
+    },
+    {
+        "id": "UM",
+        "name": "Menšie odľahlé ostrovy USA"
+    },
+    {
+        "id": "MX",
+        "name": "Mexiko"
+    },
+    {
+        "id": "FM",
+        "name": "Mikronézia"
+    },
+    {
+        "id": "MM",
+        "name": "Mjanmarsko"
+    },
+    {
+        "id": "MD",
+        "name": "Moldavsko"
+    },
+    {
+        "id": "MC",
+        "name": "Monako"
+    },
+    {
+        "id": "MN",
+        "name": "Mongolsko"
+    },
+    {
+        "id": "MS",
+        "name": "Montserrat"
+    },
+    {
+        "id": "MZ",
+        "name": "Mozambik"
+    },
+    {
+        "id": "NA",
+        "name": "Namíbia"
+    },
+    {
+        "id": "NR",
+        "name": "Nauru"
+    },
+    {
+        "id": "DE",
+        "name": "Nemecko"
+    },
+    {
+        "id": "NP",
+        "name": "Nepál"
+    },
+    {
+        "id": "AN",
+        "name": "Netherlands Antilles"
+    },
+    {
+        "id": "NE",
+        "name": "Niger"
+    },
+    {
+        "id": "NG",
+        "name": "Nigéria"
+    },
+    {
+        "id": "NI",
+        "name": "Nikaragua"
+    },
+    {
+        "id": "NU",
+        "name": "Niue"
+    },
+    {
+        "id": "NF",
+        "name": "Norfolk"
+    },
+    {
+        "id": "NO",
+        "name": "Nórsko"
+    },
+    {
+        "id": "NC",
+        "name": "Nová Kaledónia"
+    },
+    {
+        "id": "NZ",
+        "name": "Nový Zéland"
+    },
+    {
+        "id": "OM",
+        "name": "Omán"
+    },
+    {
+        "id": "IM",
+        "name": "Ostrov Man"
+    },
+    {
+        "id": "PK",
+        "name": "Pakistan"
+    },
+    {
+        "id": "PW",
+        "name": "Palau"
+    },
+    {
+        "id": "PS",
+        "name": "Palestínske územia"
+    },
+    {
+        "id": "PA",
+        "name": "Panama"
+    },
+    {
+        "id": "PG",
+        "name": "Papua-Nová Guinea"
+    },
+    {
+        "id": "PY",
+        "name": "Paraguaj"
+    },
+    {
+        "id": "PE",
+        "name": "Peru"
+    },
+    {
+        "id": "PN",
+        "name": "Pitcairnove ostrovy"
+    },
+    {
+        "id": "CI",
+        "name": "Pobrežie Slonoviny"
+    },
+    {
+        "id": "PL",
+        "name": "Poľsko"
+    },
+    {
+        "id": "PR",
+        "name": "Portoriko"
+    },
+    {
+        "id": "PT",
+        "name": "Portugalsko"
+    },
+    {
+        "id": "AT",
+        "name": "Rakúsko"
+    },
+    {
+        "id": "RE",
+        "name": "Réunion"
+    },
+    {
+        "id": "GQ",
+        "name": "Rovníková Guinea"
+    },
+    {
+        "id": "RO",
+        "name": "Rumunsko"
+    },
+    {
+        "id": "RU",
+        "name": "Rusko"
+    },
+    {
+        "id": "RW",
+        "name": "Rwanda"
+    },
+    {
+        "id": "PM",
+        "name": "Saint Pierre a Miquelon"
+    },
+    {
+        "id": "SV",
+        "name": "Salvádor"
+    },
+    {
+        "id": "WS",
+        "name": "Samoa"
+    },
+    {
+        "id": "SM",
+        "name": "San Maríno"
+    },
+    {
+        "id": "SA",
+        "name": "Saudská Arábia"
+    },
+    {
+        "id": "SN",
+        "name": "Senegal"
+    },
+    {
+        "id": "KP",
+        "name": "Severná Kórea"
+    },
+    {
+        "id": "MK",
+        "name": "Severné Macedónsko"
+    },
+    {
+        "id": "MP",
+        "name": "Severné Mariány"
+    },
+    {
+        "id": "SC",
+        "name": "Seychely"
+    },
+    {
+        "id": "SL",
+        "name": "Sierra Leone"
+    },
+    {
+        "id": "SG",
+        "name": "Singapur"
+    },
+    {
+        "id": "SK",
+        "name": "Slovensko"
+    },
+    {
+        "id": "SI",
+        "name": "Slovinsko"
+    },
+    {
+        "id": "SO",
+        "name": "Somálsko"
+    },
+    {
+        "id": "AE",
+        "name": "Spojené arabské emiráty"
+    },
+    {
+        "id": "GB",
+        "name": "Spojené kráľovstvo"
+    },
+    {
+        "id": "US",
+        "name": "Spojené štáty"
+    },
+    {
+        "id": "RS",
+        "name": "Srbsko"
+    },
+    {
+        "id": "LK",
+        "name": "Srí Lanka"
+    },
+    {
+        "id": "CF",
+        "name": "Stredoafrická republika"
+    },
+    {
+        "id": "SD",
+        "name": "Sudán"
+    },
+    {
+        "id": "SR",
+        "name": "Surinam"
+    },
+    {
+        "id": "SJ",
+        "name": "Svalbard a Jan Mayen"
+    },
+    {
+        "id": "SH",
+        "name": "Svätá Helena"
+    },
+    {
+        "id": "LC",
+        "name": "Svätá Lucia"
+    },
+    {
+        "id": "KN",
+        "name": "Svätý Krištof a Nevis"
+    },
+    {
+        "id": "ST",
+        "name": "Svätý Tomáš a Princov ostrov"
+    },
+    {
+        "id": "VC",
+        "name": "Svätý Vincent a Grenadíny"
+    },
+    {
+        "id": "SY",
+        "name": "Sýria"
+    },
+    {
+        "id": "SB",
+        "name": "Šalamúnove ostrovy"
+    },
+    {
+        "id": "ES",
+        "name": "Španielsko"
+    },
+    {
+        "id": "CH",
+        "name": "Švajčiarsko"
+    },
+    {
+        "id": "SE",
+        "name": "Švédsko"
+    },
+    {
+        "id": "TJ",
+        "name": "Tadžikistan"
+    },
+    {
+        "id": "TW",
+        "name": "Taiwan"
+    },
+    {
+        "id": "IT",
+        "name": "Taliansko"
+    },
+    {
+        "id": "TZ",
+        "name": "Tanzánia"
+    },
+    {
+        "id": "TH",
+        "name": "Thajsko"
+    },
+    {
+        "id": "TG",
+        "name": "Togo"
+    },
+    {
+        "id": "TK",
+        "name": "Tokelau"
+    },
+    {
+        "id": "TO",
+        "name": "Tonga"
+    },
+    {
+        "id": "TT",
+        "name": "Trinidad a Tobago"
+    },
+    {
+        "id": "TN",
+        "name": "Tunisko"
+    },
+    {
+        "id": "TR",
+        "name": "Turecko"
+    },
+    {
+        "id": "TM",
+        "name": "Turkménsko"
+    },
+    {
+        "id": "TC",
+        "name": "Turks a Caicos"
+    },
+    {
+        "id": "TV",
+        "name": "Tuvalu"
+    },
+    {
+        "id": "UG",
+        "name": "Uganda"
+    },
+    {
+        "id": "UA",
+        "name": "Ukrajina"
+    },
+    {
+        "id": "UY",
+        "name": "Uruguaj"
+    },
+    {
+        "id": "UZ",
+        "name": "Uzbekistan"
+    },
+    {
+        "id": "VU",
+        "name": "Vanuatu"
+    },
+    {
+        "id": "VA",
+        "name": "Vatikán"
+    },
+    {
+        "id": "VE",
+        "name": "Venezuela"
+    },
+    {
+        "id": "CX",
+        "name": "Vianočný ostrov"
+    },
+    {
+        "id": "VN",
+        "name": "Vietnam"
+    },
+    {
+        "id": "TL",
+        "name": "Východný Timor"
+    },
+    {
+        "id": "WF",
+        "name": "Wallis a Futuna"
+    },
+    {
+        "id": "ZM",
+        "name": "Zambia"
+    },
+    {
+        "id": "EH",
+        "name": "Západná Sahara"
+    },
+    {
+        "id": "ZW",
+        "name": "Zimbabwe"
+    }
+]

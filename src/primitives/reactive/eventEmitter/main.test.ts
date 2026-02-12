@@ -23,7 +23,7 @@ describe('createEventEmitter', () => {
             // listener callback should be called once (synchronously) for each emit
             expect(listener).toHaveBeenCalledTimes(i + 1);
 
-            const evt = listener.mock.lastCall[0]!;
+            const evt = listener.mock.lastCall?.[0];
 
             expect(evt.detail).toBe(emitDetails[i]);
             expect(evt.type).toBe('hello');
@@ -40,7 +40,7 @@ describe('createEventEmitter', () => {
             // listener callback not called — since it is no longer attached to emitter
             expect(listener).toHaveBeenCalledTimes(emitDetails.length);
 
-            const evt = listener.mock.lastCall[0]!;
+            const evt = listener.mock.lastCall?.[0];
 
             expect(evt.detail).toBe(emitDetails[emitDetails.length - 1]);
             expect(evt.type).toBe('hello');

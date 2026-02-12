@@ -48,7 +48,7 @@ export const getLocalisedAmount = (
         currency: currencyCode,
         currencyDisplay: 'symbol',
         ...options,
-    };
+    } as const;
 
     try {
         return hideCurrency
@@ -75,7 +75,7 @@ export const getLocalisedPercentage = (percent = 0, locale: string): string | nu
     const localeOptions = {
         style: 'percent',
         maximumFractionDigits: 2,
-    };
+    } as const;
 
     try {
         return decimalPercent.toLocaleString(locale, localeOptions);

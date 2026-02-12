@@ -1,6 +1,11 @@
 @use '../../../../style';
 
 .adyen-pe-payout-data {
+    &__title-container {
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
     &__title {
         display: grid;
         gap: style.token(spacer-020);
@@ -8,6 +13,10 @@
 
         &--ba-id {
             color: style.token(color-label-secondary);
+        }
+
+        &--with-extra-details {
+            padding-bottom: style.token(spacer-070);
         }
 
         .adyen-pe-payout-data__content--section {
@@ -49,11 +58,6 @@
     }
 
     .adyen-pe-structured-list {
-        &__content {
-            display: flex;
-            justify-content: flex-end;
-        }
-
         &__item {
             padding: style.token(spacer-040) style.token(spacer-070);
         }
@@ -67,5 +71,34 @@
         margin-top: style.token(spacer-080);
         outline: style.token(color-outline-tertiary) 1px dashed;
         padding: style.token(spacer-040) style.token(spacer-070);
+    }
+
+    &__extra-details {
+        margin-bottom: style.token(spacer-090);
+
+        .adyen-pe-structured-list__item {
+            padding: style.token(spacer-000);
+        }
+    }
+
+    &__extra-details-label {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+    }
+
+    &__extra-details-icon {
+        img {
+            width: style.token(spacer-070);
+        }
+    }
+
+    &__button-actions {
+        display: flex;
+        justify-content: end;
+        margin-top: style.token(spacer-080);
     }
 }

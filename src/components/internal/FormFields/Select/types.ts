@@ -1,6 +1,7 @@
 import { Ref, VNode } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
+import { AriaAttributes, HTMLAttributes } from 'preact/compat';
 import { CommitActionProperties } from '../../../../hooks/useCommitAction';
+import { ButtonVariant } from '../../Button/types';
 
 type _Selected<T> = T | readonly T[];
 
@@ -9,27 +10,43 @@ type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item'
     iconClassName?: HTMLAttributes<any>['className'];
 };
 
-export interface SelectItem {
+export type SelectChangeEvent<T = string> = {
+    target: {
+        value: T;
+        name?: string;
+    };
+};
+
+export interface SelectItem<T extends string = string> {
     disabled?: boolean;
     icon?: string;
-    id: string;
+    id: T;
     name: string;
     selectedOptionName?: string;
 }
 
-export interface SelectProps<T extends SelectItem> {
+export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     className?: string;
     classNameModifiers?: string[];
+    clearable?: boolean;
     filterable?: boolean;
     isCollatingErrors?: boolean;
     isInvalid?: boolean;
     isValid?: boolean;
     items: readonly T[];
+    buttonVariant?: ButtonVariant;
+    /**
+     * When true, closing the list will not restore focus to the toggle button.
+     * Useful when Select is embedded inside composite controls that should own focus.
+     */
+    disableToggleFocusOnClose?: boolean;
+    disableFocusTrap?: boolean;
     multiSelect?: boolean;
     name?: string;
-    onChange: (...args: any[]) => any;
+    onChange: (e: SelectChangeEvent<T['id']>) => void;
     placeholder?: string;
     readonly?: boolean;
+    renderButtonContent?: (data: { item?: T }) => VNode<any> | null;
     renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
     selected?: _Selected<T['id']>;
     uniqueId?: string;
@@ -38,22 +55,30 @@ export interface SelectProps<T extends SelectItem> {
     showOverlay?: boolean;
     popoverClassNameModifiers?: string[];
     fitPosition?: boolean;
+    fixedPopoverPositioning?: boolean;
+    onResetAction?: () => void;
 }
 
-export interface SelectButtonProps<T extends SelectItem> {
+export interface SelectButtonProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     active: readonly T[];
     ariaDescribedBy?: string;
     className?: string;
+    clearable?: boolean;
     filterable: boolean;
     filterInputRef?: Ref<HTMLInputElement>;
-    id?: string;
+    id: string;
+    buttonVariant?: ButtonVariant;
     isInvalid?: boolean;
     isValid?: boolean;
     multiSelect?: boolean;
+    name?: string;
+    onClear?: (evt?: Event) => any;
     onButtonKeyDown?: (evt: KeyboardEvent) => any;
+    onFilterInputKeyDown?: (evt: KeyboardEvent) => any;
     onInput?: (evt: Event) => any;
     placeholder?: string;
     readonly?: boolean;
+    renderButtonContent?: (data: { item?: T }) => VNode<any> | null;
     selectListId?: string;
     showList?: boolean;
     toggleButtonRef: Ref<HTMLButtonElement>;
@@ -66,6 +91,7 @@ export interface SelectListProps<T extends SelectItem> {
     commitActions: CommitActionProperties['commitActionButtons'];
     items: readonly T[];
     multiSelect?: boolean;
+    disableFocusTrap: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;
     renderListItem?: (data: _ListItemRenderData<T>) => VNode<any> | null;
@@ -78,10 +104,14 @@ export interface SelectListProps<T extends SelectItem> {
     popoverClassNameModifiers?: string[];
     showOverlay?: boolean;
     fitPosition?: boolean;
+    fixedPopoverPositioning?: boolean;
+    activeIndex?: number;
+    filterable?: boolean;
 }
 
 export interface SelectItemProps<T extends SelectItem> {
     item: T;
+    isKeyboardActive?: boolean;
     multiSelect: boolean;
     onKeyDown: (evt: KeyboardEvent) => any;
     onSelect: (evt: Event) => any;

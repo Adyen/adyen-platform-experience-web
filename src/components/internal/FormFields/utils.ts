@@ -1,3 +1,43 @@
-const convertFullToHalf = (str: string) => str.replace(/[！-～]/g, r => String.fromCharCode(r.charCodeAt(0) - 0xfee0));
+import { JSX } from 'preact/jsx-runtime';
+import { InteractionKeyCode } from '../../types';
 
-export { convertFullToHalf };
+interface FilterDisallowedCharactersProps {
+    event: JSX.TargetedKeyboardEvent<HTMLInputElement>;
+    inputType?: string;
+    onValidInput?: (event: JSX.TargetedKeyboardEvent<HTMLInputElement>) => void;
+}
+
+const ALLOWED_NAVIGATION_KEYS = [
+    InteractionKeyCode.BACKSPACE,
+    InteractionKeyCode.DELETE,
+    InteractionKeyCode.ARROW_LEFT,
+    InteractionKeyCode.ARROW_RIGHT,
+    InteractionKeyCode.ARROW_UP,
+    InteractionKeyCode.ARROW_DOWN,
+    InteractionKeyCode.TAB,
+];
+
+const filterDisallowedCharacters = ({ event, inputType, onValidInput }: FilterDisallowedCharactersProps) => {
+    const input = event.currentTarget as HTMLInputElement;
+    const { key } = event;
+
+    // Allow digits, period, comma, and minus
+    const isAllowedChar = /^[0-9.,-]$/.test(key);
+    const hasDecimal = /[.,]/.test(input.value);
+    const isDecimalKey = key === '.' || key === ',';
+
+    const isNavigationKey = ALLOWED_NAVIGATION_KEYS.includes(key as InteractionKeyCode);
+    const isDuplicateDecimal = hasDecimal && isDecimalKey;
+    const isNumberInput = inputType === 'number';
+
+    const shouldBlockInput = isNumberInput && !isNavigationKey && (!isAllowedChar || isDuplicateDecimal);
+
+    if (shouldBlockInput) {
+        event.preventDefault();
+        return;
+    }
+
+    onValidInput?.(event);
+};
+
+export { filterDisallowedCharacters };

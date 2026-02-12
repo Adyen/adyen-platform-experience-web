@@ -1,6 +1,6 @@
 import type { RestampContext } from './types';
 
-export const REGEX_TZ_OFFSET = /(?<=GMT)(?:[-+](?:0?\d|1[0-4])(?::?[0-5]\d)?)?$/;
+export const REGEX_TZ_OFFSET = /GMT(?:[-+](?:0?\d|1[0-4])(?::?[0-5]\d)?)?$/;
 
 export const { BASE_FORMAT_OPTIONS, BASE_LOCALE, SYSTEM_TIMEZONE, SYSTEM_TIMEZONE_FORMATTER } = (() => {
     const BASE_LOCALE = 'en-US';

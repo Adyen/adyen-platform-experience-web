@@ -1,0 +1,15 @@
+.adyen-pe-dropdown__store {
+    .adyen-pe-store-selector-button {
+        &__name {
+            white-space: normal;
+            width: 100%;
+            word-wrap: break-word;
+        }
+
+        &__description {
+            white-space: normal;
+            width: 100%;
+            word-wrap: break-word;
+        }
+    }
+}

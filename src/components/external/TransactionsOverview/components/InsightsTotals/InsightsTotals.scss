@@ -1,0 +1,52 @@
+@use '../../../../../style/skeleton' as skeleton;
+@use '../../../../../style';
+
+.adyen-pe-transaction-insights-totals {
+    &__breakdowns {
+        display: grid;
+        gap: style.token(spacer-100) calc(#{style.token(spacer-110)} * 2);
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    &__breakdown-list {
+        .adyen-pe-structured-list__item {
+            border-bottom: style.token(border-width-s) solid style.token(color-outline-primary);
+            padding: style.token(spacer-030) 0;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+
+        .adyen-pe-structured-list__label {
+            color: style.token(color-label-secondary);
+        }
+
+        .adyen-pe-structured-list__value {
+            color: style.token(color-label-primary);
+        }
+    }
+
+    &__skeleton {
+        @include skeleton.adyen-pe-skeleton();
+
+        &--amount {
+            display: block;
+            height: style.token(spacer-070);
+            margin: style.token(spacer-040) 0 style.token(spacer-060);
+            max-width: 160px;
+
+            &-large {
+                max-width: 120px;
+            }
+        }
+
+        &--loading {
+            @include skeleton.adyen-pe-skeleton-animation();
+        }
+    }
+
+    &__error-container {
+        margin: 0 auto;
+    }
+}

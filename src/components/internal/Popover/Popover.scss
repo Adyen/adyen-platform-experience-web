@@ -9,7 +9,10 @@
         background: style.token(color-background-primary);
         border: unset;
         border-radius: style.token(spacer-040);
-        box-shadow: 0 6px 12px rgba(0, 17, 44, 0.08), 0 2px 4px rgba(0, 17, 44, 0.04), 0 0 0 1px rgba(0, 17, 44, 0.06);
+        box-shadow:
+            0 6px 12px rgba(0, 17, 44, 0.08),
+            0 2px 4px rgba(0, 17, 44, 0.04),
+            0 0 0 1px rgba(0, 17, 44, 0.06);
         min-width: 200px;
         overflow: hidden;
         z-index: 10;

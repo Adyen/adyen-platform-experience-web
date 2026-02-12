@@ -1,10 +1,14 @@
 import { isNullish } from '../../utils';
+import { API_VERSION } from './constants';
 import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
-import AdyenPlatformExperienceError from '../Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError, { InvalidField } from '../Errors/AdyenPlatformExperienceError';
 
 const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;
 
 export const enum ErrorTypes {
+    /** HTTP error. */
+    HTTP_ERROR = 'HTTP_ERROR',
+
     /** Network error. */
     NETWORK_ERROR = 'NETWORK_ERROR',
 
@@ -26,8 +30,13 @@ export const getErrorType = (errorCode: number): ErrorTypes => {
         case 401:
             return ErrorTypes.EXPIRED_TOKEN;
         default:
-            return ErrorTypes.NETWORK_ERROR;
+            return ErrorTypes.HTTP_ERROR;
     }
+};
+
+export const getApiVersion = (options: HttpOptions) => {
+    const [, version] = String(options.apiVersion).match(/^v?([1-9]\d*)$/i) ?? [];
+    return version ? `v${version}` : API_VERSION;
 };
 
 export const getResponseContentType = (response: Response): string | undefined => response.headers.get('Content-Type')?.split(';', 1)[0];
@@ -38,9 +47,21 @@ export const getResponseDownloadFilename = (response: Response): string | undefi
     return decodeURIComponent(filename);
 };
 
+export const getRequestBodyForContentType = (body: any, contentType?: string) => {
+    switch (contentType) {
+        case 'application/json':
+            return JSON.stringify(body);
+        case 'multipart/form-data':
+            return body instanceof FormData ? body : new FormData();
+        default:
+            return String(body);
+    }
+};
+
 export const getRequestObject = (options: HttpOptions): RequestInit => {
     const { headers = [], method = 'GET' } = options;
-    const SDKVersion = process.env.VITE_VERSION;
+    const SDKVersion = !options.versionless && process.env.VITE_VERSION;
+    const contentType = options.skipContentType ? undefined : (options.contentType?.toLowerCase() ?? 'application/json');
 
     return {
         method,
@@ -49,14 +70,19 @@ export const getRequestObject = (options: HttpOptions): RequestInit => {
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json, text/plain, */*',
-            'Content-Type': options.contentType ?? 'application/json',
             ...headers,
+
+            // Skip Content-Type header for multipart/form-data requests
+            // The browser will automatically set the content-type for such requests
+            ...(contentType && contentType !== 'multipart/form-data' && { 'Content-Type': contentType }),
+
             ...(SDKVersion && { 'SDK-Version': SDKVersion }),
         },
         redirect: 'follow',
         signal: options.signal,
+        keepalive: options.keepalive,
         referrerPolicy: 'no-referrer-when-downgrade',
-        ...(method === 'POST' && options.body && { body: JSON.stringify(options.body) }),
+        ...(method === 'POST' && options.body && { body: getRequestBodyForContentType(options.body, contentType) }),
     };
 };
 
@@ -66,6 +92,7 @@ export function handleFetchError({
     errorCode,
     type = ErrorTypes.NETWORK_ERROR,
     requestId,
+    invalidFields,
 }: {
     message: string;
     level: ErrorLevel | undefined;
@@ -73,6 +100,7 @@ export function handleFetchError({
     type?: ErrorTypes;
     requestId?: string;
     status?: number;
+    invalidFields?: InvalidField[];
 }) {
     switch (level) {
         case 'silent': {
@@ -84,7 +112,7 @@ export function handleFetchError({
             break;
         case 'error':
         default:
-            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode);
+            throw new AdyenPlatformExperienceError(type, requestId, message, errorCode, invalidFields);
     }
 }
 

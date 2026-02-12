@@ -9,6 +9,7 @@ export type UseMultiSelectionFilterConfig<FilterParam extends string = string, F
     defaultFilters?: UseMultiSelectionFilterConfig<FilterParam, FilterValue>['filters'];
     filterParam: FilterParam;
     filterValues?: SelectionOptionsList<FilterValue>;
+    mapFilterOptionName?: (id: FilterValue) => string;
 } & Partial<Pick<UsePaginatedRecords<any, string, TransactionsOverviewMultiSelectionFilterParam>, 'filters' | 'updateFilters'>>;
 
 export type UseMultiSelectionFilterConfigWithoutValues<FilterParam extends string = string, FilterValue extends string = string> = Omit<

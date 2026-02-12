@@ -1,5 +1,6 @@
 @use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style';
+/* stylelint-disable */
 
 .adyen-pe-capital-overview {
     display: flex;
@@ -8,10 +9,11 @@
     min-height: 150px;
 
     &__skeleton {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: 5px;
         flex: 1;
         height: 100%;
+
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__header-skeleton-container {
@@ -29,11 +31,12 @@
     }
 
     &__header-skeleton {
-        @include skeleton.adyen-pe-skeleton-animation();
         border-radius: 4px;
         height: style.token(spacer-080);
         margin-top: style.token(spacer-040);
         width: 60%;
+
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
     &__unqualified-state {

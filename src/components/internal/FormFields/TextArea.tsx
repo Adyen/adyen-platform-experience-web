@@ -3,8 +3,9 @@ import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { isUndefined } from '../../../utils';
 import cx from 'classnames';
 import './FormFields.scss';
+import { TextareaHTMLAttributes } from 'preact/compat';
 
-export const TextArea = (props: h.JSX.HTMLAttributes<HTMLTextAreaElement> & { maxRows?: number }) => {
+export const TextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement> & { maxRows?: number }) => {
     const { className, maxRows, onInput, rows, ...externalProps } = props;
     const [lastUpdated, setLastUpdated] = useState(performance.now());
     const inputRef = useRef<HTMLTextAreaElement>(null);

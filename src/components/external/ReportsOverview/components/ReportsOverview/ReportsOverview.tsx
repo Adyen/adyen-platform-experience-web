@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { useAuthContext } from '../../../../../core/Auth';
+import { useConfigContext } from '../../../../../core/ConfigContext';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { IBalanceAccountBase, IReport } from '../../../../../types';
 import { isFunction } from '../../../../../utils';
@@ -11,24 +11,28 @@ import BalanceAccountSelector from '../../../../internal/FormFields/Select/Balan
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
-import { ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
-import { ReportsTable } from '../ReportsTable/ReportsTable';
+import { CustomDataRetrieved, ExternalUIComponentProps, FilterParam, ReportsOverviewComponentProps } from '../../../../types';
+import { FIELDS, ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 
 export const ReportsOverview = ({
     onFiltersChanged,
     balanceAccounts,
-    allowLimitSelection,
+    allowLimitSelection = true,
     preferredLimit = DEFAULT_PAGE_LIMIT,
     isLoadingBalanceAccount,
     onContactSupport,
     hideTitle,
+    dataCustomization,
 }: ExternalUIComponentProps<
     ReportsOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
 >) => {
-    const { getReports: reportsEndpointCall } = useAuthContext().endpoints;
-    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection(balanceAccounts);
+    const { getReports: reportsEndpointCall } = useConfigContext().endpoints;
+    const { activeBalanceAccount, balanceAccountSelectionOptions, onBalanceAccountSelection } = useBalanceAccountSelection({ balanceAccounts });
     const { defaultParams, nowTimestamp, refreshNowTimestamp } = useDefaultOverviewFilterParams('reports', activeBalanceAccount);
 
     const getReports = useCallback(
@@ -67,16 +71,30 @@ export const ReportsOverview = ({
             enabled: !!activeBalanceAccount?.id && !!reportsEndpointCall,
         });
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: IReport[]; retrievedData: CustomDataRetrieved[] }) =>
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.createdAt === record.createdAt),
+        []
+    );
+
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
+    const { customRecords: reports, loadingCustomRecords } = useCustomColumnsData<IReport>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
+
     useEffect(() => {
         refreshNowTimestamp();
     }, [filters, refreshNowTimestamp]);
 
     return (
         <div className={BASE_CLASS}>
-            <Header hideTitle={hideTitle} titleKey="reportsTitle" subtitleKey="reportsNotice">
+            <Header hideTitle={hideTitle} titleKey="reports.overview.title" subtitleKey="reports.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>
-            <FilterBar {...filterBarState}>
+            <FilterBar {...filterBarState} ariaLabelKey="reports.overview.filters.label">
                 <BalanceAccountSelector
                     activeBalanceAccount={activeBalanceAccount}
                     balanceAccountSelectionOptions={balanceAccountSelectionOptions}
@@ -93,17 +111,17 @@ export const ReportsOverview = ({
                     updateFilters={updateFilters}
                 />
             </FilterBar>
-
             <ReportsTable
                 balanceAccountId={activeBalanceAccount?.id}
-                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
-                data={records}
+                loading={fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount || loadingCustomRecords}
+                data={dataCustomization?.list?.onDataRetrieve ? reports : records}
                 showPagination={true}
                 limit={limit}
                 limitOptions={limitOptions}
                 onContactSupport={onContactSupport}
                 onLimitSelection={updateLimit}
                 error={error as AdyenPlatformExperienceError}
+                customColumns={dataCustomization?.list?.fields}
                 {...paginationProps}
             />
         </div>

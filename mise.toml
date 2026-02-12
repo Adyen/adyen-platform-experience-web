@@ -1,0 +1,3 @@
+[tools]
+node = "path:/usr/local/adyen/nodejs22"
+npm = "path:/usr/local/adyen/nodejs22/npm"

@@ -21,7 +21,7 @@ function PopoverDismissButton({ image = true, onClick }: PopoverDismissButtonPro
                 iconButton={true}
                 variant={ButtonVariant.TERTIARY}
                 onClick={onClick}
-                aria-label={i18n.get('closeIconLabel')}
+                aria-label={i18n.get('common.actions.dismiss.labels.close')}
             >
                 <svg role="img" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
                     <title>{'dismiss'}</title>

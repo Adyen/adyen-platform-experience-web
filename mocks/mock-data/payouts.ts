@@ -20,7 +20,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-15T00:00:00.000Z',
+            createdAt: '2026-01-10T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -29,7 +29,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -62,7 +62,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-09T00:00:00.000Z',
+            createdAt: '2026-01-09T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -71,14 +71,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'grantIssued',
+                    category: 'capture',
                 },
                 {
                     amount: {
                         value: 1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'correction',
                 },
             ],
             adjustmentBreakdown: [
@@ -87,7 +87,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'Fee',
+                    category: 'fee',
                 },
                 {
                     amount: {
@@ -118,7 +118,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-10T00:00:00.000Z',
+            createdAt: '2026-01-10T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -127,14 +127,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'Fee',
+                    category: 'capture',
                 },
                 {
                     amount: {
                         value: 1000,
                         currency: 'EUR',
                     },
-                    category: 'grantIssued',
+                    category: 'correction',
                 },
             ],
             adjustmentBreakdown: [
@@ -174,7 +174,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 100000,
                 currency: 'USD',
             },
-            createdAt: '2024-12-13T10:00:00Z',
+            createdAt: '2026-01-13T10:00:00Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -190,14 +190,14 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -80000,
                         currency: 'USD',
                     },
-                    category: 'refund',
+                    category: 'chargeback',
                 },
                 {
                     amount: {
                         value: 20000,
                         currency: 'USD',
                     },
-                    category: 'chargeback',
+                    category: 'refund',
                 },
                 {
                     amount: {
@@ -279,7 +279,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-10T00:00:00.000Z',
+            createdAt: '2026-01-10T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -288,7 +288,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -321,7 +321,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2021-12-10T00:00:00.000Z',
+            createdAt: '2025-12-20T00:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -330,7 +330,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -363,7 +363,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-12T10:00:00.000Z',
+            createdAt: '2025-12-12T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -372,7 +372,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -405,7 +405,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-13T10:00:00.000Z',
+            createdAt: '2026-01-13T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -414,7 +414,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -447,7 +447,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-18T10:00:00.000Z',
+            createdAt: '2025-01-20T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -456,7 +456,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -498,7 +498,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -540,7 +540,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
-                    category: 'fee',
+                    category: 'capture',
                 },
             ],
             adjustmentBreakdown: [
@@ -573,7 +573,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-01-20T10:00:00.000Z',
+            createdAt: '2025-10-29T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -582,7 +582,57 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                         value: -1000,
                         currency: 'EUR',
                     },
+                    category: 'capture',
+                },
+                {
+                    amount: {
+                        value: 1500,
+                        currency: 'EUR',
+                    },
+                    category: 'correction',
+                },
+            ],
+            adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
                     category: 'fee',
+                },
+            ],
+        },
+    },
+    {
+        balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+        payout: {
+            fundsCapturedAmount: {
+                value: 30000,
+                currency: 'EUR',
+            },
+            adjustmentAmount: {
+                value: -5000,
+                currency: 'EUR',
+            },
+            payoutAmount: {
+                value: 25000,
+                currency: 'EUR',
+            },
+            unpaidAmount: {
+                value: 90000,
+                currency: 'EUR',
+            },
+            createdAt: '2025-02-02T10:00:00.000Z',
+            isSumOfSameDayPayouts: true,
+        },
+        amountBreakdowns: {
+            fundsCapturedBreakdown: [
+                {
+                    amount: {
+                        value: -1000,
+                        currency: 'EUR',
+                    },
+                    category: 'capture',
                 },
                 {
                     amount: {

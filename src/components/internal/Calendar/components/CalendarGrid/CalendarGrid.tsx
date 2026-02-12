@@ -4,7 +4,7 @@ import CalendarGridDate from './CalendarGridDate';
 import CalendarGridDayOfWeek from './CalendarGridDayOfWeek';
 import '../../Calendar.scss';
 
-const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, grid }: CalendarGridProps, cursorElementRef) => (
+const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, getGridLabel, grid }: CalendarGridProps, cursorElementRef) => (
     <ol className={'adyen-pe-calendar'} role="none" {...cursorRootProps}>
         {grid.map(block => (
             <li key={block.datetime} className={'adyen-pe-calendar__month'} role="none">
@@ -17,7 +17,7 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, gr
                 <table
                     role="grid"
                     aria-multiselectable={true}
-                    aria-label={`${block.label} calendar`}
+                    aria-label={getGridLabel(block)}
                     className={'adyen-pe-calendar__grid'}
                     style={{ '--adyen-pe-calendar-rowspan': grid.rowspan }}
                 >

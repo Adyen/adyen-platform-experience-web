@@ -2,8 +2,9 @@ import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { InteractionKeyCode } from '../../../types';
 import { ARIA_ERROR_SUFFIX } from '../../../../core/Errors/constants';
-import { boolOrFalse, EMPTY_ARRAY, noop, uuid } from '../../../../utils';
+import { boolOrFalse, EMPTY_ARRAY, noop } from '../../../../utils';
 import useCommitAction, { CommitAction } from '../../../../hooks/useCommitAction';
+import useUniqueId from '../../../../hooks/useUniqueId';
 import SelectButton from './components/SelectButton';
 import SelectList from './components/SelectList';
 import useSelect from './hooks/useSelect';
@@ -15,9 +16,12 @@ import './Select.scss';
 const Select = <T extends SelectItem>({
     className,
     classNameModifiers = EMPTY_ARRAY as [],
+    clearable = false,
     popoverClassNameModifiers,
     items = EMPTY_ARRAY as readonly T[],
     filterable = false,
+    disableFocusTrap = false,
+    disableToggleFocusOnClose = false,
     multiSelect = false,
     readonly = false,
     onChange = noop,
@@ -28,20 +32,28 @@ const Select = <T extends SelectItem>({
     placeholder,
     uniqueId,
     renderListItem,
+    renderButtonContent,
     isCollatingErrors,
     setToTargetWidth,
     withoutCollapseIndicator = false,
     showOverlay = false,
     fitPosition,
+    fixedPopoverPositioning,
+    onResetAction,
+    buttonVariant,
+    ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
     const [showList, setShowList] = useState<boolean>(false);
     const [textFilter, setTextFilter] = useState<string>('');
+    const [activeIndex, setActiveIndex] = useState<number>(-1);
     const filterInputRef = useRef<HTMLInputElement>(null);
     const selectListRef = useRef<HTMLUListElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
-    const selectListId = useRef(`select-${uuid()}`);
-    const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
+
+    const selectButtonUniqueId = `elem-${useUniqueId()}`;
+    const selectButtonId = uniqueId ?? selectButtonUniqueId;
+    const selectListId = `select-${useUniqueId()}`;
 
     const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
     const pendingClickOutsideTriggeredHideList = useRef(true);
@@ -49,27 +61,17 @@ const Select = <T extends SelectItem>({
     const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
 
+    const appliedFilterNumber = useMemo(() => selection.length, [selection]);
+
     const dismissPopover = useCallback(() => {
         setTextFilter('');
         setShowList(false);
+        setActiveIndex(-1);
         if (showList) {
             resetSelection(cachedSelectedItems.current);
             pendingClickOutsideTriggeredHideList.current = true;
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
-
-    //TODO: Clarify and delete this
-    // const selectContainerRef = useClickOutside(
-    //     useRef<HTMLDivElement>(null),
-    //     useCallback(() => {
-    //         setTextFilter('');
-    //         setShowList(false);
-    //         if (showList) {
-    //             resetSelection(cachedSelectedItems.current);
-    //             pendingClickOutsideTriggeredHideList.current = true;
-    //         }
-    //     }, [resetSelection, showList, setShowList, setTextFilter])
-    // );
 
     const dropdownClassName = useMemo(
         () =>
@@ -84,6 +86,7 @@ const Select = <T extends SelectItem>({
 
     const { commitAction, commitActionButtons, committing, resetCommitAction } = useCommitAction({
         resetDisabled: !selection.length,
+        onResetAction: onResetAction,
     });
 
     /**
@@ -94,12 +97,13 @@ const Select = <T extends SelectItem>({
     const closeList = useCallback(() => {
         setTextFilter('');
         setShowList(false);
+        setActiveIndex(-1);
         resetCommitAction();
 
         if (!pendingClickOutsideTriggeredHideList.current) {
-            toggleButtonRef.current?.focus();
+            if (!disableToggleFocusOnClose) toggleButtonRef.current?.focus();
         } else pendingClickOutsideTriggeredHideList.current = false;
-    }, [resetCommitAction, setShowList, setTextFilter]);
+    }, [disableToggleFocusOnClose, resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
         cachedSelectedItems.current = selection;
@@ -107,17 +111,23 @@ const Select = <T extends SelectItem>({
         onChange({ target: { value, name } });
     }, [name, onChange, selection]);
 
+    const clearAndResetSelection = useCallback(() => {
+        resetSelection();
+        cachedSelectedItems.current = EMPTY_ARRAY;
+        onChange({ target: { value: '', name } });
+    }, [name, onChange, resetSelection]);
+
     useEffect(() => {
         switch (commitAction) {
             case CommitAction.APPLY:
                 commitSelection();
                 break;
             case CommitAction.CLEAR:
-                resetSelection();
                 clearSelectionInProgress.current = true;
+                clearAndResetSelection();
                 break;
         }
-    }, [commitAction, commitSelection, resetSelection]);
+    }, [clearAndResetSelection, commitAction, commitSelection, name, onChange, resetSelection]);
 
     /**
      * Closes the select list and fires an onChange
@@ -145,20 +155,24 @@ const Select = <T extends SelectItem>({
     useEffect(() => {
         if (selectedItems.current !== selection) {
             selectedItems.current = selection;
-            if (!multiSelect || clearSelectionInProgress.current) {
+            // showList check added to prevent commitSelection from being executed on initial value assignment
+            if ((!multiSelect || clearSelectionInProgress.current) && showList) {
                 commitSelection();
                 closeList();
             }
         }
         clearSelectionInProgress.current = false;
-    }, [closeList, commitSelection, multiSelect, selection]);
+    }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
-        if (committing) {
-            setAppliedFilterNumber(selection.length);
-            closeList();
+        if (committing) closeList();
+    }, [committing, closeList]);
+
+    useEffect(() => {
+        if (!showList) {
+            cachedSelectedItems.current = selection;
         }
-    }, [committing, closeList, setAppliedFilterNumber, selection.length]);
+    }, [selection, showList]);
 
     /**
      * Handle keyDown events on the selectList button
@@ -190,6 +204,10 @@ const Select = <T extends SelectItem>({
                     break;
                 case InteractionKeyCode.ARROW_DOWN:
                 case InteractionKeyCode.ARROW_UP:
+                    if (filterable && showList) {
+                        // When filterable and list is open, arrow keys are handled by input
+                        return;
+                    }
                     break;
                 default:
                     return;
@@ -209,23 +227,29 @@ const Select = <T extends SelectItem>({
                 focus: {
                     let item = selectListRef.current?.firstElementChild as HTMLLIElement;
                     let firstAvailableItem: typeof item | undefined;
+                    let activeIndex = 0;
 
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
-                                item.focus();
+                                item.tabIndex = 0;
+                                filterable ? setActiveIndex(activeIndex) : item.focus();
                                 break focus;
                             }
                             firstAvailableItem = firstAvailableItem || item;
+                            activeIndex++;
                         }
                         item = item.nextElementSibling as HTMLLIElement;
                     }
 
-                    if (firstAvailableItem) firstAvailableItem.focus();
+                    if (firstAvailableItem && !filterable) {
+                        firstAvailableItem.tabIndex = 0;
+                        firstAvailableItem.focus();
+                    }
                 }
             });
         }
-    }, [showList]);
+    }, [filterable, showList]);
 
     /**
      * Handle keyDown events on the list elements
@@ -239,6 +263,7 @@ const Select = <T extends SelectItem>({
             switch (evt.code) {
                 case InteractionKeyCode.ESCAPE:
                     evt.preventDefault();
+                    evt.stopPropagation();
                     // When user is actively navigating through list with arrow keys - close list and keep focus on the Select Button re. a11y guidelines (above)
                     closeList();
                     break;
@@ -251,6 +276,8 @@ const Select = <T extends SelectItem>({
                     let item = target.nextElementSibling as HTMLLIElement;
                     while (item) {
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                            target.tabIndex = -1;
+                            item.tabIndex = 0;
                             item.focus();
                             break;
                         }
@@ -264,6 +291,8 @@ const Select = <T extends SelectItem>({
                         let item = target.previousElementSibling as HTMLLIElement;
                         while (item) {
                             if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
+                                target.tabIndex = -1;
+                                item.tabIndex = 0;
                                 item.focus();
                                 break focus;
                             }
@@ -275,13 +304,84 @@ const Select = <T extends SelectItem>({
                     }
                     break;
                 }
-                case InteractionKeyCode.TAB:
-                    closeList();
-                    break;
                 default:
             }
         },
         [closeList, filterable, handleSelect]
+    );
+
+    /**
+     * Handle keyDown events on the filter input
+     * Navigates through filtered items using arrow keys
+     * @param evt - KeyboardEvent
+     */
+    const handleFilterInputKeyDown = useCallback(
+        (evt: KeyboardEvent) => {
+            if (!filterable || !showList) return;
+
+            const filteredItems = items.filter(item => !textFilter || item.name.toLowerCase().includes(textFilter));
+            const availableItems = filteredItems.filter(item => !item.disabled);
+
+            switch (evt.code) {
+                case InteractionKeyCode.ESCAPE:
+                    evt.preventDefault();
+                    closeList();
+                    break;
+                case InteractionKeyCode.ENTER:
+                    evt.preventDefault();
+                    if (activeIndex >= 0 && activeIndex < filteredItems.length) {
+                        const item = filteredItems[activeIndex];
+                        if (item && !item?.disabled) {
+                            select(item);
+                        }
+                    }
+                    break;
+                case InteractionKeyCode.ARROW_DOWN: {
+                    evt.preventDefault();
+                    if (availableItems.length === 0) break;
+
+                    let nextIndex = activeIndex + 1;
+                    while (nextIndex < filteredItems.length) {
+                        if (!filteredItems[nextIndex]?.disabled) {
+                            setActiveIndex(nextIndex);
+                            break;
+                        }
+                        nextIndex++;
+                    }
+                    // If we reached the end, wrap to first available
+                    if (nextIndex >= filteredItems.length) {
+                        for (let i = 0; i < filteredItems.length; i++) {
+                            if (!filteredItems[i]?.disabled) {
+                                setActiveIndex(i);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case InteractionKeyCode.ARROW_UP: {
+                    evt.preventDefault();
+                    if (availableItems.length === 0) break;
+
+                    let prevIndex = activeIndex - 1;
+                    while (prevIndex >= 0) {
+                        if (!filteredItems[prevIndex]?.disabled) {
+                            setActiveIndex(prevIndex);
+                            break;
+                        }
+                        prevIndex--;
+                    }
+                    // If we reached the start or activeIndex was -1, don't wrap
+                    if (prevIndex < 0) {
+                        setActiveIndex(-1);
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        },
+        [filterable, showList, items, textFilter, activeIndex, closeList, select]
     );
 
     /**
@@ -292,6 +392,7 @@ const Select = <T extends SelectItem>({
         (e: Event) => {
             const value: string = (e.target as HTMLInputElement).value;
             setTextFilter(value.toLowerCase());
+            setActiveIndex(-1); // Reset active index when filter changes
         },
         [setTextFilter]
     );
@@ -311,31 +412,53 @@ const Select = <T extends SelectItem>({
 
     useEffect(() => {
         if (showList && filterable) {
-            filterInputRef.current?.focus();
+            // Use requestAnimationFrame to ensure focus happens after any parent
+            // focus traps (e.g., Modal) have completed their focus management
+            const frame = requestAnimationFrame(() => {
+                filterInputRef.current?.focus();
+            });
+            setActiveIndex(-1);
+            return () => cancelAnimationFrame(frame);
         }
     }, [filterable, showList]);
+
+    const handleClear = useCallback(
+        (e?: Event) => {
+            e?.preventDefault?.();
+            e?.stopPropagation?.();
+            clearAndResetSelection();
+        },
+        [clearAndResetSelection]
+    );
 
     return (
         <div className={dropdownClassName}>
             <SelectButton
-                id={uniqueId ?? undefined}
+                buttonVariant={buttonVariant}
+                id={selectButtonId}
                 appliedFilterNumber={appliedFilterNumber}
                 active={selection}
+                clearable={clearable}
                 filterInputRef={filterInputRef}
                 filterable={filterable}
                 isInvalid={isInvalid}
                 isValid={isValid}
+                name={name}
+                onClear={handleClear}
                 onButtonKeyDown={handleButtonKeyDown}
-                onInput={handleTextFilter}
+                onFilterInputKeyDown={handleFilterInputKeyDown}
                 multiSelect={multiSelect}
                 placeholder={placeholder}
                 readonly={readonly}
-                selectListId={selectListId.current}
+                renderButtonContent={renderButtonContent}
+                selectListId={selectListId}
                 showList={showList}
                 toggleButtonRef={toggleButtonRef}
                 toggleList={toggleList}
                 withoutCollapseIndicator={withoutCollapseIndicator}
-                ariaDescribedBy={!isCollatingErrors && uniqueId ? `${uniqueId}${ARIA_ERROR_SUFFIX}` : ''}
+                ariaDescribedBy={!isCollatingErrors && selectButtonId ? `${selectButtonId}${ARIA_ERROR_SUFFIX}` : undefined}
+                {...ariaAttributeProps}
+                onInput={handleTextFilter}
             />
             <SelectList
                 popoverClassNameModifiers={popoverClassNameModifiers}
@@ -345,16 +468,20 @@ const Select = <T extends SelectItem>({
                 commitActions={commitActionButtons}
                 items={items}
                 multiSelect={multiSelect}
+                disableFocusTrap={disableFocusTrap || filterable}
                 onKeyDown={handleListKeyDown}
                 onSelect={handleSelect}
-                selectListId={selectListId.current}
+                selectListId={selectListId}
                 ref={selectListRef}
                 toggleButtonRef={toggleButtonRef}
                 renderListItem={renderListItem}
                 showList={showList}
                 showOverlay={showOverlay}
                 textFilter={textFilter}
+                activeIndex={filterable ? activeIndex : undefined}
+                filterable={filterable}
                 fitPosition={fitPosition}
+                fixedPopoverPositioning={fixedPopoverPositioning}
             />
         </div>
     );

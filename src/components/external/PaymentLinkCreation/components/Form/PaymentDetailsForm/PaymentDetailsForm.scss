@@ -1,0 +1,15 @@
+@use '../../../../../../style/index' as style;
+
+.adyen-pe-payment-link-creation-form {
+    &__validity-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+
+    &__validity-custom-duration {
+        &--hidden {
+            display: none;
+        }
+    }
+}

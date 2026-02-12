@@ -1,0 +1,15 @@
+@use '../../../../../style';
+
+.adyen-pe-payment-link-summary {
+    padding: style.token(spacer-060);
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+    }
+
+    &__expires-label {
+        color: style.token(color-label-secondary);
+    }
+}

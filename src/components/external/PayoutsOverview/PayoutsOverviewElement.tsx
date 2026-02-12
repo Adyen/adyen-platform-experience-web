@@ -11,13 +11,7 @@ export class PayoutsElement extends UIElement<PayoutsOverviewComponentProps> {
     }
 
     public componentToRender = () => {
-        return (
-            <Payouts
-                {...this.props}
-                balanceAccountId={this.props.balanceAccountId}
-                ref={(ref: UIElement<PayoutsOverviewComponentProps>) => void (this.componentRef = ref)}
-            />
-        );
+        return <Payouts {...this.props} />;
     };
 }
 

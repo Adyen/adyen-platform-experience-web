@@ -1,12 +1,14 @@
 import { IGrant, IGrantStatus } from '../../../../../types';
 import { TranslationKey } from '../../../../../translations';
 import { TagVariant } from '../../../../internal/Tag/types';
+import { GrantConfig } from './types';
 
 const getHasDetails = (status: IGrantStatus) => status === 'Active';
 
 const getIsBackgroundFilled = (status: IGrantStatus) => status === 'Repaid';
 
-const getAmountLabelKey = (status: IGrantStatus): TranslationKey => (status === 'Active' ? 'capital.remaining' : 'capital.requestedFunds');
+const getAmountLabelKey = (status: IGrantStatus): TranslationKey =>
+    status === 'Active' ? 'capital.overview.grants.item.amounts.remaining' : 'capital.overview.grants.item.amounts.requestedFunds';
 
 const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 
@@ -15,15 +17,17 @@ const getStatusKey = ({ status, missingActions }: IGrant): TranslationKey | unde
         case 'Active':
             return undefined;
         case 'Failed':
-            return 'capital.failed';
+            return 'capital.overview.grants.common.statuses.failed';
         case 'Pending':
-            return missingActions && missingActions.length ? 'capital.actionNeeded' : 'capital.pending';
+            return missingActions && missingActions.length
+                ? 'capital.overview.grants.common.statuses.actionNeeded'
+                : 'capital.overview.grants.common.statuses.pending';
         case 'Repaid':
-            return 'capital.fullyRepaid';
+            return 'capital.overview.grants.common.statuses.fullyRepaid';
         case 'Revoked':
-            return 'capital.revoked';
+            return 'capital.overview.grants.common.statuses.revoked';
         case 'WrittenOff':
-            return 'capital.writtenOff';
+            return 'capital.overview.grants.common.statuses.writtenOff';
     }
 };
 
@@ -57,21 +61,21 @@ export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined =
         case 'Pending':
             return grant.missingActions?.length
                 ? pendingToS
-                    ? 'capital.signTheTermsToReceiveYourFunds'
+                    ? 'capital.overview.grants.common.statuses.pending.description.signTerms'
                     : undefined
-                : 'capital.youShouldGetTheFundsWithinOneBusinessDay';
+                : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
         case 'Failed':
-            return 'capital.weCouldNotProcessThisRequestTryAgain';
+            return 'capital.overview.grants.common.statuses.failed.description';
         case 'WrittenOff':
-            return 'capital.youAcceptedTheseFundsButDidNotRepayThem';
+            return 'capital.overview.grants.common.statuses.writtenOff.description';
         case 'Revoked':
-            return 'capital.youAcceptedButThenReturnedTheseFunds';
+            return 'capital.overview.grants.common.statuses.revoked.description';
         default:
             return undefined;
     }
 };
 
-export const getGrantConfig = (grant: IGrant) => {
+export const getGrantConfig = (grant: IGrant): GrantConfig => {
     const isGrantActive = grant.status === 'Active';
     const isGrantPending = grant.status === 'Pending';
 
@@ -80,6 +84,12 @@ export const getGrantConfig = (grant: IGrant) => {
         amountLabelKey: getAmountLabelKey(grant.status),
         hasAlerts: isGrantPending,
         hasDetails: getHasDetails(grant.status),
+        hasUnscheduledRepaymentDetails: isGrantActive && !!grant.unscheduledRepaymentAccounts?.length,
+        // The grant revocation account details is currently not ready to be rendered.
+        // A future iteration of this component might include revocation account details.
+        // Only then should the following line be uncommented.
+        //
+        // hasRevocationDetails: isGrantActive && grant.revocationAccount !== undefined,
         isAmountColorSecondary: !isGrantActive,
         isBackgroundFilled: getIsBackgroundFilled(grant.status),
         isGrantIdVisible: !isGrantActive,

@@ -45,4 +45,25 @@ describe('createAbortable', () => {
         expect(abortable.promise).not.toBe(promise);
         expect(abortable.signal).not.toBe(signal);
     });
+
+    test('should refresh abortable if abort is explicitly true', async () => {
+        const abortable = createAbortable();
+        const { promise, reason, signal } = abortable.refresh();
+
+        expect(abortable.promise).toBe(promise);
+        expect(abortable.reason).toBe(reason);
+        expect(abortable.signal).toBe(signal);
+
+        [undefined, null, false, 'true', 1].forEach((abort: any) => {
+            // refresh abortable (abort is not explicitly true)
+            abortable.refresh(abort);
+            expect(abortable.promise).toBe(promise);
+            expect(abortable.signal).toBe(signal);
+        });
+
+        // refresh abortable (abort is explicitly true)
+        abortable.refresh(true);
+        expect(abortable.promise).not.toBe(promise);
+        expect(abortable.signal).not.toBe(signal);
+    });
 });

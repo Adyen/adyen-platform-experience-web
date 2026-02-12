@@ -11,7 +11,7 @@ function ReportsOverviewContainer({ ...props }: ExternalUIComponentProps<Reports
         <DataOverviewContainer
             balanceAccountsError={error}
             className={BASE_CLASS}
-            errorMessage={'weCouldNotLoadTheReportsOverview'}
+            errorMessage={'reports.overview.errors.unavailable'}
             isBalanceAccountIdWrong={isBalanceAccountIdWrong}
             onContactSupport={props.onContactSupport}
         >

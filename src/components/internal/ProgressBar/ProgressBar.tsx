@@ -79,7 +79,7 @@ const ProgressBar = ({ max = 1, value, labels, tooltips, className }: ProgressBa
             aria-label={ariaLabel}
             className={cx('adyen-pe-progress-bar', className)}
         >
-            <div className="adyen-pe-progress-bar__track">
+            <div className="adyen-pe-progress-bar__track" role="presentation">
                 <div className="adyen-pe-progress-bar__track-background"></div>
                 <ProgressBarSegment
                     tooltipContent={tooltips?.progress}
@@ -119,8 +119,8 @@ interface ProgressBarSegmentProps {
     className: string;
 }
 const ProgressBarSegment = ({ tooltipContent, title, percentage, className }: ProgressBarSegmentProps) => {
-    const getContent = (title?: string) => <div className={className} title={title} style={{ width: `${percentage}%` }} />;
-    return tooltipContent ? <Tooltip content={tooltipContent}>{getContent()}</Tooltip> : getContent(title);
+    const getContent = (title?: string) => <div className={className} aria-label={title} style={{ width: `${percentage}%` }} />;
+    return tooltipContent ? <Tooltip content={tooltipContent}>{getContent(title)}</Tooltip> : getContent(title);
 };
 
 export default ProgressBar;

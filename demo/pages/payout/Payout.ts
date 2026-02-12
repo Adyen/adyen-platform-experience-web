@@ -1,5 +1,6 @@
 import { enableServerInMockedMode } from '../../../mocks/mock-server/utils/utils';
-import { AdyenPlatformExperience, PayoutDetails, all_locales } from '../../../src';
+import { AdyenPlatformExperience, PayoutDetails, all_locales } from '@adyen/adyen-platform-experience-web';
+import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
 

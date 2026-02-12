@@ -1,7 +1,21 @@
+import { CONTROL_ELEMENT_PROPERTY } from '../../../../hooks/element/useClickOutside';
+
 export const popoverUtil = (<T extends Element, U extends Function>() => {
     let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];
 
     const closePopoversOutsideOfClick = (eventPath: EventTarget[]) => {
+        // Check if click is on a control element (button that opens the popover)
+        // If so, let the button's onClick handle the toggle instead of closing here
+        const clickedOnControlElement = eventPath.some(
+            path =>
+                path instanceof Element &&
+                popoverRefs.some(popoverRef => {
+                    const controlElement = (popoverRef.element as any)[CONTROL_ELEMENT_PROPERTY];
+                    return controlElement instanceof Element && controlElement.contains(path as Node);
+                })
+        );
+        if (clickedOnControlElement) return;
+
         const index = eventPath.reduce((index: number, path: EventTarget) => {
             const pathMatchIndex =
                 path instanceof Node

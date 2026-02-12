@@ -11,31 +11,36 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
     grantList,
     newOfferAvailable,
     onFundsRequest,
+    onGrantListUpdateRequest,
     onOfferDismiss,
 }) => {
-    const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(false);
+    const [isCapitalOfferVisible, setIsCapitalOfferVisible] = useState<boolean>(false);
 
-    const goBackToPreviousStep = useCallback(() => setCapitalOfferSelection(false), []);
-    const goToNextStep = useCallback(() => setCapitalOfferSelection(true), []);
+    const goBackToPreviousStep = useCallback(() => setIsCapitalOfferVisible(false), []);
+    const goToNextStep = useCallback(() => setIsCapitalOfferVisible(true), []);
 
     const goBackToList = useCallback(() => {
         onOfferDismiss ? onOfferDismiss(goBackToPreviousStep) : goBackToPreviousStep();
     }, [goBackToPreviousStep, onOfferDismiss]);
 
-    const goBackToGrantListOnFundsRequest = useCallback(
+    const handleFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequest(data);
-            setCapitalOfferSelection(false);
+            if (onFundsRequest) {
+                onFundsRequest(data);
+            } else {
+                onGrantListUpdateRequest(data);
+                setIsCapitalOfferVisible(false);
+            }
         },
-        [onFundsRequest]
+        [onFundsRequest, onGrantListUpdateRequest]
     );
 
     return (
         <>
-            {capitalOfferSelection ? (
+            {isCapitalOfferVisible ? (
                 <CapitalOffer
                     externalDynamicOffersConfig={externalDynamicOffersConfig}
-                    onFundsRequest={goBackToGrantListOnFundsRequest}
+                    onFundsRequest={handleFundsRequest}
                     onOfferDismiss={goBackToList}
                 />
             ) : (

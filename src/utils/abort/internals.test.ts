@@ -44,6 +44,7 @@ describe('AbortSignal.prototype.throwIfAborted', () => {
         controller.abort();
 
         expect(signal.aborted).toBe(true);
+        expect(signal.reason?.constructor?.name).toBe('DOMException');
         expect(() => signal.throwIfAborted()).toThrowError();
     });
 });
@@ -61,7 +62,7 @@ describe('AbortSignal.prototype.reason', () => {
         controller.abort();
 
         expect(signal.aborted).toBe(true);
-        expect(signal.reason).toBeInstanceOf(DOMException);
+        expect(signal.reason?.constructor?.name).toBe('DOMException');
         expect(signal.reason.name).toBe('AbortError');
     });
 });

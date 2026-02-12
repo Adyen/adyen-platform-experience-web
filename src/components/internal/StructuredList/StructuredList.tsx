@@ -1,10 +1,18 @@
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../translations';
+import { AriaAttributes } from 'preact/compat';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import { SL_BASE_CLASS, SL_CONTENT_CLASS, SL_GRID_CLASS, SL_ITEM_CLASS, SL_ITEM_WITH_HIGHLIGHT_CLASS, SL_LABEL_CLASS } from './constants';
+import {
+    SL_ALIGN_END,
+    SL_BASE_CLASS,
+    SL_CONTENT_CLASS,
+    SL_EXPANDED_CLASS,
+    SL_GRID_CLASS,
+    SL_ITEM_CLASS,
+    SL_ITEM_WITH_HIGHLIGHT_CLASS,
+    SL_LABEL_CLASS,
+} from './constants';
 import { StructuredListProps } from './types';
 import './StructuredList.scss';
 import { useStructuredListItems } from './useStructuredListItem';
@@ -13,6 +21,7 @@ export const StructuredListLayouts = ['3-9', '4-8', '5-7', '6-6', '7-5', '8-4'] 
 
 const DEFAULT_LAYOUT = '6-6';
 export default function StructuredList({
+    ['aria-label']: ariaLabel,
     items,
     highlightable,
     renderValue,
@@ -20,17 +29,22 @@ export default function StructuredList({
     layout = DEFAULT_LAYOUT,
     grid = true,
     classNames,
-}: StructuredListProps) {
+    align = 'end',
+    condensed = true,
+}: StructuredListProps & Pick<AriaAttributes, 'aria-label'>) {
     const [LABEL_COL_CLASS, VALUE_COL_CLASS] = useMemo(() => {
         return layout.split('-').map(w => `${SL_GRID_CLASS}--width-${w}-of-12`);
     }, [layout]);
+
     const formattedItems = useStructuredListItems(items);
-    const { i18n } = useCoreContext();
+
+    const typographyVariant = condensed ? TypographyVariant.CAPTION : TypographyVariant.BODY;
 
     return (
-        <div aria-label={i18n.get('structuredList')} className={cx(SL_BASE_CLASS, classNames)}>
+        <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end', [SL_EXPANDED_CLASS]: !condensed })} aria-label={ariaLabel}>
             {formattedItems.map((item, index) => (
-                <dl
+                <div
+                    data-testid={item.label}
                     key={`${index}_${item.id || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
@@ -39,16 +53,22 @@ export default function StructuredList({
                 >
                     <dt className={cx(SL_LABEL_CLASS, LABEL_COL_CLASS)}>
                         {renderLabel ? (
-                            renderLabel(item.label, items[index]!.key)
+                            renderLabel(item.label, item.key, item.rawValue)
                         ) : (
-                            <Typography variant={TypographyVariant.BODY}>{item.label}</Typography>
+                            <Typography variant={typographyVariant}>{item.label}</Typography>
                         )}
                     </dt>
-                    <dd aria-label={`${i18n.get(item.key as TranslationKey)} ${i18n.get('value')}`} className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
-                        {renderValue ? renderValue(item.value, item.key) : <Typography variant={TypographyVariant.BODY}>{item.value}</Typography>}
+                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)}>
+                        {item.render ? (
+                            item.render(item)
+                        ) : renderValue ? (
+                            renderValue(item.value, item.key, item.type, item.config)
+                        ) : (
+                            <Typography variant={typographyVariant}>{item.value}</Typography>
+                        )}
                     </dd>
-                </dl>
+                </div>
             ))}
-        </div>
+        </dl>
     );
 }

@@ -1,4 +1,4 @@
-import { IDynamicOffersConfig, IGrant } from '../../src';
+import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -12,50 +12,86 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
+export const CAD_CAPITAL_OFFER = {
+    minAmount: {
+        value: 100000,
+        currency: 'CAD',
+    },
+    maxAmount: {
+        value: 2500000,
+        currency: 'CAD',
+    },
+    step: 10000,
+} satisfies IDynamicOffersConfig;
+
+export const GRANT_NL_ACCOUNT = {
+    beneficiaryName: 'Adyen N.V.',
+    iban: 'NL69RABO1319778291',
+    region: 'NL',
+    order: ['iban', 'beneficiaryName', 'region'],
+} satisfies NonNullable<INLCapitalFundsCollection>;
+
+export const GRANT_GB_ACCOUNT = {
+    accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. London Branch',
+    iban: 'GB01ADYB01234567890123',
+    region: 'GB',
+    sortCode: '012345678',
+    order: ['iban', 'accountNumber', 'sortCode', 'beneficiaryName', 'region'],
+} satisfies NonNullable<IGBCapitalFundsCollection>;
+
+export const GRANT_US_ACCOUNT = {
+    accountNumber: '123456789012',
+    beneficiaryName: 'Adyen N.V. San Francisco Branch',
+    region: 'US',
+    routingNumber: '012345678',
+    order: ['accountNumber', 'routingNumber', 'beneficiaryName', 'region'],
+} satisfies NonNullable<IUSCapitalFundsCollection>;
+
 export const DEFAULT_GRANT: IGrant = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingGrantAmount: {
         value: 813000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     remainingFeesAmount: {
         value: 9000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidTotalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     termEndsAt: '2025-02-15',
@@ -63,6 +99,9 @@ export const DEFAULT_GRANT: IGrant = {
     balanceAccountDescription: 'Primary balance account',
     status: 'Pending',
     missingActions: [],
+    transferInstruments: [{ accountIdentifier: 'NL**INGB******8101' }, { accountIdentifier: 'NL**INGB******4151' }],
+    unscheduledRepaymentAccounts: [],
+    // revocationAccount: (account here),
 };
 
 export const ACTIVE_GRANT: IGrant = {
@@ -70,20 +109,20 @@ export const ACTIVE_GRANT: IGrant = {
     id: 'afedbe0e05e9',
     repaidTotalAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     status: 'Active',
     remainingTotalAmount: {
         value: 822000,
-        currency: 'USD',
+        currency: 'EUR',
     },
 };
 
@@ -106,6 +145,20 @@ export const PENDING_GRANT_WITH_ACTIONS: IGrant = {
     missingActions: [{ type: 'signToS' }],
 };
 
+export const PENDING_GRANT_WITH_MULTIPLE_ACTIONS: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'AnaCredit' }, { type: 'signToS' }],
+};
+
+export const PENDING_GRANT_WITH_ANACREDIT: IGrant = {
+    ...PENDING_GRANT,
+    id: '14588ba8f278',
+    offerExpiresAt: '2025-02-15',
+    missingActions: [{ type: 'AnaCredit' }],
+};
+
 export const REPAID_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: 'e1be2511758c',
@@ -124,26 +177,28 @@ export const WRITTEN_OFF_GRANT: IGrant = {
     status: 'WrittenOff',
 };
 
+export const GRANTS: IGrant[] = [ACTIVE_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT, FAILED_GRANT];
+
 export const GRANT_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     totalAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdAmount: {
         value: 169000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
 };
 
@@ -153,34 +208,34 @@ export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
     grantAmount: {
         value: 2000000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidAmount: {
         value: 1200000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidGrantAmount: {
         value: 1187000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaidFeesAmount: {
         value: 13000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     feesAmount: {
         value: 22000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentAmount: {
         value: 2022000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     thresholdPaymentAmount: {
         value: 80000,
-        currency: 'USD',
+        currency: 'EUR',
     },
     repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 365,
+    expectedRepaymentPeriodDays: 180,
     maximumRepaymentPeriodDays: 540,
     repaymentPeriodLeft: 135,
     status: 'Pending',
@@ -188,4 +243,8 @@ export const SIGNED_OFFER = {
 
 export const SIGN_TOS_ACTION_DETAILS = {
     url: 'https://www.adyen.com/',
+};
+
+export const ANACREDIT_ACTION_DETAILS = {
+    url: 'https://www.adyen.com/capital',
 };

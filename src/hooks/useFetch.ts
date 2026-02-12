@@ -6,6 +6,7 @@ export interface State<T> {
     data?: T;
     error?: Error;
     isFetching: boolean;
+    refetch: () => void;
 }
 
 // type Cache<T> = Map<string, T>;
@@ -39,6 +40,7 @@ UseFetchConfig<QueryFn>): State<T> {
         error: undefined,
         data: undefined,
         isFetching: boolOrTrue(enabled),
+        refetch: () => fetchData(),
     };
     const fetchReducer = (state: State<T>, action: Action<T>): State<T> => {
         switch (action.type) {

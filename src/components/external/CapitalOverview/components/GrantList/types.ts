@@ -5,7 +5,8 @@ export interface GrantListProps {
     grantList: IGrant[];
     hideTitle?: boolean;
     newOfferAvailable: boolean;
-    onFundsRequest: (data: IGrant) => void;
+    onFundsRequest?: (data: IGrant) => void;
+    onGrantListUpdateRequest: (data: IGrant) => void;
     onOfferDismiss?: (goToPreviousStep: () => void) => void;
 }
 

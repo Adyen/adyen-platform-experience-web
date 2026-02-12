@@ -12,8 +12,6 @@ type PreQualifiedProps = {
     skipPreQualifiedIntro?: boolean;
 };
 
-type PreQualifiedState = 'Intro' | 'CapitalOffer';
-
 export const PreQualified = ({
     hideTitle,
     dynamicOffer,
@@ -22,31 +20,28 @@ export const PreQualified = ({
     onFundsRequest,
     onOfferDismiss,
 }: PreQualifiedProps) => {
-    const [capitalOfferSelection, setCapitalOfferSelection] = useState<boolean>(!!skipPreQualifiedIntro);
-    const goToCapitalOffer = useCallback(() => setCapitalOfferSelection(true), []);
-    const onSeeOptionsHandler = useCallback(() => {
-        onOfferOptionsRequest ? onOfferOptionsRequest() : goToCapitalOffer();
-    }, [goToCapitalOffer, onOfferOptionsRequest]);
+    const [state, setState] = useState<'intro' | 'capitalOffer'>(skipPreQualifiedIntro ? 'capitalOffer' : 'intro');
 
-    const goBackToPreviousStep = useCallback(() => setCapitalOfferSelection(false), []);
-    const goBackToIntro = useCallback(() => {
-        onOfferDismiss ? onOfferDismiss() : goBackToPreviousStep();
-    }, [goBackToPreviousStep, onOfferDismiss]);
+    const handleOfferOptionsRequest = useCallback(() => {
+        onOfferOptionsRequest ? onOfferOptionsRequest() : setState('capitalOffer');
+    }, [onOfferOptionsRequest]);
 
-    const state: PreQualifiedState = useMemo(() => {
-        if (skipPreQualifiedIntro || capitalOfferSelection) {
-            return 'CapitalOffer';
-        }
-        return 'Intro';
-    }, [capitalOfferSelection, skipPreQualifiedIntro]);
+    const isOfferDismissButtonVisible = useMemo(() => !skipPreQualifiedIntro || !!onOfferDismiss, [onOfferDismiss, skipPreQualifiedIntro]);
+    const handleOfferDismiss = useCallback(() => {
+        onOfferDismiss ? onOfferDismiss() : setState('intro');
+    }, [onOfferDismiss]);
 
     return (
         <>
-            {state === 'Intro' ? (
-                <PreQualifiedIntro hideTitle={hideTitle} dynamicOffer={dynamicOffer} onSeeOptions={onSeeOptionsHandler} />
-            ) : state === 'CapitalOffer' ? (
-                <CapitalOffer onFundsRequest={onFundsRequest} onOfferDismiss={goBackToIntro} externalDynamicOffersConfig={dynamicOffer} />
-            ) : null}
+            {state === 'intro' ? (
+                <PreQualifiedIntro hideTitle={hideTitle} dynamicOfferConfig={dynamicOffer} onOfferOptionsRequest={handleOfferOptionsRequest} />
+            ) : (
+                <CapitalOffer
+                    onFundsRequest={onFundsRequest}
+                    onOfferDismiss={isOfferDismissButtonVisible ? handleOfferDismiss : undefined}
+                    externalDynamicOffersConfig={dynamicOffer}
+                />
+            )}
         </>
     );
 };

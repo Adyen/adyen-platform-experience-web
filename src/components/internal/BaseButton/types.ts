@@ -1,6 +1,6 @@
-import { JSXInternal } from 'preact/src/jsx';
+import { ButtonHTMLAttributes } from 'preact/compat';
 
-export interface ButtonProps extends JSXInternal.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     classNameModifiers?: string[];
     fullWidth?: boolean;
 }

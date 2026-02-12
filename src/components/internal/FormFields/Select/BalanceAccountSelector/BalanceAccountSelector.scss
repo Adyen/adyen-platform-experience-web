@@ -12,7 +12,7 @@ $adyen-pe-body-line-height: style.token(text-body-line-height);
 
     .adyen-pe-dropdown__element-content {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
     }
 
     .adyen-pe-dropdown__element-checkmark {
@@ -33,7 +33,6 @@ $adyen-pe-body-line-height: style.token(text-body-line-height);
     }
 
     &__account-label {
-        flex: auto;
         font-weight: style.token(text-body-stronger-font-weight);
         overflow-x: hidden;
         text-overflow: ellipsis;

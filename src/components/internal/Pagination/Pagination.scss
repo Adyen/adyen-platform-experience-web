@@ -5,7 +5,7 @@
     padding: style.token(spacer-070) style.token(spacer-040);
     text-align: right;
 
-    &__context {
+    &__limit {
         align-items: center;
         display: flex;
         gap: style.token(spacer-070);
@@ -15,6 +15,16 @@
         display: flex;
         gap: style.token(spacer-070);
         margin-left: auto;
+
+        .adyen-pe-button--icon {
+            font-size: style.$adyen-pe-svg-icon-size-base;
+        }
+
+        .adyen-pe-button--icon:focus-visible {
+            height: fit-content;
+            margin: 1px;
+            width: calc(#{style.token(spacer-110)} - 2px);
+        }
     }
 
     &__limit-selector {

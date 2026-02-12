@@ -1,6 +1,11 @@
 @use '../../../../../style';
 
 .adyen-pe-grant-item {
+    .adyen-pe-expandable-card__container {
+        font-family: inherit;
+        width: 100%;
+    }
+
     &__status-container {
         align-items: center;
         display: flex;
@@ -34,8 +39,16 @@
         margin-top: style.token(spacer-040);
     }
 
-    &__overview {
-        padding-bottom: style.token(spacer-060);
-        padding-top: style.token(spacer-060);
+    &__actions-bar {
+        display: flex;
+        margin-top: style.token(spacer-060);
+    }
+
+    &__main-action-button {
+        flex: 1;
+
+        .adyen-pe-button__label {
+            justify-content: center;
+        }
     }
 }

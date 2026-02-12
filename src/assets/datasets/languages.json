@@ -1,0 +1,131 @@
+[
+    {
+        "text": "Auto detect",
+        "value": null
+    },
+    {
+        "text": "Dansk",
+        "value": "da-DK",
+        "localeId": "DK"
+    },
+    {
+        "text": "Deutsch",
+        "value": "de-DE",
+        "localeId": "DE"
+    },
+    {
+        "text": "English",
+        "value": "en-US",
+        "localeId": "US"
+    },
+    {
+        "text": "Español",
+        "value": "es-ES",
+        "localeId": "ES"
+    },
+    {
+        "text": "Français",
+        "value": "fr-FR",
+        "localeId": "FR"
+    },
+    {
+        "text": "Hrvatski",
+        "value": "hr-HR",
+        "localeId": "HR"
+    },
+    {
+        "text": "Italiano",
+        "value": "it-IT",
+        "localeId": "IT"
+    },
+    {
+        "text": "Magyar",
+        "value": "hu-HU",
+        "localeId": "HU"
+    },
+    {
+        "text": "Nederlands",
+        "value": "nl-NL",
+        "localeId": "NL"
+    },
+    {
+        "text": "Norsk",
+        "value": "no-NO",
+        "localeId": "NO"
+    },
+    {
+        "text": "Polski",
+        "value": "pl-PL",
+        "localeId": "PL"
+    },
+    {
+        "text": "Português - Brazilian",
+        "value": "pt-BR",
+        "localeId": "BR"
+    },
+    {
+        "text": "Português - Portuguese",
+        "value": "pt-PT",
+        "localeId": "PT"
+    },
+    {
+        "text": "Română",
+        "value": "ro-RO",
+        "localeId": "RO"
+    },
+    {
+        "text": "Slovenčina",
+        "value": "sk-SK",
+        "localeId": "SK"
+    },
+    {
+        "text": "Slovenščina",
+        "value": "sl-SI",
+        "localeId": "SI"
+    },
+    {
+        "text": "Suomi",
+        "value": "fi-FI",
+        "localeId": "FI"
+    },
+    {
+        "text": "Svenska",
+        "value": "sv-SE",
+        "localeId": "SE"
+    },
+    {
+        "text": "Čeština",
+        "value": "cs-CZ",
+        "localeId": "CZ"
+    },
+    {
+        "text": "Ελληνικά",
+        "value": "el-GR",
+        "localeId": "GR"
+    },
+    {
+        "text": "Русский",
+        "value": "ru-RU",
+        "localeId": "RU"
+    },
+    {
+        "text": "日本語",
+        "value": "ja-JP",
+        "localeId": "JP"
+    },
+    {
+        "text": "简体中文",
+        "value": "zh-CN",
+        "localeId": "CN"
+    },
+    {
+        "text": "繁體中文",
+        "value": "zh-TW",
+        "localeId": "TW"
+    },
+    {
+        "text": "한국어",
+        "value": "ko-KR",
+        "localeId": "KR"
+    }
+]

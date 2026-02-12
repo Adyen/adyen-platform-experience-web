@@ -4,50 +4,56 @@
  */
 
 export interface paths {
-    '/v1/setup': {
+    "/v1/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /**
          * Get allowed endpoints
          * @description Provides the allowed endpoints for a given session
          */
-        post: operations['setup'];
+        post: operations["setup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
 }
-
 export type webhooks = Record<string, never>;
-
 export interface components {
     schemas: {
         /** @enum {string} */
-        EndpointName:
-            | 'getTransactions'
-            | 'getTransaction'
-            | 'getTransactionTotals'
-            | 'getBalances'
-            | 'getBalanceAccounts'
-            | 'getPayouts'
-            | 'getPayout'
-            | 'getReports'
-            | 'createNetworkTokenActivationData'
-            | 'downloadReport'
-            | 'getNetworkTokenActivationData'
-            | 'getDynamicGrantOffersConfiguration'
-            | 'getDynamicGrantOffer'
-            | 'createGrantOffer'
-            | 'getGrants'
-            | 'requestFunds'
-            | 'signToSActionDetails'
-            | 'initiateRefund';
+        EndpointName: "acceptDispute" | "anaCreditActionDetails" | "countries" | "createGrantOffer" | "createNetworkTokenActivationData" | "currencies" | "defendDispute" | "downloadDefenseDocument" | "downloadReport" | "expirePayByLinkPaymentLink" | "getApplicableDefenseDocuments" | "getBalanceAccounts" | "getBalances" | "getDisputeDetail" | "getDisputeList" | "getDynamicGrantOffer" | "getDynamicGrantOffersConfiguration" | "getGrants" | "getNetworkTokenActivationData" | "getPaymentLinks" | "getPayout" | "getPayouts" | "getReports" | "getTransaction" | "getTransactionTotals" | "getTransactions" | "initiateRefund" | "requestFunds" | "registerSdk" | "sendEngageEvent" | "sendTrackEvent" | "signToSActionDetails" | "getPayByLinkStores" | "payByLinkFilters" | "getPayByLinkSettings" | "savePayByLinkSettings" | "getPayByLinkTheme" | "updatePayByLinkTheme" | "createPBLPaymentLink" | "getPayByLinkConfiguration" | "getPayByLinkPaymentLinkById" | "downloadTransactions";
+        LegalEntitySetupResponseDTO: {
+            countryCode: string;
+            regions: components["schemas"]["RegionDTO"][];
+        };
+        RegionDTO: {
+            type: components["schemas"]["RegionType"];
+            value?: string;
+        };
+        /** @enum {string} */
+        RegionType: "capital";
         SetupEndpointResponse: {
             method?: string;
             url?: string;
+            versions?: number[];
         };
         SetupResponse: {
             /** @description Always null. This field is only used to expose endpoint names in OpenApi schema. Front-end components generate types from it. */
-            endpointTypesExposure?: components['schemas']['EndpointName'];
+            endpointTypesExposure?: components["schemas"]["EndpointName"];
             /** @description Allowed endpoints for a given session */
             endpoints: {
-                [key: string]: components['schemas']['SetupEndpointResponse'];
+                [key: string]: components["schemas"]["SetupEndpointResponse"];
             };
+            /** @description Legal entity information. Only for components that require it. */
+            legalEntity?: components["schemas"]["LegalEntitySetupResponseDTO"];
         };
     };
     responses: never;
@@ -56,22 +62,24 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-
 export type $defs = Record<string, never>;
-
-export type external = Record<string, never>;
-
 export interface operations {
-    /**
-     * Get allowed endpoints
-     * @description Provides the allowed endpoints for a given session
-     */
     setup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK - the request has succeeded. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
-                    'application/json': components['schemas']['SetupResponse'];
+                    "application/json": components["schemas"]["SetupResponse"];
                 };
             };
         };

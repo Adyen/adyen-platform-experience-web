@@ -1,6 +1,6 @@
 @use '../../../../../style/skeleton' as skeleton;
 @use '../../../../../style' as style;
-//stylelint-disable no-invalid-position-at-import-rule
+/* stylelint-disable */
 @import '../../../../../style/breakpoints.scss';
 
 .adyen-pe-capital-offer-selection {
@@ -19,12 +19,13 @@
     }
 
     &__loading-skeleton {
-        @include skeleton.adyen-pe-skeleton-animation(hsl(212, 100%, 90%));
         background: #cbe3ff;
         border-radius: style.token(border-radius-s);
         display: block;
         height: 20px;
         width: 100%;
+
+        @include skeleton.adyen-pe-skeleton-animation(hsl(212, 100%, 90%));
     }
 
     &__loading-skeleton:first-child {
@@ -47,7 +48,7 @@
         justify-content: end;
     }
 
-    // stylelint-disable order/order
+    /* stylelint-disable order/order */
     @include adyen-pe-screen-sm-and-up {
         &__loading-skeleton:first-child {
             height: 42px;

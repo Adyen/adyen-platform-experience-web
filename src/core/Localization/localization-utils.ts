@@ -3,10 +3,14 @@ import { isFunction, struct } from '../../utils';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { EXCLUDE_PROPS, FALLBACK_LOCALE } from './constants/localization';
 import type { CustomTranslations, Locale } from '../../translations';
+import { SupportedLocales } from './types';
 
 export function createTranslationsLoader(this: Localization) {
     type TranslationsLoader = {
-        load: (customTranslations?: CustomTranslations) => ReturnType<typeof loadTranslations>;
+        load: (
+            fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
+            customTranslations?: CustomTranslations
+        ) => ReturnType<typeof loadTranslations>;
         get locale(): Locale;
         set locale(locale: string);
         supportedLocales: Locale[];
@@ -17,7 +21,10 @@ export function createTranslationsLoader(this: Localization) {
     let _supportedLocales: TranslationsLoader['supportedLocales'] = [...this.supportedLocales];
 
     return struct<TranslationsLoader>({
-        load: { value: (customTranslations?: CustomTranslations) => loadTranslations(_locale, this.preferredTranslations, customTranslations) },
+        load: {
+            value: (fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>, customTranslations?: CustomTranslations) =>
+                loadTranslations(_locale, fetchTranslationFromCdnPromise, customTranslations),
+        },
         locale: {
             get: () => _locale,
             set: (locale: string) => {

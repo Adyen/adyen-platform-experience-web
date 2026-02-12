@@ -5,7 +5,7 @@
 
 .adyen-pe-data-grid {
     --adyen-pe-data-grid-cols: #{auto-fit};
-    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, 1fr))};
+    --adyen-pe-data-grid-cells: #{repeat(var(--adyen-pe-data-grid-cols), minmax(100px, auto))};
     $adyen-pe-data-grid: &;
     $adyen-pe-data-grid__cell: #{$adyen-pe-data-grid}__cell;
 
@@ -33,10 +33,6 @@
 
     &--empty {
         position: relative;
-    }
-
-    .adyen-pe-error-message-display {
-        top: 60px;
     }
 
     &__table {
@@ -71,6 +67,11 @@
                 outline-offset: -1px;
             }
         }
+    }
+
+    &__icon-cell {
+        display: flex;
+        gap: style.token(spacer-030);
     }
 
     #{$adyen-pe-data-grid__cell} {

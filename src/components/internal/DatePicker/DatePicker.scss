@@ -32,9 +32,8 @@
 
         > .adyen-pe-button--prev,
         > .adyen-pe-button--next {
-            color: inherit;
             display: inline-flex;
-            transform: rotate(-90deg);
+            font-size: style.$adyen-pe-svg-icon-size-base;
         }
 
         > .adyen-pe-button--prev {

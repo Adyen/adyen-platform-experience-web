@@ -1,0 +1,59 @@
+@use '../../../style/variable-generator' as style;
+
+.adyen-pe-search-bar {
+    display: flex;
+    flex-direction: column;
+
+    &__field {
+        align-items: center;
+        background: style.token(color-background-primary);
+        border: 1px solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-direction: row;
+        height: 40px;
+        position: relative;
+        transition:
+            border 0.2s ease-out,
+            box-shadow 0.2s ease-out;
+
+        &:hover {
+            border-color: style.token(color-outline-primary-hover);
+        }
+
+        &:focus-within {
+            outline: 1px solid style.token(color-outline-selected);
+        }
+    }
+
+    // Remove border from InputBase container when inside SearchBar
+    &__field .adyen-pe-input__container {
+        background: transparent;
+        border: 0;
+        flex: 1;
+        height: auto;
+
+        &:hover {
+            border: 0;
+        }
+
+        &:focus-within {
+            background: transparent;
+            border: 0;
+            outline: none;
+        }
+    }
+
+    &__field .adyen-pe-input {
+        &:hover,
+        &:active,
+        &:focus,
+        &--focus,
+        &:active:hover,
+        &:focus:hover,
+        &--focus:hover {
+            border: 0;
+            outline: none;
+        }
+    }
+}

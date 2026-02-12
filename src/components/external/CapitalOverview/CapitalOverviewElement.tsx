@@ -1,22 +1,22 @@
+import { isCapitalRegionSupported } from '../../internal/CapitalHeader/helpers';
 import { _UIComponentProps, ExternalComponentType } from '../../types';
 import UIElement from '../UIElement/UIElement';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
 import { EMPTY_OBJECT, noop } from '../../../utils';
-import sessionReady from '../../../core/Auth/session/utils/sessionReady';
+import sessionReady from '../../../core/ConfigContext/session/utils/sessionReady';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type: ExternalComponentType = 'capitalOverview';
 
     constructor(props: _UIComponentProps<CapitalOverviewProps>) {
         super(props);
-
-        this.customClassNames = 'adyen-pe-capital-overview-component';
         this.componentToRender = this.componentToRender.bind(this);
+        this.customClassNames = 'adyen-pe-capital-overview-component';
     }
 
     public componentToRender = () => {
-        return <CapitalOverview {...this.props} ref={(ref: UIElement<CapitalOverviewProps>) => void (this.componentRef = ref)} />;
+        return <CapitalOverview {...this.props} />;
     };
 
     public async getState(): Promise<CapitalComponentState> {
@@ -24,13 +24,24 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         await sessionReady(session);
 
         const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
+        const legalEntity = session.context.extraConfig?.legalEntity;
+
+        if (!isCapitalRegionSupported(legalEntity)) {
+            return { state: 'isInUnsupportedRegion' };
+        }
 
         const [config, grants] = await Promise.all([
             getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 
-        const state = grants && grants.data?.length > 0 ? 'hasRequestedGrants' : config && config.minAmount ? 'isPreQualified' : 'isUnqualified';
+        let state: CapitalComponentState['state'] = 'isUnqualified';
+
+        if (grants && grants.data?.length > 0) {
+            state = 'hasRequestedGrants';
+        } else if (config && config.minAmount) {
+            state = 'isPreQualified';
+        }
 
         return { state };
     }

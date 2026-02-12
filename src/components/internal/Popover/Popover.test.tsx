@@ -16,28 +16,19 @@ interface PopoverContext {
 
 describe('Popover component', () => {
     beforeEach<PopoverContext>(context => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
         context.dismiss = vi.fn();
         context.applyAction = vi.fn();
-
-        window.IntersectionObserver = mockIntersectionObserver;
 
         const buttonEl = createRef();
 
         render(
             <div>
+                <div>{'Outside of component'}</div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
                 {buttonEl && (
                     <Popover
                         targetElement={buttonEl}
                         title={'Test Popover'}
-                        aria-label={'popover-test'}
                         open={true}
                         disableFocusTrap={true}
                         dismiss={context.dismiss}
@@ -70,6 +61,7 @@ describe('Popover component', () => {
     test<PopoverContext>('should call dismiss on click outside', async ({ dismiss }) => {
         const titleEl = screen.getByText(/Test Popover/i);
         const buttonEl = screen.getByRole('button', { name: 'Popover Controller' });
+        const outsideEl = screen.getByText('Outside of component');
         const inputEl = screen.getByTestId('mock-textbox');
 
         await waitFor(() => {
@@ -80,7 +72,7 @@ describe('Popover component', () => {
         expect(titleEl).toBeInTheDocument();
         expect(dismiss).toBeCalledTimes(0);
 
-        await userEvent.click(buttonEl);
+        await userEvent.click(outsideEl);
         expect(dismiss).toBeCalledTimes(1);
     });
 
@@ -122,21 +114,12 @@ describe('Popover component', () => {
 
 describe('Popover component close', () => {
     beforeEach(() => {
-        const mockIntersectionObserver = vi.fn();
-        mockIntersectionObserver.mockReturnValue({
-            observe: () => null,
-            unobserve: () => null,
-            disconnect: () => null,
-        });
-
-        window.IntersectionObserver = mockIntersectionObserver;
-
         const buttonEl = createRef();
 
         render(
             <div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
-                <Popover targetElement={buttonEl} aria-label={'popover-test'}>
+                <Popover targetElement={buttonEl}>
                     <input data-testid="mock-textbox" type="text" />
                 </Popover>
             </div>

@@ -1,0 +1,982 @@
+[
+    {
+        "id": "AF",
+        "name": "Afganistan"
+    },
+    {
+        "id": "AL",
+        "name": "Albanía"
+    },
+    {
+        "id": "DZ",
+        "name": "Alsír"
+    },
+    {
+        "id": "AD",
+        "name": "Andorra"
+    },
+    {
+        "id": "AO",
+        "name": "Angóla"
+    },
+    {
+        "id": "AI",
+        "name": "Angvilla"
+    },
+    {
+        "id": "AG",
+        "name": "Antígva og Barbúda"
+    },
+    {
+        "id": "AR",
+        "name": "Argentína"
+    },
+    {
+        "id": "AM",
+        "name": "Armenía"
+    },
+    {
+        "id": "AW",
+        "name": "Arúba"
+    },
+    {
+        "id": "AZ",
+        "name": "Aserbaídsjan"
+    },
+    {
+        "id": "AT",
+        "name": "Austurríki"
+    },
+    {
+        "id": "AX",
+        "name": "Álandseyjar"
+    },
+    {
+        "id": "AU",
+        "name": "Ástralía"
+    },
+    {
+        "id": "BS",
+        "name": "Bahamaeyjar"
+    },
+    {
+        "id": "US",
+        "name": "Bandaríkin"
+    },
+    {
+        "id": "AS",
+        "name": "Bandaríska Samóa"
+    },
+    {
+        "id": "VI",
+        "name": "Bandarísku Jómfrúaeyjar"
+    },
+    {
+        "id": "BD",
+        "name": "Bangladess"
+    },
+    {
+        "id": "BB",
+        "name": "Barbados"
+    },
+    {
+        "id": "BH",
+        "name": "Barein"
+    },
+    {
+        "id": "BE",
+        "name": "Belgía"
+    },
+    {
+        "id": "BZ",
+        "name": "Belís"
+    },
+    {
+        "id": "BJ",
+        "name": "Benín"
+    },
+    {
+        "id": "BM",
+        "name": "Bermúdaeyjar"
+    },
+    {
+        "id": "BA",
+        "name": "Bosnía og Hersegóvína"
+    },
+    {
+        "id": "BW",
+        "name": "Botsvana"
+    },
+    {
+        "id": "BV",
+        "name": "Bouveteyja"
+    },
+    {
+        "id": "BO",
+        "name": "Bólivía"
+    },
+    {
+        "id": "BR",
+        "name": "Brasilía"
+    },
+    {
+        "id": "IO",
+        "name": "Bresku Indlandshafseyjar"
+    },
+    {
+        "id": "VG",
+        "name": "Bresku Jómfrúaeyjar"
+    },
+    {
+        "id": "GB",
+        "name": "Bretland"
+    },
+    {
+        "id": "BN",
+        "name": "Brúnei"
+    },
+    {
+        "id": "BG",
+        "name": "Búlgaría"
+    },
+    {
+        "id": "BF",
+        "name": "Búrkína Fasó"
+    },
+    {
+        "id": "BI",
+        "name": "Búrúndí"
+    },
+    {
+        "id": "BT",
+        "name": "Bútan"
+    },
+    {
+        "id": "KY",
+        "name": "Caymaneyjar"
+    },
+    {
+        "id": "CK",
+        "name": "Cooks-eyjar"
+    },
+    {
+        "id": "DK",
+        "name": "Danmörk"
+    },
+    {
+        "id": "DJ",
+        "name": "Djíbútí"
+    },
+    {
+        "id": "DM",
+        "name": "Dóminíka"
+    },
+    {
+        "id": "DO",
+        "name": "Dóminíska lýðveldið"
+    },
+    {
+        "id": "EG",
+        "name": "Egyptaland"
+    },
+    {
+        "id": "EE",
+        "name": "Eistland"
+    },
+    {
+        "id": "EC",
+        "name": "Ekvador"
+    },
+    {
+        "id": "SV",
+        "name": "El Salvador"
+    },
+    {
+        "id": "ER",
+        "name": "Erítrea"
+    },
+    {
+        "id": "ET",
+        "name": "Eþíópía"
+    },
+    {
+        "id": "FK",
+        "name": "Falklandseyjar"
+    },
+    {
+        "id": "PH",
+        "name": "Filippseyjar"
+    },
+    {
+        "id": "FI",
+        "name": "Finnland"
+    },
+    {
+        "id": "FJ",
+        "name": "Fídjíeyjar"
+    },
+    {
+        "id": "CI",
+        "name": "Fílabeinsströndin"
+    },
+    {
+        "id": "FR",
+        "name": "Frakkland"
+    },
+    {
+        "id": "GF",
+        "name": "Franska Gvæjana"
+    },
+    {
+        "id": "PF",
+        "name": "Franska Pólýnesía"
+    },
+    {
+        "id": "TF",
+        "name": "Frönsku suðlægu landsvæðin"
+    },
+    {
+        "id": "FO",
+        "name": "Færeyjar"
+    },
+    {
+        "id": "GA",
+        "name": "Gabon"
+    },
+    {
+        "id": "GM",
+        "name": "Gambía"
+    },
+    {
+        "id": "GH",
+        "name": "Gana"
+    },
+    {
+        "id": "GE",
+        "name": "Georgía"
+    },
+    {
+        "id": "GI",
+        "name": "Gíbraltar"
+    },
+    {
+        "id": "GN",
+        "name": "Gínea"
+    },
+    {
+        "id": "GW",
+        "name": "Gínea-Bissá"
+    },
+    {
+        "id": "GD",
+        "name": "Grenada"
+    },
+    {
+        "id": "GR",
+        "name": "Grikkland"
+    },
+    {
+        "id": "CV",
+        "name": "Grænhöfðaeyjar"
+    },
+    {
+        "id": "GL",
+        "name": "Grænland"
+    },
+    {
+        "id": "GG",
+        "name": "Guernsey"
+    },
+    {
+        "id": "GP",
+        "name": "Gvadelúpeyjar"
+    },
+    {
+        "id": "GU",
+        "name": "Gvam"
+    },
+    {
+        "id": "GT",
+        "name": "Gvatemala"
+    },
+    {
+        "id": "GY",
+        "name": "Gvæjana"
+    },
+    {
+        "id": "HT",
+        "name": "Haítí"
+    },
+    {
+        "id": "HM",
+        "name": "Heard og McDonaldseyjar"
+    },
+    {
+        "id": "PS",
+        "name": "Heimastjórnarsvæði Palestínumanna"
+    },
+    {
+        "id": "NL",
+        "name": "Holland"
+    },
+    {
+        "id": "HN",
+        "name": "Hondúras"
+    },
+    {
+        "id": "BY",
+        "name": "Hvíta-Rússland"
+    },
+    {
+        "id": "IN",
+        "name": "Indland"
+    },
+    {
+        "id": "ID",
+        "name": "Indónesía"
+    },
+    {
+        "id": "IQ",
+        "name": "Írak"
+    },
+    {
+        "id": "IR",
+        "name": "Íran"
+    },
+    {
+        "id": "IE",
+        "name": "Írland"
+    },
+    {
+        "id": "IS",
+        "name": "Ísland"
+    },
+    {
+        "id": "IL",
+        "name": "Ísrael"
+    },
+    {
+        "id": "IT",
+        "name": "Ítalía"
+    },
+    {
+        "id": "JM",
+        "name": "Jamaíka"
+    },
+    {
+        "id": "JP",
+        "name": "Japan"
+    },
+    {
+        "id": "YE",
+        "name": "Jemen"
+    },
+    {
+        "id": "JE",
+        "name": "Jersey"
+    },
+    {
+        "id": "CX",
+        "name": "Jólaey"
+    },
+    {
+        "id": "JO",
+        "name": "Jórdanía"
+    },
+    {
+        "id": "KH",
+        "name": "Kambódía"
+    },
+    {
+        "id": "CM",
+        "name": "Kamerún"
+    },
+    {
+        "id": "CA",
+        "name": "Kanada"
+    },
+    {
+        "id": "KZ",
+        "name": "Kasakstan"
+    },
+    {
+        "id": "QA",
+        "name": "Katar"
+    },
+    {
+        "id": "KE",
+        "name": "Kenía"
+    },
+    {
+        "id": "KG",
+        "name": "Kirgistan"
+    },
+    {
+        "id": "CN",
+        "name": "Kína"
+    },
+    {
+        "id": "KI",
+        "name": "Kíribatí"
+    },
+    {
+        "id": "CG",
+        "name": "Kongó-Brazzaville"
+    },
+    {
+        "id": "CD",
+        "name": "Kongó-Kinshasa"
+    },
+    {
+        "id": "CR",
+        "name": "Kostaríka"
+    },
+    {
+        "id": "CC",
+        "name": "Kókoseyjar (Keeling)"
+    },
+    {
+        "id": "CO",
+        "name": "Kólumbía"
+    },
+    {
+        "id": "KM",
+        "name": "Kómoreyjar"
+    },
+    {
+        "id": "XK",
+        "name": "Kósóvó"
+    },
+    {
+        "id": "HR",
+        "name": "Króatía"
+    },
+    {
+        "id": "CU",
+        "name": "Kúba"
+    },
+    {
+        "id": "KW",
+        "name": "Kúveit"
+    },
+    {
+        "id": "CY",
+        "name": "Kýpur"
+    },
+    {
+        "id": "LA",
+        "name": "Laos"
+    },
+    {
+        "id": "LS",
+        "name": "Lesótó"
+    },
+    {
+        "id": "LV",
+        "name": "Lettland"
+    },
+    {
+        "id": "LI",
+        "name": "Liechtenstein"
+    },
+    {
+        "id": "LT",
+        "name": "Litháen"
+    },
+    {
+        "id": "LB",
+        "name": "Líbanon"
+    },
+    {
+        "id": "LR",
+        "name": "Líbería"
+    },
+    {
+        "id": "LY",
+        "name": "Líbía"
+    },
+    {
+        "id": "LU",
+        "name": "Lúxemborg"
+    },
+    {
+        "id": "MG",
+        "name": "Madagaskar"
+    },
+    {
+        "id": "MY",
+        "name": "Malasía"
+    },
+    {
+        "id": "MW",
+        "name": "Malaví"
+    },
+    {
+        "id": "MV",
+        "name": "Maldíveyjar"
+    },
+    {
+        "id": "ML",
+        "name": "Malí"
+    },
+    {
+        "id": "MT",
+        "name": "Malta"
+    },
+    {
+        "id": "MA",
+        "name": "Marokkó"
+    },
+    {
+        "id": "MH",
+        "name": "Marshalleyjar"
+    },
+    {
+        "id": "MQ",
+        "name": "Martiník"
+    },
+    {
+        "id": "YT",
+        "name": "Mayotte"
+    },
+    {
+        "id": "MR",
+        "name": "Máritanía"
+    },
+    {
+        "id": "MU",
+        "name": "Máritíus"
+    },
+    {
+        "id": "MX",
+        "name": "Mexíkó"
+    },
+    {
+        "id": "CF",
+        "name": "Mið-Afríkulýðveldið"
+    },
+    {
+        "id": "GQ",
+        "name": "Miðbaugs-Gínea"
+    },
+    {
+        "id": "FM",
+        "name": "Míkrónesía"
+    },
+    {
+        "id": "MM",
+        "name": "Mjanmar (Búrma)"
+    },
+    {
+        "id": "MD",
+        "name": "Moldóva"
+    },
+    {
+        "id": "MN",
+        "name": "Mongólía"
+    },
+    {
+        "id": "MS",
+        "name": "Montserrat"
+    },
+    {
+        "id": "MC",
+        "name": "Mónakó"
+    },
+    {
+        "id": "MZ",
+        "name": "Mósambík"
+    },
+    {
+        "id": "IM",
+        "name": "Mön"
+    },
+    {
+        "id": "NA",
+        "name": "Namibía"
+    },
+    {
+        "id": "NR",
+        "name": "Nárú"
+    },
+    {
+        "id": "NP",
+        "name": "Nepal"
+    },
+    {
+        "id": "AN",
+        "name": "Netherlands Antilles"
+    },
+    {
+        "id": "NU",
+        "name": "Niue"
+    },
+    {
+        "id": "NE",
+        "name": "Níger"
+    },
+    {
+        "id": "NG",
+        "name": "Nígería"
+    },
+    {
+        "id": "NI",
+        "name": "Níkaragva"
+    },
+    {
+        "id": "KP",
+        "name": "Norður-Kórea"
+    },
+    {
+        "id": "MK",
+        "name": "Norður-Makedónía"
+    },
+    {
+        "id": "MP",
+        "name": "Norður-Maríanaeyjar"
+    },
+    {
+        "id": "NO",
+        "name": "Noregur"
+    },
+    {
+        "id": "NF",
+        "name": "Norfolkeyja"
+    },
+    {
+        "id": "NC",
+        "name": "Nýja-Kaledónía"
+    },
+    {
+        "id": "NZ",
+        "name": "Nýja-Sjáland"
+    },
+    {
+        "id": "OM",
+        "name": "Óman"
+    },
+    {
+        "id": "PK",
+        "name": "Pakistan"
+    },
+    {
+        "id": "PW",
+        "name": "Palá"
+    },
+    {
+        "id": "PA",
+        "name": "Panama"
+    },
+    {
+        "id": "PG",
+        "name": "Papúa Nýja-Gínea"
+    },
+    {
+        "id": "PY",
+        "name": "Paragvæ"
+    },
+    {
+        "id": "PE",
+        "name": "Perú"
+    },
+    {
+        "id": "PN",
+        "name": "Pitcairn-eyjar"
+    },
+    {
+        "id": "PT",
+        "name": "Portúgal"
+    },
+    {
+        "id": "PL",
+        "name": "Pólland"
+    },
+    {
+        "id": "PR",
+        "name": "Púertó Ríkó"
+    },
+    {
+        "id": "RE",
+        "name": "Réunion"
+    },
+    {
+        "id": "RW",
+        "name": "Rúanda"
+    },
+    {
+        "id": "RO",
+        "name": "Rúmenía"
+    },
+    {
+        "id": "RU",
+        "name": "Rússland"
+    },
+    {
+        "id": "SB",
+        "name": "Salómonseyjar"
+    },
+    {
+        "id": "ZM",
+        "name": "Sambía"
+    },
+    {
+        "id": "AE",
+        "name": "Sameinuðu arabísku furstadæmin"
+    },
+    {
+        "id": "WS",
+        "name": "Samóa"
+    },
+    {
+        "id": "SH",
+        "name": "Sankti Helena"
+    },
+    {
+        "id": "KN",
+        "name": "Sankti Kitts og Nevis"
+    },
+    {
+        "id": "LC",
+        "name": "Sankti Lúsía"
+    },
+    {
+        "id": "PM",
+        "name": "Sankti Pierre og Miquelon"
+    },
+    {
+        "id": "VC",
+        "name": "Sankti Vinsent og Grenadíneyjar"
+    },
+    {
+        "id": "SM",
+        "name": "San Marínó"
+    },
+    {
+        "id": "ST",
+        "name": "Saó Tóme og Prinsípe"
+    },
+    {
+        "id": "SA",
+        "name": "Sádi-Arabía"
+    },
+    {
+        "id": "SN",
+        "name": "Senegal"
+    },
+    {
+        "id": "RS",
+        "name": "Serbía"
+    },
+    {
+        "id": "SC",
+        "name": "Seychelles-eyjar"
+    },
+    {
+        "id": "HK",
+        "name": "sérstjórnarsvæðið Hong Kong"
+    },
+    {
+        "id": "MO",
+        "name": "sérstjórnarsvæðið Makaó"
+    },
+    {
+        "id": "ZW",
+        "name": "Simbabve"
+    },
+    {
+        "id": "SG",
+        "name": "Singapúr"
+    },
+    {
+        "id": "SL",
+        "name": "Síerra Leóne"
+    },
+    {
+        "id": "CL",
+        "name": "Síle"
+    },
+    {
+        "id": "SK",
+        "name": "Slóvakía"
+    },
+    {
+        "id": "SI",
+        "name": "Slóvenía"
+    },
+    {
+        "id": "UM",
+        "name": "Smáeyjar Bandaríkjanna"
+    },
+    {
+        "id": "SO",
+        "name": "Sómalía"
+    },
+    {
+        "id": "ES",
+        "name": "Spánn"
+    },
+    {
+        "id": "LK",
+        "name": "Srí Lanka"
+    },
+    {
+        "id": "ZA",
+        "name": "Suður-Afríka"
+    },
+    {
+        "id": "GS",
+        "name": "Suður-Georgía og Suður-Sandvíkureyjar"
+    },
+    {
+        "id": "KR",
+        "name": "Suður-Kórea"
+    },
+    {
+        "id": "AQ",
+        "name": "Suðurskautslandið"
+    },
+    {
+        "id": "SD",
+        "name": "Súdan"
+    },
+    {
+        "id": "SR",
+        "name": "Súrínam"
+    },
+    {
+        "id": "SJ",
+        "name": "Svalbarði og Jan Mayen"
+    },
+    {
+        "id": "ME",
+        "name": "Svartfjallaland"
+    },
+    {
+        "id": "SZ",
+        "name": "Svasíland"
+    },
+    {
+        "id": "CH",
+        "name": "Sviss"
+    },
+    {
+        "id": "SE",
+        "name": "Svíþjóð"
+    },
+    {
+        "id": "SY",
+        "name": "Sýrland"
+    },
+    {
+        "id": "TJ",
+        "name": "Tadsíkistan"
+    },
+    {
+        "id": "TH",
+        "name": "Taíland"
+    },
+    {
+        "id": "TW",
+        "name": "Taívan"
+    },
+    {
+        "id": "TZ",
+        "name": "Tansanía"
+    },
+    {
+        "id": "CZ",
+        "name": "Tékkland"
+    },
+    {
+        "id": "TL",
+        "name": "Tímor-Leste"
+    },
+    {
+        "id": "TO",
+        "name": "Tonga"
+    },
+    {
+        "id": "TG",
+        "name": "Tógó"
+    },
+    {
+        "id": "TK",
+        "name": "Tókelá"
+    },
+    {
+        "id": "TT",
+        "name": "Trínidad og Tóbagó"
+    },
+    {
+        "id": "TD",
+        "name": "Tsjad"
+    },
+    {
+        "id": "TC",
+        "name": "Turks- og Caicoseyjar"
+    },
+    {
+        "id": "TN",
+        "name": "Túnis"
+    },
+    {
+        "id": "TM",
+        "name": "Túrkmenistan"
+    },
+    {
+        "id": "TV",
+        "name": "Túvalú"
+    },
+    {
+        "id": "TR",
+        "name": "Tyrkland"
+    },
+    {
+        "id": "HU",
+        "name": "Ungverjaland"
+    },
+    {
+        "id": "UG",
+        "name": "Úganda"
+    },
+    {
+        "id": "UA",
+        "name": "Úkraína"
+    },
+    {
+        "id": "UY",
+        "name": "Úrúgvæ"
+    },
+    {
+        "id": "UZ",
+        "name": "Úsbekistan"
+    },
+    {
+        "id": "VU",
+        "name": "Vanúatú"
+    },
+    {
+        "id": "VA",
+        "name": "Vatíkanið"
+    },
+    {
+        "id": "VE",
+        "name": "Venesúela"
+    },
+    {
+        "id": "EH",
+        "name": "Vestur-Sahara"
+    },
+    {
+        "id": "VN",
+        "name": "Víetnam"
+    },
+    {
+        "id": "WF",
+        "name": "Wallis- og Fútúnaeyjar"
+    },
+    {
+        "id": "DE",
+        "name": "Þýskaland"
+    }
+]

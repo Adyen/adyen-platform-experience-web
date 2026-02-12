@@ -1,25 +1,19 @@
-import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
 import { DetailsWithExtraData } from '../../external';
-
-//TODO: Revisit those types to find the most appropriate file
-export interface TransactionDetailsWithoutIdProps {
-    data: TransactionDetailData;
-}
+import { DetailsDataCustomizationObject } from '../../types';
+import { IBalanceAccountBase, ITransactionWithDetails } from '../../../types';
+import { PayoutDetailsCustomization } from '../../external/PayoutDetails/types';
 
 export interface PayoutDetailsWithIdProps {
     id: string;
     date: string;
 }
 
-export interface TransactionDetailsWithIdProps {
-    id: string;
-}
+export type DetailsWithId = PayoutDetailsWithIdProps & {
+    type: 'payout';
+    balanceAccountDescription?: string;
+} & DetailsWithExtraData<PayoutDetailsCustomization>;
 
-export type DetailsWithId =
-    | ((TransactionDetailsWithIdProps & { type: 'transaction' }) & DetailsWithExtraData)
-    | (PayoutDetailsWithIdProps & { type: 'payout'; balanceAccountDescription?: string });
-
-export type DetailsComponentProps = (TransactionDetailsWithoutIdProps & { type: 'transaction' }) | DetailsWithId;
+export type DetailsComponentProps = DetailsWithId;
 
 export type TransactionDetailData = ITransactionWithDetails & BalanceAccountProps;
 
@@ -30,4 +24,5 @@ export interface BalanceAccountProps {
 export type SelectedDetail = {
     type: 'payout' | 'transaction';
     data: string | TransactionDetailData | PayoutDetailsWithIdProps;
+    dataCustomization?: { details?: DetailsDataCustomizationObject<any, any, any> };
 };

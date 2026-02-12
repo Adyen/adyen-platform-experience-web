@@ -1,6 +1,6 @@
 import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import { useAuthContext } from '../../../core/Auth';
+import { useConfigContext } from '../../../core/ConfigContext';
 import { TranslationKey } from '../../../translations';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
@@ -23,7 +23,7 @@ function DataOverviewContainer({
     isBalanceAccountIdWrong,
     onContactSupport,
 }: DataOverviewContainerProps) {
-    const { hasError } = useAuthContext();
+    const { hasError } = useConfigContext();
 
     // TODO: Verify if WITH_ERROR_CLASS should appended only for session setup error
     return (
@@ -32,22 +32,22 @@ function DataOverviewContainer({
                 <ErrorMessageDisplay
                     withImage
                     centered
-                    title={'somethingWentWrong'}
-                    message={[errorMessage, 'tryRefreshingThePageOrComeBackLater']}
+                    title={'common.errors.somethingWentWrong'}
+                    message={[errorMessage, 'common.errors.retry']}
                     refreshComponent={true}
                 />
             ) : balanceAccountsError ? (
                 <ErrorMessageDisplay
                     withImage
                     centered
-                    {...getErrorMessage(balanceAccountsError as AdyenPlatformExperienceError, 'weCouldNotLoadYourBalanceAccounts', onContactSupport)}
+                    {...getErrorMessage(balanceAccountsError as AdyenPlatformExperienceError, 'common.errors.accountUnavailable', onContactSupport)}
                 />
             ) : isBalanceAccountIdWrong ? (
                 <ErrorMessageDisplay
                     withImage
                     centered
-                    title={'somethingWentWrong'}
-                    message={[errorMessage, 'theSelectedBalanceAccountIsIncorrect']}
+                    title={'common.errors.somethingWentWrong'}
+                    message={[errorMessage, 'common.errors.accountInvalid']}
                 />
             ) : (
                 <>{children}</>

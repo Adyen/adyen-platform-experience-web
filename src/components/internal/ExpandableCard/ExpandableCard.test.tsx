@@ -22,7 +22,7 @@ describe('ExpandableCard component', () => {
         render(
             <div>
                 <button data-testid="outside-element">{'Click'}</button>
-                <ExpandableCard renderHeader="Header">{'Body'}</ExpandableCard>
+                <ExpandableCard renderContent="Header">{'Body'}</ExpandableCard>
             </div>
         );
     });
