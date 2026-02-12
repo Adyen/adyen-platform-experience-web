@@ -1,4 +1,4 @@
-import { PayoutsOverview, TransactionsOverview } from '../../src';
+import { PayoutsOverview } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { PayoutsOverviewMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
@@ -16,7 +16,7 @@ export const Default: ElementStory<typeof PayoutsOverview> = {
     args: { mockedApi: true },
 };
 
-export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
+export const SingleBalanceAccount: ElementStory<typeof PayoutsOverview> = {
     name: 'Single balance account',
     args: { mockedApi: true },
     parameters: {
@@ -24,7 +24,7 @@ export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const EmptyList: ElementStory<typeof TransactionsOverview> = {
+export const EmptyList: ElementStory<typeof PayoutsOverview> = {
     name: 'Empty list',
     args: { mockedApi: true },
     parameters: {
@@ -32,7 +32,7 @@ export const EmptyList: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const ErrorList: ElementStory<typeof TransactionsOverview> = {
+export const ErrorList: ElementStory<typeof PayoutsOverview> = {
     name: 'Error - List',
     args: { mockedApi: true },
     parameters: {

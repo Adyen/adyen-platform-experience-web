@@ -1,4 +1,4 @@
-import { PayoutDetails, TransactionsOverview } from '../../src';
+import { PayoutDetails } from '../../src';
 import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
@@ -23,7 +23,7 @@ export const Default: ElementStory<typeof PayoutDetails> = {
     },
 };
 
-export const ErrorDetails: ElementStory<typeof TransactionsOverview> = {
+export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
     name: 'Error - Details',
     args: sharedArgs,
     parameters: {
@@ -31,7 +31,7 @@ export const ErrorDetails: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const SumOfSameDayPayouts: ElementStory<typeof TransactionsOverview> = {
+export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
     name: 'Sum of same-day payouts',
     args: sharedArgs,
     parameters: {

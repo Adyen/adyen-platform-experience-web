@@ -16,7 +16,7 @@ export const getFormattedPayoutDate = (() => {
         'December',
     ] as const;
 
-    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
+    const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 
     return (payoutDate = new Date()) => {
         const date = payoutDate.getUTCDate()!;
@@ -32,23 +32,17 @@ export const getFormattedPayoutDate = (() => {
 })();
 
 export const createPayoutBreakdownGroup = (page: Page, name: string, expanded = false) => {
-    const buttonCollapsed = page.getByRole('button', { name, exact: true, expanded: false });
-    const buttonExpanded = page.getByRole('button', { name, exact: true, expanded: true });
+    const buttonCollapsed = page.getByRole('button', { name, exact: true, disabled: false, expanded: false });
+    const buttonExpanded = page.getByRole('button', { name, exact: true, disabled: false, expanded: true });
     const breakdownRegion = page.getByRole('region', { name, exact: true });
 
     let isExpanded = expanded;
 
-    const expectToBeCollapsed = async () => {
-        await expect(buttonCollapsed).toBeVisible();
-        await expect(buttonExpanded).toBeHidden();
-        await expect(breakdownRegion).toBeHidden();
-    };
+    const expectToBeCollapsed = () =>
+        Promise.all([expect(buttonCollapsed).toBeVisible(), expect(buttonExpanded).toBeHidden(), expect(breakdownRegion).toBeHidden()]);
 
-    const expectToBeExpanded = async () => {
-        await expect(buttonCollapsed).toBeHidden();
-        await expect(buttonExpanded).toBeVisible();
-        await expect(breakdownRegion).toBeVisible();
-    };
+    const expectToBeExpanded = () =>
+        Promise.all([expect(buttonCollapsed).toBeHidden(), expect(buttonExpanded).toBeVisible(), expect(breakdownRegion).toBeVisible()]);
 
     const toggleBreakdown = async () => {
         await ((isExpanded = !isExpanded) ? buttonCollapsed : buttonExpanded).click();

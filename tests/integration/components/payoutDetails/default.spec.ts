@@ -14,60 +14,55 @@ test.describe('Default', () => {
     test('should render payout details', async ({ page }) => {
         const formattedPayoutDate = getFormattedPayoutDate();
 
-        // Using first here to prevent clashes with other same texts displayed on page
-        await expect(page.getByText('Net payout', { exact: true }).first()).toBeVisible();
-        await expect(page.getByText('900.00 EUR', { exact: true }).first()).toBeVisible();
-        await expect(page.getByText(formattedPayoutDate.withDay, { exact: true })).toBeVisible();
+        await Promise.all([
+            // Using first here to prevent clashes with other same texts displayed on page
+            expect(page.getByText('Net payout', { exact: true }).first()).toBeVisible(),
+            expect(page.getByText('900.00 EUR', { exact: true }).first()).toBeVisible(),
+            expect(page.getByText(formattedPayoutDate.withDay, { exact: true })).toBeVisible(),
 
-        await expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible();
-        await expect(page.getByText('BA32272223222B5CTDQPM6W2H', { exact: true })).toBeVisible();
+            expect(page.getByText('S. Hopper - Main Account', { exact: true })).toBeVisible(),
+            expect(page.getByText('BA32272223222B5CTDQPM6W2H', { exact: true })).toBeVisible(),
 
-        await expect(page.getByText('Funds captured', { exact: true })).toBeVisible();
-        await expect(page.getByText('€1,000.00', { exact: true })).toBeVisible();
+            expect(page.getByText('Funds captured', { exact: true })).toBeVisible(),
+            expect(page.getByText('€1,000.00', { exact: true })).toBeVisible(),
 
-        await expect(page.getByText('Adjustments', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €100.00', { exact: true })).toBeVisible();
+            expect(page.getByText('Adjustments', { exact: true })).toBeVisible(),
+            expect(page.getByText('- €100.00', { exact: true })).toBeVisible(),
 
-        await expect(page.getByText('Remaining amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€900.00', { exact: true }).first()).toBeVisible();
+            expect(page.getByText('Remaining amount', { exact: true })).toBeVisible(),
+            expect(page.getByText('€900.00', { exact: true }).first()).toBeVisible(),
+        ]);
     });
 
     test('should render expandable payout breakdowns', async ({ page }) => {
         const fundsCaptured = createPayoutBreakdownGroup(page, 'Funds captured');
         const adjustments = createPayoutBreakdownGroup(page, 'Adjustments');
 
-        await fundsCaptured.expectToBeCollapsed();
-        await adjustments.expectToBeCollapsed();
+        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
 
         // Expand "Funds captured"
         await fundsCaptured.toggleBreakdown();
-        await fundsCaptured.expectToBeExpanded();
-        await adjustments.expectToBeCollapsed();
+        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeCollapsed()]);
 
         // Collapse "Funds captured"
         await fundsCaptured.toggleBreakdown();
-        await fundsCaptured.expectToBeCollapsed();
-        await adjustments.expectToBeCollapsed();
+        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
 
         // Expand "Adjustments"
         await adjustments.toggleBreakdown();
-        await fundsCaptured.expectToBeCollapsed();
-        await adjustments.expectToBeExpanded();
+        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeExpanded()]);
 
         // Expand "Funds captured"
         await fundsCaptured.toggleBreakdown();
-        await fundsCaptured.expectToBeExpanded();
-        await adjustments.expectToBeExpanded();
+        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeExpanded()]);
 
         // Collapse "Adjustments"
         await adjustments.toggleBreakdown();
-        await fundsCaptured.expectToBeExpanded();
-        await adjustments.expectToBeCollapsed();
+        await Promise.all([fundsCaptured.expectToBeExpanded(), adjustments.expectToBeCollapsed()]);
 
         // Collapse "Funds captured"
         await fundsCaptured.toggleBreakdown();
-        await fundsCaptured.expectToBeCollapsed();
-        await adjustments.expectToBeCollapsed();
+        await Promise.all([fundsCaptured.expectToBeCollapsed(), adjustments.expectToBeCollapsed()]);
     });
 
     test('should render "Funds captured" breakdown', async ({ page }) => {
@@ -95,21 +90,27 @@ test.describe('Default', () => {
             refund.getByText('110.00', { exact: true }),
         ];
 
-        await fundsCaptured.expectToBeCollapsed();
-        await expect(breakdownLists).toHaveCount(1);
-        await Promise.all(fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()));
+        await Promise.all([
+            fundsCaptured.expectToBeCollapsed(),
+            expect(breakdownLists).toHaveCount(1),
+            ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
+        ]);
 
         await fundsCaptured.toggleBreakdown();
 
-        await fundsCaptured.expectToBeExpanded();
-        await expect(breakdownLists).toHaveCount(1);
-        await Promise.all(fundsCapturedBreakdown.map(locator => expect(locator).toBeInViewport()));
+        await Promise.all([
+            fundsCaptured.expectToBeExpanded(),
+            expect(breakdownLists).toHaveCount(1),
+            ...fundsCapturedBreakdown.map(locator => expect(locator).toBeInViewport()),
+        ]);
 
         await fundsCaptured.toggleBreakdown();
 
-        await fundsCaptured.expectToBeCollapsed();
-        await expect(breakdownLists).toHaveCount(1);
-        await Promise.all(fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()));
+        await Promise.all([
+            fundsCaptured.expectToBeCollapsed(),
+            expect(breakdownLists).toHaveCount(1),
+            ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
+        ]);
     });
 
     test('should render "Adjustments" breakdown', async ({ page }) => {
@@ -157,20 +158,26 @@ test.describe('Default', () => {
             transfer.getByText('- 150.00', { exact: true }),
         ];
 
-        await adjustments.expectToBeCollapsed();
-        await expect(breakdownLists).toHaveCount(2);
-        await Promise.all(adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()));
+        await Promise.all([
+            adjustments.expectToBeCollapsed(),
+            expect(breakdownLists).toHaveCount(2),
+            ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
+        ]);
 
         await adjustments.toggleBreakdown();
 
-        await adjustments.expectToBeExpanded();
-        await expect(breakdownLists).toHaveCount(2);
-        await Promise.all(adjustmentsBreakdown.map(locator => expect(locator).toBeInViewport()));
+        await Promise.all([
+            adjustments.expectToBeExpanded(),
+            expect(breakdownLists).toHaveCount(2),
+            ...adjustmentsBreakdown.map(locator => expect(locator).toBeInViewport()),
+        ]);
 
         await adjustments.toggleBreakdown();
 
-        await adjustments.expectToBeCollapsed();
-        await expect(breakdownLists).toHaveCount(2);
-        await Promise.all(adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()));
+        await Promise.all([
+            adjustments.expectToBeCollapsed(),
+            expect(breakdownLists).toHaveCount(2),
+            ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
+        ]);
     });
 });
