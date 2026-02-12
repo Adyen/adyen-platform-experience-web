@@ -8,6 +8,7 @@ import useReflex from '../../../../../hooks/useReflex';
 import { InteractionKeyCode } from '../../../../types';
 import classNames from 'classnames';
 import './SelectPopover.scss';
+import useUniqueId from '../../../../../hooks/useUniqueId';
 
 // Helper to find the nearest scrollable parent element
 const getScrollableParent = (element: HTMLElement | null): HTMLElement => {
@@ -67,7 +68,7 @@ const SelectPopover = ({
     const contentRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState<SelectPopoverPosition | null>(null);
     const [isVisible, setIsVisible] = useState(false);
-    const popoverId = useRef(`select-popover-${Math.random().toString(36).substr(2, 9)}`);
+    const popoverId = useRef(`select-popover-${useUniqueId()}`);
     const capturedWidthRef = useRef<number | null>(null);
     const defaultMaxHeight = maxHeightProp || DEFAULT_MAX_HEIGHT;
 

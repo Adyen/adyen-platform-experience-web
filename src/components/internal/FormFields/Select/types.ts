@@ -54,8 +54,6 @@ export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 
     setToTargetWidth?: boolean;
     showOverlay?: boolean;
     popoverClassNameModifiers?: string[];
-    fitPosition?: boolean;
-    fixedPopoverPositioning?: boolean;
     onResetAction?: () => void;
     popoverMaxHeight?: number;
 }

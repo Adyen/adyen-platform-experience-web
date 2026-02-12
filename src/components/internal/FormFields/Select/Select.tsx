@@ -37,8 +37,6 @@ const Select = <T extends SelectItem>({
     setToTargetWidth,
     withoutCollapseIndicator = false,
     showOverlay = false,
-    fitPosition,
-    fixedPopoverPositioning,
     onResetAction,
     buttonVariant,
     popoverMaxHeight,

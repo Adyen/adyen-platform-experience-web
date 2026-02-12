@@ -86,7 +86,6 @@ export function FormSelect<TFieldValues>({
                                     onChange={handleChange}
                                     readonly={readonly}
                                     selected={field.value as string}
-                                    fitPosition
                                     setToTargetWidth
                                 />
                                 {isInvalid && fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
