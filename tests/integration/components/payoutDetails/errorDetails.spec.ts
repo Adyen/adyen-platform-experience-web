@@ -7,12 +7,12 @@ test.describe('Error - Details', () => {
     test('should render payout details error display', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const errorMessage = "We couldn't load the payout details. Try refreshing the page or come back later.";
-        const refreshButton = page.getByRole('button', { name: 'Refresh', exact: true });
+        const errorText = "We couldn't load the payout details. Try refreshing the page or come back later.";
 
-        await expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible();
-        await expect(page.getByText(errorMessage, { exact: true })).toBeVisible();
-        await expect(refreshButton).toBeVisible();
-        await expect(refreshButton).toBeEnabled();
+        await Promise.all([
+            expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible(),
+            expect(page.getByText(errorText, { exact: true })).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Refresh', exact: true, disabled: false })).toBeVisible(),
+        ]);
     });
 });
