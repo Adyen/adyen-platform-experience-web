@@ -15,7 +15,7 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
         if (analyticsEvents === undefined) {
             pageAnalyticsEventsMap.set(page, (analyticsEvents = []));
 
-            page.on('request', async request => {
+            page.on('request', request => {
                 if (/uxdsclient\/track/.test(request.url())) {
                     const params = new URLSearchParams(request.postData() || '');
                     const data = params.get('data');
@@ -30,10 +30,6 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
 
         // use analytics events in the test
         await use(analyticsEvents);
-
-        // cleanup after the test
-        analyticsEvents.length = 0;
-        pageAnalyticsEventsMap.delete(page);
     },
 });
 
