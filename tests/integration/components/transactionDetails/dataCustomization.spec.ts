@@ -1,11 +1,16 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transaction-details--data-customization';
 
 test.describe('Data Customization', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [
+            ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
+            ['Landed on page', sharedAnalyticsEventProperties],
+        ]);
     });
 
     test('should render payment transaction details without hidden fields', async ({ page }) => {

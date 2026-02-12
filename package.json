@@ -79,7 +79,7 @@
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
-    "preact": "^10.13.2"
+    "preact": "^10.28.2"
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.80.0",

@@ -1,5 +1,7 @@
-import { expect, test, type Page } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transaction-details--tabbed-details';
 
@@ -132,8 +134,9 @@ test.describe('Tabbed details', () => {
         await navigatedToTab;
     };
 
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
     });
 
     test('should render navigation tabs', async ({ page }) => {
