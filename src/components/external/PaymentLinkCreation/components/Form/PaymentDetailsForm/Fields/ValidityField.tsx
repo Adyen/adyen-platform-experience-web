@@ -181,6 +181,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                                 items={validitySelectItems}
                                                 isValid={isValid}
                                                 isInvalid={!validityValue}
+                                                setToTargetWidth
                                             />
                                         </FormField>
                                         {validityValue === FLEXIBLE_ID && (

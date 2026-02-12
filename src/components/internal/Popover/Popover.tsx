@@ -115,7 +115,7 @@ function Popover({
             contentRef
         ),
         dismiss,
-        variant === PopoverContainerVariant.TOOLTIP && !open,
+        !open,
         ClickOutsideVariant.POPOVER
     );
 

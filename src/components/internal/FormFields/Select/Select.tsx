@@ -37,10 +37,9 @@ const Select = <T extends SelectItem>({
     setToTargetWidth,
     withoutCollapseIndicator = false,
     showOverlay = false,
-    fitPosition,
-    fixedPopoverPositioning,
     onResetAction,
     buttonVariant,
+    popoverMaxHeight,
     ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
@@ -60,6 +59,7 @@ const Select = <T extends SelectItem>({
     const clearSelectionInProgress = useRef(false);
     const cachedSelectedItems = useRef(selection);
     const selectedItems = useRef(selection);
+    const dismissedByClickOutsideRef = useRef(false);
 
     const appliedFilterNumber = useMemo(() => selection.length, [selection]);
 
@@ -70,6 +70,12 @@ const Select = <T extends SelectItem>({
         if (showList) {
             resetSelection(cachedSelectedItems.current);
             pendingClickOutsideTriggeredHideList.current = true;
+            // Mark that dismiss was triggered by click-outside to prevent toggleList from reopening
+            dismissedByClickOutsideRef.current = true;
+            // Reset the flag after the current event cycle
+            requestAnimationFrame(() => {
+                dismissedByClickOutsideRef.current = false;
+            });
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
 
@@ -404,6 +410,10 @@ const Select = <T extends SelectItem>({
     const toggleList = useCallback(
         (e: Event) => {
             e.preventDefault();
+            // Skip toggle if dismiss was already triggered by click-outside in this event cycle
+            if (dismissedByClickOutsideRef.current) {
+                return;
+            }
             setShowList(showList => !showList);
             showList && resetSelection(cachedSelectedItems.current);
         },
@@ -480,8 +490,7 @@ const Select = <T extends SelectItem>({
                 textFilter={textFilter}
                 activeIndex={filterable ? activeIndex : undefined}
                 filterable={filterable}
-                fitPosition={fitPosition}
-                fixedPopoverPositioning={fixedPopoverPositioning}
+                maxHeight={popoverMaxHeight}
             />
         </div>
     );

@@ -181,12 +181,24 @@
 
 .adyen-pe-dropdown {
     &--input-field {
-        align-items: center;
-        background: style.token(color-background-secondary);
-        border-radius: style.token(border-radius-m);
-        display: flex;
-        height: 100%;
-        padding: style.token(spacer-030) style.token(spacer-040);
+        .adyen-pe-dropdown__button {
+            align-items: center;
+            background: style.token(color-background-secondary);
+            border-radius: style.token(border-radius-m);
+            display: flex;
+            height: 100%;
+            padding: style.token(spacer-030) style.token(spacer-040);
+        }
+    }
+
+    &--readonly {
+        .adyen-pe-dropdown__button {
+            background-color: style.token(color-background-disabled);
+
+            &:hover {
+                color: style.token(color-label-disabled);
+            }
+        }
     }
 
     .adyen-pe-button--tertiary {

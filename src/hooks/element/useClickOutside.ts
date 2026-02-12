@@ -76,31 +76,32 @@ export const useClickOutside = <T extends Element = Element>(
         document.addEventListener('mousedown', handleMouseDown, true);
         document.addEventListener('click', handleClick, true);
 
-        if (variant === ClickOutsideVariant.POPOVER && ref.current instanceof Element) {
-            popoverUtil.add(ref.current, callback);
-        }
-
         return () => {
             document.removeEventListener('mousedown', handleMouseDown, true);
             document.removeEventListener('click', handleClick, true);
-            if (ref.current) popoverUtil.remove(ref.current);
         };
-    }, [disableClickOutside, handleMouseDown, handleClick, callback, variant, ref]);
+    }, [disableClickOutside, handleMouseDown, handleClick]);
 
     return useReflex<T>(
         useCallback(
             (current: Nullable<T>, previous) => {
                 if (previous instanceof Element) {
                     previous.removeEventListener('focusout', onFocusout, false);
+                    if (variant === ClickOutsideVariant.POPOVER) {
+                        popoverUtil.remove(previous);
+                    }
                 }
                 if (current instanceof Element) {
                     if (!disableClickOutside) {
                         current.addEventListener('focusout', onFocusout, false);
                         ref.current = current;
+                        if (variant === ClickOutsideVariant.POPOVER) {
+                            popoverUtil.add(current, callback);
+                        }
                     }
                 }
             },
-            [disableClickOutside, variant]
+            [disableClickOutside, variant, callback]
         ),
         rootElementRef
     );

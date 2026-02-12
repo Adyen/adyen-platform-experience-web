@@ -199,9 +199,9 @@
     display: none;
     list-style: none;
     margin: 0;
-    max-height: 375px;
-    overflow-y: auto;
     padding: 0;
+    padding-bottom: style.token(spacer-040);
+    padding-top: style.token(spacer-040);
 
     &--active {
         display: block;
@@ -255,14 +255,6 @@
 
     &--keyboard-active {
         background: style.token(color-background-primary-active);
-    }
-
-    &:first-child {
-        margin-top: style.token(spacer-040);
-    }
-
-    &:last-child {
-        margin-bottom: style.token(spacer-040);
     }
 
     &:not(#{$adyen-pe-self--disabled}, #{$adyen-pe-self--no-option}) {

@@ -165,6 +165,8 @@ export const DefendDisputeReason = () => {
                     selected={selected}
                     aria-label={i18n.get('disputes.management.defend.common.inputs.reasonSelect.a11y.label')}
                     popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
+                    setToTargetWidth
+                    popoverMaxHeight={270}
                 />
                 {defenseReasonContent?.primaryDescriptionItems?.map((description, i) => (
                     <Typography

@@ -67,7 +67,6 @@ export default function Pagination({
                                 pageLimit: (
                                     <div className={classes.limitSelector}>
                                         <Select
-                                            setToTargetWidth={true}
                                             filterable={false}
                                             multiSelect={false}
                                             items={_limitOptions}

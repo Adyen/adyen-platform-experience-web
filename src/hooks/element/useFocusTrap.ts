@@ -5,6 +5,7 @@ import withTabbableRoot, { focusIsWithin, isFocusable } from '../../primitives/d
 import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
+import { CONTROL_ELEMENT_PROPERTY } from './useClickOutside';
 
 const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
@@ -79,6 +80,14 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
         if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
         if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
         if (interactionKeyPressed.current) return;
+
+        // Don't trigger escape if focus is moving to the control element (e.g., toggle button)
+        // This prevents the popover from closing and reopening when clicking the toggle button
+        const currentTarget = evt.currentTarget as Element;
+        const controlElement = (currentTarget as any)?.[CONTROL_ELEMENT_PROPERTY];
+        if (controlElement instanceof Element && controlElement.contains(evt.relatedTarget as Node)) {
+            return;
+        }
 
         escapedFocus.current = true;
 

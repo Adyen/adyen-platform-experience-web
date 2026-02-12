@@ -105,6 +105,7 @@ const SelectAndUploadOptionalDoc = ({
                     aria-label={documentSelectLabel}
                     placeholder={documentSelectLabel}
                     popoverClassNameModifiers={[cx(classes.dropdownList, { [classes.dropdownListMobile]: isMobileContainer })]}
+                    setToTargetWidth
                 />
                 {selection &&
                     getDocInfo(selection)?.primaryDescriptionItems?.map(desc => {
