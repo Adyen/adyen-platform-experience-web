@@ -55,20 +55,23 @@ const TransactionsOverviewList = ({
         return { sortedBalances, sortedTotals } as const;
     }, [currenciesDictionary, defaultCurrencySortedCurrencies]);
 
-    const renderErrorAlert = useCallback(<T extends { canRefresh: boolean; refresh: () => void }>({ canRefresh, refresh }: T, titleKey: TranslationKey) => (
-        <Alert
-            className={classes.totalsError}
-            type={AlertTypeOption.WARNING}
-            title={i18n.get(titleKey)}
-            description={
-                <div>
-                    <Button variant={ButtonVariant.TERTIARY} onClick={refresh} disabled={!canRefresh}>
-                        {i18n.get('common.actions.refresh.labels.default')}
-                    </Button>
-                </div>
-            }
-        />
-    ), [i18n]);
+    const renderErrorAlert = useCallback(
+        <T extends { canRefresh: boolean; refresh: () => void }>({ canRefresh, refresh }: T, titleKey: TranslationKey) => (
+            <Alert
+                className={classes.totalsError}
+                type={AlertTypeOption.WARNING}
+                title={i18n.get(titleKey)}
+                description={
+                    <div>
+                        <Button variant={ButtonVariant.TERTIARY} onClick={refresh} disabled={!canRefresh}>
+                            {i18n.get('common.actions.refresh.labels.default')}
+                        </Button>
+                    </div>
+                }
+            />
+        ),
+        [i18n]
+    );
 
     useLandedPageEvent(sharedAnalyticsEventProperties);
     useDurationEvent(sharedAnalyticsEventProperties);

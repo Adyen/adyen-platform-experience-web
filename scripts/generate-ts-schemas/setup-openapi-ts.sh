@@ -7,7 +7,7 @@ SECRETS_PATH="${SCRIPT_DIR}/variables"
 
 # Values
 FOLDER_PATH="specs/platform-components-external"
-CA_CERTS=$(npm config get cafile)
+CA_CERTS=$(pnpm config get cafile)
 
 
 if [ -z "$REPO_TOKEN" ] || [ -z "$REPO_URL" ] || [ -z "$PROJECT_ID" ]; then

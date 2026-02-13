@@ -18,7 +18,11 @@ import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
 
 const INSIGHTS_FILTERS_SET = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
-const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({ balanceAccountId, createdSince, createdUntil });
+const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({
+    balanceAccountId,
+    createdSince,
+    createdUntil,
+});
 const getTransactionsTotalsQueryParams: GetQueryParams = allQueryParams => allQueryParams;
 
 export const TransactionsOverview = ({

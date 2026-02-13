@@ -51,15 +51,15 @@
     "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
-    "build:publish": "npm run build && npm pack",
+    "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
-    "prepare": "node prepare.cjs && bash ./scripts/process-package-lock.sh",
+    "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
-    "start": "npm run storybook",
-    "storybook": "concurrently --kill-others-on-fail 'npm run types:watch' 'node .storybook/dev.js'",
+    "start": "pnpm run storybook",
+    "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'node .storybook/dev.js'",
     "storybook:build": "cross-env USE_TEST_CDN=true storybook build",
     "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 storybook build && vite serve storybook-static --config vite.config.ts",
     "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts",
@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "^2.29.7",
+    "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
     "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.10.2",
@@ -93,20 +93,21 @@
     "@testing-library/preact": "^3.2.3",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20.4.7",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.8.1",
+    "@types/testing-library__jest-dom": "^5.14.9",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
     "@vitest/coverage-v8": "4.0.10",
     "autoprefixer": "^10.4.20",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.11.0",
     "dotenv": "^17.2.3",
-    "eslint": "^8.12.0",
+    "eslint": "^9.39.2",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.26.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-testing-library": "^7.1.1",
     "file-loader": "^6.2.0",
     "husky": "^7.0.4",
@@ -115,7 +116,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "msw": "^2.4.5",
     "msw-storybook-addon": "^2.0.2",
-    "openapi-typescript": "^7.6.1",
+    "openapi-typescript": "^7.10.1",
     "postcss": "^8.3.11",
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^5.9.0",
@@ -128,15 +129,23 @@
     "stylelint-config-sass-guidelines": "^9.0.1",
     "stylelint-scss": "^4.2.0",
     "ts-loader": "^9.2.6",
+    "tslib": "^2.8.1",
     "typescript": "5.8.3",
     "vite": "^7.2.4",
     "vite-plugin-checker": "^0.5.6",
-    "vite-plugin-svgr": "^4.2.0",
+    "vite-plugin-svgr": "^4.5.0",
     "vitest": "4.0.10"
   },
   "msw": {
     "workerDirectory": [
       "static"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild@0.25.2": "0.27.1",
+      "js-yaml@3.14.1": "3.14.2",
+      "js-yaml@4.1.0": "4.1.1"
+    }
   }
 }

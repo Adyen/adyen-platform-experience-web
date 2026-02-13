@@ -3,8 +3,6 @@ name: Setup
 description: Setup Node.js, cache and install dependencies
 
 inputs:
-  NPM_TOKEN:
-    description: 'NPM token used to authenticate'
   GITHUB_TOKEN:
     description: 'Github token used to checkout repo'
     default: ${{ github.token }}
@@ -13,10 +11,16 @@ runs:
   using: composite
 
   steps:
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 10
+
     - name: Set up Node
       uses: actions/setup-node@v4
       with:
         node-version: 22.x
+        cache: 'pnpm'
 
     - name: Set up Git user
       shell: bash
@@ -24,29 +28,8 @@ runs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Cache node modules
-      uses: actions/cache@v3
-      id: cache-npm
-      env:
-        cache-name: cache-node-modules
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-      name: List the state of node modules
-      shell: bash
-      run: npm list
-      continue-on-error: true
-
     - name: Install dependencies
       shell: bash
-      run: |
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.NPM_READ_TOKEN }}
-        npm install
+      run: pnpm install --registry=https://registry.npmjs.org/
       env:
         HUSKY: "0"

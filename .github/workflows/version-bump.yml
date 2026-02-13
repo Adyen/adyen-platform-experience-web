@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Commit message
         run: |
-          echo "NEW_VERSION=$(npm changeset status --output=release.json && jq -r '.releases[0].newVersion' release.json && rm release.json)" >> "$GITHUB_ENV"
+          echo "NEW_VERSION=$(pnpm changeset status --output=release.json && jq -r '.releases[0].newVersion' release.json && rm release.json)" >> "$GITHUB_ENV"
 
       - name: Checkout Repo
         uses: actions/checkout@v3

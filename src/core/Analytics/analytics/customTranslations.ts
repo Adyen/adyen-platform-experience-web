@@ -1,5 +1,5 @@
 import Localization from '../../Localization';
-import currentTranslations from '../../../assets/translations/en-US.json';
+import currentTranslations from '../../../assets/translations/en-US.json' with { type: 'json' };
 import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
 import { encodeAnalyticsEvent, getEventTime } from './utils';
 
