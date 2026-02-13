@@ -4,6 +4,14 @@ import { checker } from 'vite-plugin-checker';
 import { getEnvironment } from '../envs/getEnvs.ts';
 import { realApiProxies } from '../endpoints/realApiProxies.js';
 
+const findChunk = (id: string, mappings: Record<string, string | string[]>, fallback: string): string => {
+    for (const [chunkName, patterns] of Object.entries(mappings)) {
+        const list = Array.isArray(patterns) ? patterns : [patterns];
+        if (list.some(p => id.includes(p))) return chunkName;
+    }
+    return fallback;
+};
+
 const config: StorybookConfig = {
     stories: ['../stories/**/*.stories.*'],
     staticDirs: ['../static'],
@@ -33,49 +41,42 @@ const config: StorybookConfig = {
                 rollupOptions: {
                     output: {
                         manualChunks: (id: string) => {
-                            // Split vendor dependencies
                             if (id.includes('node_modules')) {
-                                if (id.includes('preact') || id.includes('preact/hooks')) {
-                                    return 'vendor-react';
-                                }
-                                if (id.includes('@storybook')) {
-                                    return 'vendor-storybook';
-                                }
-                                if (id.includes('@testing-library')) {
-                                    return 'vendor-testing';
-                                }
-                                if (id.includes('classnames')) {
-                                    return 'vendor-utils';
-                                }
-                                return 'vendor-other';
+                                return findChunk(
+                                    id,
+                                    {
+                                        'vendor-react': ['preact', 'preact/hooks'],
+                                        'vendor-storybook': '@storybook',
+                                        'vendor-testing': '@testing-library',
+                                        'vendor-utils': 'classnames',
+                                    },
+                                    'vendor-other'
+                                );
                             }
-                            // Split component groups
+
                             if (id.includes('/components/internal/')) {
-                                if (id.includes('/FormFields/')) {
-                                    return 'components-formfields';
-                                }
-                                if (id.includes('/Calendar/')) {
-                                    return 'components-calendar';
-                                }
-                                return 'components-internal';
+                                return findChunk(
+                                    id,
+                                    {
+                                        'components-formfields': '/FormFields/',
+                                        'components-calendar': '/Calendar/',
+                                    },
+                                    'components-internal'
+                                );
                             }
+
                             if (id.includes('/stories/')) {
-                                if (id.includes('/stories/api/')) {
-                                    return 'stories-api';
-                                }
-                                if (id.includes('/stories/components/Capital/')) {
-                                    return 'stories-capital';
-                                }
-                                if (id.includes('/stories/components/Disputes/')) {
-                                    return 'stories-disputes';
-                                }
-                                if (id.includes('/stories/components/PayByLink/')) {
-                                    return 'stories-paybylink';
-                                }
-                                if (id.includes('/stories/mocked/')) {
-                                    return 'stories-mocked';
-                                }
-                                return 'stories-other';
+                                return findChunk(
+                                    id,
+                                    {
+                                        'stories-api': '/stories/api/',
+                                        'stories-capital': '/stories/components/Capital/',
+                                        'stories-disputes': '/stories/components/Disputes/',
+                                        'stories-paybylink': '/stories/components/PayByLink/',
+                                        'stories-mocked': '/stories/mocked/',
+                                    },
+                                    'stories-other'
+                                );
                             }
                         },
                     },
