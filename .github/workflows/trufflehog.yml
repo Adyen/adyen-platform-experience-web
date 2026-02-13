@@ -26,7 +26,7 @@ jobs:
           echo "HEAD_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
 
       - name: Run TruffleHog
-        uses: trufflesecurity/trufflehog@v3.62.0
+        uses: trufflesecurity/trufflehog@v3.92.5
         with:
           path: .
           base: ${{ steps.vars.outputs.BASE_SHA }}
