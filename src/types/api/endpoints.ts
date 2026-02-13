@@ -10,12 +10,14 @@ import { operations as CapitalMissingActionsOps } from './resources/CapitalMissi
 import { components as SetupResource } from './resources/SetupResource';
 import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
 import { operations as PayByLinkOps } from './resources/PayByLinkResource';
+import { operations as OnboardingConfigurationOps } from './resources/OnboardingConfigurationResource';
 
 export type EndpointsOperations = AnalyticsOps &
     BalanceAccountOps &
     CapitalGrantOfferOps &
     CapitalGrantsOps &
     CapitalMissingActionsOps &
+    OnboardingConfigurationOps &
     PayoutsOps &
     ReportsOps &
     Omit<TransactionsOps, keyof TransactionsOpsV2> &
