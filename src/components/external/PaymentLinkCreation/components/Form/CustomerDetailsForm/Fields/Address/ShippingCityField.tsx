@@ -2,26 +2,30 @@ import { PaymentLinkCreationFormValues } from '../../../../types';
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback } from 'preact/hooks';
-import { TargetedEvent } from 'preact/compat';
+import { TargetedEvent } from 'preact';
 import { FormTextInput } from '../../../../../../../internal/FormWrappers/FormTextInput';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
-export const ShippingCityField = ({
-    isSameAddress,
-    isAddressFieldRequired,
-}: {
+interface ShippingCityFieldProps {
     isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
-}) => {
+    isSameAddressCopyEnabled?: boolean;
+}
+
+export const ShippingCityField = ({ isSameAddress, isAddressFieldRequired, isSameAddressCopyEnabled = false }: ShippingCityFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            isSameAddress && setValue('billingAddress.city', e.currentTarget.value);
+            // Only copy when the same-address checkbox is enabled.
+            // Prevents unintended copying when no address is prefilled and target fields are readOnly
+            if (isSameAddressCopyEnabled && isSameAddress) {
+                setValue('billingAddress.city', e.currentTarget.value);
+            }
         },
-        [isSameAddress, setValue]
+        [isSameAddress, setValue, isSameAddressCopyEnabled]
     );
 
     const isRequired = fieldsConfig['deliveryAddress.city']?.required || isAddressFieldRequired('deliveryAddress.city');

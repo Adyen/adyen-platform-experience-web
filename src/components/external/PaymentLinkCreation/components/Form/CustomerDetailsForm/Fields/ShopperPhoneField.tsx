@@ -70,6 +70,7 @@ export const ShopperPhoneField = () => {
     }, [phoneCode, phoneNumberWithoutPhoneCode, trigger, formState.errors, formState.touchedFields]);
 
     const isRequired = useMemo(() => fieldsConfig['telephoneNumber']?.required, [fieldsConfig]);
+    const isReadOnly = useMemo(() => fieldsConfig['telephoneNumber']?.readOnly, [fieldsConfig]);
 
     const shouldHideField = useMemo(() => {
         const hasDataset = (phonesDatasetQuery.data?.length ?? 0) > 0;
@@ -125,7 +126,7 @@ export const ShopperPhoneField = () => {
                                     items: phoneCodesDropdown,
                                     value: phoneCode,
                                     placeholder: i18n.get('payByLink.creation.fields.shopperPhone.phonePrefix.placeholder'),
-                                    readonly: phonesDatasetQuery.isFetching,
+                                    readonly: phonesDatasetQuery.isFetching || isReadOnly,
                                 }}
                                 onDropdownInput={val => {
                                     const currentNumber = phoneNumberWithoutPhoneCode || '';
@@ -136,6 +137,7 @@ export const ShopperPhoneField = () => {
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}
                                 maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max}
+                                readonly={isReadOnly}
                             />
                         );
                     }}

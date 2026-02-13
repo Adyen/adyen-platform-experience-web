@@ -8,15 +8,16 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../../translations';
 import { useWizardForm } from '../../../../../hooks/form/wizard/useWizardForm';
 import { PaymentLinkCreationFormValues } from '../types';
-import { DeepPartial } from '../../../../types';
+import { DeepPartial, PaymentLinkFieldsVisibilityConfig } from '../../../../types';
 import { StoreIds } from '../../../PaymentLinksOverview/types';
 
 type UsePaymentLinkFormDataProps = {
     storeIds?: StoreIds;
     defaultValues?: DeepPartial<PaymentLinkCreationFormValues>;
+    visibilityConfig?: PaymentLinkFieldsVisibilityConfig;
 };
 
-export const usePaymentLinkFormData = ({ storeIds, defaultValues }: UsePaymentLinkFormDataProps) => {
+export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConfig }: UsePaymentLinkFormDataProps) => {
     const [selectedStore, setSelectedStore] = useState<string>('');
     const { i18n, getCdnDataset } = useCoreContext();
     const {
@@ -120,8 +121,8 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues }: UsePaymentLi
     // Form steps configuration
     const formSteps = useMemo(() => {
         const skipStoreStep = storesSelectorItems.length === 1 && termsAndConditionsProvisioned;
-        return getFormSteps({ i18n, getFieldConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
-    }, [getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned]);
+        return getFormSteps({ i18n, getFieldConfig, visibilityConfig }).filter(step => !(step.id === 'store' && skipStoreStep));
+    }, [getFieldConfig, i18n, storesSelectorItems, termsAndConditionsProvisioned, visibilityConfig]);
 
     const stepperItems = useMemo(() => {
         return formSteps.map(step => ({
@@ -138,7 +139,6 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues }: UsePaymentLi
         steps: formSteps,
         defaultValues: {
             ...defaultValues,
-            billingAddress: defaultValues?.billingAddress || defaultValues?.deliveryAddress || {},
             store: selectedStore || defaultValues?.store || '',
         } as Partial<PaymentLinkCreationFormValues>,
         mode: 'all',

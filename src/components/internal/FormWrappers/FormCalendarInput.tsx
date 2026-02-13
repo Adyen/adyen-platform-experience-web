@@ -11,12 +11,14 @@ interface FormCalendarInputProps<TFieldValues> {
     clearable?: boolean;
     fieldName: FieldValues<TFieldValues>;
     label: string;
+    isReadOnly?: boolean;
 }
 
-export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label }: FormCalendarInputProps<TFieldValues>) {
+export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label, isReadOnly: isReadOnlyProp }: FormCalendarInputProps<TFieldValues>) {
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
 
-    const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig]);
+    const isRequired = useMemo(() => fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName]);
+    const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
 
     return (
         <VisibleField name={fieldName}>
@@ -35,6 +37,7 @@ export function FormCalendarInput<TFieldValues>({ clearable, fieldName, label }:
                                     onInput={field.onInput}
                                     isInvalid={!!fieldState.error && fieldState.isTouched}
                                     clearable={clearable}
+                                    isReadOnly={isReadOnly}
                                 />
                                 {fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
                             </div>

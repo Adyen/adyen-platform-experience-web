@@ -10,6 +10,7 @@ import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
 import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
 import { PaymentLinkCreationFormValues } from './external/PaymentLinkCreation/components/types';
+import { FieldValues } from '../hooks/form/types';
 import { StoreIds } from './external/PaymentLinksOverview/types';
 
 export const enum InteractionKeyCode {
@@ -212,10 +213,35 @@ export type DeepPartial<T> = T extends object
       }
     : T;
 
+export type PaymentLinkFieldVisibility = 'hidden' | 'readOnly';
+
+export type PaymentLinkParentFields = 'amount' | 'deliveryAddress' | 'billingAddress' | 'shopperName' | 'linkValidity';
+
+// Nested visibility config for parent fields - supports both string and object notation
+type AmountVisibility = PaymentLinkFieldVisibility | Partial<Record<'currency' | 'value', PaymentLinkFieldVisibility>>;
+type AddressVisibility =
+    | PaymentLinkFieldVisibility
+    | Partial<Record<'city' | 'country' | 'houseNumberOrName' | 'postalCode' | 'street' | 'stateOrProvince', PaymentLinkFieldVisibility>>;
+type ShopperNameVisibility = PaymentLinkFieldVisibility | Partial<Record<'firstName' | 'lastName', PaymentLinkFieldVisibility>>;
+type LinkValidityVisibility = PaymentLinkFieldVisibility | Partial<Record<'durationUnit' | 'quantity', PaymentLinkFieldVisibility>>;
+
+export type PaymentLinkFieldsVisibilityConfig = Partial<
+    Omit<Record<FieldValues<PaymentLinkCreationFormValues>, PaymentLinkFieldVisibility>, PaymentLinkParentFields> & {
+        amount?: AmountVisibility;
+        deliveryAddress?: AddressVisibility;
+        billingAddress?: AddressVisibility;
+        shopperName?: ShopperNameVisibility;
+        linkValidity?: LinkValidityVisibility;
+    }
+>;
+
+export interface PaymentLinkCreationFieldsConfig {
+    data?: DeepPartial<PaymentLinkCreationFormValues>;
+    visibility?: PaymentLinkFieldsVisibilityConfig;
+}
+
 export interface PaymentLinkCreationComponentProps extends UIElementProps {
-    fieldsConfig?: {
-        data: DeepPartial<PaymentLinkCreationFormValues>;
-    };
+    fieldsConfig?: PaymentLinkCreationFieldsConfig;
     storeIds?: StoreIds;
     onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
     onCreationDismiss?: () => void;

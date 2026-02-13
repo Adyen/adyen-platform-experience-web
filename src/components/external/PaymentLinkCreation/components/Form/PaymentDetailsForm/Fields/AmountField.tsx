@@ -45,6 +45,8 @@ export const AmountField = () => {
     );
 
     const isRequired = useMemo(() => fieldsConfig?.amount?.required, [fieldsConfig]);
+    const isAmountReadOnly = useMemo(() => fieldsConfig?.['amount.value']?.readOnly, [fieldsConfig]);
+    const isCurrencyReadOnly = useMemo(() => fieldsConfig?.['amount.currency']?.readOnly, [fieldsConfig]);
 
     const currencyItems = useMemo(() => {
         const options = fieldsConfig?.[CURRENCY_FIELD_NAME]?.options as string[] | undefined;
@@ -74,6 +76,7 @@ export const AmountField = () => {
                             <>
                                 <CurrencyInput
                                     {...field}
+                                    hideCurrencySelector={!currencyCodeFieldVisible}
                                     selectedCurrencyCode={getValues(CURRENCY_FIELD_NAME)}
                                     onCurrencyChange={value => handleCurrencyChange(value, isInvalid)}
                                     currency={getValues(CURRENCY_FIELD_NAME)}
@@ -83,6 +86,7 @@ export const AmountField = () => {
                                     amount={field.value ? Number(field.value) : undefined}
                                     onAmountChange={field.onInput}
                                     maxValue={MAX_AMOUNT}
+                                    readonly={{ amount: isAmountReadOnly, currency: isCurrencyReadOnly }}
                                 />
                                 {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} />}
                             </>
