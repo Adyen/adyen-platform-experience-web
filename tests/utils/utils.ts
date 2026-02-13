@@ -86,8 +86,10 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
 
 export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
     analyticsEvents: T[],
-    expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][]
+    expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][],
+    options?: { strictOrder?: boolean }
 ) => {
+    const { strictOrder = true } = options ?? {};
     const numberOfEvents = expectedEvents.length;
     await expect.poll(() => analyticsEvents.length).toBe(numberOfEvents);
     const actualEvents = [...analyticsEvents];
@@ -95,11 +97,21 @@ export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
     // drain the analytics events
     analyticsEvents.length = 0;
 
-    for (let i = 0; i < numberOfEvents; i++) {
-        const [event, properties] = expectedEvents[i]!;
-        const data = actualEvents[i]!;
-        expect(data.event).toBe(event);
-        expect(data.properties).toEqual(expect.objectContaining(properties));
+    if (strictOrder) {
+        for (let i = 0; i < numberOfEvents; i++) {
+            const [event, properties] = expectedEvents[i]!;
+            const data = actualEvents[i]!;
+            expect(data.event).toBe(event);
+            expect(data.properties).toEqual(expect.objectContaining(properties));
+        }
+    } else {
+        const expectedEventMatchers = expectedEvents.map(([event, properties]) =>
+            expect.objectContaining({
+                event,
+                properties: expect.objectContaining(properties),
+            })
+        );
+        expect(actualEvents).toEqual(expect.arrayContaining(expectedEventMatchers));
     }
 };
 
