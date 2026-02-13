@@ -12,8 +12,6 @@ module.exports = {
         }
       });
 
-      // Clean-up yaml
-      exec('pnpm prettier pnpm-lock.yaml --write');
 
       return pnpmLock;
     },
