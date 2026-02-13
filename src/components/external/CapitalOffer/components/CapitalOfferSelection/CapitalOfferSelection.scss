@@ -19,7 +19,7 @@
     }
 
     &__loading-skeleton {
-        background: #cbe3ff;
+        background: style.token(color-background-selected);
         border-radius: style.token(border-radius-s);
         display: block;
         height: 20px;

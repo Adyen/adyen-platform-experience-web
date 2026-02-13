@@ -20,11 +20,15 @@
     }
 
     &__item {
+        background: inherit;
         border-radius: style.token(border-radius-m);
+        color: inherit;
         cursor: pointer;
         padding: style.token(spacer-020) style.token(spacer-080);
         text-align: center;
-        transition: background 150ms ease-in-out, transform 150ms ease;
+        transition:
+            background 150ms ease-in-out,
+            transform 150ms ease;
 
         &:focus,
         &:hover:not(:disabled),

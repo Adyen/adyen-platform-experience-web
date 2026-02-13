@@ -20,7 +20,7 @@ $adyen-icon-touch-size: style.token(spacer-110);
 
 .adyen-pe-modal-wrapper {
     align-items: center;
-    background: rgba(0, 17, 44, 0.5);
+    background: color-mix(in srgb, style.token(color-support-overlay), transparent 50%);
     bottom: 0;
     content: '';
     display: flex;
@@ -89,12 +89,6 @@ $adyen-icon-touch-size: style.token(spacer-110);
         max-width: 100%;
         width: 100%;
     }
-
-    // @include tablet-portrait-up {
-    //     min-height: 200px;
-    //     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-    //     width: 464px;
-    // }
 
     &__header {
         align-items: center;

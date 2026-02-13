@@ -1,17 +1,41 @@
-@import '@adyen/bento-design-tokens/dist/scss-map/bento/aliases';
-@import '@adyen/bento-design-tokens/dist/scss-map/bento/definitions';
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/aliases-dark' as dark;
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/aliases';
+@use '@adyen/bento-design-tokens/dist/scss-map/bento/definitions';
 
 @function adyen-sdk-generate-css-variables($maps...) {
     $adyen-output-map: ();
+
     @each $map in $maps {
         @each $name, $value in $map {
             $adyen-output-map: map-merge($adyen-output-map, (#{$name}: var(--adyen-sdk-#{$name}, #{$value})));
         }
     }
+
     @return $adyen-output-map;
 }
 
-$adyen-tokens-map: adyen-sdk-generate-css-variables($color, $text, $focus-ring, $spacer, $border);
+@mixin adyen-sdk-print-css-variables($maps...) {
+    @each $map in $maps {
+        @each $name, $value in $map {
+            --adyen-sdk-#{$name}: #{$value};
+        }
+    }
+}
+
+@mixin adyen-sdk-dark-theme() {
+    @include adyen-sdk-print-css-variables(dark.$color);
+}
+
+/* stylelint-disable */
+$adyen-tokens-map: adyen-sdk-generate-css-variables(
+    aliases.$color,
+    aliases.$text,
+    aliases.$focus-ring,
+    definitions.$spacer,
+    definitions.$border,
+    definitions.$shadow
+);
+
 @function token($token) {
     @return map-get($adyen-tokens-map, '#{$token}');
 }

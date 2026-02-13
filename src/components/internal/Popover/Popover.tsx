@@ -15,6 +15,7 @@ import PopoverTitle from './PopoverTitle/PopoverTitle';
 import { PopoverContainerSize, PopoverContainerVariant, PopoverProps } from './types';
 import { InteractionKeyCode } from '../../types';
 import { ClickOutsideVariant, CONTROL_ELEMENT_PROPERTY, useClickOutside } from '../../../hooks/element/useClickOutside';
+import useCoreContext from '../../../core/Context/useCoreContext';
 import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import usePopoverPositioner from '../../../hooks/element/usePopoverPositioner';
 import useUniqueIdentifier from '../../../hooks/element/useUniqueIdentifier';
@@ -74,6 +75,8 @@ function Popover({
     const isDismissible = useMemo(() => isFunction(dismiss) && boolOrTrue(dismissible), [dismiss, dismissible]);
     const arrowRef = useUniqueIdentifier() as Ref<HTMLSpanElement> | undefined;
     const contentRef = useUniqueIdentifier() as Ref<HTMLDivElement> | undefined;
+    const { theme } = useCoreContext();
+    const isDarkTheme = theme === 'dark';
     const popoverOpen = useRef<boolean>();
 
     const onCloseFocusTrap = useCallback(
@@ -170,7 +173,9 @@ function Popover({
     }, [onKeyDown]);
 
     const classNamesByVariant =
-        variant === PopoverContainerVariant.TOOLTIP ? DEFAULT_TOOLTIP_CLASSNAME : `${DEFAULT_POPOVER_CLASSNAME} ${POPOVER_CONTAINER_CLASSNAME}`;
+        variant === PopoverContainerVariant.TOOLTIP
+            ? classNames(DEFAULT_TOOLTIP_CLASSNAME, { [`${DEFAULT_TOOLTIP_CLASSNAME}--dark`]: isDarkTheme })
+            : classNames(DEFAULT_POPOVER_CLASSNAME, POPOVER_CONTAINER_CLASSNAME, { [`${DEFAULT_POPOVER_CLASSNAME}--dark`]: isDarkTheme });
     const classNamesContentByVariant = variant === PopoverContainerVariant.TOOLTIP ? TOOLTIP_CONTENT_CLASSNAME : `${POPOVER_CONTENT_CLASSNAME}`;
 
     return createPortal(
