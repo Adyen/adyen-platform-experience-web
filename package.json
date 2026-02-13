@@ -68,7 +68,7 @@
     "test:e2e": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome-e2e",
     "test:integration": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome",
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
-    "test:integration:ui": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome --ui",
+    "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "tsc --preserveWatchOutput",
     "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
