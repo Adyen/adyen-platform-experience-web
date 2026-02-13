@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
 import { InteractionKeyCode } from '../../components/types';
 import { isUndefined } from '../../utils';
-import withTabbableRoot, { focusIsWithin, isFocusable } from '../../primitives/dom/tabbableRoot/tabbable';
+import withTabbableRoot, { focusIsWithin, getDeepActiveElement, isFocusable } from '../../primitives/dom/tabbableRoot/tabbable';
 import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
@@ -30,9 +30,13 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
 
         return (evt: Event) => {
             if (!isUndefined(raf)) cancelAnimationFrame(raf);
-            let element = evt.target as Element | null;
+
+            const eventPath = evt.composedPath();
+            let element = eventPath[0] as Element | null;
+            let index = 0;
+
             while (element && element !== evt.currentTarget) {
-                if (isFocusable(element)) {
+                if (element instanceof Element && isFocusable(element)) {
                     lastFocusableElement = element;
                     raf = requestAnimationFrame(() => {
                         raf = requestAnimationFrame(() => {
@@ -45,20 +49,20 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                     });
                     return;
                 }
-                element = element.parentNode as Element | null;
+                element = eventPath[++index] as Element | null;
             }
         };
     }, []);
 
     const onFocusInCapture = useCallback((evt: FocusEvent) => {
-        tabbableRoot.current = focusElement.current = evt.target as Element | null;
+        tabbableRoot.current = focusElement.current = (evt.composedPath()[0] || evt.target) as Element | null;
     }, []);
 
     const onDocumentFocusInCapture = useCallback((evt: FocusEvent) => {
         const root = tabbableRoot.root;
         if (!(root instanceof Element)) return;
 
-        const target = evt.target as Element | null;
+        const target = (evt.composedPath()[0] || evt.target) as Element | null;
         if (focusIsWithin(root, target)) return;
 
         // Only trap focus if it's moving from within this trap.
@@ -156,7 +160,7 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                 }
 
                 // Automatically focus inside the trap if focus is not already within it
-                if (!focusIsWithin(current, document.activeElement)) {
+                if (!focusIsWithin(current, getDeepActiveElement())) {
                     if (current instanceof HTMLElement) {
                         current.focus();
                     }
