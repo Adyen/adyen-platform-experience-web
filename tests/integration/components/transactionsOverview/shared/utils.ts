@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test';
 import { ITransactionCategory } from '../../../../../src';
-import { expectAnalyticsEvents } from '../../../../utils/utils';
+import { expectAnalyticsEvents, sleep } from '../../../../utils/utils';
 import { expect, type PageAnalyticsEvent } from '../../../../fixtures/analytics/events';
 import {
     sharedTransactionDetailsAnalyticsEventProperties,
@@ -88,6 +88,10 @@ export const resetPspReferenceFilter = async (page: Page, analyticsEvents: PageA
         ...sharedTransactionsListAnalyticsEventProperties,
         label: 'PSP reference filter',
     } as const;
+
+    // [NOTE]: Adding a tiny subsecond delay before clicking the "Reset" button to reduce flakiness
+    // [TODO]: Remove this temporary sleep when the root cause of flakiness has been addressed
+    await sleep(100);
 
     await filterDialog.getByRole('button', { name: 'Reset', exact: true }).click();
     await expect(filterButton).toHaveText('PSP reference');

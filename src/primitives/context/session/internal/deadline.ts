@@ -73,7 +73,10 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
             // clear collections
             _deadlines.length = 0;
             _signals.clear();
-        } else _deadlineSignal = undefined;
+        } else {
+            _deadlineSignal = undefined;
+            _deadlineAbortable.refresh();
+        }
     });
 
     const _startDeadlineClock = () => {

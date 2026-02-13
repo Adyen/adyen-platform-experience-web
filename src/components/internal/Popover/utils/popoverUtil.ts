@@ -17,14 +17,7 @@ export const popoverUtil = (<T extends Element, U extends Function>() => {
         if (clickedOnControlElement) return;
 
         const index = eventPath.reduce((index: number, path: EventTarget) => {
-            const pathMatchIndex =
-                path instanceof Node
-                    ? popoverRefs.findIndex(popoverRef => {
-                          const popoverRefId = popoverRef.element.getAttribute('id');
-                          const pathId = path && (path as HTMLElement)?.getAttribute ? (path as HTMLElement)?.getAttribute('id') : null;
-                          return popoverRefId === pathId;
-                      })
-                    : -1;
+            const pathMatchIndex = path instanceof Element ? popoverRefs.findIndex(popoverRef => popoverRef.element === path) : -1;
             if (index === -1 && pathMatchIndex !== -1) return pathMatchIndex;
             return index;
         }, -1);
@@ -36,14 +29,14 @@ export const popoverUtil = (<T extends Element, U extends Function>() => {
     };
 
     const remove = (currentRef: T) => {
-        const index = popoverRefs.findIndex(refs => refs.element.getAttribute('id') === currentRef.getAttribute('id'));
+        const index = popoverRefs.findIndex(refs => refs.element === currentRef);
         if (index >= 0) {
             popoverRefs.splice(index, 1);
         }
     };
 
     const add = (currentRef: T, callback: U | undefined) => {
-        const index = popoverRefs.findIndex(refs => refs.element.getAttribute('id') === currentRef.getAttribute('id'));
+        const index = popoverRefs.findIndex(refs => refs.element === currentRef);
         if (index >= 0) return;
         popoverRefs.push({ element: currentRef, callback: callback });
     };

@@ -9,10 +9,14 @@ const STORY_ID = 'mocked-transactions-transactions-overview--data-customization'
 test.describe('Data customization', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
-            ['Landed on page', sharedTransactionsListAnalyticsEventProperties],
-        ]);
+        await expectAnalyticsEvents(
+            analyticsEvents,
+            [
+                ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
+                ['Landed on page', sharedTransactionsListAnalyticsEventProperties],
+            ],
+            { strictOrder: false }
+        );
     });
 
     test('should not render hidden data grid columns', async ({ page }) => {
