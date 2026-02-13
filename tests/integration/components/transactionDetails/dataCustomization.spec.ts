@@ -13,7 +13,7 @@ test.describe('Data Customization', () => {
                 ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
                 ['Landed on page', sharedAnalyticsEventProperties],
             ],
-            false
+            { strictOrder: false }
         );
     });
 

@@ -87,8 +87,9 @@ export const goToStory = async (page: Page, params: { id: string; args?: Record<
 export const expectAnalyticsEvents = async <T extends PageAnalyticsEvent>(
     analyticsEvents: T[],
     expectedEvents: [event: Awaited<T>['event'], properties: Partial<Awaited<T>['properties']>][],
-    strictOrder = true
+    options?: { strictOrder?: boolean }
 ) => {
+    const { strictOrder = true } = options ?? {};
     const numberOfEvents = expectedEvents.length;
     await expect.poll(() => analyticsEvents.length).toBe(numberOfEvents);
     const actualEvents = [...analyticsEvents];
