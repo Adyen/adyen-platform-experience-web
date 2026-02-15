@@ -141,6 +141,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                                 ...(editMode ? ['active'] : []),
                                 ...(hasEmptyValue ? [] : ['has-selection']),
                             ]}
+                            aria-haspopup="dialog"
+                            aria-expanded={editMode}
                             aria-label={ariaLabel}
                             id={filterButtonId}
                             onClick={editMode ? closeEditDialog : openEditDialog}
