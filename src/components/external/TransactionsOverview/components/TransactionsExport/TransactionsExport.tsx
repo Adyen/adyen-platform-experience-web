@@ -5,6 +5,7 @@ import Spinner from '../../../../internal/Spinner';
 import Alert from '../../../../internal/Alert/Alert';
 import Popover from '../../../../internal/Popover/Popover';
 import Typography from '../../../../internal/Typography/Typography';
+import useUniqueId from '../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useDownload from '../../../../internal/Button/DownloadButton/useDownload';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
@@ -108,6 +109,7 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         downloadBlob
     );
 
+    const exportButtonId = `elem-${useUniqueId()}`;
     const exportButtonRef = useRef<HTMLButtonElement | null>(null);
     const exportButtonLabel = useMemo(() => i18n.get('transactions.overview.export.button.label'), [i18n]);
     const exportingButtonLabel = useMemo(() => i18n.get('transactions.overview.export.button.inProgress'), [i18n]);
@@ -270,8 +272,11 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         <div className={classes.root}>
             <>
                 <FilterButton
+                    aria-haspopup="dialog"
+                    aria-expanded={popoverOpen}
                     aria-label={exportButtonLabel}
                     ref={exportButtonRef}
+                    id={exportButtonId}
                     className={classes.button}
                     classNameModifiers={popoverOpen ? ['active'] : undefined}
                     disabled={disabled || isFetching}

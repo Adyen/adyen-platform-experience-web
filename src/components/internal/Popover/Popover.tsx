@@ -160,7 +160,17 @@ function Popover({
     );
 
     useEffect(() => {
-        if (popoverElement.current) popoverElement.current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
+        const popover = popoverElement.current;
+
+        if (popover) {
+            popover[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
+            targetElement.current?.setAttribute('aria-controls', popover.id);
+
+            return () => {
+                targetElement.current?.removeAttribute('aria-controls');
+                popover[CONTROL_ELEMENT_PROPERTY] = undefined;
+            };
+        }
     }, [popoverElement, targetElement]);
 
     useEffect(() => {
