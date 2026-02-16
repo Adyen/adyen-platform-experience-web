@@ -5,8 +5,8 @@ import { getReports } from '../mock-data/reports';
 
 const DEFAULT_SORT_DIRECTION = 'desc';
 
-const REPORTS = endpoints('mock').reports;
-const DOWNLOAD = endpoints('mock').downloadReport;
+const REPORTS = endpoints().reports;
+const DOWNLOAD = endpoints().downloadReport;
 const networkError = false;
 const serverError = false;
 const downloadError = false;

@@ -1,5 +1,4 @@
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import PopoverContainer from '../../../Popover/PopoverContainer';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { boolOrFalse, isFunction } from '../../../../../utils';
@@ -10,6 +9,7 @@ import { useMemo } from 'preact/hooks';
 import { DROPDOWN_ELEMENT_CLASS, DROPDOWN_ELEMENT_NO_OPTION_CLASS, DROPDOWN_LIST_ACTIVE_CLASS, DROPDOWN_LIST_CLASS } from '../constants';
 import type { SelectItem, SelectListProps } from '../types';
 import SelectListItem, { renderListItemDefault } from './SelectListItem';
+import Popover from '../../../Popover/Popover';
 
 const SelectList = fixedForwardRef(
     <T extends SelectItem>(
@@ -46,7 +46,7 @@ const SelectList = fixedForwardRef(
         const multipleSelection = useMemo(() => boolOrFalse(multiSelect), [multiSelect]);
 
         return showList ? (
-            <PopoverContainer
+            <Popover
                 classNameModifiers={popoverClassNameModifiers}
                 actions={multipleSelection ? commitActions : undefined}
                 disableFocusTrap={disableFocusTrap}
@@ -84,7 +84,7 @@ const SelectList = fixedForwardRef(
                         <div className={noOptionsClassName}>{i18n.get('common.inputs.select.errors.noOptions')}</div>
                     )}
                 </ul>
-            </PopoverContainer>
+            </Popover>
         ) : null;
     }
 );

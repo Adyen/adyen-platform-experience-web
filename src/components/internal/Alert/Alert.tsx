@@ -44,7 +44,7 @@ export const Alert = ({
                     )}
                     {children}
                 </div>
-                {actions?.length && (
+                {!!actions?.length && (
                     <div className="adyen-pe-alert__actions">
                         {actions?.map((action, index) => (
                             <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>

@@ -1,11 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-anacredit';
 
 test.describe('Grant: Missing Action Anacredit', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {
@@ -20,10 +22,19 @@ test.describe('Grant: Missing Action Anacredit', () => {
         await expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible();
     });
 
-    test('should go to Business Financing task when button in clicked', async ({ page }) => {
-        await page.getByText('Submit information').click();
+    test('should go to Business Financing task when button in clicked', async ({ page, analyticsEvents }) => {
+        const analyticsEventProperties = {
+            ...sharedGrantsOverviewAnalyticsEventProperties,
+            subCategory: 'Missing action',
+            label: 'Submit information for AnaCredit button',
+        };
+
         const redirectionURL = 'https://www.adyen.com/capital';
-        await page.waitForURL(redirectionURL);
+
+        await page.getByText('Submit information').click();
+        await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
     });
 });

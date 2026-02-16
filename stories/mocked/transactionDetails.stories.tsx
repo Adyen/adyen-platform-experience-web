@@ -40,6 +40,14 @@ export const PartialRefund: ElementStory<typeof TransactionDetails> = {
     },
 };
 
+export const UnlinkedRefund: ElementStory<typeof TransactionDetails> = {
+    name: 'Unlinked refund',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...TRANSACTION_DETAILS_HANDLERS.unlinkedRefund },
+    },
+};
+
 export const RefundNotAvailable: ElementStory<typeof TransactionDetails> = {
     name: 'Refund - Not available',
     args: sharedArgs,

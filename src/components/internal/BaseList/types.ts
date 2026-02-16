@@ -1,5 +1,5 @@
-import { JSXInternal } from 'preact/src/jsx';
+import { HTMLAttributes } from 'preact';
 
-export type BaseListProps = JSXInternal.HTMLAttributes<HTMLButtonElement> & {
+export type BaseListProps = HTMLAttributes<HTMLButtonElement> & {
     classNames?: string;
 };

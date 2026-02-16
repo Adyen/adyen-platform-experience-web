@@ -14,7 +14,7 @@ const findChunk = (id: string, mappings: Record<string, string | string[]>, fall
 
 const config: StorybookConfig = {
     stories: ['../stories/**/*.stories.*'],
-    staticDirs: ['../static'],
+    staticDirs: ['../static', { from: '../src/assets/datasets', to: '/datasets' }],
     framework: {
         name: '@storybook/preact-vite',
         options: {},

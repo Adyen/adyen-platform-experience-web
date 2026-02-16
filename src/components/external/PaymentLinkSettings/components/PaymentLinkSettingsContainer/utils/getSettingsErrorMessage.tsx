@@ -6,6 +6,7 @@ import { AssetOptions } from '../../../../../../core/Assets/Assets';
 
 export const ACCOUNT_MISCONFIGURATION = 'ACCOUNT_MISCONFIGURATION';
 export const WRONG_STORE_IDS = 'WRONG_STORE_IDS';
+export const PERMISSION_ERROR = 'PERMISSION_ERROR';
 
 const getSettingsErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,
@@ -35,6 +36,13 @@ const getSettingsErrorMessage = (
                 message: ['payByLink.common.errors.storeID', 'common.errors.contactSupport'],
                 translationValues,
                 onContactSupport,
+            };
+        case PERMISSION_ERROR:
+            return {
+                title: 'common.errors.somethingWentWrong',
+                message: [errorMessage],
+                translationValues,
+                refreshComponent: false,
             };
         case '00_500':
             return {

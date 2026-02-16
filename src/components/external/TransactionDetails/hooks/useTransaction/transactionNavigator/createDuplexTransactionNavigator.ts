@@ -51,6 +51,8 @@ export const createDuplexTransactionNavigator = () => {
     };
 
     const triggerNavigationCallback = () => {
+        if (isEmptyString(currentTransactionId)) return;
+
         const from = previousTransactionId;
         const to = currentTransactionId!;
         previousTransactionId = undefined;

@@ -125,18 +125,13 @@
             outline: none;
         }
 
-        &:focus,
-        &:active {
+        &:is(:focus, :active):not(.adyen-pe-input--invalid) {
             background: transparent;
             border: 0;
             outline: none;
         }
 
-        &:focus:hover {
-            outline: none;
-        }
-
-        &:active:hover {
+        &:is(:focus, :active):hover:not(.adyen-pe-input--invalid) {
             outline: none;
         }
     }

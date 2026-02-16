@@ -36,9 +36,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'pnpm'
+
       - uses: preactjs/compressed-size-action@v2
         with:
-          install-script: "pnpm install"
+          install-script: "pnpm install --frozen-lockfile --registry=https://registry.npmjs.org/"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           pattern: "**/dist/**/*.js"
           exclude: "{**/*.map,**/node_modules/**,**/src}"

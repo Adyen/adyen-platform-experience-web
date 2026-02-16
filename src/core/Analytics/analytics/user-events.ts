@@ -1,4 +1,5 @@
 import { ExternalComponentType } from '../../../components/types';
+import { getEventTime } from './utils';
 
 export type MixpanelProperty = string | number | boolean | any[] | null | undefined;
 
@@ -138,7 +139,7 @@ export class UserEvents {
      * Adds an analytics event with all base event properties.
      */
     public addEvent(eventName: EventName, properties: AdditionalEventProperties) {
-        const time = Math.floor(Date.now() / 1000);
+        const time = getEventTime();
         const completeEvent = { ...this.baseTrackingPayload, time, ...properties } as AnalyticsEventPayload;
         this.add({
             name: eventName,

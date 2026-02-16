@@ -1,10 +1,10 @@
+import { JSX } from 'preact';
 import cx from 'classnames';
 import Button from '../Button';
 import Typography from '../Typography/Typography';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { TranslationKey } from '../../../translations';
-import { JSXInternal } from 'preact/src/jsx';
 import { useCallback } from 'preact/hooks';
 import './ErrorMessageDisplay.scss';
 
@@ -32,10 +32,11 @@ type ErrorMessageDisplayProps = {
     centered?: boolean;
     refreshComponent?: boolean;
     onContactSupport?: () => void;
-    translationValues?: { [k in TranslationKey]?: JSXInternal.Element | null };
+    onRefreshComponent?: () => void;
+    translationValues?: { [k in TranslationKey]?: JSX.Element | null };
     absolutePosition?: boolean;
     outlined?: boolean;
-    renderSecondaryButton?: () => JSXInternal.Element;
+    renderSecondaryButton?: () => JSX.Element;
     withBackground?: boolean;
     withHeaderOffset?: boolean;
     condensed?: boolean;
@@ -57,6 +58,7 @@ export const ErrorMessageDisplay = ({
     withImage,
     centered,
     refreshComponent,
+    onRefreshComponent,
     onContactSupport,
     translationValues,
     absolutePosition = true,
@@ -118,7 +120,7 @@ export const ErrorMessageDisplay = ({
                     {renderSecondaryButton && renderSecondaryButton()}
                     {onContactSupport && <Button onClick={onContactSupport}>{i18n.get('common.actions.contactSupport.labels.reachOut')}</Button>}
                     {!onContactSupport && refreshComponent && (
-                        <Button onClick={updateCore}>{i18n.get('common.actions.refresh.labels.default')}</Button>
+                        <Button onClick={onRefreshComponent ?? updateCore}>{i18n.get('common.actions.refresh.labels.default')}</Button>
                     )}
                 </div>
             )}

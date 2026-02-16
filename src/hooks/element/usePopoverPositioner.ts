@@ -25,6 +25,8 @@ const calculateOffset = ({
     additionalStyle,
     fixedPositioning,
     fullWidth,
+    fitPosition,
+    forceFixed,
     popover,
     targetElement,
 }: {
@@ -34,6 +36,8 @@ const calculateOffset = ({
     additionalStyle?: { minY?: number; maxY?: number };
     fixedPositioning?: boolean;
     fullWidth?: boolean;
+    fitPosition?: boolean;
+    forceFixed?: boolean;
     popover: Element;
     targetElement: HTMLElement;
 }): h.JSX.CSSProperties => {
@@ -64,7 +68,7 @@ const calculateOffset = ({
             translateX = fullWidth ? toCenterFullWidth : isTooltip ? toCenterX : targetPosition.x;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 if (!fullWidth) {
                     translateX += scrollX;
                 }
@@ -75,7 +79,7 @@ const calculateOffset = ({
             translateX = isTooltip ? toCenterX : targetPosition.x;
             translateY = targetPosition.y - (popoverHeight + offset[0]);
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
@@ -84,7 +88,7 @@ const calculateOffset = ({
             translateX = targetPosition.x + targetPosition.width + offset[2];
             translateY = isTooltip ? toCenterY : targetPosition.y - targetPosition.height / 2;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
@@ -93,44 +97,44 @@ const calculateOffset = ({
             translateX = targetPosition.x - (popoverWidth + offset[3]);
             translateY = isTooltip ? toCenterY : targetPosition.y - targetPosition.height / 2;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
             break;
         case PopoverContainerPosition.BOTTOM_LEFT:
-            translateX = 5;
+            translateX = fitPosition ? targetPosition.x : 5;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY;
             }
             break;
         case PopoverContainerPosition.BOTTOM_RIGHT:
-            translateX = -5;
+            translateX = fitPosition ? targetPosition.x : -5;
             translateY = targetPosition.y + targetPosition.height + offset[1];
 
-            if (!fixedPositioning) {
-                translateX = scrollX - (bodyPosition.width - targetPosition.right);
+            if (!fixedPositioning && !forceFixed) {
+                translateX = fitPosition ? targetPosition.x + scrollX : scrollX - (bodyPosition.width - targetPosition.right);
                 translateY += scrollY;
             }
             break;
         case PopoverContainerPosition.TOP_LEFT:
-            translateX = POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
+            translateX = fitPosition ? targetPosition.x : POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
-            if (!fixedPositioning) {
+            if (!fixedPositioning && !forceFixed) {
                 translateX += scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
             break;
         case PopoverContainerPosition.TOP_RIGHT:
-            translateX = -POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
+            translateX = fitPosition ? targetPosition.x : -POPOVER_DIAGONAL_HORIZONTAL_OFFSET;
             translateY = targetPosition.y - popoverHeight;
 
-            if (!fixedPositioning) {
-                translateX += scrollX;
+            if (!fixedPositioning && !forceFixed) {
+                translateX = fitPosition ? targetPosition.x + scrollX : translateX + scrollX;
                 translateY += scrollY - popoverContent.clientHeight + popoverHeight;
             }
             break;
@@ -177,7 +181,7 @@ const calculateOffset = ({
     return {
         inset: isAlignedToRight ? '0 0 auto auto' : '0 auto auto 0',
         margin: '0',
-        position: fixedPositioning ? 'fixed' : 'absolute',
+        position: fixedPositioning || forceFixed ? 'fixed' : 'absolute',
         transform: `translate3d(${translateX}px, ${translateY}px, 0)`,
         visibility: 'hidden',
         ...offsetStyle,
@@ -202,6 +206,56 @@ const usePopoverPositioner = (
     const [showPopover, setShowPopover] = useState(fitPosition ? !fitPosition : !!position);
     const [currentPosition, setCurrentPosition] = useState(position || PopoverContainerPosition.TOP);
     const [checkedPositions, setCheckedPosition] = useState<Array<[PopoverContainerPosition, number]>>([]);
+    const popoverRef = useRef<Element | null>(null);
+    const currentPositionRef = useRef(currentPosition);
+    const lastTargetRectRef = useRef<{ x: number; y: number } | null>(null);
+    currentPositionRef.current = currentPosition;
+
+    // Track scroll events to update popover position relative to target element
+    useEffect(() => {
+        if (fixedPositioning) return;
+
+        let rafId: ReturnType<typeof requestAnimationFrame> | null = null;
+
+        const handleScroll = () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                const popover = popoverRef.current;
+                if (!popover || !targetElement.current) return;
+
+                // Check if target element has actually moved to avoid infinite loops
+                const targetRect = targetElement.current.getBoundingClientRect();
+                const lastRect = lastTargetRectRef.current;
+                if (lastRect && lastRect.x === targetRect.x && lastRect.y === targetRect.y) {
+                    return;
+                }
+                lastTargetRectRef.current = { x: targetRect.x, y: targetRect.y };
+
+                const popoverStyle = calculateOffset({
+                    variant,
+                    offset,
+                    additionalStyle,
+                    fixedPositioning,
+                    fullWidth: showOverlay,
+                    fitPosition,
+                    forceFixed: !showPopover,
+                    popover,
+                    position: currentPositionRef.current,
+                    targetElement: targetElement.current as HTMLElement,
+                });
+
+                (popover as HTMLElement).style.transform = popoverStyle.transform as string;
+            });
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll, { capture: true });
+            if (rafId) cancelAnimationFrame(rafId);
+        };
+    }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition]);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
@@ -274,6 +328,8 @@ const usePopoverPositioner = (
     return useReflex<Element>(
         useCallback(
             (current, previous) => {
+                popoverRef.current = current ?? null;
+
                 if (previous && (!position || fitPosition)) {
                     const observer = getIntersectionObserver(observerCallback).observer;
                     observer.unobserve(previous);
@@ -293,6 +349,8 @@ const usePopoverPositioner = (
                         additionalStyle,
                         fixedPositioning,
                         fullWidth: showOverlay,
+                        fitPosition,
+                        forceFixed: !showPopover,
                         popover: current,
                         position: currentPosition,
                         targetElement: targetElement.current as HTMLElement,

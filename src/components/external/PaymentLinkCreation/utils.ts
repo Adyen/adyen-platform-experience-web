@@ -18,23 +18,27 @@ export interface FormStepConfig {
     isOptional?: boolean;
 }
 
-export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number): void => {
-    const errorElements = errorFields.map(field => document.querySelector(`[name="${field}"]`)).filter((el): el is Element => el !== null);
+export const scrollToFirstErrorField = (errorFields: string[], visibilityOffset: number, scope?: ParentNode | null): void => {
+    if (errorFields.length === 0) return;
 
-    const firstElement = errorElements.sort((a, b) => {
-        const rectA = a.getBoundingClientRect();
-        const rectB = b.getBoundingClientRect();
-        return rectA.top - rectB.top;
-    })[0];
+    const queryScope = scope ?? document;
+
+    const errorFieldsSelector = errorFields.map(field => `[name="${field}"]`).join(',');
+    const elements = queryScope.querySelectorAll<HTMLElement>(`:scope ${errorFieldsSelector}`);
+
+    const firstElement = Array.from(elements).reduce<HTMLElement | null>((topmost, el) => {
+        if (!topmost) return el;
+        return el.getBoundingClientRect().top < topmost.getBoundingClientRect().top ? el : topmost;
+    }, null);
 
     if (!firstElement) return;
 
     const rect = firstElement.getBoundingClientRect();
-    const isInViewport = rect.top >= visibilityOffset && rect.bottom <= window.innerHeight;
+    const isVisible = rect.top >= visibilityOffset && rect.bottom <= window.innerHeight;
 
-    if (!isInViewport) {
-        const top = Math.max(0, window.scrollY + rect.top - visibilityOffset);
-        window.scrollTo({ top, behavior: 'smooth' });
+    if (!isVisible) {
+        firstElement.style.scrollMarginTop = `${visibilityOffset}px`;
+        firstElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 };
 

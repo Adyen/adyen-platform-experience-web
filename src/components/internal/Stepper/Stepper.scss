@@ -43,6 +43,7 @@
     &__number {
         align-content: center;
         display: flex;
+        font-size: style.token(text-caption-font-size);
         justify-content: center;
         width: 100%;
     }

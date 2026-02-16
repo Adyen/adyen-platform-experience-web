@@ -9,33 +9,48 @@ import { TypographyElement, TypographyVariant } from '../../../../../../internal
 import { uuid } from '../../../../../../../utils';
 
 interface BillingAndShippingCheckboxFieldProps {
-    isSeparateAddress: boolean;
-    setIsSeparateAddress: Dispatch<StateUpdater<boolean>>;
+    isSameAddress: boolean;
+    setIsSameAddress: Dispatch<StateUpdater<boolean>>;
+    showBillingFirst?: boolean;
 }
 
-export const BillingAndShippingCheckboxField = ({ isSeparateAddress, setIsSeparateAddress }: BillingAndShippingCheckboxFieldProps) => {
+export const BillingAndShippingCheckboxField = ({
+    isSameAddress,
+    setIsSameAddress,
+    showBillingFirst = false,
+}: BillingAndShippingCheckboxFieldProps) => {
     const { i18n } = useCoreContext();
     const { setValue, getValues } = useWizardFormContext<PaymentLinkCreationFormValues>();
-    const isSeparateAddressInputId = uuid();
+    const isSameAddressInputId = uuid();
 
     const toggleBillingAndDeliveryAddress = useCallback(() => {
-        setIsSeparateAddress(prev => {
-            setValue('billingAddress.street', !prev ? undefined : getValues('deliveryAddress.street'));
-            setValue('billingAddress.houseNumberOrName', !prev ? undefined : getValues('deliveryAddress.houseNumberOrName'));
-            setValue('billingAddress.postalCode', !prev ? undefined : getValues('deliveryAddress.postalCode'));
-            setValue('billingAddress.city', !prev ? undefined : getValues('deliveryAddress.city'));
-            setValue('billingAddress.country', !prev ? undefined : getValues('deliveryAddress.country'));
+        setIsSameAddress(prev => {
+            if (showBillingFirst) {
+                // When billing is shown first, copy billing to delivery when checking (same address)
+                setValue('deliveryAddress.street', prev ? undefined : getValues('billingAddress.street'));
+                setValue('deliveryAddress.houseNumberOrName', prev ? undefined : getValues('billingAddress.houseNumberOrName'));
+                setValue('deliveryAddress.postalCode', prev ? undefined : getValues('billingAddress.postalCode'));
+                setValue('deliveryAddress.city', prev ? undefined : getValues('billingAddress.city'));
+                setValue('deliveryAddress.country', prev ? undefined : getValues('billingAddress.country'));
+            } else {
+                // Default behavior: copy delivery to billing when checking (same address)
+                setValue('billingAddress.street', prev ? undefined : getValues('deliveryAddress.street'));
+                setValue('billingAddress.houseNumberOrName', prev ? undefined : getValues('deliveryAddress.houseNumberOrName'));
+                setValue('billingAddress.postalCode', prev ? undefined : getValues('deliveryAddress.postalCode'));
+                setValue('billingAddress.city', prev ? undefined : getValues('deliveryAddress.city'));
+                setValue('billingAddress.country', prev ? undefined : getValues('deliveryAddress.country'));
+            }
             return !prev;
         });
-    }, [getValues, setIsSeparateAddress, setValue]);
+    }, [getValues, setIsSameAddress, setValue, showBillingFirst]);
 
     return (
         <div>
-            <input type="checkbox" className="adyen-pe-visually-hidden" id={isSeparateAddressInputId} onInput={toggleBillingAndDeliveryAddress} />
-            <label className="adyen-pe-payment-link-creation-form__field-checkbox" htmlFor={isSeparateAddressInputId}>
-                {isSeparateAddress ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
+            <input type="checkbox" className="adyen-pe-visually-hidden" id={isSameAddressInputId} onInput={toggleBillingAndDeliveryAddress} />
+            <label className="adyen-pe-payment-link-creation-form__field-checkbox" htmlFor={isSameAddressInputId}>
+                {isSameAddress ? <Icon name="checkmark-square-fill" /> : <Icon name="square" />}
                 <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
-                    {i18n.get('payByLink.creation.fields.billingAndDeliverySeparateAddress.label')}
+                    {i18n.get('payByLink.creation.fields.shippingAndBillingSameAddress.label')}
                 </Typography>
             </label>
         </div>

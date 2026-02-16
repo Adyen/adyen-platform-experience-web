@@ -1,8 +1,6 @@
 import matchers from '@testing-library/jest-dom/matchers';
 import { beforeEach, beforeAll, expect, vi } from 'vitest';
 import { cleanup } from '@testing-library/preact';
-import '@testing-library/jest-dom';
-import '@testing-library/jest-dom/vitest';
 
 expect.extend(matchers);
 
@@ -19,8 +17,12 @@ beforeAll(() => {
             removeEventListener: vi.fn(),
         }));
 
-        if (!HTMLElement.prototype.scrollIntoView) {
-            HTMLElement.prototype.scrollIntoView = vi.fn();
+        if (!Element.prototype.scrollIntoView) {
+            Element.prototype.scrollIntoView = vi.fn();
+        }
+
+        if (!Element.prototype.scrollTo) {
+            Element.prototype.scrollTo = vi.fn();
         }
 
         if (!window.IntersectionObserver) {

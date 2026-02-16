@@ -60,6 +60,7 @@ $adyen-icon-touch-size: style.token(spacer-110);
     max-height: 80vh;
     opacity: 0;
     overflow-y: auto;
+    overscroll-behavior-y: contain;
     position: fixed;
     transition:
         opacity 0.2s ease,

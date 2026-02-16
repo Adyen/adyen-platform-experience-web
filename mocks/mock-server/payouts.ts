@@ -3,7 +3,7 @@ import { getPayouts, PAYOUTS_WITH_DETAILS } from '../mock-data';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const networkError = false;
 const defaultPaginationLimit = 20;
 

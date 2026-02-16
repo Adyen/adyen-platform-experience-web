@@ -10,6 +10,7 @@ import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
 import { useSaveAction } from '../../../hooks/useSaveAction';
 import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import { useSettingsPermission } from '../../../hooks/useSettingsPermission';
 
 export const PaymentLinkSettingsContext = createContext<IPaymentLinkSettingsContext>({
     activeMenuItem: MenuItem.theme,
@@ -59,6 +60,7 @@ export const PaymentLinkSettingsProvider = memo(
         const [menuItems] = useState<MenuItemType[]>(selectedMenuItems);
         const [loading, setLoading] = useState<boolean>(false);
         const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+        const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
 
         const menuItemPreSelect = useMemo(() => {
             if (isSmContainer && menuItems.length > 1) return;
@@ -195,7 +197,15 @@ export const PaymentLinkSettingsProvider = memo(
             [activeMenuItem]
         );
 
-        const contentLoading = loading || loadingThemes || loadingTermsAndConditions || isLoadingStores;
+        const hasPermission = useMemo(() => {
+            if (!activeMenuItem) return false;
+            return activeMenuItem === MenuItem.theme ? themeEnabled : termsAndConditionsEnabled;
+        }, [activeMenuItem, termsAndConditionsEnabled, themeEnabled]);
+
+        const contentLoading = useMemo(() => {
+            if (!hasPermission) return false;
+            return loading || loadingThemes || loadingTermsAndConditions || isLoadingStores;
+        }, [loading, loadingThemes, loadingTermsAndConditions, isLoadingStores, hasPermission]);
 
         return (
             <PaymentLinkSettingsContext.Provider

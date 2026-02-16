@@ -19,6 +19,7 @@ test.describe('Error - Defense server error', () => {
         const __dirname = path.dirname(__filename);
         const fixture = path.resolve(__dirname, '../../../fixtures/files/test-file.pdf');
         const fileInput = page.locator('input[type="file"]');
+        await expect(fileInput).toBeEnabled();
         await fileInput.setInputFiles(fixture);
 
         await page.getByRole('button', { name: 'Submit' }).click();

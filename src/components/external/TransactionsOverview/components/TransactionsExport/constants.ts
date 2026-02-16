@@ -5,6 +5,7 @@ export const classes = {
     root: BASE_CLASS,
     popover: POPOVER_CLASS,
     button: BASE_CLASS + '__button',
+    errorAlert: BASE_CLASS + '__error-alert',
     popoverActions: POPOVER_CLASS + '-actions',
     popoverActionsAlert: POPOVER_CLASS + '-actions-alert',
     popoverSections: POPOVER_CLASS + '-sections',

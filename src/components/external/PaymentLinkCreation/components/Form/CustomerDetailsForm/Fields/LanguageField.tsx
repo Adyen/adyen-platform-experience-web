@@ -46,6 +46,16 @@ export const LanguageField = () => {
             .sort(({ name: a }, { name: b }) => a.localeCompare(b));
     }, [languagesQuery.data, configCountryList]);
 
+    const isRequired = useMemo(() => fieldsConfig['shopperLocale']?.required, [fieldsConfig]);
+
+    const shouldHideField = useMemo(() => {
+        const hasItems = localeListItems.length > 0;
+
+        return !languagesQuery.isFetching && !hasItems && !isRequired;
+    }, [languagesQuery.isFetching, localeListItems.length, isRequired]);
+
+    if (shouldHideField) return null;
+
     return (
         <FormSelect<PaymentLinkCreationFormValues>
             filterable

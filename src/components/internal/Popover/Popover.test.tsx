@@ -23,6 +23,7 @@ describe('Popover component', () => {
 
         render(
             <div>
+                <div>{'Outside of component'}</div>
                 <button ref={buttonEl}>{'Popover Controller'}</button>
                 {buttonEl && (
                     <Popover
@@ -60,6 +61,7 @@ describe('Popover component', () => {
     test<PopoverContext>('should call dismiss on click outside', async ({ dismiss }) => {
         const titleEl = screen.getByText(/Test Popover/i);
         const buttonEl = screen.getByRole('button', { name: 'Popover Controller' });
+        const outsideEl = screen.getByText('Outside of component');
         const inputEl = screen.getByTestId('mock-textbox');
 
         await waitFor(() => {
@@ -70,7 +72,7 @@ describe('Popover component', () => {
         expect(titleEl).toBeInTheDocument();
         expect(dismiss).toBeCalledTimes(0);
 
-        await userEvent.click(buttonEl);
+        await userEvent.click(outsideEl);
         expect(dismiss).toBeCalledTimes(1);
     });
 

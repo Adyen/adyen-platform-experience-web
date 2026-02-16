@@ -24,14 +24,17 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
             setLatestActiveStep(activeIndex);
         }
 
-        // Scroll to active step if its out of view
+        // Scroll parent container to show active step
         const stepElement = stepRefs.current[activeIndex];
-        if (stepElement) {
-            stepElement.scrollIntoView({
-                block: 'nearest',
-                inline: 'nearest',
-                behavior: 'smooth',
-            });
+        const container = listRef.current;
+        if (stepElement && container) {
+            if (isHorizontal) {
+                const scrollLeft = stepElement.offsetLeft - container.offsetLeft;
+                container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+            } else {
+                const scrollTop = stepElement.offsetTop - container.offsetTop;
+                container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+            }
         }
     }, [activeIndex, latestActiveStep]);
 

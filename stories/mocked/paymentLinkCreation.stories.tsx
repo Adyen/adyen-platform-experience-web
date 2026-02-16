@@ -111,7 +111,7 @@ export const SubmitInvalidFieldError: ElementStory<typeof PaymentLinkCreation> =
 };
 
 export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
-    name: 'Error -Configuration Error',
+    name: 'Error - Configuration Error',
     args: {
         mockedApi: true,
         onPaymentLinkCreated: action('Payment link created'),
@@ -120,6 +120,24 @@ export const ConfigurationError: ElementStory<typeof PaymentLinkCreation> = {
     parameters: {
         msw: {
             ...PaymentLinkCreationMockedResponses.configError,
+        },
+    },
+};
+
+export const CountryDatasetError: ElementStory<typeof PaymentLinkCreation> = {
+    name: 'Error - Country Dataset Error',
+    args: {
+        mockedApi: true,
+        coreOptions: {
+            locale: 'es-ES',
+        },
+        onPaymentLinkCreated: action('Payment link created'),
+        storeIds: ['STORE_NY_001'],
+        fieldsConfig,
+    },
+    parameters: {
+        msw: {
+            ...PaymentLinkCreationMockedResponses.countryDatasetError,
         },
     },
 };

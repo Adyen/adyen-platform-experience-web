@@ -1,7 +1,7 @@
 import { IBalanceAccountBase } from '../../../../../types';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
-import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useTransactionsList from '../../hooks/useTransactionsList';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 
 type PropsFromTransactionComponent = Pick<
     ExternalUIComponentProps<TransactionOverviewComponentProps>,
@@ -11,6 +11,6 @@ type PropsFromTransactionComponent = Pick<
 export interface TransactionsListProps extends PropsFromTransactionComponent {
     balanceAccount?: IBalanceAccountBase;
     loadingBalanceAccounts: boolean;
-    accountBalancesResult: ReturnType<typeof useAccountBalances>;
+    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
     transactionsListResult: ReturnType<typeof useTransactionsList>;
 }

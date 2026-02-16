@@ -1,11 +1,20 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transaction-details--data-customization';
 
 test.describe('Data Customization', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(
+            analyticsEvents,
+            [
+                ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
+                ['Landed on page', sharedAnalyticsEventProperties],
+            ],
+            { strictOrder: false }
+        );
     });
 
     test('should render payment transaction details without hidden fields', async ({ page }) => {
@@ -18,7 +27,10 @@ test.describe('Data Customization', () => {
         await expect(page.getByText('Reference ID', { exact: true })).toBeHidden();
         await expect(page.getByText('4B7N9Q2Y6R1W5M8T', { exact: true })).toBeHidden();
 
-        await expect(page.getByTestId('copy-icon')).toHaveCount(1);
+        await expect(page.getByText('Merchant reference', { exact: true })).toBeVisible();
+        await expect(page.getByText('TX-F9X2V8L7P1K6W', { exact: true })).toBeVisible();
+
+        await expect(page.getByTestId('copy-icon')).toHaveCount(2);
     });
 
     test('should render payment transaction details with custom data fields', async ({ page }) => {

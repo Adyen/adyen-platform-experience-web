@@ -33,15 +33,32 @@ export const useClickOutside = <T extends Element = Element>(
             } else {
                 let eventPathIndex = 0;
                 let samePath = false;
-                let currentElement: Element | null = eventPath[eventPathIndex] as Element;
+                let currentElement: Element | ShadowRoot | null = eventPath[eventPathIndex] as Element | ShadowRoot;
 
-                while (currentElement instanceof Element) {
-                    if ((samePath ||= currentElement?.isSameNode(ref.current))) break;
-                    currentElement = (eventPath[++eventPathIndex] as Element) ?? currentElement.parentElement;
+                while (currentElement instanceof Element || currentElement instanceof ShadowRoot) {
+                    if (currentElement instanceof ShadowRoot) {
+                        currentElement = currentElement.host;
+                    }
+
+                    if ((samePath ||= currentElement.isSameNode(ref.current))) break;
 
                     if ((currentElement as any)?.[CONTROL_ELEMENT_PROPERTY] instanceof Element) {
                         currentElement = (currentElement as any)[CONTROL_ELEMENT_PROPERTY];
                         eventPath.length = 0;
+                        continue;
+                    }
+
+                    const nextInPath = eventPath[++eventPathIndex] as Element | ShadowRoot | undefined;
+                    if (nextInPath) {
+                        currentElement = nextInPath;
+                    } else {
+                        if (currentElement.parentElement) {
+                            currentElement = currentElement.parentElement;
+                        } else if (currentElement.parentNode instanceof ShadowRoot) {
+                            currentElement = currentElement.parentNode;
+                        } else {
+                            currentElement = null;
+                        }
                     }
                 }
 
@@ -51,41 +68,45 @@ export const useClickOutside = <T extends Element = Element>(
         [ref, callback, variant]
     );
 
-    const handleMouseDown = useCallback(
-        (e: MouseEvent) => {
-            if (!(ref && ref.current)) return;
-            mouseDownInsideRef.current = ref.current.contains(e.target as Node);
-        },
-        [ref]
-    );
+    const handleMouseDown = useCallback((e: MouseEvent) => {
+        if (ref.current) {
+            mouseDownInsideRef.current = e.composedPath().includes(ref.current);
+        }
+    }, []);
 
     const handleClick = useCallback(
         (e: MouseEvent) => {
             if (mouseDownInsideRef.current) {
                 mouseDownInsideRef.current = false;
-                return;
-            }
-            handleClickOutside(e);
+            } else handleClickOutside(e);
         },
         [handleClickOutside]
     );
 
     useEffect(() => {
-        if (disableClickOutside) return;
+        if (disableClickOutside || !ref.current) return;
 
-        document.addEventListener('mousedown', handleMouseDown, true);
-        document.addEventListener('click', handleClick, true);
+        const element = ref.current;
+        const target = element.getRootNode();
 
-        if (variant === ClickOutsideVariant.POPOVER && ref.current instanceof Element) {
-            popoverUtil.add(ref.current, callback);
+        if (target instanceof ShadowRoot || target instanceof Document) {
+            target.addEventListener('mousedown', handleMouseDown as EventListener, true);
+            target.addEventListener('click', handleClick as EventListener, true);
+
+            if (variant === ClickOutsideVariant.POPOVER) {
+                popoverUtil.add(element, callback);
+            }
+
+            return () => {
+                target.removeEventListener('mousedown', handleMouseDown as EventListener, true);
+                target.removeEventListener('click', handleClick as EventListener, true);
+
+                if (variant === ClickOutsideVariant.POPOVER) {
+                    popoverUtil.remove(element);
+                }
+            };
         }
-
-        return () => {
-            document.removeEventListener('mousedown', handleMouseDown, true);
-            document.removeEventListener('click', handleClick, true);
-            if (ref.current) popoverUtil.remove(ref.current);
-        };
-    }, [disableClickOutside, handleMouseDown, handleClick, callback, variant, ref]);
+    }, [disableClickOutside, variant, handleMouseDown, handleClick, callback]);
 
     return useReflex<T>(
         useCallback(
@@ -98,9 +119,11 @@ export const useClickOutside = <T extends Element = Element>(
                         current.addEventListener('focusout', onFocusout, false);
                         ref.current = current;
                     }
+                } else {
+                    ref.current = null;
                 }
             },
-            [disableClickOutside, variant]
+            [disableClickOutside]
         ),
         rootElementRef
     );

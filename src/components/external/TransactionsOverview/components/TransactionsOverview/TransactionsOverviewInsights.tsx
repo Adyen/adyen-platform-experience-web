@@ -2,6 +2,7 @@ import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_INSIG
 import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
 import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 import InsightsTotals from '../InsightsTotals/InsightsTotals';
 
 const sharedAnalyticsEventProperties = {
@@ -9,16 +10,16 @@ const sharedAnalyticsEventProperties = {
     subCategory: TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
 } as const;
 
-interface TransactionsOverviewInsightsProps {
+export interface TransactionsOverviewInsightsProps {
     currency?: string;
+    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
     transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
 }
 
-const TransactionsOverviewInsights = ({ currency, transactionsTotalsResult }: TransactionsOverviewInsightsProps) => {
-    const { isWaiting: loadingTotals, totalsLookup: totals, error } = transactionsTotalsResult;
+const TransactionsOverviewInsights = (props: TransactionsOverviewInsightsProps) => {
     useLandedPageEvent(sharedAnalyticsEventProperties);
     useDurationEvent(sharedAnalyticsEventProperties);
-    return <InsightsTotals currency={currency} loadingTotals={loadingTotals} totals={totals} error={error} />;
+    return <InsightsTotals {...props} />;
 };
 
 export default TransactionsOverviewInsights;

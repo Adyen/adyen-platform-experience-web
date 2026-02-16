@@ -8,10 +8,10 @@ import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 
 export const ShippingHouseNumberField = ({
-    isSeparateAddress,
+    isSameAddress,
     isAddressFieldRequired,
 }: {
-    isSeparateAddress: boolean;
+    isSameAddress: boolean;
     isAddressFieldRequired: AddressFieldRequiredChecker;
 }) => {
     const { i18n } = useCoreContext();
@@ -19,9 +19,9 @@ export const ShippingHouseNumberField = ({
 
     const onInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>) => {
-            !isSeparateAddress && setValue('billingAddress.houseNumberOrName', e.currentTarget.value);
+            isSameAddress && setValue('billingAddress.houseNumberOrName', e.currentTarget.value);
         },
-        [isSeparateAddress, setValue]
+        [isSameAddress, setValue]
     );
 
     const isRequired = fieldsConfig['deliveryAddress.houseNumberOrName']?.required || isAddressFieldRequired('deliveryAddress.houseNumberOrName');

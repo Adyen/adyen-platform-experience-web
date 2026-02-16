@@ -48,6 +48,7 @@ export const Tooltip = ({ content, children, showTooltip, position, isUnderlineV
                     setPopoverElement={setPopoverElement}
                     fitPosition
                     open
+                    disableFocusTrap
                 >
                     {content && isString(content) ? (
                         <Typography el={TypographyElement.DIV} variant={TypographyVariant.CAPTION}>

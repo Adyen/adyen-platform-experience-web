@@ -1,10 +1,10 @@
+import { TargetedMouseEvent } from 'preact';
 import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
 import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObject } from '../../../types';
 import Button from '../../Button';
-import { JSXInternal } from 'preact/src/jsx';
 import Link from '../../Link/Link';
 import { ButtonVariant } from '../../Button/types';
 import cx from 'classnames';
@@ -28,7 +28,7 @@ const _isLinkType = (item: any): item is CustomLinkObject => {
 export const TableCells = <
     Items extends Array<any>,
     Columns extends Array<DataGridColumn<Extract<keyof Items[number], string>>>,
-    CustomCells extends CustomCell<Items, Columns, Columns[number]>
+    CustomCells extends CustomCell<Items, Columns, Columns[number]>,
 >({
     columns,
     customCells,
@@ -68,7 +68,7 @@ export const TableCells = <
                     ? { url: data?.config?.src, alt: data?.config?.alt !== undefined && data?.config?.alt !== null ? data?.config?.alt : data.value }
                     : undefined;
                 const buttonCallback = _isButtonType(data)
-                    ? (e: JSXInternal.TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+                    ? (e: TargetedMouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
                           e.stopPropagation();
                           data?.config?.action();
                       }

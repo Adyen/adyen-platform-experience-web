@@ -1,11 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-multiple-actions';
 
 test.describe('Grant: Multiple Missing Actions', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render pending grant with actions', async ({ page }) => {

@@ -3,7 +3,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils/utils';
 import { http, HttpResponse } from 'msw';
 
-const mockEndpoints = endpoints('mock');
+const mockEndpoints = endpoints();
 const networkError = false;
 
 export const balanceAccountMock = [

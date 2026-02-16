@@ -29,7 +29,7 @@ import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 
-const mockEndpoints = endpoints('mock').capital;
+const mockEndpoints = endpoints().capital;
 const networkError = false;
 
 const EMPTY_GRANTS_LIST = getHandlerCallback({

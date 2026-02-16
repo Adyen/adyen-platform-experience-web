@@ -1,7 +1,7 @@
-import { EMPTY_ARRAY, isFunction } from '../utils';
+import { isFunction } from '../utils';
 import { IBalance, IBalanceAccountBase } from '../types';
 import { createAbortable } from '../primitives/async/abortable';
-import { useCallback, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../core/ConfigContext';
 import { useFetch } from './useFetch';
 
@@ -10,14 +10,21 @@ export interface UseAccountBalancesProps {
 }
 
 const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
-    const { getBalances } = useConfigContext().endpoints;
+    const [pendingRefresh, setPendingRefresh] = useState(false);
+    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
+    const fetchTimestampRef = useRef<number>();
+
     const abortable = useRef(createAbortable()).current;
     const balanceAccountId = balanceAccount?.id;
+    const fetchEnabled = !!balanceAccountId;
+
+    const { getBalances } = useConfigContext().endpoints;
     const canGetBalances = isFunction(getBalances);
-    const canFetchBalances = canGetBalances && !!balanceAccountId;
+    const canFetchBalances = canGetBalances && fetchEnabled;
+    const shouldFetchBalances = canFetchBalances && fetchTimestampRef.current !== fetchTimestamp;
 
     const fetchBalances = useCallback(async () => {
-        if (canFetchBalances) {
+        if (shouldFetchBalances) {
             const { signal } = abortable.refresh(true);
             try {
                 const path: Parameters<NonNullable<typeof getBalances>>[1]['path'] = { balanceAccountId };
@@ -27,30 +34,53 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
                 if (!signal.aborted) throw error;
             }
         }
-    }, [abortable, balanceAccountId, canFetchBalances, getBalances]);
+    }, [abortable, balanceAccountId, getBalances, shouldFetchBalances]);
 
     const { data, error, isFetching } = useFetch({
-        fetchOptions: { enabled: canFetchBalances },
+        fetchOptions: { enabled: shouldFetchBalances },
         queryFn: fetchBalances,
     });
 
-    const { balances, balancesLookup, currencies } = useMemo(() => {
-        const balances = [...(Array.isArray(data) ? data : EMPTY_ARRAY)] as readonly Readonly<IBalance>[];
-        const currencySortedBalances = [...balances].sort(({ currency: a }, { currency: b }) => a.localeCompare(b));
-        const balancesLookup = Object.freeze(Object.fromEntries(balances.map(balance => [balance.currency, balance])));
-        const currencies = Object.freeze([...new Set(currencySortedBalances.map(({ currency }) => currency))]);
-        return { balances, balancesLookup, currencies } as const;
-    }, [data]);
+    const cachedIsFetching = useRef(isFetching);
+    const canRefresh = !isFetching && canFetchBalances;
+    const balances = useMemo<readonly Readonly<IBalance>[]>(() => (Array.isArray(data) ? data : []), [data]);
+
+    const refresh = useCallback(() => {
+        if (canRefresh) setPendingRefresh(true);
+    }, [canRefresh, isFetching]);
+
+    useEffect(() => {
+        if (balanceAccountId) {
+            // The balance account ID has changed,
+            // hence a new fetch request is required
+            setFetchTimestamp(performance.now());
+        }
+    }, [balanceAccountId]);
+
+    useEffect(() => {
+        if (pendingRefresh) {
+            // A new fetch request is required
+            setPendingRefresh(false);
+            setFetchTimestamp(performance.now());
+        }
+    }, [pendingRefresh]);
+
+    useEffect(() => {
+        if (cachedIsFetching.current && !isFetching) {
+            // Last fetch request has finished,
+            // update fetch timestamp
+            fetchTimestampRef.current = fetchTimestamp;
+        }
+        cachedIsFetching.current = isFetching;
+    }, [isFetching, fetchTimestamp]);
 
     return {
         balances,
-        balancesLookup,
-        currencies,
         error,
+        canRefresh,
+        refresh,
         isAvailable: canGetBalances,
-        isEmpty: !!error || !currencies.length,
-        isMultiCurrency: currencies.length > 1,
-        isWaiting: isFetching || (canGetBalances && !balanceAccountId),
+        isWaiting: isFetching || (canGetBalances && !canFetchBalances && !data),
     } as const;
 };
 

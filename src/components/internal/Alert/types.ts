@@ -1,5 +1,4 @@
-import { ComponentChild, VNode } from 'preact';
-import { JSXInternal } from 'preact/src/jsx';
+import { ComponentChild, VNode, TargetedMouseEvent } from 'preact';
 
 export interface AlertAction {
     label: string;
@@ -14,7 +13,7 @@ export interface AlertProps {
     title?: VNode<Element> | string;
     description?: VNode<Element> | string;
     children?: ComponentChild;
-    onClose?: (event: JSXInternal.TargetedMouseEvent<HTMLButtonElement>) => void;
+    onClose?: (event: TargetedMouseEvent<HTMLButtonElement>) => void;
     variant?: AlertVariantOption;
 }
 

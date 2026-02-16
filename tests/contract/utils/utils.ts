@@ -1,6 +1,7 @@
-import { asPlainObject, isPlainObject } from '../../../src/utils';
 import { AllowedHttpMethods, AvailableVersions, EndpointUrl, RequestArgs } from './types';
+import { asPlainObject, isPlainObject } from '../../../src/utils';
 import dotenv from 'dotenv';
+
 dotenv.config({ path: './envs/.env' });
 
 export const getHeaders = ({ token, contentType }: { token: string; contentType?: string }) => {
@@ -15,9 +16,7 @@ export const getHeaders = ({ token, contentType }: { token: string; contentType?
     };
 };
 
-const requestHasParams = (request: any): request is Record<'params', any> => {
-    return !!request.params;
-};
+const requestHasParams = (request: any): request is Record<'params', any> => !!request.params;
 
 const buildUrl = (baseUrl: string, queryParams: Record<any, any>) => {
     const queryString = Object.keys(queryParams)
@@ -35,6 +34,7 @@ export const getRequestURL = <Endpoint extends EndpointUrl, Method extends Allow
 
     if (requestHasParams(request)) {
         const { path: pathParams, query: searchParams } = asPlainObject(request.params as any);
+
         if (isPlainObject(pathParams)) {
             for (const pathParamKey of Object.keys(pathParams)) {
                 path = path.replace(`{${pathParamKey}}`, pathParams[pathParamKey]);
@@ -45,5 +45,6 @@ export const getRequestURL = <Endpoint extends EndpointUrl, Method extends Allow
             path = buildUrl(path, searchParams);
         }
     }
+
     return `v${request.version}${path}`;
 };

@@ -1,11 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/analytics/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
+import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--grant-failed';
 
 test.describe('Grant: Failed', () => {
-    test.beforeEach(async ({ page }) => {
+    test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
     });
 
     test('should render failed grant', async ({ page }) => {
