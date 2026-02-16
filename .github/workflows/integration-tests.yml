@@ -31,8 +31,36 @@ jobs:
     outputs:
       approved: ${{ steps.check-approval.outcome == 'success' }}
 
-  e2e-local-mocked-api:
+  build-storybook-static:
     needs: is-pr-approved
+    if: needs.is-pr-approved.outputs.approved == 'true'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: true
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v3
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Build Storybook static files
+        run: USE_CDN=false TEST_ENV=1 pnpm exec storybook build
+
+      - name: Upload Storybook static artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-static-${{ github.sha }}
+          path: storybook-static/
+          retention-days: 1
+
+  e2e-local-mocked-api:
+    needs:
+      - is-pr-approved
+      - build-storybook-static
     if: needs.is-pr-approved.outputs.approved == 'true'
     permissions:
       contents: read
@@ -47,7 +75,8 @@ jobs:
             total: 2
     env:
       CI: true
-      PLAYWRIGHT_WORKERS: 2
+      PLAYWRIGHT_WORKERS: 1
+      PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite serve storybook-static --config vite.config.ts
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
       PLAYGROUND_URL: http://localhost:4173
@@ -57,6 +86,12 @@ jobs:
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
+
+      - name: Download Storybook static artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: storybook-static-${{ github.sha }}
+          path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
         run: pnpm run test:integration -- --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}

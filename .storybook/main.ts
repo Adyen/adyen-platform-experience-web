@@ -13,6 +13,7 @@ const config: StorybookConfig = {
     },
     async viteFinal(config) {
         const mode = process.env.VITE_MODE ?? 'development';
+        const isCI = process.env.CI === 'true';
         const { api } = getEnvironment(mode);
 
         return mergeConfig(config, {
@@ -21,6 +22,7 @@ const config: StorybookConfig = {
             },
             plugins: [
                 mode === 'development' &&
+                    !isCI &&
                     checker({
                         stylelint: {
                             lintCommand: 'stylelint src/**/*.scss',
