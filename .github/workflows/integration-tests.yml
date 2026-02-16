@@ -38,8 +38,16 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        shard:
+          - index: 1
+            total: 2
+          - index: 2
+            total: 2
     env:
       CI: true
+      PLAYWRIGHT_WORKERS: 2
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
       PLAYGROUND_URL: http://localhost:4173
@@ -50,30 +58,13 @@ jobs:
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
 
-      - name: Fetch latest Chrome stable version
-        id: latest-chrome-version
-        run: echo "version=$( curl -s https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Linux&num=1 | jq '.[0].version' )" >> $GITHUB_OUTPUT
-
-      - name: Cache Chrome
-        id: cache-chrome
-        uses: actions/cache@v3
-        with:
-          path: /opt/hostedtoolcache/chromium/latest
-          key: chrome-${{ steps.latest-chrome-version.outputs.version }}
-
-      - name: Install Chrome (if not available in cache)
-        if: steps.cache-chrome.outputs.cache-hit != 'true'
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: stable
-
-      - name: Run tests
-        run: pnpm run test:integration
+      - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
+        run: pnpm run test:integration -- --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.sha }}
+          name: playwright-report-${{ github.sha }}-shard-${{ matrix.shard.index }}
           path: playwright-report/
           retention-days: 3

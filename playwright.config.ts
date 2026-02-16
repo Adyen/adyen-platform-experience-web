@@ -5,6 +5,7 @@ import { getEnvironment } from './envs/getEnvs';
 const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
+const ciWorkers = Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '2', 10);
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -24,8 +25,8 @@ const config: PlaywrightTestConfig = {
     /* Retry on CI only. Playwright will tell us if a test is flaky */
     retries: process.env.CI ? 2 : 0,
 
-    /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    /* Allow CI worker tuning via PLAYWRIGHT_WORKERS. */
+    workers: process.env.CI ? (Number.isFinite(ciWorkers) && ciWorkers > 0 ? ciWorkers : 2) : undefined,
 
     reporter: 'html',
 
