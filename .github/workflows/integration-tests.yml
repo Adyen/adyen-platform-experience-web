@@ -94,7 +94,7 @@ jobs:
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
-        run: pnpm run test:integration -- --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }} --workers=1
+        run: cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' pnpm exec playwright test --project local-chrome --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
         if: failure()
