@@ -12,6 +12,17 @@ const preview: Preview = {
             hideNoControlsWarning: true,
         },
     },
+    globalTypes: {
+        theme: {
+            description: 'Global theme for components',
+            toolbar: {
+                title: 'Theme',
+                icon: 'paintbrush',
+                items: ['light', 'dark'],
+                dynamicTitle: true,
+            },
+        },
+    },
     argTypes: {
         mockedApi: {
             table: {

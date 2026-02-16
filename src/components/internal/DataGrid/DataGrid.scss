@@ -178,7 +178,7 @@
         background: style.token(color-background-primary);
         border: style.token(border-width-s) solid style.token(color-outline-primary);
         border-radius: style.token(spacer-060);
-        box-shadow: 0 6px 12px 0 rgba(0, 17, 44, 0.08);
+        box-shadow: style.token(shadow-medium);
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-050);

@@ -12,6 +12,7 @@ export interface CoreProviderProps {
     commonProps?: CommonPropsTypes;
     i18n?: Localization['i18n'];
     loadingContext?: string;
+    theme?: 'dark' | 'light';
     updateCore?: () => void;
     externalErrorHandler?: onErrorHandler | null;
     componentRef: RefObject<HTMLDivElement>;

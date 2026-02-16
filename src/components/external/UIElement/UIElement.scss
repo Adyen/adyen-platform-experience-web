@@ -14,6 +14,10 @@
 .adyen-pe-tooltip {
     box-sizing: border-box;
 
+    &--dark {
+        @include style.adyen-sdk-dark-theme();
+    }
+
     *,
     *::before,
     *::after {

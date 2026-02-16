@@ -47,6 +47,8 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
 
     analytics?: AnalyticsConfig;
 
+    theme?: 'dark' | 'light';
+
     /**
      * @internal
      */

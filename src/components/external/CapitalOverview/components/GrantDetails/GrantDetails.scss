@@ -19,6 +19,7 @@
     }
 
     &__header {
+        color: style.token(color-label-primary);
         margin-bottom: style.token(spacer-060);
     }
 

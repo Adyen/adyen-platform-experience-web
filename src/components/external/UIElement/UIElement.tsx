@@ -96,10 +96,16 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}
                     updateCore={updateCore}
+                    theme={core.options.theme}
                 >
                     <AnalyticsProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
                         {this.componentToRender && (
-                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                            <section
+                                ref={this.compRef}
+                                className={cx('adyen-pe-component', this.customClassNames, {
+                                    'adyen-pe-component--dark': core.options.theme === 'dark',
+                                })}
+                            >
                                 <div className="adyen-pe-component__container">{this.componentToRender()}</div>
                             </section>
                         )}

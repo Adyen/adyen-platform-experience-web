@@ -17,6 +17,7 @@
     }
 
     &__card-content {
+        color: style.token(color-label-primary);
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-010);

@@ -24,7 +24,9 @@
 
     &:focus-visible {
         border-radius: style.token(border-radius-xs);
-        box-shadow: 0 0 0 $adyen-pe-box-shadow-initial-width #fff, 0 0 0 $adyen-pe-box-shadow-width rgba(0, 112, 245, 0.8);
+        box-shadow:
+            0 0 0 $adyen-pe-box-shadow-initial-width #fff,
+            0 0 0 $adyen-pe-box-shadow-width style.token(focus-ring-color);
         outline: none;
         transition: $adyen-pe-transition-duration $adyen-pe-timing-function-ease-in-out;
     }
