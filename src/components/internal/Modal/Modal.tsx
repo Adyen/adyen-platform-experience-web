@@ -1,7 +1,7 @@
 import { ButtonVariant } from '../Button/types';
 import { useClickOutside } from '../../../hooks/element/useClickOutside';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
-import tabbable from '../../../primitives/dom/tabbableRoot/tabbable';
+import tabbable, { getDeepActiveElement } from '../../../primitives/dom/tabbableRoot/tabbable';
 import useFocusTrap from '../../../hooks/element/useFocusTrap';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { useCallback, useContext, useEffect, useRef } from 'preact/hooks';
@@ -43,7 +43,7 @@ export default function Modal({
 
     useEffect(() => {
         if (isOpen && modalRootElement.current) {
-            focusRestoreElement.current = document.activeElement;
+            focusRestoreElement.current = getDeepActiveElement();
             let tabbableHandle = tabbable();
 
             // Temporarily focus on the capture element, so that

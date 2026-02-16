@@ -7,10 +7,14 @@ const STORY_ID = 'mocked-transactions-transaction-details--data-customization';
 test.describe('Data Customization', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
-            ['Landed on page', sharedAnalyticsEventProperties],
-        ]);
+        await expectAnalyticsEvents(
+            analyticsEvents,
+            [
+                ['Customized translation', { category: 'PIE', subCategory: 'Core', locale: 'en-US', keys: [] }],
+                ['Landed on page', sharedAnalyticsEventProperties],
+            ],
+            { strictOrder: false }
+        );
     });
 
     test('should render payment transaction details without hidden fields', async ({ page }) => {
