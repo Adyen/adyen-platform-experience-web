@@ -48,7 +48,7 @@
         user-select: none;
         width: 100%;
 
-        &:hover:not(:disabled) &:hover:not([aria-disabled='true']) {
+        &:hover:where(:not(:disabled, [aria-disabled='true'])) {
             background-color: style.token(color-background-primary-hover);
         }
 
