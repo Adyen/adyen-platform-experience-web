@@ -40,6 +40,11 @@ const config: StorybookConfig = {
                 chunkSizeWarningLimit: 800,
                 rollupOptions: {
                     output: {
+                        // Merge small chunks to reduce HTTP requests.
+                        experimentalMinChunkSize: 10_000,
+                        // Only split vendor (node_modules) chunks. Splitting application code
+                        // (components/internal, stories) causes circular dependency TDZ errors
+                        // with Vite 7 / Rollup 4 and is left to Rollup's default chunking.
                         manualChunks: (id: string) => {
                             if (id.includes('node_modules')) {
                                 return findChunk(
@@ -51,31 +56,6 @@ const config: StorybookConfig = {
                                         'vendor-utils': 'classnames',
                                     },
                                     'vendor-other'
-                                );
-                            }
-
-                            if (id.includes('/components/internal/')) {
-                                return findChunk(
-                                    id,
-                                    {
-                                        'components-formfields': '/FormFields/',
-                                        'components-calendar': '/Calendar/',
-                                    },
-                                    'components-internal'
-                                );
-                            }
-
-                            if (id.includes('/stories/')) {
-                                return findChunk(
-                                    id,
-                                    {
-                                        'stories-api': '/stories/api/',
-                                        'stories-capital': '/stories/components/Capital/',
-                                        'stories-disputes': '/stories/components/Disputes/',
-                                        'stories-paybylink': '/stories/components/PayByLink/',
-                                        'stories-mocked': '/stories/mocked/',
-                                    },
-                                    'stories-other'
                                 );
                             }
                         },
