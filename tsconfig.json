@@ -22,7 +22,7 @@
         "declarationDir": "./dist/types",
         "jsxImportSource": "preact",
         "jsx": "react-jsx",
-        "types": ["@testing-library/jest-dom", "node", "vitest/globals"],
+        "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
         "stripInternal": true
     },
     "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "src/translations/*.json", "tests/**/*.ts"],

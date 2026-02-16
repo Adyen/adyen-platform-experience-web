@@ -25,7 +25,7 @@ jobs:
 
       - name: Create a build and export an artifact
         run: |
-          npm run build:publish
+          pnpm run build:publish
 
       - name: Determine the release version
         run: |
@@ -45,7 +45,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run changeset -- tag
+          publish: pnpm run changeset -- tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
