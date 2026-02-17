@@ -40,6 +40,9 @@ jobs:
     timeout-minutes: 15
     env:
       CI: true
+      PLAYGROUND_HOST: localhost
+      PLAYGROUND_PORT: 4173
+      PLAYGROUND_URL: http://localhost:4173
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
