@@ -94,7 +94,7 @@ jobs:
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
-        run: pnpm run test:integration --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }} --workers=1
+        run: pnpm run test:integration --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
         if: failure()
