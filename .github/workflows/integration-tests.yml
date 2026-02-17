@@ -76,7 +76,7 @@ jobs:
     env:
       CI: true
       PLAYWRIGHT_WORKERS: 1
-      PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite serve storybook-static --config vite.config.ts
+      PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config vite.config.ts
       PLAYGROUND_HOST: localhost
       PLAYGROUND_PORT: 4173
       PLAYGROUND_URL: http://localhost:4173
