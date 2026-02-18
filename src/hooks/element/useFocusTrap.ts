@@ -85,14 +85,6 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
         if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
         if (interactionKeyPressed.current) return;
 
-        // Don't trigger escape if focus is moving to the control element (e.g., toggle button)
-        // This prevents the popover from closing and reopening when clicking the toggle button
-        const currentTarget = evt.currentTarget as Element;
-        const controlElement = (currentTarget as any)?.[CONTROL_ELEMENT_PROPERTY];
-        if (controlElement instanceof Element && controlElement.contains(evt.relatedTarget as Node)) {
-            return;
-        }
-
         escapedFocus.current = true;
 
         requestAnimationFrame(() => {
