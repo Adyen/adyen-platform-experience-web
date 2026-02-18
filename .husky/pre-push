@@ -9,7 +9,7 @@ GREEN='\033[0;32m'
 echo "----- ${YELLOW}Pre-push hook checks started${NC} -----"
 
 echo "${LIGHT_BLUE}Checking for type errors...${NC}"
-npm run types:check
+pnpm run types:check
 
 # Successful check
 echo "${GREEN}✓✓✓✓✓ Types are correct!${NC}"
