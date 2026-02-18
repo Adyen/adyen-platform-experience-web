@@ -1,6 +1,6 @@
 import keys from '../../src/assets/translations/en-US.json' with { type: 'json' };
 import type { PageAnalyticsEvent } from '../fixtures/analytics/events';
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: './envs/.env' });
@@ -129,3 +129,17 @@ export const sleep = async (ms: number = 100) => {
 };
 
 export const getComponentRoot = (page: Page) => page.locator('.adyen-pe-component');
+
+export const clickOutsideDialog = async (dialog: Locator) => {
+    await expect(dialog).toBeVisible();
+    await dialog.page().click('body', { position: { x: 0, y: 0 } });
+    await expect(dialog).toBeHidden();
+};
+
+export const selectFirstUnselectedBalanceAccount = async (balanceAccountSelectorDialog: Locator) => {
+    await expect(balanceAccountSelectorDialog).toBeVisible();
+    const firstUnselectedOption = balanceAccountSelectorDialog.getByRole('option', { selected: false, disabled: false }).nth(0);
+
+    await firstUnselectedOption.click();
+    await expect(balanceAccountSelectorDialog).toBeHidden();
+};
