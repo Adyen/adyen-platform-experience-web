@@ -5,7 +5,6 @@ import withTabbableRoot, { focusIsWithin, getDeepActiveElement, isFocusable } fr
 import type { Reflexable } from '../../primitives/reactive/reflex';
 import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
-import { CONTROL_ELEMENT_PROPERTY } from './useClickOutside';
 
 const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>, onEscape: (interactionKeyPressed: boolean) => any) => {
     const escapedFocus = useRef(false);
