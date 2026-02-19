@@ -16,7 +16,7 @@ fi
 # Check the current package version
 current_version=$(jq -r '.version' package.json)
 
-npm run changeset -- version
+pnpm run changeset -- version
 
 # Check the newly bumped package version
 new_version=$(jq -r '.version' package.json)
@@ -28,7 +28,7 @@ fi
 
 bump_branch="bump/$new_version"
 
-npm install
+pnpm install
 git add .
 git commit -m "Bump to version $new_version"
 git push origin "HEAD:$bump_branch" || { echo -e "${RED}Failed to push to remote branch $bump_branch${NC}"; exit 1; }

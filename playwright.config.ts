@@ -5,6 +5,8 @@ import { getEnvironment } from './envs/getEnvs';
 const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
+const ciWorkers = Math.max(1, Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '', 10) || 2);
+const webServerCommand = process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm run storybook:static';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -24,8 +26,8 @@ const config: PlaywrightTestConfig = {
     /* Retry on CI only. Playwright will tell us if a test is flaky */
     retries: process.env.CI ? 2 : 0,
 
-    /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    /* Allow CI worker tuning via PLAYWRIGHT_WORKERS. */
+    workers: process.env.CI ? ciWorkers : undefined,
 
     reporter: 'html',
 
@@ -74,7 +76,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'npm run storybook:static',
+        command: webServerCommand,
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? app.port : undefined,
