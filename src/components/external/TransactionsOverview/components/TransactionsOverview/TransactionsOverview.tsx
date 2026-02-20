@@ -12,7 +12,8 @@ export const TransactionsOverview = (props: TransactionsOverviewProps) => (
 );
 
 TransactionsOverview.Content = () => {
-    const { isTransactionsView } = useTransactionsOverviewContext();
+    const { transactionsViewState } = useTransactionsOverviewContext();
+    const { isTransactionsView } = transactionsViewState;
     // prettier-ignore
     return (
         <TransactionsOverviewShell>

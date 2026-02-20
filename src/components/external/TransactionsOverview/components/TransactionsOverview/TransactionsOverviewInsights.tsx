@@ -10,13 +10,18 @@ const sharedAnalyticsEventProperties = {
 } as const;
 
 const TransactionsOverviewInsights = () => {
-    const { currenciesLookupResult, insightsCurrency, insightsTotalsResult } = useTransactionsOverviewContext();
+    const { currenciesLookupResult, transactionsFiltersResult, insightsTotalsResult } = useTransactionsOverviewContext();
+    const { insightsCurrency } = transactionsFiltersResult;
 
     useLandedPageEvent(sharedAnalyticsEventProperties);
     useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
-        <InsightsTotals currency={insightsCurrency} currenciesLookupResult={currenciesLookupResult} transactionsTotalsResult={insightsTotalsResult} />
+        <InsightsTotals
+            currency={insightsCurrency.$value}
+            currenciesLookupResult={currenciesLookupResult}
+            transactionsTotalsResult={insightsTotalsResult}
+        />
     );
 };
 

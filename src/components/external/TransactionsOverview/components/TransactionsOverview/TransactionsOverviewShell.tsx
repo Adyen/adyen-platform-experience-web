@@ -12,8 +12,8 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './TransactionsOverview.scss';
 
 const TransactionsOverviewShell = ({ children }: PropsWithChildren<{}>) => {
-    const { filterBarState, hideTitle, isTransactionsView, transactionsListResult, transactionsViewState } = useTransactionsOverviewContext();
-    const { activeView, onViewChange, viewTabs } = transactionsViewState;
+    const { filterBarState, hideTitle, transactionsListResult, transactionsViewState } = useTransactionsOverviewContext();
+    const { activeView, isTransactionsView, onViewChange, viewTabs } = transactionsViewState;
     const { isMobileContainer } = filterBarState;
     const { i18n } = useCoreContext();
 

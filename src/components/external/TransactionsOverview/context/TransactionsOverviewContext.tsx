@@ -1,23 +1,13 @@
 import { createContext } from 'preact';
-import { INITIAL_FILTERS } from '../constants';
-import { TransactionsFilters, TransactionsOverviewContextValue, TransactionsOverviewProviderProps, TransactionsView } from '../types';
-import { useCallback, useContext, useMemo, useState } from 'preact/hooks';
+import { TransactionsOverviewContextValue, TransactionsOverviewProviderProps } from '../types';
+import { useContext, useEffect, useMemo, useRef } from 'preact/hooks';
 import { useFilterBarState } from '../../../internal/FilterBar';
 import useTransactionsList from '../hooks/useTransactionsList';
-import useTransactionsTotals, { GetQueryParams } from '../hooks/useTransactionsTotals';
+import useTransactionsTotals from '../hooks/useTransactionsTotals';
 import useTransactionsViewSwitcher from '../hooks/useTransactionsViewSwitcher';
+import useTransactionsFilters from '../hooks/useTransactionsFilters';
 import useAccountBalances from '../../../../hooks/useAccountBalances';
 import useCurrenciesLookup from '../hooks/useCurrenciesLookup';
-
-const INSIGHTS_FILTERS_SET = new Set<keyof TransactionsFilters>(['balanceAccount', 'createdDate']);
-
-const getTransactionsTotalsQueryParams: GetQueryParams = allQueryParams => allQueryParams;
-
-const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({
-    balanceAccountId,
-    createdSince,
-    createdUntil,
-});
 
 const TransactionsOverviewContext = createContext<TransactionsOverviewContextValue | undefined>(undefined);
 
@@ -42,58 +32,60 @@ export const TransactionsOverviewProvider = ({
     preferredLimit,
     showDetails,
 }: TransactionsOverviewProviderProps) => {
-    const [filters, setFilters] = useState(INITIAL_FILTERS);
-    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(Date.now());
-    const [insightsCurrency, setInsightsCurrency] = useState<string>();
-
     const filterBarState = useFilterBarState();
+    const transactionsFiltersResult = useTransactionsFilters();
+    const { filters, listQueryParams, insightsQueryParams, filterParams, insightsCurrency } = transactionsFiltersResult;
 
-    const lockedView = useMemo(() => {
-        if (mode === 'insights') return TransactionsView.INSIGHTS;
-        if (hideInsights) return TransactionsView.TRANSACTIONS;
-    }, [hideInsights, mode]);
+    const effectiveMode = useMemo(() => (mode === 'overview' && hideInsights ? 'transactions' : mode), [mode, hideInsights]);
+    const transactionsViewState = useTransactionsViewSwitcher({ mode: effectiveMode });
+    const { isTransactionsView } = transactionsViewState;
 
-    const transactionsViewState = useTransactionsViewSwitcher({ view: lockedView });
-    const isTransactionsView = transactionsViewState.activeView !== TransactionsView.INSIGHTS;
-    const hasActiveBalanceAccount = !!filters.balanceAccount?.id;
+    const balanceAccount = filters.value.balanceAccount;
+    const defaultCurrency = balanceAccount?.defaultCurrencyCode;
+    const hasActiveBalanceAccount = !!balanceAccount?.id;
 
-    const onFiltersChange = useCallback((nextFilters: Readonly<TransactionsFilters>) => {
-        setLastFiltersChangeTimestamp(Date.now());
-        setFilters(nextFilters);
-    }, []);
-
-    const accountBalancesResult = useAccountBalances({ balanceAccount: filters.balanceAccount });
+    const accountBalancesResult = useAccountBalances({ balanceAccount });
 
     const insightsTotalsResult = useTransactionsTotals({
         fetchEnabled: !isTransactionsView && hasActiveBalanceAccount,
-        getQueryParams: getInsightsTotalsQueryParams,
-        applicableFilters: INSIGHTS_FILTERS_SET,
-        now: lastFiltersChangeTimestamp,
-        filters,
+        queryParams: insightsQueryParams,
     });
 
     const transactionsTotalsResult = useTransactionsTotals({
         fetchEnabled: isTransactionsView && hasActiveBalanceAccount,
-        getQueryParams: getTransactionsTotalsQueryParams,
-        now: lastFiltersChangeTimestamp,
-        filters,
+        queryParams: listQueryParams,
     });
 
     const transactionsListResult = useTransactionsList({
         fetchEnabled: mode !== 'insights' && hasActiveBalanceAccount,
-        now: lastFiltersChangeTimestamp,
+        queryParams: listQueryParams,
         allowLimitSelection,
         dataCustomization,
         onFiltersChanged,
         preferredLimit,
-        filters,
+        filterParams,
     });
 
     const currenciesLookupResult = useCurrenciesLookup({
-        defaultCurrency: filters.balanceAccount?.defaultCurrencyCode,
         balances: accountBalancesResult.balances,
         totals: (isTransactionsView ? transactionsTotalsResult : insightsTotalsResult).totals,
+        defaultCurrency,
     });
+
+    const availableCurrencies = currenciesLookupResult.sortedCurrencies;
+    const cachedAvailableCurrencies = useRef(availableCurrencies);
+    const cachedDefaultCurrency = useRef(defaultCurrency);
+
+    useEffect(() => {
+        const availableCurrenciesChanged = cachedAvailableCurrencies.current !== availableCurrencies;
+        const defaultCurrencyChanged = cachedDefaultCurrency.current !== defaultCurrency;
+
+        if (availableCurrenciesChanged || defaultCurrencyChanged) {
+            cachedAvailableCurrencies.current = availableCurrencies;
+            cachedDefaultCurrency.current = defaultCurrency;
+            insightsCurrency.set(defaultCurrency);
+        }
+    }, [availableCurrencies, defaultCurrency, insightsCurrency.set]);
 
     const contextValue = useMemo(
         () => ({
@@ -102,19 +94,14 @@ export const TransactionsOverviewProvider = ({
             currenciesLookupResult,
             dataCustomization,
             filterBarState,
-            filters,
             hideInsights,
             hideTitle,
-            insightsCurrency,
             insightsTotalsResult,
             isLoadingBalanceAccount,
-            isTransactionsView,
-            lastFiltersChangeTimestamp,
             onContactSupport,
-            onFiltersChange,
             onRecordSelection,
-            setInsightsCurrency,
             showDetails,
+            transactionsFiltersResult,
             transactionsListResult,
             transactionsTotalsResult,
             transactionsViewState,
@@ -125,18 +112,14 @@ export const TransactionsOverviewProvider = ({
             currenciesLookupResult,
             dataCustomization,
             filterBarState,
-            filters,
             hideInsights,
             hideTitle,
-            insightsCurrency,
             insightsTotalsResult,
             isLoadingBalanceAccount,
-            isTransactionsView,
-            lastFiltersChangeTimestamp,
             onContactSupport,
-            onFiltersChange,
             onRecordSelection,
             showDetails,
+            transactionsFiltersResult,
             transactionsListResult,
             transactionsTotalsResult,
             transactionsViewState,

@@ -2,6 +2,7 @@ import { useFilterBarState } from '../../internal/FilterBar';
 import useCurrenciesLookup from './hooks/useCurrenciesLookup';
 import useTransactionsList from './hooks/useTransactionsList';
 import useTransactionsTotals from './hooks/useTransactionsTotals';
+import useTransactionsFilters from './hooks/useTransactionsFilters';
 import useAccountBalances from '../../../hooks/useAccountBalances';
 import useTransactionsViewSwitcher from './hooks/useTransactionsViewSwitcher';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../types';
@@ -37,7 +38,7 @@ export const enum TransactionsView {
     INSIGHTS = 'insights',
 }
 
-export type TransactionsOverviewMode = 'overview' | 'insights';
+export type TransactionsOverviewMode = 'overview' | 'insights' | 'transactions';
 
 export type TransactionsOverviewProps = ExternalUIComponentProps<
     TransactionOverviewComponentProps & {
@@ -60,12 +61,7 @@ export type TransactionsOverviewContextValue = Pick<
     accountBalancesResult: ReturnType<typeof useAccountBalances>;
     currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
     filterBarState: ReturnType<typeof useFilterBarState>;
-    filters: Readonly<TransactionsFilters>;
-    insightsCurrency?: string;
-    isTransactionsView: boolean;
-    lastFiltersChangeTimestamp: number;
-    onFiltersChange: (filters: Readonly<TransactionsFilters>) => void;
-    setInsightsCurrency: (currency?: string) => void;
+    transactionsFiltersResult: ReturnType<typeof useTransactionsFilters>;
     transactionsListResult: ReturnType<typeof useTransactionsList>;
     transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
     insightsTotalsResult: ReturnType<typeof useTransactionsTotals>;

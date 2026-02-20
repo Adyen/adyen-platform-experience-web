@@ -24,14 +24,17 @@ const TransactionsOverviewList = () => {
         balanceAccounts,
         currenciesLookupResult,
         isLoadingBalanceAccount,
-        filters,
         onContactSupport,
         onRecordSelection,
         showDetails,
+        transactionsFiltersResult,
         transactionsListResult,
         transactionsTotalsResult,
         dataCustomization,
     } = useTransactionsOverviewContext();
+
+    const { filters } = transactionsFiltersResult;
+    const filtersValue = filters.value;
 
     const { i18n } = useCoreContext();
     const { error: balancesError, isWaiting: loadingBalances } = accountBalancesResult;
@@ -86,7 +89,7 @@ const TransactionsOverviewList = () => {
             </div>
 
             <TransactionsList
-                balanceAccount={filters.balanceAccount}
+                balanceAccount={filtersValue.balanceAccount}
                 currenciesLookupResult={currenciesLookupResult}
                 dataCustomization={dataCustomization}
                 loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}

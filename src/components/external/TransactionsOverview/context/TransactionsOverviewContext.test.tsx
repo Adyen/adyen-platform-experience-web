@@ -5,6 +5,7 @@ import { describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
 import { PropsWithChildren } from 'preact/compat';
 import { TransactionsView } from '../types';
+import { TRANSACTIONS_VIEW_TABS } from '../constants';
 import { TransactionsOverviewProvider, useTransactionsOverviewContext } from './TransactionsOverviewContext';
 
 vi.mock('../../../../hooks/useAccountBalances', () => ({
@@ -34,7 +35,7 @@ vi.mock('../hooks/useTransactionsTotals', () => ({
 
 describe('TransactionsOverviewContext', () => {
     const getWrapper =
-        (props: { hideInsights?: boolean; mode?: 'overview' | 'insights' }) =>
+        (props: { hideInsights?: boolean; mode?: 'overview' | 'insights' | 'transactions' }) =>
         ({ children }: PropsWithChildren<{}>) => (
             <TransactionsOverviewProvider balanceAccounts={[]} isLoadingBalanceAccount={false} hideInsights={props.hideInsights} mode={props.mode}>
                 {children}
@@ -47,7 +48,7 @@ describe('TransactionsOverviewContext', () => {
         });
 
         expect(result.current.transactionsViewState.activeView).toBe(TransactionsView.INSIGHTS);
-        expect(result.current.isTransactionsView).toBe(false);
+        expect(result.current.transactionsViewState.isTransactionsView).toBe(false);
         expect(result.current.transactionsViewState.viewTabs).toHaveLength(1);
         expect(result.current.transactionsViewState.viewTabs[0]?.id).toBe(TransactionsView.INSIGHTS);
     });
@@ -58,8 +59,40 @@ describe('TransactionsOverviewContext', () => {
         });
 
         expect(result.current.transactionsViewState.activeView).toBe(TransactionsView.TRANSACTIONS);
-        expect(result.current.isTransactionsView).toBe(true);
+        expect(result.current.transactionsViewState.isTransactionsView).toBe(true);
         expect(result.current.transactionsViewState.viewTabs).toHaveLength(1);
         expect(result.current.transactionsViewState.viewTabs[0]?.id).toBe(TransactionsView.TRANSACTIONS);
+    });
+
+    test('locks to transactions view when mode is transactions', () => {
+        const { result } = renderHook(() => useTransactionsOverviewContext(), {
+            wrapper: getWrapper({ mode: 'transactions' }),
+        });
+
+        expect(result.current.transactionsViewState.activeView).toBe(TransactionsView.TRANSACTIONS);
+        expect(result.current.transactionsViewState.isTransactionsView).toBe(true);
+        expect(result.current.transactionsViewState.viewTabs).toHaveLength(1);
+        expect(result.current.transactionsViewState.viewTabs[0]?.id).toBe(TransactionsView.TRANSACTIONS);
+    });
+
+    test('locks to transactions view when mode is overview and hideInsights is true', () => {
+        const { result } = renderHook(() => useTransactionsOverviewContext(), {
+            wrapper: getWrapper({ mode: 'overview', hideInsights: true }),
+        });
+
+        expect(result.current.transactionsViewState.activeView).toBe(TransactionsView.TRANSACTIONS);
+        expect(result.current.transactionsViewState.isTransactionsView).toBe(true);
+        expect(result.current.transactionsViewState.viewTabs).toHaveLength(1);
+        expect(result.current.transactionsViewState.viewTabs[0]?.id).toBe(TransactionsView.TRANSACTIONS);
+    });
+
+    test('allows view switching in overview mode without hideInsights', () => {
+        const { result } = renderHook(() => useTransactionsOverviewContext(), {
+            wrapper: getWrapper({ mode: 'overview' }),
+        });
+
+        expect(result.current.transactionsViewState.activeView).toBe(TransactionsView.TRANSACTIONS);
+        expect(result.current.transactionsViewState.isTransactionsView).toBe(true);
+        expect(result.current.transactionsViewState.viewTabs).toEqual(TRANSACTIONS_VIEW_TABS);
     });
 });

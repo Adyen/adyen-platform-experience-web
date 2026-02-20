@@ -24,7 +24,6 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { fixedForwardRef } from '../../../../../utils/preact';
-import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '../../../../../translations';
 import { Tag } from '../../../../internal/Tag/Tag';
 import { PropsWithChildren } from 'preact/compat';
@@ -69,7 +68,9 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
 );
 
 const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
-    const { filters, lastFiltersChangeTimestamp } = useTransactionsOverviewContext();
+    const { transactionsFiltersResult } = useTransactionsOverviewContext();
+    const { filters, listQueryParams } = transactionsFiltersResult;
+    const filtersValue = filters.value;
     const { i18n } = useCoreContext();
 
     const userEvents = useAnalyticsContext();
@@ -81,7 +82,7 @@ const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
     const [exportColumns, setExportColumns] = useState([] as readonly (typeof EXPORT_COLUMNS)[number][]);
 
     const [activeFilters, exportParams] = useMemo(() => {
-        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
+        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filtersValue;
 
         const activeFilters: readonly TranslationKey[] = [
             ...(balanceAccount?.id ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -93,12 +94,12 @@ const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
         ] as const;
 
         const exportParams = {
-            ...getTransactionsFilterQueryParams(filters, lastFiltersChangeTimestamp),
+            ...listQueryParams,
             sortDirection: 'desc' as const,
         };
 
         return [activeFilters, exportParams];
-    }, [filters, lastFiltersChangeTimestamp]);
+    }, [filtersValue, listQueryParams]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);
