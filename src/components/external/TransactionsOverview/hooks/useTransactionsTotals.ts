@@ -1,31 +1,24 @@
 import { useFetch } from '../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { compareTransactionsFilters, getTransactionsFilterQueryParams } from '../components/utils';
+import { operations } from '../../../../types/api/resources/TransactionsResourceV2';
 import { createAbortable } from '../../../../primitives/async/abortable';
-import { isFunction } from '../../../../utils';
 import { ITransactionTotal } from '../../../../types';
-import { TransactionsFilters } from '../types';
-
-type AllQueryParams = ReturnType<typeof getTransactionsFilterQueryParams>;
-type TotalsQueryParams = Partial<AllQueryParams> & Pick<AllQueryParams, 'balanceAccountId'>;
-export type GetQueryParams = (allQueryParams: AllQueryParams) => TotalsQueryParams;
+import { isFunction } from '../../../../utils';
 
 export interface UseTransactionsTotalsProps {
     fetchEnabled: boolean;
-    filters: Readonly<TransactionsFilters>;
-    applicableFilters?: Set<keyof TransactionsFilters>;
-    getQueryParams: GetQueryParams;
-    now: number;
+    query: operations['getTransactionTotals']['parameters']['query'];
+    filtersLoading?: boolean;
 }
 
-const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
+const useTransactionsTotals = ({ fetchEnabled, query, filtersLoading }: UseTransactionsTotalsProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
     const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
     const fetchTimestampRef = useRef<number>();
 
     const abortable = useRef(createAbortable()).current;
-    const cachedFilters = useRef(filters);
+    const cachedQuery = useRef(query);
 
     const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
@@ -36,14 +29,13 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         if (shouldFetchTransactionTotals) {
             const { signal } = abortable.refresh(true);
             try {
-                const query = getQueryParams(getTransactionsFilterQueryParams(filters, now));
                 const json = await getTransactionTotals({ signal }, { query });
                 if (!signal.aborted) return json?.data;
             } catch (error) {
                 if (!signal.aborted) throw error;
             }
         }
-    }, [abortable, filters, getQueryParams, getTransactionTotals, now, shouldFetchTransactionTotals]);
+    }, [abortable, getTransactionTotals, query, shouldFetchTransactionTotals]);
 
     const { data, error, isFetching } = useFetch({
         fetchOptions: { enabled: shouldFetchTransactionTotals },
@@ -59,17 +51,17 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     }, [canRefresh, isFetching]);
 
     useEffect(() => {
-        if (cachedFilters.current === filters) return;
+        if (cachedQuery.current === query) return;
 
-        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFilters.current, applicableFilters);
+        const queryDidChange = (Object.keys(query) as (keyof typeof query)[]).some(key => cachedQuery.current[key] !== query[key]);
 
-        if (applicableFiltersDidChange) {
+        if (queryDidChange) {
             // The applicable filters have changed,
             // hence a new fetch request is required
             setFetchTimestamp(performance.now());
-            cachedFilters.current = filters;
+            cachedQuery.current = query;
         }
-    }, [filters, applicableFilters]);
+    }, [query]);
 
     useEffect(() => {
         if (pendingRefresh) {
@@ -94,7 +86,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         canRefresh,
         refresh,
         isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
+        isWaiting: !!filtersLoading || isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
     } as const;
 };
 

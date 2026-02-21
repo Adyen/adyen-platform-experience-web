@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import useTransactionsList from '../../hooks/useTransactionsList';
 import useTransactionsViewSwitcher from '../../hooks/useTransactionsViewSwitcher';
-import useTransactionsTotals, { GetQueryParams } from '../../hooks/useTransactionsTotals';
+import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import useAccountBalances from '../../../../../hooks/useAccountBalances';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
@@ -11,19 +11,12 @@ import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
 import { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
-import { TransactionOverviewProps, TransactionsFilters as Filters, TransactionsView } from '../../types';
-import { useCallback, useMemo, useState } from 'preact/hooks';
-import { classes, INITIAL_FILTERS } from '../../constants';
+import { useTransactionsFilters } from '../../hooks/useTransactionsFilters';
+import { TransactionOverviewProps, TransactionsView } from '../../types';
 import { Header } from '../../../../internal/Header';
+import { useMemo, useState } from 'preact/hooks';
+import { classes } from '../../constants';
 import './TransactionsOverview.scss';
-
-const INSIGHTS_FILTERS_SET = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
-const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({
-    balanceAccountId,
-    createdSince,
-    createdUntil,
-});
-const getTransactionsTotalsQueryParams: GetQueryParams = allQueryParams => allQueryParams;
 
 export const TransactionsOverview = ({
     onFiltersChanged,
@@ -37,50 +30,41 @@ export const TransactionsOverview = ({
     hideTitle,
     dataCustomization,
 }: TransactionOverviewProps) => {
-    const [filters, setFilters] = useState(INITIAL_FILTERS);
-    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(Date.now());
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
-
     const filterBarState = useFilterBarState();
+    const filters = useTransactionsFilters({ onFiltersChanged });
 
-    const { balanceAccount } = filters;
-    const { isMobileContainer } = filterBarState;
     const { i18n } = useCoreContext();
-
+    const { isMobileContainer } = filterBarState;
     const { activeView, onViewChange, viewTabs } = useTransactionsViewSwitcher();
+
+    const filtersLoading = filters.loading;
+    const balanceAccount = filters.balanceAccount.value;
     const isTransactionsView = activeView !== TransactionsView.INSIGHTS;
     const hasActiveBalanceAccount = !!balanceAccount?.id;
-
-    const onFiltersChange = useCallback((filters: Readonly<Filters>) => {
-        setLastFiltersChangeTimestamp(Date.now());
-        setFilters(filters);
-    }, []);
 
     const accountBalancesResult = useAccountBalances({ balanceAccount });
 
     const insightsTotalsResult = useTransactionsTotals({
         fetchEnabled: !isTransactionsView && hasActiveBalanceAccount,
-        getQueryParams: getInsightsTotalsQueryParams,
-        applicableFilters: INSIGHTS_FILTERS_SET,
-        now: lastFiltersChangeTimestamp,
-        filters,
+        query: filters.insightsFiltersQuery,
+        filtersLoading,
     });
 
     const transactionsTotalsResult = useTransactionsTotals({
         fetchEnabled: isTransactionsView && hasActiveBalanceAccount,
-        getQueryParams: getTransactionsTotalsQueryParams,
-        now: lastFiltersChangeTimestamp,
-        filters,
+        query: filters.transactionsFiltersQuery,
+        filtersLoading,
     });
 
     const transactionsListResult = useTransactionsList({
         fetchEnabled: hasActiveBalanceAccount,
-        now: lastFiltersChangeTimestamp,
+        query: filters.transactionsFiltersQuery,
+        filterParams: filters.transactionsFilterParams,
         allowLimitSelection,
         dataCustomization,
-        onFiltersChanged,
         preferredLimit,
-        filters,
+        filtersLoading,
     });
 
     const currenciesLookupResult = useCurrenciesLookup({
@@ -90,11 +74,8 @@ export const TransactionsOverview = ({
     });
 
     const exportButton = useMemo(
-        () =>
-            isTransactionsView ? (
-                <TransactionsExport disabled={!transactionsListResult.page} filters={filters} now={lastFiltersChangeTimestamp} />
-            ) : null,
-        [filters, isTransactionsView, lastFiltersChangeTimestamp, transactionsListResult.page]
+        () => (isTransactionsView ? <TransactionsExport disabled={!transactionsListResult.page} query={filters.transactionsFiltersQuery} /> : null),
+        [isTransactionsView, filters.transactionsFiltersQuery, transactionsListResult.page]
     );
 
     const viewSwitcher = useMemo(
@@ -109,6 +90,8 @@ export const TransactionsOverview = ({
             ) : null,
         [activeView, onViewChange, viewTabs, i18n]
     );
+
+    console.log('here...');
 
     return (
         <div className={cx(classes.root, { [classes.rootSmall]: isMobileContainer })}>
@@ -130,7 +113,7 @@ export const TransactionsOverview = ({
                     isTransactionsView={isTransactionsView}
                     insightsCurrency={insightsCurrency}
                     setInsightsCurrency={setInsightsCurrency}
-                    onChange={onFiltersChange}
+                    filters={filters}
                 />
                 {!isMobileContainer && <>{exportButton}</>}
             </div>

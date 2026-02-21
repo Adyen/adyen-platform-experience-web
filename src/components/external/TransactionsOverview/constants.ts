@@ -1,6 +1,6 @@
 import { TranslationKey } from '../../../translations';
+import { TransactionsDateRange, TransactionsView } from './types';
 import { ITransaction, ITransactionCategory, ITransactionStatus } from '../../../types';
-import { TransactionsDateRange, TransactionsFilters, TransactionsView } from './types';
 import * as RangePreset from '../../internal/Calendar/calendar/timerange/presets';
 
 const ROOT_CLASS = 'adyen-pe-transactions';
@@ -61,15 +61,6 @@ export const TRANSACTIONS_VIEW_TABS: readonly Readonly<{ id: TransactionsView; l
     { id: TransactionsView.TRANSACTIONS, label: 'transactions.overview.views.transactions', content: null } as const,
     { id: TransactionsView.INSIGHTS, label: 'transactions.overview.views.insights', content: null } as const,
 ] as const;
-
-export const INITIAL_FILTERS: Readonly<TransactionsFilters> = {
-    balanceAccount: undefined,
-    categories: [] as const,
-    createdDate: TRANSACTION_DATE_RANGE_DEFAULT_TIMESTAMPS,
-    currencies: [] as const,
-    paymentPspReference: undefined,
-    statuses: ['Booked'] as const,
-} as const;
 
 export const EXPORT_COLUMNS = [
     'id',

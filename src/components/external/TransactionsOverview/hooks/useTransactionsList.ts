@@ -1,10 +1,9 @@
 import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
-import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
-import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
+import { operations } from '../../../../types/api/resources/TransactionsResourceV2';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
@@ -13,11 +12,17 @@ import normalizeCustomFields from '../../../utils/customData/normalizeCustomFiel
 import hasCustomField from '../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../utils/customData/mergeRecords';
 
+type TransactionsQuery = operations['getTransactions']['parameters']['query'];
+type TransactionsFiltersQuery = Omit<TransactionsQuery, 'limit' | 'cursor' | 'sortDirection'>;
+type RequiredQueryParams = 'createdSince' | 'createdUntil';
+type OptionalQueryParams = Exclude<keyof TransactionsFiltersQuery, RequiredQueryParams>;
+
 export interface UseTransactionsListProps
-    extends Pick<TransactionOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
+    extends Pick<TransactionOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'preferredLimit'> {
     fetchEnabled: boolean;
-    filters: Readonly<TransactionsFilters>;
-    now: number;
+    filtersLoading: boolean;
+    filterParams: { [K in OptionalQueryParams]: string | undefined } & { [K in RequiredQueryParams]: string };
+    query: TransactionsFiltersQuery;
 }
 
 const useTransactionsList = ({
@@ -25,28 +30,27 @@ const useTransactionsList = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     dataCustomization,
     fetchEnabled,
-    filters,
-    now,
-    onFiltersChanged,
+    filtersLoading,
+    filterParams,
+    query: transactionsQuery,
 }: UseTransactionsListProps) => {
     const { getTransactions } = useConfigContext().endpoints;
 
-    const filterParams = useMemo(() => getTransactionsFilterParams(filters, now), [filters, now]);
     const initialFilterParams = useRef(filterParams).current;
     const cachedFilterParams = useRef(initialFilterParams);
     const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
 
     const fetchTransactions = useCallback(
-        async (requestParams: Pick<Parameters<NonNullable<typeof getTransactions>>[1]['query'], 'limit' | 'cursor'>, signal?: AbortSignal) => {
-            const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
+        async (requestParams: Pick<TransactionsQuery, 'limit' | 'cursor'>, signal?: AbortSignal) => {
+            const query: TransactionsQuery = {
                 ...requestParams,
-                ...getTransactionsFilterQueryParams(filters, now),
+                ...transactionsQuery,
                 sortDirection: 'desc' as const,
             } as const;
 
             return getTransactions!({ signal }, { query });
         },
-        [filters, getTransactions, now]
+        [getTransactions, transactionsQuery]
     );
 
     const {
@@ -67,7 +71,6 @@ const useTransactionsList = ({
         enabled: canFetchTransactions,
         filterParams: initialFilterParams,
         initialFiltersSameAsDefault: true,
-        onFiltersChanged: isFunction(onFiltersChanged) ? onFiltersChanged : void 0,
         preferredLimitOptions: allowLimitSelection ? LIMIT_OPTIONS : undefined,
         preferredLimit,
     });
@@ -95,7 +98,7 @@ const useTransactionsList = ({
         ...paginationProps,
         error,
         fields: normalizedFields,
-        fetching: fetching || loadingCustomRecords,
+        fetching: filtersLoading || fetching || loadingCustomRecords,
         records: customRecords,
         hasCustomColumn,
         limit,

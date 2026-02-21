@@ -1,6 +1,5 @@
-import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
+import { IBalanceAccountBase } from '../../../types';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../types';
-import { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
 import { TranslationKey } from '../../../translations';
 
 type _DateRangeKey<T extends TranslationKey> = T;
@@ -15,15 +14,6 @@ export type TransactionsDateRange =
     | _DateRangeKey<'common.filters.types.date.rangeSelect.options.lastMonth'>
     | _DateRangeKey<'common.filters.types.date.rangeSelect.options.yearToDate'>
     | _DateRangeKey<'common.filters.types.date.rangeSelect.options.custom'>;
-
-export interface TransactionsFilters {
-    balanceAccount?: Readonly<IBalanceAccountBase>;
-    categories: readonly ITransactionCategory[];
-    statuses: readonly ITransactionStatus[];
-    currencies: readonly IAmount['currency'][];
-    createdDate: RangeTimestamps;
-    paymentPspReference?: string;
-}
 
 export const enum TransactionsView {
     TRANSACTIONS = 'transactions',

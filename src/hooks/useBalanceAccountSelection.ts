@@ -15,6 +15,7 @@ export interface UseBalanceAccountSelectionProps {
     eventSubCategory?: string;
     eventLabel?: FilterType;
     onUpdateSelection?: (balanceAccount?: IBalanceAccountBase) => void;
+    selectedBalanceAccountId?: string;
 }
 
 const useBalanceAccountSelection = ({
@@ -24,6 +25,7 @@ const useBalanceAccountSelection = ({
     eventSubCategory,
     eventLabel = 'Balance account filter',
     onUpdateSelection,
+    selectedBalanceAccountId,
 }: UseBalanceAccountSelectionProps) => {
     const { i18n } = useCoreContext();
     const { logEvent } = useFilterAnalyticsEvent({ category: eventCategory, subCategory: eventSubCategory, label: eventLabel });
@@ -73,6 +75,13 @@ const useBalanceAccountSelection = ({
     );
 
     const resetBalanceAccountSelection = useCallback(() => setSelectedBalanceAccountIndex(0), []);
+
+    useEffect(() => {
+        if (selectedBalanceAccountId && allBalanceAccounts) {
+            const index = allBalanceAccounts.findIndex(({ id }) => id === selectedBalanceAccountId);
+            if (index >= 0) setSelectedBalanceAccountIndex(index);
+        }
+    }, [selectedBalanceAccountId, allBalanceAccounts]);
 
     useEffect(() => {
         const cachedBalanceAccountId = cachedBalanceAccountIdRef.current;

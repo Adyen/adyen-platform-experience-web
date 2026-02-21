@@ -126,4 +126,26 @@ describe('useBalanceAccountSelection', () => {
         expect(result.current.activeBalanceAccount?.id).toBe(ALL_BALANCE_ACCOUNTS_SELECTION_ID);
         expect(result.current.activeBalanceAccount?.description).toBeUndefined();
     });
+
+    test('should update selection when selectedBalanceAccountId prop changes', () => {
+        const { result, rerender } = renderHook(props => useBalanceAccountSelection({ balanceAccounts: mockBalanceAccounts, ...props }), {
+            initialProps: { selectedBalanceAccountId: 'BA00000000000000000000001' },
+        });
+
+        expect(result.current.activeBalanceAccount).toEqual(mockBalanceAccounts[0]);
+
+        rerender({ selectedBalanceAccountId: 'BA00000000000000000000002' });
+        expect(result.current.activeBalanceAccount).toEqual(mockBalanceAccounts[1]);
+    });
+
+    test('should not update selection when selectedBalanceAccountId prop is invalid', () => {
+        const { result, rerender } = renderHook(props => useBalanceAccountSelection({ balanceAccounts: mockBalanceAccounts, ...props }), {
+            initialProps: { selectedBalanceAccountId: 'BA00000000000000000000001' },
+        });
+
+        expect(result.current.activeBalanceAccount).toEqual(mockBalanceAccounts[0]);
+
+        rerender({ selectedBalanceAccountId: 'invalid-id' });
+        expect(result.current.activeBalanceAccount).toEqual(mockBalanceAccounts[0]);
+    });
 });

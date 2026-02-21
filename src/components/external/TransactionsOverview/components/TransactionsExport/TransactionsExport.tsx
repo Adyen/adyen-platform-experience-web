@@ -18,15 +18,14 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { downloadBlob, EMPTY_ARRAY, isFunction, uniqueId } from '../../../../../utils';
+import { operations } from '../../../../../types/api/resources/TransactionsResource';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { fixedForwardRef } from '../../../../../utils/preact';
-import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '../../../../../translations';
 import { Tag } from '../../../../internal/Tag/Tag';
-import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
@@ -68,7 +67,14 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
     </Text>
 );
 
-const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; filters: Readonly<TransactionsFilters>; now: number }) => {
+type TransactionsExportQuery = operations['downloadTransactions']['parameters']['query'];
+
+export interface TransactionsExportProps {
+    disabled?: boolean;
+    query: Omit<TransactionsExportQuery, 'columns' | 'sortDirection'>;
+}
+
+const TransactionsExport = ({ disabled, query }: TransactionsExportProps) => {
     const { i18n } = useCoreContext();
     const userEvents = useAnalyticsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -78,25 +84,20 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
     const [exportStarted, setExportStarted] = useState(false);
     const [exportColumns, setExportColumns] = useState([] as readonly (typeof EXPORT_COLUMNS)[number][]);
 
-    const [activeFilters, exportParams] = useMemo(() => {
-        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
+    const activeFilters = useMemo(() => {
+        const { balanceAccountId, paymentPspReference, createdSince, createdUntil, categories, currencies /*, statuses*/ } = query;
 
         const activeFilters: readonly TranslationKey[] = [
-            ...(balanceAccount?.id ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
-            ...(createdDate ? (['transactions.overview.export.filters.types.date'] as const) : EMPTY_ARRAY),
-            // ...(statuses.length ? (['transactions.overview.export.filters.types.status'] as const) : EMPTY_ARRAY),
-            ...(categories.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
-            ...(currencies.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
+            ...(balanceAccountId ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
+            ...(createdSince && createdUntil ? (['transactions.overview.export.filters.types.date'] as const) : EMPTY_ARRAY),
+            // ...(statuses?.length ? (['transactions.overview.export.filters.types.status'] as const) : EMPTY_ARRAY),
+            ...(categories?.length ? (['transactions.overview.export.filters.types.category'] as const) : EMPTY_ARRAY),
+            ...(currencies?.length ? (['transactions.overview.export.filters.types.currency'] as const) : EMPTY_ARRAY),
             ...(paymentPspReference ? (['transactions.overview.export.filters.types.paymentPspReference'] as const) : EMPTY_ARRAY),
         ] as const;
 
-        const exportParams = {
-            ...getTransactionsFilterQueryParams(filters, now),
-            sortDirection: 'desc' as const,
-        };
-
-        return [activeFilters, exportParams];
-    }, [filters, now]);
+        return activeFilters;
+    }, [query]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);
@@ -104,7 +105,7 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const { error, isFetching } = useDownload(
         'downloadTransactions',
-        { query: { ...exportParams, columns: exportColumns } },
+        { query: { ...query, columns: exportColumns, sortDirection: 'desc' as const } },
         canExportTransactions,
         downloadBlob
     );

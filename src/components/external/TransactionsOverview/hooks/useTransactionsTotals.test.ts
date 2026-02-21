@@ -4,23 +4,18 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/preact';
 import * as ConfigContext from '../../../../core/ConfigContext';
-import useTransactionsTotals, { GetQueryParams, UseTransactionsTotalsProps } from './useTransactionsTotals';
-import { TransactionsFilters } from '../types';
+import useTransactionsTotals, { UseTransactionsTotalsProps } from './useTransactionsTotals';
 
 vi.mock('../../../../core/ConfigContext');
 
 describe('useTransactionsTotals', () => {
     const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);
-    const getQueryParams: GetQueryParams = allQueryParams => allQueryParams;
-    const now = Date.now();
 
-    const defaultFilters = {
-        balanceAccount: { id: 'BA00000000000000000000001' },
-        createdDate: {
-            from: new Date('2024-01-01T00:00:00.000Z').getTime(),
-            to: new Date('2024-01-31T23:59:59.999Z').getTime(),
-        },
-    } as Readonly<TransactionsFilters>;
+    const defaultQuery = {
+        balanceAccountId: 'BA00000000000000000000001',
+        createdSince: '2024-01-01T00:00:00.000Z',
+        createdUntil: '2024-01-31T23:59:59.999Z',
+    } as Readonly<UseTransactionsTotalsProps['query']>;
 
     const getMockTransactionTotalsEndpoint = () => {
         const mockTransactionTotalsEndpoint = vi.fn();
@@ -41,14 +36,7 @@ describe('useTransactionsTotals', () => {
             endpoints: { getTransactionTotals: undefined },
         } as unknown as ReturnType<typeof ConfigContext.useConfigContext>);
 
-        const { result } = renderHook(() =>
-            useTransactionsTotals({
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                now,
-            })
-        );
+        const { result } = renderHook(() => useTransactionsTotals({ fetchEnabled: true, query: defaultQuery }));
 
         expect(result.current).toStrictEqual({
             totals: [],
@@ -63,14 +51,7 @@ describe('useTransactionsTotals', () => {
     test('should return correct waiting state when fetch is disabled', () => {
         getMockTransactionTotalsEndpoint();
 
-        const { result } = renderHook(() =>
-            useTransactionsTotals({
-                getQueryParams,
-                fetchEnabled: false,
-                filters: defaultFilters,
-                now,
-            })
-        );
+        const { result } = renderHook(() => useTransactionsTotals({ fetchEnabled: false, query: defaultQuery }));
 
         expect(result.current).toMatchObject({
             totals: [],
@@ -94,14 +75,7 @@ describe('useTransactionsTotals', () => {
 
         mockTransactionTotalsEndpoint.mockResolvedValue({ data: mockData });
 
-        const { result } = renderHook(() =>
-            useTransactionsTotals({
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                now,
-            })
-        );
+        const { result } = renderHook(() => useTransactionsTotals({ fetchEnabled: true, query: defaultQuery }));
 
         expect(result.current.isWaiting).toBe(true);
         expect(result.current.isAvailable).toBe(true);
@@ -109,13 +83,7 @@ describe('useTransactionsTotals', () => {
         await waitFor(() => expect(result.current.isWaiting).toBe(false));
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledOnce();
-        expect(mockTransactionTotalsEndpoint).toHaveBeenCalledWith(expect.any(Object), {
-            query: {
-                balanceAccountId: 'BA00000000000000000000001',
-                createdSince: '2024-01-01T00:00:00.000Z',
-                createdUntil: '2024-01-31T23:59:59.999Z',
-            },
-        });
+        expect(mockTransactionTotalsEndpoint).toHaveBeenCalledWith(expect.any(Object), { query: defaultQuery });
 
         expect(result.current).toMatchObject({
             totals: mockData,
@@ -129,24 +97,16 @@ describe('useTransactionsTotals', () => {
         const mockTransactionTotalsEndpoint = getMockTransactionTotalsEndpoint();
         mockTransactionTotalsEndpoint.mockRejectedValue('Network Error');
 
-        const { result } = renderHook(() =>
-            useTransactionsTotals({
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                now,
-            })
-        );
+        const { result } = renderHook(() => useTransactionsTotals({ fetchEnabled: true, query: defaultQuery }));
 
         expect(result.current.isWaiting).toBe(true);
 
         await waitFor(() => expect(result.current.isWaiting).toBe(false));
-
         expect(result.current.error).toBe('Network Error');
         expect(result.current.totals).toEqual([]);
     });
 
-    test('should abort previous request when filters change', async () => {
+    test('should abort previous request when fetch query changes', async () => {
         const mockTransactionTotalsEndpoint = getMockTransactionTotalsEndpoint();
         const abortSignals: AbortSignal[] = [];
 
@@ -156,25 +116,15 @@ describe('useTransactionsTotals', () => {
         });
 
         const { rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
-            initialProps: {
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                now,
-            },
+            initialProps: { fetchEnabled: true, query: defaultQuery },
         });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1);
         expect(abortSignals[0]!.aborted).toBe(false);
 
-        const newFilters = { ...defaultFilters, balanceAccount: { id: 'BA2' } } as typeof defaultFilters;
+        const newQuery = { ...defaultQuery, balanceAccountId: 'BA2' } as typeof defaultQuery;
 
-        rerender({
-            getQueryParams,
-            fetchEnabled: true,
-            filters: newFilters,
-            now,
-        });
+        rerender({ fetchEnabled: true, query: newQuery });
 
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(2);
         expect(abortSignals[0]!.aborted).toBe(true);
@@ -186,91 +136,37 @@ describe('useTransactionsTotals', () => {
         mockTransactionTotalsEndpoint.mockResolvedValue({ data: [] });
 
         const { rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
-            initialProps: {
-                getQueryParams,
-                fetchEnabled: false,
-                filters: defaultFilters,
-                now,
-            },
+            initialProps: { fetchEnabled: false, query: defaultQuery },
         });
 
         expect(mockTransactionTotalsEndpoint).not.toHaveBeenCalled();
 
-        rerender({
-            getQueryParams,
-            fetchEnabled: true,
-            filters: defaultFilters,
-            now,
-        });
-
+        rerender({ fetchEnabled: true, query: defaultQuery });
         await waitFor(() => expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1));
     });
 
-    test('should respect applicableFilters when determining if fetch is needed', async () => {
+    test('should not trigger fetch again on re-render if no prop changes', async () => {
         const mockTransactionTotalsEndpoint = getMockTransactionTotalsEndpoint();
         mockTransactionTotalsEndpoint.mockResolvedValue({ data: [] });
 
-        const applicableFilters = new Set<keyof TransactionsFilters>(['balanceAccount']);
-
         const { rerender } = renderHook((props: UseTransactionsTotalsProps) => useTransactionsTotals(props), {
-            initialProps: {
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                applicableFilters,
-                now,
-            },
+            initialProps: { fetchEnabled: true, query: defaultQuery },
         });
 
         await waitFor(() => expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1));
 
-        const newFiltersIgnored = {
-            ...defaultFilters,
-            createdDate: { from: 0, to: 1 },
-        } as typeof defaultFilters;
-
-        rerender({
-            getQueryParams,
-            fetchEnabled: true,
-            filters: newFiltersIgnored,
-            applicableFilters,
-            now,
-        });
-
+        rerender({ fetchEnabled: true, query: defaultQuery });
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1);
-
-        const newFiltersRelevant = {
-            ...newFiltersIgnored,
-            balanceAccount: { id: 'BA_NEW' },
-        } as typeof defaultFilters;
-
-        rerender({
-            getQueryParams,
-            fetchEnabled: true,
-            filters: newFiltersRelevant,
-            applicableFilters,
-            now,
-        });
-
-        await waitFor(() => expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(2));
     });
 
     test('should refresh data when refresh is called', async () => {
         const mockTransactionTotalsEndpoint = getMockTransactionTotalsEndpoint();
         mockTransactionTotalsEndpoint.mockResolvedValue({ data: [] });
 
-        const { result } = renderHook(() =>
-            useTransactionsTotals({
-                getQueryParams,
-                fetchEnabled: true,
-                filters: defaultFilters,
-                now,
-            })
-        );
+        const { result } = renderHook(() => useTransactionsTotals({ fetchEnabled: true, query: defaultQuery }));
 
         await waitFor(() => expect(result.current.isWaiting).toBe(false));
         expect(mockTransactionTotalsEndpoint).toHaveBeenCalledTimes(1);
-
         expect(result.current.canRefresh).toBe(true);
 
         await act(() => result.current.refresh());
