@@ -1,35 +1,48 @@
-import type { AtomicValue as AtomicValueType, AtomResult } from '../shared/types';
-
-import { AtomicValue } from '../shared/constants';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useDelay } from './useDelay';
+import { useDelay } from '../useDelay/useDelay';
 import { fn } from '../../../utils';
 
+// prettier-ignore
+import {
+    AtomicValue,
+    type AtomicResetValue,
+    type WithAtomicValue,
+    type WithAtomicValueOperations,
+    type WithAtomicValueState,
+} from '../AtomicValue';
+
+// prettier-ignore
 import {
     getInitialValue,
     getResolvedValue,
     isAwaitingInitialValue,
     isInitialValue,
-    OptionalInitialValueProps,
-    WithInitialValueProps,
-    WithoutInitialValueProps,
+    type OptionalInitialValueProps,
+    type RequiredInitialValueProps,
+    type WithoutInitialValueProps,
 } from './initialValue';
 
-export interface AtomProps<T> {
+// prettier-ignore
+export type Atom<T> =
+    & WithAtomicValue<T>
+    & WithAtomicValueOperations<T>
+    & WithAtomicValueState;
+
+export type AtomProps<T> = {
     equals?: (value_1: T, value_2: T) => boolean;
     delay?: number;
-}
+};
 
 const defaultEquals = fn(Object.is, undefined);
 
-export function useAtom<T>(props: AtomProps<T> & WithInitialValueProps<T>): AtomResult<T>;
-export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & WithoutInitialValueProps): AtomResult<T | undefined>;
-export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & OptionalInitialValueProps<T>): AtomResult<T | undefined> {
+export function useAtom<T>(props: AtomProps<T> & RequiredInitialValueProps<T>): Atom<T>;
+export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & WithoutInitialValueProps): Atom<T | undefined>;
+export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & OptionalInitialValueProps<T>): Atom<T | undefined> {
     const _equals: NonNullable<AtomProps<T | undefined>['equals']> = props?.equals ?? defaultEquals;
     const _awaitingInitialValue = isAwaitingInitialValue(props);
     const _initialValue = getInitialValue(props);
 
-    const { cancel, exec } = useDelay(props?.delay);
+    const { cancel, exec } = useDelay({ delay: props?.delay });
     const [latestValue, setLatestValue] = useState(_initialValue);
     const [usedValue, setUsedValue] = useState(latestValue);
 
@@ -52,12 +65,12 @@ export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & Option
     }, [_equals, usedValue]);
 
     // prettier-ignore
-    const equals = useCallback<AtomResult<T | undefined>['equals']>(
+    const equals = useCallback<Atom<T | undefined>['equals']>(
         compareValue => cachedEquals.current(compareValue, usedValue),
         [usedValue]
     );
 
-    const set = useCallback<AtomResult<T | undefined>['set']>(
+    const set = useCallback<Atom<T | undefined>['set']>(
         value => {
             const latestValue = cachedValue.current;
 
@@ -86,12 +99,12 @@ export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & Option
         [exec, usedValue]
     );
 
-    const reset = useMemo<AtomResult<T | undefined>['reset']>(() => {
+    const reset = useMemo<Atom<T | undefined>['reset']>(() => {
         return reset;
 
         function reset(): void;
-        function reset(value: AtomicValueType | T | undefined): void;
-        function reset(...args: [value?: AtomicValueType | T | undefined]): void {
+        function reset(value: AtomicResetValue | T | undefined): void;
+        function reset(...args: [value?: AtomicResetValue | T | undefined]): void {
             let nextValue = (cachedValue.current = cachedInitialValue.current);
 
             if (args.length > 0) {
@@ -122,7 +135,7 @@ export function useAtom<T = undefined>(props?: AtomProps<T | undefined> & Option
     }, [_awaitingInitialValue, _equals, _initialValue]);
 
     // prettier-ignore
-    return useMemo<AtomResult<T | undefined>>(
+    return useMemo<Atom<T | undefined>>(
         () => ({ equals, pristine, reset, set, stale, value, $value }),
         [equals, pristine, reset, set, stale, value, $value]
     );

@@ -1,11 +1,15 @@
 const $initialValue = Symbol();
 
-export interface OptionalInitialValueProps<T = undefined> {
+export type OptionalInitialValueProps<T = undefined> = {
     deferredInitialValue?: boolean;
     initialValue?: T;
-}
+};
 
-export type WithInitialValueProps<T> = { initialValue: T } | { deferredInitialValue: true };
+// prettier-ignore
+export type RequiredInitialValueProps<T> =
+    | { deferredInitialValue: true }
+    | { initialValue: T };
+
 export type WithoutInitialValueProps = { deferredInitialValue?: false };
 
 export const isAwaitingInitialValue = <T = undefined>(props?: OptionalInitialValueProps<T>) => {

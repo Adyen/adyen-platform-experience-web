@@ -3,7 +3,7 @@
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/preact';
-import { AtomicValue } from '../shared/constants';
+import { AtomicValue } from '../AtomicValue';
 import { useAtom } from './useAtom';
 
 describe('useAtom', () => {

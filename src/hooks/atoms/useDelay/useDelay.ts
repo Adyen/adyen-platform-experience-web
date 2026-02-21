@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 
-export interface DelayResult {
+export type Delay = {
     readonly exec: <Fn extends () => unknown>(fn: Fn) => void;
     readonly cancel: () => void;
-}
+};
 
-export const useDelay = (delay?: number): DelayResult => {
+export type DelayProps = {
+    delay?: number;
+};
+
+export const useDelay = (props?: DelayProps): Delay => {
     const timeoutId = useRef<ReturnType<typeof setTimeout>>();
     const cachedDelay = useRef(0);
 
@@ -32,8 +36,8 @@ export const useDelay = (delay?: number): DelayResult => {
     useEffect(() => cancel, [cancel]);
 
     useEffect(() => {
-        cachedDelay.current = Math.max(0, Number.parseInt(String(delay), 10) || 0);
-    }, [delay]);
+        cachedDelay.current = Math.max(0, Number.parseInt(String(props?.delay), 10) || 0);
+    }, [props?.delay]);
 
     return { cancel, exec } as const;
 };

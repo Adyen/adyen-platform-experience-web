@@ -17,7 +17,7 @@ describe('useDelay', () => {
 
     test('should execute callback immediately when delay is 0 or undefined', () => {
         const callback = vi.fn();
-        const { result } = renderHook(() => useDelay(0));
+        const { result } = renderHook(() => useDelay({ delay: 0 }));
 
         result.current.exec(callback);
         expect(callback).toHaveBeenCalledTimes(1);
@@ -29,7 +29,7 @@ describe('useDelay', () => {
 
     test('should delay execution of callback', () => {
         const callback = vi.fn();
-        const { result } = renderHook(() => useDelay(1000));
+        const { result } = renderHook(() => useDelay({ delay: 1000 }));
 
         result.current.exec(callback);
         expect(callback).not.toHaveBeenCalled();
@@ -43,7 +43,7 @@ describe('useDelay', () => {
 
     test('should debounce multiple calls', () => {
         const callback = vi.fn();
-        const { result } = renderHook(() => useDelay(1000));
+        const { result } = renderHook(() => useDelay({ delay: 1000 }));
 
         result.current.exec(callback);
         vi.advanceTimersByTime(500);
@@ -59,7 +59,7 @@ describe('useDelay', () => {
 
     test('should cancel pending execution', () => {
         const callback = vi.fn();
-        const { result } = renderHook(() => useDelay(1000));
+        const { result } = renderHook(() => useDelay({ delay: 1000 }));
 
         result.current.exec(callback);
         vi.advanceTimersByTime(500);
@@ -72,7 +72,7 @@ describe('useDelay', () => {
 
     test('should handle dynamic delay updates', () => {
         const callback = vi.fn();
-        const { result, rerender } = renderHook(delay => useDelay(delay), { initialProps: 1000 });
+        const { result, rerender } = renderHook(props => useDelay(props), { initialProps: { delay: 1000 } });
 
         // Start with 1000ms delay
         result.current.exec(callback);
@@ -80,7 +80,7 @@ describe('useDelay', () => {
         expect(callback).not.toHaveBeenCalled();
 
         // Change delay to 2000ms
-        rerender(2000);
+        rerender({ delay: 2000 });
 
         vi.advanceTimersByTime(500); // Total 1000ms
         expect(callback).toHaveBeenCalledTimes(1);
@@ -96,7 +96,7 @@ describe('useDelay', () => {
 
     test('should cleanup on unmount', () => {
         const callback = vi.fn();
-        const { result, unmount } = renderHook(() => useDelay(1000));
+        const { result, unmount } = renderHook(() => useDelay({ delay: 1000 }));
 
         result.current.exec(callback);
         unmount();
@@ -106,7 +106,7 @@ describe('useDelay', () => {
     });
 
     test('should return stable function references', () => {
-        const { result, rerender } = renderHook(() => useDelay(1000));
+        const { result, rerender } = renderHook(() => useDelay({ delay: 1000 }));
         const { exec, cancel } = result.current;
 
         rerender();

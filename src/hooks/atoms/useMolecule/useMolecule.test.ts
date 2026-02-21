@@ -3,8 +3,9 @@
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/preact';
+import { AtomicValue } from '../AtomicValue';
+import { useAtom } from '../useAtom/useAtom';
 import { useMolecule } from './useMolecule';
-import { useAtom } from '../useAtom';
 
 describe('useMolecule', () => {
     beforeEach(() => {
@@ -25,6 +26,7 @@ describe('useMolecule', () => {
 
         expect(result.current.value).toEqual({ a: 1, b: 2 });
         expect(result.current.$value).toEqual({ a: 1, b: 2 });
+        expect(result.current.$$value).toEqual({ a: 1, b: 2 });
         expect(result.current.stale).toBe(false);
         expect(result.current.pristine).toBe(true);
     });
@@ -42,6 +44,7 @@ describe('useMolecule', () => {
 
         expect(result.current.value).toEqual({ a: 10, b: 2 });
         expect(result.current.$value).toEqual({ a: 10, b: 2 });
+        expect(result.current.$$value).toEqual({ a: 10, b: 2 });
         expect(result.current.pristine).toBe(false);
     });
 
@@ -58,7 +61,8 @@ describe('useMolecule', () => {
         });
 
         expect(result.current.$value).toEqual({ a: 10, b: 20 });
-        expect(result.current.value).toEqual({ a: 10, b: 2 }); // B is still 2
+        expect(result.current.$$value).toEqual({ a: 10, b: 2 }); // B is still 2
+        expect(result.current.value).toEqual({ a: 1, b: 2 }); // all values not updated yet (all or nothing)
         expect(result.current.stale).toBe(true);
         expect(result.current.pristine).toBe(false); // A is dirty immediately
 
@@ -67,19 +71,21 @@ describe('useMolecule', () => {
             vi.advanceTimersByTime(500);
         });
 
-        expect(result.current.value).toEqual({ a: 10, b: 2 });
+        expect(result.current.$$value).toEqual({ a: 10, b: 2 });
+        expect(result.current.value).toEqual({ a: 1, b: 2 });
 
         // Advance time fully
         act(() => {
             vi.advanceTimersByTime(500);
         });
 
+        expect(result.current.$$value).toEqual({ a: 10, b: 20 });
         expect(result.current.value).toEqual({ a: 10, b: 20 });
         expect(result.current.stale).toBe(false);
         expect(result.current.pristine).toBe(false);
     });
 
-    test('should reset all members', () => {
+    test('should reset all members to initial value', () => {
         const { result } = renderHook(() => {
             const atom1 = useAtom({ initialValue: 1 });
             const atom2 = useAtom({ initialValue: 2 });
@@ -101,7 +107,49 @@ describe('useMolecule', () => {
         expect(result.current.pristine).toBe(true);
     });
 
-    test('should reset all members to match specific value when provided', () => {
+    test('should reset all members to last committed value when requested', () => {
+        const { result } = renderHook(() => {
+            const atom1 = useAtom({ initialValue: 1, delay: 1000 });
+            const atom2 = useAtom({ initialValue: 2 });
+            return useMolecule({ members: { a: atom1, b: atom2 } });
+        });
+
+        act(() => {
+            result.current.set({ a: 10, b: 20 });
+        });
+
+        // Advance time to commit updated value
+        act(() => {
+            vi.advanceTimersByTime(1000);
+        });
+
+        expect(result.current.value).toEqual({ a: 10, b: 20 });
+        expect(result.current.stale).toBe(false);
+        expect(result.current.pristine).toBe(false);
+
+        act(() => {
+            result.current.set({ a: 100, b: 200 });
+        });
+
+        // Partially advance time before reset
+        act(() => {
+            vi.advanceTimersByTime(500);
+        });
+
+        expect(result.current.value).toEqual({ a: 10, b: 20 });
+        expect(result.current.stale).toBe(true);
+        expect(result.current.pristine).toBe(false);
+
+        act(() => {
+            result.current.reset(AtomicValue.LAST);
+        });
+
+        expect(result.current.value).toEqual({ a: 10, b: 20 });
+        expect(result.current.stale).toBe(false);
+        expect(result.current.pristine).toBe(false);
+    });
+
+    test('should reset all members to match specific value when requested', () => {
         const { result } = renderHook(() => {
             const atom1 = useAtom({ initialValue: 1 });
             const atom2 = useAtom({ initialValue: 2 });
