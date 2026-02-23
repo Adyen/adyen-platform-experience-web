@@ -265,6 +265,7 @@ export const DisputeData = ({
                     title: config?.value,
                     event: config?.config?.action,
                     variant: ButtonVariant.SECONDARY,
+                    classNames: config?.config?.className ? [config?.config?.className] : [],
                 });
             });
         }
