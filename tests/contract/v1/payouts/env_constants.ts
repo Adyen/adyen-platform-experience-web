@@ -114,11 +114,11 @@ const TEST: PayoutsVariables = {
     payout_details_response: {
         payout: {
             fundsCapturedAmount: {
-                value: 2539,
+                value: 2540,
                 currency: 'EUR',
             },
             adjustmentAmount: {
-                value: -1394,
+                value: -1395,
                 currency: 'EUR',
             },
             payoutAmount: {
@@ -135,7 +135,7 @@ const TEST: PayoutsVariables = {
             fundsCapturedBreakdown: [
                 {
                     amount: {
-                        value: 5382,
+                        value: 5383,
                         currency: 'EUR',
                     },
                     category: 'capture',
@@ -149,6 +149,13 @@ const TEST: PayoutsVariables = {
                 },
             ],
             adjustmentBreakdown: [
+                {
+                    amount: {
+                        value: -1,
+                        currency: 'EUR',
+                    },
+                    category: 'fee',
+                },
                 {
                     amount: {
                         value: -1394,
