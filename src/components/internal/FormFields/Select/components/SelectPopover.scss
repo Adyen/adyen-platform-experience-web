@@ -1,0 +1,33 @@
+@use '../../../../../style';
+
+.adyen-pe-select-popover {
+    background: style.token(color-background-primary);
+    border: unset;
+    border-radius: style.token(spacer-040);
+    box-shadow:
+        0 6px 12px rgba(0, 17, 44, 0.08),
+        0 2px 4px rgba(0, 17, 44, 0.04),
+        0 0 0 1px rgba(0, 17, 44, 0.06);
+    min-width: 200px;
+    overflow: hidden;
+
+    &__overlay {
+        background: rgba(0, 17, 44, 0.5);
+        height: 100%;
+        inset: 0;
+        position: fixed;
+        width: 100%;
+        z-index: 999;
+    }
+
+    &__content {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    &__footer {
+        background-color: style.token(color-background-primary);
+        border-top: style.token(border-width-s) solid style.token(color-outline-disabled);
+        padding: style.token(spacer-060) style.token(spacer-070);
+    }
+}

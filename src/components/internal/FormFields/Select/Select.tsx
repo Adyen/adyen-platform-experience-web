@@ -37,10 +37,9 @@ const Select = <T extends SelectItem>({
     setToTargetWidth,
     withoutCollapseIndicator = false,
     showOverlay = false,
-    fitPosition,
-    fixedPopoverPositioning,
     onResetAction,
     buttonVariant,
+    popoverMaxHeight,
     ...ariaAttributeProps
 }: SelectProps<T>) => {
     const { resetSelection, select, selection } = useSelect({ items, multiSelect, selected });
@@ -480,8 +479,7 @@ const Select = <T extends SelectItem>({
                 textFilter={textFilter}
                 activeIndex={filterable ? activeIndex : undefined}
                 filterable={filterable}
-                fitPosition={fitPosition}
-                fixedPopoverPositioning={fixedPopoverPositioning}
+                maxHeight={popoverMaxHeight}
             />
         </div>
     );

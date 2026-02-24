@@ -46,7 +46,7 @@ const TimeRangeSelector = ({
 
     return (
         <Select
-            setToTargetWidth={true}
+            setToTargetWidth
             items={selectOptions}
             filterable={false}
             multiSelect={false}

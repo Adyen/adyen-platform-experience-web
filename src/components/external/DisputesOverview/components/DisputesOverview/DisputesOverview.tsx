@@ -81,6 +81,7 @@ const DisputesOverviewTabsDropdown = ({
             showOverlay={true}
             multiSelect={false}
             filterable={false}
+            setToTargetWidth
         />
     );
 };
