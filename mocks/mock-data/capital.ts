@@ -1,4 +1,11 @@
-import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src';
+import {
+    IDynamicOffersConfig,
+    IGBCapitalFundsCollection,
+    IGrant,
+    INLCapitalFundsCollection,
+    IOnboardingConfiguration,
+    IUSCapitalFundsCollection,
+} from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -247,4 +254,9 @@ export const SIGN_TOS_ACTION_DETAILS = {
 
 export const ANACREDIT_ACTION_DETAILS = {
     url: 'https://www.adyen.com/capital',
+};
+
+export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
+    token: 'test-onboarding-token',
+    legalEntityId: 'test-legal-entity-id',
 };
