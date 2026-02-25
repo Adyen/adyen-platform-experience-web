@@ -3,4 +3,6 @@ module.exports = {
     // Fix Prettier formatting
     // Don't include TS schemas
     '!(src/types/api/resources/**/*)/**/*.(ts|tsx|js|scss|css|md|json|html)': filenames => [`npx prettier --write ${filenames.join(' ')}`],
+    // Fix stylelint issues only (no checking/reporting)
+    'src/**/*.scss': filenames => [`npx stylelint --fix --quiet ${filenames.join(' ')}`],
 };
