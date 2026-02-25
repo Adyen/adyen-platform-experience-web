@@ -102,7 +102,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         mode,
     });
 
-    const { trigger, getValues } = form;
+    const { trigger, getValues, getValueMap } = form;
 
     const totalSteps = steps.length;
     const currentStepConfig = steps[wizardState.currentStep]!;
@@ -290,30 +290,30 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
     }, [steps, getValues, wizardState.displayValues]);
 
     const getApiPayloadValues = useCallback((): Partial<TFieldValues> => {
-        const values = getValues();
+        const valueMap = getValueMap();
         const result = {} as TFieldValues;
 
-        // Get all fields that are API visible
-        const apiVisibleFieldNames = new Set<string>();
+        // Collect fields explicitly excluded from API payload
+        const excludedFields = new Set<string>();
         steps.forEach(step => {
             step.fields.forEach(field => {
-                // Include field if includeInApiPayload is true or undefined (default to true)
-                if (field.includeInApiPayload !== false) {
-                    apiVisibleFieldNames.add(field.fieldName as string);
+                if (field.includeInApiPayload === false) {
+                    excludedFields.add(field.fieldName as string);
                 }
             });
         });
 
-        // Build result object with only API-visible fields
-        apiVisibleFieldNames.forEach(fieldName => {
-            const value = getNestedValue(values, fieldName);
+        // Include values that exist in form state but are not represented in wizard steps
+        // (e.g. values set through defaults when a step is dynamically omitted)
+        for (const [fieldName, value] of valueMap) {
+            if (excludedFields.has(fieldName)) continue;
             if (value !== undefined && value !== null && value !== '') {
                 setNestedValue(result, fieldName, value);
             }
-        });
+        }
 
         return result;
-    }, [steps, getValues]);
+    }, [steps, getValueMap]);
 
     const getDisplayValue = useCallback(
         (name: FieldValues<TFieldValues>): string | undefined => {
