@@ -10,10 +10,11 @@ import { ButtonVariant } from '../../../Button/types';
 import Typography from '../../../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
 import { boolOrFalse } from '../../../../../utils';
+import { DEFAULT_BUTTON_CLASSNAME } from '../../../Button/constants';
+import { getModifierClasses } from '../../../../../utils/preact';
 import {
     DROPDOWN_BUTTON_ACTIVE_CLASS,
     DROPDOWN_BUTTON_CLASS,
-    DROPDOWN_BUTTON_CLASSNAME,
     DROPDOWN_BUTTON_CLEAR_CLASS,
     DROPDOWN_BUTTON_COLLAPSE_INDICATOR_CLASS,
     DROPDOWN_BUTTON_HAS_SELECTION_CLASS,
@@ -41,7 +42,9 @@ const SelectButtonElement = <T extends SelectItem>({
             Partial<AnchorHTMLAttributes<HTMLAnchorElement>> &
             Partial<HTMLAttributes<HTMLDivElement>>)
 >) => {
-    const baseClassName = useMemo(() => (filterable ? cx(DROPDOWN_BUTTON_CLASSNAME, className) : className), [className, filterable]);
+    const variant = buttonVariant ?? ButtonVariant.SECONDARY;
+    const buttonClasses = useMemo(() => getModifierClasses(DEFAULT_BUTTON_CLASSNAME, [variant], [DEFAULT_BUTTON_CLASSNAME]), [variant]);
+    const baseClassName = useMemo(() => (filterable ? cx(buttonClasses, className) : className), [buttonClasses, className, filterable]);
     return filterable ? (
         <div {...props} className={baseClassName} ref={toggleButtonRef as Ref<HTMLDivElement>} />
     ) : (
@@ -49,7 +52,7 @@ const SelectButtonElement = <T extends SelectItem>({
             {...props}
             className={baseClassName}
             disabled={disabled}
-            variant={buttonVariant ?? ButtonVariant.SECONDARY}
+            variant={variant}
             ref={toggleButtonRef as MutableRef<HTMLButtonElement>}
             aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
@@ -63,7 +66,7 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
     const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('common.inputs.select.placeholder'), [i18n, placeholder]);
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
-    const showClearButton = useMemo(() => boolOrFalse(clearable) && !!active.length, [active, clearable]);
+    const showClearButton = useMemo(() => boolOrFalse(clearable) && !!active.length && !readonly, [active, clearable, readonly]);
 
     return (
         <SelectButtonElement
