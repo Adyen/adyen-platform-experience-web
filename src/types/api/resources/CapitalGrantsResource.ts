@@ -49,11 +49,11 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         Amount: {
-            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes). */
+            /** @description The three-character [ISO currency code](https://docs.adyen.com/development-resources/currency-codes#currency-codes) of the amount. */
             currency: string;
             /**
              * Format: int64
-             * @description The amount of the transaction, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
+             * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
         };

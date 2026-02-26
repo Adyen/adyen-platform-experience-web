@@ -106,7 +106,7 @@ export const GrantMissingActionSignTOS: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.signTOS,
+        msw: CapitalOverviewMockedResponses.grantTOSActionHosted,
     },
 };
 
@@ -116,7 +116,7 @@ export const GrantMissingActionAnacredit: ElementStory<typeof CapitalOverview> =
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.anacredit,
+        msw: CapitalOverviewMockedResponses.grantAnaCreditActionHosted,
     },
 };
 
@@ -126,7 +126,7 @@ export const GrantMultipleActions: ElementStory<typeof CapitalOverview> = {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActions,
+        msw: CapitalOverviewMockedResponses.grantActionsHosted,
     },
 };
 
