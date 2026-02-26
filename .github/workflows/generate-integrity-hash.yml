@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.1)'
+        description: 'Version number (e.g., v1.0.1)'
         required: true
         type: string
   workflow_call:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.1)'
+        description: 'Version number (e.g., v1.0.1)'
         required: true
         type: string
 
