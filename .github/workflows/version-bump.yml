@@ -1,31 +1,62 @@
-name: Version bump
-
+name: Release
+ 
 on:
   workflow_dispatch:
-
+ 
 jobs:
-  create-version-bump-pr:
-    if: startsWith(github.ref_name, 'main') && github.repository == 'adyen/adyen-platform-experience-web'
-    name: Create version bump PR
+  prepare-release:
+    if: github.ref_name == 'main' && github.repository == 'adyen/adyen-platform-experience-web'
+    name: Prepare and version bump
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Commit message
-        run: |
-          echo "NEW_VERSION=$(pnpm changeset status --output=release.json && jq -r '.releases[0].newVersion' release.json && rm release.json)" >> "$GITHUB_ENV"
-
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
+      - name: Checkout develop branch (full history)
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+ 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
+ 
+      - name: Check that changesets exist
+        run: |
+          pnpm changeset status || {
+            echo "::error::No changesets found. Cannot proceed with release."
+            exit 1
+          }
+ 
+      - name: Determine new version
+        run: |
+          pnpm changeset status --output=release.json
+          NEW_VERSION=$(jq -r '.releases[0].newVersion' release.json)
+          rm release.json
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
 
-      - name: Create Release Pull Request
+      - name: Fast-forward main with develop
+        run: |
+          git checkout main
+          git merge --ff-only origin/develop
+          git push origin main
+ 
+      - name: Create Version Pull Request
+        id: changesets
         uses: changesets/action@v1
         with:
-          commit: "Bump v${{env.NEW_VERSION}}"
-          title: "Bump package version v${{env.NEW_VERSION}}"
+          commit: "Bump v${{ env.NEW_VERSION }}"
+          title: "Bump package version v${{ env.NEW_VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # TODO: Analyze if this step is optimal
+      # - name: Auto-merge version PR
+      #   if: steps.changesets.outputs.pullRequestNumber
+      #   run: |
+      #     gh pr merge ${{ steps.changesets.outputs.pullRequestNumber }} \
+      #       --squash \
+      #       --admin \
+      #       --delete-branch
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
