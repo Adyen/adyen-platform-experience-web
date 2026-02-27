@@ -63,6 +63,7 @@ export const useTabbedControl = <OptionId extends string, Options extends Tabbed
 
     const activeOption: Options[number] = options[activeIndex]!;
     const activeOptionRef = useRef(activeOption);
+    const activeOptionFromPropsRef = useRef(activeOptionFromProps);
     const optionElementsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const uniqueId = useUniqueId();
 
@@ -115,11 +116,16 @@ export const useTabbedControl = <OptionId extends string, Options extends Tabbed
     }, [activeIndex, focusPending]);
 
     useEffect(() => {
+        if (activeOptionFromPropsRef.current !== activeOptionFromProps) {
+            activeOptionFromPropsRef.current = activeOptionFromProps;
+            return;
+        }
+
         if (activeOptionRef.current !== activeOption) {
             activeOptionRef.current = activeOption;
             onChange?.(activeOption);
         }
-    }, [activeOption, onChange]);
+    }, [activeOption, activeOptionFromProps, onChange]);
 
     return { activeIndex, onClick, onKeyDown, refs, uniqueId } as const;
 };
