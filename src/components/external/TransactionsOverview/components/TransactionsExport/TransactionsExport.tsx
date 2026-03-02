@@ -18,15 +18,14 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { downloadBlob, EMPTY_ARRAY, isFunction, uniqueId } from '../../../../../utils';
+import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { fixedForwardRef } from '../../../../../utils/preact';
-import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '../../../../../translations';
 import { Tag } from '../../../../internal/Tag/Tag';
-import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
@@ -68,8 +67,11 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
     </Text>
 );
 
-const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; filters: Readonly<TransactionsFilters>; now: number }) => {
+const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
+    const { transactionsFiltersResult } = useTransactionsOverviewContext();
+    const { filters, listQueryParams } = transactionsFiltersResult;
     const { i18n } = useCoreContext();
+
     const userEvents = useAnalyticsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -79,7 +81,7 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
     const [exportColumns, setExportColumns] = useState([] as readonly (typeof EXPORT_COLUMNS)[number][]);
 
     const [activeFilters, exportParams] = useMemo(() => {
-        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters;
+        const { balanceAccount, paymentPspReference, createdDate, categories, currencies /*, statuses*/ } = filters.value;
 
         const activeFilters: readonly TranslationKey[] = [
             ...(balanceAccount?.id ? (['transactions.overview.export.filters.types.account'] as const) : EMPTY_ARRAY),
@@ -91,12 +93,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         ] as const;
 
         const exportParams = {
-            ...getTransactionsFilterQueryParams(filters, now),
+            ...listQueryParams,
             sortDirection: 'desc' as const,
         };
 
         return [activeFilters, exportParams];
-    }, [filters, now]);
+    }, [filters.value, listQueryParams]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);

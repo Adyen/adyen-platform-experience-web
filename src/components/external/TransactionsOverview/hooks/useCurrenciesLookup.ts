@@ -1,4 +1,4 @@
-import { useMemo } from 'preact/hooks';
+import { useMemo, useRef } from 'preact/hooks';
 import { IBalance, ITransactionTotal } from '../../../../types';
 
 const getCurrencyLookupRecord = (currency: string, lookupMap?: Map<string, CurrencyLookupRecord>) => {
@@ -60,20 +60,30 @@ const useCurrenciesLookup = ({ defaultCurrency, balances, totals }: UseCurrencyL
         return Object.freeze(Object.fromEntries(sortedCurrencies));
     }, [defaultCurrency, balances, totals]);
 
-    const sortedCurrencies = useMemo(() => Object.freeze(Object.keys(currenciesDictionary)), [currenciesDictionary]);
+    const cachedSortedCurrencies = useRef<readonly string[]>();
+
+    const sortedCurrencies = useMemo(() => {
+        const currencies = Object.freeze(Object.keys(currenciesDictionary));
+
+        if (!cachedSortedCurrencies.current || String(cachedSortedCurrencies.current) !== String(currencies)) {
+            cachedSortedCurrencies.current = currencies;
+        }
+
+        return cachedSortedCurrencies.current;
+    }, [currenciesDictionary]);
 
     const defaultCurrencySortedCurrencies = useMemo(
         () =>
-            Object.freeze(
-                [...sortedCurrencies].sort((firstCurrency, secondCurrency) => {
-                    if (defaultCurrency) {
-                        if (firstCurrency === defaultCurrency) return -1;
-                        if (secondCurrency === defaultCurrency) return 1;
-                    }
-                    return 0; // currencies already sorted alphabetically
-                })
-            ),
-        [sortedCurrencies]
+            defaultCurrency
+                ? Object.freeze(
+                      [...sortedCurrencies].sort((firstCurrency, secondCurrency) => {
+                          if (firstCurrency === defaultCurrency) return -1;
+                          if (secondCurrency === defaultCurrency) return 1;
+                          return 0; // currencies already sorted alphabetically
+                      })
+                  )
+                : sortedCurrencies,
+        [defaultCurrency, sortedCurrencies]
     );
 
     return { currenciesDictionary, defaultCurrency, defaultCurrencySortedCurrencies, sortedCurrencies } as const;

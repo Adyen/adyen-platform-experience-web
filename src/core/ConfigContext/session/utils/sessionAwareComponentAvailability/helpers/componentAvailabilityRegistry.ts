@@ -8,6 +8,7 @@ const getComponentAvailabilityFromEndpoint = (context: AuthSession['context'], e
 
 const componentAvailabilityRegistry: ExternalComponentAvailabilityRegistry = {
     transactions: context => getComponentAvailabilityFromEndpoint(context, 'getTransactions'),
+    transactionsInsights: context => getComponentAvailabilityFromEndpoint(context, 'getTransactionTotals'),
     transactionDetails: context => getComponentAvailabilityFromEndpoint(context, 'getTransaction'),
     payouts: context => getComponentAvailabilityFromEndpoint(context, 'getPayouts'),
     payoutDetails: context => getComponentAvailabilityFromEndpoint(context, 'getPayout'),

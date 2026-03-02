@@ -7,7 +7,6 @@ export class TransactionsElement extends UIElement<TransactionOverviewComponentP
 
     constructor(props: _UIComponentProps<TransactionOverviewComponentProps>) {
         super(props);
-        this.componentToRender = this.componentToRender.bind(this);
     }
 
     public componentToRender = () => {

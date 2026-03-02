@@ -45,6 +45,7 @@ export interface components {
         Component:
             | 'transactions'
             | 'transactionDetails'
+            | 'transactionsInsights'
             | 'payouts'
             | 'payoutDetails'
             | 'reports'

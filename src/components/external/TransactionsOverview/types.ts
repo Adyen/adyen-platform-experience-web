@@ -1,7 +1,16 @@
-import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
+import { useFilterBarState } from '../../internal/FilterBar';
+import useCurrenciesLookup from './hooks/useCurrenciesLookup';
+import useTransactionsList from './hooks/useTransactionsList';
+import useTransactionsTotals from './hooks/useTransactionsTotals';
+import useTransactionsFilters from './hooks/useTransactionsFilters';
+import useAccountBalances from '../../../hooks/useAccountBalances';
+import useTransactionsViewSwitcher from './hooks/useTransactionsViewSwitcher';
+import useTransactionsInsightsCurrency from './hooks/useTransactionsInsightsCurrency';
 import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../types';
+import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
 import { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
 import { TranslationKey } from '../../../translations';
+import { PropsWithChildren } from 'preact/compat';
 
 type _DateRangeKey<T extends TranslationKey> = T;
 
@@ -30,6 +39,33 @@ export const enum TransactionsView {
     INSIGHTS = 'insights',
 }
 
-export type TransactionOverviewProps = ExternalUIComponentProps<
-    TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
+export type TransactionsOverviewMode = 'overview' | 'insights' | 'transactions';
+
+export type TransactionsOverviewProps = ExternalUIComponentProps<
+    TransactionOverviewComponentProps & {
+        balanceAccounts: IBalanceAccountBase[] | undefined;
+        isLoadingBalanceAccount: boolean;
+        hideInsights?: boolean;
+    }
 >;
+
+export type TransactionsOverviewProviderProps = PropsWithChildren<
+    Omit<TransactionsOverviewProps, 'onError' | 'ref'> & {
+        mode?: TransactionsOverviewMode;
+    }
+>;
+
+export type TransactionsOverviewContextValue = Pick<
+    TransactionsOverviewProps,
+    'balanceAccounts' | 'dataCustomization' | 'hideTitle' | 'isLoadingBalanceAccount' | 'onContactSupport' | 'onRecordSelection' | 'showDetails'
+> & {
+    accountBalancesResult: ReturnType<typeof useAccountBalances>;
+    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
+    filterBarState: ReturnType<typeof useFilterBarState>;
+    insightsCurrency: ReturnType<typeof useTransactionsInsightsCurrency>['currency'];
+    transactionsFiltersResult: ReturnType<typeof useTransactionsFilters>;
+    transactionsListResult: ReturnType<typeof useTransactionsList>;
+    transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
+    insightsTotalsResult: ReturnType<typeof useTransactionsTotals>;
+    transactionsViewState: ReturnType<typeof useTransactionsViewSwitcher>;
+};

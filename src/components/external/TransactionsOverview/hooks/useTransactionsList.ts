@@ -1,14 +1,13 @@
 import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
-import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
-import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
+import { TransactionsFilterParams, TransactionsListQueryParams } from './useTransactionsFilters';
 import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
-import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import normalizeCustomFields from '../../../utils/customData/normalizeCustomFields';
 import hasCustomField from '../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../utils/customData/mergeRecords';
@@ -16,8 +15,8 @@ import mergeRecords from '../../../utils/customData/mergeRecords';
 export interface UseTransactionsListProps
     extends Pick<TransactionOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
     fetchEnabled: boolean;
-    filters: Readonly<TransactionsFilters>;
-    now: number;
+    filterParams: TransactionsFilterParams;
+    queryParams: TransactionsListQueryParams;
 }
 
 const useTransactionsList = ({
@@ -25,28 +24,29 @@ const useTransactionsList = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     dataCustomization,
     fetchEnabled,
-    filters,
-    now,
+    filterParams,
+    queryParams,
     onFiltersChanged,
 }: UseTransactionsListProps) => {
     const { getTransactions } = useConfigContext().endpoints;
+    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
+    const fetchTimestampRef = useRef<number>();
 
-    const filterParams = useMemo(() => getTransactionsFilterParams(filters, now), [filters, now]);
     const initialFilterParams = useRef(filterParams).current;
     const cachedFilterParams = useRef(initialFilterParams);
-    const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
+    const canFetchTransactions = isFunction(getTransactions) && fetchEnabled && fetchTimestampRef.current !== fetchTimestamp;
 
     const fetchTransactions = useCallback(
         async (requestParams: Pick<Parameters<NonNullable<typeof getTransactions>>[1]['query'], 'limit' | 'cursor'>, signal?: AbortSignal) => {
             const query: Parameters<NonNullable<typeof getTransactions>>[1]['query'] = {
                 ...requestParams,
-                ...getTransactionsFilterQueryParams(filters, now),
+                ...queryParams,
                 sortDirection: 'desc' as const,
             } as const;
 
             return getTransactions!({ signal }, { query });
         },
-        [filters, getTransactions, now]
+        [queryParams, getTransactions]
     );
 
     const {
@@ -72,6 +72,8 @@ const useTransactionsList = ({
         preferredLimit,
     });
 
+    const cachedFetching = useRef(fetching);
+
     const mergeCustomData = useCallback(
         ({ records, retrievedData }: { records: ITransaction[]; retrievedData: CustomDataRetrieved[] }) =>
             mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.id === record.id),
@@ -87,9 +89,19 @@ const useTransactionsList = ({
     useEffect(() => {
         if (cachedFilterParams.current !== filterParams) {
             cachedFilterParams.current = filterParams;
+            setFetchTimestamp(performance.now());
             updateFilters?.(filterParams);
         }
     }, [filterParams, updateFilters]);
+
+    useEffect(() => {
+        if (cachedFetching.current && !fetching) {
+            // Last fetch request has finished,
+            // update fetch timestamp
+            fetchTimestampRef.current = fetchTimestamp;
+        }
+        cachedFetching.current = fetching;
+    }, [fetching, fetchTimestamp]);
 
     return {
         ...paginationProps,

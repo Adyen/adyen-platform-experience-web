@@ -1,31 +1,25 @@
 import { useFetch } from '../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { compareTransactionsFilters, getTransactionsFilterQueryParams } from '../components/utils';
+import { TransactionsInsightsQueryParams, TransactionsListQueryParams } from './useTransactionsFilters';
 import { createAbortable } from '../../../../primitives/async/abortable';
-import { isFunction } from '../../../../utils';
 import { ITransactionTotal } from '../../../../types';
-import { TransactionsFilters } from '../types';
+import { isFunction } from '../../../../utils';
 
-type AllQueryParams = ReturnType<typeof getTransactionsFilterQueryParams>;
-type TotalsQueryParams = Partial<AllQueryParams> & Pick<AllQueryParams, 'balanceAccountId'>;
-export type GetQueryParams = (allQueryParams: AllQueryParams) => TotalsQueryParams;
+type TotalsQueryParams = TransactionsListQueryParams | TransactionsInsightsQueryParams;
 
 export interface UseTransactionsTotalsProps {
     fetchEnabled: boolean;
-    filters: Readonly<TransactionsFilters>;
-    applicableFilters?: Set<keyof TransactionsFilters>;
-    getQueryParams: GetQueryParams;
-    now: number;
+    queryParams: TotalsQueryParams;
 }
 
-const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
+const useTransactionsTotals = ({ fetchEnabled, queryParams }: UseTransactionsTotalsProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
     const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
     const fetchTimestampRef = useRef<number>();
 
     const abortable = useRef(createAbortable()).current;
-    const cachedFilters = useRef(filters);
+    const cachedQueryParams = useRef(queryParams);
 
     const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
@@ -36,14 +30,13 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         if (shouldFetchTransactionTotals) {
             const { signal } = abortable.refresh(true);
             try {
-                const query = getQueryParams(getTransactionsFilterQueryParams(filters, now));
-                const json = await getTransactionTotals({ signal }, { query });
+                const json = await getTransactionTotals({ signal }, { query: queryParams });
                 if (!signal.aborted) return json?.data;
             } catch (error) {
                 if (!signal.aborted) throw error;
             }
         }
-    }, [abortable, filters, getQueryParams, getTransactionTotals, now, shouldFetchTransactionTotals]);
+    }, [abortable, queryParams, getTransactionTotals, shouldFetchTransactionTotals]);
 
     const { data, error, isFetching } = useFetch({
         fetchOptions: { enabled: shouldFetchTransactionTotals },
@@ -59,17 +52,13 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     }, [canRefresh, isFetching]);
 
     useEffect(() => {
-        if (cachedFilters.current === filters) return;
-
-        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFilters.current, applicableFilters);
-
-        if (applicableFiltersDidChange) {
-            // The applicable filters have changed,
+        if (cachedQueryParams.current !== queryParams) {
+            // The query params have changed,
             // hence a new fetch request is required
             setFetchTimestamp(performance.now());
-            cachedFilters.current = filters;
+            cachedQueryParams.current = queryParams;
         }
-    }, [filters, applicableFilters]);
+    }, [queryParams]);
 
     useEffect(() => {
         if (pendingRefresh) {
