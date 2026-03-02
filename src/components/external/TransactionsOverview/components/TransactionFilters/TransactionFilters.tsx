@@ -8,10 +8,9 @@ import {
 import { compareTransactionsFilters } from '../utils';
 import { FilterBar } from '../../../../internal/FilterBar';
 import { selectionOptionsFor } from '../MultiSelectionFilter';
-import { IBalanceAccountBase } from '../../../../../types';
 import { TransactionsFilters as Filters } from '../../types';
-import { FilterBarState } from '../../../../internal/FilterBar/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
@@ -32,26 +31,22 @@ const balanceAccountFilterChangedCallback = (() => {
     };
 })();
 
-export interface TransactionsFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
-    availableCurrencies: readonly string[];
-    balanceAccounts?: IBalanceAccountBase[];
-    isTransactionsView: boolean;
-    insightsCurrency?: string;
-    onChange?: (filters: Readonly<Filters>) => void;
-    setInsightsCurrency?: (currency?: string) => void;
-}
+const TransactionsFilters = () => {
+    // prettier-ignore
+    const {
+        filterBarState,
+        isTransactionsView,
+        balanceAccounts,
+        currenciesLookupResult,
+        insightsCurrency,
+        onFiltersChange,
+        setInsightsCurrency,
+    } = useTransactionsOverviewContext();
 
-const TransactionsFilters = ({
-    availableCurrencies,
-    balanceAccounts,
-    isTransactionsView,
-    onChange,
-    insightsCurrency,
-    setInsightsCurrency,
-    ...filterBarProps
-}: TransactionsFiltersProps) => {
     const { i18n } = useCoreContext();
+    const { setShowingFilters, ...filterBarProps } = filterBarState;
 
+    const availableCurrencies = currenciesLookupResult.sortedCurrencies;
     const eventSubCategory = isTransactionsView ? TRANSACTION_ANALYTICS_SUBCATEGORY_LIST : TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS;
     const initialFilters = useRef<Filters>({ ...INITIAL_FILTERS });
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
@@ -122,9 +117,9 @@ const TransactionsFilters = ({
     useEffect(() => {
         if (cachedCurrentFilters.current !== currentFilters) {
             cachedCurrentFilters.current = currentFilters;
-            onChange?.(currentFilters);
+            onFiltersChange?.(currentFilters);
         }
-    }, [onChange, currentFilters]);
+    }, [onFiltersChange, currentFilters]);
 
     useEffect(() => {
         if (!initialFilters.current.balanceAccount && balanceAccount) {
