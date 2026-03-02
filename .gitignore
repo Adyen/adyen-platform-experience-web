@@ -11,6 +11,8 @@ stats.json
 stats.html
 .DS_Store
 /*.tgz
+.gemini/*
+mcp.json
 
 # IntelliJ
 .idea
