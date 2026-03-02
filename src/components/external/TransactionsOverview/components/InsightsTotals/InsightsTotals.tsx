@@ -7,15 +7,22 @@ import { ITransactionCategory } from '../../../../../types';
 import { getTransactionCategory } from '../../../../utils/translation/getters';
 import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { TransactionsOverviewInsightsProps } from '../TransactionsOverview/TransactionsOverviewInsights';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import AmountDisplay, { AmountDisplayProps } from '../AmountDisplay/AmountDisplay';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useTransactionsTotals from '../../hooks/useTransactionsTotals';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 import Typography from '../../../../internal/Typography/Typography';
 import StructuredList from '../../../../internal/StructuredList';
 import './InsightsTotals.scss';
 
-const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsResult }: TransactionsOverviewInsightsProps) => {
+interface InsightsTotalsProps {
+    currency?: string;
+    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
+    transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
+}
+
+const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsResult }: InsightsTotalsProps) => {
     const { i18n } = useCoreContext();
     const { currenciesDictionary } = currenciesLookupResult;
 
