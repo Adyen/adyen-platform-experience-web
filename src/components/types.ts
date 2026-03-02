@@ -145,13 +145,8 @@ export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved
 export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
 export type { ReportsTableFields } from './external/ReportsOverview/types';
 
-export type { TransactionOverviewComponentProps } from './external/TransactionsOverview/types';
-export type {
-    TransactionsOverviewProps,
-    TransactionOverviewProps,
-    TransactionsTableFields,
-    TransactionsFilters,
-} from './external/TransactionsOverview/types';
+export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
+export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
 
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
 export type { StoreIds } from './external/PaymentLinksOverview/types';
