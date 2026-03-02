@@ -5,6 +5,9 @@ const componentAvailabilityErrors = (type: ExternalComponentType): TranslationKe
     switch (type) {
         case 'transactions':
             return 'transactions.overview.errors.unavailable';
+        case 'transactionsInsights':
+            /* [TODO]: Define translation key */
+            return 'transactions.insights.errors.unavailable' as any;
         case 'payouts':
             return 'payouts.overview.errors.unavailable';
         case 'reports':

@@ -185,7 +185,11 @@ export interface TransactionOverviewComponentProps
         _CustomizableDataOverview<
             OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, ITransactionWithDetails>
         >,
-        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
+    hideInsights?: boolean;
+}
+
+export type TransactionsInsightsComponentProps = Pick<_DataOverviewComponentProps, 'balanceAccountId' | 'onFiltersChanged'>;
 
 type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
 
@@ -279,4 +283,5 @@ export type ExternalComponentType =
     | 'payoutDetails'
     | 'reports'
     | 'transactions'
+    | 'transactionsInsights'
     | 'transactionDetails';
