@@ -18,8 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write
-      actions: write
+      contents: read
 
     steps:
       - name: Checkout the repo
