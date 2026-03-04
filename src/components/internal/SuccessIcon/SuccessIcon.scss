@@ -1,0 +1,20 @@
+@use '../../../style';
+
+.adyen-pe-success-icon {
+    align-items: center;
+    background-color: style.token(color-decorative-green);
+    border-radius: 50%;
+    box-shadow: style.token(shadow-medium);
+    color: style.token(color-label-on-color);
+    display: flex;
+    height: 64px;
+    justify-content: center;
+    width: 64px;
+
+    &__icon {
+        display: flex;
+        font-size: 24px;
+        height: 24px;
+        justify-content: center;
+    }
+}
