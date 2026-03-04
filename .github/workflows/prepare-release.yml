@@ -1,0 +1,49 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-release-pr:
+    if: github.repository == 'adyen/adyen-platform-experience-web'
+    name: Create release PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout develop branch (full history)
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Run the preliminary setup steps
+        uses: ./.github/actions/setup-env
+
+      - name: Fetch main branch
+        run: git fetch origin main:main
+
+      - name: Validate changesets exist
+        run: |
+          pnpm changeset status || {
+            echo "::error::No changesets found. Cannot proceed with release."
+            exit 1
+          }
+
+      - name: Determine new version
+        run: |
+          pnpm changeset status --output=release.json
+          NEW_VERSION=$(jq -r '.releases[0].newVersion' release.json)
+          rm release.json
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "Start release v${{ env.NEW_VERSION }}" \
+            --body "Merge develop into main for release v${{ env.NEW_VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

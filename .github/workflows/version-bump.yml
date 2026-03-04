@@ -1,46 +1,40 @@
-name: Release
- 
+name: Version Bump
+
 on:
+  pull_request:
+    types: [closed]
+    branches: [main]
   workflow_dispatch:
- 
+
 jobs:
-  prepare-release:
-    if: github.ref_name == 'main' && github.repository == 'adyen/adyen-platform-experience-web'
-    name: Prepare and version bump
+  version-bump:
+    if: |
+      github.repository == 'adyen/adyen-platform-experience-web' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.pull_request.merged == true &&
+        startsWith(github.event.pull_request.title, 'Start release v')))
+    name: Version bump
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Checkout develop branch (full history)
+      - name: Checkout main branch
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
           fetch-depth: 0
- 
+
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
- 
-      - name: Check that changesets exist
-        run: |
-          pnpm changeset status || {
-            echo "::error::No changesets found. Cannot proceed with release."
-            exit 1
-          }
- 
+
       - name: Determine new version
         run: |
-          pnpm changeset status --output=release.json
-          NEW_VERSION=$(jq -r '.releases[0].newVersion' release.json)
-          rm release.json
+          pnpm changeset version
+          NEW_VERSION=$(jq -r '.version' package.json)
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+          git checkout -- .
 
-      - name: Fast-forward main with develop
-        run: |
-          git checkout main
-          git merge --ff-only origin/develop
-          git push origin main
- 
       - name: Create Version Pull Request
         id: changesets
         uses: changesets/action@v1
@@ -49,14 +43,3 @@ jobs:
           title: "Bump package version v${{ env.NEW_VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # TODO: Analyze if this step is optimal
-      # - name: Auto-merge version PR
-      #   if: steps.changesets.outputs.pullRequestNumber
-      #   run: |
-      #     gh pr merge ${{ steps.changesets.outputs.pullRequestNumber }} \
-      #       --squash \
-      #       --admin \
-      #       --delete-branch
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
