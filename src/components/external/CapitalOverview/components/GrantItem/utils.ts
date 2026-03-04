@@ -59,11 +59,7 @@ export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined =
 
     switch (grant.status) {
         case 'Pending':
-            return grant.missingActions?.length
-                ? pendingToS
-                    ? 'capital.overview.grants.common.statuses.pending.description.signTerms'
-                    : undefined
-                : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
+            return grant.missingActions?.length ? undefined : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
         case 'Failed':
             return 'capital.overview.grants.common.statuses.failed.description';
         case 'WrittenOff':
