@@ -1,30 +1,45 @@
+// =============================================================================
+// Core types
+// =============================================================================
+
 // prettier-ignore
 export {
     AtomicValue,
+    type Atom,
+    type AtomConfig,
     type AtomicResetValue,
+    type DeferredAtom,
+    type Molecule,
     type WithAtomicValue,
     type WithAtomicValueOperations,
     type WithAtomicValueState,
-} from './AtomicValue';
+} from './core/types';
+
+// Backward-compatible alias (AtomProps was renamed to AtomConfig)
+export type { AtomConfig as AtomProps } from './core/types';
+
+// =============================================================================
+// Core factories (vanilla JS — framework-agnostic)
+// =============================================================================
+
+// prettier-ignore
+export {
+    createAtom,
+    createDelay,
+    createMolecule,
+} from './core';
+
+// =============================================================================
+// Preact hooks
+// =============================================================================
 
 // prettier-ignore
 export {
     useAtom,
-    type Atom,
-    type AtomProps,
-    type DeferredAtom,
-} from './useAtom/useAtom';
-
-// prettier-ignore
-export {
-    useDelay,
-    type Delay,
-    type DelayProps,
-} from './useDelay/useDelay';
+} from './preact/useAtom';
 
 // prettier-ignore
 export {
     useMolecule,
-    type Molecule,
     type MoleculeProps,
-} from './useMolecule/useMolecule';
+} from './preact/useMolecule';

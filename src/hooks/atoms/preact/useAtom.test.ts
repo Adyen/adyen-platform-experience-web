@@ -3,7 +3,7 @@
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/preact';
-import { AtomicValue } from '../AtomicValue';
+import { AtomicValue } from '../core/types';
 import { useAtom } from './useAtom';
 
 describe('useAtom', () => {
@@ -456,10 +456,6 @@ describe('useAtom', () => {
     test('should not update if value is referentially equal', () => {
         const initial = { id: 1 };
         const { result } = renderHook(() => useAtom({ initialValue: initial }));
-
-        // We can't easily spy on internal set state, but we can check if object identity is preserved
-        // and if no unnecessary re-renders happen (though renderHook doesn't expose render count directly easily without a wrapper).
-        // But we can verify behavior.
 
         act(() => {
             result.current.set(initial);

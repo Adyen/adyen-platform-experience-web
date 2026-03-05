@@ -3,8 +3,8 @@
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/preact';
-import { AtomicValue } from '../AtomicValue';
-import { useAtom } from '../useAtom/useAtom';
+import { AtomicValue } from '../core/types';
+import { useAtom } from './useAtom';
 import { useMolecule } from './useMolecule';
 
 describe('useMolecule', () => {
