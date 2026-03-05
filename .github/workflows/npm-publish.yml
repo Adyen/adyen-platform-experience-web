@@ -33,8 +33,6 @@ jobs:
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
-        with:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Determine the release version
         run: |
@@ -65,14 +63,12 @@ jobs:
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
           npm publish --dry-run
 
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_PLATFORM_EXPERIENCE_TOKEN }}
-          npm publish
+          npm publish --tag=latest
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
