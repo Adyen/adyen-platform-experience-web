@@ -3,7 +3,7 @@ import {
     ACTIVE_GRANT,
     FAILED_GRANT,
     PENDING_GRANT,
-    PENDING_GRANT_WITH_SIGN_TOS,
+    PENDING_GRANT_WITH_SINGLE_ACTION,
     REPAID_GRANT,
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
@@ -39,7 +39,7 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for pending grant with actions', () => {
-        const config = getGrantConfig(PENDING_GRANT_WITH_SIGN_TOS);
+        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_GRANT.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
