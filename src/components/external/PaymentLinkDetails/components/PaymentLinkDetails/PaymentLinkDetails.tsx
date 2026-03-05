@@ -227,12 +227,7 @@ export const PaymentLinkDetails = ({ id, onUpdate, hideTitle, onContactSupport, 
                     title: i18n.get(isCopiedIndicatorVisible ? 'payByLink.details.actions.copied' : 'payByLink.details.actions.copyLink'),
                     event: handleCopyLink,
                     variant: ButtonVariant.PRIMARY,
-                    iconLeft: (
-                        <Icon
-                            className="adyen-pe-payment-link-creation-form-success__button-icon"
-                            name={isCopiedIndicatorVisible ? 'checkmark' : 'copy'}
-                        />
-                    ),
+                    iconLeft: <Icon name={isCopiedIndicatorVisible ? 'checkmark' : 'copy'} />,
                 },
                 ...(paymentLink.linkInformation.status !== 'expired' && paymentLink.linkInformation.status !== 'completed'
                     ? [
