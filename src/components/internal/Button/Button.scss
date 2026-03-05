@@ -179,6 +179,14 @@
         justify-content: center;
     }
 
+    &__icon-left {
+        margin-right: style.token(spacer-040);
+    }
+
+    &__icon-right {
+        margin-left: style.token(spacer-040);
+    }
+
     &:disabled {
         cursor: not-allowed;
     }
@@ -194,5 +202,12 @@
 
     &--invalid {
         border: 1px solid style.token(color-outline-critical);
+    }
+
+    &:focus-visible {
+        box-shadow:
+            0 0 0 style.token(focus-ring-spacer) style.token(color-background-primary),
+            0 0 0 style.token(focus-ring-outline) style.token(focus-ring-color);
+        outline: none;
     }
 }
