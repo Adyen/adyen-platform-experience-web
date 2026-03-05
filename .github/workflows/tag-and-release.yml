@@ -104,6 +104,7 @@ jobs:
     permissions:
       contents: write
       actions: write
+      id-token: write
     needs: create-github-release
     uses: adyen/adyen-platform-experience-web/.github/workflows/npm-publish.yml@main
     secrets: inherit
