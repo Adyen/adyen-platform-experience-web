@@ -19,9 +19,10 @@ type GrantActionsProps = {
     missingActions: IMissingAction[];
     offerExpiresAt?: string;
     className?: string;
+    onComplete: () => void;
 };
 
-export const GrantActions: FunctionalComponent<GrantActionsProps> = ({ missingActions = [], offerExpiresAt, className }) => {
+export const GrantActions: FunctionalComponent<GrantActionsProps> = ({ missingActions = [], offerExpiresAt, className, onComplete }) => {
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
 
     const onboardingConfigurationQuery = useFetch({
@@ -52,6 +53,7 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({ missingAc
             expirationDate={offerExpiresAt}
             legalEntityId={onboardingConfigurationQuery.data.legalEntityId}
             missingActions={missingActions}
+            onComplete={onComplete}
         />
     ) : (
         <GrantActionsHosted missingActions={missingActions} expirationDate={offerExpiresAt} className={className} />

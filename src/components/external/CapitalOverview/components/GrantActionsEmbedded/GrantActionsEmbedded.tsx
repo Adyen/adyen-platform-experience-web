@@ -1,5 +1,5 @@
 import { Fragment, FunctionalComponent } from 'preact';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -25,6 +25,7 @@ type GrantActionsEmbeddedProps = {
     legalEntityId: string;
     missingActions: IMissingAction[];
     expirationDate?: string;
+    onComplete: () => void;
 };
 
 export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps> = ({
@@ -32,6 +33,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     expirationDate,
     legalEntityId,
     missingActions,
+    onComplete,
 }) => {
     const { i18n, environment } = useCoreContext();
     const userEvents = useAnalyticsContext();
@@ -45,6 +47,13 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     const [actionsWithLoadedComponent, setActionsWithLoadedComponent] = useState<IMissingActionType[]>([]);
     const [activeAction, setActiveAction] = useState<IMissingActionType | undefined>(undefined);
     const [completedActions, setCompletedActions] = useState<IMissingActionType[]>([]);
+    const areActionsCompleted = useMemo(() => completedActions.length === missingActions.length, [completedActions.length, missingActions.length]);
+
+    useEffect(() => {
+        if (areActionsCompleted) {
+            onComplete();
+        }
+    }, [areActionsCompleted, onComplete]);
 
     const loadKYCComponent = useCallback(
         async (actionType: IMissingActionType) => {
@@ -105,10 +114,14 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     );
 
     const alertTitles = useActionsAlertTitles(expirationDate);
+    const processAlertTitle = useCallback(
+        (title: string) => (areActionsCompleted ? i18n.get('capital.overview.grants.item.alerts.actionsCompleted') : title),
+        [areActionsCompleted, i18n]
+    );
     const alertConfig = useMemo(() => {
         if (missingActions.length > 1) {
             return {
-                title: alertTitles.multiple,
+                title: processAlertTitle(alertTitles.multiple),
                 description: (
                     <div className={CLASSNAMES.actionButtonsContainer}>
                         {missingActions.map(action => (
@@ -120,11 +133,11 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
         } else {
             const actionType = missingActions[0]!.type;
             return {
-                title: alertTitles.single,
+                title: processAlertTitle(alertTitles.single),
                 description: renderActionButton(actionType),
             };
         }
-    }, [alertTitles.multiple, alertTitles.single, missingActions, renderActionButton]);
+    }, [alertTitles.multiple, alertTitles.single, missingActions, processAlertTitle, renderActionButton]);
 
     const close = () => {
         setActiveAction(undefined);
@@ -139,7 +152,12 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
 
     return (
         <div>
-            <Alert className={className} type={AlertTypeOption.WARNING} title={alertConfig.title} description={alertConfig.description} />
+            <Alert
+                className={className}
+                type={areActionsCompleted ? AlertTypeOption.HIGHLIGHT : AlertTypeOption.WARNING}
+                title={alertConfig.title}
+                description={alertConfig.description}
+            />
             <Modal isOpen={!!activeAction} onClose={close} isDismissible headerWithBorder={false} size="large">
                 {activeAction === 'AnaCredit' && (
                     <adyen-business-financing
