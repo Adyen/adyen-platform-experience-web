@@ -1,5 +1,5 @@
 import { FunctionalComponent } from 'preact';
-import { useCallback, useMemo } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
@@ -31,7 +31,8 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
     const { dateFormat } = useTimezoneAwareDateFormatting();
     const userEvents = useAnalyticsContext();
 
-    const grantConfig = useMemo(() => getGrantConfig(grant), [grant]);
+    const [areActionsLocallyCompleted, setActionsLocallyCompleted] = useState(false);
+    const grantConfig = useMemo(() => getGrantConfig(grant, areActionsLocallyCompleted), [grant, areActionsLocallyCompleted]);
 
     const showUnscheduledRepaymentAccounts = useCallback(() => {
         try {
@@ -77,7 +78,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                                         fills={{
                                             date: (
                                                 <time
-                                                    aria-labelledBy={elementIds.termEnds}
+                                                    aria-labelledby={elementIds.termEnds}
                                                     dateTime={grantConfig.repaymentPeriodEndDate.toISOString()}
                                                 >
                                                     <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
@@ -144,39 +145,21 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                         />
                     </div>
                 ) : null}
-                {grantConfig.hasAlerts ? (
-                    <>
-                        {grant.missingActions && grant.missingActions.length ? (
-                            <GrantActions
-                                missingActions={grant.missingActions}
-                                className={GRANT_ITEM_CLASS_NAMES.alert}
-                                offerExpiresAt={grant.offerExpiresAt}
-                            />
-                        ) : (
-                            <Alert
-                                className={GRANT_ITEM_CLASS_NAMES.alert}
-                                type={AlertTypeOption.HIGHLIGHT}
-                                title={i18n.get('capital.overview.grants.item.alerts.processingRequest')}
-                            />
-                        )}
-                    </>
-                ) : (
-                    grantConfig.hasUnscheduledRepaymentDetails && (
-                        <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
-                            <Button
-                                onClick={showUnscheduledRepaymentAccounts}
-                                className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
-                                variant={ButtonVariant.SECONDARY}
-                                fullWidth
-                            >
-                                {i18n.get('capital.overview.grants.item.actions.sendRepayment')}
-                            </Button>
-                        </div>
-                    )
+                {grantConfig.hasUnscheduledRepaymentDetails && (
+                    <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
+                        <Button
+                            onClick={showUnscheduledRepaymentAccounts}
+                            className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
+                            variant={ButtonVariant.SECONDARY}
+                            fullWidth
+                        >
+                            {i18n.get('capital.overview.grants.item.actions.sendRepayment')}
+                        </Button>
+                    </div>
                 )}
             </div>
         ),
-        [i18n, dateFormat, grant, grantConfig, showUnscheduledRepaymentAccounts]
+        [elementIds, grantConfig, i18n, grant, dateFormat, showUnscheduledRepaymentAccounts]
     );
 
     return (
@@ -190,6 +173,24 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
             >
                 {grantConfig.hasDetails && <GrantDetails grant={grant} />}
             </ExpandableCard>
+            {grantConfig.hasAlerts && (
+                <>
+                    {grant.missingActions && grant.missingActions.length ? (
+                        <GrantActions
+                            missingActions={grant.missingActions}
+                            className={GRANT_ITEM_CLASS_NAMES.alert}
+                            offerExpiresAt={grant.offerExpiresAt}
+                            onComplete={() => setActionsLocallyCompleted(true)}
+                        />
+                    ) : (
+                        <Alert
+                            className={GRANT_ITEM_CLASS_NAMES.alert}
+                            type={AlertTypeOption.HIGHLIGHT}
+                            title={i18n.get('capital.overview.grants.item.alerts.processingRequest')}
+                        />
+                    )}
+                </>
+            )}
         </div>
     );
 };
