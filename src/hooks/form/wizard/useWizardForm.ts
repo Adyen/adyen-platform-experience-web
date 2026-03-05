@@ -1,5 +1,5 @@
 import { useReducer, useCallback, useMemo } from 'preact/hooks';
-import { getNestedValue, useForm } from '../useForm';
+import { getNestedValue, setNestedValue, useForm } from '../useForm';
 import { UseWizardFormOptions, UseWizardFormReturn, WizardState, WizardAction, WizardStep, WizardSummaryData } from './types';
 import { FieldValues } from '../types';
 
@@ -102,7 +102,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         mode,
     });
 
-    const { trigger, getValues } = form;
+    const { trigger, getValues, getValueMap } = form;
 
     const totalSteps = steps.length;
     const currentStepConfig = steps[wizardState.currentStep]!;
@@ -289,6 +289,32 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
         return summary;
     }, [steps, getValues, wizardState.displayValues]);
 
+    const getApiPayloadValues = useCallback((): Partial<TFieldValues> => {
+        const valueMap = getValueMap();
+        const result = {} as TFieldValues;
+
+        // Collect fields explicitly excluded from API payload
+        const excludedFields = new Set<string>();
+        steps.forEach(step => {
+            step.fields.forEach(field => {
+                if (field.includeInApiPayload === false) {
+                    excludedFields.add(field.fieldName as string);
+                }
+            });
+        });
+
+        // Include values that exist in form state but are not represented in wizard steps
+        // (e.g. values set through defaults when a step is dynamically omitted)
+        for (const [fieldName, value] of valueMap) {
+            if (excludedFields.has(fieldName)) continue;
+            if (value !== undefined && value !== null && value !== '') {
+                setNestedValue(result, fieldName, value);
+            }
+        }
+
+        return result;
+    }, [steps, getValueMap]);
+
     const getDisplayValue = useCallback(
         (name: FieldValues<TFieldValues>): string | undefined => {
             return wizardState.displayValues.get(name);
@@ -320,6 +346,7 @@ export function useWizardForm<TFieldValues>(options: UseWizardFormOptions<TField
 
         // Summary data
         getSummaryData,
+        getApiPayloadValues,
 
         // Display values
         getDisplayValue,

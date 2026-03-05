@@ -22,7 +22,7 @@ jobs:
             - name: Run the preliminary setup steps
               uses: ./.github/actions/setup-env
 
-            - run: npm run test:coverage
+            - run: pnpm run test:coverage
 
             - name: Upload coverage report
               uses: actions/upload-artifact@v4
@@ -53,7 +53,7 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Run tests with coverage
-              run: npm run test:coverage
+              run: pnpm run test:coverage
 
             # STEP 1: Check for overall drop & post a PR comment
             - name: Report overall coverage drop

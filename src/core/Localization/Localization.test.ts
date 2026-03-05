@@ -118,6 +118,49 @@ describe('Localization', () => {
                 expect(result).toBe('Get help now');
             });
 
+            test('returns translation normally if custom translation is missing', async () => {
+                const lang = new Localization('en-US');
+                await lang.ready;
+
+                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
+                expect(result).toBe('Contact support');
+            });
+
+            test('prioritizes new key custom translation over old key custom translation', async () => {
+                const lang = new Localization('en-US');
+
+                lang.customTranslations = {
+                    'en-US': {
+                        'capital.common.actions.contactSupport': 'New Translation',
+                        contactSupport: 'Old Translation',
+                    } as unknown as Record<TranslationKey, string>,
+                };
+
+                await lang.ready;
+
+                const result = lang.get('capital.common.actions.contactSupport' as TranslationKey);
+                expect(result).toBe('New Translation');
+            });
+
+            test('warns when falling back to a deprecated key', async () => {
+                const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+                const lang = new Localization('en-US');
+
+                lang.customTranslations = {
+                    'en-US': {
+                        contactSupport: 'Call us now',
+                    } as unknown as Record<TranslationKey, string>,
+                };
+
+                await lang.ready;
+
+                lang.get('capital.common.actions.contactSupport' as TranslationKey);
+
+                expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('Deprecated translation key detected: "contactSupport"'));
+
+                consoleWarnSpy.mockRestore();
+            });
+
             test('does not check swapConfig for 1:1 mappings', async () => {
                 const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
                 const lang = new Localization('en-US');

@@ -189,27 +189,51 @@ export default class Localization {
      * @returns Translated string
      */
     get(key: TranslationKey, options?: TranslationOptions): string {
+        const customTranslations = this.#customTranslations?.[this.#locale];
+        const initialSwapKey = this.#keySwapConfig[key];
+
         // Check if there's a mapped old key in swapConfig and if user provided custom translation with old key
-        if (this.#customTranslations) {
-            const oldKey = this.#keySwapConfig[key];
+        if (customTranslations && initialSwapKey && !Array.isArray(initialSwapKey) && initialSwapKey !== key) {
+            let currentKey: string = key;
+            const keyChain: string[] = [];
+            const visitedKeys = new Set<string>();
 
-            // Only process if oldKey is a string (skip arrays for now, they represent multi-key mappings that we will treat as new keys)
-            // Also skip if oldKey is the same as the new key (1:1 mappings)
-            if (oldKey && typeof oldKey === 'string' && oldKey !== key) {
-                const translationForOldKey = getTranslation(this.#translations, oldKey, options);
+            while (true) {
+                // Cycle detected, stop lookup
+                if (visitedKeys.has(currentKey)) break;
 
-                if (!isNull(translationForOldKey)) {
-                    // Warn about deprecated key usage (only once per key)
-                    if (!this.#warnedDeprecatedKeys.has(oldKey)) {
-                        console.warn(
-                            `[Adyen Platform Experience Web] Deprecated translation key detected: "${oldKey}". ` +
-                                `Please update to use the new key: "${key}". ` +
-                                `This backward compatibility will be removed in a future version.`
-                        );
-                        this.#warnedDeprecatedKeys.add(oldKey);
+                visitedKeys.add(currentKey);
+                keyChain.push(currentKey);
+
+                const nextSwapKey = this.#keySwapConfig[currentKey];
+
+                // Stop if no mapping, or array (composite key)
+                if (!nextSwapKey || Array.isArray(nextSwapKey)) break;
+
+                currentKey = nextSwapKey;
+            }
+
+            // Check translations in order (Newest -> Oldest)
+            for (let i = 0; i < keyChain.length; i++) {
+                const translationKey = keyChain[i]!;
+                const translation = getTranslation(customTranslations, translationKey, options);
+
+                if (!isNull(translation)) {
+                    if (translationKey !== key) {
+                        if (!this.#warnedDeprecatedKeys.has(translationKey)) {
+                            console.warn(
+                                `[Adyen Platform Experience Web] Deprecated translation key detected: "${translationKey}". ` +
+                                    `Please update to use the new key: "${key}". ` +
+                                    `This backward compatibility will be removed in a future version.`
+                            );
+                            this.#warnedDeprecatedKeys.add(translationKey);
+                        }
+
+                        // Path compression (for shorter subsequent lookups)
+                        if (i > 1) this.#keySwapConfig[key] = translationKey;
                     }
 
-                    return translationForOldKey;
+                    return translation;
                 }
             }
         }

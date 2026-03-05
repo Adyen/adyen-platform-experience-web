@@ -1,31 +1,45 @@
-name: Version bump
+name: Version Bump
 
 on:
+  pull_request:
+    types: [closed]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  create-version-bump-pr:
-    if: startsWith(github.ref_name, 'main') && github.repository == 'adyen/adyen-platform-experience-web'
-    name: Create version bump PR
+  version-bump:
+    if: |
+      github.repository == 'adyen/adyen-platform-experience-web' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.pull_request.merged == true &&
+        startsWith(github.event.pull_request.title, 'Start release v')))
+    name: Version bump
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
     steps:
-      - name: Commit message
-        run: |
-          echo "NEW_VERSION=$(npm changeset status --output=release.json && jq -r '.releases[0].newVersion' release.json && rm release.json)" >> "$GITHUB_ENV"
-
-      - name: Checkout Repo
-        uses: actions/checkout@v3
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
 
-      - name: Create Release Pull Request
+      - name: Determine new version
+        run: |
+          pnpm changeset version
+          NEW_VERSION=$(jq -r '.version' package.json)
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+          git checkout -- .
+
+      - name: Create Version Pull Request
+        id: changesets
         uses: changesets/action@v1
         with:
-          commit: "Bump v${{env.NEW_VERSION}}"
-          title: "Bump package version v${{env.NEW_VERSION}}"
+          commit: "Bump v${{ env.NEW_VERSION }}"
+          title: "Bump package version v${{ env.NEW_VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

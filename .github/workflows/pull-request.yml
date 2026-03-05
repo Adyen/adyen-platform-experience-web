@@ -12,14 +12,18 @@ on:
       - README.md
       - LICENSE
       - .gitignore
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   build:
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write
-      actions: write
+      contents: read
 
     steps:
       - name: Checkout the repo
@@ -29,7 +33,7 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: Run unit tests
-        run: npm run test
+        run: pnpm run test
 
       - name: Build library
-        run: npm run build
+        run: pnpm run build

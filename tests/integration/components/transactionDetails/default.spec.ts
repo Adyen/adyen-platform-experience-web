@@ -1,18 +1,7 @@
 import type { Page } from '@playwright/test';
 import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, getClipboardContent, goToStory } from '../../../utils/utils';
-
-const sharedAnalyticsEventProperties = {
-    componentName: 'transactionDetails',
-    category: 'Transaction component',
-    subCategory: 'Transaction details',
-} as const;
-
-const sharedCopyButtonAnalyticsEventProperties = {
-    ...sharedAnalyticsEventProperties,
-    sectionName: 'Details',
-    label: 'Copy button',
-} as const;
+import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transaction-details--default';
 

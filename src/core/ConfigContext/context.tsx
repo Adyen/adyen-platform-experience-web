@@ -1,5 +1,5 @@
 import { createContext, toChildArray } from 'preact';
-import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
+import { useContext, useEffect, useState } from 'preact/hooks';
 import { ErrorMessageDisplay } from '../../components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { AuthSession } from './session/AuthSession';
 import { isWatchlistUnsubscribeToken } from '../../primitives/reactive/watchlist';
@@ -19,7 +19,7 @@ const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, '
 });
 
 export const ConfigProvider = ({ children, session, type }: ConfigProviderProps) => {
-    const { http, refresh } = useMemo(() => session, [session]);
+    const { context, http, refresh } = session;
     const [, setContextCounter] = useState(0);
     const [unsubscribeCounter, setUnsubscribeCounter] = useState(0);
     const [hasPermission, setHasPermission] = useState<undefined | boolean>();
@@ -33,10 +33,10 @@ export const ConfigProvider = ({ children, session, type }: ConfigProviderProps)
             const stateUpdater = isWatchlistUnsubscribeToken(maybeContext) ? setUnsubscribeCounter : setContextCounter;
             stateUpdater(count => count + 1);
         });
-    }, [unsubscribeCounter]);
+    }, [session, unsubscribeCounter]);
 
     return (
-        <ConfigContext.Provider value={{ ...session.context, http, refresh }}>
+        <ConfigContext.Provider value={{ ...context, http, refresh }}>
             {!isUndefined(hasPermission) &&
                 (hasPermission ? (
                     toChildArray(children)

@@ -5,6 +5,7 @@ import { TransactionsOverviewMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';
 import { endpoints } from '../../endpoints/endpoints';
 import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
+import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/transactions';
 import { TRANSACTIONS } from '../../mocks/mock-data';
 
 const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions/Transactions Overview' };
@@ -14,44 +15,60 @@ export const Default: ElementStory<typeof TransactionsOverview> = {
     args: { mockedApi: true },
 };
 
-export const ErrorNoTotals: ElementStory<typeof TransactionsOverview> = {
-    name: 'Error - No Totals',
+export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
+    name: 'Single balance account',
     args: { mockedApi: true },
     parameters: {
-        msw: {
-            handlers: [
-                http.get(endpoints().transactionsTotals, () => {
-                    return HttpResponse.error();
-                }),
-                http.get(endpoints().transactions, () => {
-                    return HttpResponse.json({
-                        data: [
-                            { ...TRANSACTIONS[0], createdAt: Date.now() },
-                            { ...TRANSACTIONS[6], createdAt: Date.now() },
-                        ],
-                        _links: {},
-                    });
-                }),
-            ],
-        },
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.singleBalanceAccount },
     },
 };
 
-const CUSTOM_COLUMNS_MOCK_HANDLER = {
-    handlers: [
-        http.get(endpoints().transactions, () => {
-            return HttpResponse.json({
-                data: [
-                    { ...TRANSACTIONS[0], createdAt: Date.now() },
-                    { ...TRANSACTIONS[4], createdAt: Date.now() },
-                    { ...TRANSACTIONS[6], createdAt: Date.now() },
-                    { ...TRANSACTIONS[8], createdAt: Date.now() },
-                    { ...TRANSACTIONS[10], createdAt: Date.now() },
-                ],
-                _links: {},
-            });
-        }),
-    ],
+export const SingleBalanceCurrency: ElementStory<typeof TransactionsOverview> = {
+    name: 'Single balance currency',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.singleBalanceCurrency },
+    },
+};
+
+export const EmptyList: ElementStory<typeof TransactionsOverview> = {
+    name: 'Empty list',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.emptyList },
+    },
+};
+
+export const ErrorList: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - List',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorList },
+    },
+};
+
+export const ErrorExport: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - Export',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorExport },
+    },
+};
+
+export const ErrorBalances: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - Balances',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorBalances },
+    },
+};
+
+export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
+    name: 'Error - Totals',
+    args: { mockedApi: true },
+    parameters: {
+        msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorTotals },
+    },
 };
 
 export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
@@ -110,7 +127,22 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
         },
     },
     parameters: {
-        msw: CUSTOM_COLUMNS_MOCK_HANDLER,
+        msw: {
+            handlers: [
+                http.get(endpoints().transactions, () => {
+                    return HttpResponse.json({
+                        data: [
+                            { ...TRANSACTIONS[0], createdAt: Date.now() },
+                            { ...TRANSACTIONS[4], createdAt: Date.now() },
+                            { ...TRANSACTIONS[6], createdAt: Date.now() },
+                            { ...TRANSACTIONS[8], createdAt: Date.now() },
+                            { ...TRANSACTIONS[10], createdAt: Date.now() },
+                        ],
+                        _links: {},
+                    });
+                }),
+            ],
+        },
     },
 };
 

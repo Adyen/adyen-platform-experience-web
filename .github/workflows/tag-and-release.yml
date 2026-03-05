@@ -14,8 +14,10 @@ jobs:
       contents: write
       actions: write
     runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.determine_version.outputs.version }}
     if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
-      || (github.event.pull_request.merged == true && startsWith(github.head_ref, 'bump/'))
+      || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v4
@@ -25,11 +27,14 @@ jobs:
 
       - name: Create a build and export an artifact
         run: |
-          npm run build:publish
+          pnpm run build:publish
 
       - name: Determine the release version
+        id: determine_version
         run: |
-          echo "NEW_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          VERSION=$(jq -r .version package.json)
+          echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Upload build as artifact for other jobs
         uses: actions/upload-artifact@v4
@@ -45,7 +50,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run changeset -- tag
+          publish: pnpm run changeset -- tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -90,7 +95,7 @@ jobs:
         run: |
           echo "Targeting repository: $TARGET_REPO"
           echo "Using tag: ${{ env.NEW_VERSION }}"
-          
+
           # Upload the new asset to the target repo using the new tag
           gh release upload "v${{ env.NEW_VERSION }}" "$ASSET_PATH" \
             --repo "$TARGET_REPO"
@@ -114,3 +119,12 @@ jobs:
     secrets: inherit
     with:
       environment_choice: 'live'
+
+  generate-sri-hashes:
+    permissions:
+      contents: read
+    needs: [trigger-npm-publish, upload-assets]
+    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
+    secrets: inherit
+    with:
+      version: ${{ needs.create-github-release.outputs.release_version }}

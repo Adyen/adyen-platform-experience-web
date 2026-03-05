@@ -3,21 +3,46 @@ import { ElementProps, ElementStory } from '../utils/types';
 import { Meta } from '@storybook/preact';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
+import { PAYOUT_DETAILS_HANDLERS } from '../../mocks/mock-server/payouts';
 
 const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payouts/Payout Details' };
+const defaultPayoutDetails = PAYOUTS_WITH_DETAILS[0]!;
+
+const sharedArgs = {
+    date: defaultPayoutDetails.payout!.createdAt,
+    id: defaultPayoutDetails.balanceAccountId,
+    mockedApi: true,
+};
 
 export const Default: ElementStory<typeof PayoutDetails> = {
     name: 'Default',
-    args: {
-        date: '2024-05-13T10%3A00%3A00.000Z',
-        id: 'BA32272223222B5CTDQPM6W2H',
-        mockedApi: true,
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.default },
+    },
+};
+
+export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
+    name: 'Error - Details',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.errorDetails },
+    },
+};
+
+export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
+    name: 'Sum of same-day payouts',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.sumOfSameDayPayouts },
     },
 };
 
 export const DataCustomization: ElementStory<typeof PayoutDetails> = {
     name: 'Data customization',
     args: {
+        ...sharedArgs,
         coreOptions: {
             translations: {
                 en_US: {
@@ -29,9 +54,6 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
                 },
             },
         },
-        date: '2024-05-13T10%3A00%3A00.000Z',
-        id: 'BA32272223222B5CTDQPM6W2H',
-        mockedApi: true,
         dataCustomization: {
             details: {
                 fields: [{ key: '_store' }, { key: '_product' }, { key: '_summary' }, { key: '_sendEmail' }, { key: '_country' }],
@@ -43,7 +65,7 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
                             _product: 'Coffee',
                             _summary: {
                                 type: 'link',
-                                value: 'Summary',
+                                value: 'See summary',
                                 config: {
                                     href: CUSTOM_URL_EXAMPLE,
                                 },
@@ -67,6 +89,9 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
                 },
             },
         },
+    },
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.default },
     },
 };
 

@@ -118,6 +118,7 @@ export interface UseFormReturn<TFieldValues> {
         options?: { shouldValidate?: boolean; shouldDirty?: boolean; shouldTouch?: boolean }
     ) => void;
     getValues: (name?: FieldValues<TFieldValues>) => any;
+    getValueMap: () => Map<FieldValues<TFieldValues>, FieldValue>;
     reset: (values?: Partial<TFieldValues>) => void;
     formState: FormState<TFieldValues>;
     trigger: (name?: FieldValues<TFieldValues> | FieldValues<TFieldValues>[]) => Promise<boolean>;

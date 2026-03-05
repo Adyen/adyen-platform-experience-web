@@ -1,6 +1,6 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
-    plugins: ['react', '@typescript-eslint', 'import', 'jsx-a11y', 'react-hooks'],
+    plugins: ['react', '@typescript-eslint', 'import-x', 'jsx-a11y', 'react-hooks'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
@@ -26,7 +26,7 @@ module.exports = {
         react: {
             version: '17.0',
         },
-        'import/resolver': {
+        'import-x/resolver': {
             node: {
                 extensions: ['.js', '.jsx', '.ts', '.tsx'],
             },
@@ -39,10 +39,10 @@ module.exports = {
         'no-console': 0,
         'class-methods-use-this': 'off', // TODO
         'no-underscore-dangle': 'off', // TODO
-        'import/prefer-default-export': 'off',
+        'import-x/prefer-default-export': 'off',
         'no-debugger': 'warn',
         indent: 'off',
-        'import/extensions': [
+        'import-x/extensions': [
             'error',
             'ignorePackages',
             {
@@ -52,7 +52,7 @@ module.exports = {
                 tsx: 'never',
             },
         ],
-        'import/no-extraneous-dependencies': [
+        'import-x/no-extraneous-dependencies': [
             'error',
             {
                 devDependencies: [
