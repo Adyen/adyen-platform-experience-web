@@ -21,6 +21,7 @@ const CoreProvider = ({
     getDatasetAsset,
     getCdnDataset,
     getCdnConfig,
+    environment,
 }: CoreProviderProps) => {
     const [ready, setReady] = useBooleanState(false);
     const commonProps = useMemo(() => _commonProps || {}, [_commonProps]);
@@ -45,6 +46,7 @@ const CoreProvider = ({
             getDatasetAsset,
             getCdnConfig,
             getCdnDataset,
+            environment,
         }),
         [
             commonProps,
@@ -57,6 +59,7 @@ const CoreProvider = ({
             getCdnConfig,
             getCdnDataset,
             updateCore,
+            environment,
         ]
     );
 

@@ -1,5 +1,5 @@
 import Localization from '../Localization';
-import { onErrorHandler } from '../types';
+import { DevEnvironment, onErrorHandler } from '../types';
 import { RefObject } from 'preact';
 import { AssetOptions } from '../Assets/Assets';
 
@@ -10,7 +10,7 @@ export interface CommonPropsTypes {
 export interface CoreProviderProps {
     children?: any;
     commonProps?: CommonPropsTypes;
-    i18n?: Localization['i18n'];
+    i18n: Localization['i18n'];
     loadingContext?: string;
     updateCore?: () => void;
     externalErrorHandler?: onErrorHandler | null;
@@ -19,4 +19,5 @@ export interface CoreProviderProps {
     getDatasetAsset?: (props: AssetOptions) => string;
     getCdnConfig?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+    environment: DevEnvironment;
 }
