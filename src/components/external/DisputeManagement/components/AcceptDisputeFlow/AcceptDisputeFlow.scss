@@ -9,13 +9,7 @@
     }
 
     &__success-icon {
-        color: style.token(color-background-success-strong);
-        font-size: style.token(spacer-110);
-        padding: style.token(spacer-040);
-
-        svg {
-            display: block;
-        }
+        margin-bottom: style.token(spacer-040);
     }
 
     &__input {

@@ -14,6 +14,7 @@ import { TranslationKey } from '../../../../../translations';
 import { DisputeManagementProps } from '../../types';
 import Button from '../../../../internal/Button';
 import Icon from '../../../../internal/Icon';
+import SuccessIcon from '../../../../internal/SuccessIcon/SuccessIcon';
 import './AcceptDisputeFlow.scss';
 
 export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementProps, 'onDisputeAccept'>) => {
@@ -114,7 +115,7 @@ export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementPro
         <div className="adyen-pe-accept-dispute__container">
             {disputeAccepted ? (
                 <div className="adyen-pe-accept-dispute__success">
-                    <Icon name="checkmark-circle-fill" className="adyen-pe-accept-dispute__success-icon" />
+                    <SuccessIcon className="adyen-pe-accept-dispute__success-icon" />
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get(acceptedLabel.current)}</Typography>
                     <Button variant={ButtonVariant.SECONDARY} onClick={goBack}>
                         {i18n.get('disputes.management.common.actions.showDetails')}
