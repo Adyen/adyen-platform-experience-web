@@ -6,6 +6,7 @@ import { ConfigProvider } from '../../../core/ConfigContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import BaseElement from '../BaseElement';
 import './UIElement.scss';
+import { FALLBACK_ENV } from '../../../core/utils';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -88,6 +89,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
                     componentRef={this.compRef}
+                    environment={core.options.environment || FALLBACK_ENV}
                     i18n={core.localization.i18n}
                     getCdnConfig={core.getCdnConfig}
                     getImageAsset={core.getImageAsset}
