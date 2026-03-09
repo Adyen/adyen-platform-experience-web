@@ -8,6 +8,7 @@ import { sessionsMock } from './sessions';
 import { analyticsMock } from './analytics';
 import { setupMock } from './setup';
 import { capitalMock } from './capital';
+import { cashoutMocks } from './cashout';
 import { disputesMocks } from './disputes';
 import { payByLinkMocks } from './payByLink';
 
@@ -20,6 +21,7 @@ export const mocks = [
     setupMock,
     reportsMock,
     capitalMock,
+    cashoutMocks,
     disputesMocks,
     payByLinkMocks,
 ];
