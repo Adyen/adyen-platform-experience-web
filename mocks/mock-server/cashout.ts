@@ -1,7 +1,6 @@
-import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils/utils';
-import { getHandlerCallback } from './utils/mocksHandlerFactory';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 import {
@@ -24,50 +23,42 @@ import {
 const mockEndpoints = endpoints().cashout;
 const networkError = false;
 
+const validationError = (fields: string[]) =>
+    HttpResponse.json(
+        {
+            type: 'https://docs.adyen.com/errors/validation',
+            errorCode: '29_001',
+            title: 'The request is missing required fields or contains invalid data.',
+            detail: `'${fields.join("', '")}' is required.`,
+            requestId: '00000000000000000000000000000000',
+            status: 422,
+        },
+        { status: 422 }
+    );
+
+const requireAccountKey = (request: Request) => {
+    const url = new URL(request.url);
+    const accountKey = url.searchParams.get('accountKey');
+    if (!accountKey) return { error: validationError(['accountKey']) };
+    return { accountKey };
+};
+
 export const cashoutMocks = [
     http.get(mockEndpoints.configuration, async ({ request }) => {
         if (networkError) return HttpResponse.error();
 
-        const url = new URL(request.url);
-        const accountKey = url.searchParams.get('accountKey');
-
-        if (!accountKey) {
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: "'accountKey' is required.",
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
-        }
+        const result = requireAccountKey(request);
+        if ('error' in result) return result.error;
 
         await delay(300);
-        return HttpResponse.json({ ...CASHOUT_CONFIGURATION, accountKey });
+        return HttpResponse.json({ ...CASHOUT_CONFIGURATION, accountKey: result.accountKey });
     }),
 
     http.get(mockEndpoints.balanceAccounts, async ({ request }) => {
         if (networkError) return HttpResponse.error();
 
-        const url = new URL(request.url);
-        const accountKey = url.searchParams.get('accountKey');
-
-        if (!accountKey) {
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: "'accountKey' is required.",
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
-        }
+        const result = requireAccountKey(request);
+        if ('error' in result) return result.error;
 
         await delay(300);
         return HttpResponse.json(CASHOUT_BALANCE_ACCOUNTS);
@@ -82,18 +73,8 @@ export const cashoutMocks = [
         const currency = url.searchParams.get('currency');
 
         if (!accountKey || !amount || !currency) {
-            const missingFields = [!accountKey && 'accountKey', !amount && 'amount', !currency && 'currency'].filter(Boolean);
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: `'${missingFields.join("', '")}' is required.`,
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
+            const missingFields = [!accountKey && 'accountKey', !amount && 'amount', !currency && 'currency'].filter(Boolean) as string[];
+            return validationError(missingFields);
         }
 
         const amountValue = Number(amount);
@@ -111,22 +92,8 @@ export const cashoutMocks = [
     http.get(mockEndpoints.transferInstruments, async ({ request }) => {
         if (networkError) return HttpResponse.error();
 
-        const url = new URL(request.url);
-        const accountKey = url.searchParams.get('accountKey');
-
-        if (!accountKey) {
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: "'accountKey' is required.",
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
-        }
+        const result = requireAccountKey(request);
+        if ('error' in result) return result.error;
 
         await delay(300);
         return HttpResponse.json(CASHOUT_TRANSFER_INSTRUMENTS);
@@ -147,18 +114,8 @@ export const cashoutMocks = [
                 !body.amount?.value && 'amount.value',
                 !body.amount?.currency && 'amount.currency',
                 !body.transferInstrumentId && 'transferInstrumentId',
-            ].filter(Boolean);
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: `'${missingFields.join("', '")}' is required.`,
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
+            ].filter(Boolean) as string[];
+            return validationError(missingFields);
         }
 
         await delay(500);
@@ -168,22 +125,8 @@ export const cashoutMocks = [
     http.get(mockEndpoints.history, async ({ request }) => {
         if (networkError) return HttpResponse.error();
 
-        const url = new URL(request.url);
-        const accountKey = url.searchParams.get('accountKey');
-
-        if (!accountKey) {
-            return HttpResponse.json(
-                {
-                    type: 'https://docs.adyen.com/errors/validation',
-                    errorCode: '29_001',
-                    title: 'The request is missing required fields or contains invalid data.',
-                    detail: "'accountKey' is required.",
-                    requestId: '00000000000000000000000000000000',
-                    status: 422,
-                },
-                { status: 422 }
-            );
-        }
+        const result = requireAccountKey(request);
+        if ('error' in result) return result.error;
 
         await delay(300);
         return HttpResponse.json(CASHOUT_HISTORY);
@@ -203,79 +146,25 @@ const genericError500 = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Some
 const forbiddenError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Forbidden', 'Message', '00_403');
 const entityNotFoundError = new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Entity was not found', 'Message', '30_112');
 
+const createConfigHandler = (response: object) => ({
+    handlers: [
+        http.get(mockEndpoints.configuration, async () => {
+            await delay(300);
+            return HttpResponse.json(response);
+        }),
+    ],
+});
+
 export const CASHOUT_CONFIGURATION_HANDLERS = {
-    default: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION);
-            }),
-        ],
-    },
-    unavailableZeroBalance: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_ZERO_BALANCE);
-            }),
-        ],
-    },
-    unavailableUnsupportedCurrency: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_CURRENCY);
-            }),
-        ],
-    },
-    unavailableUnsupportedRegion: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_REGION);
-            }),
-        ],
-    },
-    unavailableNoTransferInstruments: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_NO_TRANSFER_INSTRUMENTS);
-            }),
-        ],
-    },
-    unavailableCooldown: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_COOLDOWN);
-            }),
-        ],
-    },
-    unavailableDailyLimit: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_DAILY_LIMIT);
-            }),
-        ],
-    },
-    unavailableCapability: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_CAPABILITY);
-            }),
-        ],
-    },
-    unavailableRisk: {
-        handlers: [
-            http.get(mockEndpoints.configuration, async () => {
-                await delay(300);
-                return HttpResponse.json(CASHOUT_CONFIGURATION_UNAVAILABLE_RISK);
-            }),
-        ],
-    },
+    default: createConfigHandler(CASHOUT_CONFIGURATION),
+    unavailableZeroBalance: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_ZERO_BALANCE),
+    unavailableUnsupportedCurrency: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_CURRENCY),
+    unavailableUnsupportedRegion: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_REGION),
+    unavailableNoTransferInstruments: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_NO_TRANSFER_INSTRUMENTS),
+    unavailableCooldown: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_COOLDOWN),
+    unavailableDailyLimit: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_DAILY_LIMIT),
+    unavailableCapability: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_CAPABILITY),
+    unavailableRisk: createConfigHandler(CASHOUT_CONFIGURATION_UNAVAILABLE_RISK),
     forbidden: {
         handlers: [http.get(mockEndpoints.configuration, getErrorHandler(forbiddenError, 403))],
     },
@@ -303,17 +192,7 @@ export const CASHOUT_SUBMIT_HANDLERS = {
         handlers: [
             http.post(mockEndpoints.submit, async () => {
                 await delay(300);
-                return HttpResponse.json(
-                    {
-                        type: 'https://docs.adyen.com/errors/validation',
-                        errorCode: '29_001',
-                        title: 'The request is missing required fields or contains invalid data.',
-                        detail: "'balanceAccountId' is required.",
-                        requestId: '00000000000000000000000000000000',
-                        status: 422,
-                    },
-                    { status: 422 }
-                );
+                return validationError(['balanceAccountId']);
             }),
         ],
     },

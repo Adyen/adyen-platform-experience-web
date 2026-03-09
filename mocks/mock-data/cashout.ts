@@ -18,61 +18,25 @@ export const CASHOUT_CONFIGURATION = {
     accountKey: 'AccountHolder.AH123321123123',
 };
 
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_ZERO_BALANCE = {
+const createUnavailableConfig = (reason: string, overrides?: Partial<typeof CASHOUT_CONFIGURATION>) => ({
     ...CASHOUT_CONFIGURATION,
-    balanceAmount: {
-        value: 0,
-        currency: 'USD',
-    },
-    availableForCashoutAmount: {
-        value: 0,
-        currency: 'USD',
-    },
     isCashoutAvailable: false,
-    unsupportedReasons: ['zero_balance'],
-};
+    unsupportedReasons: [reason],
+    ...overrides,
+});
 
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_CURRENCY = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['unsupported_currency'],
-};
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_ZERO_BALANCE = createUnavailableConfig('zero_balance', {
+    balanceAmount: { value: 0, currency: 'USD' },
+    availableForCashoutAmount: { value: 0, currency: 'USD' },
+});
 
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_REGION = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['unsupported_region'],
-};
-
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_NO_TRANSFER_INSTRUMENTS = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['no_transfer_instruments'],
-};
-
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_COOLDOWN = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['cashout_cooldown'],
-};
-
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_DAILY_LIMIT = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['daily_limit_reached'],
-};
-
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_CAPABILITY = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['capability_configuration'],
-};
-
-export const CASHOUT_CONFIGURATION_UNAVAILABLE_RISK = {
-    ...CASHOUT_CONFIGURATION,
-    isCashoutAvailable: false,
-    unsupportedReasons: ['risk_rejection'],
-};
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_CURRENCY = createUnavailableConfig('unsupported_currency');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_REGION = createUnavailableConfig('unsupported_region');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_NO_TRANSFER_INSTRUMENTS = createUnavailableConfig('no_transfer_instruments');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_COOLDOWN = createUnavailableConfig('cashout_cooldown');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_DAILY_LIMIT = createUnavailableConfig('daily_limit_reached');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_CAPABILITY = createUnavailableConfig('capability_configuration');
+export const CASHOUT_CONFIGURATION_UNAVAILABLE_RISK = createUnavailableConfig('risk_rejection');
 
 export const CASHOUT_BALANCE_ACCOUNTS = {
     data: [
@@ -138,7 +102,7 @@ export const CASHOUT_HISTORY = [
             description: 'NL91 ABNA **** **** 01',
         },
         reference: 'SWP13443121234',
-        descriptionReference: 'Manual Cashout by user.', // TODO: Check if this stays in the final contract
+        descriptionReference: 'Manual Cashout by user.',
         creationDate: '2023-01-20T10:00:00.121Z',
     },
     {
@@ -157,7 +121,7 @@ export const CASHOUT_HISTORY = [
             description: '**** **** **** 1234',
         },
         reference: 'SWP98765432101',
-        descriptionReference: 'Manual Cashout by user.', // TODO: Check if this stays in the final contract
+        descriptionReference: 'Manual Cashout by user.',
         creationDate: '2023-01-15T14:30:00.000Z',
     },
 ];
