@@ -16,6 +16,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { classes, INITIAL_FILTERS } from '../../constants';
 import { Header } from '../../../../internal/Header';
 import './TransactionsOverview.scss';
+import '@adyen/kyc-components/terms-of-service-management';
 
 const INSIGHTS_FILTERS_SET = new Set<keyof Filters>(['balanceAccount', 'createdDate']);
 const getInsightsTotalsQueryParams: GetQueryParams = ({ balanceAccountId, createdSince, createdUntil }) => ({
