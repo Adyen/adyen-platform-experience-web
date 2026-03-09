@@ -1,0 +1,17 @@
+@use '../../style';
+
+.adyen-pe-payout-details {
+    color: style.token(color-label-primary);
+
+    &--unpaid-amount {
+        padding: 0.5rem 2rem;
+        margin-top: 1rem;
+        border: 1px dashed #8d95a3;
+        border-radius: 24px;
+    }
+
+    &--net-payout {
+        padding-left: 2rem;
+        margin-top: 1rem;
+    }
+}

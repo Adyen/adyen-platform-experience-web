@@ -1,0 +1,46 @@
+.adyen-pe-insights-totals {
+    &__breakdowns {
+        display: grid;
+        gap: var(--b-spacer-100, 32px) calc(var(--b-spacer-110, 36px) * 2);
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+
+    &__breakdown-list {
+        .breakdown-item {
+            border-bottom: var(--b-border-width-s, 1px) solid var(--b-color-outline-primary, #d1d5db);
+            display: flex;
+            justify-content: space-between;
+            padding: var(--b-spacer-030, 8px) 0;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+    }
+
+    &__skeleton {
+        background-color: var(--b-color-background-secondary, #e5e7eb);
+        border-radius: var(--b-border-radius-s, 4px);
+        display: inline-block;
+        height: var(--b-spacer-060, 16px);
+
+        &-amount {
+            display: block;
+            height: var(--b-spacer-070, 20px);
+            margin: var(--b-spacer-040, 10px) 0 var(--b-spacer-060, 16px);
+            max-width: 160px;
+
+            &--large {
+                max-width: 120px;
+            }
+        }
+
+        &--loading {
+            animation: adyen-pe-skeleton-pulse 1.5s ease-in-out infinite;
+        }
+    }
+
+    &__error-container {
+        margin: 0 auto;
+    }
+}

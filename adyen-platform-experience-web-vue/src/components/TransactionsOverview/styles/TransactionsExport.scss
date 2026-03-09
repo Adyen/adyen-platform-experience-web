@@ -1,0 +1,87 @@
+@use '../../../style';
+
+.adyen-pe-transactions-export {
+    margin-bottom: auto;
+    margin-left: auto;
+    padding-top: var(--b-spacer-010, 2px);
+    display: flex;
+    justify-content: center;
+
+    &__button {
+        .adyen-pe-filter-button__label {
+            align-items: center;
+            display: flex;
+            gap: var(--b-spacer-040, 10px);
+        }
+    }
+
+    &__error-alert {
+        align-items: center;
+        border: 0;
+        padding: var(--b-spacer-050, 12px);
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    &__popover {
+        min-width: 320px;
+        overflow: hidden;
+        padding: 0 var(--b-spacer-070, 20px) var(--b-spacer-060, 16px);
+
+        &-sections {
+            display: flex;
+            flex-direction: column;
+            gap: var(--b-spacer-060, 16px);
+            margin: var(--b-spacer-060, 16px) 0;
+        }
+
+        &-section {
+            .adyen-pe-toggle--label-first {
+                justify-content: space-between;
+                padding: style.token('spacer-020') 0;
+            }
+
+            &--filters {
+                align-items: center;
+                display: flex;
+                flex-wrap: wrap;
+                gap: var(--b-spacer-020, 4px);
+                padding-bottom: var(--b-spacer-040, 10px);
+                position: relative;
+                border-bottom: var(--b-border-width-s, 1px) solid var(--b-color-separator-primary, #d1d5db);
+            }
+
+            &--columns {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        &-section-title {
+            font-weight: var(--b-text-body-stronger-font-weight, 600);
+        }
+
+        &-column {
+            align-items: center;
+            display: flex;
+            gap: var(--b-spacer-060, 16px);
+            padding: var(--b-spacer-040, 10px) 0;
+            width: 100%;
+
+            &--all {
+                position: relative;
+                background: var(--b-color-background-secondary, #f3f4f6);
+                border-radius: var(--b-border-radius-m, 8px);
+                padding: var(--b-spacer-040, 10px);
+            }
+        }
+
+        &-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--b-spacer-060, 16px);
+        }
+    }
+}

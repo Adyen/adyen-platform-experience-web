@@ -1,0 +1,27 @@
+.adyen-pe-amount-display {
+    display: flex;
+    flex-direction: column;
+    gap: var(--b-spacer-020, 4px);
+    padding: var(--b-spacer-060, 16px) 0;
+
+    &__amount {
+        align-items: baseline;
+        display: inline-flex;
+        gap: var(--b-spacer-020, 4px);
+
+        &--large {
+            gap: var(--b-spacer-040, 10px);
+        }
+    }
+
+    &__currency {
+        font-weight: var(--b-text-body-strongest-font-weight, 700);
+    }
+
+    &__label {
+        align-items: center;
+        color: var(--b-color-label-secondary, #6b7280);
+        display: flex;
+        gap: var(--b-spacer-040, 10px);
+    }
+}

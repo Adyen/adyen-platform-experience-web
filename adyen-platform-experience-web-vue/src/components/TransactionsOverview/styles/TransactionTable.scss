@@ -1,0 +1,36 @@
+.adyen-pe-transactions-table {
+    &__amount {
+        display: block;
+        font-weight: var(--b-text-body-stronger-font-weight, 600);
+        text-align: right;
+    }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: var(--b-spacer-030, 8px);
+        line-height: 1;
+    }
+
+    &__payment-method-logo-container {
+        height: var(--b-spacer-090, 28px);
+        width: var(--b-spacer-100, 32px);
+    }
+
+    &__payment-method-logo {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    &__date-and-payment-method {
+        display: flex;
+        flex-direction: column;
+        gap: var(--b-spacer-040, 10px);
+
+        &--date {
+            color: var(--b-color-label-secondary, #6b7280);
+        }
+    }
+}

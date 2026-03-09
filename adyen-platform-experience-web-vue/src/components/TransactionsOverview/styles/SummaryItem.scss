@@ -1,0 +1,42 @@
+.adyen-pe-summary-item {
+    align-items: center;
+    display: flex;
+    gap: var(--b-spacer-080, 24px);
+    justify-content: space-between;
+    width: 100%;
+
+    @media (min-width: 576px) {
+        gap: var(--b-spacer-120, 40px);
+    }
+
+    &--body {
+        border-top: var(--b-border-width-s, 1px) solid var(--b-color-outline-disabled, #d1d5db);
+        margin-top: var(--b-spacer-040, 10px);
+        padding-top: var(--b-spacer-040, 10px);
+    }
+
+    &__label-container {
+        display: inline-block;
+        width: fit-content;
+
+        &--loading {
+            display: block;
+        }
+    }
+
+    &__label {
+        color: var(--b-color-label-secondary, #6b7280);
+        width: fit-content;
+    }
+
+    &__amount {
+        color: var(--b-color-label-primary, #111827);
+        font-weight: var(--b-text-body-strongest-font-weight, 700);
+        white-space: nowrap;
+    }
+
+    &__placeholder {
+        display: inline-block;
+        height: var(--b-spacer-060, 16px);
+    }
+}

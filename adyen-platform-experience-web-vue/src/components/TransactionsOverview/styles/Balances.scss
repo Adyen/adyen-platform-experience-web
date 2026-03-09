@@ -1,0 +1,14 @@
+.adyen-pe-balances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--b-spacer-060, 16px);
+    justify-content: space-between;
+
+    @media (min-width: 576px) {
+        display: block;
+    }
+
+    &__item {
+        width: 100%;
+    }
+}
