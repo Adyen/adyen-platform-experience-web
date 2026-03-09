@@ -7,6 +7,11 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   build:
     name: Build and analyze
