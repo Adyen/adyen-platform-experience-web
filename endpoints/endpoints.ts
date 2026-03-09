@@ -48,6 +48,14 @@ export const endpoints = () =>
             settings: `${baseUrl}/paybylink/settings/:storeId`,
             themes: `${baseUrl}/paybylink/themes/:id`,
         },
+        cashout: {
+            configuration: `${baseUrl}/cashout/configuration`,
+            balanceAccounts: `${baseUrl}/cashout/balanceAccounts`,
+            fees: `${baseUrl}/cashout/fees`,
+            transferInstruments: `${baseUrl}/cashout/transferInstruments`,
+            submit: `${baseUrl}/cashout`,
+            history: `${baseUrl}/cashout`,
+        },
         datasets: {
             countries: `${datasetBaseUrl}/countries/:locale.json?import`,
         },
