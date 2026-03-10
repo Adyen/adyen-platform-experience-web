@@ -15,18 +15,11 @@
     font-family: inherit;
     height: fit-content;
     justify-content: center;
-    min-height: 48px;
-    min-width: 48px;
     padding: style.token(spacer-040) style.token(spacer-060);
     text-decoration: none;
     transition: 125ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
     transition-property: color, background-color, box-shadow;
     user-select: none;
-
-    @include adyen-pe-screen-md-and-up {
-        min-height: auto;
-        min-width: auto;
-    }
 
     &--condensed {
         border-radius: style.token(border-radius-s);
@@ -55,6 +48,14 @@
 
     &--hidden {
         display: none;
+    }
+
+    &--primary,
+    &--secondary {
+        @media (max-width: #{$adyen-pe-breakpoint-md}) {
+            min-height: 48px;
+            min-width: max(48px, min-content);
+        }
     }
 
     &--primary {
