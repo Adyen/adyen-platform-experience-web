@@ -59,11 +59,7 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
                 <Button variant={ButtonVariant.SECONDARY} onClick={onGoToDetails}>
                     {i18n.get('payByLink.creation.success.showDetails')}
                 </Button>
-                <Button
-                    variant={ButtonVariant.PRIMARY}
-                    onClick={onCopy}
-                    iconLeft={<Icon className="adyen-pe-payment-link-creation-form-success__button-icon" name={copied ? 'checkmark' : 'copy'} />}
-                >
+                <Button variant={ButtonVariant.PRIMARY} onClick={onCopy} iconLeft={<Icon name={copied ? 'checkmark' : 'copy'} />}>
                     {copied ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink')}
                 </Button>
             </div>
