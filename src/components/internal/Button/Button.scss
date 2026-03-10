@@ -179,6 +179,14 @@
         justify-content: center;
     }
 
+    &__icon-left {
+        margin-right: style.token(spacer-040);
+    }
+
+    &__icon-right {
+        margin-left: style.token(spacer-040);
+    }
+
     &:disabled {
         cursor: not-allowed;
     }
