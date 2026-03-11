@@ -2,7 +2,6 @@ import { REF } from './constants';
 import { MissingReflexActionError } from './errors';
 import type { Ref, Reflex, Reflexable, ReflexAction } from './types';
 import { EMPTY_OBJECT, hasOwnProperty, isFunction, isUndefined, sameValue } from '../../../utils';
-import { RefObject } from 'preact';
 
 export function assertReflexAction<T = any>(value?: any): asserts value is ReflexAction<T> {
     if (!isFunction(value)) throw new MissingReflexActionError();
@@ -24,6 +23,6 @@ export const isReflex = <T = any>(value: any): value is Reflex<T> => {
 
 export const unwrap = <T = any>(reflexable: Reflexable<T>): Ref<T> => (isReflex<T>(reflexable) ? unwrap(reflexable[REF]) : reflexable);
 
-export function isRefObject(ref: any): ref is RefObject<any> {
+export function isRefObject(ref: any): ref is { current: any } {
     return !!ref.current;
 }
