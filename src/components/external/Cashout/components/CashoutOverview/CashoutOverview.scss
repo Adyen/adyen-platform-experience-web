@@ -1,0 +1,99 @@
+@use '../../../../../style';
+@use '../../../../../style/skeleton' as skeleton;
+
+.adyen-pe-cashout-overview {
+    $adyen-pe-cashout-overview: &;
+
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__amount-skeleton {
+        @include skeleton.adyen-pe-skeleton-animation();
+        border-radius: style.token(border-radius-m);
+        height: style.token(text-subtitle-font-size);
+
+        margin: 5px 0;
+        width: 120px !important;
+    }
+
+    &__header {
+        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__header-subtitle {
+        color: style.token(color-label-secondary);
+        margin-top: style.token(spacer-020);
+    }
+
+    &__account-selector {
+        display: flex;
+
+        .adyen-pe-dropdown__button {
+            border-color: style.token(color-outline-primary-active);
+            border-width: 1.5px;
+        }
+    }
+
+    &__cards {
+        display: grid;
+        gap: style.token(spacer-050);
+        grid-template-columns: 1fr 1fr;
+    }
+
+    &__card {
+        background-color: style.token(color-background-secondary);
+        border-radius: style.token(spacer-040);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        padding: style.token(spacer-060);
+    }
+
+    &__card-label {
+        color: style.token(color-label-primary);
+    }
+
+    &__card-value {
+        color: style.token(color-label-primary);
+        margin: 0;
+    }
+
+    &__cashout-row {
+        align-items: center;
+        border: 1px solid style.token(color-outline-primary);
+        border-radius: style.token(spacer-040);
+        display: flex;
+        justify-content: space-between;
+        padding: style.token(spacer-060);
+    }
+
+    &__cashout-info {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+    }
+
+    &__cashout-label {
+        color: style.token(color-label-secondary);
+    }
+
+    &__cashout-value {
+        color: style.token(color-label-primary);
+        margin: 0;
+    }
+
+    &--summary {
+        border-radius: style.token(border-radius-l);
+
+        #{$adyen-pe-cashout-overview}__cashout-row {
+            border: 0;
+        }
+    }
+
+    &--button {
+        display: inline-flex;
+    }
+}

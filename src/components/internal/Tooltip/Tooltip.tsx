@@ -26,6 +26,8 @@ export const Tooltip = ({ content, children, showTooltip, position, isUnderlineV
         [children?.props?.className, isUnderlineVisible]
     );
 
+    console.log(canShowTooltip, children);
+
     return (
         <>
             {children

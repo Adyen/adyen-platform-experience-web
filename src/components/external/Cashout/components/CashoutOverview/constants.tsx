@@ -1,0 +1,15 @@
+export const CASHOUT_OVERVIEW_CLASS_NAMES = {
+    base: 'adyen-pe-cashout-overview',
+    header: 'adyen-pe-cashout-overview__header',
+    headerTitle: 'adyen-pe-cashout-overview__header-title',
+    headerSubtitle: 'adyen-pe-cashout-overview__header-subtitle',
+    accountSelector: 'adyen-pe-cashout-overview__account-selector',
+    cards: 'adyen-pe-cashout-overview__cards',
+    card: 'adyen-pe-cashout-overview__card',
+    cardLabel: 'adyen-pe-cashout-overview__card-label',
+    cardValue: 'adyen-pe-cashout-overview__card-value',
+    cashoutRow: 'adyen-pe-cashout-overview__cashout-row',
+    cashoutInfo: 'adyen-pe-cashout-overview__cashout-info',
+    cashoutLabel: 'adyen-pe-cashout-overview__cashout-label',
+    cashoutValue: 'adyen-pe-cashout-overview__cashout-value',
+} as const;

@@ -4,6 +4,7 @@ import { delay } from './utils/utils';
 import { EndpointName } from '../../src/types/api/endpoints';
 import { HttpMethod } from '../../src/core/Http/types';
 import {
+    CashoutComponent,
     CapitalComponentManage,
     DisputesComponentManage,
     PayByLinkComponentManageLinks,
@@ -29,6 +30,7 @@ export const setupBasicResponse = {
         ...PayByLinkComponentView,
         ...PayByLinkComponentManageLinks,
         ...PayByLinkComponentManageSettings,
+        ...CashoutComponent,
     } satisfies Record<EndpointName, { method: HttpMethod; url: string; versions: number[] }>,
 };
 

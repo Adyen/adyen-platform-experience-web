@@ -55,7 +55,8 @@ export interface components {
             | 'paymentLinkCreation'
             | 'paymentLinkDetails'
             | 'paymentLinksOverview'
-            | 'paymentLinkSettings';
+            | 'paymentLinkSettings'
+            | 'cashout';
     };
     responses: never;
     parameters: never;

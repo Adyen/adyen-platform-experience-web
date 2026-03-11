@@ -264,3 +264,37 @@ export const PayByLinkComponentManageSettings = {
     },
     ...AnalyticsEndpoints,
 };
+
+export const CashoutComponent = {
+    getCashoutConfiguration: {
+        method: 'GET' as HttpMethod,
+        url: 'cashout/configuration',
+        versions: [1],
+    },
+    getCashoutBalanceAccounts: {
+        method: 'GET' as HttpMethod,
+        url: 'cashout/balanceAccounts',
+        versions: [1],
+    },
+    getCashoutFees: {
+        method: 'GET' as HttpMethod,
+        url: 'cashout/fees',
+        versions: [1],
+    },
+    getCashoutTransferInstruments: {
+        method: 'GET' as HttpMethod,
+        url: 'cashout/transferInstruments',
+        versions: [1],
+    },
+    submitCashout: {
+        method: 'POST' as HttpMethod,
+        url: 'cashout',
+        versions: [1],
+    },
+    getCashoutHistory: {
+        method: 'GET' as HttpMethod,
+        url: 'cashout',
+        versions: [1],
+    },
+    ...AnalyticsEndpoints,
+};

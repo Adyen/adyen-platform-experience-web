@@ -3,6 +3,7 @@ export * from './PayoutsOverview';
 export * from './TransactionDetails';
 export * from './TransactionsOverview';
 export * from './CapitalOffer';
+export * from './Cashout';
 export * from './ReportsOverview';
 export * from './CapitalOverview';
 export * from './DisputesOverview';
