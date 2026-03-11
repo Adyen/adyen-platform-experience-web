@@ -79,6 +79,10 @@ i18n.fullDate(date)                      // Date with time
 - Translation files live under `src/assets/translations/*.json`
 - Keep translation JSON sorted: `pnpm run translations:sort`
 
+### Bug fixes
+
+When I report a bug, don't start by trying to fix it. Instead, start by writing a test that reproduces the bug. Then, try to fix the bug and prove it with a passing test.
+
 ### Styling with Bento Design Tokens
 
 Never hardcode pixel values. Use design tokens:
