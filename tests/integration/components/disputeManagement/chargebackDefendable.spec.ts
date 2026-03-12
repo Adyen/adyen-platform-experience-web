@@ -8,8 +8,8 @@ const STORY_ID = 'mocked-disputes-dispute-management--chargeback-defendable';
 test.describe('Chargeback - Defendable', () => {
     test('should render button to accept and alert for defending the chargeback', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag', { hasText: 'Undefended' })).toBeVisible();
+        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
+        await expect(page.getByText('Undefended', { exact: true })).toBeVisible();
 
         await expect(page.getByRole('button', { name: 'Accept' })).toBeVisible();
 
@@ -42,6 +42,6 @@ test.describe('Chargeback - Defendable', () => {
         await expect(page.getByText('Evidence has been submitted')).toBeVisible();
         await expect(page.getByText('The chargeback details will be reviewed by the scheme, which can take up to 60 days.')).toBeVisible();
         await page.getByRole('button', { name: 'Show details' }).click();
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
+        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
     });
 });

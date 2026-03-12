@@ -10,16 +10,16 @@ test.describe('Payment link creation - Country dataset error', () => {
         const continueButton = page.getByRole('button', { name: 'Continuar' });
 
         // Wait for the form to load - single store setup skips store selection
-        await expect(page.locator('input[name="amount.value"]')).toBeVisible();
+        await expect(page.getByTestId('form-field-amount.value')).toBeVisible();
 
         await continueButton.click();
 
         // Step 2: Customer Details - verify country selector has English country names
         // Wait for the customer details form to load
-        await expect(page.locator('div[name="countryCode"]')).toBeVisible();
+        await expect(page.getByTestId('form-field-countryCode')).toBeVisible();
 
         // Open the country selector
-        await page.locator('div[name="countryCode"]').click();
+        await page.getByTestId('form-field-countryCode').getByTitle('Spain', { exact: true }).click();
 
         // Verify that English country names are displayed (fallback from countriesData)
         // These are the countries from the mock COUNTRIES data which has English names
