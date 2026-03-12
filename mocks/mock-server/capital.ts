@@ -17,6 +17,7 @@ import {
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
     GRANT_NL_ACCOUNT,
+    ONBOARDING_CONFIGURATION,
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
@@ -25,6 +26,7 @@ import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
 import { paths as CapitalGrantOfferPaths } from '../../src/types/api/resources/CapitalGrantOffersResource';
 import { paths as CapitalGrantsPaths } from '../../src/types/api/resources/CapitalGrantsResource';
 import { paths as CapitalMissingActionsPaths } from '../../src/types/api/resources/CapitalMissingActionsResource';
+import { paths as OnboardingSessionPaths } from '../../src/types/api/resources/OnboardingConfigurationResource';
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
@@ -116,7 +118,7 @@ const commonHandlers = {
     ],
 };
 
-const capitalFactory = mocksFactory<CapitalGrantOfferPaths & CapitalGrantsPaths & CapitalMissingActionsPaths>();
+const capitalFactory = mocksFactory<CapitalGrantOfferPaths & CapitalGrantsPaths & CapitalMissingActionsPaths & OnboardingSessionPaths>();
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
@@ -192,9 +194,15 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
-    grantActions: [
+    grantActionsEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
+    ],
+    grantActionsHosted: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
         {
             endpoint: mockEndpoints.signToS,
             handler: async () => {
@@ -210,9 +218,15 @@ export const CapitalOverviewMockedResponses = capitalFactory({
             },
         },
     ],
-    anacredit: [
+    grantAnaCreditActionEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
+    ],
+    grantAnaCreditActionHosted: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
         {
             endpoint: mockEndpoints.anaCredit,
             handler: async () => {
@@ -221,9 +235,15 @@ export const CapitalOverviewMockedResponses = capitalFactory({
             },
         },
     ],
-    signTOS: [
+    grantTOSActionEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
+    ],
+    grantTOSActionHosted: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
         {
             endpoint: mockEndpoints.signToS,
             handler: async () => {
