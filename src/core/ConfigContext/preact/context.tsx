@@ -1,9 +1,9 @@
 import { createContext, toChildArray } from 'preact';
-import { useContext, useEffect, useState } from 'preact/hooks';
+import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import { ErrorMessageDisplay } from '../../../components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { AuthSession } from '../session/AuthSession';
 import { componentAvailabilityErrors } from '../session/utils/sessionAwareComponentAvailability';
-import { createConfigContextValue, checkComponentPermission, subscribeToSession } from '../setupConfig';
+import { createConfigController } from '../setupConfig';
 import { asyncNoop, EMPTY_OBJECT, isUndefined, noop } from '../../../utils';
 import type { ConfigProviderProps } from '../types';
 
@@ -19,23 +19,16 @@ const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, '
 });
 
 export const ConfigProvider = ({ children, session, type }: ConfigProviderProps) => {
-    const [, setContextCounter] = useState(0);
-    const [unsubscribeCounter, setUnsubscribeCounter] = useState(0);
-    const [hasPermission, setHasPermission] = useState<undefined | boolean>();
+    const [, setStateVersion] = useState(0);
+    const controller = useMemo(() => createConfigController(session, type), [session, type]);
+    const { contextValue, hasPermission } = controller.getSnapshot();
 
     useEffect(() => {
-        checkComponentPermission(type, session).then(setHasPermission);
-    }, [session, type]);
-
-    useEffect(() => {
-        return subscribeToSession(session, {
-            onContextChange: () => setContextCounter(count => count + 1),
-            onUnsubscribe: () => setUnsubscribeCounter(count => count + 1),
-        });
-    }, [session, unsubscribeCounter]);
+        return controller.connect(() => setStateVersion(count => count + 1));
+    }, [controller]);
 
     return (
-        <ConfigContext.Provider value={createConfigContextValue(session)}>
+        <ConfigContext.Provider value={contextValue}>
             {!isUndefined(hasPermission) &&
                 (hasPermission ? (
                     toChildArray(children)
