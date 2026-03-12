@@ -35,7 +35,7 @@ export const useCashoutData = (accountKey: string) => {
         fetchOptions: { enabled: !!activeBalanceAccount },
         queryFn: useCallback(async () => {
             return getCashoutConfiguration?.(EMPTY_OBJECT, { query: { accountKey: activeBalanceAccount?.id || '' } });
-        }, [getCashoutConfiguration, accountKey, activeBalanceAccount]),
+        }, [getCashoutConfiguration, activeBalanceAccount]),
     });
 
     const formatAmount = useCallback(

@@ -76,7 +76,7 @@ export interface components {
             | 'getCashoutBalanceAccounts'
             | 'getCashoutFees'
             | 'getCashoutTransferInstruments'
-            | 'submitCashoutRequest'
+            | 'submitCashout'
             | 'getCashoutHistory';
         LegalEntitySetupResponseDTO: {
             countryCode: string;
