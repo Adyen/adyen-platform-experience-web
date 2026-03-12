@@ -13,9 +13,19 @@ interface CalendarInputButtonProps {
     onClear?: (e?: Event) => void;
     showClearButton?: boolean;
     buttonRef: MutableRef<HTMLButtonElement | null>;
+    isReadOnly?: boolean;
 }
 
-export function CalendarInputButton({ label, isOpen, isInvalid, onClick, onClear, showClearButton, buttonRef }: CalendarInputButtonProps) {
+export function CalendarInputButton({
+    label,
+    isOpen,
+    isInvalid,
+    onClick,
+    onClear,
+    showClearButton,
+    buttonRef,
+    isReadOnly,
+}: CalendarInputButtonProps) {
     return (
         <Button
             ref={buttonRef}
@@ -27,6 +37,7 @@ export function CalendarInputButton({ label, isOpen, isInvalid, onClick, onClear
             aria-haspopup="dialog"
             aria-expanded={isOpen}
             aria-invalid={isInvalid ? 'true' : undefined}
+            disabled={isReadOnly}
             className={cx('adyen-pe-button adyen-pe-dropdown__button', {
                 ['adyen-pe-button--invalid']: isInvalid,
             })}
