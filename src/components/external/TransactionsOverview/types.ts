@@ -48,11 +48,6 @@ export type TransactionsCustomColumn = DataGridCustomColumnConfig<TransactionsTa
 /** Data customization configuration for transactions list view */
 export type TransactionsListCustomization = DataCustomizationObject<TransactionsTableFields, ITransaction[], CustomDataRetrieved[]>;
 
-/**
- * @deprecated Use TransactionsOverviewProps instead
- */
-export type TransactionOverviewProps = TransactionsOverviewProps;
-
 /** Main component props for TransactionsOverview */
 export interface TransactionsOverviewProps extends UIElementProps {
     /** Allow user to change the number of items displayed per page */
@@ -92,3 +87,8 @@ export interface TransactionOverviewComponentProps extends TransactionsOverviewP
     /** @internal Loading state for balance accounts */
     isLoadingBalanceAccount?: boolean;
 }
+
+/**
+ * @deprecated Use TransactionOverviewComponentProps instead.
+ */
+export type TransactionOverviewProps = TransactionOverviewComponentProps;

@@ -176,7 +176,12 @@ export type { ReportsTableFields } from './external/ReportsOverview/types';
 
 // Transactions Overview types
 export type { TransactionOverviewComponentProps } from './external/TransactionsOverview/types';
-export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
+export type {
+    TransactionsOverviewProps,
+    TransactionOverviewProps,
+    TransactionsTableFields,
+    TransactionsFilters,
+} from './external/TransactionsOverview/types';
 
 // Payment Links Overview types
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
@@ -204,11 +209,6 @@ export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/C
 
 // Payment Link Creation types
 export type { PaymentLinkCreationComponentProps, PaymentLinkCreationProps } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
 export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
 
 // Payment Link Settings types

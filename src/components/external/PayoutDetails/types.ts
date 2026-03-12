@@ -1,15 +1,11 @@
-import { UIElementProps, CustomColumn, CustomDataRetrieved, DataGridCustomColumnConfig, OnDataRetrievedCallback } from '../../types';
+import { UIElementProps, CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
 import { IPayoutDetails } from '../../../types';
-import { StringWithAutocompleteOptions } from '../../../utils/types';
 
 /** Payout details field names */
 type PayoutDetailsFields = 'createdAt' | 'payoutType' | 'netPayoutAmount' | 'fundingSource' | 'summary' | 'adjustments';
 
 /** Customization for payout details fields */
-export type PayoutDetailsCustomization = {
-    fields?: DataGridCustomColumnConfig<StringWithAutocompleteOptions<PayoutDetailsFields>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<IPayoutDetails, CustomDataRetrieved[]>;
-};
+export type PayoutDetailsCustomization = DetailsDataCustomizationObject<PayoutDetailsFields, IPayoutDetails, CustomDataRetrieved>;
 
 /** Props for the PayoutDetails component */
 export interface PayoutDetailsProps extends UIElementProps {
@@ -22,7 +18,9 @@ export interface PayoutDetailsProps extends UIElementProps {
     /** Callback fired when user requests contact support */
     onContactSupport?: () => void;
     /** Data customization options */
-    dataCustomization?: PayoutDetailsCustomization;
+    dataCustomization?: {
+        details?: PayoutDetailsCustomization;
+    };
 }
 
 /**
