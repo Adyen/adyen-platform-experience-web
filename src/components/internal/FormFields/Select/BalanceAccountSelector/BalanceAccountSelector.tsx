@@ -30,7 +30,12 @@ const BalanceAccountSelector = memo(
                     <div className={data.contentClassName}>
                         {data.item.name && <span className={BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.name}</span>}
                         {data.item.id !== ALL_BALANCE_ACCOUNTS_SELECTION_ID && (
-                            <span className={data.item.name ? BA_SELECTOR_ACCOUNT_ID_CLASS : BA_SELECTOR_ACCOUNT_LABEL_CLASS}>{data.item.id}</span>
+                            <span
+                                className={data.item.name ? BA_SELECTOR_ACCOUNT_ID_CLASS : BA_SELECTOR_ACCOUNT_LABEL_CLASS}
+                                data-testid="balance-account-id"
+                            >
+                                {data.item.id}
+                            </span>
                         )}
                     </div>
                     {renderDefaultSingleSelectionCheckedness(data)}

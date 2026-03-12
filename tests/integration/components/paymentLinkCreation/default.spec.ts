@@ -1,4 +1,4 @@
-import { test, expect, Locator } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-creation--default';
@@ -21,28 +21,28 @@ test.describe('Payment link creation - Link creation success', () => {
             .locator('div')
             .filter({ hasText: /^Custom$/ })
             .click();
-        await page.locator('input[name="linkValidity.quantity"]').click();
-        await page.locator('input[name="linkValidity.quantity"]').fill('30');
+        await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').click();
+        await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').fill('30');
 
-        await page.locator('button[name="linkValidity.durationUnit"]').click();
+        await page.getByTestId('form-field-linkValidity.quantity').getByRole('button', { name: 'Select option', exact: true }).click();
         await page.getByRole('option', { name: 'hours' }).click();
 
         // Set amount to CNY 3000
-        await page.locator('button[title="Select option"]').first().click();
+        await page.getByTestId('form-field-amount.value').getByRole('button', { name: 'Select option', exact: true }).click();
         await page.getByRole('option', { name: 'CNY' }).click();
-        await page.locator('input[name="amount.value"]').fill('3000');
+        await page.getByTestId('form-field-amount.value').getByRole('spinbutton').fill('3000');
 
         // Fill merchant reference
-        await page.locator('input[name="reference"]').click();
-        await page.locator('input[name="reference"]').fill('MERCH00001');
+        await page.getByTestId('form-field-reference').getByRole('textbox').click();
+        await page.getByTestId('form-field-reference').getByRole('textbox').fill('MERCH00001');
 
         // Select link type Open
-        await page.getByTitle('Select option').click();
+        await page.getByTestId('form-field-linkType').getByRole('button', { name: 'Select option', exact: true }).click();
         await page.getByRole('option', { name: 'Open' }).click();
 
         // Fill description
-        await page.locator('input[name="description"]').click();
-        await page.locator('input[name="description"]').fill('This is a test description');
+        await page.getByTestId('form-field-description').getByRole('textbox').click();
+        await page.getByTestId('form-field-description').getByRole('textbox').fill('This is a test description');
 
         // Select delivery date
         await page.getByRole('button', { name: 'Select option' }).click();
@@ -52,56 +52,52 @@ test.describe('Payment link creation - Link creation success', () => {
 
         // Step 3: Customer Details
         // Shopper reference
-        await page.locator('input[name="shopperReference"]').click();
-        await page.locator('input[name="shopperReference"]').fill('SHP000001');
+        await page.getByTestId('form-field-shopperReference').getByRole('textbox').click();
+        await page.getByTestId('form-field-shopperReference').getByRole('textbox').fill('SHP000001');
 
         // Shopper name
-        await page.locator('input[name="shopperName.firstName"]').click();
-        await page.locator('input[name="shopperName.firstName"]').fill('John');
-        await page.locator('input[name="shopperName.lastName"]').click();
-        await page.locator('input[name="shopperName.lastName"]').fill('Doe');
+        await page.getByTestId('form-field-shopperName.firstName').getByRole('textbox').click();
+        await page.getByTestId('form-field-shopperName.firstName').getByRole('textbox').fill('John');
+        await page.getByTestId('form-field-shopperName.lastName').getByRole('textbox').click();
+        await page.getByTestId('form-field-shopperName.lastName').getByRole('textbox').fill('Doe');
 
         // Shopper email
-        await page.locator('input[name="shopperEmail"]').click();
-        await page.locator('input[name="shopperEmail"]').fill('john.doe@adyen.com');
+        await page.getByTestId('form-field-shopperEmail').getByRole('textbox').click();
+        await page.getByTestId('form-field-shopperEmail').getByRole('textbox').fill('john.doe@adyen.com');
 
         // Phone number with country code
-        await page.getByTitle('Select option').first().click();
-        await page.getByRole('combobox', { name: 'Select option' }).first().fill('co');
+        await page.getByTestId('form-field-telephoneNumber').getByTitle('Select option', { exact: true }).click();
+        await page.getByRole('combobox', { name: 'Select option' }).fill('co');
         await page.getByRole('option', { name: 'CO (+57)' }).click();
-        await page.locator('input[name="telephoneNumber"]').click();
-        await page.locator('input[name="telephoneNumber"]').fill('3002119220');
+        await page.getByTestId('form-field-telephoneNumber').getByRole('textbox').click();
+        await page.getByTestId('form-field-telephoneNumber').getByRole('textbox').fill('3002119220');
 
         // Country/Region
-        await page.locator('div[name="countryCode"]').click();
-        await page.getByRole('combobox', { name: 'Select option' }).first().fill('united');
-        await page.getByRole('option', { name: 'United States' }).first().click();
+        await page.getByTestId('form-field-countryCode').getByTitle('Select option', { exact: true }).click();
+        await page.getByRole('combobox', { name: 'Select option' }).fill('united');
+        await page.getByRole('option', { name: 'United States' }).click();
 
         // Billing address
-        await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
-        await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
-        await page.locator('div[name="billingAddress.country"]').click();
+        await page.getByTestId('form-field-billingAddress.street').getByRole('textbox').fill('Imaginary Street');
+        await page.getByTestId('form-field-billingAddress.houseNumberOrName').getByRole('textbox').fill('100');
+        await page.getByTestId('form-field-billingAddress.country').getByTitle('Select option', { exact: true }).click();
         await page.getByRole('option', { name: 'Mexico' }).click();
-        await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
-        await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
+        await page.getByTestId('form-field-billingAddress.city').getByRole('textbox').fill('Monterrey');
+        await page.getByTestId('form-field-billingAddress.postalCode').getByRole('textbox').fill('050010');
 
         // Enable separate billing address
         await page.getByText('Shipping and billing addresses are the same').click();
 
         // Delivery address
-        await page.locator('input[name="deliveryAddress.street"]').fill('Test Street');
-        await page.locator('input[name="deliveryAddress.houseNumberOrName"]').fill('123');
-        await page.locator('div[name="deliveryAddress.country"]').click();
-        await page
-            .getByLabel('', { exact: true })
-            .getByRole('option')
-            .filter({ hasText: /^United States$/ })
-            .click();
-        await page.locator('input[name="deliveryAddress.city"]').fill('Gaithersburg');
-        await page.locator('input[name="deliveryAddress.postalCode"]').fill('20878');
+        await page.getByTestId('form-field-deliveryAddress.street').getByRole('textbox').fill('Test Street');
+        await page.getByTestId('form-field-deliveryAddress.houseNumberOrName').getByRole('textbox').fill('123');
+        await page.getByTestId('form-field-deliveryAddress.country').getByTitle('Select option', { exact: true }).click();
+        await page.getByRole('option', { name: 'United States', exact: true }).click();
+        await page.getByTestId('form-field-deliveryAddress.city').getByRole('textbox').fill('Gaithersburg');
+        await page.getByTestId('form-field-deliveryAddress.postalCode').getByRole('textbox').fill('20878');
 
         // Language
-        await page.getByTitle('Select option').click();
+        await page.getByTestId('form-field-shopperLocale').getByTitle('Select option', { exact: true }).click();
         await page.getByRole('combobox', { name: 'Select option' }).fill('spa');
         await page.getByRole('option', { name: 'Español' }).click();
 
@@ -136,12 +132,6 @@ test.describe('Payment link creation - Link creation validation', () => {
 
         await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
 
-        const getFieldErrorMessage = (field: Locator) =>
-            field
-                .locator('xpath=ancestor::div[contains(@class,"adyen-pe-payment-link-creation-form__field-container")]')
-                .first()
-                .locator('.adyen-pe-field-error__message');
-
         // Step 1: Store Selection
         await page.getByRole('button', { name: 'Select option' }).click();
         await page.getByRole('option', { name: 'NY001' }).click();
@@ -150,22 +140,22 @@ test.describe('Payment link creation - Link creation validation', () => {
         // Step 2: Payment Details
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        const amountField = page.locator('input[name="amount.value"]');
-        const amountErrorMessage = getFieldErrorMessage(amountField);
+        const amountField = page.getByTestId('form-field-amount.value').getByRole('spinbutton');
+        const amountErrorMessage = page.getByTestId('field-error-amount.value');
         await expect(amountErrorMessage).toHaveText('Please select a currency');
 
-        await page.locator('button[title="Select option"]').first().click();
+        await page.getByTestId('form-field-amount.value').getByRole('button', { name: 'Select option', exact: true }).click();
         await page.getByRole('option', { name: 'CNY' }).click();
         await expect(amountErrorMessage).toHaveText('This field is required');
 
-        const referenceField = page.locator('input[name="reference"]');
-        await expect(getFieldErrorMessage(referenceField)).toHaveText('This field is required');
+        const referenceField = page.getByTestId('form-field-reference').getByRole('textbox');
+        await expect(page.getByTestId('field-error-reference')).toHaveText('This field is required');
 
-        const linkTypeField = page.locator('button[name="linkType"], div[name="linkType"]').first();
-        await expect(getFieldErrorMessage(linkTypeField)).toHaveText('This field is required');
+        const linkTypeField = page.getByTestId('form-field-linkType').getByRole('button', { name: 'Select option', exact: true });
+        await expect(page.getByTestId('field-error-linkType')).toHaveText('This field is required');
 
-        const descriptionField = page.locator('input[name="description"]');
-        await expect(getFieldErrorMessage(descriptionField)).toHaveText('This field is required');
+        const descriptionField = page.getByTestId('form-field-description').getByRole('textbox');
+        await expect(page.getByTestId('field-error-description')).toHaveText('This field is required');
 
         await amountField.fill('8403218043128031280312803218031283021');
         await expect(amountField).toHaveValue('10000000000000');
@@ -178,56 +168,53 @@ test.describe('Payment link creation - Link creation validation', () => {
         // Step 3: Customer Details
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        const shopperReferenceField = page.locator('input[name="shopperReference"]');
-        await expect(getFieldErrorMessage(shopperReferenceField)).toHaveText('This field is required');
+        const shopperReferenceField = page.getByTestId('form-field-shopperReference').getByRole('textbox');
+        await expect(page.getByTestId('field-error-shopperReference')).toHaveText('This field is required');
 
-        const shopperPhoneField = page.locator('input[name="telephoneNumber"]');
-        await expect(getFieldErrorMessage(shopperPhoneField)).toHaveText('This field is required');
+        const shopperPhoneField = page.getByTestId('form-field-telephoneNumber').getByRole('textbox');
+        await expect(page.getByTestId('field-error-telephoneNumber')).toHaveText('This field is required');
 
-        const countryField = page.locator('div[name="countryCode"], button[name="countryCode"]').first();
-        await expect(getFieldErrorMessage(countryField)).toHaveText('This field is required');
+        const countryField = page.getByTestId('form-field-countryCode').getByTitle('Select option', { exact: true });
+        await expect(page.getByTestId('field-error-countryCode')).toHaveText('This field is required');
 
-        const languageField = page.locator('div[name="shopperLocale"], button[name="shopperLocale"]').first();
-        await expect(getFieldErrorMessage(languageField)).toHaveText('This field is required');
+        const languageField = page.getByTestId('form-field-shopperLocale').getByTitle('Select option', { exact: true });
+        await expect(page.getByTestId('field-error-shopperLocale')).toHaveText('This field is required');
 
-        const billingStreetField = page.locator('input[name="billingAddress.street"]');
-        await expect(getFieldErrorMessage(billingStreetField)).toHaveText('This field is required');
+        const billingStreetField = page.getByTestId('form-field-billingAddress.street').getByRole('textbox');
+        await expect(page.getByTestId('field-error-billingAddress.street')).toHaveText('This field is required');
 
-        const billingHouseNumberField = page.locator('input[name="billingAddress.houseNumberOrName"]');
-        await expect(getFieldErrorMessage(billingHouseNumberField)).toHaveText('This field is required');
+        const billingHouseNumberField = page.getByTestId('form-field-billingAddress.houseNumberOrName').getByRole('textbox');
+        await expect(page.getByTestId('field-error-billingAddress.houseNumberOrName')).toHaveText('This field is required');
 
-        const billingCountryField = page.locator('div[name="billingAddress.country"], button[name="billingAddress.country"]').first();
-        await expect(getFieldErrorMessage(billingCountryField)).toHaveText('This field is required');
+        const billingCountryField = page.getByTestId('form-field-billingAddress.country').getByTitle('Select option', { exact: true });
+        await expect(page.getByTestId('field-error-billingAddress.country')).toHaveText('This field is required');
 
-        const billingCityField = page.locator('input[name="billingAddress.city"]');
-        await expect(getFieldErrorMessage(billingCityField)).toHaveText('This field is required');
+        const billingCityField = page.getByTestId('form-field-billingAddress.city').getByRole('textbox');
+        await expect(page.getByTestId('field-error-billingAddress.city')).toHaveText('This field is required');
 
-        const billingPostalCodeField = page.locator('input[name="billingAddress.postalCode"]');
-        await expect(getFieldErrorMessage(billingPostalCodeField)).toHaveText('This field is required');
+        const billingPostalCodeField = page.getByTestId('form-field-billingAddress.postalCode').getByRole('textbox');
+        await expect(page.getByTestId('field-error-billingAddress.postalCode')).toHaveText('This field is required');
 
         await shopperReferenceField.fill('SHP000001');
-        await page.locator('input[name="shopperEmail"]').fill('john.doe@adyen.com');
+        await page.getByTestId('form-field-shopperEmail').getByRole('textbox').fill('john.doe@adyen.com');
 
-        const phoneFieldContainer = shopperPhoneField
-            .locator('xpath=ancestor::div[contains(@class,"adyen-pe-payment-link-creation-form__field-container")]')
-            .first();
-        await phoneFieldContainer.locator('[title="Select option"]').first().click();
-        await page.getByRole('combobox', { name: 'Select option' }).first().fill('co');
+        await page.getByTestId('form-field-telephoneNumber').getByTitle('Select option', { exact: true }).click();
+        await page.getByRole('combobox', { name: 'Select option' }).fill('co');
         await page.getByRole('option', { name: 'CO (+57)' }).click();
-        await expect(phoneFieldContainer.locator('.adyen-pe-dropdown__button--active')).toHaveCount(0);
+        await expect(page.getByRole('listbox')).toBeHidden();
         await shopperPhoneField.fill('3002119220');
 
         await countryField.click();
-        await page.getByRole('combobox', { name: 'Select option' }).first().fill('united');
-        await page.getByRole('option', { name: 'United States' }).first().click();
+        await page.getByRole('combobox', { name: 'Select option' }).fill('united');
+        await page.getByRole('option', { name: 'United States' }).click();
 
         // Billing address
-        await page.locator('input[name="billingAddress.street"]').fill('Imaginary Street');
-        await page.locator('input[name="billingAddress.houseNumberOrName"]').fill('100');
-        await page.locator('div[name="billingAddress.country"]').click();
+        await billingStreetField.fill('Imaginary Street');
+        await billingHouseNumberField.fill('100');
+        await billingCountryField.click();
         await page.getByRole('option', { name: 'Mexico' }).click();
-        await page.locator('input[name="billingAddress.city"]').fill('Monterrey');
-        await page.locator('input[name="billingAddress.postalCode"]').fill('050010');
+        await billingCityField.fill('Monterrey');
+        await billingPostalCodeField.fill('050010');
 
         await languageField.click();
         await page.getByRole('combobox', { name: 'Select option' }).fill('spa');

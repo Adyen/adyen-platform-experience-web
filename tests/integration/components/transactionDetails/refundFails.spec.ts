@@ -12,8 +12,7 @@ test.describe('Refund - Fails', () => {
 
     test('should render payment transaction', async ({ page }) => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
     });
 
@@ -33,8 +32,7 @@ test.describe('Refund - Fails', () => {
         await backButton.click();
 
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         const refundPaymentButton = page.getByRole('button', { name: 'Refund payment', exact: true });
 
