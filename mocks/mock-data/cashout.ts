@@ -1,14 +1,14 @@
 export const CASHOUT_CONFIGURATION = {
     balanceAmount: {
-        value: 500000,
+        value: 1910090,
         currency: 'USD',
     },
     availableForCashoutAmount: {
-        value: 3000,
+        value: 189039,
         currency: 'USD',
     },
     pendingAmount: {
-        value: 100000,
+        value: 222030,
         currency: 'USD',
     },
     isCashoutAvailable: true,
@@ -16,6 +16,25 @@ export const CASHOUT_CONFIGURATION = {
     minAmount: 1000,
     maxAmount: 400000,
     accountKey: 'AccountHolder.AH123321123123',
+};
+
+export const CASHOUT_CONFIGURATION_ACCOUNT_KEY_2 = {
+    ...CASHOUT_CONFIGURATION,
+    balanceAmount: {
+        value: 3925000,
+        currency: 'USD',
+    },
+    availableForCashoutAmount: {
+        value: 284300,
+        currency: 'USD',
+    },
+    pendingAmount: {
+        value: 98050,
+        currency: 'USD',
+    },
+    minAmount: 2000,
+    maxAmount: 500000,
+    accountKey: 'AccountHolder.AH123321123124',
 };
 
 const createUnavailableConfig = (reason: string, overrides?: Partial<typeof CASHOUT_CONFIGURATION>) => ({
@@ -75,8 +94,8 @@ export const CASHOUT_TRANSFER_INSTRUMENTS = {
         },
         {
             transferInstrumentId: 'SE00000000000000000000002',
-            type: 'bank',
-            description: 'NL91 ABNA **** **** 01',
+            type: 'mc',
+            description: '**** **** **** 5678',
         },
     ],
 };

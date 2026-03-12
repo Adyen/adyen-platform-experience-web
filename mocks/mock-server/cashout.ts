@@ -5,6 +5,7 @@ import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExp
 import { ErrorTypes } from '../../src/core/Http/utils';
 import {
     CASHOUT_CONFIGURATION,
+    CASHOUT_CONFIGURATION_ACCOUNT_KEY_2,
     CASHOUT_CONFIGURATION_UNAVAILABLE_ZERO_BALANCE,
     CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_CURRENCY,
     CASHOUT_CONFIGURATION_UNAVAILABLE_UNSUPPORTED_REGION,
@@ -43,6 +44,14 @@ const requireAccountKey = (request: Request) => {
     return { accountKey };
 };
 
+const getCashoutConfigurationByAccountKey = (accountKey: string) => {
+    if (accountKey === 'BA00000000000000000000002') {
+        return CASHOUT_CONFIGURATION_ACCOUNT_KEY_2;
+    }
+
+    return CASHOUT_CONFIGURATION;
+};
+
 export const cashoutMocks = [
     http.get(mockEndpoints.configuration, async ({ request }) => {
         if (networkError) return HttpResponse.error();
@@ -51,7 +60,7 @@ export const cashoutMocks = [
         if ('error' in result) return result.error;
 
         await delay(300);
-        return HttpResponse.json({ ...CASHOUT_CONFIGURATION, accountKey: result.accountKey });
+        return HttpResponse.json({ ...getCashoutConfigurationByAccountKey(result.accountKey), accountKey: result.accountKey });
     }),
 
     http.get(mockEndpoints.balanceAccounts, async ({ request }) => {

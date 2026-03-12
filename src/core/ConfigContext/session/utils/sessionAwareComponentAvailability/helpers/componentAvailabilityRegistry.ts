@@ -20,6 +20,7 @@ const componentAvailabilityRegistry: ExternalComponentAvailabilityRegistry = {
     paymentLinkCreation: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkConfiguration'),
     paymentLinkSettings: context => getComponentAvailabilityFromEndpoint(context, 'savePayByLinkSettings'),
     paymentLinkDetails: context => getComponentAvailabilityFromEndpoint(context, 'getPayByLinkPaymentLinkById'),
+    cashout: context => getComponentAvailabilityFromEndpoint(context, 'getCashoutConfiguration'),
 };
 
 export default componentAvailabilityRegistry;

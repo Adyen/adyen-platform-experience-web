@@ -269,6 +269,7 @@ export const enum FilterParam {
 export type ExternalComponentType =
     | 'capitalOverview'
     | 'capitalOffer'
+    | 'cashout'
     | 'disputes'
     | 'disputesManagement'
     | 'paymentLinkCreation'
