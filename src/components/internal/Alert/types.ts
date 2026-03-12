@@ -9,6 +9,7 @@ export interface AlertProps {
     actions?: AlertAction[];
     className?: string;
     closeButton?: boolean;
+    'data-testid'?: string;
     type: AlertTypeOption;
     title?: VNode<Element> | string;
     description?: VNode<Element> | string;

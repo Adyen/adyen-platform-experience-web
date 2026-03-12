@@ -10,11 +10,12 @@ const FormField = ({
     supportText,
     children,
     className,
-}: PropsWithChildren<{ label: string; optional: boolean; supportText?: string; className?: string }>) => {
+    testId,
+}: PropsWithChildren<{ label: string; optional: boolean; supportText?: string; className?: string; testId?: string }>) => {
     const { i18n } = useCoreContext();
 
     return (
-        <div className={cx('adyen-pe-payment-link-creation-form__field-container', className)}>
+        <div className={cx('adyen-pe-payment-link-creation-form__field-container', className)} role="group" aria-label={label} data-testid={testId}>
             <div className="adyen-pe-payment-link-creation-form__field-label-container">
                 <Typography
                     el={TypographyElement.SPAN}

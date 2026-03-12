@@ -261,7 +261,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const renderAlertError = useCallback(
         () => (
-            <Alert onClose={dismissExportError} className={classes.errorAlert} type={AlertTypeOption.CRITICAL}>
+            <Alert
+                onClose={dismissExportError}
+                className={classes.errorAlert}
+                type={AlertTypeOption.CRITICAL}
+                data-testid="transactions-export-error-alert"
+            >
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
             </Alert>
         ),
@@ -305,9 +310,9 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
                     targetElement={exportButtonRef}
                     title={exportButtonLabel}
                 >
-                    <div className={classes.popover}>
+                    <div className={classes.popover} data-testid="transactions-export-popover">
                         <div className={classes.popoverSections}>
-                            <div className={cx(classes.popoverSection, classes.filtersSection)}>
+                            <div className={cx(classes.popoverSection, classes.filtersSection)} data-testid="transactions-export-filters">
                                 <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
                                 {activeFilters.map(filter => (
                                     <Tag label={i18n.get(filter)} key={filter} />

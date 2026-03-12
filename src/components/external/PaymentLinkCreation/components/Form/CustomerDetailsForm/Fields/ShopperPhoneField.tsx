@@ -95,7 +95,7 @@ export const ShopperPhoneField = () => {
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name="telephoneNumber">
-            <FormField label={i18n.get('payByLink.creation.fields.shopperPhone.label')} optional={!isRequired}>
+            <FormField label={i18n.get('payByLink.creation.fields.shopperPhone.label')} optional={!isRequired} testId="form-field-telephoneNumber">
                 <Controller<PaymentLinkCreationFormValues>
                     name="telephoneNumber"
                     control={control}
@@ -136,6 +136,7 @@ export const ShopperPhoneField = () => {
                                 isValid={!fieldState.error && !!field.value}
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}
+                                errorTestId="field-error-telephoneNumber"
                                 maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max}
                                 readonly={isReadOnly}
                             />

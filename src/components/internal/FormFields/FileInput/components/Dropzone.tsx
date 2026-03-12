@@ -193,7 +193,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     onChange={handleFileChange}
                     onInvalid={handleInputInvalid}
                     aria-invalid={isInvalid}
-                    data-testId="dropzone-input"
+                    data-testid="dropzone-input"
                 />
 
                 {/* Using the label element here to expose a user interaction surface for the file input element. */}

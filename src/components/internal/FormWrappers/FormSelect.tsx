@@ -40,6 +40,7 @@ export function FormSelect<TFieldValues>({
     validate,
 }: FormSelectProps<TFieldValues>) {
     const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
+    const fieldNameValue = String(fieldName);
     const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
     const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
 
@@ -60,7 +61,7 @@ export function FormSelect<TFieldValues>({
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired && !hideOptionalLabel} className={className}>
+            <FormField label={label} optional={!isRequired && !hideOptionalLabel} className={className} testId={`form-field-${fieldNameValue}`}>
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}
@@ -91,7 +92,9 @@ export function FormSelect<TFieldValues>({
                                     selected={field.value as string}
                                     fitPosition
                                 />
-                                {isInvalid && fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
+                                {isInvalid && fieldState.error?.message && (
+                                    <FieldError errorMessage={fieldState.error?.message} testId={`field-error-${fieldNameValue}`} withTopMargin />
+                                )}
                             </div>
                         );
                     }}
