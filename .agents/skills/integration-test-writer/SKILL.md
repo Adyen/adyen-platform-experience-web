@@ -305,160 +305,19 @@ test('should forward reference to creation sub-component', async ({ page }) => {
 | `DataGridPage`                                      | `tests/models/internal-components/dataGrid.ts`  | POM for DataGrid interactions                            |
 | `FilterBarPage`                                     | `tests/models/internal-components/filterBar.ts` | POM for FilterBar interactions                           |
 
-## Anti-Patterns to Avoid
+## Best Practices (Quick Reference)
 
-| Anti-Pattern                                  | Problem                                    | Solution                                                           |
-| --------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------ |
-| `await page.waitForTimeout(3000)`             | Arbitrary delay, slow, hides timing issues | Use auto-waiting assertions or `waitForResponse`                   |
-| `await new Promise(r => setTimeout(r, 1000))` | Same as above                              | Use element state waits or network waits                           |
-| `page.locator('.btn-primary')`                | Brittle, breaks on CSS refactors           | `page.getByRole('button', { name: 'Submit' })`                     |
-| `page.locator('#dynamic-id-123')`             | Breaks when IDs change                     | Use role, text, label, or test-id                                  |
-| Generic assertions on DOM values              | No auto-retry, flaky                       | Use web-first assertions: `await expect(locator).toBeVisible()`    |
-| Testing implementation details                | Breaks on refactoring                      | Test user-visible behavior                                         |
-| Shared mutable state between tests            | State leaks cause flakiness                | Each test gets a fresh page via Playwright isolation               |
-| `{ force: true }` on clicks                   | Hides real accessibility/visibility issues | Fix the element state instead                                      |
-| Installing clock after `goto()`               | Page already captured real time            | Always `setTime(page)` or `page.clock.install()` before navigation |
+For detailed guidance, consult the reference files. Key points:
 
-## Flaky Test Prevention
-
-### Burn-in new tests
-
-Before merging new tests, run them multiple times to catch intermittent failures:
-
-```bash
-pnpm run test:integration -- --grep "{componentName}" --repeat-each=5
-```
-
-### Defensive assertions
-
-Add progressive assertions that help diagnose failures:
-
-```typescript
-// Bad — single point of failure with no context
-await expect(page.getByRole('row')).toHaveCount(5);
-
-// Good — progressive assertions narrow down the issue
-await expect(page.getByRole('table')).toBeVisible();
-await expect(page.getByText('Loading')).not.toBeVisible();
-await expect(page.getByRole('row')).toHaveCount(5);
-```
-
-### Soft assertions (check multiple elements without stopping)
-
-Use `expect.soft` when you want to verify several independent elements and see all failures at once:
-
-```typescript
-test('should render all dashboard elements', async ({ page }) => {
-    await expect.soft(page.getByRole('heading')).toHaveText('Dashboard');
-    await expect.soft(page.getByRole('table')).toBeVisible();
-    await expect.soft(page.getByRole('button', { name: 'Export' })).toBeEnabled();
-    // All failures reported at end, test doesn't stop on first
-});
-```
-
-### Isolation checklist
-
-- Each test is self-contained — no dependency on other tests
-- No shared mutable state at module level
-- `test.beforeEach` reloads the story fresh
-- Fixtures handle cleanup automatically
-
-## Advanced Waiting Strategies
-
-### Polling with `toPass()` (retry until block passes)
-
-```typescript
-await expect(async () => {
-    const response = await page.request.get('/api/status');
-    expect(response.status()).toBe(200);
-}).toPass({
-    intervals: [1000, 2000, 5000],
-    timeout: 30000,
-});
-```
-
-### Polling with `expect.poll()`
-
-```typescript
-await expect.poll(() => page.getByTestId('counter').textContent(), { intervals: [500, 1000], timeout: 10000 }).toBe('10');
-```
-
-### Wait for network response after action
-
-```typescript
-const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/data') && resp.ok());
-await page.getByRole('button', { name: 'Load' }).click();
-const response = await responsePromise;
-expect(response.status()).toBe(200);
-```
-
-## Locator Filtering & Chaining
-
-### Filter by text
-
-```typescript
-page.getByRole('listitem').filter({ hasText: 'Product' });
-page.getByRole('listitem').filter({ hasNotText: 'Out of stock' });
-```
-
-### Filter by child locator
-
-```typescript
-page.getByRole('listitem').filter({
-    has: page.getByRole('button', { name: 'Download' }),
-});
-```
-
-### Chaining
-
-```typescript
-page.getByRole('article').getByRole('heading'); // Navigate down
-page.getByText('Child').locator('..'); // Parent
-page.getByText('Child').locator('xpath=ancestor::article'); // Ancestor
-```
-
-### nth / first / last
-
-```typescript
-page.getByRole('listitem').first();
-page.getByRole('listitem').last();
-page.getByRole('listitem').nth(2); // 0-indexed
-```
-
-## Debugging
-
-### Quick debugging commands
-
-```bash
-# Run in headed mode (see the browser)
-pnpm run test:integration -- --headed --grep "{componentName}"
-
-# Run with Playwright inspector (step through)
-PWDEBUG=1 pnpm run test:integration -- --grep "{componentName}"
-
-# Open trace viewer for a failed test
-npx playwright show-trace test-results/{path}/trace.zip
-
-# Run in debug mode (this project's script)
-pnpm run test:integration:debug
-```
-
-### Debug in code
-
-```typescript
-test('debug example', async ({ page }) => {
-    await goToStory(page, { id: STORY_ID });
-    await page.pause(); // Opens inspector, step through from here
-});
-```
-
-### Log element state for troubleshooting
-
-```typescript
-console.log('Count:', await page.getByRole('button').count());
-console.log('Visible:', await page.getByRole('button').isVisible());
-await page.getByRole('button').highlight(); // Highlights in headed mode
-```
+- **Anti-patterns**: Never use `waitForTimeout`, brittle CSS selectors, generic assertions, or `{ force: true }`. See [references/flaky-tests.md](references/flaky-tests.md).
+- **Flaky test prevention**: Burn-in with `--repeat-each=5`. Use defensive progressive assertions. See [references/flaky-tests.md](references/flaky-tests.md).
+- **Row counts**: Assert the number of rows/buttons that are actually rendered for the current page limit; do not assume the full mock dataset size equals the visible row count.
+- **Error text**: When multiple translation strings render inside a single paragraph/container, scope to that locator and use `toContainText(...)` for each fragment instead of separate exact `getByText(...)` assertions.
+- **Waiting strategies**: Prefer auto-waiting. Use `toPass()` or `expect.poll()` for polling. See [references/assertions-waiting.md](references/assertions-waiting.md).
+- **Locator filtering**: Use `filter({ hasText })`, `filter({ has })`, `nth()`, `first()`, `last()`. See [references/locators.md](references/locators.md).
+- **Debugging**: Run `--headed`, `PWDEBUG=1`, or `pnpm run test:integration:debug`. Use `page.pause()` in code, and inspect `test-results/**/error-context.md` first when Playwright prints an error-context path. See [references/debugging.md](references/debugging.md).
+- **Clock mocking**: Always call `setTime(page)` before `goToStory`. See [references/clock-mocking.md](references/clock-mocking.md).
+- **Annotations**: Use `test.fixme()` for known bugs (not `test.skip`). Use `test.step()` for complex flows. See [references/annotations.md](references/annotations.md).
 
 ## Hard Rules
 
@@ -482,6 +341,9 @@ After writing tests:
 
 1. Ensure Storybook builds with the new stories: `pnpm run build-storybook`
 2. Run the new integration tests: `pnpm run test:integration -- --grep "{componentName}"`
-3. Burn-in for flakiness: `pnpm run test:integration -- --grep "{componentName}" --repeat-each=5`
-4. If a test fails intermittently, debug with trace: `pnpm run test:integration -- --grep "{testName}" --trace on`
-5. View trace: `npx playwright show-trace test-results/{path}/trace.zip`
+3. For a component-folder focused run, use: `pnpm run test:integration -- tests/integration/components/{componentName}`
+4. Burn-in for flakiness:
+    - grep-based: `pnpm run test:integration -- --grep "{componentName}" --repeat-each=5`
+    - path-based: `pnpm exec playwright test tests/integration/components/{componentName} --project local-chrome --repeat-each=5`
+5. If a test fails intermittently, debug with trace: `pnpm run test:integration -- --grep "{testName}" --trace on`
+6. View trace: `npx playwright show-trace test-results/{path}/trace.zip`

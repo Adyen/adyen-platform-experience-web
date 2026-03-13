@@ -1,6 +1,6 @@
 ---
 name: code-simplifier
-description: Manual-only skill to simplify recently modified code in this repository for clarity, consistency, and maintainability without changing behavior. Invoke only when the user explicitly asks for a cleanup or simplification pass.
+description: This skill should be used when the user asks to "simplify this code", "clean up these changes", "refine this code", "make this more readable", or requests a simplification pass. Manual-only -- simplifies recently modified code for clarity, consistency, and maintainability without changing behavior.
 user-invocable: true
 disable-model-invocation: true
 ---
@@ -15,9 +15,9 @@ Refine recently changed code so it is easier to read, easier to maintain, and mo
 
 This skill is manual-only.
 
-- Do not run it automatically after every coding task
-- Do not run it as a default post-edit step
-- Use it only when the user explicitly asks for simplification, cleanup, refinement, or asks for this skill by name
+- Not to be run automatically after every coding task
+- Not to be run as a default post-edit step
+- Invoke only when the user explicitly asks for simplification, cleanup, refinement, or asks for this skill by name
 
 ## When to Use
 
