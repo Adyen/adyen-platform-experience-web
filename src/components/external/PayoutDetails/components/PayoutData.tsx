@@ -243,7 +243,12 @@ export const PayoutData = ({
                                             {
                                                 <div className={PD_CARD_CLASS}>
                                                     <Card noPadding>
-                                                        <StructuredList items={fundsCaptured} renderLabel={payoutFundsCapturedTypeLabelRenderer} />
+                                                        <div data-testid="payout-funds-captured-breakdown">
+                                                            <StructuredList
+                                                                items={fundsCaptured}
+                                                                renderLabel={payoutFundsCapturedTypeLabelRenderer}
+                                                            />
+                                                        </div>
                                                     </Card>
                                                 </div>
                                             }
@@ -285,7 +290,9 @@ export const PayoutData = ({
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.additions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
+                                                <div data-testid="payout-adjustments-additions-breakdown">
+                                                    <StructuredList items={adjustments?.additions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
+                                                </div>
                                             </Card>
                                         </div>
                                     )}
@@ -299,7 +306,12 @@ export const PayoutData = ({
                                                     </Typography>
                                                 }
                                             >
-                                                <StructuredList items={adjustments?.subtractions} renderLabel={payoutAdjustmentTypeLabelRenderer} />
+                                                <div data-testid="payout-adjustments-subtractions-breakdown">
+                                                    <StructuredList
+                                                        items={adjustments?.subtractions}
+                                                        renderLabel={payoutAdjustmentTypeLabelRenderer}
+                                                    />
+                                                </div>
                                             </Card>
                                         </div>
                                     )}

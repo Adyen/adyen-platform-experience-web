@@ -61,7 +61,7 @@ export const FilterBar = (props: PropsWithChildren<FilterBarProps>) => {
     return props.showingFilters ? (
         <div
             role="group"
-            data-testId="filter-bar"
+            data-testid="filter-bar"
             aria-label={i18n.get(props.ariaLabelKey ?? 'common.filters.label')}
             className={cx('adyen-pe-filter-bar', { 'adyen-pe-filter-bar--mobile': props.isMobileContainer })}
             id={props.filterBarElementId}
