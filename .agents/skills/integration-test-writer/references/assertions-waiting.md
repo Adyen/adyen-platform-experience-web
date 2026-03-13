@@ -1,6 +1,6 @@
 # Assertions & Waiting
 
-Adapted from [currents-dev/playwright-best-practices-skill](https://github.com/currents-dev/playwright-best-practices-skill). Tailored for this project's Storybook + MSW integration tests.
+Repo-focused guidance for this project's Storybook + MSW integration tests.
 
 ## Web-First Assertions (Always Prefer These)
 
@@ -27,12 +27,10 @@ await expect(page.getByRole('columnheader')).toHaveCount(3);
 // Attributes
 await expect(tab).toHaveAttribute('aria-selected', 'true');
 
-// Input values
-await expect(page.getByLabel('Email')).toHaveValue('user@example.com');
-await expect(page.getByLabel('Search')).toBeEmpty();
-
-// Focus
-await expect(page.getByLabel('Email')).toBeFocused();
+// Combined error copy rendered in a single paragraph/container
+const errorMessage = page.locator('p').filter({ hasText: getTranslatedKey('reports.overview.errors.listUnavailable') });
+await expect(errorMessage).toContainText(getTranslatedKey('reports.overview.errors.listUnavailable'));
+await expect(errorMessage).toContainText(getTranslatedKey('common.errors.retry'));
 ```
 
 ## Generic Assertions (for Non-UI Values)
@@ -41,14 +39,13 @@ These do NOT auto-retry. Use for values extracted from the page.
 
 ```typescript
 expect(value).toBe(5);
-expect(clipboardText).toBe('expected-value');
 expect(download.suggestedFilename()).toBe('report.csv');
 expect(newPage.url()).toBe('https://expected-url.com');
 ```
 
 ## Soft Assertions
 
-Continue test execution after failure, report all failures at end. Useful for checking multiple independent elements:
+Continue test execution after failure, report all failures at end. Use sparingly; most repo tests prefer regular `expect` plus progressive assertions.
 
 ```typescript
 test('should render all dashboard elements', async ({ page }) => {
@@ -56,15 +53,6 @@ test('should render all dashboard elements', async ({ page }) => {
     await expect.soft(page.getByRole('table')).toBeVisible();
     await expect.soft(page.getByRole('button', { name: 'Export' })).toBeEnabled();
     // All failures reported at end
-});
-
-// Early exit when a critical soft assertion fails
-test('check form', async ({ page }) => {
-    await expect.soft(page.getByRole('form')).toBeVisible();
-    if (expect.soft.hasFailures()) return; // No point checking fields
-
-    await expect.soft(page.getByLabel('Name')).toBeVisible();
-    await expect.soft(page.getByLabel('Email')).toBeVisible();
 });
 ```
 
@@ -96,18 +84,13 @@ await page.getByLabel('Email').fill('test@example.com'); // Auto-waits
 ```typescript
 await page.getByRole('dialog').waitFor({ state: 'visible' });
 await page.getByText('Loading...').waitFor({ state: 'hidden' });
-await page.getByTestId('modal').waitFor({ state: 'detached' }); // Removed from DOM
+await page.getByRole('dialog').waitFor({ state: 'detached' }); // Removed from DOM
 ```
 
 ### Wait for Network
 
 ```typescript
-// Wait for specific API response after action
-const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/data') && resp.ok());
-await page.getByRole('button', { name: 'Load' }).click();
-const response = await responsePromise;
-
-// Wait for request (verify retry/refresh triggers correct call)
+// Wait for request (verify filter refresh / retry triggers correct call)
 const requestPromise = page.waitForRequest(req => req.url().includes('/reports'));
 await page.getByRole('button', { name: 'Refresh' }).click();
 await requestPromise;
@@ -126,30 +109,14 @@ expect(download.suggestedFilename()).toBe('report.csv');
 
 ```typescript
 const newPagePromise = page.context().waitForEvent('page');
-await page.getByRole('link', { name: 'External' }).click();
+await page.getByRole('link', { name: 'Summary' }).click();
 const newPage = await newPagePromise;
 await newPage.waitForLoadState();
 ```
 
 ## Polling & Retrying
 
-### `toPass()` — Retry a Block Until It Passes
-
-```typescript
-await expect(async () => {
-    const response = await page.request.get('/api/status');
-    expect(response.status()).toBe(200);
-}).toPass({
-    intervals: [1000, 2000, 5000],
-    timeout: 30000,
-});
-```
-
-### `expect.poll()` — Poll a Value
-
-```typescript
-await expect.poll(() => page.getByTestId('counter').textContent(), { intervals: [500, 1000], timeout: 10000 }).toBe('10');
-```
+`toPass()` and `expect.poll()` are available, but they should be a fallback after better locators and web-first assertions. In this repo, most integration tests should rely on Playwright auto-waiting, `waitForRequest`, and DOM assertions first.
 
 ## Defensive Assertions
 
@@ -162,7 +129,7 @@ await expect(page.getByRole('row')).toHaveCount(5);
 // Good — progressive, narrows down the issue
 await expect(page.getByRole('table')).toBeVisible();
 await expect(page.getByText('Loading')).not.toBeVisible();
-await expect(page.getByRole('row')).toHaveCount(5);
+await expect(page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')).toHaveCount(10);
 ```
 
 ## Anti-Patterns

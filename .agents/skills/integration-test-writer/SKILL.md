@@ -20,13 +20,8 @@ Consult these adapted Playwright best practice references when needed:
 | Locators             | [references/locators.md](references/locators.md)                     | Choosing selectors, filtering, chaining                          |
 | Assertions & Waiting | [references/assertions-waiting.md](references/assertions-waiting.md) | Writing assertions, waiting strategies, polling                  |
 | Flaky Tests          | [references/flaky-tests.md](references/flaky-tests.md)               | Diagnosing/fixing intermittent failures                          |
-| Page Object Model    | [references/page-object-model.md](references/page-object-model.md)   | Structuring POMs for complex components                          |
 | Clock Mocking        | [references/clock-mocking.md](references/clock-mocking.md)           | Testing date/time-dependent features                             |
 | Debugging            | [references/debugging.md](references/debugging.md)                   | Troubleshooting failures, using trace viewer                     |
-| Test Organization    | [references/test-organization.md](references/test-organization.md)   | File structure, naming, mock architecture                        |
-| Console Errors       | [references/console-errors.md](references/console-errors.md)         | Capturing/asserting console output                               |
-| File Operations      | [references/file-operations.md](references/file-operations.md)       | Upload/download testing                                          |
-| Annotations          | [references/annotations.md](references/annotations.md)               | skip, fixme, fail, test steps                                    |
 | Common Patterns      | [references/common-patterns.md](references/common-patterns.md)       | Project-specific assertion, filter, dialog, interaction patterns |
 
 ## When to Use
@@ -317,7 +312,6 @@ For detailed guidance, consult the reference files. Key points:
 - **Locator filtering**: Use `filter({ hasText })`, `filter({ has })`, `nth()`, `first()`, `last()`. See [references/locators.md](references/locators.md).
 - **Debugging**: Run `--headed`, `PWDEBUG=1`, or `pnpm run test:integration:debug`. Use `page.pause()` in code, and inspect `test-results/**/error-context.md` first when Playwright prints an error-context path. See [references/debugging.md](references/debugging.md).
 - **Clock mocking**: Always call `setTime(page)` before `goToStory`. See [references/clock-mocking.md](references/clock-mocking.md).
-- **Annotations**: Use `test.fixme()` for known bugs (not `test.skip`). Use `test.step()` for complex flows. See [references/annotations.md](references/annotations.md).
 
 ## Hard Rules
 

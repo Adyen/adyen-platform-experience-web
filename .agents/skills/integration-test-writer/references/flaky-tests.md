@@ -1,6 +1,6 @@
 # Flaky Tests: Prevention, Detection & Fixing
 
-Adapted from [currents-dev/playwright-best-practices-skill](https://github.com/currents-dev/playwright-best-practices-skill). Tailored for this project's Storybook + MSW integration tests.
+Repo-focused guidance for this project's Storybook + MSW integration tests.
 
 ## Categories of Flakiness
 
@@ -29,7 +29,7 @@ Test fails intermittently
 
 ```bash
 # Run test multiple times to confirm instability
-pnpm run test:integration -- --grep "componentName" --repeat-each=20
+pnpm exec playwright test tests/integration/components/{componentName} --project local-chrome --repeat-each=5
 
 # Run with trace to capture failure details
 pnpm run test:integration -- --grep "testName" --trace on
@@ -44,35 +44,29 @@ npx playwright show-trace test-results/{path}/trace.zip
 
 ```typescript
 // Bad: No wait for element state
-await page.click('#submit');
+await page.locator('.adyen-pe-download').click();
 
 // Good: Auto-waiting via role-based selector + assertion
-await page.getByRole('button', { name: 'Submit' }).click();
-await expect(page.getByRole('heading', { name: 'Success' })).toBeVisible();
-
-// Bad: Brittle CSS selector
-await page.click('div.container > div:nth-child(2) > button.btn-primary');
-
-// Good: Semantic selector
-await page.getByRole('button', { name: 'Continue' }).click();
+await page.getByRole('button', { name: 'Download report', exact: true }).click();
+await expect(page.getByRole('alert')).toBeVisible();
 ```
 
 ### Timing Flakiness
 
 ```typescript
 // Bad: Arbitrary sleep
-await page.getByRole('button', { name: 'Load' }).click();
+await page.getByRole('button', { name: 'Balance account', exact: true }).click();
 await page.waitForTimeout(3000);
 
 // Good: Wait for specific condition
-await page.getByRole('button', { name: 'Load' }).click();
-await expect(page.getByRole('row')).toHaveCount(10, { timeout: 10000 });
+await page.getByRole('button', { name: 'Balance account', exact: true }).click();
+await expect(page.getByRole('dialog')).toBeVisible();
 
 // Better: Wait for network response, then assert
-const responsePromise = page.waitForResponse(resp => resp.url().includes('/api/data') && resp.ok());
-await page.getByRole('button', { name: 'Load' }).click();
-await responsePromise;
-await expect(page.getByRole('row')).toHaveCount(10);
+const requestPromise = page.waitForRequest(req => req.url().includes('/reports'));
+await page.getByRole('button', { name: 'Refresh', exact: true }).click();
+await requestPromise;
+await expect(page.getByRole('table')).toBeVisible();
 ```
 
 ### Race-Condition-Safe Tab Navigation
@@ -90,7 +84,7 @@ await tabSelectedPromise;
 
 ```bash
 # Run new tests many times before merging
-pnpm run test:integration -- --grep "componentName" --repeat-each=5
+pnpm exec playwright test tests/integration/components/{componentName} --project local-chrome --repeat-each=5
 ```
 
 ### Isolation Checklist
@@ -98,7 +92,7 @@ pnpm run test:integration -- --grep "componentName" --repeat-each=5
 - Each test gets a fresh page via `test.beforeEach` calling `goToStory`
 - No module-level mutable state shared between tests
 - Each spec file is self-contained (no dependency on other spec files)
-- MSW handlers are deterministic (no random data, fixed dates via `setTime`)
+- MSW handlers are deterministic (no random data, fixed dates via `setTime` or `page.clock.setFixedTime(...)`)
 
 ### Defensive Assertions
 
@@ -109,7 +103,7 @@ await expect(page.getByRole('row')).toHaveCount(5);
 // Good — progressive assertions narrow down the issue
 await expect(page.getByRole('table')).toBeVisible();
 await expect(page.getByText('Loading')).not.toBeVisible();
-await expect(page.getByRole('row')).toHaveCount(5);
+await expect(page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')).toHaveCount(10);
 ```
 
 ## CI-Specific Notes
