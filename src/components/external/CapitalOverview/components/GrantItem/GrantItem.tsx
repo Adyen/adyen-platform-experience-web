@@ -162,6 +162,10 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
         [elementIds, grantConfig, i18n, grant, dateFormat, showUnscheduledRepaymentAccounts]
     );
 
+    const handleActionsComplete = useCallback(() => {
+        setActionsLocallyCompleted(true);
+    }, []);
+
     return (
         <div className={GRANT_ITEM_CLASS_NAMES.base}>
             <ExpandableCard
@@ -180,7 +184,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                             missingActions={grant.missingActions}
                             className={GRANT_ITEM_CLASS_NAMES.alert}
                             offerExpiresAt={grant.offerExpiresAt}
-                            onComplete={() => setActionsLocallyCompleted(true)}
+                            onComplete={handleActionsComplete}
                         />
                     ) : (
                         <Alert
