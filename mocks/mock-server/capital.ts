@@ -1,7 +1,7 @@
 import {
     DYNAMIC_CAPITAL_OFFER,
     GRANTS,
-    PENDING_GRANT_WITH_SIGN_TOS,
+    PENDING_GRANT_WITH_SINGLE_ACTION,
     REPAID_GRANT,
     SIGNED_OFFER,
     SIGN_TOS_ACTION_DETAILS,
@@ -13,7 +13,6 @@ import {
     GRANT_US_ACCOUNT,
     GRANT_GB_ACCOUNT,
     CAD_CAPITAL_OFFER,
-    PENDING_GRANT_WITH_ANACREDIT,
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
     GRANT_NL_ACCOUNT,
@@ -194,15 +193,15 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
-    grantActionsEmbedded: [
+    grantMultipleActionsEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
-    grantActionsHosted: [
+    grantMultipleActionsHosted: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
-        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
+        { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         {
             endpoint: mockEndpoints.signToS,
             handler: async () => {
@@ -218,32 +217,15 @@ export const CapitalOverviewMockedResponses = capitalFactory({
             },
         },
     ],
-    grantAnaCreditActionEmbedded: [
+    grantSingleActionEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
-    grantAnaCreditActionHosted: [
+    grantSingleActionHosted: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_ANACREDIT] } },
-        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
-        {
-            endpoint: mockEndpoints.anaCredit,
-            handler: async () => {
-                await delay(500);
-                return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });
-            },
-        },
-    ],
-    grantTOSActionEmbedded: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
-        { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
-    ],
-    grantTOSActionHosted: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
-        { endpoint: mockEndpoints.onboardingConfiguration, response: {} },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         {
             endpoint: mockEndpoints.signToS,
             handler: async () => {
@@ -316,9 +298,10 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
     ],
-    errorMissingActionsGeneric: [
+    errorActionsHosted: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SIGN_TOS] } },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
+        { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         {
             endpoint: mockEndpoints.signToS,
             handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),

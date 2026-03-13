@@ -100,33 +100,43 @@ export const GrantPending: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantMissingActionSignTOS: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Missing Action Sign TOS',
+export const GrantMultipleActionsEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple actions - Embedded',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantTOSActionHosted,
+        msw: CapitalOverviewMockedResponses.grantMultipleActionsEmbedded,
     },
 };
 
-export const GrantMissingActionAnacredit: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Missing Action Anacredit',
+export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple actions - Hosted',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantAnaCreditActionHosted,
+        msw: CapitalOverviewMockedResponses.grantMultipleActionsHosted,
     },
 };
 
-export const GrantMultipleActions: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple missing actions',
+export const GrantSingleActionEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Single action - Embedded',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActionsHosted,
+        msw: CapitalOverviewMockedResponses.grantSingleActionEmbedded,
+    },
+};
+
+export const GrantSingleActionHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Single action - Hosted',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantSingleActionHosted,
     },
 };
 
@@ -264,14 +274,14 @@ export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof C
     },
 };
 
-export const ErrorMissingActionsGeneric: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Missing actions - Generic',
+export const ErrorActionsHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Actions Hosted',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorMissingActionsGeneric,
+            handlers: CapitalOverviewMockedResponses.errorActionsHosted,
         },
     },
 };

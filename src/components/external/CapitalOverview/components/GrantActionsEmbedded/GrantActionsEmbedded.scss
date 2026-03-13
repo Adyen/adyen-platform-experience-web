@@ -1,0 +1,13 @@
+@use '../../../../../style';
+
+.adyen-pe-grant-actions-embedded {
+    &__action-buttons-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 style.token(spacer-070);
+    }
+
+    &__action-button {
+        margin-top: style.token(spacer-050);
+    }
+}
