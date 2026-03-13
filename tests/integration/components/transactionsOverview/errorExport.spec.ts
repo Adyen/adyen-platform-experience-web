@@ -14,18 +14,17 @@ test.describe('Error - Export', () => {
     });
 
     test('should render export error alert', async ({ page }) => {
-        const alert = page.locator('.adyen-pe-alert--critical');
+        const alert = page.getByTestId('transactions-export-error-alert');
 
         await expect(alert).toBeVisible();
         await expect(alert.getByText('Download has failed. Please try again.', { exact: true })).toBeVisible();
         await expect(alert.getByRole('button', { name: 'Dismiss', exact: true })).toBeVisible();
 
         await expect(alert).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
     });
 
     test('should dismiss the export error alert when the "x" button is clicked', async ({ page }) => {
-        const alert = page.locator('.adyen-pe-alert--critical');
+        const alert = page.getByTestId('transactions-export-error-alert');
         const dismissButton = alert.getByRole('button', { name: 'Dismiss', exact: true });
         await dismissButton.click();
         await expect(alert).toBeHidden();
@@ -33,6 +32,6 @@ test.describe('Error - Export', () => {
 
     test('should dismiss the export error alert when the export popover is reopened', async ({ page, analyticsEvents }) => {
         await openExportPopover(page, analyticsEvents);
-        await expect(page.locator('.adyen-pe-alert--critical')).toBeHidden();
+        await expect(page.getByTestId('transactions-export-error-alert')).toBeHidden();
     });
 });

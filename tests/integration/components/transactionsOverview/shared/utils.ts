@@ -24,7 +24,7 @@ export const downloadTransactions = async (
     exportedFields: 'All' | 'Custom' | 'Default',
     fails = false
 ) => {
-    const popover = page.locator('.adyen-pe-transactions-export__popover');
+    const popover = page.getByTestId('transactions-export-popover');
     const downloadPromise = fails ? undefined : page.waitForEvent('download');
 
     await popover.getByRole('button', { name: 'Download', exact: true }).click();
@@ -43,7 +43,7 @@ export const openTransactionDetailsModal = async (page: Page, analyticsEvents: P
     const transactionRow = dataGridBody.getByRole('row').nth(transactionRowIndex);
 
     const transactionType = await transactionRow
-        .locator(`[aria-labelledby=transactionType]`)
+        .getByTestId('transactionType')
         .textContent()
         .catch(() => 'Payment');
 
@@ -57,7 +57,7 @@ export const openTransactionDetailsModal = async (page: Page, analyticsEvents: P
 
 export const openExportPopover = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Export', exact: true }).click();
-    await expect(page.locator('.adyen-pe-transactions-export__popover')).toBeVisible();
+    await expect(page.getByTestId('transactions-export-popover')).toBeVisible();
     await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedTransactionsListAnalyticsEventProperties, label: 'Export' }]]);
 };
 
@@ -117,7 +117,7 @@ export const setExactPspReference = async (page: Page, analyticsEvents: PageAnal
 export const selectFirstUnselectedBalanceAccount = async (page: Page, analyticsEvents: PageAnalyticsEvent[], view: 'Insights' | 'Transactions') => {
     const filterDialog = page.getByRole('dialog');
     const firstUnselectedOption = filterDialog.getByRole('option', { selected: false }).nth(0);
-    const balanceAccountId = await firstUnselectedOption.locator('.adyen-pe-balance-account-selector__account-id').textContent();
+    const balanceAccountId = await firstUnselectedOption.getByTestId('balance-account-id').textContent();
 
     const modifiedFilterEventProperties = {
         ...(view === 'Insights' ? sharedTransactionsInsightsAnalyticsEventProperties : sharedTransactionsListAnalyticsEventProperties),
@@ -178,9 +178,9 @@ export const selectSingleCurrencyFromMultiSelectFilter = async (page: Page, anal
 };
 
 export const extractTodayDateFromDatePicker = async (datePicker: Locator, now: number) => {
-    const monthAndYear = (await datePicker.locator('.adyen-pe-calendar__month-name').textContent()) ?? '';
-    const timezone = (await datePicker.locator('.adyen-pe-datepicker__timezone').textContent()) ?? '';
-    const date = (await datePicker.locator(`[data-today='1']`).textContent()) ?? '';
+    const monthAndYear = (await datePicker.getByTestId('calendar-month-name').textContent()) ?? '';
+    const timezone = (await datePicker.getByTestId('date-picker-timezone').textContent()) ?? '';
+    const date = (await datePicker.getByTestId('calendar-current-day').textContent()) ?? '';
     const month = monthAndYear.slice(0, 3);
     const year = monthAndYear.slice(-4);
 

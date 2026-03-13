@@ -42,10 +42,10 @@ test.describe('Data customization', () => {
         const dataGridBody = dataGrid.getByRole('rowgroup').nth(1);
         const firstRow = dataGridBody.getByRole('row').nth(0);
 
-        const productCell = firstRow.locator(`[aria-labelledby=_product]`);
-        const storeCell = firstRow.locator(`[aria-labelledby=_store]`);
-        const referenceCell = firstRow.locator(`[aria-labelledby=_reference]`);
-        const actionCell = firstRow.locator(`[aria-labelledby=_button]`);
+        const productCell = firstRow.getByTestId('_product');
+        const storeCell = firstRow.getByTestId('_store');
+        const referenceCell = firstRow.getByTestId('_reference');
+        const actionCell = firstRow.getByTestId('_button');
 
         await expect(productCell).toHaveText('Bubble tea');
         await expect(storeCell).toHaveText('Sydney');
@@ -76,7 +76,7 @@ test.describe('Data customization', () => {
         const detailsModal = page.getByRole('dialog');
         await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
-        const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
+        const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
         await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
     });
 });

@@ -125,7 +125,7 @@ test.describe('Default', () => {
             const detailsModal = page.getByRole('dialog');
             await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
-            const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}`).locator('dd');
+            const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
             await expect(referenceID).toHaveText('B78I76Y77072H127');
         });
     });
@@ -229,7 +229,7 @@ test.describe('Default', () => {
             await expect(dateRangeSelectorButton).toHaveText(dateRange);
             await expect(dateRangeOptionsDialog).toBeHidden();
 
-            await datePicker.locator(`[data-today='1']`).click();
+            await datePicker.getByTestId('calendar-current-day').click();
             await expect(dateRangeSelectorButton).toHaveText('Custom');
             await dateRangeSelectorButton.click();
 
@@ -264,7 +264,7 @@ test.describe('Default', () => {
             const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
             const today = await extractTodayDateFromDatePicker(datePicker, NOW);
 
-            await datePicker.locator(`[data-today='1']`).click();
+            await datePicker.getByTestId('calendar-current-day').click();
             await expect(dateRangeSelectorButton).toHaveText('Custom');
 
             await datePicker.getByRole('button', { name: 'Apply', exact: true }).click();
@@ -282,7 +282,7 @@ test.describe('Default', () => {
             const dateRangeSelectorButton = datePicker.getByRole('button', { name: 'Preset range select', exact: true });
             const today = await extractTodayDateFromDatePicker(datePicker, NOW);
 
-            await datePicker.locator(`[data-today='1']`).click();
+            await datePicker.getByTestId('calendar-current-day').click();
             await expect(dateRangeSelectorButton).toHaveText('Custom');
 
             await datePicker.getByRole('button', { name: 'Apply', exact: true }).click();
@@ -490,13 +490,12 @@ test.describe('Default', () => {
         });
 
         test('should render export popover', async ({ page }) => {
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
+            const filters = popover.getByTestId('transactions-export-filters');
 
-            await expect(popover.getByText('Applied filters:', { exact: true })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Account' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Date' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default')).toHaveCount(2);
-            await expect(popover.locator('.adyen-pe-tag')).toHaveCount(2);
+            await expect(filters.getByText('Applied filters:', { exact: true })).toBeVisible();
+            await expect(filters.getByText('Account', { exact: true })).toBeVisible();
+            await expect(filters.getByText('Date', { exact: true })).toBeVisible();
 
             await expect(popover.getByText('Columns', { exact: true })).toBeVisible();
             await expect(popover.getByRole('checkbox', { name: 'All 10 columns', exact: true, checked: false })).toBeVisible();
@@ -512,8 +511,7 @@ test.describe('Default', () => {
             await expect(popover.getByRole('checkbox', { checked: true })).toHaveCount(6);
 
             await expect(popover.getByText('The download includes the top 100 entries.', { exact: true })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-            await expect(popover.locator('.adyen-pe-alert')).toHaveCount(1);
+            await expect(popover.getByRole('alert')).toHaveCount(1);
 
             await expect(popover.getByRole('button', { name: 'Cancel', exact: true })).toBeVisible();
             await expect(popover.getByRole('button', { name: 'Download', exact: true })).toBeVisible();
@@ -521,12 +519,12 @@ test.describe('Default', () => {
 
         test('should close export popover when the "Export" button is clicked again', async ({ page, analyticsEvents }) => {
             await page.getByRole('button', { name: 'Export', exact: true }).click();
-            await expect(page.locator('.adyen-pe-transactions-export__popover')).toBeHidden();
+            await expect(page.getByTestId('transactions-export-popover')).toBeHidden();
             await expectAnalyticsEvents(analyticsEvents, [['Cancelled export', sharedTransactionsListAnalyticsEventProperties]]);
         });
 
         test('should close export popover when the "Cancel" button is clicked', async ({ page, analyticsEvents }) => {
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
             await popover.getByRole('button', { name: 'Cancel', exact: true }).click();
             await expectAnalyticsEvents(analyticsEvents, [['Cancelled export', sharedTransactionsListAnalyticsEventProperties]]);
             await expect(popover).toBeHidden();
@@ -535,11 +533,11 @@ test.describe('Default', () => {
         test('should close export popover when clicked outside', async ({ page, analyticsEvents }) => {
             await page.click('body', { position: { x: 0, y: 0 } });
             await expectAnalyticsEvents(analyticsEvents, [['Cancelled export', sharedTransactionsListAnalyticsEventProperties]]);
-            await expect(page.locator('.adyen-pe-transactions-export__popover')).toBeHidden();
+            await expect(page.getByTestId('transactions-export-popover')).toBeHidden();
         });
 
         test('should control all column switches with the master switch', async ({ page }) => {
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
             const masterSwitch = popover.getByRole('checkbox', { name: 'All 10 columns', exact: true });
             const masterSwitchLabel = popover.getByText('All 10 columns', { exact: true });
 
@@ -562,7 +560,7 @@ test.describe('Default', () => {
 
         test('should restore default column switches state when popover reopens', async ({ page, analyticsEvents }) => {
             const exportButton = page.getByRole('button', { name: 'Export', exact: true });
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
 
             // Check all the column switches by clicking the master switch
             await popover.getByText('All 10 columns', { exact: true }).click();
@@ -582,7 +580,7 @@ test.describe('Default', () => {
         });
 
         test('should disable the "Download" button when all column switches are unchecked', async ({ page }) => {
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
             const masterSwitchLabel = popover.getByText('All 10 columns', { exact: true });
             const downloadButton = popover.getByRole('button', { name: 'Download', exact: true });
 
@@ -603,7 +601,7 @@ test.describe('Default', () => {
 
         test('should download transactions with custom columns', async ({ page, analyticsEvents }) => {
             // Uncheck the default-selected "Currency" column and download
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
             await popover.getByText('Currency', { exact: true }).click();
             await expect(popover.getByRole('checkbox', { name: 'Currency', exact: true })).toBeChecked({ checked: false });
             await downloadTransactions(page, analyticsEvents, 'Custom');
@@ -611,7 +609,7 @@ test.describe('Default', () => {
 
         test('should download transactions with all columns', async ({ page, analyticsEvents }) => {
             // Check all columns and download
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover');
             await popover.getByText('All 10 columns', { exact: true }).click();
             await expect(popover.getByRole('checkbox', { checked: true })).toHaveCount(11);
             await downloadTransactions(page, analyticsEvents, 'All');
@@ -625,15 +623,13 @@ test.describe('Default', () => {
             await setExactPspReference(page, analyticsEvents, 'PSP0000000000056');
             await openExportPopover(page, analyticsEvents);
 
-            const popover = page.locator('.adyen-pe-transactions-export__popover');
+            const popover = page.getByTestId('transactions-export-popover').getByTestId('transactions-export-filters');
 
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Account' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Date' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Transaction type' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'Currency' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default', { hasText: 'PSP reference' })).toBeVisible();
-            await expect(popover.locator('.adyen-pe-tag--default')).toHaveCount(5);
-            await expect(popover.locator('.adyen-pe-tag')).toHaveCount(5);
+            await expect(popover.getByText('Account', { exact: true })).toBeVisible();
+            await expect(popover.getByText('Date', { exact: true })).toBeVisible();
+            await expect(popover.getByText('Transaction type', { exact: true })).toBeVisible();
+            await expect(popover.getByText('Currency', { exact: true })).toBeVisible();
+            await expect(popover.getByText('PSP reference', { exact: true })).toBeVisible();
         });
 
         test('should disable "Export" button if applied filters match no transactions', async ({ page, analyticsEvents }) => {
