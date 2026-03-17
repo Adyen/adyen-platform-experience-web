@@ -198,25 +198,51 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
+    grantMultipleAsyncActionsEmbedded: (() => {
+        let firstCallTime: number | undefined;
+        return [
+            { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+            {
+                endpoint: mockEndpoints.grants,
+                handler: async () => {
+                    if (!firstCallTime) {
+                        firstCallTime = Date.now();
+                    }
+                    const elapsedTime = Date.now() - firstCallTime;
+                    const grant = elapsedTime < 1000 ? PENDING_GRANT_WITH_SINGLE_ACTION : PENDING_GRANT_WITH_MULTIPLE_ACTIONS;
+                    return getHandlerCallback({ response: { data: [grant] }, status: 200 })();
+                },
+            },
+            { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
+        ];
+    })(),
     grantMultipleActionsHosted: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
-        {
-            endpoint: mockEndpoints.signToS,
-            handler: async () => {
-                await delay(500);
-                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS, { status: 200 });
-            },
-        },
-        {
-            endpoint: mockEndpoints.anaCredit,
-            handler: async () => {
-                await delay(500);
-                return HttpResponse.json(ANACREDIT_ACTION_DETAILS, { status: 200 });
-            },
-        },
+        { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
+        { endpoint: mockEndpoints.anaCredit, handler: getHandlerCallback({ response: ANACREDIT_ACTION_DETAILS, status: 200 }) },
     ],
+    grantMultipleAsyncActionsHosted: (() => {
+        let firstCallTime: number | undefined;
+        return [
+            { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+            {
+                endpoint: mockEndpoints.grants,
+                handler: async () => {
+                    if (!firstCallTime) {
+                        firstCallTime = Date.now();
+                    }
+                    const elapsedTime = Date.now() - firstCallTime;
+                    const grant = elapsedTime < 1000 ? PENDING_GRANT_WITH_SINGLE_ACTION : PENDING_GRANT_WITH_MULTIPLE_ACTIONS;
+                    return getHandlerCallback({ response: { data: [grant] }, status: 200 })();
+                },
+            },
+            { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
+            { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
+            { endpoint: mockEndpoints.anaCredit, handler: getHandlerCallback({ response: ANACREDIT_ACTION_DETAILS, status: 200 }) },
+        ];
+    })(),
     grantSingleActionEmbedded: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
@@ -226,13 +252,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
-        {
-            endpoint: mockEndpoints.signToS,
-            handler: async () => {
-                await delay(500);
-                return HttpResponse.json(SIGN_TOS_ACTION_DETAILS, { status: 200 });
-            },
-        },
+        { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
     ],
     grantActive: [
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
