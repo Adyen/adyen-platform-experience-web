@@ -12,9 +12,10 @@ interface CalendarInputProps {
     onInput: (val: any) => void;
     isInvalid?: boolean;
     timezone?: string;
+    isReadOnly?: boolean;
 }
 
-export function CalendarInput({ clearable, value, onInput, isInvalid, timezone }: CalendarInputProps) {
+export function CalendarInput({ clearable, value, onInput, isInvalid, timezone, isReadOnly }: CalendarInputProps) {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting(timezone);
     const [open, setOpen] = useState(false);
@@ -66,6 +67,7 @@ export function CalendarInput({ clearable, value, onInput, isInvalid, timezone }
                 showClearButton={showClearButton}
                 onClear={onClear}
                 buttonRef={buttonRef}
+                isReadOnly={isReadOnly}
             />
             <CalendarInputPopover
                 isOpen={open}

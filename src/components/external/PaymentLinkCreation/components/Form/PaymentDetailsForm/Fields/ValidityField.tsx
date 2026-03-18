@@ -71,6 +71,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
 
     const isDurationUnitRequired = fieldsConfig['linkValidity.durationUnit']?.required;
     const isDurationQuantityRequired = fieldsConfig['linkValidity.quantity']?.required;
+    const isReadOnly = fieldsConfig['linkValidity.durationUnit']?.readOnly || fieldsConfig['linkValidity.quantity']?.readOnly;
 
     const handleCustomDurationQuantityChange = useCallback(
         (e: JSX.TargetedEvent<HTMLInputElement>) => {
@@ -181,13 +182,19 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                                 items={validitySelectItems}
                                                 isValid={isValid}
                                                 isInvalid={!validityValue}
+                                                readonly={isReadOnly}
                                             />
                                         </FormField>
                                         {validityValue === FLEXIBLE_ID && (
                                             <FormField label={i18n.get('payByLink.creation.fields.validity.customDuration.label')} optional={false}>
                                                 <InputBase
                                                     {...durationQuantityField}
-                                                    dropdown={{ ...durationUnitField, items: dropdownItems, value: customDurationUnit || '' }}
+                                                    dropdown={{
+                                                        ...durationUnitField,
+                                                        items: dropdownItems,
+                                                        value: customDurationUnit || '',
+                                                        readonly: isReadOnly,
+                                                    }}
                                                     onDropdownInput={handleCustomDurationUnitChange}
                                                     dropdownPosition="end"
                                                     value={customDurationQuantity}
@@ -195,6 +202,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                                     onInput={handleCustomDurationQuantityChange}
                                                     isValid={isValid}
                                                     isInvalid={isInvalid}
+                                                    readonly={isReadOnly}
                                                 />
                                             </FormField>
                                         )}

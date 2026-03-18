@@ -95,6 +95,7 @@ export const PaymentLinkCreationFormContainer = ({
         setSelectedStore,
     } = usePaymentLinkFormData({
         defaultValues: fieldsConfig?.data,
+        visibilityConfig: fieldsConfig?.visibility,
         storeIds,
     });
 
@@ -147,8 +148,12 @@ export const PaymentLinkCreationFormContainer = ({
         queryFn: createPaymentLink,
     });
 
-    const onSubmit = async (data: PaymentLinkCreationFormValues) => {
-        const { store, ...dataWithoutStore } = data;
+    const onSubmit = async () => {
+        // Use getApiPayloadValues to only include fields that come back from configuration
+        // This excludes fields that are not returned by the configuration endpoint
+        // but includes fields that are hidden via visibility prop
+        const apiPayloadData = wizardForm.getApiPayloadValues() as PaymentLinkCreationFormValues;
+        const { store, ...dataWithoutStore } = apiPayloadData;
 
         try {
             const result = await submitMutation.mutate(
@@ -159,7 +164,7 @@ export const PaymentLinkCreationFormContainer = ({
                 { path: { storeId: store } }
             );
 
-            onPaymentLinkCreated?.({ ...data, paymentLink: result });
+            onPaymentLinkCreated?.({ ...apiPayloadData, paymentLink: result });
         } catch (error) {
             console.error('Failed to create payment link:', error);
             throw error;

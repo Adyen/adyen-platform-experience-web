@@ -4,7 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number (e.g., 1.0.1)'
+        description: 'Version number (e.g., v1.0.1)'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version number (e.g., v1.0.1)'
         required: true
         type: string
 
@@ -21,52 +27,52 @@ jobs:
       - name: Generate SRI Hashes
         run: |
           VERSION="${{ inputs.version }}"
-          
+
           JS_URL="${BASE_URL}/${VERSION}/adyen-platform-experience-web.js"
           CSS_URL="${BASE_URL}/${VERSION}/adyen-platform-experience-web.css"
-          
+
           echo "Fetching JavaScript file..."
           JS_HASH=$(curl -s "$JS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
-          
+
           echo "Fetching CSS file..."
           CSS_HASH=$(curl -s "$CSS_URL" | openssl dgst -sha384 -binary | openssl base64 -A)
-          
+
           # Print to logs
           echo "================================"
           echo "Version: ${VERSION}"
           echo "JS Hash: sha384-${JS_HASH}"
           echo "CSS Hash: sha384-${CSS_HASH}"
           echo "================================"
-          
+
           # Add to job summary
           cat >> $GITHUB_STEP_SUMMARY << EOF
           ## 🔐 SRI Hashes for Version ${VERSION}
-          
+
           ### JavaScript
           **URL:** \`${JS_URL}\`
-          
+
           **Integrity Hash:** \`sha384-${JS_HASH}\`
-          
+
           \`\`\`html
           <script src="${JS_URL}"
                   integrity="sha384-${JS_HASH}"
                   crossorigin="anonymous"></script>
           \`\`\`
-          
+
           ### CSS
           **URL:** \`${CSS_URL}\`
-          
+
           **Integrity Hash:** \`sha384-${CSS_HASH}\`
-          
+
           \`\`\`html
           <link href="${CSS_URL}"
                 rel="stylesheet"
                 integrity="sha384-${CSS_HASH}"
                 crossorigin="anonymous">
           \`\`\`
-          
+
           ---
-          
+
           ### 📋 Complete Integration
           \`\`\`html
           <!-- Adyen Platform Experience Web ${VERSION} -->
@@ -74,9 +80,23 @@ jobs:
                 rel="stylesheet"
                 integrity="sha384-${CSS_HASH}"
                 crossorigin="anonymous">
-          
+
           <script src="${JS_URL}"
                   integrity="sha384-${JS_HASH}"
                   crossorigin="anonymous"></script>
           \`\`\`
           EOF
+
+          echo "JS_HASH=sha384-${JS_HASH}" >> $GITHUB_ENV
+          echo "CSS_HASH=sha384-${CSS_HASH}" >> $GITHUB_ENV
+
+      # TODO: Configure Slack webhook before enabling this step
+      # - name: Notify Slack with SRI hashes
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     VERSION: ${{ inputs.version }}
+      #   run: |
+      #     curl -X POST -H 'Content-Type: application/json' \
+      #       --data "{
+      #         \"text\": \"@pie-frontend :lock: SRI Hashes for v${VERSION}\\n\\nJS: \`${JS_HASH}\`\\nCSS: \`${CSS_HASH}\`\\n\\nJS URL: \`${BASE_URL}/${VERSION}/adyen-platform-experience-web.js\`\\nCSS URL: \`${BASE_URL}/${VERSION}/adyen-platform-experience-web.css\`\\n\\nSee <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|workflow run> for full integration snippets.\"
+      #       }" $SLACK_WEBHOOK_URL

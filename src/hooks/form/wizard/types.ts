@@ -2,11 +2,21 @@ import { FieldValues, UseFormReturn } from '../types';
 import { TranslationKey } from '../../../translations';
 import Localization from '../../../core/Localization';
 
+export interface WizardStepField<TFieldValues> {
+    fieldName: FieldValues<TFieldValues>;
+    required: boolean;
+    visible?: boolean;
+    includeInApiPayload?: boolean;
+    readOnly?: boolean;
+    label?: TranslationKey;
+    options?: any;
+}
+
 export interface WizardStep<TFieldValues> {
     id: string;
     title?: string;
     description?: string;
-    fields: Readonly<{ fieldName: FieldValues<TFieldValues>; required: boolean; visible?: boolean; label?: TranslationKey; options?: any }[]>;
+    fields: Readonly<WizardStepField<TFieldValues>[]>;
     validate?: (values: Partial<TFieldValues>) => boolean | Promise<boolean>;
     isOptional?: boolean;
 }
@@ -64,6 +74,7 @@ export interface UseWizardFormReturn<TFieldValues> extends UseFormReturn<TFieldV
 
     // Summary data
     getSummaryData: () => WizardSummaryData<TFieldValues>;
+    getApiPayloadValues: () => Partial<TFieldValues>;
 
     // Display values
     getDisplayValue: (name: FieldValues<TFieldValues>) => string | undefined;
