@@ -3,6 +3,7 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import Typography from '../../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../../internal/Typography/types';
 import Icon from '../../../../../internal/Icon/Icon';
+import SuccessIcon from '../../../../../internal/SuccessIcon/SuccessIcon';
 import Button from '../../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../../internal/Button/types';
 import './FormSuccess.scss';
@@ -47,7 +48,7 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
     return (
         <section className={cx('adyen-pe-payment-link-creation-form-success')}>
             <div className="adyen-pe-payment-link-creation-form-success__content">
-                <Icon name="checkmark-circle-fill" className="adyen-pe-payment-link-creation-form-success__icon" />
+                <SuccessIcon className="adyen-pe-payment-link-creation-form-success__icon" />
                 <Typography variant={TypographyVariant.TITLE} className="adyen-pe-payment-link-creation-form-success__title">
                     {i18n.get('payByLink.creation.success.title')}
                 </Typography>

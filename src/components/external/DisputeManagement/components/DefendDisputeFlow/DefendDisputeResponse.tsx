@@ -4,6 +4,7 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import Icon from '../../../../internal/Icon';
 import { TypographyVariant } from '../../../../internal/Typography/types';
+import SuccessIcon from '../../../../internal/SuccessIcon/SuccessIcon';
 import Typography from '../../../../internal/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { isFunction } from '../../../../../utils';
@@ -44,7 +45,7 @@ export const DefendDisputeResponse = ({ onDisputeDefend }: Pick<DisputeManagemen
         <div className={'adyen-pe-defend-dispute__response'}>
             {defendResponse === 'success' ? (
                 <div className="adyen-pe-defend-dispute__success">
-                    <Icon name="checkmark-circle-fill" className="adyen-pe-defend-dispute__success-icon" />
+                    <SuccessIcon className="adyen-pe-defend-dispute__success-icon" />
                     <Typography variant={TypographyVariant.TITLE}>{i18n.get('disputes.management.defend.common.evidenceSubmitted')}</Typography>
                     <Typography variant={TypographyVariant.BODY} className="adyen-pe-defend-dispute__success-description">
                         {i18n.get('disputes.management.defend.chargeback.submitSuccessInfo')}
