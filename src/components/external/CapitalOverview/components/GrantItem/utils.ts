@@ -12,14 +12,14 @@ const getAmountLabelKey = (status: IGrantStatus): TranslationKey =>
 
 const getAmount = (grant: IGrant) => (grant.status === 'Active' ? grant.remainingTotalAmount : grant.grantAmount);
 
-const getStatusKey = ({ status, missingActions }: IGrant): TranslationKey | undefined => {
+const getStatusKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
     switch (status) {
         case 'Active':
             return undefined;
         case 'Failed':
             return 'capital.overview.grants.common.statuses.failed';
         case 'Pending':
-            return missingActions && missingActions.length
+            return !areActionsLocallyCompleted && missingActions?.length
                 ? 'capital.overview.grants.common.statuses.actionNeeded'
                 : 'capital.overview.grants.common.statuses.pending';
         case 'Repaid':
@@ -31,12 +31,12 @@ const getStatusKey = ({ status, missingActions }: IGrant): TranslationKey | unde
     }
 };
 
-const getStatusTagVariant = ({ status, missingActions }: IGrant): TagVariant => {
+const getStatusTagVariant = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TagVariant => {
     switch (status) {
         case 'Failed':
             return TagVariant.ERROR;
         case 'Pending':
-            return missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
+            return !areActionsLocallyCompleted && missingActions?.length ? TagVariant.WARNING : TagVariant.DEFAULT;
         case 'Repaid':
             return TagVariant.LIGHT;
         case 'Revoked':
@@ -54,12 +54,12 @@ const getRepaymentPeriodEndDate = (repaymentPeriodLeft: number) => {
     return endDate;
 };
 
-export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined => {
-    const pendingToS = grant.missingActions?.some(action => action.type === 'signToS') || false;
-
-    switch (grant.status) {
+export const getStatusTooltipKey = ({ status, missingActions }: IGrant, areActionsLocallyCompleted?: boolean): TranslationKey | undefined => {
+    switch (status) {
         case 'Pending':
-            return grant.missingActions?.length ? undefined : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
+            return !areActionsLocallyCompleted && missingActions?.length
+                ? undefined
+                : 'capital.overview.grants.common.statuses.pending.description.awaitingFunds';
         case 'Failed':
             return 'capital.overview.grants.common.statuses.failed.description';
         case 'WrittenOff':
@@ -71,7 +71,7 @@ export const getStatusTooltipKey = (grant: IGrant): TranslationKey | undefined =
     }
 };
 
-export const getGrantConfig = (grant: IGrant): GrantConfig => {
+export const getGrantConfig = (grant: IGrant, areActionsLocallyCompleted?: boolean): GrantConfig => {
     const isGrantActive = grant.status === 'Active';
     const isGrantPending = grant.status === 'Pending';
 
@@ -92,8 +92,8 @@ export const getGrantConfig = (grant: IGrant): GrantConfig => {
         isLabelColorSecondary: isGrantActive,
         isProgressBarVisible: isGrantActive,
         repaymentPeriodEndDate: getRepaymentPeriodEndDate(grant.repaymentPeriodLeft),
-        statusKey: getStatusKey(grant),
-        statusTagVariant: getStatusTagVariant(grant),
-        statusTooltipKey: getStatusTooltipKey(grant),
+        statusKey: getStatusKey(grant, areActionsLocallyCompleted),
+        statusTagVariant: getStatusTagVariant(grant, areActionsLocallyCompleted),
+        statusTooltipKey: getStatusTooltipKey(grant, areActionsLocallyCompleted),
     };
 };

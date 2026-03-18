@@ -58,6 +58,26 @@ describe('getGrantConfig', () => {
         });
     });
 
+    test('returns config for pending grant with locally completed actions', () => {
+        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION, true);
+        expect(config).toEqual<GrantConfig>({
+            amount: ACTIVE_GRANT.grantAmount,
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            hasAlerts: true,
+            hasDetails: false,
+            hasUnscheduledRepaymentDetails: false,
+            isAmountColorSecondary: true,
+            isBackgroundFilled: false,
+            isGrantIdVisible: true,
+            isLabelColorSecondary: false,
+            isProgressBarVisible: false,
+            repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
+            statusKey: 'capital.overview.grants.common.statuses.pending',
+            statusTagVariant: TagVariant.DEFAULT,
+            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
+        });
+    });
+
     test('returns config for active grant', () => {
         const config = getGrantConfig(ACTIVE_GRANT);
         expect(config).toEqual<GrantConfig>({
