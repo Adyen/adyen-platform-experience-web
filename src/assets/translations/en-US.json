@@ -67,7 +67,7 @@
     "capital.overview.grants.item.actions.sendRepayment": "Send repayment",
     "capital.overview.grants.item.actions.submitInformation": "Submit information",
     "capital.overview.grants.item.actions.submitInformationSuccess": "Information submitted",
-    "capital.overview.grants.item.actions.viewTermsAndConditions": "Go to Terms & Conditions",
+    "capital.overview.grants.item.actions.viewTermsAndConditions": "Sign terms & conditions",
     "capital.overview.grants.item.actions.viewTermsAndConditionsSuccess": "Terms signed",
     "capital.overview.grants.item.alerts.actionNeeded": "We need a bit more input from you to process your funds. Please complete this action.",
     "capital.overview.grants.item.alerts.actionNeededBy": "We need a bit more input from you to process your funds. Please complete this action by %{date}.",

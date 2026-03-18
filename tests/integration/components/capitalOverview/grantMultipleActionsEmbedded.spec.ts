@@ -13,7 +13,7 @@ const submitBusinessFinancingInformation = async (page: Page) => {
 };
 
 const signTermsOfService = async (page: Page) => {
-    await page.getByRole('button', { name: 'Go to Terms & Conditions', exact: true }).click();
+    await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
     await page.getByRole('combobox', { name: 'signer' }).click();
     await page.getByRole('option').first().click();
     await page
@@ -42,10 +42,10 @@ test.describe('Grant: Multiple actions - Embedded', () => {
             page.getByText('We need a bit more input from you to process your funds. Please complete these actions by February 15, 2025.')
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go to Terms & Conditions' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
     });
 
-    test('should render business financing component when "Submit information" button in clicked', async ({ page, analyticsEvents }) => {
+    test('should render business financing component when information submit button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
             ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
@@ -63,14 +63,14 @@ test.describe('Grant: Multiple actions - Embedded', () => {
         await expect(page.getByText('Information submitted')).toBeVisible();
     });
 
-    test('should render terms of service component when "Go to Terms & Conditions" button in clicked', async ({ page, analyticsEvents }) => {
+    test('should render terms of service component when signing button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
             ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
             label: 'Go to terms & conditions button clicked',
         };
 
-        await page.getByRole('button', { name: 'Go to Terms & Conditions', exact: true }).click();
+        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
         await expect(page.getByRole('heading').getByText('Capital User Terms')).toBeVisible();
 
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', analyticsEventProperties]]);

@@ -49,7 +49,7 @@
     "capital.overview.grants.item.actions.sendRepayment": "Label for a button that allows the user initiate procedures for repayment",
     "capital.overview.grants.item.actions.submitInformation": "Label for a link that redirects the user to submit extra information",
     "capital.overview.grants.item.actions.submitInformationSuccess": "Label for a button to submit information after the information has been submitted",
-    "capital.overview.grants.item.actions.viewTermsAndConditions": "Label for a button that enables the user to navigate to a screen with terms and conditions",
+    "capital.overview.grants.item.actions.viewTermsAndConditions": "Label for a button that enables the user to navigate to a screen where they can sign terms and conditions",
     "capital.overview.grants.item.actions.viewTermsAndConditionsSuccess": "Label for a button to sign terms of service after the terms of service have been signed",
     "capital.overview.grants.item.alerts.actionNeeded": "Description indicating that there is an action that needs to be completed to process the funds.",
     "capital.overview.grants.item.alerts.actionNeededBy": "Description indicating that there is an action that needs to be completed by an specific date to process the funds.",

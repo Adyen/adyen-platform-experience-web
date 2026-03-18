@@ -20,10 +20,10 @@ test.describe('Grant: Multiple actions - Hosted', () => {
             page.getByText('We need a bit more input from you to process your funds. Please complete these actions by February 15, 2025.')
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go to Terms & Conditions' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
     });
 
-    test('should go to terms of service page when "Go to Terms & Conditions" button in clicked', async ({ page, analyticsEvents }) => {
+    test('should go to terms of service page when signing button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
             ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
@@ -32,14 +32,14 @@ test.describe('Grant: Multiple actions - Hosted', () => {
 
         const redirectionURL = 'https://www.adyen.com/';
 
-        await page.getByRole('button', { name: 'Go to Terms & Conditions', exact: true }).click();
+        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
         await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
         expect(page.url()).toBe(redirectionURL);
 
         await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
     });
 
-    test('should go to business financing page when "Submit information" button in clicked', async ({ page, analyticsEvents }) => {
+    test('should go to business financing page when information submit button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
             ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',

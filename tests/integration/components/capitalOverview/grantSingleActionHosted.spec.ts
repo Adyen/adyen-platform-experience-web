@@ -19,7 +19,7 @@ test.describe('Grant: Single action - Hosted', () => {
         await expect(
             page.getByText('We need a bit more input from you to process your funds. Please complete this action by February 15, 2025.')
         ).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Go to Terms & Conditions' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
         await expect(page.getByRole('progressbar')).toBeHidden();
         await expect(page.getByTestId('expand-button')).toBeHidden();
     });
