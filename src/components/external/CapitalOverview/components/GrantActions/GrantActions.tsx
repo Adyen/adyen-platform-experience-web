@@ -9,6 +9,7 @@ import { GrantActionsHosted } from '../GrantActionsHosted/GrantActionsHosted';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
 import Alert from '../../../../internal/Alert/Alert';
 import './GrantActions.scss';
+import { useMissingActionsPolling } from './hooks';
 
 const CLASSNAMES = {
     actionsTitleSkeleton: 'adyen-pe-grant-actions__actions-title-skeleton',
@@ -16,17 +17,25 @@ const CLASSNAMES = {
 };
 
 type GrantActionsProps = {
+    grantId: string;
     missingActions: IMissingAction[];
     offerExpiresAt?: string;
     className?: string;
     onComplete: () => void;
 };
 
-export const GrantActions: FunctionalComponent<GrantActionsProps> = ({ missingActions = [], offerExpiresAt, className, onComplete }) => {
+export const GrantActions: FunctionalComponent<GrantActionsProps> = ({
+    grantId,
+    missingActions: initialMissingActions,
+    offerExpiresAt,
+    className,
+    onComplete,
+}) => {
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
+    const { missingActions, isPollingComplete } = useMissingActionsPolling({ grantId, initialMissingActions });
 
     const onboardingConfigurationQuery = useFetch({
-        fetchOptions: { enabled: !!missingActions.length },
+        fetchOptions: { enabled: isPollingComplete && !!missingActions.length },
         queryFn: useCallback(async () => {
             return getOnboardingConfiguration?.(EMPTY_OBJECT);
         }, [getOnboardingConfiguration]),
@@ -36,7 +45,7 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({ missingAc
         return null;
     }
 
-    if (onboardingConfigurationQuery.isFetching) {
+    if (!isPollingComplete || onboardingConfigurationQuery.isFetching) {
         return (
             <Alert
                 className={className}

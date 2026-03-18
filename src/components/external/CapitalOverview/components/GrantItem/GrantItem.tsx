@@ -181,6 +181,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 <>
                     {grant.missingActions && grant.missingActions.length ? (
                         <GrantActions
+                            grantId={grant.id}
                             missingActions={grant.missingActions}
                             className={GRANT_ITEM_CLASS_NAMES.alert}
                             offerExpiresAt={grant.offerExpiresAt}
