@@ -116,11 +116,7 @@ export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = 
         mockedApi: true,
     },
     parameters: {
-<<<<<<< fix/align-ui-with-onboarding
-        msw: CapitalOverviewMockedResponses.grantAnaCreditActionHosted,
-=======
         msw: CapitalOverviewMockedResponses.grantMultipleActionsHosted,
->>>>>>> group/capital-onboarding
     },
 };
 
