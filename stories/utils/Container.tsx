@@ -34,7 +34,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
             Component.mount(container.current ?? '');
         })();
 
-        return () => Component.unmount();
+        return () => Component?.unmount();
     }, [component, componentConfiguration, context]);
 
     return (
