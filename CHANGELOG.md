@@ -1,5 +1,16 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.10.2
+
+### Patch Changes
+
+- Added support for `readOnly` and `hidden` fields in the Pay By Link creation form. These options can be configured via the `fieldsConfig` prop to pre-fill and lock certain fields, or to hide them from the UI.
+- Across all components, we resolved an issue where clicking the "Refresh" button failed to restore expired sessions after long periods of inactivity.
+- In the Transaction Details component, we resolved an issue that prevented refund details from showing when there was no associated payment transaction.
+- Across all components, we improved backward compatibility for legacy custom translations by supporting multi-step key mapping.
+- In the Dispute Management component, we fixed an issue to ensure that custom CSS class names are correctly applied to custom action buttons.
+- In the Transaction Details component, we fixed an issue where navigating from refund details to the associated payment details occasionally caused the UI to flicker indefinitely.
+
 ## 1.10.1
 
 ### Patch Changes

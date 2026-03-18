@@ -283,6 +283,10 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues>): Us
         [control]
     );
 
+    const getValueMap = useCallback(() => {
+        return control._values;
+    }, [control]);
+
     const reset = useCallback(
         (values?: Partial<TFieldValues>) => {
             const resetValues = values || control._defaultValues;
@@ -356,6 +360,7 @@ export function useForm<TFieldValues>(options: UseFormOptions<TFieldValues>): Us
         handleSubmit,
         setValue,
         getValues,
+        getValueMap,
         reset,
         formState,
         trigger,
