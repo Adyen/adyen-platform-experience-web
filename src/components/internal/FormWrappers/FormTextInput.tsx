@@ -16,6 +16,7 @@ interface FormTextInputProps<TFieldValues> {
     dropdown?: InputFieldDropdownProps;
     className?: string;
     isRequired?: boolean;
+    isReadOnly?: boolean;
     min?: number;
     onInput?: (e: TargetedEvent<HTMLInputElement, Event>) => void;
     onDropdownInput?: (value: string) => void;
@@ -33,6 +34,7 @@ export function FormTextInput<TFieldValues>({
     dropdown,
     fieldName,
     isRequired: isRequiredProp,
+    isReadOnly: isReadOnlyProp,
     label,
     onDropdownInput,
     onInput,
@@ -48,7 +50,8 @@ export function FormTextInput<TFieldValues>({
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
     const { i18n } = useCoreContext();
 
-    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, isRequiredProp]);
+    const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
+    const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
 
     const handleInput = useCallback(
         (e: TargetedEvent<HTMLInputElement, Event>, onInputHandler: (value: string) => void) => {
@@ -107,6 +110,7 @@ export function FormTextInput<TFieldValues>({
                                 min={min}
                                 dropdown={dropdown}
                                 dropdownPosition={dropdownPosition}
+                                readonly={isReadOnly}
                             />
                         );
                     }}

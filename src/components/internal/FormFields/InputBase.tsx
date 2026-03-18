@@ -3,7 +3,7 @@ import { hasOwnProperty } from '../../../utils';
 import classNames from 'classnames';
 import { h } from 'preact';
 import { ForwardedRef, forwardRef, TargetedEvent } from 'preact/compat';
-import { useCallback } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { InputBaseProps } from './types';
 import Select from './Select';
 import { filterDisallowedCharacters } from './utils';
@@ -144,6 +144,12 @@ function InputBase(
         />
     );
 
+    const selectClassNameModifiers = useMemo(() => {
+        let modifiers = ['input-field'];
+        if (readonly) modifiers = [...modifiers, 'readonly'];
+        return modifiers;
+    }, [readonly]);
+
     const renderDropdown = useCallback(
         () =>
             dropdown ? (
@@ -156,7 +162,7 @@ function InputBase(
                     readonly={isDropdownReadOnly}
                     filterable={dropdown.filterable}
                     aria-label={dropdown['aria-label']}
-                    classNameModifiers={['input-field']}
+                    classNameModifiers={selectClassNameModifiers}
                     isCollatingErrors={isCollatingErrors}
                     disableToggleFocusOnClose
                 />
@@ -170,6 +176,7 @@ function InputBase(
                 <div
                     className={classNames('adyen-pe-input__container', {
                         ['adyen-pe-input--invalid']: isInvalid,
+                        ['adyen-pe-input__container--readonly']: readonly,
                     })}
                 >
                     {shouldDisplayDropdownAtStart && (
