@@ -11,4 +11,5 @@ export type IGBCapitalFundsCollection = Schema<CapitalGrantsResourceComponents, 
 export type IGrantOfferResponseDTO = Schema<CapitalResourceComponents, 'GrantOfferResponseDTO'>;
 export type IGrantStatus = Schema<CapitalGrantsResourceComponents, 'GrantStatus'>;
 export type IMissingAction = Schema<CapitalGrantsResourceComponents, 'MissingActionDTO'>;
+export type IMissingActionType = Schema<CapitalGrantsResourceComponents, 'MissingActionType'>;
 export type IOnboardingConfiguration = Schema<OnboardingConfigurationResourceComponents, 'OnboardingConfigurationResponseDTO'>;

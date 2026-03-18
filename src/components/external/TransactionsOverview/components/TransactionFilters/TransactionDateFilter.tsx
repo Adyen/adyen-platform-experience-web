@@ -61,10 +61,9 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
     const filterLabel = useMemo(() => i18n.get('common.filters.types.date.label'), [i18n]);
     const customDateRange = useMemo(() => i18n.get(TRANSACTION_DATE_RANGE_CUSTOM), [i18n]);
     const defaultDateRange = useMemo(() => i18n.get(TRANSACTION_DATE_RANGE_DEFAULT), [i18n]);
-    const cachedCreatedDate = useRef(createdDate);
-
     const [selectedDateRange, setSelectedDateRange] = useState(defaultDateRange);
     const [pendingResetAction, setPendingResetAction] = useState(false);
+    const createdDateBeforeReset = useRef<RangeTimestamps | null>(null);
 
     const { from, to, since, until, now } = useMemo(() => {
         const timeShiftMs = 1; // time shift for differentiating equivalent time ranges
@@ -117,19 +116,24 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
                         : getDateRangeSelectionEventValue(selectedDateRangeKey);
 
                 setSelectedDateRange(selected);
-                setCreatedDate((cachedCreatedDate.current = nextCreatedDate));
+                setCreatedDate(nextCreatedDate);
                 logEvent?.('update', eventValue);
             }
         },
         [i18n, from, to, customDateRange, defaultDateRange, selectedDateRange, logEvent]
     );
 
-    const onFilterResetAction = useCallback(() => setPendingResetAction(true), []);
+    const onFilterResetAction = useCallback(() => {
+        createdDateBeforeReset.current = createdDate;
+        setPendingResetAction(true);
+    }, [createdDate]);
 
     useEffect(() => {
-        if (!pendingResetAction) return;
-        setPendingResetAction(false);
-        if (cachedCreatedDate.current !== createdDate) logEvent?.('reset');
+        if (pendingResetAction && createdDateBeforeReset.current !== null && createdDateBeforeReset.current !== createdDate) {
+            setPendingResetAction(false);
+            createdDateBeforeReset.current = null;
+            logEvent?.('reset');
+        }
     }, [pendingResetAction, createdDate, logEvent]);
 
     useEffect(() => {

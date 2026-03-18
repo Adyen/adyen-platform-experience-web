@@ -1,26 +1,21 @@
 @use '../../../../../style';
+@use '../../../../../style/skeleton';
 
-.adyen-pe-grant-action {
-    &__button {
-        margin-top: style.token(spacer-030);
+.adyen-pe-grant-actions {
+    &__actions-title-skeleton {
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        margin-bottom: style.token(spacer-040);
+        width: 200px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 
-    &__button-label {
-        font-weight: style.token(text-body-stronger-font-weight);
-    }
-
-    &__actions-container {
-        display: flex;
-        flex-direction: column;
-        font-size: style.token(text-body-font-size);
-        font-weight: style.token(text-body-stronger-font-weight);
-        gap: style.token(spacer-020);
-        padding-left: style.token(spacer-070);
-    }
-
-    &__actions-information {
-        display: flex;
-        flex-direction: column;
-        gap: style.token(spacer-070);
+    &__actions-description-skeleton {
+        border-radius: style.token(border-radius-s);
+        height: 20px;
+        width: 250px;
+        /* stylelint-disable-next-line order/order */
+        @include skeleton.adyen-pe-skeleton-animation();
     }
 }
