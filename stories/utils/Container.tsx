@@ -10,10 +10,9 @@ interface IContainer<T extends new (...args: any) => any> {
     componentConfiguration: Omit<ConstructorParameters<T>[0], 'core'>;
     context: StoryContext;
     mockedApi?: boolean;
-    locale?: string;
 }
 
-export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context, locale }: IContainer<T>) => {
+export const Container = <T extends new (args: any) => any>({ component, componentConfiguration, context }: IContainer<T>) => {
     const container = useRef(null);
 
     useEffect(() => {
@@ -24,23 +23,23 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 ...context.coreOptions,
                 balanceAccountId: context.args.balanceAccountId,
                 environment: 'test',
-                locale: locale || 'en-US',
+                locale: context.globals.locale,
                 onSessionCreate: async () => {
                     return await sessionRequest(context.args.session);
                 },
-                ...context.args.coreOptions,
+                ...(context.args.coreOptions ?? {}),
             });
 
             Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
         })();
 
-        return () => Component.unmount();
-    }, []);
+        return () => Component?.unmount();
+    }, [component, componentConfiguration, context]);
 
     return (
         <>
-            <div ref={container} id="component-root" className="component-wrapper" />
+            <div ref={container} id="component-root" className="component-wrapper" style={{ fontFamily: context.globals.fontFamily }} />
         </>
     );
 };
