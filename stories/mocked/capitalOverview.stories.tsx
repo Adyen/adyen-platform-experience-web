@@ -294,6 +294,18 @@ export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof C
     },
 };
 
+export const ErrorActionsEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Actions Embedded',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOverviewMockedResponses.errorActionsEmbedded,
+        },
+    },
+};
+
 export const ErrorActionsHosted: ElementStory<typeof CapitalOverview> = {
     name: 'Error - Actions Hosted',
     args: {
