@@ -318,6 +318,14 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
     ],
+    errorActionsEmbedded: [
+        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
+        {
+            endpoint: mockEndpoints.onboardingConfiguration,
+            handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),
+        },
+    ],
     errorActionsHosted: [
         { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
