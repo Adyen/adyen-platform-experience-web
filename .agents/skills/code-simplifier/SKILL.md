@@ -36,7 +36,7 @@ This skill is manual-only.
 ## Hard Requirements
 
 1. Preserve functionality exactly. Do not change behavior, public API, data flow, accessibility behavior, or user-visible output unless the task explicitly requires it.
-2. Follow this repository's rules from `AGENTS.md`, not Claude-specific conventions.
+2. Follow this repository's rules from `AGENTS.md`.
 3. Match the local style of the touched code. Do not rewrite files just to force a global personal preference.
 4. Use Preact conventions only. Never introduce imports from `react`.
 5. Keep user-facing text on the i18n path. Use `useCoreContext()` and `i18n.get(...)`; do not hardcode strings in JSX.
