@@ -23,6 +23,7 @@ Consult these adapted Playwright best practice references when needed:
 | Clock Mocking        | [references/clock-mocking.md](references/clock-mocking.md)           | Testing date/time-dependent features                             |
 | Debugging            | [references/debugging.md](references/debugging.md)                   | Troubleshooting failures, using trace viewer                     |
 | Common Patterns      | [references/common-patterns.md](references/common-patterns.md)       | Project-specific assertion, filter, dialog, interaction patterns |
+| Analytics Events     | [references/analytics-events.md](references/analytics-events.md)     | Asserting analytics events, fixture setup, shared constants      |
 
 ## When to Use
 
