@@ -10,9 +10,3 @@ export const enabledDisabledCallbackRadioControls = (actionName: string, options
         },
     } as const;
 };
-
-export const disableControls = {
-    table: {
-        disable: true,
-    },
-};
