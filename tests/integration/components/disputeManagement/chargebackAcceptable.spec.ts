@@ -6,12 +6,13 @@ const STORY_ID = 'mocked-disputes-dispute-management--chargeback-acceptable';
 test.describe('Chargeback - Acceptable', () => {
     test('should render button to accept and alert for defending the chargeback', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
-        await expect(page.getByRole('alert')).toBeVisible();
-
-        await expect(page.getByText('Contact support to defend this dispute.')).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Accept' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Defend chargeback' })).not.toBeVisible();
+        await Promise.all([
+            expect(page.getByText('Chargeback', { exact: true })).toBeVisible(),
+            expect(page.getByRole('alert')).toBeVisible(),
+            expect(page.getByText('Contact support to defend this dispute.')).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Accept' })).toBeVisible(),
+            expect(page.getByRole('button', { name: 'Defend chargeback' })).not.toBeVisible(),
+        ]);
     });
 
     test('should render contact support button', async ({ page }) => {
