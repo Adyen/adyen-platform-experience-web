@@ -15,7 +15,6 @@ Unit tests live colocated with source in `src/` — see [source-overview.md](../
 | `e2e/components/`              | End-to-end specs against real APIs                         |
 | `contract/v1/`, `contract/v2/` | API contract validation specs                              |
 | `contract/utils/`              | Contract test utilities                                    |
-| `models/`                      | Page object models for external and internal components    |
 | `utils/`                       | Shared test utilities (`utils.ts`, `datePicker.ts`)        |
 | `fixtures/`                    | Test fixture data (analytics, files)                       |
 
@@ -55,16 +54,6 @@ CI builds Storybook first, then runs tests with sharding.
 - Integration: `tests/integration/components/{component}/{scenario}.spec.ts`
 - Each spec tests one scenario (e.g., `grantActive.spec.ts`, `errorMissingActionsGeneric.spec.ts`)
 - Name files after the **scenario**, not the component
-
-### Page Object Models
-
-Use models in `tests/models/` for reusable component interactions:
-
-```
-models/
-├── external-components/   # Models for external components
-└── internal-components/   # Models for internal UI primitives
-```
 
 ### Test Utilities
 
