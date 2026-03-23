@@ -1,7 +1,5 @@
 # Test Annotations
 
-Adapted from [currents-dev/playwright-best-practices-skill](https://github.com/currents-dev/playwright-best-practices-skill). Tailored for this project's Storybook + MSW integration tests.
-
 ## Skip, Fixme, Fail
 
 | Annotation     | Runs? | Use Case                                             |

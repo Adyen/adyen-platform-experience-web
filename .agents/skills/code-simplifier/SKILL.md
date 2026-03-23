@@ -38,14 +38,13 @@ This skill is manual-only.
 1. Preserve functionality exactly. Do not change behavior, public API, data flow, accessibility behavior, or user-visible output unless the task explicitly requires it.
 2. Follow this repository's rules from `AGENTS.md`.
 3. Match the local style of the touched code. Do not rewrite files just to force a global personal preference.
-4. Use Preact conventions only. Never introduce imports from `react`.
-5. Keep user-facing text on the i18n path. Use `useCoreContext()` and `i18n.get(...)`; do not hardcode strings in JSX.
-6. Reuse existing internal components instead of inventing new primitives.
-7. Respect strict TypeScript. Avoid `any`, handle `T | undefined` correctly, and do not hand-write API shapes that already exist in generated types.
-8. Never edit generated files under `src/types/api/resources/` manually.
-9. In SCSS, use Bento design tokens instead of hardcoded pixel values.
-10. For bug fixes, preserve the repository rule: reproduce the bug with a test first, then simplify only after the fix is proven.
-11. Never add secrets, credentials, or unsafe logging.
+4. Keep user-facing text on the i18n path. Use `useCoreContext()` and `i18n.get(...)`; do not hardcode strings.
+5. Reuse existing internal components instead of inventing new primitives.
+6. Respect strict TypeScript. Avoid `any`, handle `T | undefined` correctly, and do not hand-write API shapes that already exist in generated types.
+7. Never edit generated files under `src/types/api/resources/` manually.
+8. In SCSS, use Bento design tokens instead of hardcoded pixel values.
+9. For bug fixes, preserve the repository rule: reproduce the bug with a test first, then simplify only after the fix is proven.
+10. Never add secrets, credentials, or unsafe logging.
 
 ## Simplification Guidelines
 
@@ -58,6 +57,7 @@ This skill is manual-only.
 - Keep useful abstractions that improve structure or reuse
 - Prefer explicit, debuggable code over dense one-liners
 - Keep changes small and targeted
+-
 
 ## Project-Specific Guidance
 

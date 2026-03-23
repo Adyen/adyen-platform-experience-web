@@ -28,9 +28,6 @@ Test fails intermittently
 ## Detection
 
 ```bash
-# Run test multiple times to confirm instability
-pnpm exec playwright test tests/integration/components/{componentName} --project local-chrome --repeat-each=5
-
 # Run with trace to capture failure details
 pnpm run test:integration -- --grep "testName" --trace on
 
