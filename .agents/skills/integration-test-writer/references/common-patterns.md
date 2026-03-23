@@ -243,12 +243,12 @@ import { getComponentRoot } from '../../../utils/utils';
 await expect(getComponentRoot(page).getByText('Description')).toBeVisible();
 ```
 
-**Translated key for locators:**
+**User-facing text in locators:**
+
+Use the actual expected text (from `src/assets/translations/en-US.json`) instead of `getTranslatedKey()`:
 
 ```typescript
-import { getTranslatedKey } from '../../../utils/utils';
-
-await expect(page.getByText(getTranslatedKey('component.title'))).toBeVisible();
+await expect(page.getByText('Reports')).toBeVisible();
 ```
 
 ## Form Validation

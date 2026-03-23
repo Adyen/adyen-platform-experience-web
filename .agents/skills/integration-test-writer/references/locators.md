@@ -6,7 +6,7 @@ Repo-focused guidance for this project's Storybook + MSW integration tests.
 
 1. **Role-based** (preferred): `getByRole` — matches how users and assistive technology see the page
 2. **Label-based**: `getByLabel`, `getByPlaceholder`
-3. **Text-based**: `getByText`, `getByTitle` — use `getTranslatedKey()` for i18n strings
+3. **Text-based**: `getByText`, `getByTitle` — use the actual expected text from `src/assets/translations/en-US.json`
 4. **Test IDs**: `getByTestId` — for custom elements without semantic roles already exposed by the component
 5. **CSS class**: `page.locator('.adyen-pe-tag', { hasText: 'Status' })` — only for project-specific UI (tags, download buttons)
 6. **XPath** (last resort): `locator('xpath=ancestor::div[...]')` — only for ancestor traversal (e.g., form field errors)
@@ -84,10 +84,9 @@ Available `getByRole` constraint options per role. Always include `exact: true` 
 Use `exact: true` with `getByText` and `getByLabel` to prevent partial substring matches:
 
 ```typescript
-// Use translated keys for i18n strings
-import { getTranslatedKey } from '../../../utils/utils';
-page.getByText(getTranslatedKey('reports.overview.title'), { exact: true });
-page.getByLabel(getTranslatedKey('common.actions.apply.labels.default'), { exact: true });
+// Use the actual expected text from src/assets/translations/en-US.json
+page.getByText('Reports', { exact: true });
+page.getByLabel('Apply', { exact: true });
 ```
 
 ## Scoped Locators

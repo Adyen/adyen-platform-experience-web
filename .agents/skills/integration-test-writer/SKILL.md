@@ -260,22 +260,22 @@ test('should forward reference to creation sub-component', async ({ page }) => {
 
 ## Shared utilities reference
 
-| Utility                                             | Location                                        | Purpose                                                  |
-| --------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------- |
-| `goToStory(page, { id, args? })`                    | `tests/utils/utils.ts`                          | Navigate to a Storybook story                            |
-| `clickOutsideDialog(dialog)`                        | `tests/utils/utils.ts`                          | Click outside to dismiss a dialog                        |
-| `selectFirstUnselectedBalanceAccount(dialog)`       | `tests/utils/utils.ts`                          | Select first unselected BA option                        |
-| `applyDateFilter(page, options?)`                   | `tests/utils/utils.ts`                          | Apply a date range via the date picker                   |
-| `setTime(page)`                                     | `tests/utils/utils.ts`                          | Freeze time to `2025-01-01T00:00:00Z`                    |
-| `getTranslatedKey(key)`                             | `tests/utils/utils.ts`                          | Get i18n translation by key                              |
-| `getComponentRoot(page)`                            | `tests/utils/utils.ts`                          | Get `.adyen-pe-component` root locator                   |
-| `getClipboardContent(page)`                         | `tests/utils/utils.ts`                          | Read clipboard text via `navigator.clipboard.readText()` |
-| `sleep(ms?)`                                        | `tests/utils/utils.ts`                          | Wait for a given duration (default 100ms)                |
-| `expectAnalyticsEvents(events, expected, options?)` | `tests/utils/utils.ts`                          | Assert analytics event sequence (`strictOrder` option)   |
-| Date picker helpers                                 | `tests/utils/datePicker.ts`                     | `resetDatePicker`, `selectTodayDateFromDatePicker`, etc. |
-| Analytics fixture                                   | `tests/fixtures/analytics/events.ts`            | Custom `test`/`expect` with `analyticsEvents` array      |
-| `DataGridPage`                                      | `tests/models/internal-components/dataGrid.ts`  | POM for DataGrid interactions                            |
-| `FilterBarPage`                                     | `tests/models/internal-components/filterBar.ts` | POM for FilterBar interactions                           |
+| Utility                                             | Location                                        | Purpose                                                                                                                   |
+| --------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `goToStory(page, { id, args? })`                    | `tests/utils/utils.ts`                          | Navigate to a Storybook story                                                                                             |
+| `clickOutsideDialog(dialog)`                        | `tests/utils/utils.ts`                          | Click outside to dismiss a dialog                                                                                         |
+| `selectFirstUnselectedBalanceAccount(dialog)`       | `tests/utils/utils.ts`                          | Select first unselected BA option                                                                                         |
+| `applyDateFilter(page, options?)`                   | `tests/utils/utils.ts`                          | Apply a date range via the date picker                                                                                    |
+| `setTime(page)`                                     | `tests/utils/utils.ts`                          | Freeze time to `2025-01-01T00:00:00Z`                                                                                     |
+| ~~`getTranslatedKey(key)`~~                         | `tests/utils/utils.ts`                          | **Deprecated — do not use.** Look up the text in `src/assets/translations/en-US.json` and use the literal string instead. |
+| `getComponentRoot(page)`                            | `tests/utils/utils.ts`                          | Get `.adyen-pe-component` root locator                                                                                    |
+| `getClipboardContent(page)`                         | `tests/utils/utils.ts`                          | Read clipboard text via `navigator.clipboard.readText()`                                                                  |
+| `sleep(ms?)`                                        | `tests/utils/utils.ts`                          | Wait for a given duration (default 100ms)                                                                                 |
+| `expectAnalyticsEvents(events, expected, options?)` | `tests/utils/utils.ts`                          | Assert analytics event sequence (`strictOrder` option)                                                                    |
+| Date picker helpers                                 | `tests/utils/datePicker.ts`                     | `resetDatePicker`, `selectTodayDateFromDatePicker`, etc.                                                                  |
+| Analytics fixture                                   | `tests/fixtures/analytics/events.ts`            | Custom `test`/`expect` with `analyticsEvents` array                                                                       |
+| `DataGridPage`                                      | `tests/models/internal-components/dataGrid.ts`  | POM for DataGrid interactions                                                                                             |
+| `FilterBarPage`                                     | `tests/models/internal-components/filterBar.ts` | POM for FilterBar interactions                                                                                            |
 
 ## Best Practices (Quick Reference)
 
@@ -294,7 +294,7 @@ For detailed guidance, consult the reference files. Key points:
 
 1. **One spec file per story variant** — do not combine multiple stories in one file
 2. **Use `test.beforeEach` for `goToStory`** — do not call it inside individual tests unless testing different args
-3. **Never hardcode user-facing strings** — use `getTranslatedKey()` when referencing i18n keys in assertions, or match the rendered text from translations
+3. **Always use actual expected text in assertions** — look up the English translation value from `src/assets/translations/en-US.json` for the relevant i18n key and use the literal text string in assertions (e.g., `page.getByText('Reports')` instead of `page.getByText(getTranslatedKey('reports.overview.title'))`). Do not use `getTranslatedKey()`.
 4. **Prefer role-based selectors** over CSS classes or test IDs
 5. **Use `Promise.all`** for independent parallel assertions
 6. **Do not import from `react`** — if needed, import from `@playwright/test` or the analytics fixture

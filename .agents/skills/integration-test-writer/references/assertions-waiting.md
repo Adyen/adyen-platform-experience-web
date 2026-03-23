@@ -28,9 +28,9 @@ await expect(page.getByRole('columnheader')).toHaveCount(3);
 await expect(tab).toHaveAttribute('aria-selected', 'true');
 
 // Combined error copy rendered in a single paragraph/container
-const errorMessage = page.locator('p').filter({ hasText: getTranslatedKey('reports.overview.errors.listUnavailable') });
-await expect(errorMessage).toContainText(getTranslatedKey('reports.overview.errors.listUnavailable'));
-await expect(errorMessage).toContainText(getTranslatedKey('common.errors.retry'));
+const errorMessage = page.locator('p').filter({ hasText: "We couldn't load your reports." });
+await expect(errorMessage).toContainText("We couldn't load your reports.");
+await expect(errorMessage).toContainText('Try refreshing the page or come back later.');
 ```
 
 ## Generic Assertions (for Non-UI Values)

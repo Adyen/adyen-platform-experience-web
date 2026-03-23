@@ -45,14 +45,14 @@ Traces contain screenshots at each action, DOM snapshots, network requests, cons
 
 ## Troubleshooting by Symptom
 
-| Symptom                                     | Likely Cause                                | Solution                                                               |
-| ------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
-| Element not found                           | Wrong selector, element not visible, timing | Check locator with Inspector, wait for visibility                      |
-| Timeout errors                              | Slow network mock, heavy page load          | Check MSW handler delay, current page limit, and per-assertion timeout |
-| Test passes locally, fails in CI            | Environment differences, headless rendering | Run headless locally, check CI sharding                                |
-| Flaky test                                  | Race condition, timing dependency           | See [flaky-tests.md](flaky-tests.md)                                   |
-| Wrong text content                          | Missing i18n key, wrong translation         | Check `getTranslatedKey()` matches component                           |
-| Storybook text matches instead of component | Ambiguous text selector                     | Use `getComponentRoot(page).getByText(...)`                            |
+| Symptom                                     | Likely Cause                                | Solution                                                                                  |
+| ------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Element not found                           | Wrong selector, element not visible, timing | Check locator with Inspector, wait for visibility                                         |
+| Timeout errors                              | Slow network mock, heavy page load          | Check MSW handler delay, current page limit, and per-assertion timeout                    |
+| Test passes locally, fails in CI            | Environment differences, headless rendering | Run headless locally, check CI sharding                                                   |
+| Flaky test                                  | Race condition, timing dependency           | See [flaky-tests.md](flaky-tests.md)                                                      |
+| Wrong text content                          | Missing i18n key, wrong translation         | Check the expected literal text matches the value in `src/assets/translations/en-US.json` |
+| Storybook text matches instead of component | Ambiguous text selector                     | Use `getComponentRoot(page).getByText(...)`                                               |
 
 ## Log Element State
 
