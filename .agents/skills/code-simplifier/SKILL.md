@@ -57,7 +57,7 @@ This skill is manual-only.
 - Keep useful abstractions that improve structure or reuse
 - Prefer explicit, debuggable code over dense one-liners
 - Keep changes small and targeted
--
+- Check whether an existing utility function can be used instead of this custom logic
 
 ## Project-Specific Guidance
 

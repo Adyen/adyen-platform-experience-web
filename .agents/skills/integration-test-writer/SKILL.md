@@ -242,33 +242,9 @@ test.describe('Component - Default', () => {
 });
 ```
 
-### 8. Page Object Models (for complex components)
-
-For components with rich interactions (data grids, filter bars, detail views), create a POM in `tests/models/external-components/`:
-
-```typescript
-import { type Locator, type Page } from '@playwright/test';
-
-export class ComponentPage {
-    readonly page: Page;
-    readonly table: Locator;
-    readonly filterBar: Locator;
-
-    constructor(page: Page) {
-        this.page = page;
-        this.table = page.getByRole('table');
-        this.filterBar = page.locator('.adyen-pe-filter-bar');
-    }
-
-    async getRowCount() {
-        return this.table.getByRole('row').count();
-    }
-}
-```
-
 POMs can compose internal component POMs (e.g., `DataGridPage`, `FilterBarPage`) as properties. Use POMs when 3+ specs share the same interaction helpers; otherwise prefer inline helpers or self-contained tests.
 
-### 9. Props forwarding verification
+### 8. Props forwarding verification
 
 When a parent component forwards props to sub-components, verify the prop reaches the child:
 
