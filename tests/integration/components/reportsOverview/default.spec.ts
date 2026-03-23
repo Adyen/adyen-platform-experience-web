@@ -3,7 +3,7 @@ import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } fr
 import { resetDatePicker, selectDateRangeResetFromDatePicker, selectTodayDateFromDatePicker } from '../../../utils/datePicker';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
-const NOW = '2024-07-17T00:00:00.000Z';
+const INITIAL_DATETIME = '2024-07-17T00:00:00.000Z';
 const SECONDARY_BALANCE_ACCOUNT_ID = 'BA32272223222B5CTDQPM6W2G';
 const REPORTS_PER_PAGE = 10;
 const BALANCE_ACCOUNT_FILTER_NAME = 'Balance account';
@@ -16,7 +16,7 @@ const getDateRangeFilter = (page: Page) => page.getByRole('button', { name: DATE
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
-        await page.clock.setFixedTime(NOW);
+        await page.clock.setFixedTime(INITIAL_DATETIME);
         await goToStory(page, { id: STORY_ID });
     });
 

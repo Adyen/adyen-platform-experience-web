@@ -8,17 +8,11 @@ test.describe('Empty list', () => {
         await goToStory(page, { id: STORY_ID });
     });
 
-    test('should show empty state message', async ({ page }) => {
+    test('should show empty state and table headers', async ({ page }) => {
         await expect(page.getByText('No reports found', { exact: true })).toBeVisible();
-    });
-
-    test('should show update filters hint', async ({ page }) => {
         await expect(page.getByText('Try a different search or reset your filters, and we\u2019ll try again.', { exact: true })).toBeVisible();
-    });
 
-    test('should still render column headers', async ({ page }) => {
         const table = page.getByRole('table');
-
         await Promise.all([
             expect(table.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible(),
             expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible(),
