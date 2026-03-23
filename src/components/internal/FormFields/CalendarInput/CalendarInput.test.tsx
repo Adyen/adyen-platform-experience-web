@@ -21,8 +21,7 @@ vi.mock('./components/CalendarInputPopover', () => ({
         ) : null,
 }));
 
-// @TODO: Samuel will fix this one :)
-describe.todo('CalendarInput', () => {
+describe('CalendarInput', () => {
     const mockUseCoreContext = vi.mocked(useCoreContext);
     const mockUseTimezoneAwareDateFormatting = vi.mocked(useTimezoneAwareDateFormatting);
     const mockOnInput = vi.fn();
