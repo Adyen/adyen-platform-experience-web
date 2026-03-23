@@ -109,6 +109,7 @@ test.describe('Default', () => {
         test('should close selector by clicking outside', async ({ page }) => {
             await getBalanceAccountFilter(page).click();
             await clickOutsideDialog(page.getByRole('dialog'));
+            await expect(page.getByRole('dialog')).toBeHidden();
         });
     });
 
