@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { getTranslatedKey, goToStory } from '../../../utils/utils';
+import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-reports-reports-overview--download-error';
 const NOW = '2024-07-17T00:00:00.000Z';
@@ -8,10 +8,7 @@ test.describe('Download error', () => {
     test.beforeEach(async ({ page }) => {
         await page.clock.setFixedTime(NOW);
         await goToStory(page, { id: STORY_ID });
-        await page
-            .getByRole('button', { name: getTranslatedKey('reports.overview.list.controls.downloadReport.label'), exact: true })
-            .first()
-            .click();
+        await page.getByRole('button', { name: 'Download report', exact: true }).first().click();
     });
 
     test('should show error alert on download failure', async ({ page }) => {
@@ -19,10 +16,10 @@ test.describe('Download error', () => {
     });
 
     test('should show correct error title', async ({ page }) => {
-        await expect(page.getByRole('alert').getByText(getTranslatedKey('reports.overview.errors.download'), { exact: true })).toBeVisible();
+        await expect(page.getByRole('alert').getByText('Something went wrong with the download', { exact: true })).toBeVisible();
     });
 
     test('should show correct error description', async ({ page }) => {
-        await expect(page.getByRole('alert').getByText(getTranslatedKey('reports.overview.errors.tooManyDownloads'), { exact: true })).toBeVisible();
+        await expect(page.getByRole('alert').getByText("We couldn't download all the files. Please try again later.", { exact: true })).toBeVisible();
     });
 });

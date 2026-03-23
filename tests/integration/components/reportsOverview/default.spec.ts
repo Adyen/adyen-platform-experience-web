@@ -1,5 +1,5 @@
 import { type Page, test, expect } from '@playwright/test';
-import { clickOutsideDialog, getTranslatedKey, goToStory, selectFirstUnselectedBalanceAccount } from '../../../utils/utils';
+import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } from '../../../utils/utils';
 import { resetDatePicker, selectDateRangeResetFromDatePicker, selectTodayDateFromDatePicker } from '../../../utils/datePicker';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
@@ -22,22 +22,16 @@ test.describe('Default', () => {
 
     test.describe('Render', () => {
         test('should render the component title', async ({ page }) => {
-            await expect(page.getByText(getTranslatedKey('reports.overview.title'), { exact: true })).toBeVisible();
+            await expect(page.getByText('Reports', { exact: true })).toBeVisible();
         });
 
         test('should render table with correct columns', async ({ page }) => {
             const table = getReportsTable(page);
 
             await Promise.all([
-                expect(
-                    table.getByRole('columnheader', { name: getTranslatedKey('reports.overview.list.fields.createdAt'), exact: true })
-                ).toBeVisible(),
-                expect(
-                    table.getByRole('columnheader', { name: getTranslatedKey('reports.overview.list.fields.reportType'), exact: true })
-                ).toBeVisible(),
-                expect(
-                    table.getByRole('columnheader', { name: getTranslatedKey('reports.overview.list.fields.reportFile'), exact: true })
-                ).toBeVisible(),
+                expect(table.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible(),
+                expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible(),
+                expect(table.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible(),
                 expect(table.getByRole('columnheader')).toHaveCount(3),
             ]);
         });
@@ -47,19 +41,17 @@ test.describe('Default', () => {
         });
 
         test('should render download button per row', async ({ page }) => {
-            await expect(
-                page.getByRole('button', { name: getTranslatedKey('reports.overview.list.controls.downloadReport.label'), exact: true })
-            ).toHaveCount(REPORTS_PER_PAGE);
+            await expect(page.getByRole('button', { name: 'Download report', exact: true })).toHaveCount(REPORTS_PER_PAGE);
         });
 
         test('should render pagination controls', async ({ page }) => {
-            const pagination = page.getByLabel(getTranslatedKey('reports.overview.pagination.label'));
+            const pagination = page.getByLabel('Reports pagination');
 
             await Promise.all([
                 expect(pagination.getByText('Showing ')).toBeVisible(),
                 expect(
                     pagination.getByRole('button', {
-                        name: getTranslatedKey('reports.overview.pagination.controls.limitSelect.label'),
+                        name: 'Reports per page',
                         exact: true,
                     })
                 ).toBeVisible(),

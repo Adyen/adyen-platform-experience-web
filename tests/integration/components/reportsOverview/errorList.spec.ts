@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { getTranslatedKey, goToStory } from '../../../utils/utils';
+import { goToStory } from '../../../utils/utils';
 
 const STORY_ID = 'mocked-reports-reports-overview--error-list';
 
@@ -9,13 +9,13 @@ test.describe('Error - list', () => {
     });
 
     test('should show error message', async ({ page }) => {
-        const errorMessage = page.locator('p').filter({ hasText: getTranslatedKey('reports.overview.errors.listUnavailable') });
+        const errorMessage = page.locator('p').filter({ hasText: "We couldn't load your reports." });
 
         await Promise.all([
-            expect(page.getByText(getTranslatedKey('common.errors.somethingWentWrong'), { exact: true })).toBeVisible(),
-            expect(errorMessage).toContainText(getTranslatedKey('reports.overview.errors.listUnavailable')),
-            expect(errorMessage).toContainText(getTranslatedKey('common.errors.retry')),
-            expect(page.getByRole('button', { name: getTranslatedKey('common.actions.refresh.labels.default'), exact: true })).toBeVisible(),
+            expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible(),
+            expect(errorMessage).toContainText("We couldn't load your reports."),
+            expect(errorMessage).toContainText('Try refreshing the page or come back later.'),
+            expect(page.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible(),
         ]);
     });
 });
