@@ -5,6 +5,9 @@
             "default",
             "sharedGlobals",
             "!{workspaceRoot}/*",
+            "!{projectRoot}/eslint.config.[jt]s",
+            "!{projectRoot}/vite.config.ts",
+            "!{projectRoot}/vitest.config.ts",
             "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)"
         ],
         "default": ["{workspaceRoot}/package.json", "{projectRoot}/**/*", "sharedGlobals"],
@@ -17,6 +20,10 @@
             }
         ]
     },
+    "workspaceLayout": {
+        "appsDir": "packages/domains",
+        "libsDir": "packages/shared"
+    },
     "targetDefaults": {
         "build": {
             "cache": true
@@ -25,7 +32,11 @@
             "cache": true
         },
         "lint": {
-            "cache": true
+            "executor": "@nx/eslint:lint",
+            "cache": true,
+            "options": {
+                "lintFilePatterns": ["{projectRoot}/**/*.{js,ts,tsx}"]
+            }
         }
     },
     "plugins": [
