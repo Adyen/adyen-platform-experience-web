@@ -1,1 +1,1 @@
-export { createGreeting } from './sample-logic';
+// Domain layer — will hold framework-agnostic business logic after extraction.

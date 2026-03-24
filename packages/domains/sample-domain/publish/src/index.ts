@@ -1,1 +1,1 @@
-export { SampleComponent } from '../../preact/src';
+export { ReportsOverview } from '@iex/sample-lib';
