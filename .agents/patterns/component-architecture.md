@@ -114,8 +114,7 @@ export const CLASS_NAMES = {
 - **No raw strings in JSX**: Use `i18n.get()` for all text — see [i18n patterns](i18n.md)
 - **Provider access**: Use `useCoreContext()` for i18n, assets, error handling — not direct imports
 - **Form components**: Extend `FormElement` (see `external/FormElement.tsx`) for submit/validation lifecycle
-- **New external component?** Follow the full scaffolding guide: [external-component.md](../scaffolding/external-component.md).
-  Must be added to `ExternalComponentType` in `src/components/types.ts` and exported from `src/components/external/index.ts`
+- **New external component?** Must be added to `ExternalComponentType` in `src/components/types.ts` and exported from `src/components/external/index.ts`
 
 ## JIT Find Commands
 
