@@ -1,0 +1,33 @@
+import { Meta } from '@storybook/preact';
+import { ElementProps, ElementStory } from '../../../../stories/utils/types';
+import { ReportsOverview } from '../../../../src';
+import { enabledDisabledCallbackRadioControls } from '../../../../stories/utils/controls';
+
+const meta: Meta<ElementProps<typeof ReportsOverview>> = {
+    title: 'Sample Domain/Reports Overview (via package)',
+    argTypes: {
+        onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
+        onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        preferredLimit: { type: 'number', min: 1, max: 100 },
+        hideTitle: { type: 'boolean' },
+        allowLimitSelection: { type: 'boolean' },
+    },
+    args: {
+        allowLimitSelection: true,
+        component: ReportsOverview,
+    },
+    parameters: {
+        controls: {
+            sort: 'alpha',
+        },
+    },
+};
+
+export const Default: ElementStory<typeof ReportsOverview> = {
+    name: 'Default (via package)',
+    args: {
+        mockedApi: true,
+    },
+};
+
+export default meta;
