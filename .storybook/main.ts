@@ -1,7 +1,10 @@
 import { StorybookConfig } from '@storybook/preact-vite';
 import { mergeConfig } from 'vite';
+import { resolve } from 'node:path';
 import { getEnvironment } from '../envs/getEnvs.ts';
 import { realApiProxies } from '../endpoints/realApiProxies.js';
+
+const rootDir = resolve(import.meta.dirname, '..');
 
 const findChunk = (id: string, mappings: Record<string, string | string[]>, fallback: string): string => {
     for (const [chunkName, patterns] of Object.entries(mappings)) {
@@ -12,7 +15,7 @@ const findChunk = (id: string, mappings: Record<string, string | string[]>, fall
 };
 
 const config: StorybookConfig = {
-    stories: ['../stories/**/*.stories.*'],
+    stories: ['../stories/**/*.stories.*', '../packages/**/stories/**/*.stories.*'],
     staticDirs: ['../static', { from: '../src/assets/datasets', to: '/datasets' }],
     framework: {
         name: '@storybook/preact-vite',
@@ -23,6 +26,19 @@ const config: StorybookConfig = {
         const { api } = getEnvironment(mode);
 
         return mergeConfig(config, {
+            resolve: {
+                alias: {
+                    '@iex/sample-lib': resolve(rootDir, 'packages/shared/sample-lib/src'),
+                    '@iex/sample-domain': resolve(rootDir, 'packages/domains/sample-domain'),
+                },
+            },
+            css: {
+                preprocessorOptions: {
+                    scss: {
+                        loadPaths: [resolve(rootDir, 'src')],
+                    },
+                },
+            },
             server: {
                 proxy: realApiProxies(api, mode),
             },

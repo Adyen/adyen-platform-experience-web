@@ -85,6 +85,9 @@
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
+    "@nx/eslint": "^22.5.3",
+    "@nx/vite": "^22.5.3",
+    "@nx/vitest": "^22.5.3",
     "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.10.2",
     "@storybook/preact": "^10.2.12",
@@ -116,6 +119,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "msw": "^2.4.5",
     "msw-storybook-addon": "^2.0.2",
+    "nx": "^22.5.3",
     "openapi-typescript": "^7.10.1",
     "postcss": "^8.3.11",
     "prettier": "^3.6.2",
@@ -153,6 +157,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "msw",
+      "nx",
       "unrs-resolver"
     ]
   }
