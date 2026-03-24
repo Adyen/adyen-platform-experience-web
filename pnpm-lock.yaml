@@ -38,6 +38,9 @@ importers:
       '@nx/eslint':
         specifier: ^22.5.3
         version: 22.5.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.5.3)
+      '@nx/eslint-plugin':
+        specifier: ^22.5.3
+        version: 22.5.3(@babel/traverse@7.29.0)(@typescript-eslint/parser@8.51.0(eslint@9.39.2)(typescript@5.8.3))(eslint@9.39.2)(nx@22.5.3)(typescript@5.8.3)
       '@nx/vite':
         specifier: ^22.5.3
         version: 22.5.3(@babel/traverse@7.29.0)(nx@22.5.3)(typescript@5.8.3)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(yaml@2.7.0))(vitest@4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.0)(yaml@2.7.0))
@@ -1304,6 +1307,15 @@ packages:
     peerDependencies:
       nx: '>= 21 <= 23 || ^22.0.0-0'
 
+  '@nx/eslint-plugin@22.5.3':
+    resolution: {}
+    peerDependencies:
+      '@typescript-eslint/parser': ^6.13.2 || ^7.0.0 || ^8.0.0
+      eslint-config-prettier: ^10.0.0
+    peerDependenciesMeta:
+      eslint-config-prettier:
+        optional: true
+
   '@nx/eslint@22.5.3':
     resolution: {}
     peerDependencies:
@@ -2508,6 +2520,9 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.0 || >=16.0.0}
     hasBin: true
 
+  confusing-browser-globals@1.0.11:
+    resolution: {}
+
   convert-source-map@2.0.0:
     resolution: {}
 
@@ -2938,6 +2953,10 @@ packages:
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  espree@9.6.1:
+    resolution: {}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
   esprima@4.0.1:
     resolution: {}
     engines: {node: '>=4'}
@@ -3168,6 +3187,7 @@ packages:
 
   glob@7.2.3:
     resolution: {}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-modules@2.0.0:
     resolution: {}
@@ -3182,6 +3202,10 @@ packages:
     engines: {node: '>=4'}
 
   globals@14.0.0:
+    resolution: {}
+    engines: {node: '>=18'}
+
+  globals@15.15.0:
     resolution: {}
     engines: {node: '>=18'}
 
@@ -3340,6 +3364,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.4:
     resolution: {}
@@ -3632,6 +3657,10 @@ packages:
     resolution: {}
     engines: {node: '>=6'}
     hasBin: true
+
+  jsonc-eslint-parser@2.4.2:
+    resolution: {}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   jsonc-parser@3.2.0:
     resolution: {}
@@ -4398,6 +4427,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup-plugin-visualizer@5.14.0:
@@ -5170,6 +5200,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {}
@@ -5388,7 +5419,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.27.3':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/helper-compilation-targets@7.27.0':
     dependencies:
@@ -5442,7 +5473,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.28.5':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -5480,7 +5511,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/helper-plugin-utils@7.26.5': {}
 
@@ -5507,7 +5538,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.27.1':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -6078,7 +6109,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
       '@babel/helper-plugin-utils': 7.28.6
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
       esutils: 2.0.3
 
   '@babel/preset-typescript@7.28.5(@babel/core@7.26.10)':
@@ -6643,6 +6674,31 @@ snapshots:
       semver: 7.7.3
       tslib: 2.8.1
       yargs-parser: 21.1.1
+
+  '@nx/eslint-plugin@22.5.3(@babel/traverse@7.29.0)(@typescript-eslint/parser@8.51.0(eslint@9.39.2)(typescript@5.8.3))(eslint@9.39.2)(nx@22.5.3)(typescript@5.8.3)':
+    dependencies:
+      '@nx/devkit': 22.5.3(nx@22.5.3)
+      '@nx/js': 22.5.3(@babel/traverse@7.29.0)(nx@22.5.3)
+      '@phenomnomnominal/tsquery': 6.1.4(typescript@5.8.3)
+      '@typescript-eslint/parser': 8.51.0(eslint@9.39.2)(typescript@5.8.3)
+      '@typescript-eslint/type-utils': 8.51.0(eslint@9.39.2)(typescript@5.8.3)
+      '@typescript-eslint/utils': 8.51.0(eslint@9.39.2)(typescript@5.8.3)
+      chalk: 4.1.2
+      confusing-browser-globals: 1.0.11
+      globals: 15.15.0
+      jsonc-eslint-parser: 2.4.2
+      semver: 7.7.3
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@babel/traverse'
+      - '@swc-node/register'
+      - '@swc/core'
+      - debug
+      - eslint
+      - nx
+      - supports-color
+      - typescript
+      - verdaccio
 
   '@nx/eslint@22.5.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.5.3)':
     dependencies:
@@ -7552,6 +7608,10 @@ snapshots:
     dependencies:
       acorn: 8.15.0
 
+  acorn-jsx@5.3.2(acorn@8.16.0):
+    dependencies:
+      acorn: 8.16.0
+
   acorn@8.15.0: {}
 
   acorn@8.16.0: {}
@@ -7748,9 +7808,9 @@ snapshots:
   babel-plugin-const-enum@1.2.0(@babel/core@7.26.10):
     dependencies:
       '@babel/core': 7.26.10
-      '@babel/helper-plugin-utils': 7.26.5
+      '@babel/helper-plugin-utils': 7.28.6
       '@babel/plugin-syntax-typescript': 7.28.6(@babel/core@7.26.10)
-      '@babel/traverse': 7.27.0
+      '@babel/traverse': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -7799,7 +7859,7 @@ snapshots:
   babel-plugin-transform-typescript-metadata@0.3.2(@babel/core@7.26.10)(@babel/traverse@7.29.0):
     dependencies:
       '@babel/core': 7.26.10
-      '@babel/helper-plugin-utils': 7.26.5
+      '@babel/helper-plugin-utils': 7.28.6
     optionalDependencies:
       '@babel/traverse': 7.29.0
 
@@ -7994,6 +8054,8 @@ snapshots:
       supports-color: 8.1.1
       tree-kill: 1.2.2
       yargs: 17.7.2
+
+  confusing-browser-globals@1.0.11: {}
 
   convert-source-map@2.0.0: {}
 
@@ -8596,6 +8658,12 @@ snapshots:
       acorn-jsx: 5.3.2(acorn@8.15.0)
       eslint-visitor-keys: 4.2.1
 
+  espree@9.6.1:
+    dependencies:
+      acorn: 8.16.0
+      acorn-jsx: 5.3.2(acorn@8.16.0)
+      eslint-visitor-keys: 3.4.3
+
   esprima@4.0.1: {}
 
   esquery@1.6.0:
@@ -8844,6 +8912,8 @@ snapshots:
   globals@11.12.0: {}
 
   globals@14.0.0: {}
+
+  globals@15.15.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -9284,6 +9354,13 @@ snapshots:
   json-stable-stringify-without-jsonify@1.0.1: {}
 
   json5@2.2.3: {}
+
+  jsonc-eslint-parser@2.4.2:
+    dependencies:
+      acorn: 8.16.0
+      eslint-visitor-keys: 3.4.3
+      espree: 9.6.1
+      semver: 7.7.3
 
   jsonc-parser@3.2.0: {}
 

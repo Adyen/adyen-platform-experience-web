@@ -1,6 +1,6 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
-    plugins: ['react', '@typescript-eslint', 'import-x', 'jsx-a11y', 'react-hooks'],
+    plugins: ['react', '@typescript-eslint', 'import-x', 'jsx-a11y', 'react-hooks', '@nx'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
@@ -36,6 +36,27 @@ module.exports = {
         },
     },
     rules: {
+        '@nx/enforce-module-boundaries': [
+            'warn',
+            {
+                enforceBuildableLibDependency: false,
+                allow: [],
+                depConstraints: [
+                    {
+                        sourceTag: 'type:shared',
+                        onlyDependOnLibsWithTags: ['type:shared'],
+                    },
+                    {
+                        sourceTag: 'type:domain',
+                        onlyDependOnLibsWithTags: ['type:shared', 'type:domain'],
+                    },
+                    {
+                        sourceTag: 'type:publish',
+                        onlyDependOnLibsWithTags: ['type:domain', 'type:publish'],
+                    },
+                ],
+            },
+        ],
         'no-console': 0,
         'class-methods-use-this': 'off', // TODO
         'no-underscore-dangle': 'off', // TODO
