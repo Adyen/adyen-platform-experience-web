@@ -10,7 +10,7 @@ test.describe('Empty list', () => {
 
     test('should show empty state and table headers', async ({ page }) => {
         await expect(page.getByText('No reports found', { exact: true })).toBeVisible();
-        await expect(page.getByText('Try a different search or reset your filters, and we\u2019ll try again.', { exact: true })).toBeVisible();
+        await expect(page.getByText('Try a different search or reset your filters, and we’ll try again.', { exact: true })).toBeVisible();
 
         const table = page.getByRole('table');
         await Promise.all([

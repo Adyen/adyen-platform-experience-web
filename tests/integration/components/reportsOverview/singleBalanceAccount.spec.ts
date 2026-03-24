@@ -12,8 +12,11 @@ test.describe('Single balance account', () => {
     });
 
     test('should hide balance account selector and render table', async ({ page }) => {
+        const table = page.getByRole('table');
+        const rows = table.getByRole('rowgroup').nth(1).getByRole('row');
+
         await expect(page.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
-        await expect(page.getByRole('table')).toBeVisible();
-        await expect(page.getByRole('table').getByRole('rowgroup').nth(1).getByRole('row')).toHaveCount(REPORTS_PER_PAGE);
+        await expect(table).toBeVisible();
+        await expect(rows).toHaveCount(REPORTS_PER_PAGE);
     });
 });
