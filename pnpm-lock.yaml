@@ -199,9 +199,9 @@ importers:
 
   packages/domains/sample-domain:
     dependencies:
-      '@iex/sample-lib':
+      '@iex/lib':
         specifier: workspace:*
-        version: link:../../shared/sample-lib
+        version: link:../../shared/lib
 
   packages/publish:
     dependencies:
@@ -209,7 +209,7 @@ importers:
         specifier: workspace:*
         version: link:../domains/sample-domain
 
-  packages/shared/sample-lib: {}
+  packages/shared/lib: {}
 
 packages:
 

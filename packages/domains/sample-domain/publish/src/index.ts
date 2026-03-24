@@ -1,1 +1,1 @@
-export { ReportsOverview } from '@iex/sample-lib';
+export { ReportsOverview } from '@iex/lib';
