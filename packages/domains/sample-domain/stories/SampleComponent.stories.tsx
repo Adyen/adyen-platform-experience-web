@@ -9,7 +9,7 @@ const meta: Meta<typeof SampleComponent> = {
 
 export const Default: StoryObj<typeof SampleComponent> = {
     args: {
-        name: 'World',
+        name: 'PIE',
     },
 };
 
