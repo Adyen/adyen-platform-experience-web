@@ -1,0 +1,6 @@
+@use 'style' as style;
+
+.adyen-pe-sample {
+    padding: style.token(spacer-040);
+    margin: style.token(spacer-030);
+}

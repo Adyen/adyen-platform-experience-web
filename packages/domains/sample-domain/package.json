@@ -1,0 +1,14 @@
+{
+    "name": "@iex/sample-domain",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./domain": "./domain/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./publish": "./publish/src/index.ts"
+    },
+    "dependencies": {
+        "@iex/sample-lib": "workspace:*"
+    }
+}
