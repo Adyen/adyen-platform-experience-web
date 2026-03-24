@@ -20,8 +20,8 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@iex/sample-lib": ["packages/shared/sample-lib/src/index.ts"],
-            "@iex/sample-lib/*": ["packages/shared/sample-lib/src/*"],
+            "@iex/lib": ["packages/shared/lib/src/index.ts"],
+            "@iex/lib/*": ["packages/shared/lib/src/*"],
             "@iex/sample-domain/domain": ["packages/domains/sample-domain/domain/src/index.ts"],
             "@iex/sample-domain/preact": ["packages/domains/sample-domain/preact/src/index.ts"],
             "@iex/sample-domain/publish": ["packages/domains/sample-domain/publish/src/index.ts"]

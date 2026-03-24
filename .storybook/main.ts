@@ -28,7 +28,7 @@ const config: StorybookConfig = {
         return mergeConfig(config, {
             resolve: {
                 alias: {
-                    '@iex/sample-lib': resolve(rootDir, 'packages/shared/sample-lib/src'),
+                    '@iex/lib': resolve(rootDir, 'packages/shared/lib/src'),
                     '@iex/sample-domain': resolve(rootDir, 'packages/domains/sample-domain'),
                 },
             },

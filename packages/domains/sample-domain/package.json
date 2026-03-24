@@ -9,6 +9,6 @@
         "./publish": "./publish/src/index.ts"
     },
     "dependencies": {
-        "@iex/sample-lib": "workspace:*"
+        "@iex/lib": "workspace:*"
     }
 }
