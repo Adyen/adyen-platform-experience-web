@@ -4,6 +4,7 @@ import { SampleComponent } from '../preact/src';
 const meta: Meta<typeof SampleComponent> = {
     title: 'Sample Domain/Sample Component',
     component: SampleComponent,
+    render: args => <SampleComponent {...args} />,
 };
 
 export const Default: StoryObj<typeof SampleComponent> = {
