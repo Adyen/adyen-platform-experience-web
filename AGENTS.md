@@ -144,8 +144,6 @@ pnpm run test:integration
 | Internal components index | [internal-components.md](.agents/patterns/internal-components.md) |
 | Storybook stories | [storybook.md](.agents/patterns/storybook.md) |
 | Mock data & MSW handlers | [mock-data.md](.agents/patterns/mock-data.md) |
-| Scaffolding: external component | [external-component.md](.agents/scaffolding/external-component.md) |
-| Scaffolding: stories & mocks | [stories-and-mocks.md](.agents/scaffolding/stories-and-mocks.md) |
 | Integration, e2e, contract tests | [integration-and-e2e.md](.agents/testing/integration-and-e2e.md) |
 | Unit test guidelines | [unit-tests/](.agents/testing/unit-tests/) |
 

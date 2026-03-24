@@ -57,8 +57,6 @@ Stories compose handlers per scenario — see `stories/mocked/` for examples.
 
 ### Adding Mocks for a New Component
 
-**Full scaffolding guide with detailed examples**: [stories-and-mocks.md](../scaffolding/stories-and-mocks.md)
-
 1. Add mock response data in `mock-data/{domain}.ts`
 2. Add MSW handlers in `mock-server/{domain}.ts`
 3. Export from `mock-server/index.ts` and `mock-data/index.ts`

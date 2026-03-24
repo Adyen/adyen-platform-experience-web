@@ -57,8 +57,6 @@ export const GrantActive = {
 
 ### Adding a New Story
 
-**Full scaffolding guide with detailed examples**: [stories-and-mocks.md](../scaffolding/stories-and-mocks.md)
-
 1. Create component wrapper in `stories/components/{name}.tsx`
 2. Create mocked story in `stories/mocked/{name}.stories.tsx` with MSW handlers
 3. Optionally create API story in `stories/api/{name}.stories.tsx`
