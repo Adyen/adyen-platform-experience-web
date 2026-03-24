@@ -54,6 +54,7 @@
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
+    "publish-diff": "node scripts/publish-diff/check.mjs",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
