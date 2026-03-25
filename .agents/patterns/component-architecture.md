@@ -69,18 +69,13 @@ Each lives in `src/components/external/{Name}/` with this structure:
 └── index.ts               # Public exports
 ```
 
-**Current external components** (see `ExternalComponentType` in `src/components/types.ts`):
-`capitalOffer`, `capitalOverview`, `disputes`, `disputesManagement`,
-`paymentLinkCreation`, `paymentLinkDetails`, `paymentLinksOverview`, `paymentLinkSettings`,
-`payouts`, `payoutDetails`, `reports`, `transactions`, `transactionDetails`
+The current set of external components is defined in `ExternalComponentType`
+in `src/components/types.ts`.
 
 ## Internal Components
 
 Reusable UI primitives in `src/components/internal/`. Each has its own directory.
 **Full index with usage examples**: [internal-components.md](internal-components.md)
-
-**Key components**: `Button`, `DataGrid`, `Modal`, `FilterBar`, `Calendar`, `DatePicker`,
-`FormFields`, `Pagination`, `Popover`, `SearchBar`, `Tabs`, `Tag`, `Timeline`, `Tooltip`
 
 ```
 {Component}/
