@@ -102,6 +102,7 @@ export const CLASS_NAMES = {
 - **Block**: `adyen-pe-{component}` (e.g., `adyen-pe-capital-overview`)
 - **Element**: `adyen-pe-{component}__{element}` (e.g., `adyen-pe-capital-overview__title`)
 - **Modifier**: `adyen-pe-{component}--{modifier}` (e.g., `adyen-pe-button--primary`)
+- Define class names in colocated `constants.ts` files and import them — avoid repeating string literals inline
 - Use `cx()` from `classnames` for conditional class application
 
 ## Common Gotchas
