@@ -2147,9 +2147,6 @@ packages:
   ajv@8.18.0:
     resolution: {}
 
-  ajv@8.18.0:
-    resolution: {}
-
   ansi-colors@4.1.3:
     resolution: {}
     engines: {node: '>=6'}

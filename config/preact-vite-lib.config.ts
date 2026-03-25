@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { defineConfig, mergeConfig, type UserConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
+import { getBuildEnvDefines } from './build-env-defines';
 
 interface PreactViteLibOptions {
     projectRoot: string;
@@ -12,58 +13,71 @@ interface PreactViteLibOptions {
     overrides?: UserConfig;
 }
 
-export function getPreactViteLibConfig(options: PreactViteLibOptions) {
-    const { projectRoot, entry, preserveModulesRoot, external = [], scssLoadPaths = [], overrides = {} } = options;
+export function getPreactViteLibConfig({
+    projectRoot,
+    entry,
+    preserveModulesRoot = 'src',
+    external = [],
+    scssLoadPaths = [],
+    overrides = {},
+}: PreactViteLibOptions) {
+    const entryPath = resolve(projectRoot, entry);
+    const outDir = resolve(projectRoot, 'dist');
+    const scss = {
+        api: 'modern-compiler' as const,
+        silenceDeprecations: ['legacy-js-api'],
+        ...(scssLoadPaths.length > 0 ? { loadPaths: scssLoadPaths } : {}),
+    };
 
-    const baseConfig = defineConfig({
-        root: projectRoot,
-        build: {
-            minify: true,
-            lib: {
-                name: 'AdyenPlatformExperienceWeb',
-                entry: resolve(projectRoot, entry),
-            },
-            rollupOptions: {
-                external,
-                output: [
-                    {
-                        format: 'es',
-                        preserveModules: true,
-                        preserveModulesRoot: preserveModulesRoot ?? 'src',
-                        sourcemap: false,
-                        indent: false,
+    return defineConfig(({ mode }) =>
+        mergeConfig(
+            {
+                root: projectRoot,
+                build: {
+                    minify: true,
+                    lib: {
+                        name: 'AdyenPlatformExperienceWeb',
+                        entry: entryPath,
                     },
-                    {
-                        format: 'cjs',
-                        sourcemap: true,
-                        indent: false,
+                    rollupOptions: {
+                        external,
+                        output: [
+                            {
+                                format: 'es',
+                                preserveModules: true,
+                                preserveModulesRoot,
+                                sourcemap: false,
+                                indent: false,
+                            },
+                            {
+                                format: 'cjs',
+                                sourcemap: true,
+                                indent: false,
+                            },
+                        ],
                     },
+                    outDir,
+                    emptyOutDir: true,
+                },
+                css: {
+                    preprocessorOptions: {
+                        scss,
+                    },
+                },
+                define: getBuildEnvDefines(mode),
+                json: {
+                    stringify: true,
+                },
+                plugins: [
+                    svgr({
+                        svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
+                        esbuildOptions: { jsx: 'automatic' },
+                        include: '**/*.svg?component',
+                    }),
+                    preact(),
                 ],
             },
-            outDir: resolve(projectRoot, 'dist'),
-            emptyOutDir: true,
-        },
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    api: 'modern-compiler' as const,
-                    silenceDeprecations: ['legacy-js-api'],
-                    ...(scssLoadPaths.length > 0 && { loadPaths: scssLoadPaths }),
-                },
-            },
-        },
-        json: {
-            stringify: true,
-        },
-        plugins: [
-            svgr({
-                svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
-                esbuildOptions: { jsx: 'automatic' },
-                include: '**/*.svg?component',
-            }),
-            preact(),
-        ],
-    });
-
-    return mergeConfig(baseConfig, overrides);
+            overrides
+        )
+    );
 }

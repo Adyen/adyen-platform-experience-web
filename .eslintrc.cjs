@@ -80,8 +80,11 @@ module.exports = {
                     'stories/**/*',
                     'playwright/test',
                     'playwright.config.ts',
+                    'vite.config.ts',
                     'config/vite.config.ts',
                     'config/inject-css.ts',
+                    'scripts/**/*.js',
+                    'scripts/**/*.mjs',
                     '**/*.test.{ts,tsx}',
                     'config/**/*.ts',
                     'envs/**/*.ts',
@@ -178,6 +181,25 @@ module.exports = {
             files: ['*.ts', '*.tsx'],
             rules: {
                 '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'off', overrides: { properties: 'explicit' } }],
+            },
+        },
+        {
+            files: ['**/*.stories.[jt]s?(x)'],
+            rules: {
+                'import-x/no-extraneous-dependencies': [
+                    'error',
+                    {
+                        devDependencies: true,
+                        includeTypes: false,
+                        packageDir: [__dirname],
+                    },
+                ],
+            },
+        },
+        {
+            files: ['scripts/**/*.mjs'],
+            rules: {
+                'import-x/extensions': 'off',
             },
         },
         {

@@ -31,7 +31,7 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "style": "dist/style.css",
+  "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
