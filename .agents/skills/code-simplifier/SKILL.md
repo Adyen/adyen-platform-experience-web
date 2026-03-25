@@ -2,7 +2,6 @@
 name: code-simplifier
 description: This skill should be used when the user asks to "simplify this code", "clean up these changes", "refine this code", "make this more readable", or requests a simplification pass. Manual-only -- simplifies recently modified code for clarity, consistency, and maintainability without changing behavior.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Code Simplifier
