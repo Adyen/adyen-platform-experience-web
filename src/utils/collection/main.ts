@@ -39,8 +39,3 @@ const _uniqueFlatten = function _uniqueFlatten<T>(reversed: boolean, items: List
     }
     return uniqueItems;
 };
-
-type _UniqueFlatten = <T>(items: List<T>, uniqueItems?: Set<T>) => Set<T>;
-
-export const uniqueFlatten = fn(_uniqueFlatten, void 0, false) as _UniqueFlatten;
-export const uniqueFlattenReversed = fn(_uniqueFlatten, void 0, true) as _UniqueFlatten;
