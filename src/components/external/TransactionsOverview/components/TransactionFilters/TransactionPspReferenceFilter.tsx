@@ -68,13 +68,13 @@ const TransactionPspReferenceFilter = ({ eventCategory, eventSubCategory, onChan
             onChange={onValueChange}
             onResetAction={onResetAction}
             value={value}
-            render={props => <TransactionPspReferenceFilter.EditModal {...props} />}
+            render={props => <TransactionPspReferenceFilterEditModal {...props} />}
             name="pspReference"
         />
     );
 };
 
-TransactionPspReferenceFilter.EditModal = ({
+const TransactionPspReferenceFilterEditModal = ({
     editAction,
     onChange,
     onValueUpdated,

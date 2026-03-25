@@ -27,7 +27,7 @@ vi.mock(import('../core/Context/CoreContext'), () => {
 });
 
 vi.mock(import('../core/Context/CoreProvider'), () => {
-    const mockedCoreProvider = ({ children }: PropsWithChildren) => {
+    const MockedCoreProvider = ({ children }: PropsWithChildren) => {
         const componentRef = useRef<HTMLDivElement | null>(null);
         return (
             <CoreContext.Provider value={{ componentRef } as any}>
@@ -38,7 +38,7 @@ vi.mock(import('../core/Context/CoreProvider'), () => {
         );
     };
 
-    return { default: mockedCoreProvider };
+    return { default: MockedCoreProvider };
 });
 
 describe('useComponentHeadingElement', () => {
