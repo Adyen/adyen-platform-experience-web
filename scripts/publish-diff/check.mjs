@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 /**
- * Publish contract diff tool (IEX-2465).
- *
  * Compares the current build output against a checked-in baseline to detect
  * accidental changes to the public surface: JS exports, CSS, .d.ts files,
  * and package.json entrypoints.
  *
  * Usage:
- *   node scripts/publish-diff/check.mjs                 # compare against baseline
- *   node scripts/publish-diff/check.mjs --update        # regenerate baseline
+ *   pnpm run publish-diff                 # compare against baseline
+ *   pnpm run publish-diff:update          # regenerate baseline
  */
 import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';

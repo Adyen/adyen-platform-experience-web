@@ -57,7 +57,9 @@ Access providers via hooks:
 1. Consumer calls `onSessionCreate` callback to get a session token
 2. `AuthSession` manages token lifecycle, refresh, and error handling
 3. `ConfigProvider` exposes session context + resolved API endpoints to components
-4. Endpoints are typed and available via `session.context.endpoints`
+4. Endpoints are typed and consumer code accesses them through `useConfigContext().endpoints`
+
+See `src/types/api/endpoints.ts` for the typed endpoint list.
 
 ## Common Gotchas
 
@@ -70,6 +72,6 @@ Access providers via hooks:
 
 ```bash
 rg -n "useCoreContext\|useConfigContext" src/                  # Context usage
-rg -n "session.context.endpoints" src/                         # Endpoint access
-rg -n "class AuthSession" src/core/                            # Session implementation
+fd "AuthSession.ts" src/core/ConfigContext/session/            # Runtime session wrapper
+fd "SetupContext.ts" src/core/ConfigContext/session/           # Runtime endpoint resolution
 ```

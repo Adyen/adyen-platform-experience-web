@@ -69,18 +69,13 @@ Each lives in `src/components/external/{Name}/` with this structure:
 └── index.ts               # Public exports
 ```
 
-**Current external components** (see `ExternalComponentType` in `src/components/types.ts`):
-`capitalOffer`, `capitalOverview`, `disputes`, `disputesManagement`,
-`paymentLinkCreation`, `paymentLinkDetails`, `paymentLinksOverview`, `paymentLinkSettings`,
-`payouts`, `payoutDetails`, `reports`, `transactions`, `transactionDetails`
+The current set of external components is defined in `ExternalComponentType`
+in `src/components/types.ts`.
 
 ## Internal Components
 
 Reusable UI primitives in `src/components/internal/`. Each has its own directory.
 **Full index with usage examples**: [internal-components.md](internal-components.md)
-
-**Key components**: `Button`, `DataGrid`, `Modal`, `FilterBar`, `Calendar`, `DatePicker`,
-`FormFields`, `Pagination`, `Popover`, `SearchBar`, `Tabs`, `Tag`, `Timeline`, `Tooltip`
 
 ```
 {Component}/
@@ -107,6 +102,7 @@ export const CLASS_NAMES = {
 - **Block**: `adyen-pe-{component}` (e.g., `adyen-pe-capital-overview`)
 - **Element**: `adyen-pe-{component}__{element}` (e.g., `adyen-pe-capital-overview__title`)
 - **Modifier**: `adyen-pe-{component}--{modifier}` (e.g., `adyen-pe-button--primary`)
+- Define class names in colocated `constants.ts` files and import them — avoid repeating string literals inline
 - Use `cx()` from `classnames` for conditional class application
 
 ## Common Gotchas
