@@ -12,7 +12,7 @@ class DataGridPage {
     }
 
     getCell(testId: string, row = 0) {
-        return this.getRow(row).getByTestId(label);
+        return this.getRow(row).getByTestId(testId);
     }
     getRow(row = 0) {
         return this.gridBody.getByRole('row').nth(row);
