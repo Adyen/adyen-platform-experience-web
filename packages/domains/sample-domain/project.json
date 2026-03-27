@@ -1,0 +1,8 @@
+{
+    "name": "@iex/sample-domain",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/sample-domain",
+    "tags": ["scope:sample-domain", "type:domain"],
+    "targets": {}
+}

@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "moduleResolution": "bundler",
+        "module": "esnext",
+        "target": "esnext",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "importHelpers": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "stripInternal": true,
+        "jsxImportSource": "preact",
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "paths": {
+            "@iex/lib": ["packages/shared/lib/src/index.ts"],
+            "@iex/lib/*": ["packages/shared/lib/src/*"],
+            "@iex/sample-domain/domain": ["packages/domains/sample-domain/domain/src/index.ts"],
+            "@iex/sample-domain/preact": ["packages/domains/sample-domain/preact/src/index.ts"],
+            "@iex/sample-domain/publish": ["packages/domains/sample-domain/publish/src/index.ts"]
+        }
+    }
+}
