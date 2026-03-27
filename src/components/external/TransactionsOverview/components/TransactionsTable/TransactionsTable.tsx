@@ -20,15 +20,8 @@ import { TransactionTableProps } from './types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 import { Tag } from '../../../../internal/Tag/Tag';
 
-// Remove status column temporarily
-export const TRANSACTION_FIELDS = ['createdAt' /*, 'status'*/, 'paymentMethod', 'transactionType', 'currency', 'netAmount', 'grossAmount'] as const;
-export type TransactionsTableCols = (typeof TRANSACTION_FIELDS)[number];
-
-// Mapping used to remap custom column (field) configurations to a different field name
-// For example: `amount` field (V1) is remapped to `netAmount` field (V2).
-export const TRANSACTION_FIELDS_REMAPS: Readonly<Record<string, TransactionsTableCols>> = {
-    amount: 'netAmount',
-} as const;
+import { TRANSACTION_FIELDS, type TransactionsTableCols } from './fields';
+export { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS, type TransactionsTableCols } from './fields';
 
 const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',
