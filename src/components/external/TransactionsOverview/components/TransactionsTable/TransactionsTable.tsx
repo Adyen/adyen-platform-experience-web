@@ -21,7 +21,6 @@ import { useTableColumns } from '../../../../../hooks/useTableColumns';
 import { Tag } from '../../../../internal/Tag/Tag';
 
 import { TRANSACTION_FIELDS, type TransactionsTableCols } from './fields';
-export { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS, type TransactionsTableCols } from './fields';
 
 const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',
