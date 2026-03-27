@@ -91,7 +91,7 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
 
     const isCountriesQueryEnabled = useMemo(() => {
         return Boolean(getFieldConfig('deliveryAddress') || getFieldConfig('billingAddress') || getFieldConfig('countryCode'));
-    }, [getFieldConfig('deliveryAddress'), getFieldConfig('billingAddress'), getFieldConfig('countryCode')]);
+    }, [getFieldConfig]);
 
     const { data: countriesData, isFetching: isFetchingCountries } = useFetch({
         fetchOptions: { enabled: isCountriesQueryEnabled && !!getCountries },
@@ -115,7 +115,7 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
                 );
             }
             return [] as Array<{ id: string; name: string }>;
-        }, [getCdnDataset, i18n.locale, isCountriesQueryEnabled]),
+        }, [getCdnDataset, i18n.locale]),
     });
 
     // Form steps configuration
@@ -151,7 +151,7 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
             wizardForm.setValue('store', storesSelectorItems[0]?.id);
             wizardForm.setFieldDisplayValue('store', storesSelectorItems[0]?.name);
         }
-    }, [storesSelectorItems]);
+    }, [storesSelectorItems, wizardForm]);
 
     // Sync selected store with form value
     useEffect(() => {

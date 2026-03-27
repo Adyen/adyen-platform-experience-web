@@ -89,7 +89,7 @@ export const ShopperPhoneField = () => {
             return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber') };
         }
         return { valid: true };
-    }, [phoneCode, phoneNumberWithoutPhoneCode]);
+    }, [phoneCode, phoneNumberWithoutPhoneCode, i18n, isRequired]);
 
     if (shouldHideField) return null;
 
