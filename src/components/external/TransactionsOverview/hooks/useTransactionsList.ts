@@ -33,7 +33,7 @@ const useTransactionsList = ({
 
     const filterParams = useMemo(() => getTransactionsFilterParams(filters, now), [filters, now]);
     const initialFilterParams = useRef(filterParams).current;
-    const cachedFilterParams = useRef(initialFilterParams);
+    const cachedFilterParamsRef = useRef(initialFilterParams);
     const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
 
     const fetchTransactions = useCallback(
@@ -85,8 +85,8 @@ const useTransactionsList = ({
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ hasCustomColumn, mergeCustomData, onDataRetrieve, records });
 
     useEffect(() => {
-        if (cachedFilterParams.current !== filterParams) {
-            cachedFilterParams.current = filterParams;
+        if (cachedFilterParamsRef.current !== filterParams) {
+            cachedFilterParamsRef.current = filterParams;
             updateFilters?.(filterParams);
         }
     }, [filterParams, updateFilters]);

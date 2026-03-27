@@ -58,18 +58,18 @@ interface PaymentRefundResultProps extends Pick<PaymentRefundProps, 'refreshTran
 
 const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked, ...formProps }: PaymentRefundProps) => {
     const [refundResult, setRefundResult] = useState<RefundResult>();
-    const beginRefund = useCallback(() => void (initiatedRefund.current = true), []);
+    const loggedEntryEventRef = useRef(false);
+    const initiatedRefundRef = useRef(false);
+    const beginRefund = useCallback(() => void (initiatedRefundRef.current = true), []);
     const lockRefunds = useCallback(() => setLocked(true), [setLocked]);
     const showDetails = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
 
     const { duration } = useComponentTiming();
-    const loggedEntryEvent = useRef(false);
-    const initiatedRefund = useRef(false);
     const userEvents = useAnalyticsContext();
 
     useEffect(() => {
-        if (!loggedEntryEvent.current) {
-            loggedEntryEvent.current = true;
+        if (!loggedEntryEventRef.current) {
+            loggedEntryEventRef.current = true;
             userEvents.addEvent?.('Switched to refund view', sharedTransactionDetailsEventProperties);
         }
     }, [userEvents]);
@@ -81,7 +81,7 @@ const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked,
 
     useEffect(() => {
         return () => {
-            if (duration.current !== undefined && !initiatedRefund.current) {
+            if (duration.current !== undefined && !initiatedRefundRef.current) {
                 // This component is unmounting (duration.current is defined),
                 // and a refund was not initiated (initiatedRefund.current is false),
                 // indicating an abrupt termination of the refund flow.
