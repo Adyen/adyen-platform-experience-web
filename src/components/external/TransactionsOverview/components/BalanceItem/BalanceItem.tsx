@@ -55,7 +55,7 @@ export const BalanceItem = ({
                 getValue: () => balance?.currency,
             },
         ];
-    }, [balance, hiddenField, i18n]);
+    }, [balance, hiddenField, i18n, availableBalanceElemId, reservedBalanceElemId]);
 
     return (
         <SummaryItem

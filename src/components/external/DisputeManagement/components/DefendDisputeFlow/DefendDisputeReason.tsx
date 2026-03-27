@@ -66,7 +66,7 @@ export const DefendDisputeReason = () => {
         if (selected) {
             setSelectedDefenseReason(selected);
         }
-    }, [selected, isReasonSubmitted]);
+    }, [selected, isReasonSubmitted, setSelectedDefenseReason]);
 
     const { getApplicableDefenseDocuments } = useConfigContext().endpoints;
 

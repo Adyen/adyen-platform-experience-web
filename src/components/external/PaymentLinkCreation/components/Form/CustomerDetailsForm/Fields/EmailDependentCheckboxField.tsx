@@ -5,7 +5,7 @@ import Icon from '../../../../../../internal/Icon';
 import Typography from '../../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../../internal/Typography/types';
 import { uuid } from '../../../../../../../utils';
-import { useCallback, useEffect } from 'preact/hooks';
+import { useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { VisibleField } from '../../../../../../internal/FormWrappers/VisibleField';
 import { Tooltip } from '../../../../../../internal/Tooltip/Tooltip';
@@ -21,7 +21,8 @@ export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheck
     const { setValue, control, getValues } = useWizardFormContext<PaymentLinkCreationFormValues>();
     const { i18n } = useCoreContext();
 
-    const inputId = uuid();
+    const inputIdRef = useRef(uuid());
+    const inputId = inputIdRef.current;
 
     const email = useWatch(control, 'shopperEmail');
     const isEmailEmpty = !(email && String(email).trim());
@@ -29,11 +30,11 @@ export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheck
     const checkedValue = useWatch(control, name);
     const isChecked = !!checkedValue;
 
-    const toggle = () => {
+    const toggle = useCallback(() => {
         if (!isEmailEmpty) {
             setValue(name, !isChecked);
         }
-    };
+    }, [isEmailEmpty, setValue, name, isChecked]);
 
     useEffect(() => {
         if (isEmailEmpty && isChecked) {
@@ -68,7 +69,7 @@ export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheck
                 </label>
             </div>
         );
-    }, []);
+    }, [inputId, isChecked, isEmailEmpty, label, toggle]);
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name={name}>
