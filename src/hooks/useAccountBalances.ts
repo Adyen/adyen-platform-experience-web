@@ -47,7 +47,7 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
 
     const refresh = useCallback(() => {
         if (canRefresh) setPendingRefresh(true);
-    }, [canRefresh, isFetching]);
+    }, [canRefresh]);
 
     useEffect(() => {
         if (balanceAccountId) {
