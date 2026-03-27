@@ -80,7 +80,7 @@ export const useTableColumns = <T extends string, C extends string>({
         });
 
         return Array.from(columnMap.values());
-    }, [columnConfig, customColumns, fields, i18n, isSmAndUpContainer, tableColumns]);
+    }, [columnConfig, customColumns, fields, i18n, isSmAndUpContainer, tableColumns, fieldsKeys]);
 
     return columns;
 };

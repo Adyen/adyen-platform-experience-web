@@ -97,7 +97,7 @@ export const useTimeRangeSelection = ({
             setIsCustomSelection(false);
             setSelectedOption(option);
         },
-        [customOption, getRangesForOption, selectedOption, selectionOptions]
+        [getRangesForOption, selectionOptions]
     );
 
     const customSelection = useCallback(() => {
@@ -109,6 +109,7 @@ export const useTimeRangeSelection = ({
 
     useMemo(() => {
         selectedPresetOption === customOption ? setSelectedOption(customOption) : onSelection(selectedPresetOption!);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useMemo(() => {
@@ -125,6 +126,7 @@ export const useTimeRangeSelection = ({
 
             onSelection(selectedOption!);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [now, timezone, presetOptions]);
 
     return {

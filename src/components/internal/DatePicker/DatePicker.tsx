@@ -37,13 +37,14 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         [i18n]
     );
 
+    const { onHighlight: onHighlightProp } = props;
     const onHighlight = useCallback(() => {
         setLastUpdatedTimestamp(performance.now());
 
         if (calendarRef.current?.from && calendarRef.current?.to) {
-            props.onHighlight?.(+calendarRef.current?.from, +calendarRef.current?.to);
+            onHighlightProp?.(+calendarRef.current?.from, +calendarRef.current?.to);
         }
-    }, [setLastUpdatedTimestamp, props.onHighlight]);
+    }, [calendarRef, setLastUpdatedTimestamp, onHighlightProp]);
 
     return (
         <div className={datePickerClassName}>

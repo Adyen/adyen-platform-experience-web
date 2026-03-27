@@ -255,7 +255,7 @@ const usePopoverPositioner = (
             window.removeEventListener('scroll', handleScroll, { capture: true });
             if (rafId) cancelAnimationFrame(rafId);
         };
-    }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition]);
+    }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition, showPopover]);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {
