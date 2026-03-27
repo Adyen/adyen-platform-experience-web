@@ -41,7 +41,7 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
         queryFn: fetchBalances,
     });
 
-    const cachedIsFetching = useRef(isFetching);
+    const cachedIsFetchingRef = useRef(isFetching);
     const canRefresh = !isFetching && canFetchBalances;
     const balances = useMemo<readonly Readonly<IBalance>[]>(() => (Array.isArray(data) ? data : []), [data]);
 
@@ -66,12 +66,12 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     }, [pendingRefresh]);
 
     useEffect(() => {
-        if (cachedIsFetching.current && !isFetching) {
+        if (cachedIsFetchingRef.current && !isFetching) {
             // Last fetch request has finished,
             // update fetch timestamp
             fetchTimestampRef.current = fetchTimestamp;
         }
-        cachedIsFetching.current = isFetching;
+        cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
     return {
