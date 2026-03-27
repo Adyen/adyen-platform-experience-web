@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import useCoreContext from '../core/Context/useCoreContext';
 
-const _useAtomicTimezoneOperation = <Args extends any[], ReturnValue>(operation: (...args: Args) => ReturnValue) => {
+const useAtomicTimezoneOperation = <Args extends any[], ReturnValue>(operation: (...args: Args) => ReturnValue) => {
     const { i18n } = useCoreContext();
 
     return useCallback(
@@ -20,10 +20,10 @@ const _useAtomicTimezoneOperation = <Args extends any[], ReturnValue>(operation:
     );
 };
 
-const _useActiveTimezone = (timezone?: string) => {
+const useActiveTimezone = (timezone?: string) => {
     const { i18n } = useCoreContext();
 
-    const getActiveTimezone = _useAtomicTimezoneOperation(
+    const getActiveTimezone = useAtomicTimezoneOperation(
         useCallback(() => {
             // first reset to system timezone,
             // then attempt to set the specified timezone,
@@ -39,9 +39,9 @@ const _useActiveTimezone = (timezone?: string) => {
 
 const useTimezoneAwareDateFormatting = (timezone?: string) => {
     const { i18n } = useCoreContext();
-    const activeTimezone = _useActiveTimezone(timezone);
+    const activeTimezone = useActiveTimezone(timezone);
 
-    const dateFormat = _useAtomicTimezoneOperation(
+    const dateFormat = useAtomicTimezoneOperation(
         useCallback<(typeof i18n)['date']>(
             (...args) => {
                 i18n.timezone = activeTimezone;
@@ -51,7 +51,7 @@ const useTimezoneAwareDateFormatting = (timezone?: string) => {
         )
     );
 
-    const fullDateFormat = _useAtomicTimezoneOperation(
+    const fullDateFormat = useAtomicTimezoneOperation(
         useCallback<(typeof i18n)['fullDate']>(
             (...args) => {
                 i18n.timezone = activeTimezone;
