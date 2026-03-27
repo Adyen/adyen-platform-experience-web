@@ -1,5 +1,5 @@
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS } from '../TransactionsOverview/constants';
-import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/TransactionsTable';
+import { TRANSACTION_FIELDS } from '../TransactionsOverview/components/TransactionsTable/fields';
 import { DetailsTab, TransactionDetails, TransactionDetailsFields } from './types';
 import { TranslationKey } from '../../../translations';
 import { IRefundStatus } from '../../../types';
