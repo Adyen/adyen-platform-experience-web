@@ -9,7 +9,6 @@ import { useCallback, useEffect, useRef } from 'preact/hooks';
 import cx from 'classnames';
 import { VisibleField } from '../../../../../../internal/FormWrappers/VisibleField';
 import { Tooltip } from '../../../../../../internal/Tooltip/Tooltip';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 
 // TODO: CURRENTLY NOT USED - Enable this feature if we decide to implement the email-dependent checkboxes
 interface EmailDependentCheckboxFieldProps {
@@ -19,7 +18,6 @@ interface EmailDependentCheckboxFieldProps {
 
 export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheckboxFieldProps) => {
     const { setValue, control, getValues } = useWizardFormContext<PaymentLinkCreationFormValues>();
-    const { i18n } = useCoreContext();
 
     const inputIdRef = useRef(uuid());
     const inputId = inputIdRef.current;

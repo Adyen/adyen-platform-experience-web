@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import { IPaymentLinkStore, IPaymentLinkConfiguration } from '../../../../../types/api/models/payByLink';
+import { IPaymentLinkStore, IPaymentLinkConfiguration } from '../../../../../types';
 import { getFormSteps } from '../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../../../translations';
@@ -155,13 +155,12 @@ export const usePaymentLinkFormData = ({ storeIds, defaultValues, visibilityConf
 
     // Sync selected store with form value
     useEffect(() => {
-        const unsubscribe = wizardForm.control.subscribe(() => {
+        return wizardForm.control.subscribe(() => {
             const storeValue = wizardForm.control.getValue('store');
             if (storeValue && storeValue !== selectedStore) {
                 setSelectedStore(storeValue);
             }
         });
-        return unsubscribe;
     }, [wizardForm.control, selectedStore]);
 
     const isDataLoading = isFetchingConfiguration || isFetchingSettings || isFetchingStores;
