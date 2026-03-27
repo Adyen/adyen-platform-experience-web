@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { Controller } from '../../../../../../../hooks/form';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
@@ -84,8 +84,7 @@ export const ShopperPhoneField = () => {
         if (!phoneCode) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode') };
         }
-        const number = phoneNumberWithoutPhoneCode;
-        if (!number) {
+        if (!phoneNumberWithoutPhoneCode) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber') };
         }
         return { valid: true };
