@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { cleanup, render } from '@testing-library/preact';
+import { render, screen } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { popoverUtil } from '../../components/internal/Popover/utils/popoverUtil';
 import { ClickOutsideVariant, CONTROL_ELEMENT_PROPERTY, useClickOutside } from './useClickOutside';
@@ -21,8 +21,7 @@ describe('useClickOutside', () => {
     });
 
     afterEach(() => {
-        cleanup();
-        if (outsideDiv && outsideDiv.parentNode) outsideDiv.parentNode.removeChild(outsideDiv);
+        if (outsideDiv) outsideDiv.remove();
         popoverUtil.closeAll();
         vi.restoreAllMocks();
     });
@@ -30,7 +29,7 @@ describe('useClickOutside', () => {
     const TestComponent = ({ cb = callback, disable = false, variant = ClickOutsideVariant.DEFAULT, id = 'target', children = null as any }) => {
         const ref = useClickOutside(null, cb, disable, variant);
         return (
-            <div ref={ref} id={id}>
+            <div ref={ref} id={id} data-testid={id}>
                 {children}
             </div>
         );
@@ -47,8 +46,8 @@ describe('useClickOutside', () => {
 
     test('should not call callback when clicking inside the element', async () => {
         const user = userEvent.setup();
-        const { getByText } = render(<TestComponent>{'Inside'}</TestComponent>);
-        const target = getByText('Inside');
+        render(<TestComponent>{'Inside'}</TestComponent>);
+        const target = screen.getByText('Inside');
 
         await user.click(target);
 
@@ -57,8 +56,8 @@ describe('useClickOutside', () => {
 
     test('should not call callback when dragging from inside to outside', async () => {
         const user = userEvent.setup();
-        const { getByText } = render(<TestComponent>{'Inside'}</TestComponent>);
-        const target = getByText('Inside');
+        render(<TestComponent>{'Inside'}</TestComponent>);
+        const target = screen.getByText('Inside');
 
         await user.pointer([{ keys: '[MouseLeft>]', target: target }, { target: outsideDiv }, { keys: '[/MouseLeft]' }]);
 
@@ -76,15 +75,15 @@ describe('useClickOutside', () => {
 
     test('should handle control elements', async () => {
         const user = userEvent.setup();
-        const { getByTestId } = render(
+        render(
             <>
                 <TestComponent />
                 <div data-testid="control">{'Control'}</div>
             </>
         );
 
-        const target = document.getElementById('target');
-        const control = getByTestId('control');
+        const target = screen.getByTestId('target');
+        const control = screen.getByTestId('control');
         (control as any)[CONTROL_ELEMENT_PROPERTY] = target;
 
         await user.click(control);
@@ -119,8 +118,8 @@ describe('useClickOutside', () => {
             );
         };
 
-        const { getByTestId } = render(<ComplexComponent />);
-        const control = getByTestId('control');
+        render(<ComplexComponent />);
+        const control = screen.getByTestId('control');
 
         await user.click(control);
 
@@ -137,13 +136,13 @@ describe('useClickOutside', () => {
     describe('Shadow DOM', () => {
         test('should not call callback when clicking inside a shadow dom which is inside the target', async () => {
             const user = userEvent.setup();
-            const { getByTestId } = render(
+            render(
                 <TestComponent>
                     <div data-testid="host"></div>
                 </TestComponent>
             );
 
-            const host = getByTestId('host');
+            const host = screen.getByTestId('host');
             const shadowRoot = host.attachShadow({ mode: 'open' });
             const shadowDiv = document.createElement('div');
             shadowDiv.textContent = 'Shadow Content';
@@ -156,13 +155,13 @@ describe('useClickOutside', () => {
 
         test('should not call callback when dragging from inside shadow dom to outside', async () => {
             const user = userEvent.setup();
-            const { getByTestId } = render(
+            render(
                 <TestComponent>
                     <div data-testid="host"></div>
                 </TestComponent>
             );
 
-            const host = getByTestId('host');
+            const host = screen.getByTestId('host');
             const shadowRoot = host.attachShadow({ mode: 'open' });
             const shadowDiv = document.createElement('div');
             shadowDiv.textContent = 'Shadow Content';
@@ -187,7 +186,7 @@ describe('useClickOutside', () => {
             const addSpy = vi.spyOn(popoverUtil, 'add');
             render(<TestComponent variant={ClickOutsideVariant.POPOVER} />);
 
-            const target = document.getElementById('target');
+            const target = screen.getByTestId('target');
             expect(addSpy).toHaveBeenCalledWith(target, callback);
         });
 
@@ -195,7 +194,7 @@ describe('useClickOutside', () => {
             const removeSpy = vi.spyOn(popoverUtil, 'remove');
             const { unmount } = render(<TestComponent variant={ClickOutsideVariant.POPOVER} />);
 
-            const target = document.getElementById('target');
+            const target = screen.getByTestId('target');
             unmount();
 
             expect(removeSpy).toHaveBeenCalledWith(target);
@@ -217,14 +216,14 @@ describe('useClickOutside', () => {
             const user = userEvent.setup();
             const parentFocusOut = vi.fn();
 
-            const { getByText } = render(
+            render(
                 // eslint-disable-next-line react/no-unknown-property, jsx-a11y/no-noninteractive-tabindex
                 <div onFocusOut={parentFocusOut} tabIndex={0}>
                     <TestComponent>{'Target'}</TestComponent>
                 </div>
             );
 
-            const target = getByText('Target');
+            const target = screen.getByText('Target');
 
             target.focus();
             await user.tab();
@@ -242,8 +241,8 @@ describe('useClickOutside', () => {
                 </div>
             );
 
-            const { getByText, rerender } = render(<Wrapper disable={false} />);
-            const target = getByText('Target');
+            const { rerender } = render(<Wrapper disable={false} />);
+            const target = screen.getByText('Target');
 
             target.focus();
             await user.tab();
