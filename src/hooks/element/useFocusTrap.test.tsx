@@ -12,7 +12,10 @@ describe('useFocusTrap', () => {
 
     beforeEach(() => {
         // Mock rAF to run immediately to simplify testing the async logic in the hook
-        global.requestAnimationFrame = cb => (cb(performance.now()), 1);
+        global.requestAnimationFrame = cb => {
+            cb(performance.now());
+            return 1;
+        };
         global.cancelAnimationFrame = vi.fn();
     });
 
@@ -26,9 +29,9 @@ describe('useFocusTrap', () => {
         const trapRef = useFocusTrap(null, onEscape);
         return (
             <div data-testid="trap-root" ref={trapRef}>
-                <button>Button 1</button>
+                <button>{'Button 1'}</button>
                 <input type="text" placeholder="Input 1" />
-                <button>Button 2</button>
+                <button>{'Button 2'}</button>
             </div>
         );
     };

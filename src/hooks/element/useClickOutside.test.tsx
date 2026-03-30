@@ -47,7 +47,7 @@ describe('useClickOutside', () => {
 
     test('should not call callback when clicking inside the element', async () => {
         const user = userEvent.setup();
-        const { getByText } = render(<TestComponent>Inside</TestComponent>);
+        const { getByText } = render(<TestComponent>{'Inside'}</TestComponent>);
         const target = getByText('Inside');
 
         await user.click(target);
@@ -57,7 +57,7 @@ describe('useClickOutside', () => {
 
     test('should not call callback when dragging from inside to outside', async () => {
         const user = userEvent.setup();
-        const { getByText } = render(<TestComponent>Inside</TestComponent>);
+        const { getByText } = render(<TestComponent>{'Inside'}</TestComponent>);
         const target = getByText('Inside');
 
         await user.pointer([{ keys: '[MouseLeft>]', target: target }, { target: outsideDiv }, { keys: '[/MouseLeft]' }]);
@@ -79,7 +79,7 @@ describe('useClickOutside', () => {
         const { getByTestId } = render(
             <>
                 <TestComponent />
-                <div data-testid="control">Control</div>
+                <div data-testid="control">{'Control'}</div>
             </>
         );
 
@@ -109,11 +109,11 @@ describe('useClickOutside', () => {
                 <>
                     <div ref={ref} id="target">
                         <div ref={childRef} id="child">
-                            Child
+                            {'Child'}
                         </div>
                     </div>
                     <div ref={controlRef} data-testid="control">
-                        Control
+                        {'Control'}
                     </div>
                 </>
             );
@@ -218,8 +218,9 @@ describe('useClickOutside', () => {
             const parentFocusOut = vi.fn();
 
             const { getByText } = render(
+                // eslint-disable-next-line react/no-unknown-property, jsx-a11y/no-noninteractive-tabindex
                 <div onFocusOut={parentFocusOut} tabIndex={0}>
-                    <TestComponent>Target</TestComponent>
+                    <TestComponent>{'Target'}</TestComponent>
                 </div>
             );
 
@@ -235,8 +236,9 @@ describe('useClickOutside', () => {
             const parentFocusOut = vi.fn();
 
             const Wrapper = ({ disable }: { disable: boolean }) => (
+                // eslint-disable-next-line react/no-unknown-property, jsx-a11y/no-noninteractive-tabindex
                 <div onFocusOut={parentFocusOut} tabIndex={0}>
-                    <TestComponent disable={disable}>Target</TestComponent>
+                    <TestComponent disable={disable}>{'Target'}</TestComponent>
                 </div>
             );
 

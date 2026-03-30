@@ -12,13 +12,13 @@ function TestComponent<OptionId extends string, Options extends TabbedControlOpt
 }: TabbedControlConfig<OptionId, Options>) {
     const { activeIndex, onClick, onKeyDown, refs } = useTabbedControl({ options, ...restProps });
     return (
-        <>
+        <div role="radiogroup">
             {options.map((option, index) => (
-                <button key={index} ref={refs[index]} onClick={onClick} onKeyDown={onKeyDown} aria-checked={activeIndex === index}>
+                <button role="radio" key={index} ref={refs[index]} onClick={onClick} onKeyDown={onKeyDown} aria-checked={activeIndex === index}>
                     {option.id}
                 </button>
             ))}
-        </>
+        </div>
     );
 }
 
@@ -48,7 +48,7 @@ describe('useTabbedControl', () => {
     test('should activate the correct option for option clicked', () => {
         render(<TestComponent options={OPTIONS} />);
 
-        for (const optionButton of screen.getAllByRole('button')) {
+        for (const optionButton of screen.getAllByRole('radio')) {
             fireEvent.click(optionButton);
             expect(optionButton.getAttribute('aria-checked')).toBe('true');
         }
@@ -58,7 +58,7 @@ describe('useTabbedControl', () => {
         render(<TestComponent options={OPTIONS} />);
 
         // focus on first option
-        screen.getAllByRole('button')[0]!.focus();
+        screen.getAllByRole('radio')[0]!.focus();
 
         // confirm that first option has focus
         expect(document.activeElement!.textContent).toBe('option_1');
@@ -127,7 +127,7 @@ describe('useTabbedControl', () => {
 
         render(<TestComponent options={OPTIONS} activeOption={lastOption?.id} onChange={onChange} />);
 
-        const optionButtons = screen.getAllByRole('button');
+        const optionButtons = screen.getAllByRole('radio');
 
         for (let i = 0; i < OPTIONS.length; i++) {
             fireEvent.click(optionButtons[i]!);
@@ -146,7 +146,7 @@ describe('useTabbedControl', () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getAllByRole('button')[clickOptionIndex]!);
+        fireEvent.click(screen.getAllByRole('radio')[clickOptionIndex]!);
 
         expect(onChange).toHaveBeenCalledOnce();
         expect(onChange).toHaveBeenLastCalledWith(OPTIONS[clickOptionIndex]);
@@ -159,7 +159,7 @@ describe('useTabbedControl', () => {
 
         expect(onChange2).not.toHaveBeenCalled();
 
-        fireEvent.click(screen.getAllByRole('button')[clickOptionIndex]!);
+        fireEvent.click(screen.getAllByRole('radio')[clickOptionIndex]!);
 
         expect(onChange2).toHaveBeenCalledOnce();
         expect(onChange2).toHaveBeenLastCalledWith(OPTIONS[clickOptionIndex]);

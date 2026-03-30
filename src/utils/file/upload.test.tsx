@@ -16,7 +16,7 @@ const getInputElementWithFileList = async (files = FILES) => {
     const user = userEvent.setup();
     render(
         <div>
-            <label htmlFor="file-uploader">Upload file:</label>
+            <label htmlFor="file-uploader">{'Upload file:'}</label>
             <input id="file-uploader" type="file" multiple />
         </div>
     );
@@ -34,6 +34,7 @@ const getDataTransferWithFiles = (files = FILES) => {
         };
 
         const Dropzone = () => (
+            // eslint-disable-next-line jsx-a11y/no-static-element-interactions
             <div
                 onDragOver={preventDefaultAction}
                 onDrop={(evt: DragEvent) => {
@@ -41,7 +42,7 @@ const getDataTransferWithFiles = (files = FILES) => {
                     resolve(evt.dataTransfer!);
                 }}
             >
-                Drag files here
+                {'Drag files here'}
             </div>
         );
 

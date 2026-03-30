@@ -41,7 +41,7 @@ describe('Dropzone', () => {
     test('should render label element with correct child content when provided', () => {
         render(
             <Dropzone uploadFiles={vi.fn()}>
-                <span>Choose document</span>
+                <span>{'Choose document'}</span>
             </Dropzone>
         );
 
@@ -83,8 +83,6 @@ describe('Dropzone', () => {
     });
 
     test('should render correct missing file error message if required', async () => {
-        const user = userEvent.setup();
-
         render(<Dropzone uploadFiles={vi.fn()} required />);
 
         const dropzone = screen.getByRole('region');

@@ -15,7 +15,7 @@ vi.mock('./components/CalendarInputPopover', () => ({
         isOpen ? (
             <div data-testid="mock-popover">
                 <button data-testid="select-date-btn" onClick={() => onHighlight(new Date('2023-12-25T10:00:00.000Z').getTime())}>
-                    Select Date
+                    {'Select Date'}
                 </button>
             </div>
         ) : null,
@@ -117,9 +117,6 @@ describe('CalendarInput', () => {
     });
 
     test('should handle date selection correctly', async () => {
-        const testDate = '2023-12-25T10:00:00.000Z';
-        const timestamp = new Date(testDate).getTime();
-
         render(<CalendarInput value={undefined} onInput={mockOnInput} />);
 
         // Open the calendar
