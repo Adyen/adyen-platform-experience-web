@@ -168,9 +168,11 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const sendPopoverToggleEvent = useCallback(
         (popoverOpen: boolean) => {
-            popoverOpen
-                ? userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties)
-                : userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            if (popoverOpen) {
+                userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
+            } else {
+                userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            }
         },
         [userEvents]
     );

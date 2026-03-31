@@ -31,7 +31,7 @@ const PaymentRefundReason = ({ disabled, onChange, reason }: PaymentRefundReason
     const onReasonChange = useCallback(
         (evt: { target?: { value: RefundReason } }) => {
             const reason = evt.target?.value;
-            reason && onChange(reason);
+            if (reason) onChange(reason);
         },
         [onChange]
     );

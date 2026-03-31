@@ -76,7 +76,7 @@ const PaymentLinksOverviewTabsDropdown = ({
 
     useEffect(() => {
         const currentTab = PAYMENT_LINK_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
-        currentTab && onChange(currentTab);
+        if (currentTab) onChange(currentTab);
     }, [onChange, statusGroup]);
 
     useEffect(() => setStatusGroup(activeTab), [activeTab]);
@@ -274,7 +274,9 @@ export const PaymentLinksOverview = ({
 
     const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IPaymentLinkStatusGroup>['onChange']>>(
         ({ id: statusGroup }) => {
-            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+            if (debounceTimeoutIdRef.current) {
+                clearTimeout(debounceTimeoutIdRef.current);
+            }
 
             debounceTimeoutIdRef.current = setTimeout(() => {
                 requestAnimationFrame(() => setStatusGroupFetchPending(false));

@@ -118,11 +118,11 @@ export const PaymentLinkSettingsProvider = memo(
             switch (activeMenuItem) {
                 case MenuItem.theme:
                     setLoading(true);
-                    selectedStore && setFetchThemeEnabled(true);
+                    if (selectedStore) setFetchThemeEnabled(true);
                     break;
                 case MenuItem.termsAndConditions:
                     setLoading(true);
-                    selectedStore && setFetchTermsAndConditionsEnabled(true);
+                    if (selectedStore) setFetchTermsAndConditionsEnabled(true);
                     break;
             }
         }, [activeMenuItem, selectedStore, resetState]);
