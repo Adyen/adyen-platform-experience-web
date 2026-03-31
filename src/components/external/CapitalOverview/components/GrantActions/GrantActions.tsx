@@ -6,14 +6,16 @@ import { useFetch } from '../../../../../hooks/useFetch';
 import { GrantActionsEmbedded } from '../GrantActionsEmbedded/GrantActionsEmbedded';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { GrantActionsHosted } from '../GrantActionsHosted/GrantActionsHosted';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import Alert from '../../../../internal/Alert/Alert';
+import Card from '../../../../internal/Card/Card';
+import Spinner from '../../../../internal/Spinner';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './GrantActions.scss';
 import { useMissingActionsPolling } from './hooks';
+import Typography from '../../../../internal/Typography/Typography';
+import { TypographyVariant } from '../../../../internal/Typography/types';
 
 const CLASSNAMES = {
-    actionsTitleSkeleton: 'adyen-pe-grant-actions__actions-title-skeleton',
-    actionsDescriptionSkeleton: 'adyen-pe-grant-actions__actions-description-skeleton',
+    loadingContainer: 'adyen-pe-grant-actions__loading-container',
 };
 
 type GrantActionsProps = {
@@ -31,11 +33,15 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({
     className,
     onComplete,
 }) => {
+    const { i18n } = useCoreContext();
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
-    const { missingActions, isPollingComplete } = useMissingActionsPolling({ grantId, initialMissingActions });
+    const { missingActions, isPollingComplete, forcePollingComplete } = useMissingActionsPolling({ grantId, initialMissingActions });
 
     const onboardingConfigurationQuery = useFetch({
-        fetchOptions: { enabled: isPollingComplete && !!missingActions.length },
+        fetchOptions: {
+            enabled: isPollingComplete && !!missingActions.length,
+            onError: forcePollingComplete,
+        },
         queryFn: useCallback(async () => {
             return getOnboardingConfiguration?.(EMPTY_OBJECT);
         }, [getOnboardingConfiguration]),
@@ -47,12 +53,14 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({
 
     if (!isPollingComplete || onboardingConfigurationQuery.isFetching) {
         return (
-            <Alert
-                className={className}
-                type={AlertTypeOption.WARNING}
-                title={<div className={CLASSNAMES.actionsTitleSkeleton}></div>}
-                description={<div className={CLASSNAMES.actionsDescriptionSkeleton}></div>}
-            />
+            <Card classNameModifiers={className ? [className] : []} filled noOutline noPadding>
+                <div className={CLASSNAMES.loadingContainer}>
+                    <Spinner size="large" inline />
+                    <Typography variant={TypographyVariant.BODY} strongest>
+                        {i18n.get('capital.overview.grants.item.processingLongRequest')}
+                    </Typography>
+                </div>
+            </Card>
         );
     }
 

@@ -64,6 +64,7 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Label for requested funds",
     "capital.overview.grants.item.details.a11y.label": "Label for a button that toggles the visibility of the details of a loan (a.k.a grant)",
     "capital.overview.grants.item.details.requestedFunds": "Label for an amount of funds requested by the user",
+    "capital.overview.grants.item.processingLongRequest": "Description indicating that a long request is being processed prompting user to wait.",
     "capital.overview.grants.item.progressBar.a11y.label": "Label for a progress bar that indicates progress of loan (a.k.a grant) repayment",
     "capital.overview.grants.item.termEnds": "Label for the end date of a term",
     "capital.overview.grants.list.actions.newOffer": "Label for a button that enables the user to see a new offer",

@@ -18,6 +18,7 @@ type FetchOptions<ReturnType> = {
     errorLevel: ErrorLevel;
     keepPrevData: boolean;
     onSuccess?: (data: ReturnType) => void;
+    onError?: (error: Error) => void;
 };
 
 type UseFetchConfig<QueryFn extends (...args: any) => Promise<any>> = {
@@ -28,7 +29,7 @@ type UseFetchConfig<QueryFn extends (...args: any) => Promise<any>> = {
     queryFn: QueryFn;
 };
 export function useFetch<QueryFn extends (...args: any) => Promise<any>, T extends Awaited<ReturnType<QueryFn>>>({
-    fetchOptions: { keepPrevData, onSuccess, enabled } = { keepPrevData: true },
+    fetchOptions: { keepPrevData, onSuccess, onError, enabled } = { keepPrevData: true },
     queryFn,
 }: // params,
 UseFetchConfig<QueryFn>): State<T> {
@@ -73,9 +74,10 @@ UseFetchConfig<QueryFn>): State<T> {
             dispatch({ type: 'fetched', payload: data });
         } catch (error) {
             if (cancelRequest.current) return;
+            onError?.(error as Error);
             dispatch({ type: 'error', payload: error as Error });
         }
-    }, [dispatch, queryFn, onSuccess]);
+    }, [dispatch, queryFn, onSuccess, onError]);
 
     useEffect(() => {
         cancelRequest.current = false;
