@@ -1,7 +1,6 @@
-import { clamp } from '../value/number';
 import { isUndefined } from '../value/is';
-import { ABORT_EVENT, MAX_ABORT_TIMEOUT } from './constants';
-import { abortError, augmentSignalReason, timeoutError } from './internals';
+import { ABORT_EVENT } from './constants';
+import { abortError, augmentSignalReason } from './internals';
 
 declare let AbortSignal: {
     any: (signals: AbortSignal[]) => AbortSignal;

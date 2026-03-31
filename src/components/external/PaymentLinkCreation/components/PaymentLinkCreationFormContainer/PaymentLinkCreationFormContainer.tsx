@@ -177,7 +177,7 @@ export const PaymentLinkCreationFormContainer = ({
         selectedStoreNavigationCacheRef.current = '';
     }, [setShowTermsAndConditions, setSelectedStore]);
 
-    const onError = (_: any) => {
+    const onError = () => {
         // Form validation errors, should not happen since last step
         // (summary) does not include any validations
         setShowFormValidationError(true);

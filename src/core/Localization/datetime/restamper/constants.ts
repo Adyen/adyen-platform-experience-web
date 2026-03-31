@@ -27,7 +27,7 @@ export const { BASE_FORMAT_OPTIONS, BASE_LOCALE, SYSTEM_TIMEZONE, SYSTEM_TIMEZON
     try {
         SYSTEM_TIMEZONE_FORMATTER = new Intl.DateTimeFormat(BASE_LOCALE, BASE_FORMAT_OPTIONS);
         SYSTEM_TIMEZONE = SYSTEM_TIMEZONE_FORMATTER.resolvedOptions().timeZone;
-    } catch (ex) {
+    } catch {
         SYSTEM_TIMEZONE = undefined;
     }
 

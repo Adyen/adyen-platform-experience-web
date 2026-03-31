@@ -3,7 +3,7 @@
  */
 import { afterEach, beforeEach, describe, expect, vi, test } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/preact';
-import { SearchBar, SearchBarRef } from './SearchBar';
+import { SearchBar } from './SearchBar';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { TranslationKey } from '../../../translations';
 

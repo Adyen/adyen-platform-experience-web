@@ -68,8 +68,8 @@ import {
 } from '../types';
 
 export default class Calendar {
-    grid: CalendarGrid;
-    kill: () => void;
+    public grid: CalendarGrid;
+    public kill: () => void;
     #config = EMPTY_OBJECT as CalendarConfig;
     #destructed = false;
     #frame?: TimeFrame;
@@ -658,13 +658,13 @@ export default class Calendar {
         switch (this.#highlightSelection) {
             case SELECT_MANY:
                 if (!boolOrTrue(this.#frame?.blankSelection) && this.#rangeOffsets) {
-                    this.#rangeHighlight(this.#frame?.selectionStart!, SELECTION_TO, this.#rangeOffsets);
+                    this.#rangeHighlight(this.#frame!.selectionStart!, SELECTION_TO, this.#rangeOffsets);
                 }
                 break;
             case SELECT_ONE:
                 if (!boolOrTrue(this.#frame?.blankSelection)) {
                     const restamper = withTimezone(this.#frame?.timezone);
-                    const restampedDate = new Date(timezoneToSystem(restamper, this.#frame?.selectionStart!));
+                    const restampedDate = new Date(timezoneToSystem(restamper, this.#frame!.selectionStart!));
                     this.#frame?.updateSelection(systemToTimezone(restamper, restampedDate.setHours(23, 59, 59, 999)), SELECTION_TO);
                 }
                 break;

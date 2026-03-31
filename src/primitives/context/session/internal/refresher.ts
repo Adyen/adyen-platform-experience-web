@@ -19,7 +19,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
     function _assertSession(value: any): asserts value is T {
         try {
             specification.assert?.(value);
-        } catch (ex) {
+        } catch {
             throw ERR_SESSION_INVALID;
         }
     }
