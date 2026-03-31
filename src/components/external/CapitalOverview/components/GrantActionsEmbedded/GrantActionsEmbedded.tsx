@@ -144,16 +144,16 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
         }
     }, [alertTitles.multiple, alertTitles.single, missingActions, processAlertTitle, renderActionButton]);
 
-    const close = () => {
+    const close = useCallback(() => {
         setActiveAction(undefined);
-    };
+    }, []);
 
     const completeAction = useCallback(() => {
-        if (activeAction && !completedActions.includes(activeAction)) {
-            setCompletedActions(prev => [...prev, activeAction!]);
+        if (activeAction) {
+            setCompletedActions(prev => (prev.includes(activeAction) ? prev : [...prev, activeAction]));
         }
         close();
-    }, [activeAction, completedActions]);
+    }, [activeAction, close]);
 
     const handleBusinessFinancingClose = useCallback(() => {
         close();
@@ -162,7 +162,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
             subCategory: 'Information',
             label: 'Dismissed AnaCredit information',
         });
-    }, [userEvents]);
+    }, [close, userEvents]);
 
     const handleBusinessFinancingComplete = useCallback(() => {
         completeAction();
@@ -180,7 +180,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
             subCategory: 'Terms & conditions',
             label: 'Dismissed terms & conditions',
         });
-    }, [userEvents]);
+    }, [close, userEvents]);
 
     const handleTermsOfServiceAccept = useCallback(() => {
         userEvents.addEvent?.('Clicked button', {
