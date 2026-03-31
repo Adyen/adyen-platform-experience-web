@@ -33,7 +33,7 @@ export const some = fn(Array.prototype.some);
 const _uniqueFlatten = function _uniqueFlatten<T>(reversed: boolean, items: List<T>, uniqueItems: Set<T> = new Set<T>()) {
     for (const item of items) {
         if (!Array.isArray(item)) {
-            reversed && uniqueItems.delete(item);
+            if (reversed) uniqueItems.delete(item);
             uniqueItems.add(item);
         } else _uniqueFlatten(reversed, item, uniqueItems);
     }

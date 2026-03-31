@@ -108,7 +108,11 @@ export const useTimeRangeSelection = ({
     }, [customOption]);
 
     useMemo(() => {
-        selectedPresetOption === customOption ? setSelectedOption(customOption) : onSelection(selectedPresetOption!);
+        if (selectedPresetOption === customOption) {
+            setSelectedOption(customOption);
+        } else {
+            onSelection(selectedPresetOption!);
+        }
     }, []);
 
     useMemo(() => {

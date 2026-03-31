@@ -70,7 +70,9 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
     };
 
     const handleFileChange = (event: Event) => {
-        largeFileErrorContext && setLargeFileErrorContext(undefined);
+        if (largeFileErrorContext) {
+            setLargeFileErrorContext(undefined);
+        }
         updateFiles(event.target as HTMLInputElement);
     };
 

@@ -131,7 +131,7 @@ export default class Calendar {
             config: {
                 value: Object.defineProperties(
                     (config?: CalendarConfig) => {
-                        config && this.#configure(config);
+                        if (config) this.#configure(config);
                         return this.#currentConfig;
                     },
                     {
@@ -164,7 +164,9 @@ export default class Calendar {
                                         if (watchCallback) {
                                             this.#watchableEffect = this.#chainedNotifyEffectStack?.bind(noop);
                                             this.#unwatch = this.#watchlist?.subscribe(this.#chainedWatchEffectStack?.bind(watchCallback));
-                                            this.#frame && (this.#frame.effect = this.#watchableEffect);
+                                            if (this.#frame) {
+                                                this.#frame.effect = this.#watchableEffect;
+                                            }
                                         }
                                     }
 
@@ -375,10 +377,18 @@ export default class Calendar {
                     this.#frame.shiftFrameCursor(evt.ctrlKey ? CURSOR_BLOCK_END : CURSOR_LINE_END);
                     break;
                 case InteractionKeyCode.PAGE_UP:
-                    evt.shiftKey ? this.#frame.shiftFrameByOffset(-1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    if (evt.shiftKey) {
+                        this.#frame.shiftFrameByOffset(-1, SHIFT_PERIOD);
+                    } else {
+                        this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    }
                     break;
                 case InteractionKeyCode.PAGE_DOWN:
-                    evt.shiftKey ? this.#frame.shiftFrameByOffset(1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    if (evt.shiftKey) {
+                        this.#frame.shiftFrameByOffset(1, SHIFT_PERIOD);
+                    } else {
+                        this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    }
                     break;
                 case InteractionKeyCode.SPACE:
                 case InteractionKeyCode.ENTER:
@@ -388,7 +398,10 @@ export default class Calendar {
                     return;
             }
 
-            this.#highlightInProgress && this.#highlight(EMPTY_OBJECT);
+            if (this.#highlightInProgress) {
+                this.#highlight(EMPTY_OBJECT);
+            }
+
             return true;
         }
 
@@ -403,7 +416,11 @@ export default class Calendar {
             this.#frame.shiftFrameCursor(cursorIndex);
 
             if (this.#frame.cursor === cursorIndex) {
-                isClick ? this.#highlight() : this.#highlight(EMPTY_OBJECT);
+                if (isClick) {
+                    this.#highlight();
+                } else {
+                    this.#highlight(EMPTY_OBJECT);
+                }
                 return true;
             }
         }
@@ -502,9 +519,11 @@ export default class Calendar {
             if (this.#highlightSelection === SELECT_MANY && range) {
                 const selectionDirection = toTimestamp >= (this.#frame.selectionEnd as number) ? SELECTION_FROM : SELECTION_TO;
 
-                selectionDirection === SELECTION_FROM
-                    ? this.#frame.updateSelection(toTimestamp, SELECTION_TO)
-                    : this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                if (selectionDirection === SELECTION_FROM) {
+                    this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+                } else {
+                    this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                }
 
                 this.#rangeHighlight(
                     (selectionDirection === SELECTION_FROM ? this.#frame.selectionEnd : this.#frame.selectionStart) as number,
@@ -587,8 +606,12 @@ export default class Calendar {
     }
 
     #restoreHighlight() {
-        this.#highlightFrom && this.#frame?.updateSelection(this.#highlightFrom, SELECTION_FROM);
-        this.#highlightTo && this.#frame?.updateSelection(this.#highlightTo, SELECTION_TO);
+        if (this.#highlightFrom) {
+            this.#frame?.updateSelection(this.#highlightFrom, SELECTION_FROM);
+        }
+        if (this.#highlightTo) {
+            this.#frame?.updateSelection(this.#highlightTo, SELECTION_TO);
+        }
         this.#highlightInProgress = false;
     }
 

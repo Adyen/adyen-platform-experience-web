@@ -68,7 +68,11 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
                 // restamp timestamp to current target timezone before update range
                 const timestamp = parseRangeTimestamp(configContext.systemToTimezone(date)) ?? NOW;
 
-                withRangeFrom ? (to = timestamp) : (from = timestamp);
+                if (withRangeFrom) {
+                    to = timestamp;
+                } else {
+                    from = timestamp;
+                }
             }
 
             if (from > to) [from, to] = [to, from];

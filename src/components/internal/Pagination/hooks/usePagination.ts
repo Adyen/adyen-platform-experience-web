@@ -77,11 +77,11 @@ const usePagination = <Pagination extends PaginationType>(
     }, [limit, requestPageCallback]);
 
     const next = useCallback(() => {
-        page && goto(Math.min(page + 1, getPageCount()));
+        if (page) goto(Math.min(page + 1, getPageCount()));
     }, [goto, page]);
 
     const prev = useCallback(() => {
-        page && goto(Math.max(page - 1, 1));
+        if (page) goto(Math.max(page - 1, 1));
     }, [goto, page]);
 
     const pages = useMemo(() => getPageCount() || page || undefined, [goto, paginationChanged]);
@@ -98,7 +98,7 @@ const usePagination = <Pagination extends PaginationType>(
     const resetPagination = useCallback(() => {
         resetPageCount();
         $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
-        $mounted.current && setCurrentPage($page.current);
+        if ($mounted.current) setCurrentPage($page.current);
     }, [resetPageCount]);
 
     useEffect(() => {

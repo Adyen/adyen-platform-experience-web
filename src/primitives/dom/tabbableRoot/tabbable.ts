@@ -186,7 +186,7 @@ export const withTabbableRoot = () => {
             set: (maybeElement?: any) => {
                 if (maybeElement === root) return;
 
-                root && observer.disconnect();
+                if (root) observer.disconnect();
                 root = maybeElement instanceof Element ? maybeElement : null;
                 getTabbables();
             },
