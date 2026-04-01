@@ -1,8 +1,8 @@
-import { IGrant, IMissingAction } from '../../../../../types';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import { useFetch } from '../../../../../hooks/useFetch';
+import { IGrant, IMissingAction } from '../../../../../../types';
+import { useConfigContext } from '../../../../../../core/ConfigContext';
+import { useFetch } from '../../../../../../hooks/useFetch';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../../utils';
+import { EMPTY_OBJECT } from '../../../../../../utils';
 
 const MAX_POLL_COUNT = 60;
 const POLL_INTERVAL_MS = 1000;

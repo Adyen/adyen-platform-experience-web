@@ -10,7 +10,7 @@ import Card from '../../../../internal/Card/Card';
 import Spinner from '../../../../internal/Spinner';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './GrantActions.scss';
-import { useMissingActionsPolling } from './hooks';
+import { useMissingActionsPolling } from './hooks/useMissingActionsPolling';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyVariant } from '../../../../internal/Typography/types';
 
