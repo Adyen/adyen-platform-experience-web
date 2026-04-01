@@ -20,6 +20,11 @@ const CLASSNAMES = {
     actionButton: 'adyen-pe-grant-actions-embedded__action-button',
 };
 
+const sharedActionAnalyticsEventProps = {
+    ...sharedCapitalOverviewAnalyticsEventProperties,
+    category: 'Missing action modal',
+};
+
 type GrantActionsEmbeddedProps = {
     className?: string;
     legalEntityId: string;
@@ -139,16 +144,60 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
         }
     }, [alertTitles.multiple, alertTitles.single, missingActions, processAlertTitle, renderActionButton]);
 
-    const close = () => {
+    const close = useCallback(() => {
         setActiveAction(undefined);
-    };
+    }, []);
 
-    const completeAction = () => {
-        if (activeAction && !completedActions.includes(activeAction)) {
-            setCompletedActions(prev => [...prev, activeAction!]);
+    const completeAction = useCallback(() => {
+        if (activeAction) {
+            setCompletedActions(prev => (prev.includes(activeAction) ? prev : [...prev, activeAction]));
         }
         close();
-    };
+    }, [activeAction, close]);
+
+    const handleBusinessFinancingClose = useCallback(() => {
+        close();
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedActionAnalyticsEventProps,
+            subCategory: 'Information',
+            label: 'Dismissed AnaCredit information',
+        });
+    }, [close, userEvents]);
+
+    const handleBusinessFinancingComplete = useCallback(() => {
+        completeAction();
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedActionAnalyticsEventProps,
+            subCategory: 'Information',
+            label: 'Submitted AnaCredit information',
+        });
+    }, [completeAction, userEvents]);
+
+    const handleTermsOfServiceClose = useCallback(() => {
+        close();
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedActionAnalyticsEventProps,
+            subCategory: 'Terms & conditions',
+            label: 'Dismissed terms & conditions',
+        });
+    }, [close, userEvents]);
+
+    const handleTermsOfServiceAccept = useCallback(() => {
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedActionAnalyticsEventProps,
+            subCategory: 'Terms & conditions',
+            label: 'Signed terms & conditions',
+        });
+    }, [userEvents]);
+
+    const handleTermsOfServiceComplete = useCallback(() => {
+        completeAction();
+        userEvents.addEvent?.('Clicked button', {
+            ...sharedActionAnalyticsEventProps,
+            subCategory: 'Terms & conditions',
+            label: 'Finished terms & conditions',
+        });
+    }, [completeAction, userEvents]);
 
     return (
         <div>
@@ -158,15 +207,15 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
                 title={alertConfig.title}
                 description={alertConfig.description}
             />
-            <Modal isOpen={!!activeAction} onClose={close} isDismissible headerWithBorder={false} size="large">
+            <Modal isOpen={!!activeAction} onClose={close} isDismissible={false} headerWithBorder={false} size="large">
                 {activeAction === 'AnaCredit' && (
                     <adyen-business-financing
                         locale={i18n.locale}
                         environment={environment}
                         fetchToken={fetchToken}
                         rootlegalentityid={legalEntityId}
-                        oncomplete={completeAction}
-                        onclose={close}
+                        oncomplete={handleBusinessFinancingComplete}
+                        onclose={handleBusinessFinancingClose}
                     ></adyen-business-financing>
                 )}
 
@@ -176,8 +225,9 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
                         environment={environment}
                         fetchToken={fetchToken}
                         rootlegalentityid={legalEntityId}
-                        oncomplete={completeAction}
-                        onclose={close}
+                        onaccept={handleTermsOfServiceAccept}
+                        oncomplete={handleTermsOfServiceComplete}
+                        onclose={handleTermsOfServiceClose}
                     ></adyen-terms-of-service-management>
                 )}
             </Modal>
