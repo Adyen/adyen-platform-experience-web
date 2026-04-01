@@ -4,4 +4,4 @@ export interface ClockWatchListEntries {
     now: number;
 }
 
-export interface Clock extends Pick<WatchList<ClockWatchListEntries>, 'cancelSubscriptions' | 'subscribe'> {}
+export type Clock = Pick<WatchList<ClockWatchListEntries>, 'cancelSubscriptions' | 'subscribe'>;
