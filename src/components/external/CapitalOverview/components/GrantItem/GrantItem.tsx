@@ -181,7 +181,7 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                 )}
             </div>
         ),
-        [i18n, dateFormat, grant, grantConfig, showUnscheduledRepaymentAccounts]
+        [i18n, dateFormat, grant, grantConfig, showUnscheduledRepaymentAccounts, elementIds]
     );
 
     return (

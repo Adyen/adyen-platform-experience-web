@@ -80,8 +80,9 @@ const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked,
     }, [disabled, lockRefunds, refundResult, showDetails]);
 
     useEffect(() => {
+        const durationRef = duration;
         return () => {
-            if (duration.current !== undefined && !initiatedRefund.current) {
+            if (durationRef.current !== undefined && !initiatedRefund.current) {
                 // This component is unmounting (duration.current is defined),
                 // and a refund was not initiated (initiatedRefund.current is false),
                 // indicating an abrupt termination of the refund flow.
