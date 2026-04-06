@@ -164,7 +164,7 @@ export const CurrencyInput = ({
                 readonly: currenciesQuery.isFetching || readonly?.currency,
             },
         };
-    }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
+    }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange, readonly?.currency]);
 
     return (
         <div className="adyen-pe-currency-input__container">

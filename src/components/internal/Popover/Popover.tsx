@@ -163,12 +163,13 @@ function Popover({
         const popover = popoverElement.current;
 
         if (popover) {
+            const target = targetElement.current;
             // eslint-disable-next-line react-hooks/immutability
-            popover[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-            targetElement.current?.setAttribute('aria-controls', popover.id);
+            popover[CONTROL_ELEMENT_PROPERTY] = target;
+            target?.setAttribute('aria-controls', popover.id);
 
             return () => {
-                targetElement.current?.removeAttribute('aria-controls');
+                target?.removeAttribute('aria-controls');
                 // eslint-disable-next-line react-hooks/immutability
                 popover[CONTROL_ELEMENT_PROPERTY] = undefined;
             };

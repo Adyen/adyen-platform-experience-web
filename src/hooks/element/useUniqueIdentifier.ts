@@ -8,14 +8,11 @@ const useUniqueIdentifier = (ref?: Nullable<Reflexable<Element>>) => {
     const idRef = useRef<string>();
 
     return useReflex<Element>(
-        useCallback(
-            (current, previous) => {
-                if (previous instanceof Element && previous.id === idRef.current) previous.id = '';
-                if (!(current instanceof Element)) return;
-                current.id = idRef.current || (idRef.current = uniqueId());
-            },
-            [ref]
-        ),
+        useCallback((current, previous) => {
+            if (previous instanceof Element && previous.id === idRef.current) previous.id = '';
+            if (!(current instanceof Element)) return;
+            current.id = idRef.current || (idRef.current = uniqueId());
+        }, []),
         ref
     );
 };

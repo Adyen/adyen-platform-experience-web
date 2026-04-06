@@ -10,7 +10,7 @@ describe('downloadBlob', () => {
     const mockUrl = 'blob:mock-url';
     const mockBlob = new Blob(['content'], { type: 'text/plain' });
 
-    const DownloadComponent = (data: EndpointDownloadStreamData) => <button onClick={() => downloadBlob(data)}>Download</button>;
+    const DownloadComponent = (data: EndpointDownloadStreamData) => <button onClick={() => downloadBlob(data)}>{'Download'}</button>;
 
     let anchor: HTMLAnchorElement;
     let createElementSpy: MockInstance;

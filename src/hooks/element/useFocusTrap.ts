@@ -54,43 +54,52 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
         };
     }, []);
 
-    const onFocusInCapture = useCallback((evt: FocusEvent) => {
-        // eslint-disable-next-line react-hooks/immutability
-        tabbableRoot.current = focusElementRef.current = (evt.composedPath()[0] || evt.target) as Element | null;
-    }, []);
+    const onFocusInCapture = useCallback(
+        (evt: FocusEvent) => {
+            // eslint-disable-next-line react-hooks/immutability
+            tabbableRoot.current = focusElementRef.current = (evt.composedPath()[0] || evt.target) as Element | null;
+        },
+        [tabbableRoot]
+    );
 
-    const onDocumentFocusInCapture = useCallback((evt: FocusEvent) => {
-        const root = tabbableRoot.root;
-        if (!(root instanceof Element)) return;
+    const onDocumentFocusInCapture = useCallback(
+        (evt: FocusEvent) => {
+            const root = tabbableRoot.root;
+            if (!(root instanceof Element)) return;
 
-        const target = (evt.composedPath()[0] || evt.target) as Element | null;
-        if (focusIsWithin(root, target)) return;
+            const target = (evt.composedPath()[0] || evt.target) as Element | null;
+            if (focusIsWithin(root, target)) return;
 
-        // Only trap focus if it's moving from within this trap.
-        if (!focusIsWithin(root, evt.relatedTarget as Element | null)) return;
+            // Only trap focus if it's moving from within this trap.
+            if (!focusIsWithin(root, evt.relatedTarget as Element | null)) return;
 
-        if (interactionKeyPressed.current && lastInteractionKey.current === InteractionKeyCode.TAB) {
-            const tabbables = tabbableRoot.tabbables;
-            if (tabbables.length) {
-                const nextIndex = lastTabDirection.current === -1 ? tabbables.length - 1 : 0;
-                (tabbables[nextIndex] as HTMLElement)?.focus();
-            } else {
-                focusFallback(root);
+            if (interactionKeyPressed.current && lastInteractionKey.current === InteractionKeyCode.TAB) {
+                const tabbables = tabbableRoot.tabbables;
+                if (tabbables.length) {
+                    const nextIndex = lastTabDirection.current === -1 ? tabbables.length - 1 : 0;
+                    (tabbables[nextIndex] as HTMLElement)?.focus();
+                } else {
+                    focusFallback(root);
+                }
             }
-        }
-    }, []);
+        },
+        [focusFallback, tabbableRoot]
+    );
 
-    const onFocusOut = useCallback((evt: FocusEvent) => {
-        if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
-        if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
-        if (interactionKeyPressed.current) return;
+    const onFocusOut = useCallback(
+        (evt: FocusEvent) => {
+            if (tabbableRoot.tabbables.includes(evt.relatedTarget as Element)) return;
+            if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
+            if (interactionKeyPressed.current) return;
 
-        escapedFocusRef.current = true;
+            escapedFocusRef.current = true;
 
-        requestAnimationFrame(() => {
-            if (escapedFocusRef.current) onEscape((escapedFocusRef.current = false));
-        });
-    }, []);
+            requestAnimationFrame(() => {
+                if (escapedFocusRef.current) onEscape((escapedFocusRef.current = false));
+            });
+        },
+        [onEscape, tabbableRoot]
+    );
 
     const onKeyDownCapture = useMemo(() => {
         let raf: number | undefined;
@@ -129,47 +138,52 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                 }
             } else if (evt.code === InteractionKeyCode.ESCAPE) onEscape(true);
         };
-    }, []);
+    }, [focusFallback, onEscape, tabbableRoot]);
 
     return useReflex<T>(
-        useCallback((current, previous) => {
-            if (previous instanceof Element) {
-                (previous as unknown as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
-                (previous as unknown as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
-                (previous as unknown as HTMLElement).removeEventListener('focusout', onFocusOut, false);
-                (previous as unknown as HTMLElement).removeEventListener('click', onClickCapture, true);
-                document.removeEventListener('focusin', onDocumentFocusInCapture, true);
+        useCallback(
+            (current, previous) => {
+                if (previous instanceof Element) {
+                    (previous as unknown as HTMLElement).removeEventListener('keydown', onKeyDownCapture, true);
+                    (previous as unknown as HTMLElement).removeEventListener('focusin', onFocusInCapture, true);
+                    (previous as unknown as HTMLElement).removeEventListener('focusout', onFocusOut, false);
+                    (previous as unknown as HTMLElement).removeEventListener('click', onClickCapture, true);
+                    document.removeEventListener('focusin', onDocumentFocusInCapture, true);
 
-                if (setRootTabIndexRef.current && previous instanceof HTMLElement) {
-                    previous.removeAttribute('tabindex');
-                    setRootTabIndexRef.current = false;
-                }
-            }
-
-            if (current instanceof Element) {
-                (current as unknown as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
-                (current as unknown as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
-                (current as unknown as HTMLElement).addEventListener('focusout', onFocusOut, false);
-                (current as unknown as HTMLElement).addEventListener('click', onClickCapture, true);
-                document.addEventListener('focusin', onDocumentFocusInCapture, true);
-                escapedFocusRef.current = false;
-                // eslint-disable-next-line react-hooks/immutability
-                tabbableRoot.root = current;
-
-                if (current instanceof HTMLElement && !current.hasAttribute('tabindex')) {
-                    current.setAttribute('tabindex', '-1');
-                    setRootTabIndexRef.current = true;
-                }
-
-                // Automatically focus inside the trap if focus is not already within it
-                if (!focusIsWithin(current, getDeepActiveElement())) {
-                    if (current instanceof HTMLElement) {
-                        current.focus();
+                    if (setRootTabIndexRef.current && previous instanceof HTMLElement) {
+                        previous.removeAttribute('tabindex');
+                        setRootTabIndexRef.current = false;
                     }
                 }
-                // eslint-disable-next-line react-hooks/immutability
-            } else tabbableRoot.root = null;
-        }, []),
+
+                if (current instanceof Element) {
+                    (current as unknown as HTMLElement).addEventListener('keydown', onKeyDownCapture, true);
+                    (current as unknown as HTMLElement).addEventListener('focusin', onFocusInCapture, true);
+                    (current as unknown as HTMLElement).addEventListener('focusout', onFocusOut, false);
+                    (current as unknown as HTMLElement).addEventListener('click', onClickCapture, true);
+                    document.addEventListener('focusin', onDocumentFocusInCapture, true);
+                    escapedFocusRef.current = false;
+                    // eslint-disable-next-line react-hooks/immutability
+                    tabbableRoot.root = current;
+
+                    if (current instanceof HTMLElement && !current.hasAttribute('tabindex')) {
+                        current.setAttribute('tabindex', '-1');
+                        setRootTabIndexRef.current = true;
+                    }
+
+                    // Automatically focus inside the trap if focus is not already within it
+                    if (!focusIsWithin(current, getDeepActiveElement())) {
+                        if (current instanceof HTMLElement) {
+                            current.focus();
+                        }
+                    }
+                } else {
+                    // eslint-disable-next-line react-hooks/immutability
+                    tabbableRoot.root = null;
+                }
+            },
+            [onClickCapture, onDocumentFocusInCapture, onFocusInCapture, onFocusOut, onKeyDownCapture, tabbableRoot]
+        ),
         rootElementRef
     );
 };

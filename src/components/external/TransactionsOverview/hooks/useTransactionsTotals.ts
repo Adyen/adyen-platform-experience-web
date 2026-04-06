@@ -21,7 +21,7 @@ export interface UseTransactionsTotalsProps {
 
 const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
-    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
+    const [fetchTimestamp, setFetchTimestamp] = useState(() => performance.now());
     const fetchTimestampRef = useRef<number>();
 
     const abortable = useRef(createAbortable()).current;

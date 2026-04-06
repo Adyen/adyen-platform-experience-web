@@ -13,11 +13,12 @@ export const useDurationEvent = (eventProperties: AdditionalEventProperties) => 
     }, [eventProperties]);
 
     useEffect(() => {
+        const durationRef = duration;
         return () => {
-            if (duration.current !== undefined) {
+            if (durationRef.current !== undefined) {
                 userEvents.addEvent?.('Duration', {
                     ...analyticsEventPropertiesRef.current,
-                    duration: Math.floor(duration.current satisfies number),
+                    duration: Math.floor(durationRef.current satisfies number),
                 });
             }
         };

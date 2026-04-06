@@ -63,7 +63,7 @@ export default function Modal({
                 tabbableHandle = null!;
             };
         }
-    }, [isOpen]);
+    }, [isOpen, modalRootElement]);
 
     return (
         <>
