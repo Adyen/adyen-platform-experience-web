@@ -14,7 +14,7 @@ export const createInputNormalizer = (maxChars = Infinity) => {
     }
 
     const _extensiveNormalize = (input: string) => {
-        let substringChars = maxChars === Infinity ? input.length : maxChars;
+        const substringChars = maxChars === Infinity ? input.length : maxChars;
         let normalizedChars = 0;
         let normalized = '';
 
