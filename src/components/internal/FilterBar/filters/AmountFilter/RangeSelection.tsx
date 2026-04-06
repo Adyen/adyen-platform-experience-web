@@ -69,7 +69,9 @@ export const RangeSelection = ({
                     type="number"
                     value={minAmount}
                     onInput={e => {
-                        e.currentTarget && setMinAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
+                        if (e.currentTarget) {
+                            setMinAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
+                        }
                     }}
                     min={0}
                     isInvalid={minAmount ? minAmount < 0 : false}
@@ -85,7 +87,9 @@ export const RangeSelection = ({
                     type="number"
                     value={maxAmount}
                     onInput={e => {
-                        e.currentTarget && setMaxAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
+                        if (e.currentTarget) {
+                            setMaxAmount(e.currentTarget.value !== '' ? (e.currentTarget.value as any) : undefined);
+                        }
                     }}
                     min={minAmount}
                     isInvalid={!isUndefined(maxAmount) && maxAmount < (minAmount ?? 0)}

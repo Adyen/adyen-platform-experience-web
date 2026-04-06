@@ -21,10 +21,11 @@ export const popoverUtil = (<T extends Element, U extends Function>() => {
             if (index === -1 && pathMatchIndex !== -1) return pathMatchIndex;
             return index;
         }, -1);
+
         if (index === -1) {
             closeNestedPopovers(0);
-        } else {
-            index + 1 <= popoverRefs.length - 1 && closeNestedPopovers(index + 1);
+        } else if (index + 1 <= popoverRefs.length - 1) {
+            closeNestedPopovers(index + 1);
         }
     };
 

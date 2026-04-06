@@ -61,23 +61,22 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    onSuccess && tryResolve(onSuccess, result).catch(catchCallback);
-                    onSettled && tryResolve(onSettled, result, null).catch(catchCallback);
+                    if (onSuccess) tryResolve(onSuccess, result).catch(catchCallback);
+                    if (onSettled) tryResolve(onSettled, result, null).catch(catchCallback);
                     resetRetries();
                 });
 
                 return result;
             } catch (error: any) {
                 let maxRetries = 0;
+
                 if (isNumber(retry) && (shouldRetry ? shouldRetry(error) : true)) {
                     maxRetries = Math.max(0, Math.floor(retry));
-                } else {
-                    maxRetries = 0;
                 }
 
                 // Handle retries
                 if (retryCountRef.current++ < maxRetries) {
-                    const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : retryDelay ?? 1000;
+                    const delay = isFunction(retryDelay) ? retryDelay(retryCountRef.current) : (retryDelay ?? 1000);
 
                     await new Promise(resolve => setTimeout(resolve, delay));
 
@@ -92,8 +91,8 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
                 // Run error callbacks
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    onError && tryResolve(onError, error).catch(catchCallback);
-                    onSettled && tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    if (onError) tryResolve(onError, error).catch(catchCallback);
+                    if (onSettled) tryResolve(onSettled, undefined, error).catch(catchCallback);
                     resetRetries();
                 });
 

@@ -86,7 +86,9 @@ const useCalendar = (
             onMouseOverCapture: pointerHandle,
             onPointerOverCapture: pointerHandle,
             onKeyDownCapture: (evt: KeyboardEvent) => {
-                grid.cursor(evt) && evt.preventDefault();
+                if (grid.cursor(evt)) {
+                    evt.preventDefault();
+                }
             },
         } as CalendarGridCursorRootProps;
     }, [grid]);
@@ -101,33 +103,35 @@ const useCalendar = (
         )
     );
 
-    useImperativeHandle(
-        ref,
-        () => {
-            const { from, to } = grid?.highlight || EMPTY_OBJECT;
-            return {
-                clear: () => {
-                    grid?.highlight && (grid.highlight.from = undefined);
-                },
-                get config() {
-                    return { ...(config.current ?? EMPTY_OBJECT) };
-                },
-                get from() {
-                    return getDateObjectFromTimestamp(from);
-                },
-                set from(date) {
-                    grid?.highlight && date && (grid.highlight.from = date.getTime());
-                },
-                get to() {
-                    return getDateObjectFromTimestamp(to);
-                },
-                set to(date) {
-                    grid?.highlight && date && (grid.highlight.to = date.getTime());
-                },
-            } as CalendarHandle;
-        },
-        [grid, lastMutationTimestamp]
-    );
+    useImperativeHandle(ref, () => {
+        const { from, to } = grid?.highlight || EMPTY_OBJECT;
+        return {
+            clear: () => {
+                if (grid?.highlight) {
+                    grid.highlight.from = undefined;
+                }
+            },
+            get config() {
+                return { ...(config.current ?? EMPTY_OBJECT) };
+            },
+            get from() {
+                return getDateObjectFromTimestamp(from);
+            },
+            set from(date) {
+                if (grid?.highlight && date) {
+                    grid.highlight.from = date.getTime();
+                }
+            },
+            get to() {
+                return getDateObjectFromTimestamp(to);
+            },
+            set to(date) {
+                if (grid?.highlight && date) {
+                    grid.highlight.to = date.getTime();
+                }
+            },
+        } as CalendarHandle;
+    }, [grid, lastMutationTimestamp]);
 
     useEffect(() => {
         grid.config({

@@ -189,7 +189,7 @@ const Select = <T extends SelectItem>({
                      * - When user has focused select button but not yet moved into select list, close list and keep focus on the select button
                      * - Shift+Tab out of select should close list
                      */
-                    showList && closeList();
+                    if (showList) closeList();
                     pendingClickOutsideTriggeredHideList.current = evt.key === InteractionKeyCode.TAB;
                     return;
                 case InteractionKeyCode.ENTER:
@@ -233,7 +233,8 @@ const Select = <T extends SelectItem>({
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
                                 item.tabIndex = 0;
-                                filterable ? setActiveIndex(activeIndex) : item.focus();
+                                if (filterable) setActiveIndex(activeIndex);
+                                else item.focus();
                                 break focus;
                             }
                             firstAvailableItem = firstAvailableItem || item;
@@ -405,7 +406,9 @@ const Select = <T extends SelectItem>({
         (e: Event) => {
             e.preventDefault();
             setShowList(showList => !showList);
-            showList && resetSelection(cachedSelectedItems.current);
+            if (showList) {
+                resetSelection(cachedSelectedItems.current);
+            }
         },
         [setShowList, showList, resetSelection]
     );

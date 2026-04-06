@@ -18,7 +18,8 @@ export const getNearestFromSortedUniqueNums = (nums: number[], target: number): 
     while (true) {
         const current = nums[(index = mid(lo, hi))] as number;
         if (lo > hi || target === current) return current;
-        target > current ? (lo = index + 1) : (hi = index - 1);
+        if (target > current) lo = index + 1;
+        else hi = index - 1;
     }
 };
 

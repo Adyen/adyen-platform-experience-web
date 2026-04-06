@@ -17,7 +17,9 @@ export const useTooltipListeners = (): {
     const visibilityTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
     const clearVisibilityTimer = useRef(() => {
-        visibilityTimerRef.current && clearTimeout(visibilityTimerRef.current);
+        if (visibilityTimerRef.current) {
+            clearTimeout(visibilityTimerRef.current);
+        }
         visibilityTimerRef.current = undefined;
     }).current;
 
