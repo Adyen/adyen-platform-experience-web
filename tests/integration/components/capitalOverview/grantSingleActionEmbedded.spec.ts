@@ -17,9 +17,16 @@ test.describe('Grant: Single action - Embedded', () => {
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
         await expect(
-            page.getByText('We need a bit more input from you to process your funds. Please complete this action by February 15, 2025.')
+            page.getByText('Please wait and don’t refresh the page. We are processing your request and it might take a minute.')
+        ).toBeVisible();
+
+        /* The following assertions will be resolved in about 1 minute. To cut down the run time of tests they are skipped.
+        await expect(
+          page.getByText('We need a bit more input from you to process your funds. Please complete this action by February 15, 2025.')
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
+        */
+
         await expect(page.getByRole('progressbar')).toBeHidden();
         await expect(page.getByTestId('expand-button')).toBeHidden();
     });

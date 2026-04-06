@@ -1,21 +1,10 @@
 @use '../../../../../style';
-@use '../../../../../style/skeleton';
 
 .adyen-pe-grant-actions {
-    &__actions-title-skeleton {
-        border-radius: style.token(border-radius-s);
-        height: 20px;
-        margin-bottom: style.token(spacer-040);
-        width: 200px;
-        /* stylelint-disable-next-line order/order */
-        @include skeleton.adyen-pe-skeleton-animation();
-    }
-
-    &__actions-description-skeleton {
-        border-radius: style.token(border-radius-s);
-        height: 20px;
-        width: 250px;
-        /* stylelint-disable-next-line order/order */
-        @include skeleton.adyen-pe-skeleton-animation();
+    &__loading-container {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-070);
+        padding: style.token(spacer-100);
     }
 }
