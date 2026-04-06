@@ -23,7 +23,7 @@ export type DatePickerProps = Omit<CalendarProps, 'getGridLabel'> &
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const { i18n } = useCoreContext();
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
-    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(() => performance.now());
 
     const withTimezone = useMemo(() => boolOrTrue(props.showTimezoneInfo), [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });

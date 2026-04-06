@@ -54,7 +54,7 @@ export const getTimeRangeSelectionDefaultPresetOptions = ({
 };
 
 export const useTimeRangeSelection = ({
-    now = Date.now(),
+    now,
     options: presetOptions,
     selectedOption: selectedPresetOption,
     timezone,
@@ -117,7 +117,7 @@ export const useTimeRangeSelection = ({
             const options = Object.values(presetOptions);
 
             options.forEach(ranges => {
-                ranges.now = now;
+                ranges.now = now ?? null;
                 ranges.timezone = timezone;
             });
 

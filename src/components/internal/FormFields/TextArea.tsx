@@ -7,7 +7,7 @@ import { TextareaHTMLAttributes } from 'preact/compat';
 
 export const TextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement> & { maxRows?: number }) => {
     const { className, maxRows, onInput, rows, ...externalProps } = props;
-    const [lastUpdated, setLastUpdated] = useState(performance.now());
+    const [lastUpdated, setLastUpdated] = useState(() => performance.now());
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const inputOriginHeight = useRef(0);
     const inputLineHeight = useRef(0);
