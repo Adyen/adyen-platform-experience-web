@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test, vi } from 'vitest';
-import { act, render, screen, within } from '@testing-library/preact';
+import { render, screen, waitFor, within } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
 import FileInput from './FileInput';
 
@@ -29,9 +29,7 @@ describe('FileInput', () => {
         const dropzone = screen.getByRole('region');
         const fileInput = within(dropzone).getByTestId('dropzone-input');
 
-        await act(async () => {
-            await user.upload(fileInput, MOCK_FILE);
-        });
+        await user.upload(fileInput, MOCK_FILE);
 
         const fileName = screen.getByText('photo.png');
         const fileSize = screen.getByText(/bytes$/);
@@ -52,24 +50,21 @@ describe('FileInput', () => {
 
         render(<FileInput />);
 
-        await act(async () => {
-            const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('dropzone-input');
-            await user.upload(fileInput, MOCK_FILE);
-        });
-
-        const fileDeleteButton = screen.getByRole('button');
-
-        await act(async () => {
-            await user.click(fileDeleteButton);
-        });
-
         const dropzone = screen.getByRole('region');
         const fileInput = within(dropzone).getByTestId('dropzone-input');
 
+        await user.upload(fileInput, MOCK_FILE);
+
+        const fileDeleteButton = screen.getByRole('button');
+
+        await user.click(fileDeleteButton);
+
+        const newDropzone = screen.getByRole('region');
+        const newFileInput = within(newDropzone).getByTestId('dropzone-input');
+
         expect(fileDeleteButton).not.toBeInTheDocument();
 
-        [dropzone, fileInput].forEach(elem => {
+        [newDropzone, newFileInput].forEach(elem => {
             expect(elem).toBeInTheDocument();
             expect(elem).toBeVisible();
         });
@@ -81,20 +76,15 @@ describe('FileInput', () => {
 
         render(<FileInput onChange={onChange} />);
 
-        await act(async () => {
-            const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('dropzone-input');
-            await user.upload(fileInput, MOCK_FILE);
-        });
+        const dropzone = screen.getByRole('region');
+        const fileInput = within(dropzone).getByTestId('dropzone-input');
 
-        expect(onChange).toHaveBeenCalledOnce();
+        await user.upload(fileInput, MOCK_FILE);
+        await waitFor(() => expect(onChange).toHaveBeenCalledOnce());
         expect(onChange).toHaveBeenLastCalledWith([MOCK_FILE]);
 
-        await act(async () => {
-            await user.click(screen.getByRole('button'));
-        });
-
-        expect(onChange).toHaveBeenCalledTimes(2);
+        await user.click(screen.getByRole('button'));
+        await waitFor(() => expect(onChange).toHaveBeenCalledTimes(2));
         expect(onChange).toHaveBeenLastCalledWith([]);
     });
 
@@ -106,13 +96,11 @@ describe('FileInput', () => {
 
         expect(onChange).not.toHaveBeenCalled();
 
-        await act(async () => {
-            const dropzone = screen.getByRole('region');
-            const fileInput = within(dropzone).getByTestId('dropzone-input');
-            await user.upload(fileInput, MOCK_FILE);
-        });
+        const dropzone = screen.getByRole('region');
+        const fileInput = within(dropzone).getByTestId('dropzone-input');
 
-        expect(onChange).toHaveBeenCalledOnce();
+        await user.upload(fileInput, MOCK_FILE);
+        await waitFor(() => expect(onChange).toHaveBeenCalledOnce());
         expect(onChange).toHaveBeenLastCalledWith([MOCK_FILE]);
 
         const onChange2 = vi.fn();
@@ -121,11 +109,8 @@ describe('FileInput', () => {
 
         expect(onChange2).not.toHaveBeenCalled();
 
-        await act(async () => {
-            await user.click(screen.getByRole('button'));
-        });
-
-        expect(onChange2).toHaveBeenCalledOnce();
+        await user.click(screen.getByRole('button'));
+        await waitFor(() => expect(onChange2).toHaveBeenCalledOnce());
         expect(onChange2).toHaveBeenLastCalledWith([]);
     });
 });

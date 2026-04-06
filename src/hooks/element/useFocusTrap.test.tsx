@@ -49,7 +49,7 @@ describe('useFocusTrap', () => {
         render(<TestComponent onEscape={onEscape} />);
 
         const root = screen.getByTestId('trap-root');
-        expect(document.activeElement).toBe(root);
+        expect(root).toHaveFocus();
     });
 
     test('should trap focus when tabbing forward from the last element', async () => {
@@ -61,11 +61,11 @@ describe('useFocusTrap', () => {
         const firstButton = buttons[0];
 
         lastButton.focus();
-        expect(document.activeElement).toBe(lastButton);
+        expect(lastButton).toHaveFocus();
 
         fireEvent.keyDown(lastButton, { key: 'Tab', code: 'Tab', shiftKey: false });
 
-        expect(document.activeElement).toBe(firstButton);
+        expect(firstButton).toHaveFocus();
     });
 
     test('should trap focus when tabbing backward from the first element', () => {
@@ -77,11 +77,11 @@ describe('useFocusTrap', () => {
         const lastButton = buttons[1];
 
         firstButton.focus();
-        expect(document.activeElement).toBe(firstButton);
+        expect(firstButton).toHaveFocus();
 
         fireEvent.keyDown(firstButton, { key: 'Tab', code: 'Tab', shiftKey: true });
 
-        expect(document.activeElement).toBe(lastButton);
+        expect(lastButton).toHaveFocus();
     });
 
     test('should call onEscape when Escape key is pressed', () => {
@@ -102,7 +102,7 @@ describe('useFocusTrap', () => {
 
         fireEvent.click(input);
         input.focus();
-        expect(document.activeElement).toBe(input);
+        expect(input).toHaveFocus();
     });
 
     test('should call onEscape when clicking outside', async () => {
@@ -112,14 +112,14 @@ describe('useFocusTrap', () => {
 
         const firstButton = screen.getAllByRole('button')[0]!;
         await user.click(firstButton);
-        expect(document.activeElement).toBe(firstButton);
+        expect(firstButton).toHaveFocus();
 
         const outsideButton = document.createElement('button');
         outsideButton.textContent = 'Outside';
         document.body.appendChild(outsideButton);
 
         await user.click(outsideButton);
-        expect(document.activeElement).toBe(outsideButton);
+        expect(outsideButton).toHaveFocus();
 
         expect(onEscape).toHaveBeenCalledWith(false);
 
@@ -149,6 +149,7 @@ describe('useFocusTrap', () => {
 
         shadowButton.dispatchEvent(clickEvent);
 
+        // eslint-disable-next-line testing-library/no-node-access
         expect(shadowRoot.activeElement).toBe(shadowButton);
     });
 });

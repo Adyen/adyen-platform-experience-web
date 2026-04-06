@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, test } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/preact';
+import { fireEvent, render, screen } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
 import { getUploadedFilesFromSource } from './upload';
 
@@ -50,10 +50,8 @@ const getDataTransferWithFiles = (files = FILES) => {
 
         const dropzone = screen.getByText(/drag files/i);
 
-        void act(() => {
-            fireEvent.drop(dropzone, {
-                dataTransfer: { files },
-            });
+        fireEvent.drop(dropzone, {
+            dataTransfer: { files },
         });
     });
 };

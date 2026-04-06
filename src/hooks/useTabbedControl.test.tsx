@@ -55,60 +55,69 @@ describe('useTabbedControl', () => {
     });
 
     test('should focus on the right option for navigation key pressed', () => {
+        const expectToBeFocused = (element: HTMLElement) => {
+            expect(element).toHaveAttribute('aria-checked', 'true');
+            expect(element).toHaveFocus();
+        };
+
         render(<TestComponent options={OPTIONS} />);
 
+        const radios = screen.getAllByRole('radio');
+        const firstOption = radios[0]!;
+
         // focus on first option
-        screen.getAllByRole('radio')[0]!.focus();
+        firstOption.focus();
 
         // confirm that first option has focus
-        expect(document.activeElement!.textContent).toBe('option_1');
-        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
+        expectToBeFocused(firstOption);
+
+        let currentFocused = firstOption;
 
         // simulate pressing right arrow key multiple times
         for (let i = 0, j = 2; i < 5; i++, j++) {
             if (j > OPTIONS.length) j = 1;
 
-            fireEvent.keyDown(document.activeElement!, {
+            fireEvent.keyDown(currentFocused, {
                 key: InteractionKeyCode.ARROW_RIGHT,
                 code: InteractionKeyCode.ARROW_RIGHT,
             });
 
-            expect(document.activeElement!.textContent).toBe(`option_${j}`);
-            expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
+            currentFocused = radios[j - 1]!;
+            expectToBeFocused(currentFocused);
         }
 
         // simulate pressing home key
-        fireEvent.keyDown(document.activeElement!, {
+        fireEvent.keyDown(currentFocused, {
             key: InteractionKeyCode.HOME,
             code: InteractionKeyCode.HOME,
         });
 
         // confirm that first option has focus
-        expect(document.activeElement!.textContent).toBe('option_1');
-        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
+        currentFocused = firstOption;
+        expectToBeFocused(currentFocused);
 
         // simulate pressing left arrow key multiple times
         for (let i = 0, j = 0; i < 5; i++, j--) {
             if (j === 0) j = OPTIONS.length;
 
-            fireEvent.keyDown(document.activeElement!, {
+            fireEvent.keyDown(currentFocused, {
                 key: InteractionKeyCode.ARROW_LEFT,
                 code: InteractionKeyCode.ARROW_LEFT,
             });
 
-            expect(document.activeElement!.textContent).toBe(`option_${j}`);
-            expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
+            currentFocused = radios[j - 1]!;
+            expectToBeFocused(currentFocused);
         }
 
         // simulate pressing end key
-        fireEvent.keyDown(document.activeElement!, {
+        fireEvent.keyDown(currentFocused, {
             key: InteractionKeyCode.END,
             code: InteractionKeyCode.END,
         });
 
         // confirm that last option has focus
-        expect(document.activeElement!.textContent).toBe('option_3');
-        expect(document.activeElement!.getAttribute('aria-checked')).toBe('true');
+        currentFocused = radios[OPTIONS.length - 1]!;
+        expectToBeFocused(currentFocused);
     });
 
     test('should have a unique id for each consumer', () => {

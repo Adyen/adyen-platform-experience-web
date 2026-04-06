@@ -22,9 +22,7 @@ describe('Dropzone', () => {
 
         const dropzone = screen.getByRole('region');
         const fileInput: HTMLInputElement = within(dropzone).getByTestId('dropzone-input');
-        const labelElement = within(dropzone)
-            .getByText(/Browse files/)
-            .closest('label')!;
+        const labelElement = within(dropzone).getByTestId('dropzone-label');
 
         [dropzone, fileInput, labelElement].forEach(elem => {
             expect(elem).toBeInTheDocument();
@@ -47,7 +45,7 @@ describe('Dropzone', () => {
 
         const dropzone = screen.getByRole('region');
         const childElement = within(dropzone).getByText(/Choose document/);
-        const labelElement = childElement.closest('label')!;
+        const labelElement = within(dropzone).getByTestId('dropzone-label');
 
         [childElement, labelElement].forEach(elem => {
             expect(elem).toBeInTheDocument();
@@ -201,10 +199,8 @@ describe('Dropzone', () => {
         for (let i = 1; i <= 3; i++) {
             const file = FILES[i % FILES.length]!;
 
-            await act(() => {
-                fireEvent.drop(dropzone, {
-                    dataTransfer: { files: [file] },
-                });
+            fireEvent.drop(dropzone, {
+                dataTransfer: { files: [file] },
             });
 
             await waitFor(() => expect(uploadFilesMock).toHaveBeenCalledTimes(i));
@@ -219,10 +215,8 @@ describe('Dropzone', () => {
 
         const dropzone = screen.getByRole('region');
 
-        await act(() => {
-            fireEvent.drop(dropzone, {
-                dataTransfer: { files: FILES },
-            });
+        fireEvent.drop(dropzone, {
+            dataTransfer: { files: FILES },
         });
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
@@ -240,10 +234,8 @@ describe('Dropzone', () => {
 
         const dropzone = screen.getByRole('region');
 
-        await act(() => {
-            fireEvent.drop(dropzone, {
-                dataTransfer: { files: [DISALLOWED_FILE] },
-            });
+        fireEvent.drop(dropzone, {
+            dataTransfer: { files: [DISALLOWED_FILE] },
         });
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
@@ -263,10 +255,8 @@ describe('Dropzone', () => {
         const dropzone = screen.getByRole('region');
         const file = FILES[0]!;
 
-        await act(() => {
-            fireEvent.drop(dropzone, {
-                dataTransfer: { files: [file] },
-            });
+        fireEvent.drop(dropzone, {
+            dataTransfer: { files: [file] },
         });
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
@@ -285,10 +275,8 @@ describe('Dropzone', () => {
         const dropzone = screen.getByRole('region');
         const file = FILES[0];
 
-        await act(() => {
-            fireEvent.drop(dropzone, {
-                dataTransfer: { files: [file] },
-            });
+        fireEvent.drop(dropzone, {
+            dataTransfer: { files: [file] },
         });
 
         expect(uploadFilesMock).not.toHaveBeenCalled();
