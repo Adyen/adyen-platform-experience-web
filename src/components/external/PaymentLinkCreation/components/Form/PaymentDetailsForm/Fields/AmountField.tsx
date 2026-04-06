@@ -41,7 +41,7 @@ export const AmountField = () => {
                 trigger(VALUE_FIELD_NAME);
             }
         },
-        [setValue, trigger, getValues]
+        [setValue, trigger]
     );
 
     const isRequired = useMemo(() => fieldsConfig?.amount?.required, [fieldsConfig]);
@@ -57,7 +57,7 @@ export const AmountField = () => {
         if (currencyItems?.length === 1) {
             setValue(CURRENCY_FIELD_NAME, currencyItems[0]?.id);
         }
-    }, [currencyItems]);
+    }, [currencyItems, setValue]);
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name={VALUE_FIELD_NAME}>

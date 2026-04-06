@@ -73,7 +73,7 @@ const useCurrenciesLookup = ({ defaultCurrency, balances, totals }: UseCurrencyL
                     return 0; // currencies already sorted alphabetically
                 })
             ),
-        [sortedCurrencies]
+        [sortedCurrencies, defaultCurrency]
     );
 
     return { currenciesDictionary, defaultCurrency, defaultCurrencySortedCurrencies, sortedCurrencies } as const;
