@@ -32,8 +32,11 @@ describe('isBitSafeInteger', () => {
 
         for (let i = 0; i < length; i++) {
             const randomInteger = _randomBitSafeInteger();
-            if (random.has(randomInteger)) --i;
-            else random.add(randomInteger);
+            if (random.has(randomInteger)) {
+                --i;
+            } else {
+                random.add(randomInteger);
+            }
         }
 
         return random;

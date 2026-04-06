@@ -61,8 +61,12 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
                 }
 
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    if (onSuccess) tryResolve(onSuccess, result).catch(catchCallback);
-                    if (onSettled) tryResolve(onSettled, result, null).catch(catchCallback);
+                    if (onSuccess) {
+                        tryResolve(onSuccess, result).catch(catchCallback);
+                    }
+                    if (onSettled) {
+                        tryResolve(onSettled, result, null).catch(catchCallback);
+                    }
                     resetRetries();
                 });
 
@@ -91,8 +95,12 @@ function useMutation<queryFn extends (...args: any[]) => any, ResponseType exten
 
                 // Run error callbacks
                 ALREADY_RESOLVED_PROMISE.then(() => {
-                    if (onError) tryResolve(onError, error).catch(catchCallback);
-                    if (onSettled) tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    if (onError) {
+                        tryResolve(onError, error).catch(catchCallback);
+                    }
+                    if (onSettled) {
+                        tryResolve(onSettled, undefined, error).catch(catchCallback);
+                    }
                     resetRetries();
                 });
 

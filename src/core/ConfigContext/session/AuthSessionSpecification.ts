@@ -10,10 +10,10 @@ import type { onErrorHandler } from '../../types';
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
 export class AuthSessionSpecification implements _AuthSessionSpecification {
-    public declare errorHandler: onErrorHandler | null;
+    declare public errorHandler: onErrorHandler | null;
 
-    public declare readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
-    public declare readonly onRefresh: _AuthSessionSpecification['onRefresh'];
+    declare public readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
+    declare public readonly onRefresh: _AuthSessionSpecification['onRefresh'];
 
     constructor(public onSessionCreate?: SessionRequest) {
         this._errorHandler = this._errorHandler.bind(this);
@@ -68,14 +68,18 @@ export class AuthSessionSpecification implements _AuthSessionSpecification {
             };
             return await _http(sessionHttpOptions);
         } catch (ex: any) {
-            if (ex?.type === ErrorTypes.EXPIRED_TOKEN) throw ERR_SESSION_EXPIRED;
+            if (ex?.type === ErrorTypes.EXPIRED_TOKEN) {
+                throw ERR_SESSION_EXPIRED;
+            }
             throw ex;
         }
     };
 
     private _errorHandler(error: any) {
         try {
-            if (this.errorHandler) this.errorHandler(error);
+            if (this.errorHandler) {
+                this.errorHandler(error);
+            }
         } catch {
             /* Not interested in errors resulting from this instance's `errorHandler()` method */
         }

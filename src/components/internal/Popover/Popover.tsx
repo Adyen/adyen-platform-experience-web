@@ -78,7 +78,9 @@ function Popover({
 
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
-            if (dismiss) dismiss();
+            if (dismiss) {
+                dismiss();
+            }
             if (interactionKeyPressed) {
                 (targetElement?.current as HTMLElement)?.focus();
             }
@@ -89,7 +91,9 @@ function Popover({
     const onKeyDown = useCallback(
         (e: KeyboardEvent) => {
             if (e.code === InteractionKeyCode.ESCAPE) {
-                if (dismiss) dismiss();
+                if (dismiss) {
+                    dismiss();
+                }
                 (targetElement?.current as HTMLElement).focus();
             }
         },
@@ -163,11 +167,12 @@ function Popover({
         const popover = popoverElement.current;
 
         if (popover) {
-            popover[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-            targetElement.current?.setAttribute('aria-controls', popover.id);
+            const target = targetElement.current;
+            popover[CONTROL_ELEMENT_PROPERTY] = target;
+            target?.setAttribute('aria-controls', popover.id);
 
             return () => {
-                targetElement.current?.removeAttribute('aria-controls');
+                target?.removeAttribute('aria-controls');
                 popover[CONTROL_ELEMENT_PROPERTY] = undefined;
             };
         }

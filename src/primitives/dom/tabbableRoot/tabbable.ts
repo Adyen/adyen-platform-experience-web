@@ -48,7 +48,9 @@ export const getDeepActiveElement = (root: Document | ShadowRoot = document): El
 };
 
 export const focusIsWithin = (rootElement: Element = document.body, elementWithFocus?: Element | null): boolean => {
-    if (isUndefined(rootElement)) return false;
+    if (isUndefined(rootElement)) {
+        return false;
+    }
 
     if (isNullish(elementWithFocus)) {
         const activeElement = getDeepActiveElement();
@@ -58,7 +60,9 @@ export const focusIsWithin = (rootElement: Element = document.body, elementWithF
     let parentElement = elementWithFocus.parentNode as Node | null;
 
     while (parentElement) {
-        if (parentElement === rootElement) return true;
+        if (parentElement === rootElement) {
+            return true;
+        }
         parentElement = parentElement instanceof ShadowRoot ? parentElement.host : parentElement?.parentNode || null;
     }
 
@@ -104,7 +108,9 @@ export const withTabbableRoot = () => {
     const focusAt = (tabbableIndex: number) => {
         if (tabbableIndex < 0) return;
         const constrainedIndex = Math.min(tabbableIndex, tabbables.length - 1);
-        if (currentIndex !== constrainedIndex) currentIndex = constrainedIndex;
+        if (currentIndex !== constrainedIndex) {
+            currentIndex = constrainedIndex;
+        }
         (tabbables[currentIndex] as HTMLElement)?.focus();
     };
 
@@ -130,7 +136,9 @@ export const withTabbableRoot = () => {
 
             while (currentNode) {
                 const element = currentNode as Element;
-                if (isTabbable(element)) tabbables.push(element);
+                if (isTabbable(element)) {
+                    tabbables.push(element);
+                }
                 if (element.shadowRoot) {
                     observer.observe(element.shadowRoot, observerConfig);
                     walkAndObserve(element.shadowRoot);
@@ -176,7 +184,9 @@ export const withTabbableRoot = () => {
             get: () => tabbables[currentIndex] ?? null,
             set: (maybeTabbableOrOffset: Element | number | null) => {
                 if (!maybeTabbableOrOffset) return;
-                if (!isNumber(maybeTabbableOrOffset)) return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
+                if (!isNumber(maybeTabbableOrOffset)) {
+                    return focusAt(tabbables.indexOf(maybeTabbableOrOffset));
+                }
                 if (maybeTabbableOrOffset !== ~~maybeTabbableOrOffset) return;
                 return focusAt(mod(currentIndex + maybeTabbableOrOffset, tabbables.length));
             },
@@ -186,7 +196,9 @@ export const withTabbableRoot = () => {
             set: (maybeElement?: any) => {
                 if (maybeElement === root) return;
 
-                if (root) observer.disconnect();
+                if (root) {
+                    observer.disconnect();
+                }
                 root = maybeElement instanceof Element ? maybeElement : null;
                 getTabbables();
             },

@@ -79,7 +79,9 @@ const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ..
 
         const resizeObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
-                if (entry.target !== element) continue;
+                if (entry.target !== element) {
+                    continue;
+                }
                 setCollapsedCardHeight(element.offsetHeight || 0);
             }
         });

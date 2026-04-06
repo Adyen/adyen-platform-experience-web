@@ -42,7 +42,7 @@ export default class MonthFrame extends TimeFrame {
     #selectionToTimestamp?: number;
 
     protected daysInWeek: number = this.#daysInWeek;
-    protected declare origin: Month;
+    declare protected origin: Month;
 
     constructor() {
         super();
@@ -72,7 +72,9 @@ export default class MonthFrame extends TimeFrame {
     set dynamicBlockHeight(bool: boolean | null | undefined) {
         const current = this.dynamicBlockHeight;
         super.dynamicBlockHeight = bool;
-        if (this.dynamicBlockHeight !== current) this.refreshFrame(true);
+        if (this.dynamicBlockHeight !== current) {
+            this.refreshFrame(true);
+        }
     }
 
     get rowspan() {
@@ -134,9 +136,14 @@ export default class MonthFrame extends TimeFrame {
             const date = new Date(this.getTimestampAtIndex(index));
             let flags = 0;
 
-            if (this.#daysOfWeekend.includes(index as WeekDay)) flags |= TimeFlag.WEEKEND;
-            if (index === 0) flags |= TimeFlag.LINE_START;
-            else if (index === 6) flags |= TimeFlag.LINE_END;
+            if (this.#daysOfWeekend.includes(index as WeekDay)) {
+                flags |= TimeFlag.WEEKEND;
+            }
+            if (index === 0) {
+                flags |= TimeFlag.LINE_START;
+            } else if (index === 6) {
+                flags |= TimeFlag.LINE_END;
+            }
 
             const labelDescriptors = {} as {
                 [K in DayOfWeekLabelFormat]: {
@@ -199,21 +206,35 @@ export default class MonthFrame extends TimeFrame {
 
                             let flags = timestamp === this.currentDayTimestamp ? TimeFlag.CURRENT : 0;
 
-                            if (index === this.cursor) flags |= TimeFlag.CURSOR;
-                            if (this.#daysOfWeekend.includes(weekDay)) flags |= TimeFlag.WEEKEND;
+                            if (index === this.cursor) {
+                                flags |= TimeFlag.CURSOR;
+                            }
+                            if (this.#daysOfWeekend.includes(weekDay)) {
+                                flags |= TimeFlag.WEEKEND;
+                            }
 
-                            if (weekDay === 0) flags |= TimeFlag.LINE_START;
-                            else if (weekDay === this.#daysInWeek - 1) flags |= TimeFlag.LINE_END;
+                            if (weekDay === 0) {
+                                flags |= TimeFlag.LINE_START;
+                            } else if (weekDay === this.#daysInWeek - 1) {
+                                flags |= TimeFlag.LINE_END;
+                            }
 
                             if (index >= innerStartIndex && index <= innerEndIndex) {
-                                if (index === innerStartIndex) flags |= TimeFlag.BLOCK_START;
-                                else if (index === innerEndIndex) flags |= TimeFlag.BLOCK_END;
+                                if (index === innerStartIndex) {
+                                    flags |= TimeFlag.BLOCK_START;
+                                } else if (index === innerEndIndex) {
+                                    flags |= TimeFlag.BLOCK_END;
+                                }
                                 flags |= TimeFlag.WITHIN_BLOCK;
                             }
 
                             if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
-                                if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
-                                if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
+                                if (timestamp === this.fromTimestamp) {
+                                    flags |= TimeFlag.RANGE_START;
+                                }
+                                if (timestamp === this.toTimestamp) {
+                                    flags |= TimeFlag.RANGE_END;
+                                }
                                 flags |= TimeFlag.WITHIN_RANGE;
                             }
 

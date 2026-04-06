@@ -177,6 +177,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                         closeEditDialog,
                         openEditDialog,
                         targetElement,
+                        ariaLabel,
+                        filterButtonId,
                     ]
                 )}
             </div>

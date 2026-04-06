@@ -18,8 +18,11 @@ export const getNearestFromSortedUniqueNums = (nums: number[], target: number): 
     while (true) {
         const current = nums[(index = mid(lo, hi))] as number;
         if (lo > hi || target === current) return current;
-        if (target > current) lo = index + 1;
-        else hi = index - 1;
+        if (target > current) {
+            lo = index + 1;
+        } else {
+            hi = index - 1;
+        }
     }
 };
 
@@ -36,7 +39,9 @@ const usePageLimit = ({
 
             for (const option of preferredLimitOptions as number[]) {
                 const limit = getClampedPageLimit(option);
-                if (limit > 0) uniqueOptions.add(limit);
+                if (limit > 0) {
+                    uniqueOptions.add(limit);
+                }
             }
 
             return Object.freeze([...uniqueOptions].sort((a, b) => a - b));
@@ -60,14 +65,18 @@ const usePageLimit = ({
                 selection: {
                     if (uniqueOptions.size === uniqueOptions.add(limit).size) {
                         break selection;
-                    } else uniqueOptions.delete(limit);
+                    } else {
+                        uniqueOptions.delete(limit);
+                    }
 
                     if (uniqueOptions.size === uniqueOptions.add(cachedLimit.current as number).size) {
                         if (isNumber(cachedLimit.current)) {
                             limit = cachedLimit.current;
                             break selection;
                         }
-                    } else uniqueOptions.delete(cachedLimit.current as number);
+                    } else {
+                        uniqueOptions.delete(cachedLimit.current as number);
+                    }
 
                     // limit = cachedLimitOptions.current?.[0] as number;
                     limit = getNearestFromSortedUniqueNums(cachedLimitOptions.current as number[], limit);

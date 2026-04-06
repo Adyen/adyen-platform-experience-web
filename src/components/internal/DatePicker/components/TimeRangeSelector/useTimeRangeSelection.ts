@@ -54,7 +54,7 @@ export const getTimeRangeSelectionDefaultPresetOptions = ({
 };
 
 export const useTimeRangeSelection = ({
-    now = Date.now(),
+    now,
     options: presetOptions,
     selectedOption: selectedPresetOption,
     timezone,
@@ -97,7 +97,7 @@ export const useTimeRangeSelection = ({
             setIsCustomSelection(false);
             setSelectedOption(option);
         },
-        [customOption, getRangesForOption, selectedOption, selectionOptions]
+        [getRangesForOption, selectionOptions]
     );
 
     const customSelection = useCallback(() => {
@@ -113,6 +113,7 @@ export const useTimeRangeSelection = ({
         } else {
             onSelection(selectedPresetOption!);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useMemo(() => {
@@ -120,7 +121,7 @@ export const useTimeRangeSelection = ({
             const options = Object.values(presetOptions);
 
             options.forEach(ranges => {
-                ranges.now = now;
+                ranges.now = now ?? null;
                 ranges.timezone = timezone;
             });
 
@@ -129,6 +130,7 @@ export const useTimeRangeSelection = ({
 
             onSelection(selectedOption!);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [now, timezone, presetOptions]);
 
     return {

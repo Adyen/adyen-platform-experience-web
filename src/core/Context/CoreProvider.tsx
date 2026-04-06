@@ -26,12 +26,13 @@ const CoreProvider = ({
     const commonProps = useMemo(() => _commonProps || {}, [_commonProps]);
     const loadingContext = useMemo(() => _loadingContext ?? '', [_loadingContext]);
 
+    const i18nReadyPromise = i18n?.ready;
     useEffect(() => {
         (async () => {
-            await i18n?.ready;
+            await i18nReadyPromise;
             setReady(true);
         })().catch();
-    }, []);
+    }, [i18nReadyPromise, setReady]);
 
     const coreContextValues = useMemo(
         () => ({

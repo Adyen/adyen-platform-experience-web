@@ -74,6 +74,7 @@ const useCalendar = (
         };
 
         return { grid, kill };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const cursorRootProps = useMemo(() => {
@@ -96,42 +97,51 @@ const useCalendar = (
     const cursorElementRef = useFocusCursor(
         useCallback(
             ((current, previous) => {
-                if (previous instanceof Element) previous.removeAttribute('aria-selected');
-                if (current instanceof Element) current.setAttribute('aria-selected', 'true');
+                if (previous instanceof Element) {
+                    previous.removeAttribute('aria-selected');
+                }
+                if (current instanceof Element) {
+                    current.setAttribute('aria-selected', 'true');
+                }
             }) as ReflexAction<Element>,
             []
         )
     );
 
-    useImperativeHandle(ref, () => {
-        const { from, to } = grid?.highlight || EMPTY_OBJECT;
-        return {
-            clear: () => {
-                if (grid?.highlight) {
-                    grid.highlight.from = undefined;
-                }
-            },
-            get config() {
-                return { ...(config.current ?? EMPTY_OBJECT) };
-            },
-            get from() {
-                return getDateObjectFromTimestamp(from);
-            },
-            set from(date) {
-                if (grid?.highlight && date) {
-                    grid.highlight.from = date.getTime();
-                }
-            },
-            get to() {
-                return getDateObjectFromTimestamp(to);
-            },
-            set to(date) {
-                if (grid?.highlight && date) {
-                    grid.highlight.to = date.getTime();
-                }
-            },
-        } as CalendarHandle;
-    }, [grid, lastMutationTimestamp]);
+    useImperativeHandle(
+        ref,
+        () => {
+            const { from, to } = grid?.highlight || EMPTY_OBJECT;
+            return {
+                clear: () => {
+                    if (grid?.highlight) {
+                        grid.highlight.from = undefined;
+                    }
+                },
+                get config() {
+                    return { ...(config.current ?? EMPTY_OBJECT) };
+                },
+                get from() {
+                    return getDateObjectFromTimestamp(from);
+                },
+                set from(date) {
+                    if (grid?.highlight && date) {
+                        grid.highlight.from = date.getTime();
+                    }
+                },
+                get to() {
+                    return getDateObjectFromTimestamp(to);
+                },
+                set to(date) {
+                    if (grid?.highlight && date) {
+                        grid.highlight.to = date.getTime();
+                    }
+                },
+            } as CalendarHandle;
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [grid, lastMutationTimestamp]
+    );
 
     useEffect(() => {
         grid.config({
@@ -167,9 +177,14 @@ const useCalendar = (
             .slice(0, 2)
             .map(Number)
             .filter(Boolean);
-        if (origins[0]) grid.highlight.from = +origins[0];
-        if (origins[1]) grid.highlight.to = +origins[1];
+        if (origins[0]) {
+            grid.highlight.from = +origins[0];
+        }
+        if (origins[1]) {
+            grid.highlight.to = +origins[1];
+        }
         return kill;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { cursorElementRef, cursorRootProps, grid };

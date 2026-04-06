@@ -143,13 +143,19 @@ export default abstract class TimeFrame {
     }
 
     set dynamicBlockHeight(bool: boolean | null | undefined) {
-        if (isNullish(bool)) this.#dynamicBlockHeight = !!bool;
-        else if (isBoolean(bool)) this.#dynamicBlockHeight = bool;
+        if (isNullish(bool)) {
+            this.#dynamicBlockHeight = !!bool;
+        } else if (isBoolean(bool)) {
+            this.#dynamicBlockHeight = bool;
+        }
     }
 
     set effect(effect: WatchListCallable | null | undefined) {
-        if (isNullish(effect)) this.#effect = undefined;
-        else if (isFunction(effect)) this.#effect = effect;
+        if (isNullish(effect)) {
+            this.#effect = undefined;
+        } else if (isFunction(effect)) {
+            this.#effect = effect;
+        }
     }
 
     get firstWeekDay(): FirstWeekDay {
@@ -160,7 +166,9 @@ export default abstract class TimeFrame {
         if (!isNullish(day)) {
             if (!FIRST_WEEK_DAYS.includes(day)) return;
             if (this.#firstWeekDay === (this.#firstWeekDay = day)) return;
-        } else this.firstWeekDay = 0;
+        } else {
+            this.firstWeekDay = 0;
+        }
     }
 
     get frameBlocks() {
@@ -192,7 +200,9 @@ export default abstract class TimeFrame {
             }
         }
 
-        if (this.#locale !== currentLocale) this.refreshFrame(true);
+        if (this.#locale !== currentLocale) {
+            this.refreshFrame(true);
+        }
     }
 
     get selectionStart() {
@@ -250,7 +260,9 @@ export default abstract class TimeFrame {
                 this.#unwatchCurrentDay();
                 this.#unwatchCurrentDay = undefined;
             }
-        } else if (isNullish(bool)) this.trackCurrentDay = false;
+        } else if (isNullish(bool)) {
+            this.trackCurrentDay = false;
+        }
     }
 
     get units() {
@@ -275,7 +287,9 @@ export default abstract class TimeFrame {
         if (selectionStartTimestamp === this.#selectionStartTimestamp || selectionEndTimestamp === this.#selectionEndTimestamp) {
             this.#selectionStartTimestamp = selectionStartTimestamp;
             this.#selectionEndTimestamp = selectionEndTimestamp;
-        } else this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
+        } else {
+            this.#selectionStartTimestamp = this.#selectionEndTimestamp = undefined;
+        }
 
         this.reslice();
         this.#maxFrameSize = downsizeTimeFrame(12, this.numberOfBlocks);
@@ -301,7 +315,9 @@ export default abstract class TimeFrame {
             if (isNaN(timestamp) || isInfinity(timestamp)) {
                 timestamp = clampedTimestamp;
             }
-        } else timestamp = clampedTimestamp;
+        } else {
+            timestamp = clampedTimestamp;
+        }
 
         const offset = computeTimestampOffset(timestamp, this.#timezone);
 
@@ -368,7 +384,9 @@ export default abstract class TimeFrame {
     #shiftOriginIfNecessary() {
         const size_1 = this.#size - 1;
         const offset = Math.min(size_1 - (this.origin % this.#size), this.#toBlockOffsetFromOrigin) - size_1;
-        if (offset) this.#shiftOrigin(offset);
+        if (offset) {
+            this.#shiftOrigin(offset);
+        }
     }
 
     protected initialize() {
@@ -489,8 +507,11 @@ export default abstract class TimeFrame {
         const timestamp = this.#getContainedTimestamp(time, false).reduce((a, b) => a + b);
 
         if (selection === SELECTION_FARTHEST) {
-            if (timestamp <= currentStart) selection = SELECTION_TO;
-            else if (timestamp >= currentEnd) selection = SELECTION_FROM;
+            if (timestamp <= currentStart) {
+                selection = SELECTION_TO;
+            } else if (timestamp >= currentEnd) {
+                selection = SELECTION_FROM;
+            }
         }
 
         switch (selection) {
@@ -513,7 +534,9 @@ export default abstract class TimeFrame {
 
                 if (startDistance > endDistance) {
                     this.#selectionStartTimestamp = timestamp;
-                } else this.#selectionEndTimestamp = timestamp;
+                } else {
+                    this.#selectionEndTimestamp = timestamp;
+                }
 
                 break;
             }

@@ -167,7 +167,7 @@ function InputBase(
                     disableToggleFocusOnClose
                 />
             ) : null,
-        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly]
+        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly, selectClassNameModifiers]
     );
 
     return (
