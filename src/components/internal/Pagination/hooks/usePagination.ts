@@ -74,23 +74,25 @@ const usePagination = <Pagination extends PaginationType>(
                   })();
               }
             : (noop as UsePagination['goto']);
-    }, [limit, requestPageCallback]);
+    }, [limit, requestPageCallback, $mounted, getPageCount, getPageParams, updatePagination, updatePaginationChanged]);
 
     const next = useCallback(() => {
         page && goto(Math.min(page + 1, getPageCount()));
-    }, [goto, page]);
+    }, [goto, page, getPageCount]);
 
     const prev = useCallback(() => {
         page && goto(Math.max(page - 1, 1));
     }, [goto, page]);
 
-    const pages = useMemo(() => getPageCount() || page || undefined, [goto, paginationChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const pages = useMemo(() => getPageCount() || page || undefined, [getPageCount, page, paginationChanged]);
     const hasNext = useMemo(() => !!(page && pages) && page < pages, [page, pages]);
     const hasPrev = useMemo(() => !!page && page > 1, [page]);
 
     const size = useMemo(
         () => ($maxVisitedPage.current ? ($maxVisitedPage.current - 1) * limit + ($maxVisitedPageSize.current || 0) : 0),
-        [goto, paginationChanged]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [limit, paginationChanged]
     );
 
     const pageSize = useMemo(() => (page ? clamp(0, size - (page - 1) * limit, limit) : 0), [limit, size, page]);
@@ -99,13 +101,13 @@ const usePagination = <Pagination extends PaginationType>(
         resetPageCount();
         $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
         $mounted.current && setCurrentPage($page.current);
-    }, [resetPageCount]);
+    }, [resetPageCount, $mounted]);
 
     useEffect(() => {
         if ($mounted.current && paginationChanged) {
             updatePaginationChanged(false);
         }
-    }, [paginationChanged]);
+    }, [paginationChanged, $mounted, updatePaginationChanged]);
 
     return { goto, hasNext, hasPrev, limit, next, page, pages, pageSize, prev, resetPagination, size };
 };

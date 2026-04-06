@@ -34,7 +34,7 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
         [i18n]
     );
 
-    const mapErrorWithFallback = useMemo(() => (isFunction(mapError) ? mapError : defaultMapError), [mapError]);
+    const mapErrorWithFallback = useMemo(() => (isFunction(mapError) ? mapError : defaultMapError), [mapError, defaultMapError]);
 
     const deleteFile = useCallback(
         (fileToDelete: File) => {
