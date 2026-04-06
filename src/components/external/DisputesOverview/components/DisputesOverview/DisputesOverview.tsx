@@ -67,7 +67,9 @@ const DisputesOverviewTabsDropdown = ({
 
     useEffect(() => {
         const currentTab = DISPUTE_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
-        if (currentTab) onChange(currentTab);
+        if (currentTab) {
+            onChange(currentTab);
+        }
     }, [onChange, statusGroup]);
 
     useEffect(() => setStatusGroup(activeTab), [activeTab]);

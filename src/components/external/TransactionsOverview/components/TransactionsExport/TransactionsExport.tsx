@@ -149,12 +149,16 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
             const isMasterSwitch = checkbox.id === masterSwitchId;
 
             setExportColumns(exportColumns => {
-                if (isMasterSwitch) return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                if (isMasterSwitch) {
+                    return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                }
                 if (EXPORT_COLUMNS.includes(checkedColumn)) {
                     const columnIndex = exportColumns.indexOf(checkedColumn);
                     if (checked) {
                         // Include checked column
-                        if (columnIndex < 0) return [...exportColumns, checkedColumn];
+                        if (columnIndex < 0) {
+                            return [...exportColumns, checkedColumn];
+                        }
                     } else if (columnIndex >= 0) {
                         // Exclude unchecked column
                         return [...exportColumns.slice(0, columnIndex), ...exportColumns.slice(columnIndex + 1)];

@@ -76,7 +76,9 @@ const PaymentLinksOverviewTabsDropdown = ({
 
     useEffect(() => {
         const currentTab = PAYMENT_LINK_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
-        if (currentTab) onChange(currentTab);
+        if (currentTab) {
+            onChange(currentTab);
+        }
     }, [onChange, statusGroup]);
 
     useEffect(() => setStatusGroup(activeTab), [activeTab]);
@@ -256,7 +258,9 @@ export const PaymentLinksOverview = ({
 
     const onMerchantReferenceFilterChange = useCallback(
         (merchantReference?: string) => {
-            if (!merchantReference) merchantReference = undefined;
+            if (!merchantReference) {
+                merchantReference = undefined;
+            }
             updateFilters({ merchantReference: merchantReference });
         },
         [updateFilters]
@@ -264,7 +268,9 @@ export const PaymentLinksOverview = ({
 
     const onPaymentLinkIDFilterChange = useCallback(
         (paymentLinkId?: string) => {
-            if (!paymentLinkId) paymentLinkId = undefined;
+            if (!paymentLinkId) {
+                paymentLinkId = undefined;
+            }
             updateFilters({ paymentLinkId: paymentLinkId });
         },
         [updateFilters]

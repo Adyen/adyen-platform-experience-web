@@ -41,7 +41,14 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, shor
     };
 
     const renderProps = getGridDayOfWeekRenderProps(props, prepare);
-    const { children: _, className, onCommand, ...extendedProps } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
+
+    const {
+        children: _,
+        className,
+        onCommand,
+        ref: extendedRef,
+        ...extendedProps
+    } = renderProps.props || (EMPTY_OBJECT as NonNullable<typeof renderProps.props>);
 
     const classes = getClassName(renderProps.className, DEFAULT_CELL_CLASSNAME, className);
 
@@ -53,7 +60,7 @@ const CalendarGridDayOfWeek = ({ prepare, flags, labels: { long: longLabel, shor
     const childClasses = getClassName(renderProps.childClassName, DEFAULT_CELL_ABBR_CLASSNAME, childClassName);
 
     return (
-        <th {...extendedProps} ref={extendedProps.ref as Ref<HTMLTableCellElement>} {...props} className={classes}>
+        <th {...extendedProps} ref={extendedRef as Ref<HTMLTableCellElement>} {...props} className={classes}>
             <abbr {...extendedChildProps} className={childClasses}>
                 {shortLabel}
             </abbr>

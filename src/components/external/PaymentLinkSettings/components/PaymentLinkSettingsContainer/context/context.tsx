@@ -118,11 +118,15 @@ export const PaymentLinkSettingsProvider = memo(
             switch (activeMenuItem) {
                 case MenuItem.theme:
                     setLoading(true);
-                    if (selectedStore) setFetchThemeEnabled(true);
+                    if (selectedStore) {
+                        setFetchThemeEnabled(true);
+                    }
                     break;
                 case MenuItem.termsAndConditions:
                     setLoading(true);
-                    if (selectedStore) setFetchTermsAndConditionsEnabled(true);
+                    if (selectedStore) {
+                        setFetchTermsAndConditionsEnabled(true);
+                    }
                     break;
             }
         }, [activeMenuItem, selectedStore, resetState]);
@@ -167,7 +171,9 @@ export const PaymentLinkSettingsProvider = memo(
         }, [activeData, setSavedData]);
 
         useEffect(() => {
-            if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
+            if (!selectedStore) {
+                setSelectedStore(filteredStores?.[0]?.id);
+            }
         }, [filteredStores, selectedStore, setSelectedStore]);
 
         const onDataSave = useCallback(
@@ -178,7 +184,9 @@ export const PaymentLinkSettingsProvider = memo(
         );
 
         useEffect(() => {
-            if (themeError || termsAndConditionsError) setLoading(false);
+            if (themeError || termsAndConditionsError) {
+                setLoading(false);
+            }
         }, [themeError, termsAndConditionsError]);
 
         const setIsValid = useCallback((validity: boolean) => {
