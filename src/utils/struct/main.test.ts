@@ -61,7 +61,9 @@ describe('struct', () => {
             // attempt writes
             obj.a = _aValue;
             obj.b = _bValue as any; // will throw an error
-        } catch {}
+        } catch {
+            /* intentionally empty */
+        }
 
         // modified `obj.a` (writable)
         expect(obj.a).not.toBe(aValue);
@@ -84,7 +86,9 @@ describe('struct', () => {
             Object.defineProperty(obj, 'a', {
                 get: bGetter, // will throw an error
             });
-        } catch {}
+        } catch {
+            /* intentionally empty */
+        }
 
         expect(Object.getOwnPropertyNames(obj)).toMatchObject(['a', 'b']);
         expect(Object.keys(obj)).toMatchObject([]); // `obj.b` is no longer enumerable
@@ -133,7 +137,9 @@ describe('structFrom', () => {
             // attempt writes
             obj.a = _aValue;
             obj.b = _bValue as any; // will throw an error
-        } catch {}
+        } catch {
+            /* intentionally empty */
+        }
 
         // modified `obj.a` (writable)
         expect(obj.a).not.toBe(aValue);
@@ -156,7 +162,9 @@ describe('structFrom', () => {
             Object.defineProperty(obj, 'a', {
                 get: bGetter, // will throw an error
             });
-        } catch {}
+        } catch {
+            /* intentionally empty */
+        }
 
         expect(Object.getOwnPropertyNames(obj)).toMatchObject(['a', 'b']);
         expect(Object.keys(obj)).toMatchObject([]); // `obj.b` is no longer enumerable

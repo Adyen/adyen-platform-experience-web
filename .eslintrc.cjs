@@ -68,6 +68,8 @@ module.exports = {
                     'tests/**/*.{ts,js}',
                     'tests/**/**/*.spec.ts',
                     'src/utils/testing/**/*.{ts,tsx}',
+                    'src/**/__testing__/**/*.{ts,tsx}',
+                    'src/**/testing/**/*.{ts,tsx}',
                 ],
                 includeTypes: false,
             },

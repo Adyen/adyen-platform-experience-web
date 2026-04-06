@@ -49,7 +49,7 @@ const PaymentRefundReference = () => {
                     </Typography>
                 </div>
                 <Typography className={TX_DATA_INPUT_CHARS} el={TypographyElement.DIV} variant={TypographyVariant.BODY}>
-                    {characters} / {REFUND_REFERENCE_CHAR_LIMIT}
+                    {`${characters} / ${REFUND_REFERENCE_CHAR_LIMIT}`}
                 </Typography>
             </div>
 
