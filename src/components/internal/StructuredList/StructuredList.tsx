@@ -58,7 +58,7 @@ export default function StructuredList({
                             <Typography variant={typographyVariant}>{item.label}</Typography>
                         )}
                     </dt>
-                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)} data-testid={`${item.key}-value`}>
+                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)} data-testid={item.id ? `${item.id}-value` : undefined}>
                         {item.render ? (
                             item.render(item)
                         ) : renderValue ? (

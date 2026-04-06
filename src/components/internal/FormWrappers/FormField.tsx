@@ -15,7 +15,7 @@ const FormField = ({
     const { i18n } = useCoreContext();
 
     return (
-        <div className={cx('adyen-pe-payment-link-creation-form__field-container', className)} role="group" aria-label={label} data-testid={testId}>
+        <div className={cx('adyen-pe-payment-link-creation-form__field-container', className)} data-testid={testId}>
             <div className="adyen-pe-payment-link-creation-form__field-label-container">
                 <Typography
                     el={TypographyElement.SPAN}

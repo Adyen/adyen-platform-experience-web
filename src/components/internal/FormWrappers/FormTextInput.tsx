@@ -49,7 +49,6 @@ export function FormTextInput<TFieldValues>({
 }: FormTextInputProps<TFieldValues>) {
     const { control, fieldsConfig } = useWizardFormContext<TFieldValues>();
     const { i18n } = useCoreContext();
-    const fieldNameValue = String(fieldName);
 
     const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
     const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
@@ -84,7 +83,7 @@ export function FormTextInput<TFieldValues>({
                 optional={!isRequired && !hideOptionalLabel}
                 supportText={supportText}
                 className={className}
-                testId={`form-field-${fieldNameValue}`}
+                testId={fieldName ? `form-field-${fieldName}` : undefined}
             >
                 <Controller<TFieldValues>
                     name={fieldName}
@@ -106,7 +105,7 @@ export function FormTextInput<TFieldValues>({
                                 isValid={!fieldState.error}
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}
-                                errorTestId={`field-error-${fieldNameValue}`}
+                                errorTestId={fieldName ? `field-error-${fieldName}` : undefined}
                                 onDropdownInput={(...params) => {
                                     onDropdownInput?.(...params);
                                     if (isInvalid) {
