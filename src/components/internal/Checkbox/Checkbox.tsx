@@ -1,19 +1,17 @@
 import cx from 'classnames';
-import { useEffect, useState, useRef, useCallback } from 'preact/hooks';
-
-import { CheckboxProps } from './types';
-import './Checkbox.scss';
 import Icon from '../Icon';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { uniqueId } from '../../../utils';
+import { CheckboxProps } from './types';
 import { h } from 'preact';
+import './Checkbox.scss';
 
 export const Checkbox = ({ checked, error, description, disabled, id, label, name, value, onInput, className, ...props }: CheckboxProps) => {
     const [checkedInternal, setCheckedInternal] = useState(checked);
-    const inputRef = useRef(uniqueId());
-
-    const inputId = id || inputRef.current;
+    const stableId = useMemo(uniqueId, []);
+    const inputId = id || stableId;
 
     const handleInput = useCallback(
         (event: h.JSX.TargetedEvent<HTMLInputElement>) => {
