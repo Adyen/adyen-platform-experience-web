@@ -21,17 +21,17 @@ export const useTooltipListeners = (): {
         visibilityTimerRef.current = undefined;
     }).current;
 
+    const hideTooltip = useCallback(() => {
+        clearVisibilityTimer();
+        setIsVisible(false);
+    }, [clearVisibilityTimer, setIsVisible]);
+
     const showTooltip = useCallback(() => {
         visibilityTimerRef.current ??= setTimeout(() => {
             visibilityTimerRef.current = setTimeout(hideTooltip, 15000);
             setIsVisible(true);
         }, 500);
-    }, [setIsVisible]);
-
-    const hideTooltip = useCallback(() => {
-        clearVisibilityTimer();
-        setIsVisible(false);
-    }, [setIsVisible]);
+    }, [hideTooltip, setIsVisible]);
 
     const onKeyDown = useCallback(
         (evt: KeyboardEvent) => {

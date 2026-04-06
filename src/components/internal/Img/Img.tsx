@@ -31,7 +31,7 @@ export default function Img(props: ImgProps) {
             image.onload = handleLoad;
         }
         setLoaded(!!image?.complete);
-    }, []);
+    }, [backgroundUrl, src]);
 
     if (backgroundUrl) {
         return <div style={{ backgroundUrl } as JSX.CSSProperties} {...props} className={classNames} />;
