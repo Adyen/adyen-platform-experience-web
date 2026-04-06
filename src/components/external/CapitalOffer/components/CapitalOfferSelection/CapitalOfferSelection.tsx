@@ -183,7 +183,7 @@ export const CapitalOfferSelection = ({
                 });
             }
         },
-        [debouncedGetOfferCall, userEvents]
+        [debouncedGetOfferCall, userEvents, currency]
     );
 
     useEffect(() => {

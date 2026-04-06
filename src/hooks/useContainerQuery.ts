@@ -3,7 +3,7 @@ import useCoreContext from '../core/Context/useCoreContext';
 
 export const useContainerQuery = <T extends readonly [string, number, { min?: number; max?: number }?]>(query: T) => {
     const { componentRef } = useCoreContext();
-    const [width, setWidth] = useState(componentRef.current?.offsetWidth || 0);
+    const [width, setWidth] = useState(0);
     const [type, breakpoint, minMax] = query;
 
     let queryMatch = false;
@@ -28,6 +28,8 @@ export const useContainerQuery = <T extends readonly [string, number, { min?: nu
     useEffect(() => {
         const containerElement = componentRef.current;
         if (!containerElement) return;
+
+        setWidth(containerElement.offsetWidth);
 
         // ResizeObserver to watch for changes to container's size.
         const resizeObserver = new ResizeObserver(entries => {

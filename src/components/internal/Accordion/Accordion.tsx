@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
-import { useCallback, useRef, useState } from 'preact/hooks';
+import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import useUniqueId from '../../../hooks/useUniqueId';
 import {
     ACCORDION_BASE_CLASS,
@@ -15,12 +15,19 @@ import './Accordion.scss';
 
 function Accordion({ children, classNames, header, headerInformation }: PropsWithChildren<AccordionProps>) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [contentHeight, setContentHeight] = useState(0);
     const accordionContentRef = useRef<HTMLDivElement>(null);
     const toggle = useCallback(() => setIsExpanded(isExpanded => !isExpanded), []);
 
     const uniqueId = useUniqueId();
     const contentElementId = `accordion-content-${uniqueId}`;
     const controllerElementId = `accordion-controller-${uniqueId}`;
+
+    useLayoutEffect(() => {
+        if (accordionContentRef.current) {
+            setContentHeight(accordionContentRef.current.offsetHeight);
+        }
+    }, []);
 
     return (
         <div className={classnames(ACCORDION_BASE_CLASS, classNames)}>
@@ -44,7 +51,7 @@ function Accordion({ children, classNames, header, headerInformation }: PropsWit
                     role="region"
                     id={contentElementId}
                     aria-labelledby={controllerElementId}
-                    style={{ maxHeight: isExpanded ? accordionContentRef?.current?.offsetHeight : 0 }}
+                    style={{ maxHeight: isExpanded ? contentHeight : 0 }}
                     className={ACCORDION_CONTENT_CLASS}
                 >
                     <div ref={accordionContentRef}>{children}</div>

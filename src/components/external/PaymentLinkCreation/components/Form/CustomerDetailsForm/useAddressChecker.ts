@@ -1,4 +1,4 @@
-import { useCallback } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../../../../hooks/form/wizard/WizardFormContext';
 import { useWatch } from '../../../../../../hooks/form';
 import { PaymentLinkCreationFormValues } from '../../types';
@@ -37,21 +37,27 @@ export const useAddressChecker = () => {
     const billingCity = useWatch(control, 'billingAddress.city' as FieldValues<PaymentLinkCreationFormValues>);
     const billingPostalCode = useWatch(control, 'billingAddress.postalCode' as FieldValues<PaymentLinkCreationFormValues>);
 
-    const deliveryValues = {
-        'deliveryAddress.street': deliveryStreet,
-        'deliveryAddress.houseNumberOrName': deliveryHouseNumber,
-        'deliveryAddress.country': deliveryCountry,
-        'deliveryAddress.city': deliveryCity,
-        'deliveryAddress.postalCode': deliveryPostalCode,
-    };
+    const deliveryValues = useMemo(
+        () => ({
+            'deliveryAddress.street': deliveryStreet,
+            'deliveryAddress.houseNumberOrName': deliveryHouseNumber,
+            'deliveryAddress.country': deliveryCountry,
+            'deliveryAddress.city': deliveryCity,
+            'deliveryAddress.postalCode': deliveryPostalCode,
+        }),
+        [deliveryStreet, deliveryHouseNumber, deliveryCountry, deliveryCity, deliveryPostalCode]
+    );
 
-    const billingValues = {
-        'billingAddress.street': billingStreet,
-        'billingAddress.houseNumberOrName': billingHouseNumber,
-        'billingAddress.country': billingCountry,
-        'billingAddress.city': billingCity,
-        'billingAddress.postalCode': billingPostalCode,
-    };
+    const billingValues = useMemo(
+        () => ({
+            'billingAddress.street': billingStreet,
+            'billingAddress.houseNumberOrName': billingHouseNumber,
+            'billingAddress.country': billingCountry,
+            'billingAddress.city': billingCity,
+            'billingAddress.postalCode': billingPostalCode,
+        }),
+        [billingStreet, billingHouseNumber, billingCountry, billingCity, billingPostalCode]
+    );
 
     const isAddressFieldRequired = useCallback(
         (fieldName: FieldValues<PaymentLinkCreationFormValues>) => {
