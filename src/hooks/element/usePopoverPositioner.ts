@@ -1,5 +1,5 @@
 import { h, Ref } from 'preact';
-import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { MutableRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import getIntersectionObserver from '../../components/internal/Popover/utils/utils';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../components/internal/Popover/types';
 import { isRefObject } from '../../primitives/reactive/reflex/helpers';
@@ -209,7 +209,10 @@ const usePopoverPositioner = (
     const popoverRef = useRef<Element | null>(null);
     const currentPositionRef = useRef(currentPosition);
     const lastTargetRectRef = useRef<{ x: number; y: number } | null>(null);
-    currentPositionRef.current = currentPosition;
+
+    useLayoutEffect(() => {
+        currentPositionRef.current = currentPosition;
+    }, [currentPosition]);
 
     // Track scroll events to update popover position relative to target element
     useEffect(() => {
@@ -255,7 +258,7 @@ const usePopoverPositioner = (
             window.removeEventListener('scroll', handleScroll, { capture: true });
             if (rafId) cancelAnimationFrame(rafId);
         };
-    }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition]);
+    }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition, showPopover]);
 
     const observerCallback = useCallback(
         (entry: IntersectionObserverEntry) => {

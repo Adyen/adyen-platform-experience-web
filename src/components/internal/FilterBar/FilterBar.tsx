@@ -33,7 +33,7 @@ export const FilterBarMobileSwitch = ({
     setShowingFilters,
 }: FilterBarMobileSwitchProps) => {
     const { i18n } = useCoreContext();
-    const ariaLabel = useMemo(() => i18n.get(ariaLabelKey ?? 'common.filters.mobile.label'), [i18n]);
+    const ariaLabel = useMemo(() => i18n.get(ariaLabelKey ?? 'common.filters.mobile.label'), [i18n, ariaLabelKey]);
     const disabled = !isFunction(setShowingFilters);
     const expanded = !disabled && !!showingFilters;
 
