@@ -121,7 +121,7 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
                 logEvent?.('update', eventValue);
             }
         },
-        [i18n, from, to, customDateRange, defaultDateRange, selectedDateRange, logEvent]
+        [i18n, from, to, customDateRange, defaultDateRange, selectedDateRange, logEvent, setCreatedDate]
     );
 
     const onFilterResetAction = useCallback(() => setPendingResetAction(true), []);

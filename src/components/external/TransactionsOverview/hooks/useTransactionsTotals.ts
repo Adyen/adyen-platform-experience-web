@@ -56,7 +56,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
 
     const refresh = useCallback(() => {
         if (canRefresh) setPendingRefresh(true);
-    }, [canRefresh, isFetching]);
+    }, [canRefresh]);
 
     useEffect(() => {
         if (cachedFiltersRef.current === filters) return;

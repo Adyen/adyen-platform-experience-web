@@ -59,7 +59,7 @@ const useCurrencySelection = ({
             cachedActiveCurrencyRef.current = undefined;
             setActiveCurrency(getCurrencyIfAvailable(selectedCurrency));
         }
-    }, [getCurrencyIfAvailable, selectedCurrency]);
+    }, [getCurrencyIfAvailable, selectedCurrency, availableCurrencies]);
 
     useEffect(() => {
         const cachedActiveCurrency = cachedActiveCurrencyRef.current;

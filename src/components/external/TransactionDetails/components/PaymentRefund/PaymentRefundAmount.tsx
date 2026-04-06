@@ -85,7 +85,7 @@ const PaymentRefundAmount = memo(({ currency, disabled, onChange, value }: Payme
             setValidationError(error);
             onChange?.(error ? 0 : amount);
         },
-        [currencyExponent, refundableAmount, onChange]
+        [currencyExponent, refundableAmount, onChange, i18n.locale]
     );
 
     const cachedRefundableAmountRef = useRef<number>();
@@ -100,7 +100,7 @@ const PaymentRefundAmount = memo(({ currency, disabled, onChange, value }: Payme
         if (inputElementRef.current) {
             onInput(inputElementRef.current);
         }
-    }, [onInput, disabled, formattedAmount, refundableAmount]);
+    }, [onInput, disabled, formattedAmount, refundableAmount, validationError]);
 
     return (
         <div className={TX_DATA_CONTAINER}>
