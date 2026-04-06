@@ -26,8 +26,8 @@ const usePageLimit = ({
     preferredLimit = DEFAULT_PAGE_LIMIT,
     preferredLimitOptions,
 }: Pick<BasePaginatedRecordsInitOptions<any, any, any, any>, 'preferredLimit' | 'preferredLimitOptions'>) => {
-    const cachedLimitOptions = useRef<readonly number[]>();
-    const cachedLimit = useRef<number>();
+    const cachedLimitOptionsRef = useRef<readonly number[]>();
+    const cachedLimitRef = useRef<number>();
 
     const options = useMemo(() => {
         try {
@@ -48,35 +48,35 @@ const usePageLimit = ({
         let limit = getClampedPageLimit(preferredLimit) || DEFAULT_PAGE_LIMIT;
 
         parsing: try {
-            const uniqueOptions = new Set((cachedLimitOptions.current = options));
+            const uniqueOptions = new Set((cachedLimitOptionsRef.current = options));
 
             if (uniqueOptions.size === 0) {
-                cachedLimitOptions.current = undefined;
+                cachedLimitOptionsRef.current = undefined;
                 break parsing;
             }
 
-            if (cachedLimit.current !== limit) {
+            if (cachedLimitRef.current !== limit) {
                 selection: {
                     if (uniqueOptions.size === uniqueOptions.add(limit).size) {
                         break selection;
                     } else uniqueOptions.delete(limit);
 
-                    if (uniqueOptions.size === uniqueOptions.add(cachedLimit.current as number).size) {
-                        if (isNumber(cachedLimit.current)) {
-                            limit = cachedLimit.current;
+                    if (uniqueOptions.size === uniqueOptions.add(cachedLimitRef.current as number).size) {
+                        if (isNumber(cachedLimitRef.current)) {
+                            limit = cachedLimitRef.current;
                             break selection;
                         }
-                    } else uniqueOptions.delete(cachedLimit.current as number);
+                    } else uniqueOptions.delete(cachedLimitRef.current as number);
 
-                    // limit = cachedLimitOptions.current?.[0] as number;
-                    limit = getNearestFromSortedUniqueNums(cachedLimitOptions.current as number[], limit);
+                    // limit = cachedLimitOptionsRef.current?.[0] as number;
+                    limit = getNearestFromSortedUniqueNums(cachedLimitOptionsRef.current as number[], limit);
                 }
             }
         } catch {
             /* ignore exception here — there are no options */
         }
 
-        return (cachedLimit.current = limit);
+        return (cachedLimitRef.current = limit);
     }, [options, preferredLimit]);
 
     return { limit, limitOptions: options } as const;

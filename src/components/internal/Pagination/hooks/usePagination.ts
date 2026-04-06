@@ -11,19 +11,19 @@ const usePagination = <Pagination extends PaginationType>(
     requestPageCallback?: RequestPageCallback<Pagination>,
     pageLimit?: number
 ): UsePagination => {
-    const $controller = useRef<AbortController>();
-    const $maxVisitedPage = useRef<number>();
-    const $maxVisitedPageSize = useRef<number>();
-    const $page = useRef<number>();
+    const $controllerRef = useRef<AbortController>();
+    const $maxVisitedPageRef = useRef<number>();
+    const $maxVisitedPageSizeRef = useRef<number>();
+    const $pageRef = useRef<number>();
 
     const $mounted = useMounted(
         useCallback(() => {
-            $controller.current?.abort();
-            $controller.current = undefined;
+            $controllerRef.current?.abort();
+            $controllerRef.current = undefined;
         }, [])
     );
 
-    const [page, setCurrentPage] = useState($page.current);
+    const [page, setCurrentPage] = useState($pageRef.current);
     const [paginationChanged, updatePaginationChanged] = useBooleanState(false);
     const limit = useMemo(() => getClampedPageLimit(pageLimit), [pageLimit]);
 
@@ -40,17 +40,17 @@ const usePagination = <Pagination extends PaginationType>(
 
                   if (!isValidPageRequest) return;
 
-                  $controller.current?.abort();
-                  $controller.current = new AbortController();
+                  $controllerRef.current?.abort();
+                  $controllerRef.current = new AbortController();
 
                   if (!$mounted.current) return;
 
-                  if (($page.current = requestedPage) > 1 || PAGES) {
-                      setCurrentPage($page.current);
+                  if (($pageRef.current = requestedPage) > 1 || PAGES) {
+                      setCurrentPage($pageRef.current);
                   }
 
                   (async () => {
-                      const { signal } = $controller.current as AbortController;
+                      const { signal } = $controllerRef.current as AbortController;
                       const params = { ...getPageParams(requestedPage, limit), limit, page: requestedPage } as RequestPageCallbackParams<Pagination>;
 
                       try {
@@ -60,12 +60,12 @@ const usePagination = <Pagination extends PaginationType>(
                           const { size, ...paginationData } = data;
 
                           updatePagination(requestedPage, limit, paginationData);
-                          $maxVisitedPage.current = $page.current && Math.max($page.current, $maxVisitedPage.current || -Infinity);
+                          $maxVisitedPageRef.current = $pageRef.current && Math.max($pageRef.current, $maxVisitedPageRef.current || -Infinity);
 
-                          if ($page.current && $page.current === $maxVisitedPage.current) $maxVisitedPageSize.current = size;
-                          if ($page.current === 1 && size > 0) setCurrentPage($page.current);
+                          if ($pageRef.current && $pageRef.current === $maxVisitedPageRef.current) $maxVisitedPageSizeRef.current = size;
+                          if ($pageRef.current === 1 && size > 0) setCurrentPage($pageRef.current);
 
-                          $page.current = undefined;
+                          $pageRef.current = undefined;
                           updatePaginationChanged(true);
                       } catch (ex) {
                           if (signal.aborted) return;
@@ -89,7 +89,7 @@ const usePagination = <Pagination extends PaginationType>(
     const hasPrev = useMemo(() => !!page && page > 1, [page]);
 
     const size = useMemo(
-        () => ($maxVisitedPage.current ? ($maxVisitedPage.current - 1) * limit + ($maxVisitedPageSize.current || 0) : 0),
+        () => ($maxVisitedPageRef.current ? ($maxVisitedPageRef.current - 1) * limit + ($maxVisitedPageSizeRef.current || 0) : 0),
         [goto, paginationChanged]
     );
 
@@ -97,8 +97,8 @@ const usePagination = <Pagination extends PaginationType>(
 
     const resetPagination = useCallback(() => {
         resetPageCount();
-        $maxVisitedPage.current = $maxVisitedPageSize.current = $page.current = undefined;
-        $mounted.current && setCurrentPage($page.current);
+        $maxVisitedPageRef.current = $maxVisitedPageSizeRef.current = $pageRef.current = undefined;
+        $mounted.current && setCurrentPage($pageRef.current);
     }, [resetPageCount]);
 
     useEffect(() => {
