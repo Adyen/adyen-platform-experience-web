@@ -11,7 +11,7 @@ export interface UseAccountBalancesProps {
 
 const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
-    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
+    const [fetchTimestamp, setFetchTimestamp] = useState(() => performance.now());
     const fetchTimestampRef = useRef<number>();
 
     const abortable = useRef(createAbortable()).current;
@@ -47,7 +47,7 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
 
     const refresh = useCallback(() => {
         if (canRefresh) setPendingRefresh(true);
-    }, [canRefresh, isFetching]);
+    }, [canRefresh]);
 
     useEffect(() => {
         if (balanceAccountId) {
