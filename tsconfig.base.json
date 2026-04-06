@@ -20,11 +20,9 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@iex/lib": ["packages/shared/lib/src/index.ts"],
-            "@iex/lib/*": ["packages/shared/lib/src/*"],
-            "@iex/sample-domain/domain": ["packages/domains/sample-domain/domain/src/index.ts"],
-            "@iex/sample-domain/preact": ["packages/domains/sample-domain/preact/src/index.ts"],
-            "@iex/sample-domain/publish": ["packages/domains/sample-domain/publish/src/index.ts"]
+            "@integration-components/sdk": ["packages/shared/lib/src/index.ts"],
+            "@integration-components/sdk/*": ["packages/shared/lib/src/*"],
+            "@integration-components/reports/publish": ["packages/domains/reports/publish/src/index.ts"]
         }
     }
 }

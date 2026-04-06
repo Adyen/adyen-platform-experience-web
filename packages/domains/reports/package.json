@@ -1,5 +1,5 @@
 {
-    "name": "@iex/sample-domain",
+    "name": "@integration-components/reports",
     "version": "0.0.1",
     "private": true,
     "type": "module",
@@ -9,6 +9,6 @@
         "./publish": "./publish/src/index.ts"
     },
     "dependencies": {
-        "@iex/lib": "workspace:*"
+        "@integration-components/sdk": "workspace:*"
     }
 }

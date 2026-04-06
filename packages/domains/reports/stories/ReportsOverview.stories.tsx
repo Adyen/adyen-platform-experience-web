@@ -4,7 +4,7 @@ import { ReportsOverview } from '../publish/src';
 import { enabledDisabledCallbackRadioControls } from '../../../../stories/utils/controls';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = {
-    title: 'Sample Domain/Reports Overview (via package)',
+    title: 'Reports/Reports Overview (via package)',
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),

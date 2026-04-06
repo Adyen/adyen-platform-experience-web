@@ -28,8 +28,8 @@ const config: StorybookConfig = {
         return mergeConfig(config, {
             resolve: {
                 alias: {
-                    '@iex/lib': resolve(rootDir, 'packages/shared/lib/src'),
-                    '@iex/sample-domain': resolve(rootDir, 'packages/domains/sample-domain'),
+                    '@integration-components/sdk': resolve(rootDir, 'packages/shared/lib/src'),
+                    '@integration-components/reports': resolve(rootDir, 'packages/domains/reports'),
                 },
             },
             css: {
