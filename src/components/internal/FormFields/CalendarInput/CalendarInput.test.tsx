@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/preact';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { CalendarInput } from './CalendarInput';
 import useCoreContext from '../../../../core/Context/useCoreContext';
@@ -15,7 +15,7 @@ vi.mock('./components/CalendarInputPopover', () => ({
         isOpen ? (
             <div data-testid="mock-popover">
                 <button data-testid="select-date-btn" onClick={() => onHighlight(new Date('2023-12-25T10:00:00.000Z').getTime())}>
-                    Select Date
+                    {'Select Date'}
                 </button>
             </div>
         ) : null,
@@ -125,9 +125,6 @@ describe('CalendarInput', () => {
     });
 
     test('should handle date selection correctly', async () => {
-        const testDate = '2023-12-25T10:00:00.000Z';
-        const timestamp = new Date(testDate).getTime();
-
         render(<CalendarInput value={undefined} onInput={mockOnInput} />);
 
         // Open the calendar
@@ -143,23 +140,18 @@ describe('CalendarInput', () => {
         });
     });
 
-    test('should format label correctly with different date values', () => {
-        const testCases = [
-            { value: undefined, expected: 'Select date' },
-            { value: '', expected: 'Select date' },
-            { value: '2023-12-25T10:00:00.000Z', expected: 'Dec 25, 2023' },
-            { value: '2024-01-01T00:00:00.000Z', expected: 'Jan 01, 2024' },
-        ];
+    test.each([
+        { value: undefined, expected: 'Select date' },
+        { value: '', expected: 'Select date' },
+        { value: '2023-12-25T10:00:00.000Z', expected: 'Dec 25, 2023' },
+        { value: '2024-01-01T00:00:00.000Z', expected: 'Jan 01, 2024' },
+    ])('should format label correctly with value $value', ({ value, expected }) => {
+        mockDateFormat.mockReturnValue(expected);
 
-        testCases.forEach(({ value, expected }) => {
-            cleanup();
-            mockDateFormat.mockReturnValue(expected);
+        render(<CalendarInput value={value} onInput={mockOnInput} />);
 
-            render(<CalendarInput value={value} onInput={mockOnInput} />);
-
-            const button = screen.getByRole('button');
-            expect(button).toHaveTextContent(expected);
-        });
+        const button = screen.getByRole('button');
+        expect(button).toHaveTextContent(expected);
     });
 
     test('should apply correct CSS classes', () => {
@@ -204,27 +196,26 @@ describe('CalendarInput', () => {
     test('should show clear button only when clearable and value is provided', () => {
         const testDate = '2023-12-25T10:00:00.000Z';
 
-        const { container, rerender } = render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
-        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).toBeInTheDocument();
+        const { rerender } = render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
+        expect(screen.getByTestId('calendar-input-clear-button')).toBeInTheDocument();
 
         rerender(<CalendarInput value={testDate} onInput={mockOnInput} clearable={false} />);
-        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('calendar-input-clear-button')).not.toBeInTheDocument();
 
         rerender(<CalendarInput value={undefined} onInput={mockOnInput} clearable={true} />);
-        expect(container.querySelector('.adyen-pe-dropdown__button-clear')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('calendar-input-clear-button')).not.toBeInTheDocument();
     });
 
     test('should clear value when clear button is clicked and not open the popover', () => {
         const testDate = '2023-12-25T10:00:00.000Z';
-        const { container } = render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
+        render(<CalendarInput value={testDate} onInput={mockOnInput} clearable={true} />);
 
         const mainButton = screen.getAllByRole('button')[0];
         expect(mainButton).toHaveAttribute('aria-expanded', 'false');
 
-        const clearButton = container.querySelector('.adyen-pe-dropdown__button-clear');
-        expect(clearButton).toBeInTheDocument();
+        const clearButton = screen.getByTestId('calendar-input-clear-button');
 
-        fireEvent.click(clearButton as Element);
+        fireEvent.click(clearButton);
         expect(mockOnInput).toHaveBeenCalledWith('');
         expect(mainButton).toHaveAttribute('aria-expanded', 'false');
     });
