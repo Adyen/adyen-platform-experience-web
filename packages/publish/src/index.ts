@@ -1,1 +1,1 @@
-export { ReportsOverview } from '@iex/sample-domain/publish';
+export * from '@integration-components/sdk';
