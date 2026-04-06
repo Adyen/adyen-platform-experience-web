@@ -6,18 +6,18 @@ import { CalendarProps } from './types';
 import './Calendar.scss';
 
 const Calendar = forwardRef((props: CalendarProps, ref) => {
-    const calendar = useCalendar(props, ref);
-    const config = calendar.grid.config();
+    const { cursorElementRef, cursorRootProps, grid } = useCalendar(props, ref);
+    const config = grid.config();
 
     return (
         <div role="none">
-            <CalendarControls config={config} grid={calendar.grid} renderer={props.renderControl} />
+            <CalendarControls config={config} grid={grid} renderer={props.renderControl} />
             <CalendarGrid
-                ref={calendar.cursorElementRef}
+                ref={cursorElementRef}
                 config={config}
-                cursorRootProps={calendar.cursorRootProps}
+                cursorRootProps={cursorRootProps}
                 getGridLabel={props.getGridLabel}
-                grid={calendar.grid}
+                grid={grid}
                 onlyCellsWithin={props.onlyCellsWithin}
                 prepare={props.prepare}
             />

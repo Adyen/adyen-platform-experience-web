@@ -2,7 +2,7 @@ import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
 import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
-import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
+import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/fields';
 import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
