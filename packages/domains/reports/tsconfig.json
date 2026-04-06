@@ -4,5 +4,6 @@
         "noEmit": true,
         "types": ["node"]
     },
-    "include": ["domain/src/**/*.ts", "preact/src/**/*.ts", "preact/src/**/*.tsx", "vue/src/**/*.ts", "publish/src/**/*.ts"]
+    "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"],
+    "include": ["publish/src/**/*.ts"]
 }
