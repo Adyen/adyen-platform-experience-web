@@ -52,7 +52,7 @@ const PaymentDetails = ({
         () =>
             TX_DETAILS_TABS.filter(({ id }) => {
                 switch (id) {
-                    case DetailsTab.SUMMARY:
+                    case DetailsTab.SUMMARY: {
                         const { additions, deductions, originalAmount, amountBeforeDeductions, netAmount } = transaction;
                         return (
                             (additions && additions.length > 0) ||
@@ -60,6 +60,7 @@ const PaymentDetails = ({
                             (originalAmount && originalAmount.value !== amountBeforeDeductions.value) ||
                             netAmount.value !== amountBeforeDeductions.value
                         );
+                    }
                     case DetailsTab.TIMELINE:
                         return transaction.events && transaction.events.length > 0;
                     default:

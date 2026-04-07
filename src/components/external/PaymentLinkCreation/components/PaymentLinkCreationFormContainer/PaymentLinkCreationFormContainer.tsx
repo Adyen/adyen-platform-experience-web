@@ -2,7 +2,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { Stepper } from '../../../../internal/Stepper/Stepper';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import { PaymentLinkCreationFormValues, LinkCreationFormStep } from '../types';
 import { WizardFormProvider } from '../../../../../hooks/form/wizard/WizardFormContext';
 import { ButtonVariant } from '../../../../internal/Button/types';
@@ -70,7 +70,7 @@ export const PaymentLinkCreationFormContainer = ({
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledAddress = !!fieldsConfig?.data?.billingAddress || !!fieldsConfig?.data?.deliveryAddress;
     const [isSameAddress, setIsSameAddress] = useState<boolean>(!hasPrefilledAddress);
-    const selectedStoreNavigationCache = useRef<string>('');
+    const selectedStoreNavigationCacheRef = useRef<string>('');
     const { i18n } = useCoreContext();
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -172,12 +172,12 @@ export const PaymentLinkCreationFormContainer = ({
     };
 
     const navigateBackFromTermsAndConditions = useCallback(() => {
-        setSelectedStore(selectedStoreNavigationCache.current);
+        setSelectedStore(selectedStoreNavigationCacheRef.current);
         setShowTermsAndConditions(false);
-        selectedStoreNavigationCache.current = '';
+        selectedStoreNavigationCacheRef.current = '';
     }, [setShowTermsAndConditions, setSelectedStore]);
 
-    const onError = (errors: any) => {
+    const onError = (_: any) => {
         // Form validation errors, should not happen since last step
         // (summary) does not include any validations
         setShowFormValidationError(true);
@@ -224,7 +224,7 @@ export const PaymentLinkCreationFormContainer = ({
     );
 
     const onNavigateToTermsAndConditions = useCallback(() => {
-        selectedStoreNavigationCache.current = selectedStore;
+        selectedStoreNavigationCacheRef.current = selectedStore;
         setSelectedStore('');
         setShowTermsAndConditions(true);
     }, [selectedStore, setSelectedStore, setShowTermsAndConditions]);
@@ -289,7 +289,7 @@ export const PaymentLinkCreationFormContainer = ({
         return (
             <PaymentLinkSettingsContainer
                 hideTitle={true}
-                storeIds={selectedStoreNavigationCache.current}
+                storeIds={selectedStoreNavigationCacheRef.current}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}
                 embeddedInOverview={embeddedInOverview}

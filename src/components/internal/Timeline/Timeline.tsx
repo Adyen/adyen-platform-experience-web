@@ -13,7 +13,7 @@ export interface TimelineProps {
 export default function Timeline({ children, showMore = null, timeGapLimit = null }: TimelineProps) {
     const [entries, setEntries] = useState<TimelineEntry[]>([]);
     const [showAll, setShowAll] = useState(false);
-    const entryIdCounter = useRef(0);
+    const entryIdCounterRef = useRef(0);
 
     const hiddenItems = useMemo(() => {
         if (showMore && entries.length > showMore.limit) {
@@ -62,7 +62,7 @@ export default function Timeline({ children, showMore = null, timeGapLimit = nul
 
     const registerTimelineEntry = useCallback((entry: TimelineEntry) => {
         // Assign unique ID to track this specific entry
-        const entryId = entryIdCounter.current++;
+        const entryId = entryIdCounterRef.current++;
         const entryWithId = { ...entry, _id: entryId };
 
         setEntries(prev => [...prev, entryWithId]);

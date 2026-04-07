@@ -101,7 +101,7 @@ describe('createReflexContainer', () => {
         expect(container.action).toBe(action);
         expect(container.reflex).not.toBeUndefined();
 
-        let reflex = container.reflex as NonNullable<Reflex<number>>;
+        const reflex = container.reflex as NonNullable<Reflex<number>>;
 
         container.release();
 
@@ -128,7 +128,7 @@ describe('createReflexContainer', () => {
 
         __reflexInstanceUpdateTests__(reflex, action);
 
-        let previous = reflex.current;
+        const previous = reflex.current;
 
         // same action so do nothing
         container.update(action);

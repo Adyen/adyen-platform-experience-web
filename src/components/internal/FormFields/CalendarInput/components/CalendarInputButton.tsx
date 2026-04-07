@@ -47,6 +47,7 @@ export function CalendarInputButton({
                         <span
                             role="button"
                             tabIndex={0}
+                            data-testid="calendar-input-clear-button"
                             className="adyen-pe-dropdown__button-clear"
                             onClick={e => {
                                 e.preventDefault();
