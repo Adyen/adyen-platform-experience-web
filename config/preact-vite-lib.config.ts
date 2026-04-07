@@ -34,7 +34,6 @@ export function getPreactViteLibConfig({
         build: {
             minify: true,
             lib: {
-                name: 'AdyenPlatformExperienceWeb',
                 entry: entryPath,
             },
             rollupOptions: {
@@ -44,7 +43,7 @@ export function getPreactViteLibConfig({
                         format: 'es',
                         preserveModules: true,
                         preserveModulesRoot,
-                        sourcemap: false,
+                        sourcemap: true,
                         indent: false,
                     },
                 ],
