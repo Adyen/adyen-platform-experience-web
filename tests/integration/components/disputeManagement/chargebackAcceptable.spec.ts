@@ -8,6 +8,7 @@ test.describe('Chargeback - Acceptable', () => {
         await goToStory(page, { id: STORY_ID });
         await Promise.all([
             expect(page.getByText('Chargeback', { exact: true })).toBeVisible(),
+            expect(page.getByText('Undefended', { exact: true })).toBeVisible(),
             expect(page.getByRole('alert')).toBeVisible(),
             expect(page.getByText('Contact support to defend this dispute.')).toBeVisible(),
             expect(page.getByRole('button', { name: 'Accept' })).toBeVisible(),

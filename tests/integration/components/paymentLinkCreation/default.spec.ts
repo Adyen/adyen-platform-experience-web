@@ -21,7 +21,6 @@ test.describe('Payment link creation - Link creation success', () => {
             .locator('div')
             .filter({ hasText: /^Custom$/ })
             .click();
-        await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').click();
         await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').fill('30');
 
         await page.getByTestId('form-field-linkValidity.quantity').getByRole('button', { name: 'Select option', exact: true }).click();
