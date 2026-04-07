@@ -147,7 +147,7 @@
       "js-yaml@4.1.0": "4.1.1",
       "minimatch@<9.0.7": "10.1.2",
       "rollup@4.53.3": "4.59.0",
-      "serialize-javascript@6.0.2": "7.0.3"
+      "serialize-javascript@6.0.2": "7.0.5"
     },
     "ignoredBuiltDependencies": [
       "core-js"
