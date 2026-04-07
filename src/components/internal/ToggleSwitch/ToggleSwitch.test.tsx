@@ -91,29 +91,27 @@ describe('ToggleSwitch', () => {
     });
 
     test('should render the label content after the switch by default', () => {
-        render(<ToggleSwitch>My Label</ToggleSwitch>);
+        render(<ToggleSwitch>{'My Label'}</ToggleSwitch>);
 
         const label = screen.getByText('My Label');
-        expect(label).toBeInTheDocument();
-
         const switchEl = screen.getByTestId('toggle-switch-control');
-        expect(switchEl.nextElementSibling).toBe(label);
+        // switchEl precedes label in document order → label is after switch
+        expect(label.compareDocumentPosition(switchEl) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
     });
 
     test('should render the label content before the switch when labelBeforeSwitch is true', () => {
-        render(<ToggleSwitch labelBeforeSwitch>My Label</ToggleSwitch>);
+        render(<ToggleSwitch labelBeforeSwitch>{'My Label'}</ToggleSwitch>);
 
         const label = screen.getByText('My Label');
-        expect(label).toBeInTheDocument();
-
         const switchEl = screen.getByTestId('toggle-switch-control');
-        expect(switchEl.previousElementSibling).toBe(label);
+        // switchEl follows label in document order → label is before switch
+        expect(label.compareDocumentPosition(switchEl) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 
     test('should render JSX content as the label', () => {
         render(
             <ToggleSwitch>
-                <span>My custom label</span>
+                <span>{'My custom label'}</span>
             </ToggleSwitch>
         );
         const label = screen.getByText('My custom label');

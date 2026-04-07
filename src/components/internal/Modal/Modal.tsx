@@ -30,11 +30,11 @@ export default function Modal({
     const { i18n } = useCoreContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const focusCaptureElement = useRef<HTMLDivElement | null>(null);
-    const focusRestoreElement = useRef<Element | null>(null);
+    const focusRestoreElementRef = useRef<Element | null>(null);
 
     const handleDismiss = useCallback(() => {
         if (isOpen && isDismissible) {
-            (focusRestoreElement.current as HTMLElement)?.focus();
+            (focusRestoreElementRef.current as HTMLElement)?.focus();
             onClose();
         }
     }, [isOpen, isDismissible, onClose]);
@@ -43,7 +43,7 @@ export default function Modal({
 
     useEffect(() => {
         if (isOpen && modalRootElement.current) {
-            focusRestoreElement.current = getDeepActiveElement();
+            focusRestoreElementRef.current = getDeepActiveElement();
             let tabbableHandle = tabbable();
 
             // Temporarily focus on the capture element, so that
@@ -63,7 +63,7 @@ export default function Modal({
                 tabbableHandle = null!;
             };
         }
-    }, [isOpen]);
+    }, [isOpen, modalRootElement]);
 
     return (
         <>

@@ -49,7 +49,7 @@ const useDefaultOverviewFilterParams = (
     timeRange?: TimeRangeOptions,
     timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig['options']>
 ) => {
-    const [nowTimestamp, setNowTimestamp] = useState(Date.now());
+    const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
     const params = getDefaultFilterParams(filterType, timeRange, timeRangeOptionsSubset);
     const defaultParams: MutableRef<any> = useRef(params);
     const refreshNowTimestamp = useCallback(() => setNowTimestamp(Date.now()), [setNowTimestamp]);

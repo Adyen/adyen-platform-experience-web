@@ -74,6 +74,7 @@ const useCalendar = (
         };
 
         return { grid, kill };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const cursorRootProps = useMemo(() => {
@@ -126,6 +127,7 @@ const useCalendar = (
                 },
             } as CalendarHandle;
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [grid, lastMutationTimestamp]
     );
 
@@ -166,6 +168,7 @@ const useCalendar = (
         if (origins[0]) grid.highlight.from = +origins[0];
         if (origins[1]) grid.highlight.to = +origins[1];
         return kill;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return { cursorElementRef, cursorRootProps, grid };

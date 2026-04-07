@@ -11,7 +11,7 @@ const useDefinedValue = <T = any>(fallback: T | (() => T), value?: T | null) => 
         return rawValueRef.current;
     }, [value]);
 
-    return useMemo(() => definedValue ?? fallbackFactory(), [definedValue]);
+    return useMemo(() => definedValue ?? fallbackFactory(), [definedValue, fallbackFactory]);
 };
 
 export default useDefinedValue;
