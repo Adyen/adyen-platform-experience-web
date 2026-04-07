@@ -7,9 +7,10 @@ const useReactiveState = <Value, Param extends string>(
     params: ReactiveStateRecord<Value, Param> = EMPTY_OBJECT as ReactiveStateRecord<Value, Param>,
     initialStateSameAsDefault = true
 ): UseReactiveStateRecord<Value, Param> => {
+    const initialDefaultState = useMemo(() => Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>, [params]);
     const $hasDefaultStateRef = useRef(initialStateSameAsDefault);
-    const $defaultStateRef = useRef(Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>);
-    const $stateParamsRef = useRef(new Set(Object.keys($defaultStateRef.current) as Param[]));
+    const $defaultStateRef = useRef(initialDefaultState);
+    const $stateParamsRef = useRef(new Set(Object.keys(initialDefaultState) as Param[]));
     const $changedParamsRef = useRef(new Set<Param>());
     const $mounted = useMounted();
 
@@ -53,7 +54,7 @@ const useReactiveState = <Value, Param extends string>(
         }
 
         return STATE;
-    }, $defaultStateRef.current);
+    }, initialDefaultState);
 
     const [resetState, updateState] = useMemo(() => {
         const requestStateUpdate = (stateUpdateRequest: ReactiveStateUpdateRequest<Value, Param>) => {
@@ -68,6 +69,7 @@ const useReactiveState = <Value, Param extends string>(
     }, [$mounted]);
 
     const canResetState = useMemo(() => !!$changedParamsRef.current.size, []);
+    const defaultState = useMemo(() => $defaultStateRef.current, []);
 
     useEffect(() => {
         $defaultStateRef.current = Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>;
@@ -75,7 +77,7 @@ const useReactiveState = <Value, Param extends string>(
         $hasDefaultStateRef.current = initialStateSameAsDefault;
         resetState();
     }, [initialStateSameAsDefault, params, resetState]);
-    return { canResetState, defaultState: $defaultStateRef.current, resetState, state, updateState };
+    return { canResetState, defaultState, resetState, state, updateState };
 };
 
 export default useReactiveState;
