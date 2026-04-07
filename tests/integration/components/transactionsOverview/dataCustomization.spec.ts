@@ -1,5 +1,5 @@
 import { test, expect } from '../../../fixtures/analytics/events';
-import { expectAnalyticsEvents, getTranslatedKey, goToStory } from '../../../utils/utils';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
 import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
 import { openTransactionDetailsModal } from './shared/utils';
@@ -76,7 +76,7 @@ test.describe('Data customization', () => {
         const detailsModal = page.getByRole('dialog');
         await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
-        const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
+        const referenceID = detailsModal.getByTestId('id-value');
         await expect(referenceID).toHaveText('8W54BM75W7DYCIVK');
     });
 });

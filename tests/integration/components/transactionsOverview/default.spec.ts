@@ -125,7 +125,7 @@ test.describe('Default', () => {
             const detailsModal = page.getByRole('dialog');
             await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
-            const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
+            const referenceID = detailsModal.getByTestId('id-value');
             await expect(referenceID).toHaveText('B78I76Y77072H127');
         });
     });
