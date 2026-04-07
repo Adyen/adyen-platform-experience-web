@@ -28,6 +28,7 @@ const useActiveTimezone = (timezone?: string) => {
             // first reset to system timezone,
             // then attempt to set the specified timezone,
             // will fail silently if specified timezone is invalid
+            // eslint-disable-next-line react-hooks/immutability
             i18n.timezone = undefined;
             i18n.timezone = timezone;
             return i18n.timezone!;
@@ -44,6 +45,7 @@ const useTimezoneAwareDateFormatting = (timezone?: string) => {
     const dateFormat = useAtomicTimezoneOperation(
         useCallback<(typeof i18n)['date']>(
             (...args) => {
+                // eslint-disable-next-line react-hooks/immutability
                 i18n.timezone = activeTimezone;
                 return i18n.date(...args);
             },
@@ -54,6 +56,7 @@ const useTimezoneAwareDateFormatting = (timezone?: string) => {
     const fullDateFormat = useAtomicTimezoneOperation(
         useCallback<(typeof i18n)['fullDate']>(
             (...args) => {
+                // eslint-disable-next-line react-hooks/immutability
                 i18n.timezone = activeTimezone;
                 return i18n.fullDate(...args);
             },

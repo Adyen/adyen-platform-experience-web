@@ -37,8 +37,8 @@ export const useTransaction = (id: string) => {
         }, [getTransaction, transactionId])
     );
 
-    const cachedFetchingTransaction = useRef(fetchingTransaction);
-    const lastFetchedTransactionId = useRef(transactionId);
+    const cachedFetchingTransactionRef = useRef(fetchingTransaction);
+    const lastFetchedTransactionIdRef = useRef(transactionId);
 
     const transactionWithBalanceAccount = useMemo(() => {
         if (!transaction) return;
@@ -52,6 +52,7 @@ export const useTransaction = (id: string) => {
         switch (transaction?.id === id && transaction?.category) {
             case 'Refund': {
                 transactionNavigator.reset(transaction?.id, transaction?.refundMetadata?.originalPaymentId);
+                // eslint-disable-next-line react-hooks/immutability
                 transactionNavigator.onNavigation = ({ to: id }) => setTransactionId(id);
                 break;
             }
@@ -61,19 +62,19 @@ export const useTransaction = (id: string) => {
     }, [id, transaction, transactionNavigator]);
 
     useEffect(() => {
-        if (cachedFetchingTransaction.current === fetchingTransaction) return;
-        if ((cachedFetchingTransaction.current = fetchingTransaction)) return;
+        if (cachedFetchingTransactionRef.current === fetchingTransaction) return;
+        if ((cachedFetchingTransactionRef.current = fetchingTransaction)) return;
 
         if (!data || error) {
-            setTransactionId(lastFetchedTransactionId.current);
+            setTransactionId(lastFetchedTransactionIdRef.current);
         } else {
             setTransaction(data);
-            lastFetchedTransactionId.current = transactionId;
+            lastFetchedTransactionIdRef.current = transactionId;
         }
     }, [data, error, fetchingTransaction, transactionId]);
 
     useEffect(() => {
-        if (!transactionId) setTransactionId(lastFetchedTransactionId.current);
+        if (!transactionId) setTransactionId(lastFetchedTransactionIdRef.current);
     }, [transaction, transactionId]);
 
     useEffect(() => {

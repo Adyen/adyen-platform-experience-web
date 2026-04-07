@@ -6,10 +6,10 @@ import useComponentTiming from '../useComponentTiming';
 export const useDurationEvent = (eventProperties: AdditionalEventProperties) => {
     const { duration } = useComponentTiming();
     const userEvents = useAnalyticsContext();
-    const analyticsEventProperties = useRef(eventProperties);
+    const analyticsEventPropertiesRef = useRef(eventProperties);
 
     useEffect(() => {
-        analyticsEventProperties.current = eventProperties;
+        analyticsEventPropertiesRef.current = eventProperties;
     }, [eventProperties]);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export const useDurationEvent = (eventProperties: AdditionalEventProperties) => 
         return () => {
             if (durationRef.current !== undefined) {
                 userEvents.addEvent?.('Duration', {
-                    ...analyticsEventProperties.current,
+                    ...analyticsEventPropertiesRef.current,
                     duration: Math.floor(durationRef.current satisfies number),
                 });
             }
