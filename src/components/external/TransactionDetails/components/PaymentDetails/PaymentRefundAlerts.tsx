@@ -41,8 +41,10 @@ const PaymentRefundAlerts = memo(
             return (amounts: readonly number[]) => listFormatter.format(amounts.map(amount => i18n.amount(amount, refundCurrency)));
         }, [i18n, refundCurrency]);
 
+        const alertsRef = useRef<ComponentChild[]>([]);
+
         const nextAlert = useCallback(<T extends AlertProps>({ description, ...alertProps }: Partial<T>) => {
-            alerts.current.push(
+            alertsRef.current.push(
                 <Alert {...baseAlertProps} {...alertProps}>
                     <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
                         {description}
@@ -50,8 +52,6 @@ const PaymentRefundAlerts = memo(
                 </Alert>
             );
         }, []);
-
-        const alerts = useRef<ComponentChild[]>([]);
 
         if (refundedState === RefundedState.FULL) {
             nextAlert({ description: i18n.get('transactions.details.refund.alerts.refundedFull') });
@@ -86,10 +86,10 @@ const PaymentRefundAlerts = memo(
         }
 
         useEffect(() => {
-            alerts.current = [];
+            alertsRef.current = [];
         });
 
-        return alerts.current.length > 0 ? <div className={TX_REFUND_STATUSES_CONTAINER}>{alerts.current}</div> : null;
+        return alertsRef.current.length > 0 ? <div className={TX_REFUND_STATUSES_CONTAINER}>{alertsRef.current}</div> : null;
     }
 );
 

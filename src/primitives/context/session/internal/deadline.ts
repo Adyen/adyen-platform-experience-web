@@ -50,7 +50,7 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
 
         if (_deadlines.length > 0) {
             let _deadlineElapsed = false;
-            let _signals = new Set<AbortSignal>();
+            const _signals = new Set<AbortSignal>();
 
             for (const deadline of _deadlines) {
                 if (isAbortSignal(deadline)) {

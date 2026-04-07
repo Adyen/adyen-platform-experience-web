@@ -79,19 +79,16 @@ const PaymentDetailsSummary = ({ transaction }: PaymentDetailsSummaryProps) => {
         return listItems.filter(Boolean);
     }, [i18n, transaction]);
 
-    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>(
-        (label, key, rawValue) => {
-            if (rawValue) {
-                return (
-                    <Tooltip content={rawValue} isUnderlineVisible>
-                        <span className={cx(TX_DATA_LABEL)}>{label}</span>
-                    </Tooltip>
-                );
-            }
-            return <div className={cx(TX_DATA_LABEL)}>{label}</div>;
-        },
-        [i18n]
-    );
+    const renderListPropertyLabel = useCallback<NonNullable<StructuredListProps['renderLabel']>>((label, key, rawValue) => {
+        if (rawValue) {
+            return (
+                <Tooltip content={rawValue} isUnderlineVisible>
+                    <span className={cx(TX_DATA_LABEL)}>{label}</span>
+                </Tooltip>
+            );
+        }
+        return <div className={cx(TX_DATA_LABEL)}>{label}</div>;
+    }, []);
 
     const renderListPropertyValue = useCallback<NonNullable<StructuredListProps['renderValue']>>((val, key) => {
         const strongest = key === paymentAmountKeys.netAmount;

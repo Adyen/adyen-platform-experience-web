@@ -19,7 +19,7 @@ const StoreField = ({ items }: StoreFieldProps) => {
             const displayValue = items.find(item => item.id === event.target.value)?.name;
             setFieldDisplayValue('store', displayValue);
         },
-        [items]
+        [items, setFieldDisplayValue]
     );
 
     return (

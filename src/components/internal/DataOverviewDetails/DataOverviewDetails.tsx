@@ -34,9 +34,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                 fetchOptions: { enabled: !!props.id && !!getDetail },
                 queryFn: async () => {
                     switch (props.type) {
-                        case 'payout':
+                        case 'payout': {
                             const queryParam = { query: { balanceAccountId: props.id, createdAt: props.date } };
                             return getDetail!(EMPTY_OBJECT, { ...queryParam });
+                        }
                     }
                 },
             }),

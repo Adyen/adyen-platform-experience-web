@@ -36,7 +36,7 @@ export const useRefundLineItems = <T extends UseRefundLineItemsProps>({ currency
 
     const availableItems = useMemo<readonly ILineItem[]>(
         () => lineItems?.filter(({ id }) => refundableItems.has(id)) ?? EMPTY_ARRAY,
-        [lineItems, refundableItems, refundingItems]
+        [lineItems, refundableItems]
     );
 
     const clearItems = useCallback(

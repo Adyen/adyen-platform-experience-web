@@ -5,7 +5,9 @@ import { mod } from '../../../../../../utils';
 export const downsizeTimeFrame = (size: TimeFrameSize, maxsize: number): TimeFrameSize => {
     if (maxsize >= size) return size;
     let i = Math.max(1, FRAME_SIZES.indexOf(size));
-    while (--i && maxsize < (FRAME_SIZES[i] as TimeFrameSize)) {}
+    while (--i && maxsize < (FRAME_SIZES[i] as TimeFrameSize)) {
+        /* intentionally empty */
+    }
     return FRAME_SIZES[i] as TimeFrameSize;
 };
 

@@ -2,7 +2,7 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import type { PaginationProps, WithPaginationLimitSelection } from '../../../../internal/Pagination/types';
 import type { IAmount, IBalanceAccountBase, ITransaction } from '../../../../../types';
 import { StringWithAutocompleteOptions } from '../../../../../utils/types';
-import { TransactionsTableCols } from './TransactionsTable';
+import { TransactionsTableCols } from './fields';
 import { CustomColumn } from '../../../../types';
 
 export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
