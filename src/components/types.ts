@@ -169,12 +169,9 @@ type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields 
     details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
 };
 
-// Re-export component-specific types from their respective component directories
-// This maintains backward compatibility while allowing standalone type imports
 export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
 export type { ReportsTableFields } from './external/ReportsOverview/types';
 
-// Transactions Overview types
 export type { TransactionOverviewComponentProps } from './external/TransactionsOverview/types';
 export type {
     TransactionsOverviewProps,
@@ -183,15 +180,12 @@ export type {
     TransactionsFilters,
 } from './external/TransactionsOverview/types';
 
-// Payment Links Overview types
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
 export type { StoreIds } from './external/PaymentLinksOverview/types';
 
-// Payouts Overview types
 export type { PayoutsOverviewComponentProps, PayoutsOverviewProps } from './external/PayoutsOverview/types';
 export type { PayoutsTableFields } from './external/PayoutsOverview/types';
 
-// Disputes Overview types
 export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
 export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
 
@@ -201,23 +195,17 @@ export type DeepPartial<T> = T extends object
       }
     : T;
 
-// Capital Overview types
 export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
-// Capital Offer types
 export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/CapitalOffer/types';
 
-// Payment Link Creation types
 export type { PaymentLinkCreationComponentProps, PaymentLinkCreationProps } from './external/PaymentLinkCreation/types';
 export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
 
-// Payment Link Settings types
 export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from './external/PaymentLinkSettings/types';
 
-// Payment Link Details types
 export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
 
-// Payout Details types
 export type { PayoutDetailsComponentProps, PayoutDetailsProps } from './external/PayoutDetails/types';
 
 export const enum FilterParam {

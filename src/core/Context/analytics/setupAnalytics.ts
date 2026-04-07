@@ -11,10 +11,6 @@ export interface AnalyticsSetupResult {
     subscribe(pushEvent: (data: EventQueueItem) => void): () => void;
 }
 
-/**
- * Initializes analytics user events and returns a subscribe/unsubscribe helper.
- * Framework-agnostic — Preact/Vue adapters call this, then wire the result into their reactivity system.
- */
 export function setupAnalytics({ analyticsEnabled, componentName }: AnalyticsSetupOptions): AnalyticsSetupResult {
     const userEvents = createUserEvents(analyticsEnabled, componentName);
 

@@ -5,10 +5,6 @@ import { CoreProviderProps } from '../types';
 import useBooleanState from '../../../hooks/useBooleanState';
 import { waitForI18n, createCoreContextValue } from '../setupCore';
 
-/**
- * CoreProvider Component
- * Wraps a component delaying the render until after the i18n module is fully loaded
- */
 const CoreProvider = (props: CoreProviderProps) => {
     const { children } = props;
     const [ready, setReady] = useBooleanState(false);
