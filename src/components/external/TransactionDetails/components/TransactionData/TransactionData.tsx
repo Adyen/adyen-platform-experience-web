@@ -29,10 +29,12 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
     );
 
     useEffect(() => {
-        if (!initialTransaction && transaction) {
-            setInitialTransaction(transaction);
+        if (transaction && transaction.id === id) {
+            setInitialTransaction(prev => prev ?? transaction);
+        } else if (!transaction) {
+            setInitialTransaction(undefined);
         }
-    }, [initialTransaction, transaction]);
+    }, [transaction, id]);
 
     useEffect(() => {
         // ensure title is always hidden within transaction details modal

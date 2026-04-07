@@ -69,7 +69,8 @@ const useReactiveState = <Value, Param extends string>(
     }, [$mounted]);
 
     const canResetState = useMemo(() => !!$changedParamsRef.current.size, []);
-    const defaultState = useMemo(() => $defaultStateRef.current, []);
+    // eslint-disable-next-line react-hooks/refs
+    const defaultState = $defaultStateRef.current;
 
     useEffect(() => {
         $defaultStateRef.current = Object.freeze({ ...params }) as ReactiveStateRecord<Value, Param>;
@@ -77,6 +78,7 @@ const useReactiveState = <Value, Param extends string>(
         $hasDefaultStateRef.current = initialStateSameAsDefault;
         resetState();
     }, [initialStateSameAsDefault, params, resetState]);
+
     return { canResetState, defaultState, resetState, state, updateState };
 };
 
