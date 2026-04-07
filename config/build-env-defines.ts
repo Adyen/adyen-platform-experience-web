@@ -7,7 +7,7 @@ export const getBuildEnvDefines = (mode: string) => {
     const isTestEnv = process.env.TEST_ENV === '1';
     const { api, app } = getEnvironment(mode);
     const { session } = api;
-    const localAssets = process.env.USE_CDN == 'true' ? null : isDevelopment || isTestEnv;
+    const localAssets = app.useCdn == 'true' ? null : isDevelopment || isTestEnv;
     const testCdnAssets = isDevelopment || app.useTestCdn ? true : null;
 
     return {
