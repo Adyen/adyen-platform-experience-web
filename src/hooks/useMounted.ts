@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 
 const useMounted = <U extends (...args: any[]) => any>(beforeUnmount?: U) => {
-    const $mounted = useRef(false);
+    const $mountedRef = useRef(false);
     const unmount = useMemo(() => beforeUnmount, [beforeUnmount]);
 
     useEffect(() => {
-        $mounted.current = true;
+        $mountedRef.current = true;
 
         return () => {
-            $mounted.current = false;
-            if (unmount) unmount();
+            $mountedRef.current = false;
+            if (unmount) {
+                unmount();
+            }
         };
     }, [unmount]);
 
-    return $mounted;
+    return $mountedRef;
 };
 
 export default useMounted;

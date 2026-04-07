@@ -100,8 +100,8 @@ function Popover({
         [dismiss, targetElement]
     );
 
-    const cachedOnKeyDown = useRef(onKeyDown);
-    const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
+    const cachedOnKeyDownRef = useRef(onKeyDown);
+    const autoFocusAnimFrameRef = useRef<ReturnType<typeof requestAnimationFrame>>();
 
     const popoverPositionAnchorElement = useClickOutside(
         usePopoverPositioner(
@@ -134,9 +134,9 @@ function Popover({
                 }
                 if (current instanceof Element) {
                     current[CONTROL_ELEMENT_PROPERTY] = targetElement.current;
-                    cancelAnimationFrame(autoFocusAnimFrame.current!);
+                    cancelAnimationFrame(autoFocusAnimFrameRef.current!);
 
-                    autoFocusAnimFrame.current = requestAnimationFrame(() => {
+                    autoFocusAnimFrameRef.current = requestAnimationFrame(() => {
                         if (popoverOpen.current === open) return;
                         if (!(popoverOpen.current = open)) return;
                         const focusable = findFirstFocusableElement(current) as HTMLElement;
@@ -168,20 +168,22 @@ function Popover({
 
         if (popover) {
             const target = targetElement.current;
+            // eslint-disable-next-line react-hooks/immutability
             popover[CONTROL_ELEMENT_PROPERTY] = target;
             target?.setAttribute('aria-controls', popover.id);
 
             return () => {
                 target?.removeAttribute('aria-controls');
+                // eslint-disable-next-line react-hooks/immutability
                 popover[CONTROL_ELEMENT_PROPERTY] = undefined;
             };
         }
     }, [popoverElement, targetElement]);
 
     useEffect(() => {
-        document.removeEventListener('keydown', cachedOnKeyDown.current);
-        document.addEventListener('keydown', (cachedOnKeyDown.current = onKeyDown));
-        return () => document.removeEventListener('keydown', cachedOnKeyDown.current);
+        document.removeEventListener('keydown', cachedOnKeyDownRef.current);
+        document.addEventListener('keydown', (cachedOnKeyDownRef.current = onKeyDown));
+        return () => document.removeEventListener('keydown', cachedOnKeyDownRef.current);
     }, [onKeyDown]);
 
     const classNamesByVariant =

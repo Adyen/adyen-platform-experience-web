@@ -55,11 +55,11 @@ const Select = <T extends SelectItem>({
     const selectButtonId = uniqueId ?? selectButtonUniqueId;
     const selectListId = `select-${useUniqueId()}`;
 
-    const autoFocusAnimFrame = useRef<ReturnType<typeof requestAnimationFrame>>();
-    const pendingClickOutsideTriggeredHideList = useRef(true);
-    const clearSelectionInProgress = useRef(false);
-    const cachedSelectedItems = useRef(selection);
-    const selectedItems = useRef(selection);
+    const autoFocusAnimFrameRef = useRef<ReturnType<typeof requestAnimationFrame>>();
+    const pendingClickOutsideTriggeredHideListRef = useRef(true);
+    const clearSelectionInProgressRef = useRef(false);
+    const cachedSelectedItemsRef = useRef(selection);
+    const selectedItemsRef = useRef(selection);
 
     const appliedFilterNumber = useMemo(() => selection.length, [selection]);
 
@@ -68,8 +68,8 @@ const Select = <T extends SelectItem>({
         setShowList(false);
         setActiveIndex(-1);
         if (showList) {
-            resetSelection(cachedSelectedItems.current);
-            pendingClickOutsideTriggeredHideList.current = true;
+            resetSelection(cachedSelectedItemsRef.current);
+            pendingClickOutsideTriggeredHideListRef.current = true;
         }
     }, [resetSelection, setShowList, setTextFilter, showList]);
 
@@ -100,24 +100,24 @@ const Select = <T extends SelectItem>({
         setActiveIndex(-1);
         resetCommitAction();
 
-        if (!pendingClickOutsideTriggeredHideList.current) {
+        if (!pendingClickOutsideTriggeredHideListRef.current) {
             if (!disableToggleFocusOnClose) {
                 toggleButtonRef.current?.focus();
             }
         } else {
-            pendingClickOutsideTriggeredHideList.current = false;
+            pendingClickOutsideTriggeredHideListRef.current = false;
         }
     }, [disableToggleFocusOnClose, resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
-        cachedSelectedItems.current = selection;
+        cachedSelectedItemsRef.current = selection;
         const value = `${selection.map(({ id }) => id)}`;
         onChange({ target: { value, name } });
     }, [name, onChange, selection]);
 
     const clearAndResetSelection = useCallback(() => {
         resetSelection();
-        cachedSelectedItems.current = EMPTY_ARRAY;
+        cachedSelectedItemsRef.current = EMPTY_ARRAY;
         onChange({ target: { value: '', name } });
     }, [name, onChange, resetSelection]);
 
@@ -127,7 +127,7 @@ const Select = <T extends SelectItem>({
                 commitSelection();
                 break;
             case CommitAction.CLEAR:
-                clearSelectionInProgress.current = true;
+                clearSelectionInProgressRef.current = true;
                 clearAndResetSelection();
                 break;
         }
@@ -157,15 +157,15 @@ const Select = <T extends SelectItem>({
     );
 
     useEffect(() => {
-        if (selectedItems.current !== selection) {
-            selectedItems.current = selection;
+        if (selectedItemsRef.current !== selection) {
+            selectedItemsRef.current = selection;
             // showList check added to prevent commitSelection from being executed on initial value assignment
-            if ((!multiSelect || clearSelectionInProgress.current) && showList) {
+            if ((!multiSelect || clearSelectionInProgressRef.current) && showList) {
                 commitSelection();
                 closeList();
             }
         }
-        clearSelectionInProgress.current = false;
+        clearSelectionInProgressRef.current = false;
     }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
@@ -176,7 +176,7 @@ const Select = <T extends SelectItem>({
 
     useEffect(() => {
         if (!showList) {
-            cachedSelectedItems.current = selection;
+            cachedSelectedItemsRef.current = selection;
         }
     }, [selection, showList]);
 
@@ -198,7 +198,7 @@ const Select = <T extends SelectItem>({
                     if (showList) {
                         closeList();
                     }
-                    pendingClickOutsideTriggeredHideList.current = evt.key === InteractionKeyCode.TAB;
+                    pendingClickOutsideTriggeredHideListRef.current = evt.key === InteractionKeyCode.TAB;
                     return;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
@@ -232,9 +232,9 @@ const Select = <T extends SelectItem>({
 
     useEffect(() => {
         if (showList) {
-            cancelAnimationFrame(autoFocusAnimFrame.current!);
+            cancelAnimationFrame(autoFocusAnimFrameRef.current!);
 
-            autoFocusAnimFrame.current = requestAnimationFrame(() => {
+            autoFocusAnimFrameRef.current = requestAnimationFrame(() => {
                 focus: {
                     let item = selectListRef.current?.firstElementChild as HTMLLIElement;
                     let firstAvailableItem: typeof item | undefined;
@@ -244,8 +244,11 @@ const Select = <T extends SelectItem>({
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
                                 item.tabIndex = 0;
-                                if (filterable) setActiveIndex(activeIndex);
-                                else item.focus();
+                                if (filterable) {
+                                    setActiveIndex(activeIndex);
+                                } else {
+                                    item.focus();
+                                }
                                 break focus;
                             }
                             firstAvailableItem = firstAvailableItem || item;
@@ -418,7 +421,7 @@ const Select = <T extends SelectItem>({
             e.preventDefault();
             setShowList(showList => !showList);
             if (showList) {
-                resetSelection(cachedSelectedItems.current);
+                resetSelection(cachedSelectedItemsRef.current);
             }
         },
         [setShowList, showList, resetSelection]

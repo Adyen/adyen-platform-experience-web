@@ -7,16 +7,16 @@ import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
 
 const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>, onEscape: (interactionKeyPressed: boolean) => any) => {
-    const escapedFocus = useRef(false);
-    const focusElement = useRef<Element | null>(null);
+    const escapedFocusRef = useRef(false);
+    const focusElementRef = useRef<Element | null>(null);
     const interactionKeyPressed = useRef(false);
     const lastInteractionKey = useRef<string | null>(null);
     const lastTabDirection = useRef<1 | -1>(1);
-    const setRootTabIndex = useRef(false);
+    const setRootTabIndexRef = useRef(false);
     const tabbableRoot = useMemo(withTabbableRoot, []);
 
     const focusFallback = useCallback((root: Element) => {
-        const lastFocused = focusElement.current;
+        const lastFocused = focusElementRef.current;
         if (lastFocused instanceof HTMLElement && focusIsWithin(root, lastFocused)) {
             lastFocused.focus();
             return;
@@ -42,8 +42,8 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                     lastFocusableElement = element;
                     raf = requestAnimationFrame(() => {
                         raf = requestAnimationFrame(() => {
-                            if (focusElement.current !== lastFocusableElement && lastFocusableElement instanceof HTMLElement) {
-                                (focusElement.current = lastFocusableElement)?.focus();
+                            if (focusElementRef.current !== lastFocusableElement && lastFocusableElement instanceof HTMLElement) {
+                                (focusElementRef.current = lastFocusableElement)?.focus();
                             }
                             lastFocusableElement = null;
                             raf = undefined;
@@ -58,7 +58,8 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
 
     const onFocusInCapture = useCallback(
         (evt: FocusEvent) => {
-            tabbableRoot.current = focusElement.current = (evt.composedPath()[0] || evt.target) as Element | null;
+            // eslint-disable-next-line react-hooks/immutability
+            tabbableRoot.current = focusElementRef.current = (evt.composedPath()[0] || evt.target) as Element | null;
         },
         [tabbableRoot]
     );
@@ -93,11 +94,11 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
             if (focusIsWithin(evt.currentTarget as Element, evt.relatedTarget as Element | null)) return;
             if (interactionKeyPressed.current) return;
 
-            escapedFocus.current = true;
+            escapedFocusRef.current = true;
 
             requestAnimationFrame(() => {
-                if (escapedFocus.current) {
-                    onEscape((escapedFocus.current = false));
+                if (escapedFocusRef.current) {
+                    onEscape((escapedFocusRef.current = false));
                 }
             });
         },
@@ -153,9 +154,9 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                     (previous as unknown as HTMLElement).removeEventListener('click', onClickCapture, true);
                     document.removeEventListener('focusin', onDocumentFocusInCapture, true);
 
-                    if (setRootTabIndex.current && previous instanceof HTMLElement) {
+                    if (setRootTabIndexRef.current && previous instanceof HTMLElement) {
                         previous.removeAttribute('tabindex');
-                        setRootTabIndex.current = false;
+                        setRootTabIndexRef.current = false;
                     }
                 }
 
@@ -165,12 +166,13 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                     (current as unknown as HTMLElement).addEventListener('focusout', onFocusOut, false);
                     (current as unknown as HTMLElement).addEventListener('click', onClickCapture, true);
                     document.addEventListener('focusin', onDocumentFocusInCapture, true);
-                    escapedFocus.current = false;
+                    escapedFocusRef.current = false;
+                    // eslint-disable-next-line react-hooks/immutability
                     tabbableRoot.root = current;
 
                     if (current instanceof HTMLElement && !current.hasAttribute('tabindex')) {
                         current.setAttribute('tabindex', '-1');
-                        setRootTabIndex.current = true;
+                        setRootTabIndexRef.current = true;
                     }
 
                     // Automatically focus inside the trap if focus is not already within it
@@ -179,7 +181,10 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
                             current.focus();
                         }
                     }
-                } else tabbableRoot.root = null;
+                } else {
+                    // eslint-disable-next-line react-hooks/immutability
+                    tabbableRoot.root = null;
+                }
             },
             [onClickCapture, onDocumentFocusInCapture, onFocusInCapture, onFocusOut, onKeyDownCapture, tabbableRoot]
         ),

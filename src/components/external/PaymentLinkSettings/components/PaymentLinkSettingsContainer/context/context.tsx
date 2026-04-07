@@ -70,7 +70,7 @@ export const PaymentLinkSettingsProvider = memo(
         const [activeMenuItem, setActiveMenuItem] = useState<PaymentLinkSettingsItem | null>(null);
         const [payload, setPayload] = useState<PaymentLinkSettingsPayload>(undefined);
         const [savedData, setSavedData] = useState<PaymentLinkSettingsData>(undefined);
-        const isValid = useRef(false);
+        const isValidRef = useRef(false);
         const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
         const { filteredStores, selectedStore, setSelectedStore, isFetching: isLoadingStores, error: storesError, allStores } = useStores(storeIds);
         const [isSaving, setIsSaving] = useState(false);
@@ -84,7 +84,7 @@ export const PaymentLinkSettingsProvider = memo(
         }, [menuItemPreSelect]);
 
         const getIsValid = useCallback(() => {
-            return isValid.current;
+            return isValidRef.current;
         }, []);
 
         const { onSave } = useSaveAction(
@@ -190,8 +190,8 @@ export const PaymentLinkSettingsProvider = memo(
         }, [themeError, termsAndConditionsError]);
 
         const setIsValid = useCallback((validity: boolean) => {
-            if (isValid.current !== validity) {
-                isValid.current = validity;
+            if (isValidRef.current !== validity) {
+                isValidRef.current = validity;
             }
         }, []);
 

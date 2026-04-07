@@ -25,7 +25,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     const fetchTimestampRef = useRef<number>();
 
     const abortable = useRef(createAbortable()).current;
-    const cachedFilters = useRef(filters);
+    const cachedFiltersRef = useRef(filters);
 
     const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
@@ -50,7 +50,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         queryFn: fetchTransactionTotals,
     });
 
-    const cachedIsFetching = useRef(isFetching);
+    const cachedIsFetchingRef = useRef(isFetching);
     const canRefresh = !isFetching && canFetchTransactionTotals;
     const totals = useMemo<readonly Readonly<ITransactionTotal>[]>(() => (Array.isArray(data) ? data : []), [data]);
 
@@ -59,15 +59,15 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     }, [canRefresh]);
 
     useEffect(() => {
-        if (cachedFilters.current === filters) return;
+        if (cachedFiltersRef.current === filters) return;
 
-        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFilters.current, applicableFilters);
+        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFiltersRef.current, applicableFilters);
 
         if (applicableFiltersDidChange) {
             // The applicable filters have changed,
             // hence a new fetch request is required
             setFetchTimestamp(performance.now());
-            cachedFilters.current = filters;
+            cachedFiltersRef.current = filters;
         }
     }, [filters, applicableFilters]);
 
@@ -80,12 +80,12 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     }, [pendingRefresh]);
 
     useEffect(() => {
-        if (cachedIsFetching.current && !isFetching) {
+        if (cachedIsFetchingRef.current && !isFetching) {
             // Last fetch request has finished,
             // update fetch timestamp
             fetchTimestampRef.current = fetchTimestamp;
         }
-        cachedIsFetching.current = isFetching;
+        cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
     return {
