@@ -17,8 +17,8 @@ importers:
   .:
     dependencies:
       '@adyen/kyc-components':
-        specifier: '>=4.0.0-compact.3 <4.0.0'
-        version: 4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)
+        specifier: '>=4.0.0-compact.7 <4.0.0'
+        version: 4.0.0-compact.7(react@19.2.0)(typescript@5.8.3)
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -197,7 +197,7 @@ packages:
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/kyc-components@4.0.0-compact.4':
+  '@adyen/kyc-components@4.0.0-compact.7':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -1063,6 +1063,14 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@svgr/core': '*'
+
+  '@tanstack/preact-query@5.93.0':
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
+
+  '@tanstack/query-core@5.90.20':
+    resolution: {}
 
   '@testing-library/dom@8.20.1':
     resolution: {}
@@ -3016,6 +3024,9 @@ packages:
     resolution: {}
     engines: {node: '>= 6'}
 
+  mitt@3.0.1:
+    resolution: {}
+
   monogon@0.3.4:
     resolution: {}
     peerDependencies:
@@ -3378,7 +3389,15 @@ packages:
     resolution: {}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-custom-element@4.6.0:
+    resolution: {}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
+
   preact@10.28.2:
+    resolution: {}
+
+  preact@10.29.0:
     resolution: {}
 
   prelude-ls@1.2.1:
@@ -3481,6 +3500,10 @@ packages:
   regexp.prototype.flags@1.5.4:
     resolution: {}
     engines: {node: '>= 0.4'}
+
+  regexparam@3.0.0:
+    resolution: {}
+    engines: {node: '>=8'}
 
   require-directory@2.1.1:
     resolution: {}
@@ -4307,6 +4330,11 @@ packages:
     resolution: {}
     engines: {node: '>=0.10.0'}
 
+  wouter-preact@3.9.0:
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
+
   wrap-ansi@6.2.0:
     resolution: {}
     engines: {node: '>=8'}
@@ -4403,25 +4431,28 @@ snapshots:
   '@adyen/adyen-document-viewer@1.4.2':
     dependencies:
       classnames: 2.5.1
-      preact: 10.28.2
+      preact: 10.29.0
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.53.3
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/kyc-components@4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)':
+  '@adyen/kyc-components@4.0.0-compact.7(react@19.2.0)(typescript@5.8.3)':
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
       '@adyen/ui-assets-icons-16': 7.6.0
-      '@preact/signals': 2.7.1(preact@10.28.2)
+      '@preact/signals': 2.7.1(preact@10.29.0)
+      '@tanstack/preact-query': 5.93.0(preact@10.29.0)
       classnames: 2.5.1
       container-query-polyfill: 1.0.2
       i18next: 25.8.4(typescript@5.8.3)
-      monogon: 0.3.4(preact@10.28.2)(react@19.2.0)
+      monogon: 0.3.4(preact@10.29.0)(react@19.2.0)
       named-slots: 0.4.2
       onfido-sdk-ui: 14.55.0
-      preact: 10.28.2
+      preact: 10.29.0
+      preact-custom-element: 4.6.0(preact@10.29.0)
+      wouter-preact: 3.9.0(preact@10.29.0)
     transitivePeerDependencies:
       - react
       - typescript
@@ -5094,10 +5125,10 @@ snapshots:
 
   '@preact/signals-core@1.13.0': {}
 
-  '@preact/signals@2.7.1(preact@10.28.2)':
+  '@preact/signals@2.7.1(preact@10.29.0)':
     dependencies:
       '@preact/signals-core': 1.13.0
-      preact: 10.28.2
+      preact: 10.29.0
 
   '@prefresh/babel-plugin@0.5.1': {}
 
@@ -5341,6 +5372,13 @@ snapshots:
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/preact-query@5.93.0(preact@10.29.0)':
+    dependencies:
+      '@tanstack/query-core': 5.90.20
+      preact: 10.29.0
+
+  '@tanstack/query-core@5.90.20': {}
 
   '@testing-library/dom@8.20.1':
     dependencies:
@@ -7562,9 +7600,11 @@ snapshots:
       is-plain-obj: 1.1.0
       kind-of: 6.0.3
 
-  monogon@0.3.4(preact@10.28.2)(react@19.2.0):
+  mitt@3.0.1: {}
+
+  monogon@0.3.4(preact@10.29.0)(react@19.2.0):
     optionalDependencies:
-      preact: 10.28.2
+      preact: 10.29.0
       react: 19.2.0
 
   mri@1.2.0: {}
@@ -7903,7 +7943,13 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  preact-custom-element@4.6.0(preact@10.29.0):
+    dependencies:
+      preact: 10.29.0
+
   preact@10.28.2: {}
+
+  preact@10.29.0: {}
 
   prelude-ls@1.2.1: {}
 
@@ -8016,6 +8062,8 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  regexparam@3.0.0: {}
 
   require-directory@2.1.1: {}
 
@@ -8960,6 +9008,12 @@ snapshots:
       stackback: 0.0.2
 
   word-wrap@1.2.5: {}
+
+  wouter-preact@3.9.0(preact@10.29.0):
+    dependencies:
+      mitt: 3.0.1
+      preact: 10.29.0
+      regexparam: 3.0.0
 
   wrap-ansi@6.2.0:
     dependencies:
