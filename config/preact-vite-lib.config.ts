@@ -49,11 +49,6 @@ export function getPreactViteLibConfig({
                                 sourcemap: false,
                                 indent: false,
                             },
-                            {
-                                format: 'cjs',
-                                sourcemap: true,
-                                indent: false,
-                            },
                         ],
                     },
                     outDir,
