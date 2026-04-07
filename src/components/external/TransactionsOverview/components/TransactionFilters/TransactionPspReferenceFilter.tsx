@@ -40,12 +40,12 @@ const TransactionPspReferenceFilter = ({ eventCategory, eventSubCategory, onChan
     const [pendingResetAction, setPendingResetAction] = useState(false);
 
     const label = useMemo(() => i18n.get('transactions.overview.filters.types.paymentPspReference.label'), [i18n]);
-    const cachedValue = useRef(value);
+    const cachedValueRef = useRef(value);
 
     const onValueChange = useCallback<NonNullable<typeof onChange>>(
         value => {
-            if (cachedValue.current !== value) {
-                cachedValue.current = value;
+            if (cachedValueRef.current !== value) {
+                cachedValueRef.current = value;
                 logEvent?.('update', null);
                 onChange?.(value);
             }
@@ -58,7 +58,7 @@ const TransactionPspReferenceFilter = ({ eventCategory, eventSubCategory, onChan
     useEffect(() => {
         if (!pendingResetAction) return;
         setPendingResetAction(false);
-        if (cachedValue.current !== value) logEvent?.('reset');
+        if (cachedValueRef.current !== value) logEvent?.('reset');
     }, [pendingResetAction, value, logEvent]);
 
     return (

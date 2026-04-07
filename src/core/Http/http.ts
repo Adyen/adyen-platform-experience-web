@@ -63,7 +63,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
 
                     //TODO: when backend is ready double check this logic
                     switch (contentType) {
-                        case 'application/json':
+                        case 'application/json': {
                             // This could throw an exception if response body content is not valid JSON
                             const text = await res.clone().text();
                             if (!text) {
@@ -73,10 +73,12 @@ export async function http<T>(options: HttpOptions): Promise<T> {
                                 return null;
                             }
                             return await res.json();
-                        default:
+                        }
+                        default: {
                             const blob = await res.blob();
                             const filename = getResponseDownloadFilename(res);
                             return { blob, filename } as const satisfies EndpointDownloadStreamData;
+                        }
                     }
                 } catch (ex) {
                     // If it does throw an exception, the exception will be propagated to the caller (unhandled).

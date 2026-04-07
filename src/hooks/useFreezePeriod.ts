@@ -2,14 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 
 export const useFreezePeriod = (timeout = 1000, initialState = false) => {
     const [frozen, setFrozen] = useState(initialState);
-    const rafId = useRef<ReturnType<typeof requestAnimationFrame>>();
-    const timeoutId = useRef<ReturnType<typeof setTimeout>>();
+    const rafIdRef = useRef<ReturnType<typeof requestAnimationFrame>>();
+    const timeoutIdRef = useRef<ReturnType<typeof setTimeout>>();
 
     const freeze = useCallback(() => {
         if (frozen) return;
 
-        timeoutId.current = setTimeout(() => {
-            rafId.current = requestAnimationFrame(() => setFrozen(false));
+        timeoutIdRef.current = setTimeout(() => {
+            rafIdRef.current = requestAnimationFrame(() => setFrozen(false));
         }, timeout);
 
         setFrozen(true);
@@ -17,9 +17,9 @@ export const useFreezePeriod = (timeout = 1000, initialState = false) => {
 
     useEffect(() => {
         return () => {
-            cancelAnimationFrame(rafId.current!);
-            clearTimeout(timeoutId.current!);
-            rafId.current = timeoutId.current = null!;
+            cancelAnimationFrame(rafIdRef.current!);
+            clearTimeout(timeoutIdRef.current!);
+            rafIdRef.current = timeoutIdRef.current = null!;
         };
     }, [timeout]);
 

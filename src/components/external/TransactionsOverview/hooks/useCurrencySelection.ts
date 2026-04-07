@@ -37,6 +37,10 @@ const useCurrencySelection = ({
 
     const [activeCurrency, setActiveCurrency] = useState(() => getCurrencyIfAvailable(selectedCurrency));
 
+    const cachedActiveCurrencyRef = useRef<string | undefined>();
+    const cachedAvailableCurrenciesRef = useRef(availableCurrencies);
+    const cachedSelectedCurrencyRef = useRef(selectedCurrency);
+
     const onCurrencySelection = useCallback(
         ({ target }: { target?: { value: string } }) => {
             const selectedCurrency = getCurrencyIfAvailable(target?.value);
@@ -48,14 +52,10 @@ const useCurrencySelection = ({
         [getCurrencyIfAvailable, activeCurrency]
     );
 
-    const cachedActiveCurrencyRef = useRef<string | undefined>();
-    const cachedAvailableCurrencies = useRef(availableCurrencies);
-    const cachedSelectedCurrency = useRef(selectedCurrency);
-
     useEffect(() => {
-        if (cachedAvailableCurrencies.current !== availableCurrencies || cachedSelectedCurrency.current !== selectedCurrency) {
-            cachedAvailableCurrencies.current = availableCurrencies;
-            cachedSelectedCurrency.current = selectedCurrency;
+        if (cachedAvailableCurrenciesRef.current !== availableCurrencies || cachedSelectedCurrencyRef.current !== selectedCurrency) {
+            cachedAvailableCurrenciesRef.current = availableCurrencies;
+            cachedSelectedCurrencyRef.current = selectedCurrency;
             cachedActiveCurrencyRef.current = undefined;
             setActiveCurrency(getCurrencyIfAvailable(selectedCurrency));
         }
