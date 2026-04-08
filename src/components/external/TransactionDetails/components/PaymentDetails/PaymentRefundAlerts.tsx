@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import { ComponentChild } from 'preact';
 import { RefundedState } from '../../types';
-import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';
+import { useMemo } from 'preact/hooks';
 import { REFUND_STATUSES, TX_REFUND_STATUSES_CONTAINER } from '../../constants';
 import { AlertProps, AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -41,55 +41,55 @@ const PaymentRefundAlerts = memo(
             return (amounts: readonly number[]) => listFormatter.format(amounts.map(amount => i18n.amount(amount, refundCurrency)));
         }, [i18n, refundCurrency]);
 
-        const alertsRef = useRef<ComponentChild[]>([]);
+        const alerts = useMemo(() => {
+            const alertsList: ComponentChild[] = [];
 
-        const nextAlert = useCallback(<T extends AlertProps>({ description, ...alertProps }: Partial<T>) => {
-            alertsRef.current.push(
-                <Alert {...baseAlertProps} {...alertProps}>
-                    <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
-                        {description}
-                    </Typography>
-                </Alert>
-            );
-        }, []);
+            const nextAlert = <T extends AlertProps>({ description, ...alertProps }: Partial<T>) => {
+                alertsList.push(
+                    <Alert {...baseAlertProps} {...alertProps}>
+                        <Typography className={'adyen-pe-alert__description'} el={TypographyElement.DIV} variant={TypographyVariant.BODY} wide>
+                            {description}
+                        </Typography>
+                    </Alert>
+                );
+            };
 
-        if (refundedState === RefundedState.FULL) {
-            nextAlert({ description: i18n.get('transactions.details.refund.alerts.refundedFull') });
-        } else {
-            if (refundedAmount > 0) {
-                const values = { amount: getFormattedAmountsList([refundedAmount]) };
-                nextAlert({ description: i18n.get('transactions.details.refund.alerts.refundedAmount', { values }) });
-            }
-
-            if (refundLocked) {
-                nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgressBlocked') });
+            if (refundedState === RefundedState.FULL) {
+                nextAlert({ description: i18n.get('transactions.details.refund.alerts.refundedFull') });
             } else {
-                if (refundAmounts.in_progress && refundAmounts.in_progress.length > 0) {
-                    if (fullRefundInProgress) {
-                        nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgress') });
-                    } else {
-                        const values = { amount: getFormattedAmountsList(refundAmounts.in_progress) };
-                        nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgressAmount', { values }) });
-                    }
+                if (refundedAmount > 0) {
+                    const values = { amount: getFormattedAmountsList([refundedAmount]) };
+                    nextAlert({ description: i18n.get('transactions.details.refund.alerts.refundedAmount', { values }) });
                 }
 
-                if (refundAmounts.failed && refundAmounts.failed.length > 0) {
-                    const type = AlertTypeOption.WARNING;
-                    if (fullRefundFailed) {
-                        nextAlert({ type, description: i18n.get('transactions.details.refund.alerts.notPossible') });
-                    } else {
-                        const values = { amount: getFormattedAmountsList(refundAmounts.failed) };
-                        nextAlert({ type, description: i18n.get('transactions.details.refund.alerts.notPossibleAmount', { values }) });
+                if (refundLocked) {
+                    nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgressBlocked') });
+                } else {
+                    if (refundAmounts.in_progress && refundAmounts.in_progress.length > 0) {
+                        if (fullRefundInProgress) {
+                            nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgress') });
+                        } else {
+                            const values = { amount: getFormattedAmountsList(refundAmounts.in_progress) };
+                            nextAlert({ description: i18n.get('transactions.details.refund.alerts.inProgressAmount', { values }) });
+                        }
+                    }
+
+                    if (refundAmounts.failed && refundAmounts.failed.length > 0) {
+                        const type = AlertTypeOption.WARNING;
+                        if (fullRefundFailed) {
+                            nextAlert({ type, description: i18n.get('transactions.details.refund.alerts.notPossible') });
+                        } else {
+                            const values = { amount: getFormattedAmountsList(refundAmounts.failed) };
+                            nextAlert({ type, description: i18n.get('transactions.details.refund.alerts.notPossibleAmount', { values }) });
+                        }
                     }
                 }
             }
-        }
 
-        useEffect(() => {
-            alertsRef.current = [];
-        });
+            return alertsList;
+        }, [fullRefundFailed, fullRefundInProgress, getFormattedAmountsList, i18n, refundAmounts, refundLocked, refundedAmount, refundedState]);
 
-        return alertsRef.current.length > 0 ? <div className={TX_REFUND_STATUSES_CONTAINER}>{alertsRef.current}</div> : null;
+        return alerts.length > 0 ? <div className={TX_REFUND_STATUSES_CONTAINER}>{alerts}</div> : null;
     }
 );
 

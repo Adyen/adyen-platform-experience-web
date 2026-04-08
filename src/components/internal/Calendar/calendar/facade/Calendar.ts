@@ -94,7 +94,7 @@ export default class Calendar {
     #shiftControls = new Proxy(
         createIndexed(() => this.#shiftControlsList?.length ?? 0, this.#getShiftControlRecordAtIndex.bind(this)),
         withFreezeProxyHandlers({
-            get: (target: {}, property: string | symbol, receiver: {}): any => {
+            get: (target: object, property: string | symbol, receiver: object): any => {
                 const index = this.#shiftControlsList?.indexOf(property as CalendarShiftControl) ?? -1;
                 return index >= 0 ? this.#getShiftControlRecordAtIndex(index)?.[1] : Reflect.get(target, property, receiver);
             },
