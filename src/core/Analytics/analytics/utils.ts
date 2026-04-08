@@ -12,7 +12,7 @@ export const encodeAnalyticsEvent = (event: any) => {
         const data = new URLSearchParams();
         data.set('data', encodedData);
         return data;
-    } catch (err) {
+    } catch {
         return null;
     }
 };

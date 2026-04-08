@@ -2,7 +2,6 @@ import { fn, identity } from '../common';
 import { EMPTY_ARRAY } from '../value/constants';
 import { isFunction, isNullish, isUndefined } from '../value/is';
 import type { MapGetter } from './types';
-import type { List } from '../types';
 
 export const getMappedValue: MapGetter = (key, map, factory) => {
     let value = map.get(key);
@@ -33,17 +32,3 @@ export const pickFrom = <C extends readonly any[] | any[]>(list: C, option?: C[n
 };
 
 export const some = fn(Array.prototype.some);
-
-const _uniqueFlatten = function _uniqueFlatten<T>(reversed: boolean, items: List<T>, uniqueItems: Set<T> = new Set<T>()) {
-    for (const item of items) {
-        if (!Array.isArray(item)) {
-            if (reversed) {
-                uniqueItems.delete(item);
-            }
-            uniqueItems.add(item);
-        } else {
-            _uniqueFlatten(reversed, item, uniqueItems);
-        }
-    }
-    return uniqueItems;
-};

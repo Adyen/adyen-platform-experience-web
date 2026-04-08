@@ -108,7 +108,7 @@ module.exports = {
         'no-useless-constructor': 'off',
 
         // Typescript Rules
-        '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true, vars: 'local' }],
+        '@typescript-eslint/no-unused-vars': ['error', { ignoreRestSiblings: true, vars: 'local', argsIgnorePattern: '^_' }],
         '@typescript-eslint/explicit-member-accessibility': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',

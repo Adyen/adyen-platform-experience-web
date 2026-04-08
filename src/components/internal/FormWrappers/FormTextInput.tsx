@@ -1,5 +1,4 @@
-import { h } from 'preact';
-import { useCallback, useEffect, useMemo } from 'preact/hooks';
+import { useCallback, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../hooks/form/wizard/WizardFormContext';
 import FormField from './FormField';
 import { Controller } from '../../../hooks/form';

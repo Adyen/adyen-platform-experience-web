@@ -22,7 +22,7 @@ export const parsePaymentMethodType = (paymentMethod: NonNullable<IPaymentMethod
 export const getTransactionsFilterQueryParams = <T extends TransactionsFilters>(filters: T, now: number) => {
     const { from, to } = getDateRangeTimestamps(filters.createdDate, now, filters.balanceAccount?.timeZone);
     return {
-        balanceAccountId: filters.balanceAccount?.id!, // using null assertion to ensure correct type inference
+        balanceAccountId: filters.balanceAccount?.id as string, // using type cast to ensure correct type inference
         categories: filters.categories as (typeof filters.categories)[number][],
         createdSince: new Date(from).toISOString(),
         createdUntil: new Date(to).toISOString(),

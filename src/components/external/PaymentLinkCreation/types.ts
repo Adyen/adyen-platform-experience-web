@@ -1,3 +1,2 @@
-export interface PaymentLinkCreationConfig {
-    // Placeholder for future configuration options
-}
+// Placeholder for future configuration options
+export type PaymentLinkCreationConfig = Record<never, never>;

@@ -1,6 +1,6 @@
 import { CONTROL_ELEMENT_PROPERTY } from '../../../../hooks/element/useClickOutside';
 
-export const popoverUtil = (<T extends Element, U extends Function>() => {
+export const popoverUtil = (<T extends Element, U extends (...args: any[]) => any>() => {
     let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];
 
     const closePopoversOutsideOfClick = (eventPath: EventTarget[]) => {

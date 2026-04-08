@@ -9,7 +9,7 @@ import {
     parseRangeTimestamp,
 } from './utils';
 
-const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
+const createRangeTimestampsFactory = <T extends Record<any, any> = Record<string, never>>(
     config = EMPTY_OBJECT as RangeTimestampsConfig,
     additionalContext = EMPTY_OBJECT as { [P in keyof T]: TypedPropertyDescriptor<T[P]> }
 ) => {

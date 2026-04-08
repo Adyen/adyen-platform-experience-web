@@ -400,7 +400,7 @@ export async function validateFieldWithRaceConditionHandling<TFieldValues>({
             }
             control.notify();
         }
-    } catch (err) {
+    } catch {
         if (control._validationCounters.get(name) === currentCounter) {
             const errorObj = { type: 'validation', message: 'Validation error' } as const;
             control._errors.set(name, errorObj);

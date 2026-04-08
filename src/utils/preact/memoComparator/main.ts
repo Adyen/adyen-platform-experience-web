@@ -4,13 +4,13 @@ import { MemoComparator, MemoComparatorGetters, MemoComparatorProp } from './typ
 export const memoComparator = (() => {
     const _comparedProps = new Set<string>();
 
-    const _propHasChanged = <T = {}>(prev: T, next: T, prop: MemoComparatorProp<T>, getters?: MemoComparatorGetters<T>) => {
+    const _propHasChanged = <T = Record<string, unknown>>(prev: T, next: T, prop: MemoComparatorProp<T>, getters?: MemoComparatorGetters<T>) => {
         let getter = getters?.[prop];
         getter = isFunction(getter) ? getter : identity;
         return !sameValue(getter(prev[prop]), getter(next[prop]));
     };
 
-    const comparator = (<T = {}>(getters?: MemoComparatorGetters<T>) =>
+    const comparator = (<T = Record<string, unknown>>(getters?: MemoComparatorGetters<T>) =>
         (prev: T, next: T) => {
             try {
                 for (const prop in prev) {
