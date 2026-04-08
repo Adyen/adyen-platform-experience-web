@@ -70,7 +70,7 @@ export const PaymentLinkCreationFormContainer = ({
     const headerRef = useRef<HTMLDivElement>(null);
     const hasPrefilledAddress = !!fieldsConfig?.data?.billingAddress || !!fieldsConfig?.data?.deliveryAddress;
     const [isSameAddress, setIsSameAddress] = useState<boolean>(!hasPrefilledAddress);
-    const selectedStoreNavigationCacheRef = useRef<string>('');
+    const [selectedStoreNavigationCache, setSelectedStoreNavigationCache] = useState<string>('');
     const { i18n } = useCoreContext();
     const isXsAndDownContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -172,10 +172,10 @@ export const PaymentLinkCreationFormContainer = ({
     };
 
     const navigateBackFromTermsAndConditions = useCallback(() => {
-        setSelectedStore(selectedStoreNavigationCacheRef.current);
+        setSelectedStore(selectedStoreNavigationCache);
         setShowTermsAndConditions(false);
-        selectedStoreNavigationCacheRef.current = '';
-    }, [setShowTermsAndConditions, setSelectedStore]);
+        setSelectedStoreNavigationCache('');
+    }, [selectedStoreNavigationCache, setShowTermsAndConditions, setSelectedStore]);
 
     const onError = () => {
         // Form validation errors, should not happen since last step
@@ -224,7 +224,7 @@ export const PaymentLinkCreationFormContainer = ({
     );
 
     const onNavigateToTermsAndConditions = useCallback(() => {
-        selectedStoreNavigationCacheRef.current = selectedStore;
+        setSelectedStoreNavigationCache(selectedStore);
         setSelectedStore('');
         setShowTermsAndConditions(true);
     }, [selectedStore, setSelectedStore, setShowTermsAndConditions]);
@@ -289,7 +289,7 @@ export const PaymentLinkCreationFormContainer = ({
         return (
             <PaymentLinkSettingsContainer
                 hideTitle={true}
-                storeIds={selectedStoreNavigationCacheRef.current}
+                storeIds={selectedStoreNavigationCache}
                 settingsItems={['termsAndConditions']}
                 navigateBack={navigateBackFromTermsAndConditions}
                 embeddedInOverview={embeddedInOverview}
