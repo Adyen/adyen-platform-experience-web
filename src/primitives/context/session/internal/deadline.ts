@@ -19,7 +19,7 @@ import { INTERNAL_EVT_SESSION_DEADLINE } from './constants';
 import type { SessionEventType, SessionSpecification } from '../types';
 import type { SessionDeadline, SessionDeadlineEmitter } from './types';
 
-export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
+export const createSessionDeadline = <T>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _deadlineSignal: AbortSignal | undefined;
     let _deadlineTimestamp = Infinity;
     let _refreshPromisorSignal: AbortSignal | undefined;
@@ -50,7 +50,7 @@ export const createSessionDeadline = <T extends any>(emitter: Emitter<SessionEve
 
         if (_deadlines.length > 0) {
             let _deadlineElapsed = false;
-            let _signals = new Set<AbortSignal>();
+            const _signals = new Set<AbortSignal>();
 
             for (const deadline of _deadlines) {
                 if (isAbortSignal(deadline)) {

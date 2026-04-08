@@ -20,7 +20,9 @@ describe('isBoolean', () => {
 describe('isFunction', () => {
     test('should return `true` for every flavor of function (callable)', () => {
         const obj = {
-            method() {},
+            method() {
+                /* noop */
+            },
         };
 
         [
@@ -28,10 +30,18 @@ describe('isFunction', () => {
             obj.method, // object method
             obj.method.bind(obj), // bound function
             () => {}, // arrow function
-            function () {}, // function expression
-            function* () {}, // generator function expression
-            async function () {}, // async function expression
-            async function* () {}, // async generator function expression
+            function () {
+                /* noop */
+            }, // function expression
+            function* () {
+                /* noop */
+            }, // generator function expression
+            async function () {
+                /* noop */
+            }, // async function expression
+            async function* () {
+                /* noop */
+            }, // async generator function expression
         ].forEach(value => expect(isFunction(value)).toBe(true));
     });
 

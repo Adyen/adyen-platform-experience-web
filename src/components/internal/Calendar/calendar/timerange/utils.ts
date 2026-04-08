@@ -46,6 +46,7 @@ export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number
                 set(this: RangeTimestamps, value?: T | null) {
                     const currentValue = normalizedValue;
                     normalizedValue = _getNormalizedValue(value, normalizedValue);
+                    // eslint-disable-next-line no-self-assign
                     if (currentValue !== normalizedValue) this.now = this.now;
                 },
             }),
@@ -58,7 +59,7 @@ export const getRangeTimestampsContextIntegerPropertyFactory = <T extends number
 
 export const getRangeTimestampsConfigParameterUnwrapper =
     (config: RangeTimestampsConfig, context: RangeTimestampsConfigContext) =>
-    <T = {}>(value: T): RangeTimestampsConfigParameterValue<T> =>
+    <T = unknown>(value: T): RangeTimestampsConfigParameterValue<T> =>
         isFunction(value) ? value.call(config, context) : (value as RangeTimestampsConfigParameterValue<T>);
 
 export const isRangeTimestampsConfigWithoutOffsets = (config: RangeTimestampsConfig): config is RangeTimestampsConfigWithoutOffsets =>

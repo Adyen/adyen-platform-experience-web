@@ -5,13 +5,13 @@ import type { Nullable } from '../../utils/types';
 import useReflex from '../useReflex';
 
 const useUniqueIdentifier = (ref?: Nullable<Reflexable<Element>>) => {
-    const id = useRef<string>();
+    const idRef = useRef<string>();
 
     return useReflex<Element>(
         useCallback((current, previous) => {
-            if (previous instanceof Element && previous.id === id.current) previous.id = '';
+            if (previous instanceof Element && previous.id === idRef.current) previous.id = '';
             if (!(current instanceof Element)) return;
-            current.id = id.current || (id.current = uniqueId());
+            current.id = idRef.current || (idRef.current = uniqueId());
         }, []),
         ref
     );

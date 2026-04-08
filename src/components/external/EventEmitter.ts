@@ -1,17 +1,14 @@
 class EventEmitter {
-    public events: { [key: string]: Function[] } = {};
+    public events: { [key: string]: ((...args: any[]) => void)[] } = {};
 
-    public on = (eventName: string, fn: Function): void => {
+    public on = (eventName: string, fn: (...args: any[]) => void): void => {
         this.events[eventName] = this.events[eventName] || [];
         this.events[eventName]?.push(fn);
     };
 
-    public off = (eventName: string, fn: Function): void => {
+    public off = (eventName: string, fn: (...args: any[]) => void): void => {
         if (this.events[eventName]) {
-            this.events[eventName] = this.events[eventName]!.reduce((acc, cur) => {
-                if (cur !== fn) acc.push(cur);
-                return acc;
-            }, [] as Function[]);
+            this.events[eventName] = this.events[eventName]!.filter(cur => cur !== fn);
         }
     };
 
