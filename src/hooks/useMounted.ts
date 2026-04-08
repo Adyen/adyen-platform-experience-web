@@ -9,7 +9,9 @@ const useMounted = <U extends (...args: any[]) => any>(beforeUnmount?: U) => {
 
         return () => {
             $mountedRef.current = false;
-            unmount && unmount();
+            if (unmount) {
+                unmount();
+            }
         };
     }, [unmount]);
 

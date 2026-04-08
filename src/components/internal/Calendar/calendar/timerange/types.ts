@@ -13,11 +13,11 @@ type _RangeTimestamps = {
     set timezone(timezone: RestamperWithTimezone['tz']['current'] | null);
 };
 
-export type RangeTimestamps<T extends Record<any, any> = {}> = _RangeTimestamps & Omit<T, keyof _RangeTimestamps>;
+export type RangeTimestamps<T extends Record<any, any> = Record<never, never>> = _RangeTimestamps & Omit<T, keyof _RangeTimestamps>;
 export type RangeTimestampsConfig = RangeTimestampsConfigWithFromOffsets | RangeTimestampsConfigWithToOffsets | RangeTimestampsConfigWithoutOffsets;
 
 export type RangeTimestampsConfigContext = Readonly<Pick<RangeTimestamps, 'now' | 'timezone'>> & RangeTimestampsConfigRestampingContext;
-export type RangeTimestampsConfigParameter<T = {}> = T | ((context: RangeTimestampsConfigContext) => T);
+export type RangeTimestampsConfigParameter<T = Record<never, never>> = T | ((context: RangeTimestampsConfigContext) => T);
 export type RangeTimestampsConfigParameterValue<T> = T extends (context: RangeTimestampsConfigContext) => infer U ? U : T;
 
 export type RangeTimestampsConfigRestampingContext = Readonly<{

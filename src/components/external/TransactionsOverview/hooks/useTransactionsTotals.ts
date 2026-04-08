@@ -22,7 +22,7 @@ export interface UseTransactionsTotalsProps {
 const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
     const [fetchTimestamp, setFetchTimestamp] = useState(() => performance.now());
-    const fetchTimestampRef = useRef<number>();
+    const [lastFetchTimestamp, setLastFetchTimestamp] = useState<number>();
 
     const abortable = useRef(createAbortable()).current;
     const cachedFiltersRef = useRef(filters);
@@ -30,7 +30,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
     const canFetchTransactionTotals = canGetTransactionTotals && fetchEnabled;
-    const shouldFetchTransactionTotals = canFetchTransactionTotals && fetchTimestampRef.current !== fetchTimestamp;
+    const shouldFetchTransactionTotals = canFetchTransactionTotals && lastFetchTimestamp !== fetchTimestamp;
 
     const fetchTransactionTotals = useCallback(async () => {
         if (shouldFetchTransactionTotals) {
@@ -83,7 +83,7 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         if (cachedIsFetchingRef.current && !isFetching) {
             // Last fetch request has finished,
             // update fetch timestamp
-            fetchTimestampRef.current = fetchTimestamp;
+            setLastFetchTimestamp(fetchTimestamp);
         }
         cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);

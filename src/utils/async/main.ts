@@ -13,10 +13,6 @@ export const getPromiseState = async (promise: Promise<any>): Promise<PromiseSta
     }
 };
 
-export const tryResolve = function <T extends any, Params extends any[] = []>(
-    this: any,
-    fn: (this: any, ...args: Params) => Promised<T>,
-    ...args: Params
-) {
+export const tryResolve = function <T, Params extends any[] = []>(this: any, fn: (this: any, ...args: Params) => Promised<T>, ...args: Params) {
     return new Promise<T>(resolve => resolve(fn.call(this, ...args)));
 };

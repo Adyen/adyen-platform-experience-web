@@ -87,7 +87,7 @@ export default class YearFrame extends TimeFrame {
         const proxyForIndexPropertyAccess = new Proxy(
             struct(),
             withFreezeProxyHandlers({
-                get: (target: {}, property: string | symbol, receiver: {}) => {
+                get: (target: object, property: string | symbol, receiver: object) => {
                     if (isString(property)) {
                         const offset = +property;
 
@@ -98,18 +98,32 @@ export default class YearFrame extends TimeFrame {
 
                             let flags = TimeFlag.WITHIN_BLOCK;
 
-                            if (index === startIndex) flags |= TimeFlag.BLOCK_START;
-                            else if (index === endIndex) flags |= TimeFlag.BLOCK_END;
+                            if (index === startIndex) {
+                                flags |= TimeFlag.BLOCK_START;
+                            } else if (index === endIndex) {
+                                flags |= TimeFlag.BLOCK_END;
+                            }
 
-                            if (lineIndex === 0) flags |= TimeFlag.LINE_START;
-                            else if (lineIndex === this.#lineWidth - 1) flags |= TimeFlag.LINE_END;
+                            if (lineIndex === 0) {
+                                flags |= TimeFlag.LINE_START;
+                            } else if (lineIndex === this.#lineWidth - 1) {
+                                flags |= TimeFlag.LINE_END;
+                            }
 
-                            if (index === this.cursor) flags |= TimeFlag.CURSOR;
-                            if (timestamp === this.currentDayTimestamp) flags |= TimeFlag.CURRENT;
+                            if (index === this.cursor) {
+                                flags |= TimeFlag.CURSOR;
+                            }
+                            if (timestamp === this.currentDayTimestamp) {
+                                flags |= TimeFlag.CURRENT;
+                            }
 
                             if (timestamp >= this.fromTimestamp && timestamp <= this.toTimestamp) {
-                                if (timestamp === this.fromTimestamp) flags |= TimeFlag.RANGE_START;
-                                if (timestamp === this.toTimestamp) flags |= TimeFlag.RANGE_END;
+                                if (timestamp === this.fromTimestamp) {
+                                    flags |= TimeFlag.RANGE_START;
+                                }
+                                if (timestamp === this.toTimestamp) {
+                                    flags |= TimeFlag.RANGE_END;
+                                }
                                 flags |= TimeFlag.WITHIN_RANGE;
                             }
 

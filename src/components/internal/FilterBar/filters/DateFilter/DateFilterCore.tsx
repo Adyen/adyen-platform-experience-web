@@ -22,9 +22,15 @@ const computeDateFilterValue = (i18n: Localization['i18n'], fullDateFormat: Loca
     const from = fromDate && fullDateFormat(fromDate);
     const to = toDate && fullDateFormat(toDate);
 
-    if (from && to) return i18n.get('common.filters.types.date.range.between', { values: { fromDate: from, toDate: to } });
-    if (from) return i18n.get('common.filters.types.date.range.since', { values: { date: from } });
-    if (to) return i18n.get('common.filters.types.date.range.until', { values: { date: to } });
+    if (from && to) {
+        return i18n.get('common.filters.types.date.range.between', { values: { fromDate: from, toDate: to } });
+    }
+    if (from) {
+        return i18n.get('common.filters.types.date.range.since', { values: { date: from } });
+    }
+    if (to) {
+        return i18n.get('common.filters.types.date.range.until', { values: { date: to } });
+    }
 };
 
 const resolveDate = (date?: any) => {
