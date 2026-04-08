@@ -26,7 +26,7 @@ type CalendarGridDayOfWeekExtendedProps = {
 export type CalendarGridDateRenderProps = JSX.HTMLAttributes<HTMLTimeElement> & CalendarGridDateExtendedProps;
 export type CalendarGridDayOfWeekRenderProps = JSX.HTMLAttributes<HTMLElement> & CalendarGridDayOfWeekExtendedProps;
 
-type CalendarGridCellProps<T extends {} = {}> = T &
+type CalendarGridCellProps<T extends object = Record<never, never>> = T &
     Pick<CalendarGridProps, 'grid' | 'prepare'> & {
         block: CalendarGrid[number];
         cell: number;

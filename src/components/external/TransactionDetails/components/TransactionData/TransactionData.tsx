@@ -7,7 +7,7 @@ import TransactionDataContent from './TransactionDataContent';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';
 import { useModalContext } from '../../../../internal/Modal/Modal';
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Header } from '../../../../internal/Header';
 import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getErrorMessage } from '../../../../utils/getErrorMessage';
@@ -19,18 +19,22 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
 
     const [extraFields, setExtraFields] = useState<Record<string, any>>();
     const [forcedHideTitle, setForcedHideTitle] = useState(false);
+    const [initialTransaction, setInitialTransaction] = useState<TransactionDetails>();
 
     const shouldHideTitle = useMemo(() => forcedHideTitle || boolOrFalse(hideTitle), [forcedHideTitle, hideTitle]);
-    const initialTransactionRef = useRef(transaction);
 
     const errorProps = useMemo(
         () => getErrorMessage(error as AdyenPlatformExperienceError, 'transactions.details.errors.unavailable', onContactSupport),
         [error, onContactSupport]
     );
 
-    if (!initialTransactionRef.current && transaction) {
-        initialTransactionRef.current = transaction;
-    }
+    useEffect(() => {
+        if (transaction && transaction.id === id) {
+            setInitialTransaction(prev => prev ?? transaction);
+        } else if (!transaction) {
+            setInitialTransaction(undefined);
+        }
+    }, [transaction, id]);
 
     useEffect(() => {
         // ensure title is always hidden within transaction details modal
@@ -63,13 +67,13 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
         <div className="adyen-pe-overview-details">
             <Header hideTitle={shouldHideTitle} titleKey="transactions.details.title" forwardedToRoot={!withinModal} />
 
-            {initialTransactionRef.current ? (
+            {initialTransaction ? (
                 <TransactionDataContent
                     extraFields={extraFields}
                     dataCustomization={dataCustomization}
                     fetchingTransaction={fetchingTransaction}
                     refreshTransaction={refreshTransaction}
-                    transaction={transaction ?? initialTransactionRef.current}
+                    transaction={transaction ?? initialTransaction}
                     transactionNavigator={transactionNavigator}
                 />
             ) : fetchingTransaction ? (

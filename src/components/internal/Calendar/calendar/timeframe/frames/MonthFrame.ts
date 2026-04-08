@@ -195,7 +195,7 @@ export default class MonthFrame extends TimeFrame {
         const proxyForIndexPropertyAccess = new Proxy(
             struct(),
             withFreezeProxyHandlers({
-                get: (target: {}, property: string | symbol, receiver: {}) => {
+                get: (target: object, property: string | symbol, receiver: object) => {
                     if (isString(property)) {
                         const offset = +property;
 

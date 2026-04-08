@@ -12,7 +12,7 @@ const DefaultRenderStep = ({ completed, index }: { completed: boolean; index: nu
     return <span className="adyen-pe-step__number">{index + 1}</span>;
 };
 
-export const Step = forwardRef<HTMLButtonElement, StepProps>(({ index, active, completed, disabled, onClick, children, totalSteps }, ref) => {
+export const Step = forwardRef<HTMLButtonElement, StepProps>(({ index, active, completed, disabled, onClick, children }, ref) => {
     return (
         <li
             className={cx('adyen-pe-step__item', {

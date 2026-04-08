@@ -16,7 +16,7 @@ function useModalDetails<Options extends ModalDetailsOptions<any>>(options: Opti
     const updateDetails = useCallback(
         <T extends SelectedDetail<Options>>(
             state: T
-        ): CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {} => {
+        ): CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : object => {
             if (state && hasCallback(options[state.selection.type])) {
                 return {
                     callback: options?.[state.selection.type]?.callback
@@ -29,7 +29,7 @@ function useModalDetails<Options extends ModalDetailsOptions<any>>(options: Opti
                 };
             }
             setSelectedDetail(state);
-            return {} as CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : {};
+            return {} as CallbackIsPresent<Options, Options, T> extends true ? CallbackParams<Options, Options, T> : object;
         },
         [options]
     );
