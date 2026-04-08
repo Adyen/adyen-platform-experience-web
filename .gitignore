@@ -1,6 +1,7 @@
 node_modules
 dist
 coverage
+.nx/
 *.tgz*
 *.log*
 .env

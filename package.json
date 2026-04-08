@@ -31,7 +31,7 @@
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/index.js",
   "types": "./dist/types/index.d.ts",
-  "style": "dist/style.css",
+  "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
@@ -47,13 +47,15 @@
     "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
-    "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build": "nx run @integration-components/publish:build",
     "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
+    "publish-diff": "pnpm run build && node scripts/publish-diff/check.mjs",
+    "publish-diff:update": "pnpm run build && node scripts/publish-diff/check.mjs --update",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
@@ -85,6 +87,10 @@
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
+    "@nx/eslint": "^22.5.3",
+    "@nx/eslint-plugin": "^22.5.3",
+    "@nx/vite": "^22.5.3",
+    "@nx/vitest": "^22.5.3",
     "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.10.2",
     "@storybook/preact": "^10.2.12",
@@ -116,6 +122,7 @@
     "mini-css-extract-plugin": "^2.4.5",
     "msw": "^2.4.5",
     "msw-storybook-addon": "^2.0.2",
+    "nx": "^22.5.3",
     "openapi-typescript": "^7.10.1",
     "postcss": "^8.3.11",
     "prettier": "^3.6.2",
@@ -155,6 +162,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "msw",
+      "nx",
       "unrs-resolver"
     ]
   }

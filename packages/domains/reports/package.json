@@ -1,0 +1,12 @@
+{
+    "name": "@integration-components/reports",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./publish": "./publish/src/index.ts"
+    },
+    "dependencies": {
+        "@integration-components/sdk": "workspace:*"
+    }
+}
