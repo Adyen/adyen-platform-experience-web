@@ -17,10 +17,7 @@ test.describe('Payment link creation - Link creation success', () => {
         // Step 2: Payment Details
         // Set validity to Custom 30 hours
         await page.getByRole('button', { name: '24 hours' }).click();
-        await page
-            .locator('div')
-            .filter({ hasText: /^Custom$/ })
-            .click();
+        await page.getByRole('button', { name: 'Custom', exact: true }).click();
         await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').click();
         await page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton').fill('30');
 

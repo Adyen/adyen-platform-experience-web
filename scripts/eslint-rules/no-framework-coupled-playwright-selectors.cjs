@@ -1,4 +1,5 @@
 const SELECTOR_METHODS = new Set(['locator', 'waitForSelector', '$', '$$']);
+const BARE_TYPE_SELECTOR_REGEX = /^[a-z][a-z0-9-]*$/i;
 
 const DISALLOWED_PATTERNS = [
     {
@@ -10,8 +11,8 @@ const DISALLOWED_PATTERNS = [
         regex: /xpath=/,
     },
     {
-        label: 'definition list structure selectors',
-        regex: /^(?:dd|dl)$/,
+        label: 'bare type selectors',
+        regex: BARE_TYPE_SELECTOR_REGEX,
     },
     {
         label: 'aria-labelledby attribute selectors',
@@ -65,8 +66,7 @@ module.exports = {
         },
         schema: [],
         messages: {
-            disallowedSelector:
-                'Avoid {{label}} in Playwright selectors. Prefer accessible queries or stable data-testid hooks instead.',
+            disallowedSelector: 'Avoid {{label}} in Playwright selectors. Prefer accessible queries or stable data-testid hooks instead.',
         },
     },
     create(context) {
