@@ -214,6 +214,10 @@ importers:
 
   packages/shared/lib: {}
 
+  packages/shared/types: {}
+
+  packages/shared/utils: {}
+
 packages:
 
   '@adobe/css-tools@4.4.2':
