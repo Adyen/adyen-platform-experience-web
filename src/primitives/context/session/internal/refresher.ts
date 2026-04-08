@@ -6,7 +6,7 @@ import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRE
 import type { SessionRefresher, SessionRefresherContext, SessionRefresherEmitter } from './types';
 import type { SessionEventType, SessionSpecification } from '../types';
 
-export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
+export const createSessionRefresher = <T>(emitter: Emitter<SessionEventType>, specification: SessionSpecification<T>) => {
     let _refreshPending = false;
     let _refreshingPromise: Promise<void> | undefined;
     let _refreshingSignal: AbortSignal;
@@ -19,7 +19,7 @@ export const createSessionRefresher = <T extends any>(emitter: Emitter<SessionEv
     function _assertSession(value: any): asserts value is T {
         try {
             specification.assert?.(value);
-        } catch (ex) {
+        } catch {
             throw ERR_SESSION_INVALID;
         }
     }

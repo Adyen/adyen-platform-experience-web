@@ -4,9 +4,7 @@ import { enumerable, getter, isUndefined, tryResolve } from '../../../utils';
 import type { Promised } from '../../../utils/types';
 import type { Promisor } from './types';
 
-export const createPromisor = <T extends any, Params extends any[] = []>(
-    factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>
-) => {
+export const createPromisor = <T, Params extends any[] = []>(factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>) => {
     const _abortable = createAbortable();
     const _deferred = createDeferred<T>();
     let _promise: Promisor<T, Params>['promise'] | undefined;

@@ -14,8 +14,6 @@ export interface Restamper {
 }
 
 export interface RestamperWithTimezone extends Restamper {
-    // [TODO]: Remove the following @ts-ignore directive after TS version has been bumped up to >=5.0.0.
-    // @ts-ignore
     get tz(): {
         get current(): RestampContext['TIMEZONE'];
         set current(timezone: RestampContext['TIMEZONE'] | null);

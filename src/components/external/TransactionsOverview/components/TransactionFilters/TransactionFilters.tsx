@@ -56,12 +56,12 @@ const TransactionsFilters = ({
     const initialFiltersRef = useRef<Filters>({ ...INITIAL_FILTERS });
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
-    const [statuses, setStatuses] = useState(initialFiltersRef.current.statuses);
-    const [categories, setCategories] = useState(initialFiltersRef.current.categories);
-    const [currencies, setCurrencies] = useState(initialFiltersRef.current.currencies);
-    const [createdDate, setCreatedDate] = useState(initialFiltersRef.current.createdDate);
-    const [paymentPspReference, setPaymentPspReference] = useState(initialFiltersRef.current.paymentPspReference);
-    const [balanceAccount, setBalanceAccount] = useState(initialFiltersRef.current.balanceAccount);
+    const [statuses, setStatuses] = useState(() => initialFiltersRef.current.statuses);
+    const [categories, setCategories] = useState(() => initialFiltersRef.current.categories);
+    const [currencies, setCurrencies] = useState(() => initialFiltersRef.current.currencies);
+    const [createdDate, setCreatedDate] = useState(() => initialFiltersRef.current.createdDate);
+    const [paymentPspReference, setPaymentPspReference] = useState(() => initialFiltersRef.current.paymentPspReference);
+    const [balanceAccount, setBalanceAccount] = useState(() => initialFiltersRef.current.balanceAccount);
 
     const currentFilters = useMemo(
         () => ({ balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses }) as const,

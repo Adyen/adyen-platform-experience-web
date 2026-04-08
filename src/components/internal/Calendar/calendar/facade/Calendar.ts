@@ -68,8 +68,8 @@ import {
 } from '../types';
 
 export default class Calendar {
-    grid: CalendarGrid;
-    kill: () => void;
+    public grid: CalendarGrid;
+    public kill: () => void;
     #config = EMPTY_OBJECT as CalendarConfig;
     #destructed = false;
     #frame?: TimeFrame;
@@ -94,7 +94,7 @@ export default class Calendar {
     #shiftControls = new Proxy(
         createIndexed(() => this.#shiftControlsList?.length ?? 0, this.#getShiftControlRecordAtIndex.bind(this)),
         withFreezeProxyHandlers({
-            get: (target: {}, property: string | symbol, receiver: {}): any => {
+            get: (target: object, property: string | symbol, receiver: object): any => {
                 const index = this.#shiftControlsList?.indexOf(property as CalendarShiftControl) ?? -1;
                 return index >= 0 ? this.#getShiftControlRecordAtIndex(index)?.[1] : Reflect.get(target, property, receiver);
             },
@@ -658,13 +658,13 @@ export default class Calendar {
         switch (this.#highlightSelection) {
             case SELECT_MANY:
                 if (!boolOrTrue(this.#frame?.blankSelection) && this.#rangeOffsets) {
-                    this.#rangeHighlight(this.#frame?.selectionStart!, SELECTION_TO, this.#rangeOffsets);
+                    this.#rangeHighlight(this.#frame!.selectionStart!, SELECTION_TO, this.#rangeOffsets);
                 }
                 break;
             case SELECT_ONE:
                 if (!boolOrTrue(this.#frame?.blankSelection)) {
                     const restamper = withTimezone(this.#frame?.timezone);
-                    const restampedDate = new Date(timezoneToSystem(restamper, this.#frame?.selectionStart!));
+                    const restampedDate = new Date(timezoneToSystem(restamper, this.#frame!.selectionStart!));
                     this.#frame?.updateSelection(systemToTimezone(restamper, restampedDate.setHours(23, 59, 59, 999)), SELECTION_TO);
                 }
                 break;

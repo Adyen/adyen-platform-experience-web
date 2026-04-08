@@ -8,9 +8,12 @@ type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceReco
     ? Extract<WithReplacedUnderscoreOrDash<KeyOfRecord<T[number]>, '_', '-'>, string> | typeof FALLBACK_LOCALE
     : never;
 
-type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<KeyOfRecord<T extends Translations ? T : {}>, string>;
+type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
+    KeyOfRecord<T extends Translations ? T : Record<never, never>>,
+    string
+>;
 
-interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = {}> {
+interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends Translations = Record<never, never>> {
     // TODO - Remove this prop on v2
     availableTranslations?: AvailableTranslations;
 
@@ -53,8 +56,10 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
     loadingContext?: string;
 }
 
-export interface CoreOptions<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}>
-    extends _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : unknown> {}
+export type CoreOptions<
+    AvailableTranslations extends TranslationSourceRecord[] = [],
+    CustomTranslations extends object = Record<never, never>,
+> = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Translations>;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 
