@@ -40,6 +40,7 @@ type ErrorMessageDisplayProps = {
     withBackground?: boolean;
     withHeaderOffset?: boolean;
     condensed?: boolean;
+    testId?: string;
 };
 
 const ErrorMessageSeparator = () => (
@@ -67,6 +68,7 @@ export const ErrorMessageDisplay = ({
     withBackground,
     withHeaderOffset,
     condensed,
+    testId = 'error-message-display',
 }: ErrorMessageDisplayProps) => {
     const { i18n, updateCore, getImageAsset } = useCoreContext();
 
@@ -86,6 +88,7 @@ export const ErrorMessageDisplay = ({
 
     return (
         <div
+            data-testid={testId}
             className={cx(classes.base, {
                 [classes.base_absolutePosition]: absolutePosition,
                 [classes.base_centered]: centered,
@@ -98,8 +101,14 @@ export const ErrorMessageDisplay = ({
             {(imageDesktop || imageMobile || withImage) && (
                 <div className={classes.illustration}>
                     <picture>
-                        <source type="image/svg+xml" media={`(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`} srcSet={imageDesktop} />
                         <source
+                            data-testid="source-desktop"
+                            type="image/svg+xml"
+                            media={`(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`}
+                            srcSet={imageDesktop}
+                        />
+                        <source
+                            data-testid="source-mobile"
                             type="image/svg+xml"
                             media={`(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`}
                             srcSet={imageMobile ?? getImageAsset?.({ name: 'wrong-environment', subFolder: 'images/small' })}

@@ -125,7 +125,7 @@ test.describe('Default', () => {
             const detailsModal = page.getByRole('dialog');
             await detailsModal.getByRole('tab', { name: 'Details', exact: true }).click();
 
-            const referenceID = detailsModal.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
+            const referenceID = detailsModal.getByTestId('id-value');
             await expect(referenceID).toHaveText('B78I76Y77072H127');
         });
     });
@@ -625,11 +625,13 @@ test.describe('Default', () => {
 
             const popover = page.getByTestId('transactions-export-popover').getByTestId('transactions-export-filters');
 
-            await expect(popover.getByText('Account', { exact: true })).toBeVisible();
-            await expect(popover.getByText('Date', { exact: true })).toBeVisible();
-            await expect(popover.getByText('Transaction type', { exact: true })).toBeVisible();
-            await expect(popover.getByText('Currency', { exact: true })).toBeVisible();
-            await expect(popover.getByText('PSP reference', { exact: true })).toBeVisible();
+            await Promise.all([
+                expect(popover.getByText('Account', { exact: true })).toBeVisible(),
+                expect(popover.getByText('Date', { exact: true })).toBeVisible(),
+                expect(popover.getByText('Transaction type', { exact: true })).toBeVisible(),
+                expect(popover.getByText('Currency', { exact: true })).toBeVisible(),
+                expect(popover.getByText('PSP reference', { exact: true })).toBeVisible(),
+            ]);
         });
 
         test('should disable "Export" button if applied filters match no transactions', async ({ page, analyticsEvents }) => {

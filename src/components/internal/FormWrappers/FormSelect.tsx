@@ -40,7 +40,6 @@ export function FormSelect<TFieldValues>({
     validate,
 }: FormSelectProps<TFieldValues>) {
     const { control, fieldsConfig, getValues, setValue } = useWizardFormContext<TFieldValues>();
-    const fieldNameValue = String(fieldName);
     const isRequired = useMemo(() => isRequiredProp ?? fieldsConfig[fieldName]?.required, [fieldsConfig, fieldName, isRequiredProp]);
     const isReadOnly = useMemo(() => isReadOnlyProp ?? fieldsConfig[fieldName]?.readOnly, [fieldsConfig, fieldName, isReadOnlyProp]);
 
@@ -51,7 +50,7 @@ export function FormSelect<TFieldValues>({
         if (currentValue && !items.some(item => item.id === currentValue)) {
             setValue(fieldName, '');
         }
-    }, [getValues, setValue, items]);
+    }, [getValues, setValue, items, fieldName]);
 
     useEffect(() => {
         if (items && items.length === 1) {
@@ -61,7 +60,12 @@ export function FormSelect<TFieldValues>({
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired && !hideOptionalLabel} className={className} testId={`form-field-${fieldNameValue}`}>
+            <FormField
+                label={label}
+                optional={!isRequired && !hideOptionalLabel}
+                className={className}
+                testId={fieldName ? `form-field-${fieldName}` : undefined}
+            >
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}
@@ -93,7 +97,11 @@ export function FormSelect<TFieldValues>({
                                     fitPosition
                                 />
                                 {isInvalid && fieldState.error?.message && (
-                                    <FieldError errorMessage={fieldState.error?.message} testId={`field-error-${fieldNameValue}`} withTopMargin />
+                                    <FieldError
+                                        errorMessage={fieldState.error?.message}
+                                        testId={fieldName ? `field-error-${fieldName}` : undefined}
+                                        withTopMargin
+                                    />
                                 )}
                             </div>
                         );

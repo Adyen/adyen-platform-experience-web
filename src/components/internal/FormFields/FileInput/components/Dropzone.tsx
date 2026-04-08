@@ -26,6 +26,26 @@ const classes = {
     errorText: `${BASE_CLASS}__error-text`,
 };
 
+const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        const url = URL.createObjectURL(file);
+        const cleanup = () => URL.revokeObjectURL(url);
+
+        image.src = url;
+
+        image.onerror = err => {
+            cleanup();
+            reject(err);
+        };
+
+        image.onload = () => {
+            cleanup();
+            resolve({ width: image.width, height: image.height });
+        };
+    });
+};
+
 export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props, ref) => {
     const {
         id,
@@ -108,18 +128,6 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         [inputRef]
     );
 
-    const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
-        return new Promise((resolve, reject) => {
-            const image = new Image();
-            const url = URL.createObjectURL(file);
-            image.src = url;
-            image.onerror = reject;
-            image.onload = function () {
-                resolve({ width: image.width, height: image.height });
-            };
-        });
-    };
-
     const updateFiles = useCallback(
         async <T extends UploadedFileSource>(source?: T | null): Promise<void> => {
             const uploadedFiles = getUploadedFilesFromSource(source);
@@ -199,7 +207,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 {/* Using the label element here to expose a user interaction surface for the file input element. */}
                 {/* The input element itself is visually hidden (not visible), but available to assistive technology. */}
                 {/* To preserve proper focus styling, this label element should always come after the input element. */}
-                <label className={classes.label} htmlFor={inputId}>
+                <label data-testid="dropzone-label" className={classes.label} htmlFor={inputId}>
                     {children ?? (
                         <div className={cx(classes.labelDefault)}>
                             {

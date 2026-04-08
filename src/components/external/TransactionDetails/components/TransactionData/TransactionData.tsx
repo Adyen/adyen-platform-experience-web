@@ -21,15 +21,15 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
     const [forcedHideTitle, setForcedHideTitle] = useState(false);
 
     const shouldHideTitle = useMemo(() => forcedHideTitle || boolOrFalse(hideTitle), [forcedHideTitle, hideTitle]);
-    const initialTransaction = useRef(transaction);
+    const initialTransactionRef = useRef(transaction);
 
     const errorProps = useMemo(
         () => getErrorMessage(error as AdyenPlatformExperienceError, 'transactions.details.errors.unavailable', onContactSupport),
         [error, onContactSupport]
     );
 
-    if (!initialTransaction.current && transaction) {
-        initialTransaction.current = transaction;
+    if (!initialTransactionRef.current && transaction) {
+        initialTransactionRef.current = transaction;
     }
 
     useEffect(() => {
@@ -63,13 +63,13 @@ export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSup
         <div className="adyen-pe-overview-details">
             <Header hideTitle={shouldHideTitle} titleKey="transactions.details.title" forwardedToRoot={!withinModal} />
 
-            {initialTransaction.current ? (
+            {initialTransactionRef.current ? (
                 <TransactionDataContent
                     extraFields={extraFields}
                     dataCustomization={dataCustomization}
                     fetchingTransaction={fetchingTransaction}
                     refreshTransaction={refreshTransaction}
-                    transaction={transaction ?? initialTransaction.current}
+                    transaction={transaction ?? initialTransactionRef.current}
                     transactionNavigator={transactionNavigator}
                 />
             ) : fetchingTransaction ? (

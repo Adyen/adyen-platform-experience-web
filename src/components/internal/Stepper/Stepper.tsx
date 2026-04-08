@@ -36,7 +36,7 @@ export const Stepper = ({ activeIndex, onChange, variant = 'vertical', children,
                 container.scrollTo({ top: scrollTop, behavior: 'smooth' });
             }
         }
-    }, [activeIndex, latestActiveStep]);
+    }, [activeIndex, latestActiveStep, isHorizontal]);
 
     const canActivate = useCallback(
         (nextIndex: number) => {

@@ -41,7 +41,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                 return { id: FLEXIBLE_ID, name: i18n.get('payByLink.creation.fields.validity.linkValidityUnit.custom') };
             }
             const key: TranslationKey = `payByLink.creation.fields.validity.linkValidityUnit.${durationUnit}`;
-            return { id: `${quantity} ${durationUnit}` || '', name: i18n.get(key, { values: { quantity }, count: quantity }) };
+            return { id: `${quantity} ${durationUnit}`, name: i18n.get(key, { values: { quantity }, count: quantity }) };
         });
     }, [configuration, i18n]);
 

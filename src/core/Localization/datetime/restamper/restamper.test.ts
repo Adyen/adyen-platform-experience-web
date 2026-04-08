@@ -45,7 +45,7 @@ describe('restamper', () => {
     });
 
     test<RestamperTestContext>('should return restamp result for current time (when argument is omitted)', ({ restamper }) => {
-        let result = restamper();
+        const result = restamper();
 
         expect(result).toHaveProperty('formatted');
         expect(result).toHaveProperty('offset');

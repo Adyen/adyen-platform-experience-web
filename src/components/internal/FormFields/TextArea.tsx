@@ -7,10 +7,10 @@ import { TextareaHTMLAttributes } from 'preact/compat';
 
 export const TextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement> & { maxRows?: number }) => {
     const { className, maxRows, onInput, rows, ...externalProps } = props;
-    const [lastUpdated, setLastUpdated] = useState(performance.now());
+    const [lastUpdated, setLastUpdated] = useState(() => performance.now());
     const inputRef = useRef<HTMLTextAreaElement>(null);
-    const inputOriginHeight = useRef(0);
-    const inputLineHeight = useRef(0);
+    const inputOriginHeightRef = useRef(0);
+    const inputLineHeightRef = useRef(0);
 
     const autoResizable = !isUndefined(maxRows);
 
@@ -27,13 +27,13 @@ export const TextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement> & { 
             const input = inputRef.current;
 
             input.rows = (rows as number) ?? 1;
-            inputOriginHeight.current = 0;
-            inputLineHeight.current = 0;
+            inputOriginHeightRef.current = 0;
+            inputLineHeightRef.current = 0;
             input.style.marginRight = '';
 
             if (autoResizable) {
-                inputOriginHeight.current = input.scrollHeight;
-                inputLineHeight.current = parseInt(getComputedStyle(input).lineHeight, 10) || 0;
+                inputOriginHeightRef.current = input.scrollHeight;
+                inputLineHeightRef.current = parseInt(getComputedStyle(input).lineHeight, 10) || 0;
                 input.style.marginRight = `${input.scrollWidth - input.offsetWidth}px`;
             }
         }
@@ -43,7 +43,7 @@ export const TextArea = (props: TextareaHTMLAttributes<HTMLTextAreaElement> & { 
         if (inputRef.current && autoResizable) {
             const input = inputRef.current;
             const currentHeight = input.scrollHeight;
-            input.rows = Math.min(maxRows ?? Infinity, Math.floor((currentHeight - inputOriginHeight.current) / inputLineHeight.current) + 1);
+            input.rows = Math.min(maxRows ?? Infinity, Math.floor((currentHeight - inputOriginHeightRef.current) / inputLineHeightRef.current) + 1);
         }
     }, [autoResizable, lastUpdated, maxRows]);
 
