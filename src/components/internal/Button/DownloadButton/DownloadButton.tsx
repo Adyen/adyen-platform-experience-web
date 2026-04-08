@@ -44,15 +44,21 @@ function DownloadButton({
     const { data, error, isFetching } = useDownload(endpointName, requestParams, fetchData);
 
     useEffect(() => {
-        if (fetchData) setFetchData(false);
+        if (fetchData) {
+            setFetchData(false);
+        }
     }, [fetchData]);
 
     useEffect(() => {
-        if (data) downloadBlob(data);
+        if (data) {
+            downloadBlob(data);
+        }
     }, [data]);
 
     useEffect(() => {
-        if (setError && error) setError(error as AdyenPlatformExperienceError);
+        if (setError && error) {
+            setError(error as AdyenPlatformExperienceError);
+        }
     }, [error, setError]);
 
     const onClick = () => {

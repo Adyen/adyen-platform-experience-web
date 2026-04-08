@@ -67,7 +67,9 @@ const DisputesOverviewTabsDropdown = ({
 
     useEffect(() => {
         const currentTab = DISPUTE_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
-        currentTab && onChange(currentTab);
+        if (currentTab) {
+            onChange(currentTab);
+        }
     }, [onChange, statusGroup]);
 
     useEffect(() => setStatusGroup(activeTab), [activeTab]);
@@ -227,7 +229,9 @@ export const DisputesOverview = ({
 
     const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(
         ({ id: statusGroup }) => {
-            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+            if (debounceTimeoutIdRef.current) {
+                clearTimeout(debounceTimeoutIdRef.current);
+            }
 
             debounceTimeoutIdRef.current = setTimeout(() => {
                 requestAnimationFrame(() => setStatusGroupFetchPending(false));
@@ -255,11 +259,13 @@ export const DisputesOverview = ({
 
     const refreshDisputesList = useCallback(
         (gotoStatusGroup?: IDisputeStatusGroup) => {
-            gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup
-                ? setStatusGroupActiveTab(gotoStatusGroup)
-                : // Refresh the current disputes list status group,
-                  // by updating the last refresh timestamp filter parameter
-                  updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+            if (gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup) {
+                setStatusGroupActiveTab(gotoStatusGroup);
+            } else {
+                // Refresh the current disputes list status group,
+                // by updating the last refresh timestamp filter parameter
+                updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+            }
         },
         [statusGroup, updateFilters]
     );

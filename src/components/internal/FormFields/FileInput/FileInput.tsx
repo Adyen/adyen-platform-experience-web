@@ -26,8 +26,8 @@ export const FileInput = fixedForwardRef<FileInputProps, HTMLInputElement>(({ on
                     return i18n.get('common.inputs.file.errors.tooMany');
                 case validationErrors.VERY_LARGE_FILE:
                     return i18n.get('common.inputs.file.errors.tooLarge');
-                case validationErrors.MAX_DIMENSIONS:
-                    return i18n.get('common.inputs.file.errors.maxDimensions');
+                case validationErrors.INVALID_DIMENSIONS:
+                    return i18n.get('common.inputs.file.errors.invalidDimensions');
             }
             return '';
         },

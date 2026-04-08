@@ -21,7 +21,9 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
             lastFocused.focus();
             return;
         }
-        if (root instanceof HTMLElement) root.focus();
+        if (root instanceof HTMLElement) {
+            root.focus();
+        }
     }, []);
 
     const onClickCapture = useMemo(() => {
@@ -95,7 +97,9 @@ const useFocusTrap = <T extends Element>(rootElementRef: Nullable<Reflexable<T>>
             escapedFocusRef.current = true;
 
             requestAnimationFrame(() => {
-                if (escapedFocusRef.current) onEscape((escapedFocusRef.current = false));
+                if (escapedFocusRef.current) {
+                    onEscape((escapedFocusRef.current = false));
+                }
             });
         },
         [onEscape, tabbableRoot]

@@ -32,8 +32,12 @@ export function setNestedValue(obj: any, path: string, value: any): void {
 }
 
 function purgeEmptyValues<T>(obj: T): T {
-    if (obj === null || obj === undefined) return obj;
-    if (typeof obj !== 'object') return obj;
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+    if (typeof obj !== 'object') {
+        return obj;
+    }
     if (Array.isArray(obj)) return obj.filter(item => item !== '' && item !== null) as T;
 
     const result: Record<string, any> = {};
