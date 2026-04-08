@@ -9,7 +9,11 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
         "importHelpers": true,
         "skipLibCheck": true,
         "sourceMap": true,
@@ -20,9 +24,21 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@integration-components/sdk": ["packages/shared/lib/src/index.ts"],
-            "@integration-components/sdk/*": ["packages/shared/lib/src/*"],
-            "@integration-components/reports/publish": ["packages/domains/reports/publish/src/index.ts"]
+            "@integration-components/types": [
+                "packages/shared/types/src/index.ts"
+            ],
+            "@integration-components/types/*": [
+                "packages/shared/types/src/*"
+            ],
+            "@integration-components/sdk": [
+                "packages/shared/lib/src/index.ts"
+            ],
+            "@integration-components/sdk/*": [
+                "packages/shared/lib/src/*"
+            ],
+            "@integration-components/reports/publish": [
+                "packages/domains/reports/publish/src/index.ts"
+            ]
         }
     }
 }
