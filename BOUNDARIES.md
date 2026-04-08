@@ -1,56 +1,58 @@
 # NX Tag Taxonomy & Boundary Rules
 
 > Defined in IEX-2465 (Phase 0). Enforced automatically in Phase 3 (IEX-03-04).
+>
+> This reference follows the current workspace naming convention (`@integration-components/*`) while documenting the target boundary model from `implementation-plan.md`.
 
 ## Project Tags
 
 ### `type:shared`
 
-Framework-agnostic or framework-specific foundation libraries.
+Shared foundation libraries. `@integration-components/sdk` is the current transitional shared package; the remaining entries describe the planned split.
 
-| Package | Description |
-|---------|-------------|
-| `@iex/lib` | Current root library (temporary, Phase 0) |
-| `@iex/types` | Shared types and API models |
-| `@iex/utils` | Shared utilities |
-| `@iex/core` | Runtime: config, HTTP, i18n, session |
-| `@iex/style` | SCSS foundation, tokens, mixins |
-| `@iex/testing` | MSW setup, fixtures, test utilities |
-| `@iex/hooks-preact` | Shared Preact hooks |
-| `@iex/ui-primitives-preact` | Shared Preact UI components |
+| Package | Status | Description |
+|---------|--------|-------------|
+| `@integration-components/sdk` | current | Transitional shared package that re-exports the existing root `src/` surface |
+| `@integration-components/types` | planned | Shared types and API models |
+| `@integration-components/utils` | planned | Shared utilities |
+| `@integration-components/core` | planned | Runtime: config, HTTP, i18n, session |
+| `@integration-components/style` | planned | SCSS foundation, tokens, mixins |
+| `@integration-components/testing` | planned | MSW setup, fixtures, test utilities |
+| `@integration-components/hooks-preact` | planned | Shared Preact hooks |
+| `@integration-components/ui-primitives-preact` | planned | Shared Preact UI components |
 
 ### `type:domain`, `scope:<name>`
 
-Business domain packages. Each contains `domain/src`, `preact/src`, `vue/src`, `publish/src`.
+Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/src`, and `publish/src` inside each domain package. `@integration-components/reports` is the current reference domain; the remaining entries are planned.
 
-| Package | Tags |
-|---------|------|
-| `@iex/reports` | `type:domain`, `scope:reports` |
-| `@iex/payouts` | `type:domain`, `scope:payouts` |
-| `@iex/payment-links` | `type:domain`, `scope:payment-links` |
-| `@iex/disputes` | `type:domain`, `scope:disputes` |
-| `@iex/transactions` | `type:domain`, `scope:transactions` |
-| `@iex/capital` | `type:domain`, `scope:capital` |
+| Package | Status | Tags |
+|---------|--------|------|
+| `@integration-components/reports` | current | `type:domain`, `scope:reports` |
+| `@integration-components/payouts` | planned | `type:domain`, `scope:payouts` |
+| `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
+| `@integration-components/disputes` | planned | `type:domain`, `scope:disputes` |
+| `@integration-components/transactions` | planned | `type:domain`, `scope:transactions` |
+| `@integration-components/capital` | planned | `type:domain`, `scope:capital` |
 
 ### `type:publish`
 
-| Package | Description |
-|---------|-------------|
-| `@iex/publish` | Root aggregator — re-exports from each domain's `publish` layer |
+| Package | Status | Description |
+|---------|--------|-------------|
+| `@integration-components/publish` | current | Root aggregator. Target state: re-export only from each domain's `publish` layer |
 
 ## Cross-Project Rules
 
-Enforced via `@nx/enforce-module-boundaries` in `eslint.config`.
+Enforced via `@nx/enforce-module-boundaries` in the ESLint config.
 
 | Source | May import | Must NOT import |
 |--------|-----------|-----------------|
 | `type:shared` | other `type:shared` | `type:domain`, `type:publish` |
 | `type:domain` | `type:shared` | other `type:domain`, `type:publish` |
-| `type:publish` | `type:domain` (only via `@iex/<domain>/publish`) | `type:shared` directly |
+| `type:publish` | `type:domain` (only via `@integration-components/<domain>/publish`) | `type:shared` directly |
 
 ## Intra-Domain Layer Rules
 
-Enforced via ESLint path restrictions within each domain package.
+Enforced via ESLint path restrictions within each domain package once the target layer layout is in place.
 
 | Layer | May import | Must NOT import |
 |-------|-----------|-----------------|
@@ -61,7 +63,7 @@ Enforced via ESLint path restrictions within each domain package.
 
 ## Key Invariants
 
-1. `packages/publish/src/index.ts` imports domains **only** through `@iex/<domain>/publish`.
+1. `packages/publish/src/index.ts` imports domains **only** through `@integration-components/<domain>/publish`.
 2. `domain/src` must remain **framework-agnostic** (no Preact/Vue imports).
 3. `preact/src` and `vue/src` must **never** import from each other.
 4. `publish/src` is the **only** layer allowed to compose what gets published.
