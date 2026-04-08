@@ -11,8 +11,7 @@ const CoreProvider = (props: CoreProviderProps) => {
 
     useEffect(() => {
         waitForI18n(props.i18n)
-            .then(() => setReady(true))
-            .catch();
+            .then(() => setReady(true));
     }, [props.i18n]);
 
     const coreContextValues = useMemo(
