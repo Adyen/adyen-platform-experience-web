@@ -53,7 +53,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         children,
         disabled = false,
         required = false,
-        maxDimensions,
+        validDimensions,
         maxFileSize = DEFAULT_MAX_FILE_SIZE,
         allowedFileTypes = DEFAULT_FILE_TYPES,
         mapError,
@@ -139,10 +139,10 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
             try {
                 const dimensionFilteredFiles = await Promise.all(
                     uploadedFiles.map(async file => {
-                        if (!maxDimensions || !maxDimensions?.width || !maxDimensions?.height) return file;
+                        if (!validDimensions || !validDimensions?.width || !validDimensions?.height) return file;
                         const dimensions = await getImageDimensions(file);
-                        if (!(maxDimensions?.width === dimensions.width) || !(maxDimensions?.height === dimensions.height)) {
-                            throw validationErrors.MAX_DIMENSIONS;
+                        if (!(validDimensions?.width === dimensions.width) || !(validDimensions?.height === dimensions.height)) {
+                            throw validationErrors.INVALID_DIMENSIONS;
                         }
                         return file;
                     })
@@ -167,12 +167,12 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 switch (ex) {
                     case validationErrors.DISALLOWED_FILE_TYPE:
                     case validationErrors.VERY_LARGE_FILE:
-                    case validationErrors.MAX_DIMENSIONS:
+                    case validationErrors.INVALID_DIMENSIONS:
                         return updateInputValidationError(ex);
                 }
             }
         },
-        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles, maxDimensions]
+        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles, validDimensions]
     );
 
     return (
