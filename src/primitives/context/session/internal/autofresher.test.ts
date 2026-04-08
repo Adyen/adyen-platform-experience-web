@@ -42,7 +42,11 @@ describe('createSessionAutofresher', () => {
             expect(autoRefresh).toHaveBeenCalledTimes(autoRefreshCalledTimes);
             expect(onRefresh).not.toHaveBeenCalled();
 
-            skip === undefined ? autofresh() : autofresh(skip);
+            if (skip === undefined) {
+                autofresh();
+            } else {
+                autofresh(skip);
+            }
 
             // wait for a sufficient number of ticks
             await waitForTicks(TICKS_UNTIL_REFRESHED);

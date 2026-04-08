@@ -18,13 +18,16 @@ export const popoverUtil = (<T extends Element, U extends Function>() => {
 
         const index = eventPath.reduce((index: number, path: EventTarget) => {
             const pathMatchIndex = path instanceof Element ? popoverRefs.findIndex(popoverRef => popoverRef.element === path) : -1;
-            if (index === -1 && pathMatchIndex !== -1) return pathMatchIndex;
+            if (index === -1 && pathMatchIndex !== -1) {
+                return pathMatchIndex;
+            }
             return index;
         }, -1);
+
         if (index === -1) {
             closeNestedPopovers(0);
-        } else {
-            index + 1 <= popoverRefs.length - 1 && closeNestedPopovers(index + 1);
+        } else if (index + 1 <= popoverRefs.length - 1) {
+            closeNestedPopovers(index + 1);
         }
     };
 

@@ -131,7 +131,7 @@ export default class Calendar {
             config: {
                 value: Object.defineProperties(
                     (config?: CalendarConfig) => {
-                        config && this.#configure(config);
+                        if (config) this.#configure(config);
                         return this.#currentConfig;
                     },
                     {
@@ -139,16 +139,22 @@ export default class Calendar {
                             get: () => this.#cursorIndexFromEvent,
                             set: (fn: CalendarGrid['config']['cursorIndex'] | null | undefined) => {
                                 if (this.#destructed) return;
-                                if (isNullish(fn)) this.#cursorIndexFromEvent = undefined;
-                                else if (isFunction(fn)) this.#cursorIndexFromEvent = fn;
+                                if (isNullish(fn)) {
+                                    this.#cursorIndexFromEvent = undefined;
+                                } else if (isFunction(fn)) {
+                                    this.#cursorIndexFromEvent = fn;
+                                }
                             },
                         },
                         shiftFactor: {
                             get: () => this.#shiftFactorFromEvent,
                             set: (fn: CalendarGrid['config']['shiftFactor'] | null | undefined) => {
                                 if (this.#destructed) return;
-                                if (isNullish(fn)) this.#shiftFactorFromEvent = undefined;
-                                else if (isFunction(fn)) this.#shiftFactorFromEvent = fn;
+                                if (isNullish(fn)) {
+                                    this.#shiftFactorFromEvent = undefined;
+                                } else if (isFunction(fn)) {
+                                    this.#shiftFactorFromEvent = fn;
+                                }
                             },
                         },
                         watch: {
@@ -164,7 +170,9 @@ export default class Calendar {
                                         if (watchCallback) {
                                             this.#watchableEffect = this.#chainedNotifyEffectStack?.bind(noop);
                                             this.#unwatch = this.#watchlist?.subscribe(this.#chainedWatchEffectStack?.bind(watchCallback));
-                                            this.#frame && (this.#frame.effect = this.#watchableEffect);
+                                            if (this.#frame) {
+                                                this.#frame.effect = this.#watchableEffect;
+                                            }
                                         }
                                     }
 
@@ -172,7 +180,9 @@ export default class Calendar {
 
                                     this.#pendingWatchNotification = false;
                                     this.#watchableEffect?.();
-                                } else if (isNullish(fn)) this.#watchCallback = undefined;
+                                } else if (isNullish(fn)) {
+                                    this.#watchCallback = undefined;
+                                }
                             },
                         },
                     }
@@ -201,7 +211,9 @@ export default class Calendar {
                                 if (this.#highlightSelection === SELECT_MANY && this.#rangeOffsets) {
                                     this.#rangeHighlight(time, selection === SELECTION_FROM ? SELECTION_TO : SELECTION_FROM, this.#rangeOffsets);
                                 }
-                            } else this.#frame?.updateSelection(time, SELECTION_COLLAPSE);
+                            } else {
+                                this.#frame?.updateSelection(time, SELECTION_COLLAPSE);
+                            }
 
                             this.#highlightFrom = this.#frame?.selectionStart;
                             this.#highlightTo = this.#frame?.selectionEnd;
@@ -266,9 +278,13 @@ export default class Calendar {
 
         for (const key of Object.keys(snapshot) as (keyof typeof snapshot)[]) {
             if (snapshot[key] === this.#lastWatchableSnapshot?.[key]) continue;
-            if (key === 'controls') controlsChanged = true;
-            else if (key === 'highlight') highlightChanged = true;
-            else if (key === 'from' || key === 'to') selectionChanged = true;
+            if (key === 'controls') {
+                controlsChanged = true;
+            } else if (key === 'highlight') {
+                highlightChanged = true;
+            } else if (key === 'from' || key === 'to') {
+                selectionChanged = true;
+            }
         }
 
         if (this.#lastHighlightRange !== highlightRange) {
@@ -278,9 +294,15 @@ export default class Calendar {
 
         this.#lastWatchableSnapshot = snapshot;
 
-        if (this.#highlightInProgress && !selectionChanged) this.#restoreHighlight();
-        if (controlsChanged) this.#refreshShiftControls();
-        if (highlightChanged) this.#refreshHighlighting();
+        if (this.#highlightInProgress && !selectionChanged) {
+            this.#restoreHighlight();
+        }
+        if (controlsChanged) {
+            this.#refreshShiftControls();
+        }
+        if (highlightChanged) {
+            this.#refreshHighlighting();
+        }
     };
 
     static #withNotifyEffect<T extends WatchListCallable = WatchListCallable>(this: Calendar, fn: T) {
@@ -337,7 +359,9 @@ export default class Calendar {
                 this.#reframe();
                 this.#refreshShiftControls();
                 this.#refreshHighlighting();
-            } else this.#pendingWatchNotification = true;
+            } else {
+                this.#pendingWatchNotification = true;
+            }
 
             return;
         }
@@ -375,10 +399,18 @@ export default class Calendar {
                     this.#frame.shiftFrameCursor(evt.ctrlKey ? CURSOR_BLOCK_END : CURSOR_LINE_END);
                     break;
                 case InteractionKeyCode.PAGE_UP:
-                    evt.shiftKey ? this.#frame.shiftFrameByOffset(-1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    if (evt.shiftKey) {
+                        this.#frame.shiftFrameByOffset(-1, SHIFT_PERIOD);
+                    } else {
+                        this.#frame.shiftFrameCursor(CURSOR_PREV_BLOCK);
+                    }
                     break;
                 case InteractionKeyCode.PAGE_DOWN:
-                    evt.shiftKey ? this.#frame.shiftFrameByOffset(1, SHIFT_PERIOD) : this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    if (evt.shiftKey) {
+                        this.#frame.shiftFrameByOffset(1, SHIFT_PERIOD);
+                    } else {
+                        this.#frame.shiftFrameCursor(CURSOR_NEXT_BLOCK);
+                    }
                     break;
                 case InteractionKeyCode.SPACE:
                 case InteractionKeyCode.ENTER:
@@ -388,7 +420,10 @@ export default class Calendar {
                     return;
             }
 
-            this.#highlightInProgress && this.#highlight(EMPTY_OBJECT);
+            if (this.#highlightInProgress) {
+                this.#highlight(EMPTY_OBJECT);
+            }
+
             return true;
         }
 
@@ -403,7 +438,11 @@ export default class Calendar {
             this.#frame.shiftFrameCursor(cursorIndex);
 
             if (this.#frame.cursor === cursorIndex) {
-                isClick ? this.#highlight() : this.#highlight(EMPTY_OBJECT);
+                if (isClick) {
+                    this.#highlight();
+                } else {
+                    this.#highlight(EMPTY_OBJECT);
+                }
                 return true;
             }
         }
@@ -502,9 +541,11 @@ export default class Calendar {
             if (this.#highlightSelection === SELECT_MANY && range) {
                 const selectionDirection = toTimestamp >= (this.#frame.selectionEnd as number) ? SELECTION_FROM : SELECTION_TO;
 
-                selectionDirection === SELECTION_FROM
-                    ? this.#frame.updateSelection(toTimestamp, SELECTION_TO)
-                    : this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                if (selectionDirection === SELECTION_FROM) {
+                    this.#frame.updateSelection(toTimestamp, SELECTION_TO);
+                } else {
+                    this.#frame.updateSelection(fromTimestamp, SELECTION_FROM);
+                }
 
                 this.#rangeHighlight(
                     (selectionDirection === SELECTION_FROM ? this.#frame.selectionEnd : this.#frame.selectionStart) as number,
@@ -519,7 +560,9 @@ export default class Calendar {
             const isFauxHighlighting = secretFauxHighlightingHint === EMPTY_OBJECT;
             const restamper = withTimezone(this.#frame.timezone);
 
-            if (!isFauxHighlighting) this.#highlightInProgress = false;
+            if (!isFauxHighlighting) {
+                this.#highlightInProgress = false;
+            }
 
             if (fromTimestamp <= this.#frame.selectionStart!) {
                 const selectionStartDay = new Date(timezoneToSystem(restamper, this.#frame.selectionStart!));
@@ -587,8 +630,12 @@ export default class Calendar {
     }
 
     #restoreHighlight() {
-        this.#highlightFrom && this.#frame?.updateSelection(this.#highlightFrom, SELECTION_FROM);
-        this.#highlightTo && this.#frame?.updateSelection(this.#highlightTo, SELECTION_TO);
+        if (this.#highlightFrom) {
+            this.#frame?.updateSelection(this.#highlightFrom, SELECTION_FROM);
+        }
+        if (this.#highlightTo) {
+            this.#frame?.updateSelection(this.#highlightTo, SELECTION_TO);
+        }
         this.#highlightInProgress = false;
     }
 

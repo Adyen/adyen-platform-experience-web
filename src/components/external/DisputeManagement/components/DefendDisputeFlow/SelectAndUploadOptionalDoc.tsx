@@ -58,7 +58,9 @@ const SelectAndUploadOptionalDoc = ({
 
     const updateDocumentSelection = useCallback(
         (documentSelection: string) => {
-            selection && moveFieldInDefendPayload(selection, documentSelection);
+            if (selection) {
+                moveFieldInDefendPayload(selection, documentSelection);
+            }
             setSelection(documentSelection, index);
         },
         [index, moveFieldInDefendPayload, selection, setSelection]
@@ -127,13 +129,19 @@ const SelectAndUploadOptionalDoc = ({
                 allowedFileTypes={ALLOWED_FILE_TYPES}
                 mapError={mapError}
                 onDelete={() => {
-                    selection && removeFieldFromDefendPayload(selection);
+                    if (selection) {
+                        removeFieldFromDefendPayload(selection);
+                    }
                 }}
                 disabled={disabled || !selection}
                 required={required}
                 onChange={files => {
                     if (selection) {
-                        files[0] ? addFileToDefendPayload(selection, files[0]) : removeFieldFromDefendPayload(selection);
+                        if (files[0]) {
+                            addFileToDefendPayload(selection, files[0]);
+                        } else {
+                            removeFieldFromDefendPayload(selection);
+                        }
                     }
                 }}
             />

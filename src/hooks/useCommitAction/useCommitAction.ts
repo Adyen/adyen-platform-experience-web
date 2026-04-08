@@ -18,7 +18,7 @@ const useCommitAction = ({
     const applyAction = useCallback(() => setCommitAction(CommitAction.APPLY), [setCommitAction]);
     const resetAction = useCallback(() => {
         setCommitAction(CommitAction.CLEAR);
-        onResetAction && onResetAction();
+        if (onResetAction) onResetAction();
     }, [setCommitAction, onResetAction]);
     const resetCommitAction = useCallback(() => setCommitAction(CommitAction.NONE), [setCommitAction]);
 

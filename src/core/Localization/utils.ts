@@ -61,7 +61,9 @@ export function formatLocale(locale: string): Locale | null {
  */
 export function parseLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     const trimmedLocale = locale.trim();
-    if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
+    if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) {
+        return FALLBACK_LOCALE;
+    }
 
     const formattedLocale = formatLocale(trimmedLocale);
 
