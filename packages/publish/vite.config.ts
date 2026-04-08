@@ -35,6 +35,11 @@ const shouldExcludeAsset = (id: string) => {
 
 export default defineConfig(({ mode }) => ({
     root: projectRoot,
+    resolve: {
+        alias: {
+            '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
+        },
+    },
     build: {
         minify: true,
         lib: {

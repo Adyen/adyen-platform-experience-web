@@ -41,6 +41,11 @@ export default defineConfig(({ mode }) => {
     };
 
     return {
+        resolve: {
+            alias: {
+                '@integration-components/types': resolve(__dirname, 'packages/shared/types/src'),
+            },
+        },
         build: {
             minify: true,
             lib: {
@@ -64,15 +69,15 @@ export default defineConfig(({ mode }) => {
                     },
                     isUmdBuild
                         ? {
-                              name: 'AdyenPlatformExperienceWeb',
-                              format: 'umd',
-                              sourcemap: true,
-                              indent: false,
-                              globals: {
-                                  classnames: 'cx',
-                                  'core-js': 'core',
-                              },
-                          }
+                            name: 'AdyenPlatformExperienceWeb',
+                            format: 'umd',
+                            sourcemap: true,
+                            indent: false,
+                            globals: {
+                                classnames: 'cx',
+                                'core-js': 'core',
+                            },
+                        }
                         : { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
@@ -134,11 +139,11 @@ export default defineConfig(({ mode }) => {
             }),
             preact(),
             isAnalyseMode &&
-                visualizer({
-                    title: 'Adyen Platform bundle visualizer',
-                    gzipSize: true,
-                    open: true,
-                }),
+            visualizer({
+                title: 'Adyen Platform bundle visualizer',
+                gzipSize: true,
+                open: true,
+            }),
         ],
     };
 });
