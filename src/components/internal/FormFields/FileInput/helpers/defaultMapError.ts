@@ -12,8 +12,8 @@ export const defaultMapErrors = (error: ValidationError): TranslationKey => {
             return 'common.inputs.file.errors.tooMany';
         case validationErrors.VERY_LARGE_FILE:
             return 'common.inputs.file.errors.tooLarge';
-        case validationErrors.MAX_DIMENSIONS:
-            return 'common.inputs.file.errors.maxDimensions';
+        case validationErrors.INVALID_DIMENSIONS:
+            return 'common.inputs.file.errors.invalidDimensions';
     }
     return 'common.inputs.file.errors.default';
 };
