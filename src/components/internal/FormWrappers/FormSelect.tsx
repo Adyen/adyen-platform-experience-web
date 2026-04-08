@@ -50,7 +50,7 @@ export function FormSelect<TFieldValues>({
         if (currentValue && !items.some(item => item.id === currentValue)) {
             setValue(fieldName, '');
         }
-    }, [getValues, setValue, items]);
+    }, [getValues, setValue, items, fieldName]);
 
     useEffect(() => {
         if (items && items.length === 1) {

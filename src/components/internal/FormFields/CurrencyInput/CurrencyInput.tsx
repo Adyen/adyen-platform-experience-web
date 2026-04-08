@@ -62,7 +62,7 @@ export const CurrencyInput = ({
     readonly,
     selectedCurrencyCode,
 }: CurrencyInputProps) => {
-    const prevCurrency = useRef(currency);
+    const prevCurrencyRef = useRef(currency);
     const { i18n } = useCoreContext();
     const { currencies: getCurrencies } = useConfigContext().endpoints;
     const [displayValue, setDisplayValue] = useState(amount ? `${formatAmount(amount, currency)}` : '');
@@ -78,9 +78,9 @@ export const CurrencyInput = ({
     );
 
     useEffect(() => {
-        if (currency !== prevCurrency.current) {
+        if (currency !== prevCurrencyRef.current) {
             setDisplayValue(amount ? `${formatAmount(amount, currency)}` : '');
-            prevCurrency.current = currency;
+            prevCurrencyRef.current = currency;
         }
     }, [amount, currency]);
 
@@ -135,13 +135,12 @@ export const CurrencyInput = ({
 
     const currencyDropdownItems = useMemo(() => {
         const currencies: IPaymentLinkCurrency = currenciesQuery.data?.data ?? [];
-        const items = currencies.map(currency => {
+        return currencies.map(currency => {
             return {
                 id: currency,
                 name: currency,
             };
         });
-        return items;
     }, [currenciesQuery.data]);
 
     const sortedCurrencyItems = useMemo(() => {
@@ -165,7 +164,7 @@ export const CurrencyInput = ({
                 readonly: currenciesQuery.isFetching || readonly?.currency,
             },
         };
-    }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange]);
+    }, [hideCurrencySelector, sortedCurrencyItems, selectedCurrencyCode, currenciesQuery.isFetching, onCurrencyChange, readonly?.currency]);
 
     return (
         <div className="adyen-pe-currency-input__container">

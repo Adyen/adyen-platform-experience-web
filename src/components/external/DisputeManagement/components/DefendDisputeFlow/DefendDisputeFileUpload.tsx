@@ -107,7 +107,7 @@ export const DefendDisputeFileUpload = () => {
         });
 
         return docs;
-    }, [applicableDocuments, i18n]);
+    }, [applicableDocuments, i18n, defenseDocumentConfig]);
 
     const requiredDocumentsUploaded = useMemo(() => {
         if (!defendDisputePayload) return false;

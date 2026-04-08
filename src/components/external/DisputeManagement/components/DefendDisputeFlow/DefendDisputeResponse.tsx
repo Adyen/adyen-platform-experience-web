@@ -24,16 +24,16 @@ export const DefendDisputeResponse = ({ onDisputeDefend }: Pick<DisputeManagemen
         setFlowState('uploadDefenseFilesView');
     }, [clearFiles, setFlowState]);
 
-    const defendCallbackHasBeenCalled = useRef(false);
+    const defendCallbackHasBeenCalledRef = useRef(false);
 
     useEffect(() => {
-        if (defendCallbackHasBeenCalled.current) return;
+        if (defendCallbackHasBeenCalledRef.current) return;
 
         if (defendResponse === 'success' && isFunction(onDisputeDefend)) {
             const disputePspReference = dispute?.dispute.pspReference;
 
             if (disputePspReference) {
-                defendCallbackHasBeenCalled.current = true;
+                defendCallbackHasBeenCalledRef.current = true;
                 onDisputeDefend({ id: disputePspReference });
             }
         }

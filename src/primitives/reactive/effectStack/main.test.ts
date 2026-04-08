@@ -94,7 +94,7 @@ describe('createEffectStack', () => {
         const boundFn1 = stack.bind(() => (RANDOM = Math.random()));
         const boundFn2 = stack.bind(value => !!value);
 
-        let EXCEPTION = 'uncaught_exception';
+        const EXCEPTION = 'uncaught_exception';
         let RANDOM = Math.random();
         let COUNTER = 0;
 
