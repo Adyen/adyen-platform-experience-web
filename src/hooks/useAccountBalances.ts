@@ -29,9 +29,13 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
             try {
                 const path: Parameters<NonNullable<typeof getBalances>>[1]['path'] = { balanceAccountId };
                 const json = await getBalances({ signal }, { path });
-                if (!signal.aborted) return json?.data;
+                if (!signal.aborted) {
+                    return json?.data;
+                }
             } catch (error) {
-                if (!signal.aborted) throw error;
+                if (!signal.aborted) {
+                    throw error;
+                }
             }
         }
     }, [abortable, balanceAccountId, getBalances, shouldFetchBalances]);
@@ -46,7 +50,9 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     const balances = useMemo<readonly Readonly<IBalance>[]>(() => (Array.isArray(data) ? data : []), [data]);
 
     const refresh = useCallback(() => {
-        if (canRefresh) setPendingRefresh(true);
+        if (canRefresh) {
+            setPendingRefresh(true);
+        }
     }, [canRefresh]);
 
     useEffect(() => {

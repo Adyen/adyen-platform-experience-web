@@ -78,7 +78,9 @@ function Popover({
 
     const onCloseFocusTrap = useCallback(
         (interactionKeyPressed: boolean) => {
-            dismiss && dismiss();
+            if (dismiss) {
+                dismiss();
+            }
             if (interactionKeyPressed) {
                 (targetElement?.current as HTMLElement)?.focus();
             }
@@ -89,7 +91,9 @@ function Popover({
     const onKeyDown = useCallback(
         (e: KeyboardEvent) => {
             if (e.code === InteractionKeyCode.ESCAPE) {
-                dismiss && dismiss();
+                if (dismiss) {
+                    dismiss();
+                }
                 (targetElement?.current as HTMLElement).focus();
             }
         },
