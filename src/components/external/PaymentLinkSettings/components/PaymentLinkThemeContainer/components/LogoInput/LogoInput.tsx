@@ -50,8 +50,8 @@ const LogoInput = ({
     const dimensionError: TranslationKey = useMemo(
         () =>
             logoType === 'logo'
-                ? 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimension'
-                : 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimension',
+                ? 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions'
+                : 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions',
         [logoType]
     );
 
