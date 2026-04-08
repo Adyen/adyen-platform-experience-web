@@ -29,7 +29,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
     const [showInvalidURL, setShowInvalidURL] = useState(false);
     const [isTermsAndConditionsChanged, setIsTermsAndConditionsChanged] = useState(false);
     const [disabled, setDisabled] = useState(false);
-    const userRequirementsInput = useRef(false);
+    const userRequirementsInputRef = useRef(false);
     const {
         savedData,
         setPayload,
@@ -53,7 +53,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
     }, [isRequirementsChecked, termsAndConditionsURL, setIsValid, setPayload]);
 
     useEffect(() => {
-        userRequirementsInput.current = false;
+        userRequirementsInputRef.current = false;
     }, [savedData]);
 
     useEffect(() => {
@@ -81,7 +81,7 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
         } else {
             setDisabled(false);
             setIsTermsAndConditionsChanged(true);
-            setIsRequirementsChecked(userRequirementsInput.current);
+            setIsRequirementsChecked(userRequirementsInputRef.current);
         }
     }, [termsAndConditionsURL, savedData, initialData]);
 
@@ -103,11 +103,11 @@ export const TermsAndConditions = ({ data, initialData }: { data: IPaymentLinkTe
         (e: h.JSX.TargetedEvent<HTMLInputElement>) => {
             e.preventDefault();
             if (e.currentTarget?.checked) setShowNotCheckedRequirementsError(false);
-            if (!userRequirementsInput.current && e.currentTarget?.checked && !requirementsOpenedOnce) {
+            if (!userRequirementsInputRef.current && e.currentTarget?.checked && !requirementsOpenedOnce) {
                 setIsShowingRequirements(true);
                 setRequirementsOpenedOnce(true);
             }
-            userRequirementsInput.current = e.currentTarget?.checked;
+            userRequirementsInputRef.current = e.currentTarget?.checked;
             setIsRequirementsChecked(e.currentTarget?.checked);
         },
         [requirementsOpenedOnce, setIsShowingRequirements]

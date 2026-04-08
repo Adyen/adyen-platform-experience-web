@@ -1,8 +1,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { render, within } from '@testing-library/preact';
-import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
+import { render, screen, within } from '@testing-library/preact';
+import { describe, test, expect, vi } from 'vitest';
 import { TRANSACTIONS } from '../../../../../mocks/mock-data';
 import userEvent from '@testing-library/user-event';
 import DataGrid from '../../DataGrid';
@@ -22,18 +22,12 @@ const columns = [
     },
 ] satisfies { key: keyof Partial<(typeof TRANSACTIONS)[number]>; label: string }[];
 
-interface DataGridTestContext {
-    screen: any;
-    mockEventHandler: Mock<any>;
-    user: ReturnType<(typeof userEvent)['setup']>;
-    getRow: (index: number) => any;
-}
 describe('DataGrid component with clickable rows', () => {
-    beforeEach<DataGridTestContext>(async context => {
+    const renderDataGrid = () => {
         const mockEventHandler = vi.fn();
         const mockHover = vi.fn();
 
-        const screen = render(
+        render(
             <div>
                 <DataGrid
                     data={TRANSACTIONS}
@@ -62,13 +56,11 @@ describe('DataGrid component with clickable rows', () => {
             return within(within(table).getAllByRole('rowgroup')[1]!).getAllByRole('row')[index];
         };
 
-        context.screen = screen;
-        context.mockEventHandler = mockEventHandler;
-        context.user = user;
-        context.getRow = getRow;
-    });
+        return { mockEventHandler, user, getRow };
+    };
 
-    test<DataGridTestContext>('The rows are focusable', async ({ getRow, user }) => {
+    test('The rows are focusable', async () => {
+        const { getRow, user } = renderDataGrid();
         const firstRow = getRow(0);
 
         expect(document.body).toHaveFocus();
@@ -78,9 +70,10 @@ describe('DataGrid component with clickable rows', () => {
         expect(firstRow).toHaveFocus();
     });
 
-    test<DataGridTestContext>('The list is traversed with the keyboard arrows', async ({ getRow, user }) => {
-        const secondRow = getRow(1);
-        const thirdRow = getRow(2);
+    test('The list is traversed with the keyboard arrows', async () => {
+        const { getRow, user } = renderDataGrid();
+        const secondRow = getRow(1)!;
+        const thirdRow = getRow(2)!;
 
         await user.tab();
 
@@ -106,7 +99,8 @@ describe('DataGrid component with clickable rows', () => {
         expect(secondRow).toHaveFocus();
     });
 
-    test<DataGridTestContext>('The click event is triggered with the ENTER key', async ({ user, mockEventHandler }) => {
+    test('The click event is triggered with the ENTER key', async () => {
+        const { user, mockEventHandler } = renderDataGrid();
         await user.tab();
 
         await user.keyboard('[Enter]');

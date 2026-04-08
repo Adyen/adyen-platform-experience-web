@@ -63,8 +63,8 @@ export const useTimeRangeSelection = ({
     const [from, setFrom] = useState<number>();
     const [to, setTo] = useState<number>();
     const [selectedOption, setSelectedOption] = useState<string>();
-    const NOW = useRef<typeof now>();
-    const TZ = useRef<typeof timezone>();
+    const NOWRef = useRef<typeof now>();
+    const TZRef = useRef<typeof timezone>();
 
     const [customOption, getRangesForOption, selectionOptions] = useMemo(() => {
         const customOption = i18n.get('common.filters.types.date.rangeSelect.options.custom');
@@ -113,7 +113,7 @@ export const useTimeRangeSelection = ({
     }, []);
 
     useMemo(() => {
-        if (NOW.current !== now || TZ.current !== timezone) {
+        if (NOWRef.current !== now || TZRef.current !== timezone) {
             const options = Object.values(presetOptions);
 
             options.forEach(ranges => {
@@ -121,8 +121,8 @@ export const useTimeRangeSelection = ({
                 ranges.timezone = timezone;
             });
 
-            NOW.current = now;
-            TZ.current = options[0]?.timezone;
+            NOWRef.current = now;
+            TZRef.current = options[0]?.timezone;
 
             onSelection(selectedOption!);
         }

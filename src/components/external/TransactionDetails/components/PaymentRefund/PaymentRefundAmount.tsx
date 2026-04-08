@@ -88,11 +88,11 @@ const PaymentRefundAmount = memo(({ currency, disabled, onChange, value }: Payme
         [currencyExponent, refundableAmount, onChange, i18n.locale]
     );
 
-    const cachedRefundableAmount = useRef<number>();
+    const cachedRefundableAmountRef = useRef<number>();
 
     useEffect(() => {
-        if (cachedRefundableAmount.current !== refundableAmount) {
-            cachedRefundableAmount.current = refundableAmount;
+        if (cachedRefundableAmountRef.current !== refundableAmount) {
+            cachedRefundableAmountRef.current = refundableAmount;
         } else if (disabled && validationError && inputElementRef.current) {
             inputElementRef.current.value = formattedAmount;
         } else return;
