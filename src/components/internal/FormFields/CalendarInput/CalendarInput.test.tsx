@@ -36,9 +36,15 @@ describe('CalendarInput', () => {
         const mockI18nWithGet = {
             ...mockI18n,
             get: vi.fn((key: string, options?: any) => {
-                if (key === 'common.inputs.select.placeholder') return 'Select date';
-                if (key === 'common.filters.types.date.calendar.label') return `${options?.values?.monthOfYear}`;
-                if (key === 'common.filters.types.date.calendar.navigation.label') return 'Calendar navigation';
+                if (key === 'common.inputs.select.placeholder') {
+                    return 'Select date';
+                }
+                if (key === 'common.filters.types.date.calendar.label') {
+                    return `${options?.values?.monthOfYear}`;
+                }
+                if (key === 'common.filters.types.date.calendar.navigation.label') {
+                    return 'Calendar navigation';
+                }
                 return key;
             }),
         };
@@ -51,7 +57,9 @@ describe('CalendarInput', () => {
         });
 
         mockDateFormat.mockImplementation((date: string) => {
-            if (!date) return 'Select date';
+            if (!date) {
+                return 'Select date';
+            }
             return new Date(date).toLocaleDateString('en-US', { month: 'short', weekday: 'long', year: 'numeric' });
         });
     });

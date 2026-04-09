@@ -35,7 +35,9 @@ export class AuthSession {
                 .finally(() => (isLatestRefresh = this._refreshPromisorSignal === signal));
         } catch (ex) {
             if (!isLatestRefresh) return;
-            if (!signal.aborted && (onlySetupRefresh || ex !== ERR_SESSION_REFRESH_ABORTED)) this._errorContainer.set(ex);
+            if (!signal.aborted && (onlySetupRefresh || ex !== ERR_SESSION_REFRESH_ABORTED)) {
+                this._errorContainer.set(ex);
+            }
             authStateChanged = !onlySetupRefresh;
         } finally {
             if (authStateChanged || (onlySetupRefresh && isLatestRefresh)) {

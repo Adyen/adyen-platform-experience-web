@@ -6,8 +6,9 @@ import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
+import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 
-class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends {} = {}> {
+class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
     public static readonly version = process.env.VITE_VERSION!;
 
     public components: BaseElement<any>[] = [];
@@ -23,6 +24,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
     public getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
+    private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics: boolean;
 
     // [TODO]: Change the error handling strategy.
@@ -44,6 +46,11 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
     }
 
     async initialize(): Promise<this> {
+        if (!this.hasWarnedAboutServerSideInitialization && shouldWarnAboutServerSideInitialization()) {
+            console.warn(SERVER_SIDE_INITIALIZATION_WARNING);
+            this.hasWarnedAboutServerSideInitialization = true;
+        }
+
         return Promise.all([this.localization.ready]).then(() => {
             if (!this.readyCustomTranslationsAnalytics && this.analyticsEnabled) {
                 const analyticsPayload = this.setTranslationsPayload();

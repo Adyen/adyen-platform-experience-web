@@ -1,5 +1,6 @@
 import { httpPost } from '../../Http/http';
 import { LogConfig } from './types';
+import { getCurrentUrl, getScreenWidth, getUserAgent } from '../../runtime';
 
 /**
  * Log event to Adyen
@@ -9,7 +10,7 @@ const logTelemetry = (config: LogConfig) => (event: Record<string, any>) => {
     const options = {
         errorLevel: 'silent' as const,
         loadingContext: config.loadingContext,
-        path: `v2/analytics/log`,
+        path: 'v2/analytics/log',
     };
 
     const telemetryEvent = {
@@ -17,9 +18,9 @@ const logTelemetry = (config: LogConfig) => (event: Record<string, any>) => {
         channel: 'Web',
         locale: config.locale,
         flavor: 'components',
-        userAgent: navigator.userAgent,
-        referrer: window.location.href,
-        screenWidth: window.screen.width,
+        userAgent: getUserAgent(),
+        referrer: getCurrentUrl(),
+        screenWidth: getScreenWidth(),
         ...event,
     };
 

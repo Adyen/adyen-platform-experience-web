@@ -87,7 +87,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
         return (
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
-                    componentRef={this.compRef}
+                    componentRef={() => this.compRef.current}
                     i18n={core.localization.i18n}
                     getCdnConfig={core.getCdnConfig}
                     getImageAsset={core.getImageAsset}

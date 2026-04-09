@@ -13,7 +13,7 @@ class SessionStorage<T> {
         if (storageItem) {
             try {
                 return JSON.parse(storageItem);
-            } catch (err) {
+            } catch {
                 return null;
             }
         }

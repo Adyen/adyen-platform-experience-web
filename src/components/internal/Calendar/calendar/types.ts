@@ -43,7 +43,7 @@ export type WithGetSetProperty<T = any> = {
 //     [P in K]: WithGetSetProperty<T, X>['_'];
 // };
 
-export type WithTimeEdges<T = {}> = {
+export type WithTimeEdges<T = unknown> = {
     from: T;
     to: T;
 };

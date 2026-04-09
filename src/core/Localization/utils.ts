@@ -61,7 +61,9 @@ export function formatLocale(locale: string): Locale | null {
  */
 export function parseLocale(locale: string, supportedLocales: Locale[]): Locale | null {
     const trimmedLocale = locale.trim();
-    if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) return FALLBACK_LOCALE;
+    if (!trimmedLocale || trimmedLocale.length < 1 || trimmedLocale.length > 5) {
+        return FALLBACK_LOCALE;
+    }
 
     const formattedLocale = formatLocale(trimmedLocale);
 
@@ -75,7 +77,10 @@ export function parseLocale(locale: string, supportedLocales: Locale[]): Locale 
  * @param customTranslations -
  * @param supportedLocales -
  */
-export function formatCustomTranslations(customTranslations: CustomTranslations = EMPTY_OBJECT, supportedLocales: Locale[]): CustomTranslations {
+export function formatCustomTranslations(
+    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations,
+    supportedLocales: Locale[]
+): CustomTranslations {
     if (customTranslations === EMPTY_OBJECT) return customTranslations;
 
     return (Object.keys(customTranslations) as Extract<keyof CustomTranslations, string>[]).reduce((translations, locale) => {
@@ -145,7 +150,7 @@ export const getTranslation = (translations: Record<string, string>, key: string
 export const loadTranslations = async (
     locale: string,
     fetchTranslationFromCdnPromise: (locale: SupportedLocales) => Promise<any>,
-    customTranslations: CustomTranslations = EMPTY_OBJECT
+    customTranslations: CustomTranslations = EMPTY_OBJECT as CustomTranslations
 ): Promise<Translations> => {
     // Match locale to one of our available locales (e.g. es-AR => es-ES)
     const localeToLoad = parseLocale(locale, SUPPORTED_LOCALES) || FALLBACK_LOCALE;

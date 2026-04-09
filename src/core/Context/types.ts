@@ -2,9 +2,7 @@ import Localization from '../Localization';
 import { onErrorHandler } from '../types';
 import { AssetOptions } from '../Assets/Assets';
 
-export interface ComponentRef<T = HTMLDivElement> {
-    current: T | null;
-}
+export type ComponentRef<T = HTMLDivElement> = () => T | null;
 
 export interface CommonPropsTypes {
     isCollatingErrors?: boolean;

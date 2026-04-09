@@ -1,6 +1,6 @@
 import { useContext } from 'preact/hooks';
 
-import { AnalyticsContext } from '../AnalyticsContext';
+import { AnalyticsContext } from './AnalyticsContext';
 
 const useAnalyticsContext = () => {
     const context = useContext(AnalyticsContext);

@@ -16,7 +16,9 @@ const useTransactionsViewSwitcher = ({ view }: UseTransactionsViewSwitcherProps 
     const onViewChange = useCallback(
         <T extends { id: TransactionsView }>({ id }: T) => {
             const activeView = viewTabs.find(tab => tab.id === id)?.id;
-            activeView && setActiveView(activeView);
+            if (activeView) {
+                setActiveView(activeView);
+            }
         },
         [viewTabs]
     );

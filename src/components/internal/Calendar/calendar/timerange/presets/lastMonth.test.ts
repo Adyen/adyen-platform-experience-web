@@ -38,7 +38,11 @@ describe('last month', () => {
 
         expect(monthAfter).toBe(nowMonth);
 
-        fromMonth === 0 ? expect(monthBefore).toBe(11) : expect(monthBefore).toBe(fromMonth - 1);
+        if (fromMonth === 0) {
+            expect(monthBefore).toBe(11);
+        } else {
+            expect(monthBefore).toBe(fromMonth - 1);
+        }
     });
 
     test('should have precise timestamps for timezone', () => {
