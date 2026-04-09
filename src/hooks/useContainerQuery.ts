@@ -26,7 +26,7 @@ export const useContainerQuery = <T extends readonly [string, number, { min?: nu
     }
 
     useEffect(() => {
-        const containerElement = componentRef.current;
+        const containerElement = componentRef();
         if (!containerElement) return;
 
         setWidth(containerElement.offsetWidth);

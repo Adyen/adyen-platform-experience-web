@@ -21,17 +21,17 @@ const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLAttributes<
 };
 
 vi.mock(import('../core/Context/CoreContext'), () => {
-    const componentRef = createRef() as MutableRef<HTMLDivElement | null>;
-    const mockedCoreContext = createContext({ componentRef } as any);
+    const ref = createRef() as MutableRef<HTMLDivElement | null>;
+    const mockedCoreContext = createContext({ componentRef: () => ref.current } as any);
     return { CoreContext: mockedCoreContext };
 });
 
 vi.mock(import('../core/Context/CoreProvider'), () => {
     const MockedCoreProvider = ({ children }: PropsWithChildren) => {
-        const componentRef = useRef<HTMLDivElement | null>(null);
+        const ref = useRef<HTMLDivElement | null>(null);
         return (
-            <CoreContext.Provider value={{ componentRef } as any}>
-                <section data-testid="root" ref={componentRef}>
+            <CoreContext.Provider value={{ componentRef: () => ref.current } as any}>
+                <section data-testid="root" ref={ref}>
                     {children}
                 </section>
             </CoreContext.Provider>

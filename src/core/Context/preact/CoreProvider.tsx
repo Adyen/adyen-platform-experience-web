@@ -10,25 +10,10 @@ const CoreProvider = (props: CoreProviderProps) => {
     const [ready, setReady] = useBooleanState(false);
 
     useEffect(() => {
-        waitForI18n(props.i18n)
-            .then(() => setReady(true));
-    }, [props.i18n]);
+        waitForI18n(props.i18n).then(() => setReady(true));
+    }, [props.i18n, setReady]);
 
-    const coreContextValues = useMemo(
-        () => createCoreContextValue(props),
-        [
-            props.commonProps,
-            props.componentRef,
-            props.externalErrorHandler,
-            props.i18n,
-            props.loadingContext,
-            props.getImageAsset,
-            props.getDatasetAsset,
-            props.getCdnConfig,
-            props.getCdnDataset,
-            props.updateCore,
-        ]
-    );
+    const coreContextValues = useMemo(() => createCoreContextValue(props), [props]);
 
     if (!ready) return null;
 

@@ -32,7 +32,7 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
     useEffect(() => {
         if (forwardedToRoot === false) return;
 
-        const componentElement = componentRef.current;
+        const componentElement = componentRef();
         const headingElementId = headingElementRef.current?.id;
 
         if (headingElementId && componentElement) {
