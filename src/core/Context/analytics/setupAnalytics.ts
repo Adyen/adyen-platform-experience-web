@@ -16,7 +16,6 @@ export function setupAnalytics({ analyticsEnabled, componentName }: AnalyticsSet
 
     userEvents.updateBaseTrackingPayload?.({
         sdkVersion: process.env.VITE_VERSION,
-        userAgent: navigator.userAgent,
     });
 
     return {
