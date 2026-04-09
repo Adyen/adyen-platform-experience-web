@@ -1,6 +1,6 @@
 import { toChildArray } from 'preact';
 import { useEffect, useMemo } from 'preact/hooks';
-import { CoreContext } from '../CoreContext';
+import { CoreContext } from './CoreContext';
 import { CoreProviderProps } from '../types';
 import useBooleanState from '../../../hooks/useBooleanState';
 import { waitForI18n, createCoreContextValue } from '../setupCore';
