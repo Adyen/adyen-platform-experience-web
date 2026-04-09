@@ -9,7 +9,7 @@ export interface CoreContextValue {
     externalErrorHandler: CoreProviderProps['externalErrorHandler'];
     componentRef: CoreProviderProps['componentRef'];
     getImageAsset: CoreProviderProps['getImageAsset'];
-    getDatasetAsset: CoreProviderProps['getDatasetAsset'];
+    getCdnComponent: CoreProviderProps['getCdnComponent'];
     getCdnConfig: CoreProviderProps['getCdnConfig'];
     getCdnDataset: CoreProviderProps['getCdnDataset'];
     environment: CoreProviderProps['environment'];
@@ -28,7 +28,7 @@ export function createCoreContextValue(props: CoreProviderProps): CoreContextVal
         externalErrorHandler: props.externalErrorHandler,
         componentRef: props.componentRef,
         getImageAsset: props.getImageAsset,
-        getDatasetAsset: props.getDatasetAsset,
+        getCdnComponent: props.getCdnComponent,
         getCdnConfig: props.getCdnConfig,
         getCdnDataset: props.getCdnDataset,
         environment: props.environment,

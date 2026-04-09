@@ -93,9 +93,9 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                     componentRef={componentRefGetter}
                     environment={core.options.environment || FALLBACK_ENV}
                     i18n={core.localization.i18n}
+                    getCdnComponent={core.getCdnComponent}
                     getCdnConfig={core.getCdnConfig}
                     getImageAsset={core.getImageAsset}
-                    getDatasetAsset={core.getDatasetAsset}
                     getCdnDataset={core.getCdnDataset}
                     loadingContext={core.loadingContext}
                     externalErrorHandler={externalErrorHandler}

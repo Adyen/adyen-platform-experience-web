@@ -11,3 +11,12 @@ export const downloadBlob = ({ blob, filename }: EndpointDownloadStreamData) => 
 
     a.click();
 };
+
+export const importJavaScriptModuleFromBlob = async <T>(blob: Blob): Promise<T> => {
+    const url = URL.createObjectURL(new Blob([blob], { type: 'text/javascript' }));
+    try {
+        return import(/* @vite-ignore */ url);
+    } finally {
+        URL.revokeObjectURL(url);
+    }
+};

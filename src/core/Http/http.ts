@@ -29,7 +29,7 @@ export async function http<T>(options: HttpOptions): Promise<T> {
     const request = getRequestObject(options);
     const baseUrl = normalizeLoadingContext(loadingContext);
     const versionPath = versionless ? '' : apiVersion;
-    const url = new URL(`${baseUrl}${versionPath}${normalizeUrl(path)}`);
+    const url = new URL(`${baseUrl}${versionPath}${normalizeUrl(path)}`.replace(/([^:])\/+/g, '$1/'));
 
     if (options.params) {
         options.params.forEach((value, param) => {

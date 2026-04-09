@@ -1,5 +1,8 @@
 import { DevEnvironment } from './types';
+import { loadCdnComponent, type CdnComponentName } from '../components/cdn/registry';
+import type { EndpointDownloadStreamData } from '../types/api/endpoints';
 import { API_ENVIRONMENTS, CDN_ENVIRONMENTS } from './constants';
+import { importJavaScriptModuleFromBlob } from '../utils';
 import { httpGet } from './Http/http';
 
 export const FALLBACK_ENV = 'test' satisfies DevEnvironment;
@@ -21,10 +24,43 @@ export const resolveEnvironment = (() => {
             apiUrl,
             cdnTranslationsUrl: `${cdnUrl}/assets/translations`,
             cdnAssetsUrl: `${cdnUrl}/assets`,
+            cdnComponentsUrl: `${cdnUrl}/components`,
             cdnConfigUrl: `${cdnUrl}/config`,
         };
     };
 })();
+
+export const getComponentFromCdn = ({ url }: { url: string }) => {
+    return async <Component>({ name }: { name: CdnComponentName }): Promise<Component | null> => {
+        if (!process.env.VITE_LOCAL_ASSETS) {
+            // Attempt fetching from CDN
+            try {
+                const { blob } = await httpGet<EndpointDownloadStreamData>({
+                    loadingContext: `${url}`,
+                    path: `${name}.es.js`,
+                    versionless: true,
+                    skipContentType: true,
+                    errorLevel: 'error',
+                });
+
+                const module = await importJavaScriptModuleFromBlob<{ default?: Component }>(blob);
+                return module.default ?? null;
+            } catch (error) {
+                // Will attempt loading from local bundle
+                console.warn(error);
+            }
+        }
+
+        try {
+            // Attempt loading from local bundle using static imports
+            const module = await loadCdnComponent(name);
+            return module.default ?? null;
+        } catch (error) {
+            console.warn(error);
+            return null;
+        }
+    };
+};
 
 export const getConfigFromCdn = ({ url }: { url: string }) => {
     return async <Fallback>({

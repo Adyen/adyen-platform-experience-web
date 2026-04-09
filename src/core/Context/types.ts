@@ -1,6 +1,7 @@
 import Localization from '../Localization';
 import { DevEnvironment, onErrorHandler } from '../types';
 import { AssetOptions } from '../Assets/Assets';
+import type { CdnComponentName } from '../../components/cdn/registry';
 
 export type ComponentRef<T = HTMLDivElement> = () => T | null;
 
@@ -17,7 +18,7 @@ export interface CoreProviderProps {
     externalErrorHandler?: onErrorHandler | null;
     componentRef: ComponentRef<HTMLDivElement>;
     getImageAsset?: (props: AssetOptions) => string;
-    getDatasetAsset?: (props: AssetOptions) => string;
+    getCdnComponent?: <Component>(props: { name: CdnComponentName }) => Promise<Component | null>;
     getCdnConfig?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     getCdnDataset?: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
     environment: DevEnvironment;
