@@ -9,6 +9,7 @@ module.exports = {
     ],
     rules: {
         '@stylistic/indentation': 4,
+        '@stylistic/max-empty-lines': 3,
         'max-nesting-depth': 3,
         'no-descending-specificity': null,
         'property-no-vendor-prefix': null,
