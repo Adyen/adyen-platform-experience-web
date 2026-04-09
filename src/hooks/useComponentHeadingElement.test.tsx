@@ -20,7 +20,7 @@ const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLAttributes<
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };
 
-vi.mock(import('../core/Context/CoreContext'), () => {
+vi.mock(import('../core/Context/preact/CoreContext'), () => {
     const ref = createRef() as MutableRef<HTMLDivElement | null>;
     const mockedCoreContext = createContext({ componentRef: () => ref.current } as any);
     return { CoreContext: mockedCoreContext };

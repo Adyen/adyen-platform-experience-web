@@ -47,7 +47,8 @@ export const useContainerQuery = <T extends readonly [string, number, { min?: nu
             resizeObserver.unobserve(containerElement);
             resizeObserver.disconnect();
         };
-    }, [componentRef]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return queryMatch;
 };

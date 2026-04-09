@@ -44,7 +44,8 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
                 componentElement.removeAttribute(ariaAttribute);
             };
         }
-    }, [ariaAttribute, componentRef, forwardedToRoot, headingElementId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ariaAttribute, forwardedToRoot, headingElementId]);
 
     return { id: headingElementId, ref: headingElementRef } as const;
 };
