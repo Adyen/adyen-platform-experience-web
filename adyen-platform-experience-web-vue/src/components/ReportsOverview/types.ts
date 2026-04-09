@@ -1,24 +1,6 @@
 import type { CoreInstance } from '../../core/types';
 import { IBalanceAccountBase } from '../../types';
-
-// ── API model types (mirrored from Preact ReportsResource schema) ──
-
-export type ReportType = 'payout';
-
-export interface IReport {
-    createdAt: string;
-    type: ReportType;
-}
-
-export interface ReportsListResponse {
-    _links?: {
-        next?: { cursor: string };
-        prev?: { cursor: string };
-    };
-    data?: IReport[];
-}
-
-// ── Custom data types ──
+import type { IReport } from '../../types';
 
 export interface CustomDataObject {
     type?: 'text' | 'link' | 'icon' | 'button';

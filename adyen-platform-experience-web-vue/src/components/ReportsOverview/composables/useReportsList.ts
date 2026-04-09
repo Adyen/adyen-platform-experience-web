@@ -1,7 +1,8 @@
 import { ref, computed, watch } from 'vue';
 import { useConfigContext } from '../../../core/ConfigContext';
-import type { IReport, ReportsListResponse, CustomDataRetrieved } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import type { IReport, ReportsListResponse } from '../../../types';
+import type { CustomDataRetrieved } from '../types';
 
 interface UseReportsListProps {
     fetchEnabled: boolean;

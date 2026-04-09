@@ -29,7 +29,7 @@ function fetchTranslationsFromCdn(cdnTranslationsUrl: string, locale: string): P
     return translationsCache.get(locale) as Promise<Translations>;
 }
 
-export function createI18n(locale: string = FALLBACK_LOCALE, cdnTranslationsUrl?: string, customTranslations?: Translations): I18n {
+export function createI18n(locale: string = 'en-US', cdnTranslationsUrl?: string, customTranslations?: Translations): I18n {
     const translations: Translations = { ...(customTranslations || {}) };
 
     const ready = (async () => {

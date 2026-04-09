@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, type ComponentPublicInstance } from 'vue';
-import { BentoButton, BentoPopover, BentoRadioGroup, BentoDateRangePicker, BentoClickOutside } from '@adyen/bento-vue3';
-import type { BentoDateRangePickerValue } from '@adyen/bento-vue3';
+import { ref, computed, watch } from 'vue';
+import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
+import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '../../../core/Context';
 import type { IBalanceAccountBase } from '../types';
 import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
@@ -13,16 +13,40 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 
-const balanceAccount = ref<IBalanceAccountBase | undefined>(undefined);
+function startOfDay(date: Date): Date {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
 
-const now = new Date();
-const earliestDate = new Date(EARLIEST_PAYOUT_SINCE_DATE);
+function endOfDay(date: Date): Date {
+    const d = new Date(date);
+    d.setHours(23, 59, 59, 999);
+    return d;
+}
+
+function endOfPreviousDay(date: Date): Date {
+    const d = startOfDay(date);
+    d.setMilliseconds(d.getMilliseconds() - 1);
+    return d;
+}
+
+function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
+    return {
+        startDate: new Date(value.startDate),
+        endDate: new Date(value.endDate),
+        ...(value.granularity ? { granularity: value.granularity } : {}),
+        ...(value.range ? { range: value.range } : {}),
+    };
+}
+
+const now = endOfDay(new Date());
+const earliestDate = startOfDay(new Date(EARLIEST_PAYOUT_SINCE_DATE));
 
 function subDays(date: Date, days: number): Date {
     const d = new Date(date);
     d.setDate(d.getDate() - days);
-    d.setHours(0, 0, 0, 0);
-    return d;
+    return startOfDay(d);
 }
 
 function startOfWeek(date: Date): Date {
@@ -48,97 +72,196 @@ function startOfYear(date: Date): Date {
     return d;
 }
 
+const quickSelectDateRanges = {
+    last7Days: {
+        startDate: subDays(now, 6),
+        endDate: now,
+        range: 'last7Days',
+    },
+    last30Days: {
+        startDate: subDays(now, 29),
+        endDate: now,
+        range: 'last30Days',
+    },
+    last180Days: {
+        startDate: subDays(now, 179),
+        endDate: now,
+        range: 'last180Days',
+    },
+    thisWeek: {
+        startDate: startOfWeek(now),
+        endDate: now,
+        range: 'thisWeek',
+    },
+    lastWeek: {
+        startDate: (() => {
+            const d = startOfWeek(now);
+            d.setDate(d.getDate() - 7);
+            return d;
+        })(),
+        endDate: endOfPreviousDay(startOfWeek(now)),
+        range: 'lastWeek',
+    },
+    thisMonth: {
+        startDate: startOfMonth(now),
+        endDate: now,
+        range: 'thisMonth',
+    },
+    lastMonth: {
+        startDate: (() => {
+            const d = startOfMonth(now);
+            d.setMonth(d.getMonth() - 1);
+            return d;
+        })(),
+        endDate: endOfPreviousDay(startOfMonth(now)),
+        range: 'lastMonth',
+    },
+    yearToDate: {
+        startDate: startOfYear(now),
+        endDate: now,
+        range: 'yearToDate',
+    },
+} satisfies Record<string, BentoDateRangePickerValue>;
+
+function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
+    const normalizedRange = {
+        startDate: startOfDay(value.startDate),
+        endDate: endOfDay(value.endDate),
+        ...(value.granularity ? { granularity: value.granularity } : {}),
+        ...(value.range ? { range: value.range } : {}),
+    } satisfies BentoDateRangePickerValue;
+
+    const matchingQuickSelectRange = Object.values(quickSelectDateRanges).find(range => {
+        return range.startDate.getTime() === normalizedRange.startDate.getTime() && range.endDate.getTime() === normalizedRange.endDate.getTime();
+    });
+
+    return cloneDateRange(matchingQuickSelectRange ?? normalizedRange);
+}
+
 const quickSelectRanges = [
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'),
         value: 'last7Days',
-        data: { startDate: subDays(now, 6) },
+        data: quickSelectDateRanges.last7Days,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'),
         value: 'last30Days',
-        data: { startDate: subDays(now, 29) },
+        data: quickSelectDateRanges.last30Days,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.last180Days'),
         value: 'last180Days',
-        data: { startDate: subDays(now, 179) },
+        data: quickSelectDateRanges.last180Days,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'),
         value: 'thisWeek',
-        data: { startDate: startOfWeek(now) },
+        data: quickSelectDateRanges.thisWeek,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'),
         value: 'lastWeek',
-        data: {
-            startDate: (() => {
-                const d = startOfWeek(now);
-                d.setDate(d.getDate() - 7);
-                return d;
-            })(),
-            endDate: (() => {
-                const d = startOfWeek(now);
-                d.setMilliseconds(d.getMilliseconds() - 1);
-                return d;
-            })(),
-        },
+        data: quickSelectDateRanges.lastWeek,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.thisMonth'),
         value: 'thisMonth',
-        data: { startDate: startOfMonth(now) },
+        data: quickSelectDateRanges.thisMonth,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.lastMonth'),
         value: 'lastMonth',
-        data: {
-            startDate: (() => {
-                const d = startOfMonth(now);
-                d.setMonth(d.getMonth() - 1);
-                return d;
-            })(),
-            endDate: (() => {
-                const d = startOfMonth(now);
-                d.setMilliseconds(d.getMilliseconds() - 1);
-                return d;
-            })(),
-        },
+        data: quickSelectDateRanges.lastMonth,
     },
     {
         label: i18n.get('common.filters.types.date.rangeSelect.options.yearToDate'),
         value: 'yearToDate',
-        data: { startDate: startOfYear(now) },
+        data: quickSelectDateRanges.yearToDate,
     },
 ];
 
-const dateRangeValue = ref<BentoDateRangePickerValue>({
-    startDate: subDays(now, 29),
-    endDate: now,
-    range: 'last30Days',
-});
+const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
 
-const balanceAccountPopoverOpen = ref(false);
-const balanceAccountTriggerRef = ref<ComponentPublicInstance | null>(null);
+// ── Reactive filter state ──
+const selectedBalanceAccountId = ref<string | undefined>(undefined);
+const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultDateRange));
 
 // Auto-select first balance account when available
 watch(
     () => props.balanceAccounts,
     accounts => {
-        if (accounts?.length && !balanceAccount.value) {
-            balanceAccount.value = accounts[0];
+        if (accounts?.length && !selectedBalanceAccountId.value) {
+            selectedBalanceAccountId.value = accounts[0]!.id;
         }
     },
     { immediate: true }
 );
 
+// ── BentoFilterBar config ──
+const filterConfig = computed<BentoFilterBarModel>(() => {
+    const filters: BentoFilterBarModel = [];
+
+    if (props.balanceAccounts && props.balanceAccounts.length > 1) {
+        filters.push({
+            field: 'balanceAccountId',
+            label: i18n.get('common.filters.types.account.label'),
+            type: BentoFilterItemType.SELECT,
+            defaultValue: props.balanceAccounts[0]!.id,
+            options: {
+                listboxItems: props.balanceAccounts.map((a: IBalanceAccountBase) => ({
+                    label: a.description || a.id,
+                    value: a.id,
+                })),
+            },
+        });
+    }
+
+    filters.push({
+        field: 'dateRange',
+        label: i18n.get('common.filters.types.date.label'),
+        type: BentoFilterItemType.DATE_RANGE,
+        defaultValue: defaultDateRange,
+        options: {
+            min: earliestDate,
+            max: now,
+            numberOfMonths: 1,
+            quickSelectRanges,
+        },
+    });
+
+    return filters;
+});
+
+const filterValues = computed<BentoFilterValues>(() => {
+    const values: BentoFilterValues = [];
+
+    values.push({ field: 'dateRange', value: selectedDateRange.value });
+
+    if (props.balanceAccounts && props.balanceAccounts.length > 1) {
+        values.push({ field: 'balanceAccountId', value: selectedBalanceAccountId.value });
+    }
+
+    return values;
+});
+
+function onFilterInput(updatedValues: BentoFilterValues) {
+    for (const fv of updatedValues) {
+        if (fv.field === 'balanceAccountId') {
+            selectedBalanceAccountId.value = fv.value as string | undefined;
+        } else if (fv.field === 'dateRange') {
+            selectedDateRange.value = fv.value ? normalizeDateRange(fv.value as BentoDateRangePickerValue) : cloneDateRange(defaultDateRange);
+        }
+    }
+}
+
+// ── Emit filter changes to parent ──
 const currentFilterParams = computed(() => {
-    const fromMs = Math.max(dateRangeValue.value.startDate.getTime(), earliestDate.getTime());
+    const fromMs = Math.max(selectedDateRange.value.startDate.getTime(), earliestDate.getTime());
     return {
-        balanceAccountId: balanceAccount.value?.id,
+        balanceAccountId: selectedBalanceAccountId.value,
         createdSince: new Date(fromMs).toISOString(),
-        createdUntil: dateRangeValue.value.endDate.toISOString(),
+        createdUntil: selectedDateRange.value.endDate.toISOString(),
     };
 });
 
@@ -149,56 +272,8 @@ watch(
     },
     { deep: true, immediate: true }
 );
-
-const balanceAccountItems = computed(() =>
-    (props.balanceAccounts ?? []).map((a: IBalanceAccountBase) => ({
-        label: a.description || a.id,
-        value: a.id,
-    }))
-);
-
-function onBalanceAccountSelect(value: string | number) {
-    const id = String(value);
-    const account = props.balanceAccounts?.find((a: IBalanceAccountBase) => a.id === id);
-    if (account) balanceAccount.value = account;
-    balanceAccountPopoverOpen.value = false;
-}
-
-function onDateRangeInput(value: BentoDateRangePickerValue) {
-    dateRangeValue.value = value;
-}
 </script>
 
 <template>
-    <bento-click-outside v-if="balanceAccounts && balanceAccounts.length > 1" @handler="balanceAccountPopoverOpen = false">
-        <bento-button ref="balanceAccountTriggerRef" variant="secondary" size="small" @click="balanceAccountPopoverOpen = !balanceAccountPopoverOpen">
-            {{ i18n.get('common.filters.types.account.label') }}
-        </bento-button>
-
-        <bento-popover
-            v-if="balanceAccountTriggerRef"
-            :open="balanceAccountPopoverOpen"
-            :target-element="balanceAccountTriggerRef"
-            position="bottom-start"
-            @dismiss="balanceAccountPopoverOpen = false"
-        >
-            <bento-radio-group
-                :label="i18n.get('common.filters.types.account.label')"
-                :items="balanceAccountItems"
-                :model-value="balanceAccount?.id"
-                :hide-label="true"
-                @update:model-value="onBalanceAccountSelect"
-            />
-        </bento-popover>
-    </bento-click-outside>
-
-    <bento-date-range-picker
-        :has-actions="true"
-        :model-value="dateRangeValue"
-        :min="earliestDate"
-        :max="new Date()"
-        :number-of-months="1"
-        :quick-select-ranges="quickSelectRanges"
-        @input="onDateRangeInput"
-    />
+    <BentoFilterBar :config="filterConfig" :filter-values="filterValues" @input="onFilterInput" />
 </template>

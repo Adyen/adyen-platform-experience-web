@@ -4,9 +4,10 @@ import { BentoDataGrid, BentoButton } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import { useCoreContext } from '../../../core/Context';
 import { useConfigContext } from '../../../core/ConfigContext';
-import type { IReport } from '../types';
+import type { IReport } from '../../../types';
 import { TABLE_CLASS, DISABLED_BUTTONS_TIMEOUT } from '../constants';
 import '../styles/ReportsTable.scss';
+import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -99,8 +100,8 @@ async function handleDownload(item: IReport) {
             {
                 query: {
                     balanceAccountId: props.balanceAccountId ?? '',
-                    createdAt: item.createdAt,
-                    type: item.type,
+                    createdAt: item.createdAt ?? '',
+                    type: item.type ?? '',
                 },
             }
         );
@@ -136,8 +137,8 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
     if (!props.data) return [];
     return props.data.map((report: IReport, idx: number) => ({
         id: `${report.createdAt}-${idx}`,
-        createdAt: formatReportDate(report.createdAt),
-        reportType: getReportType(report.type),
+        createdAt: formatReportDate(report.createdAt ?? ''),
+        reportType: getReportType(report.type ?? ''),
         reportFile: i18n.get('reports.overview.list.controls.downloadReport.label'),
         _raw: report,
     }));
@@ -221,6 +222,9 @@ if (props.loading) alert.value = null;
                     :aria-label="i18n.get('reports.overview.list.controls.downloadReport.label')"
                     @click.stop="handleDownload(item._raw as IReport)"
                 >
+                    <template #iconLeft>
+                        <DownloadIcon />
+                    </template>
                     {{ i18n.get('reports.overview.list.controls.downloadReport.label') }}
                 </bento-button>
             </template>

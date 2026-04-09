@@ -26,5 +26,8 @@ coverage
 
 .eslintcache
 
+# Schema generation secrets
+scripts/generate-ts-schemas/variables
+
 # Vitest
 __screenshots__/
