@@ -1,0 +1,8 @@
+{
+    "name": "@integration-components/core",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/shared/core/src",
+    "tags": ["type:shared"],
+    "targets": {}
+}
