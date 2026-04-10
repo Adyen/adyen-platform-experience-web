@@ -2,6 +2,7 @@ import Localization from '../../Localization';
 import currentTranslations from '../../../assets/translations/en-US.json' with { type: 'json' };
 import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
 import { encodeAnalyticsEvent, getEventTime } from './utils';
+import { getUserAgent } from '../../runtime';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -799,9 +800,9 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
             const baseEventProperties = {
                 category: 'PIE',
                 subCategory: 'Core',
-                locale: locale,
+                locale,
                 sdkVersion: process.env.VITE_VERSION,
-                userAgent: navigator.userAgent,
+                userAgent: getUserAgent(),
             };
 
             if (!SUPPORTED_LOCALES.includes(locale as any)) {

@@ -1,7 +1,7 @@
 import type { ComponentChildren } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { AnalyticsContext } from '../AnalyticsContext';
+import { AnalyticsContext } from './AnalyticsContext';
 import type { EventQueueItem } from '../../../Analytics/analytics/user-events';
 import { setupAnalytics } from '../setupAnalytics';
 import { usePushAnalyticEvent } from '../../../../hooks/useAnalytics/usePushAnalyticEvent';
