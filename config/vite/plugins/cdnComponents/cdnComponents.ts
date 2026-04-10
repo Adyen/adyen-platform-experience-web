@@ -1,7 +1,9 @@
 import type { Plugin } from 'vite';
 import type { CdnComponentsOptions } from './types';
+import { CDN_COMPONENTS_PLUGIN } from './constants';
 import { createConfigPlugin } from './plugins/config';
 import { createInlineCssPlugin } from './plugins/inlineCss';
+import { shakeIcons } from '../shakeIcons';
 
 /**
  * Vite plugin suite for building self-contained CDN components as ES modules.
@@ -54,5 +56,10 @@ export const cdnComponents = (options: CdnComponentsOptions): Plugin[] => {
     const configPlugin: Plugin = createConfigPlugin({ componentsDir, outDir });
     const inlineCssPlugin: Plugin = createInlineCssPlugin({ target });
 
-    return [configPlugin, inlineCssPlugin];
+    const shakeIconsPlugin: Plugin = shakeIcons({
+        pluginName: `${CDN_COMPONENTS_PLUGIN}:shake-icons`,
+        strict: true, // Enforce static icons for CDN tree-shaking
+    });
+
+    return [configPlugin, shakeIconsPlugin, inlineCssPlugin];
 };

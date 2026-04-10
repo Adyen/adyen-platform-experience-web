@@ -1,4 +1,6 @@
 module.exports = {
+    // Auto-generate icon types when icon files change
+    'src/images/icons/*.svg': () => ['pnpm run types:generate:icons', 'git add src/types/virtual-modules.d.ts'],
     'src/**/translations/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
     // Fix Prettier formatting
     // Don't include TS schemas

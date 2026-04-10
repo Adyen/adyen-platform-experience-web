@@ -5,7 +5,8 @@
         "src/index.ts",
         "src/declarations/scss.d.ts",
         "src/declarations/vite-env.d.ts",
-        "src/declarations/svgr.d.ts"
+        "src/declarations/svgr.d.ts",
+        "src/types/virtual-modules.d.ts"
     ],
     "compilerOptions": {
         "rootDir": "src",
