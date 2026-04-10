@@ -1,2 +1,2 @@
-export { default, createEffectStack } from './main';
-export * from './types';
+export * from '../../../../packages/shared/utils/src/primitives/reactive/effectStack/index';
+export { default } from '../../../../packages/shared/utils/src/primitives/reactive/effectStack/index';

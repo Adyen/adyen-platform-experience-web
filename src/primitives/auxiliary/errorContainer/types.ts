@@ -1,6 +1,1 @@
-export interface ErrorContainer<T = unknown> {
-    get error(): T | undefined;
-    get hasError(): boolean;
-    readonly reset: () => void;
-    readonly set: (err: T) => void;
-}
+export * from '../../../../packages/shared/utils/src/primitives/auxiliary/errorContainer/types';
