@@ -44,7 +44,9 @@ export function run() {
     }
 
     console.error('Publish contract CHANGED:');
-    for (const entry of diffs) console.error(entry);
+    for (const entry of diffs) {
+      console.error(entry);
+    }
     console.error('\nIf intentional, update the baseline:');
     console.error('  pnpm run publish-diff -- --update');
     process.exit(1);
