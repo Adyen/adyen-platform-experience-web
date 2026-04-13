@@ -101,8 +101,12 @@ const Select = <T extends SelectItem>({
         resetCommitAction();
 
         if (!pendingClickOutsideTriggeredHideListRef.current) {
-            if (!disableToggleFocusOnClose) toggleButtonRef.current?.focus();
-        } else pendingClickOutsideTriggeredHideListRef.current = false;
+            if (!disableToggleFocusOnClose) {
+                toggleButtonRef.current?.focus();
+            }
+        } else {
+            pendingClickOutsideTriggeredHideListRef.current = false;
+        }
     }, [disableToggleFocusOnClose, resetCommitAction, setShowList, setTextFilter]);
 
     const commitSelection = useCallback(() => {
@@ -165,7 +169,9 @@ const Select = <T extends SelectItem>({
     }, [closeList, commitSelection, multiSelect, selection, showList]);
 
     useEffect(() => {
-        if (committing) closeList();
+        if (committing) {
+            closeList();
+        }
     }, [committing, closeList]);
 
     useEffect(() => {
@@ -189,15 +195,20 @@ const Select = <T extends SelectItem>({
                      * - When user has focused select button but not yet moved into select list, close list and keep focus on the select button
                      * - Shift+Tab out of select should close list
                      */
-                    showList && closeList();
+                    if (showList) {
+                        closeList();
+                    }
                     pendingClickOutsideTriggeredHideListRef.current = evt.key === InteractionKeyCode.TAB;
                     return;
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
                     if (filterable && showList) {
                         if (evt.key === InteractionKeyCode.ENTER) {
-                            if (textFilter) handleSelect(evt);
-                            else break;
+                            if (textFilter) {
+                                handleSelect(evt);
+                            } else {
+                                break;
+                            }
                         }
                         return;
                     }
@@ -233,7 +244,11 @@ const Select = <T extends SelectItem>({
                         if (!(item.dataset.disabled && item.dataset.disabled === 'true')) {
                             if (item.getAttribute('aria-selected') === 'true') {
                                 item.tabIndex = 0;
-                                filterable ? setActiveIndex(activeIndex) : item.focus();
+                                if (filterable) {
+                                    setActiveIndex(activeIndex);
+                                } else {
+                                    item.focus();
+                                }
                                 break focus;
                             }
                             firstAvailableItem = firstAvailableItem || item;
@@ -405,7 +420,9 @@ const Select = <T extends SelectItem>({
         (e: Event) => {
             e.preventDefault();
             setShowList(showList => !showList);
-            showList && resetSelection(cachedSelectedItemsRef.current);
+            if (showList) {
+                resetSelection(cachedSelectedItemsRef.current);
+            }
         },
         [setShowList, showList, resetSelection]
     );

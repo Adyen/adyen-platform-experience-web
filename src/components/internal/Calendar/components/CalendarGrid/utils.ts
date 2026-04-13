@@ -62,7 +62,7 @@ export const propsProperty = (() => {
             | PropertyDescriptor<T[K]>;
     } & Record<string, any>;
 
-    const propsProperty = <T extends Record<string, any> = {}>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
+    const propsProperty = <T extends Record<string, any> = Record<never, never>>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
         const $props = struct() as UnwrappedProps<T>;
 
         for (const [prop, maybeDescriptor] of Object.entries<UnwrappedProps<T>[keyof T]>(props)) {
@@ -87,7 +87,7 @@ export const propsProperty = (() => {
         return property((props = {} as UnwrappedProps<T>) => Object.assign($props, props), $props);
     };
 
-    const unwrapped = <T extends Record<string, any> = {}>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
+    const unwrapped = <T extends Record<string, any> = Record<never, never>>(props = {} as UnwrappedProps<T>, deepImmutable = false) => {
         const P = propsProperty(props, deepImmutable);
         return struct({ P }).P as T;
     };
@@ -95,7 +95,10 @@ export const propsProperty = (() => {
     return Object.defineProperties(propsProperty, {
         unwrapped: { value: unwrapped },
     }) as {
-        <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean): PropertyDescriptor<UnwrappedProps<T>>;
-        unwrapped: <T extends Record<string, any> = {}>(props?: UnwrappedProps<T>, deepImmutable?: boolean) => T;
+        <T extends Record<string, any> = Record<never, never>>(
+            props?: UnwrappedProps<T>,
+            deepImmutable?: boolean
+        ): PropertyDescriptor<UnwrappedProps<T>>;
+        unwrapped: <T extends Record<string, any> = Record<never, never>>(props?: UnwrappedProps<T>, deepImmutable?: boolean) => T;
     };
 })();

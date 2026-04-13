@@ -32,8 +32,12 @@ export function setNestedValue(obj: any, path: string, value: any): void {
 }
 
 function purgeEmptyValues<T>(obj: T): T {
-    if (obj === null || obj === undefined) return obj;
-    if (typeof obj !== 'object') return obj;
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+    if (typeof obj !== 'object') {
+        return obj;
+    }
     if (Array.isArray(obj)) return obj.filter(item => item !== '' && item !== null) as T;
 
     const result: Record<string, any> = {};
@@ -396,7 +400,7 @@ export async function validateFieldWithRaceConditionHandling<TFieldValues>({
             }
             control.notify();
         }
-    } catch (err) {
+    } catch {
         if (control._validationCounters.get(name) === currentCounter) {
             const errorObj = { type: 'validation', message: 'Validation error' } as const;
             control._errors.set(name, errorObj);

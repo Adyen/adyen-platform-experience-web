@@ -1,17 +1,10 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
-import { TransactionsTableFields } from './external/TransactionsOverview/components/TransactionsTable/types';
 import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
-import { ReportsTableFields } from './external/ReportsOverview/components/ReportsTable/ReportsTable';
 import { StringWithAutocompleteOptions } from '../utils/types';
-import { PayoutsTableFields } from './external/PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { TransactionDetailsFields } from './external';
 import { IDisputeListItem } from '../types/api/models/disputes';
-import { DisputesTableFields } from './external/DisputesOverview/components/DisputesTable/DisputesTable';
-import { PaymentLinkCreationFormValues } from './external/PaymentLinkCreation/components/types';
-import { FieldValues } from '../hooks/form/types';
-import { StoreIds } from './external/PaymentLinksOverview/types';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -176,36 +169,25 @@ type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields 
     details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
 };
 
-export interface ReportsOverviewComponentProps
-    extends Omit<_DataOverviewComponentProps, 'showDetails'>,
-        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<ReportsTableFields, IReport, any, any>, 'details'>> {}
+export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
+export type { ReportsTableFields } from './external/ReportsOverview/types';
 
-export interface TransactionOverviewComponentProps
-    extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<
-            OverviewCustomizationProperties<TransactionsTableFields, ITransaction, TransactionDetailsFields, ITransactionWithDetails>
-        >,
-        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+export type { TransactionOverviewComponentProps } from './external/TransactionsOverview/types';
+export type {
+    TransactionsOverviewProps,
+    TransactionOverviewProps,
+    TransactionsTableFields,
+    TransactionsFilters,
+} from './external/TransactionsOverview/types';
 
-type PaymentLinkOverviewSubComponentProps<Props> = Omit<Props, 'onContactSupport' | 'storeIds' | 'ref'>;
+export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
+export type { StoreIds } from './external/PaymentLinksOverview/types';
 
-export interface PaymentLinksOverviewComponentProps
-    extends _DataOverviewComponentProps,
-        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {
-    paymentLinkCreation?: PaymentLinkOverviewSubComponentProps<PaymentLinkCreationComponentProps>;
-    paymentLinkSettings?: PaymentLinkOverviewSubComponentProps<PaymentLinkSettingsComponentProps>;
-    storeIds?: StoreIds;
-}
+export type { PayoutsOverviewComponentProps, PayoutsOverviewProps } from './external/PayoutsOverview/types';
+export type { PayoutsTableFields } from './external/PayoutsOverview/types';
 
-export interface PayoutsOverviewComponentProps
-    extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<OverviewCustomizationProperties<PayoutsTableFields, IPayout, any, IPayoutDetails>>,
-        _DataOverviewSelectionProps<{ balanceAccountId: string; date: string; showModal: () => void }> {}
-
-export interface DisputeOverviewComponentProps
-    extends _DataOverviewComponentProps,
-        _CustomizableDataOverview<Omit<OverviewCustomizationProperties<DisputesTableFields, IDisputeListItem, any, any>, 'list'>>,
-        _DataOverviewSelectionProps<{ id: string; showModal: () => void }> {}
+export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
+export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
 
 export type DeepPartial<T> = T extends object
     ? {
@@ -213,43 +195,18 @@ export type DeepPartial<T> = T extends object
       }
     : T;
 
-export type PaymentLinkFieldVisibility = 'hidden' | 'readOnly';
+export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
-export type PaymentLinkParentFields = 'amount' | 'deliveryAddress' | 'billingAddress' | 'shopperName' | 'linkValidity';
+export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/CapitalOffer/types';
 
-// Nested visibility config for parent fields - supports both string and object notation
-type AmountVisibility = PaymentLinkFieldVisibility | Partial<Record<'currency' | 'value', PaymentLinkFieldVisibility>>;
-type AddressVisibility =
-    | PaymentLinkFieldVisibility
-    | Partial<Record<'city' | 'country' | 'houseNumberOrName' | 'postalCode' | 'street' | 'stateOrProvince', PaymentLinkFieldVisibility>>;
-type ShopperNameVisibility = PaymentLinkFieldVisibility | Partial<Record<'firstName' | 'lastName', PaymentLinkFieldVisibility>>;
-type LinkValidityVisibility = PaymentLinkFieldVisibility | Partial<Record<'durationUnit' | 'quantity', PaymentLinkFieldVisibility>>;
+export type { PaymentLinkCreationComponentProps, PaymentLinkCreationProps } from './external/PaymentLinkCreation/types';
+export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
 
-export type PaymentLinkFieldsVisibilityConfig = Partial<
-    Omit<Record<FieldValues<PaymentLinkCreationFormValues>, PaymentLinkFieldVisibility>, PaymentLinkParentFields> & {
-        amount?: AmountVisibility;
-        deliveryAddress?: AddressVisibility;
-        billingAddress?: AddressVisibility;
-        shopperName?: ShopperNameVisibility;
-        linkValidity?: LinkValidityVisibility;
-    }
->;
+export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from './external/PaymentLinkSettings/types';
 
-export interface PaymentLinkCreationFieldsConfig {
-    data?: DeepPartial<PaymentLinkCreationFormValues>;
-    visibility?: PaymentLinkFieldsVisibilityConfig;
-}
+export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
 
-export interface PaymentLinkCreationComponentProps extends UIElementProps {
-    fieldsConfig?: PaymentLinkCreationFieldsConfig;
-    storeIds?: StoreIds;
-    onPaymentLinkCreated?: (paymentLink: PaymentLinkCreationFormValues) => void;
-    onCreationDismiss?: () => void;
-}
-
-export interface PaymentLinkSettingsComponentProps extends UIElementProps {
-    storeIds?: string[] | string;
-}
+export type { PayoutDetailsComponentProps, PayoutDetailsProps } from './external/PayoutDetails/types';
 
 export const enum FilterParam {
     BALANCE_ACCOUNT = 'balanceAccount',

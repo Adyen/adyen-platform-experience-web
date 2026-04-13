@@ -4,7 +4,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Alert from '../../../../internal/Alert/Alert';
 import Button from '../../../../internal/Button';
 import Typography from '../../../../internal/Typography/Typography';
-import { AlertTypeOption, AlertVariantOption } from '../../../../internal/Alert/types';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import {

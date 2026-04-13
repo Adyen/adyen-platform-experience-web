@@ -23,12 +23,20 @@ export const PreQualified = ({
     const [state, setState] = useState<'intro' | 'capitalOffer'>(skipPreQualifiedIntro ? 'capitalOffer' : 'intro');
 
     const handleOfferOptionsRequest = useCallback(() => {
-        onOfferOptionsRequest ? onOfferOptionsRequest() : setState('capitalOffer');
+        if (onOfferOptionsRequest) {
+            onOfferOptionsRequest();
+        } else {
+            setState('capitalOffer');
+        }
     }, [onOfferOptionsRequest]);
 
     const isOfferDismissButtonVisible = useMemo(() => !skipPreQualifiedIntro || !!onOfferDismiss, [onOfferDismiss, skipPreQualifiedIntro]);
     const handleOfferDismiss = useCallback(() => {
-        onOfferDismiss ? onOfferDismiss() : setState('intro');
+        if (onOfferDismiss) {
+            onOfferDismiss();
+        } else {
+            setState('intro');
+        }
     }, [onOfferDismiss]);
 
     return (

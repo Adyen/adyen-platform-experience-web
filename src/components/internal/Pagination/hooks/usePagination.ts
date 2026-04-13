@@ -62,8 +62,12 @@ const usePagination = <Pagination extends PaginationType>(
                           updatePagination(requestedPage, limit, paginationData);
                           $maxVisitedPageRef.current = $pageRef.current && Math.max($pageRef.current, $maxVisitedPageRef.current || -Infinity);
 
-                          if ($pageRef.current && $pageRef.current === $maxVisitedPageRef.current) $maxVisitedPageSizeRef.current = size;
-                          if ($pageRef.current === 1 && size > 0) setCurrentPage($pageRef.current);
+                          if ($pageRef.current && $pageRef.current === $maxVisitedPageRef.current) {
+                              $maxVisitedPageSizeRef.current = size;
+                          }
+                          if ($pageRef.current === 1 && size > 0) {
+                              setCurrentPage($pageRef.current);
+                          }
 
                           $pageRef.current = undefined;
                           updatePaginationChanged(true);
@@ -77,15 +81,23 @@ const usePagination = <Pagination extends PaginationType>(
     }, [limit, requestPageCallback, $mounted, getPageCount, getPageParams, updatePagination, updatePaginationChanged]);
 
     const next = useCallback(() => {
-        page && goto(Math.min(page + 1, getPageCount()));
+        if (page) {
+            goto(Math.min(page + 1, getPageCount()));
+        }
     }, [goto, page, getPageCount]);
 
     const prev = useCallback(() => {
-        page && goto(Math.max(page - 1, 1));
+        if (page) {
+            goto(Math.max(page - 1, 1));
+        }
     }, [goto, page]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const pages = useMemo(() => getPageCount() || page || undefined, [getPageCount, page, paginationChanged]);
+    const pages = useMemo(
+        () => getPageCount() || page || undefined,
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [getPageCount, page, paginationChanged]
+    );
+
     const hasNext = useMemo(() => !!(page && pages) && page < pages, [page, pages]);
     const hasPrev = useMemo(() => !!page && page > 1, [page]);
 
@@ -100,7 +112,9 @@ const usePagination = <Pagination extends PaginationType>(
     const resetPagination = useCallback(() => {
         resetPageCount();
         $maxVisitedPageRef.current = $maxVisitedPageSizeRef.current = $pageRef.current = undefined;
-        $mounted.current && setCurrentPage($pageRef.current);
+        if ($mounted.current) {
+            setCurrentPage($pageRef.current);
+        }
     }, [resetPageCount, $mounted]);
 
     useEffect(() => {

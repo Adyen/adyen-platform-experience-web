@@ -133,7 +133,7 @@ const TransactionDateFilter = ({ createdDate, eventCategory, eventSubCategory, s
     }, [pendingResetAction, createdDate, logEvent]);
 
     useEffect(() => {
-        const dateRangeKey = Object.entries(TRANSACTION_DATE_RANGES).find(([_, timestamps]) => timestamps === createdDate)?.[0];
+        const dateRangeKey = Object.entries(TRANSACTION_DATE_RANGES).find(([, timestamps]) => timestamps === createdDate)?.[0];
         setSelectedDateRange(dateRangeKey ? i18n.get(dateRangeKey as TransactionsDateRange) : customDateRange);
     }, [createdDate, customDateRange, i18n]);
 

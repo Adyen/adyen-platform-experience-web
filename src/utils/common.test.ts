@@ -59,11 +59,21 @@ describe('toStringTag', () => {
             [/\\/, 'RegExp'],
             [() => {}, 'Function'],
             [async () => {}, 'AsyncFunction'],
-            [(function* () {})(), 'Generator'],
-            [(async function* () {})(), 'AsyncGenerator'],
+            [
+                (function* () {
+                    /* noop */
+                })(),
+                'Generator',
+            ],
+            [
+                (async function* () {
+                    /* noop */
+                })(),
+                'AsyncGenerator',
+            ],
             [
                 new (class HelloWorld {
-                    [Symbol.toStringTag] = 'HelloWorld';
+                    public [Symbol.toStringTag] = 'HelloWorld';
                 })(),
                 'HelloWorld',
             ],
