@@ -1,4 +1,3 @@
-import { JSX } from 'preact';
 import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '../../utils';
 import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../../translations';
@@ -171,7 +170,7 @@ export const loadTranslations = async (
  * @param translation - Translation string
  * @param renderFunctions - An array function that renders JSX elements
  */
-export const interpolateElement = (translation: string, renderFunctions: Array<(translation: string) => JSX.Element>) => {
+export const interpolateElement = <Element = unknown>(translation: string, renderFunctions: Array<(translation: string) => Element>) => {
     // splits by regex group, it guarantees that it only splits with 2 tokens (%#)
     const matches = translation.split(/%#(.*?)%#/gm);
     // the map will create an array of JSX / string elements, this syntax in accepted in JSX/react to render elements
