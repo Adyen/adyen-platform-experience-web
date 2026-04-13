@@ -52,8 +52,4 @@ export function run() {
     process.exit(1);
 }
 
-const isExecutedDirectly = !!process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
-if (isExecutedDirectly) {
-    run();
-}
+run();
