@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
-import { diff, extractExportsFromContent, getMissingPackageEntrypoints } from '../../scripts/check-publish-contract/lib';
+import { diff, extractExportsFromContent, getMissingPackageEntrypoints, type Snapshot } from '../../scripts/check-publish-contract/lib';
 
 test('extractExportsFromContent ignores import aliases', () => {
     const content = ['import { Foo as F, Bar as B } from "./foo.js";', 'export { F as Foo, B as Bar };'].join('\n');
@@ -24,6 +24,8 @@ test('getMissingPackageEntrypoints reports missing declared entrypoints', () => 
             getMissingPackageEntrypoints(
                 {
                     main: './dist/index.js',
+                    module: null,
+                    types: null,
                     style: './dist/style.css',
                     exports: {
                         './styles': './dist/styles.css',
@@ -40,16 +42,6 @@ test('getMissingPackageEntrypoints reports missing declared entrypoints', () => 
     }
 });
 
-interface Snapshot {
-    jsExports: string[];
-    esFileCount: number;
-    cssHash: string | null;
-    typeFiles: string[];
-    typeTreeHash: string | null;
-    missingPackageEntrypoints: Array<{ field: string; path: string }>;
-    packageJson: Record<string, unknown>;
-}
-
 const createSnapshot = (overrides: Partial<Snapshot>): Snapshot => ({
     jsExports: [],
     esFileCount: 0,
@@ -57,7 +49,7 @@ const createSnapshot = (overrides: Partial<Snapshot>): Snapshot => ({
     typeFiles: [],
     typeTreeHash: null,
     missingPackageEntrypoints: [],
-    packageJson: {},
+    packageJson: { main: null, module: null, types: null, style: null, exports: null },
     ...overrides,
 });
 
