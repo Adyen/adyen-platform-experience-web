@@ -205,13 +205,13 @@ importers:
 
   packages/domains/reports:
     dependencies:
-      '@integration-components/sdk':
+      '@integration-components/sdk-internal':
         specifier: workspace:*
         version: link:../../shared/lib
 
-  packages/publish:
+  packages/sdk:
     dependencies:
-      '@integration-components/sdk':
+      '@integration-components/sdk-internal':
         specifier: workspace:*
         version: link:../shared/lib
 
