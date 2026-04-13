@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
@@ -15,7 +16,8 @@ const translationsDir = resolve(srcDir, 'translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
-const externalDependencies = ['classnames', 'core-js'];
+const rootPkgJson = JSON.parse(readFileSync(resolve(rootDir, 'package.json'), 'utf-8'));
+const externalDependencies = Object.keys(rootPkgJson.dependencies ?? {});
 
 const shouldExcludeAsset = (id: string) => {
     if (externalDependencies.includes(id)) {
