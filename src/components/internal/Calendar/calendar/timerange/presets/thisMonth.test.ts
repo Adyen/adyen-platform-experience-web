@@ -29,7 +29,11 @@ describe('this month', () => {
 
         expect(to).toBe(now);
 
-        nowMonth === 0 ? expect(monthBefore).toBe(11) : expect(monthBefore).toBe(nowMonth - 1);
+        if (nowMonth === 0) {
+            expect(monthBefore).toBe(11);
+        } else {
+            expect(monthBefore).toBe(nowMonth - 1);
+        }
     });
 
     test('should have precise timestamps for timezone', () => {

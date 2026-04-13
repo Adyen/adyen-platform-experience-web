@@ -5,7 +5,7 @@ import Icon from '../../../../../../internal/Icon';
 import Typography from '../../../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../../../internal/Typography/types';
 import { uuid } from '../../../../../../../utils';
-import { useCallback, useEffect, useRef } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import { VisibleField } from '../../../../../../internal/FormWrappers/VisibleField';
 import { Tooltip } from '../../../../../../internal/Tooltip/Tooltip';
@@ -19,9 +19,7 @@ interface EmailDependentCheckboxFieldProps {
 export const EmailDependentCheckboxField = ({ name, label }: EmailDependentCheckboxFieldProps) => {
     const { setValue, control, getValues } = useWizardFormContext<PaymentLinkCreationFormValues>();
 
-    const inputIdRef = useRef(uuid());
-    const inputId = inputIdRef.current;
-
+    const inputId = useMemo(() => uuid(), []);
     const email = useWatch(control, 'shopperEmail');
     const isEmailEmpty = !(email && String(email).trim());
 

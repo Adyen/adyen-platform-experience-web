@@ -54,7 +54,7 @@ const CopyText = ({
             try {
                 await navigator.clipboard.writeText(textToCopy);
                 setIsCopied(true);
-                onCopyText && onCopyText();
+                if (onCopyText) onCopyText();
             } catch (e) {
                 console.error(e);
             }

@@ -15,7 +15,11 @@ const ToggleSwitch = fixedForwardRef<ToggleSwitchProps, HTMLInputElement>(
     ({ className, children, labelBeforeSwitch, onClick, readOnly, ...props }, ref) => {
         const handleClick = useCallback(
             (evt: TargetedMouseEvent<HTMLInputElement>) => {
-                readOnly ? evt.preventDefault() : onClick?.(evt);
+                if (readOnly) {
+                    evt.preventDefault();
+                } else {
+                    onClick?.(evt);
+                }
             },
             [readOnly, onClick]
         );

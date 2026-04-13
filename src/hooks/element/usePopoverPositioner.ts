@@ -221,7 +221,9 @@ const usePopoverPositioner = (
         let rafId: ReturnType<typeof requestAnimationFrame> | null = null;
 
         const handleScroll = () => {
-            if (rafId) cancelAnimationFrame(rafId);
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
             rafId = requestAnimationFrame(() => {
                 rafId = null;
                 const popover = popoverRef.current;
@@ -256,7 +258,9 @@ const usePopoverPositioner = (
 
         return () => {
             window.removeEventListener('scroll', handleScroll, { capture: true });
-            if (rafId) cancelAnimationFrame(rafId);
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
         };
     }, [fixedPositioning, targetElement, variant, offset, additionalStyle, showOverlay, fitPosition, showPopover]);
 
@@ -375,7 +379,9 @@ const usePopoverPositioner = (
                             .join(';')
                     );
 
-                    if (initialPosition) setInitialPosition(false);
+                    if (initialPosition) {
+                        setInitialPosition(false);
+                    }
 
                     if (variant && variant === PopoverContainerVariant.TOOLTIP && arrowRef && isRefObject(arrowRef)) {
                         arrowRef.current?.setAttribute('data-popover-placement', currentPosition);

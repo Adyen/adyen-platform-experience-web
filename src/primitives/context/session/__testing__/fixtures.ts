@@ -45,7 +45,7 @@ export const augmentSpecificationContext = <T extends SpecificationContext>(ctx:
             if (patches === undefined) continue;
             while (patches.length) {
                 const unpatch = patches.pop();
-                unpatch && unpatch();
+                if (unpatch) unpatch();
             }
             _patchMap.delete(field as unknown as T);
         }

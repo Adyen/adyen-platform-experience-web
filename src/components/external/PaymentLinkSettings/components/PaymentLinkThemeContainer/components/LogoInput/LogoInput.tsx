@@ -50,15 +50,15 @@ const LogoInput = ({
     const dimensionError: TranslationKey = useMemo(
         () =>
             logoType === 'logo'
-                ? 'payByLink.settings.themes.inputs.file.errors.logo.maxDimension'
-                : 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.maxDimension',
+                ? 'payByLink.settings.themes.inputs.file.errors.logo.invalidDimensions'
+                : 'payByLink.settings.themes.inputs.file.errors.fullWidthLogo.invalidDimensions',
         [logoType]
     );
 
     const mapError: MapErrorCallback = useCallback(
         (error: ValidationError) => {
             switch (error) {
-                case validationErrors.MAX_DIMENSIONS:
+                case validationErrors.INVALID_DIMENSIONS:
                     return i18n.get(dimensionError);
                 default:
                     return i18n.get(defaultMapError(error));
@@ -83,7 +83,7 @@ const LogoInput = ({
             </label>
             <FileInput
                 disabled={disabled}
-                maxDimensions={dimensions}
+                validDimensions={dimensions}
                 maxFileSize={THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE}
                 allowedFileTypes={THEME_FORM_ALLOWED_FILE_TYPES}
                 onChange={onChange}
