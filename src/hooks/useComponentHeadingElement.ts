@@ -32,7 +32,7 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
     useEffect(() => {
         if (forwardedToRoot === false) return;
 
-        const componentElement = componentRef.current;
+        const componentElement = componentRef();
         const headingElementId = headingElementRef.current?.id;
 
         if (headingElementId && componentElement) {
@@ -44,7 +44,8 @@ export const useComponentHeadingElement = <T extends HTMLElement>(
                 componentElement.removeAttribute(ariaAttribute);
             };
         }
-    }, [ariaAttribute, componentRef, forwardedToRoot, headingElementId]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ariaAttribute, forwardedToRoot, headingElementId]);
 
     return { id: headingElementId, ref: headingElementRef } as const;
 };

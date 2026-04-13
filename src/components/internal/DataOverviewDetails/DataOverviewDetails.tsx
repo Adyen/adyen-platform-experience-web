@@ -70,7 +70,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             const detailsData = await props.dataCustomization?.details?.onDataRetrieve?.(data);
 
             setExtraFields(
-                props.dataCustomization?.details?.fields.reduce((acc, field) => {
+                props.dataCustomization?.details?.fields?.reduce((acc, field) => {
                     return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
                         PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
                         field?.visibility === 'hidden'
