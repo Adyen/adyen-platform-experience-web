@@ -1,1 +1,1 @@
-export * from '../../../packages/shared/types/src/api';
+export * from './models';

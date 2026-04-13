@@ -1,10 +1,10 @@
-import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
 import { getBuildEnvDefines } from '../../config/build-env-defines';
+import rootPkgJson from '../../package.json';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
@@ -16,8 +16,7 @@ const translationsDir = resolve(srcDir, 'translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
-const rootPkgJson = JSON.parse(readFileSync(resolve(rootDir, 'package.json'), 'utf-8'));
-const externalDependencies = Object.keys(rootPkgJson.dependencies ?? {});
+const externalDependencies = Object.keys(rootPkgJson.dependencies);
 
 const shouldExcludeAsset = (id: string) => {
     if (externalDependencies.includes(id)) {
