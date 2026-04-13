@@ -30,10 +30,10 @@
             "@integration-components/types/*": [
                 "packages/shared/types/src/*"
             ],
-            "@integration-components/sdk": [
+            "@integration-components/sdk-internal": [
                 "packages/shared/lib/src/index.ts"
             ],
-            "@integration-components/sdk/*": [
+            "@integration-components/sdk-internal/*": [
                 "packages/shared/lib/src/*"
             ],
             "@integration-components/reports/publish": [

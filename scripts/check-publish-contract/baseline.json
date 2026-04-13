@@ -784,7 +784,7 @@
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
-        "module": "./dist/es/packages/publish/src/index.js",
+        "module": "./dist/es/packages/sdk/src/index.js",
         "types": "./dist/types/src/index.d.ts",
         "style": "./dist/adyen-platform-experience-web.css",
         "exports": {
@@ -796,7 +796,7 @@
                 },
                 "import": {
                     "types": "./dist/types/src/index.d.ts",
-                    "default": "./dist/es/packages/publish/src/index.js"
+                    "default": "./dist/es/packages/sdk/src/index.js"
                 }
             },
             "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"

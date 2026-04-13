@@ -1,5 +1,5 @@
 {
-    "name": "@integration-components/publish",
+    "name": "@integration-components/sdk",
     "version": "0.0.1",
     "private": true,
     "type": "module",
@@ -7,6 +7,6 @@
         "build": "vite build && tsc --project tsconfig-build.json"
     },
     "dependencies": {
-        "@integration-components/sdk": "workspace:*"
+        "@integration-components/sdk-internal": "workspace:*"
     }
 }
