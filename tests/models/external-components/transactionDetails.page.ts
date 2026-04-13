@@ -1,5 +1,4 @@
 import type { Locator, Page } from '@playwright/test';
-import { getTranslatedKey } from '../../utils/utils';
 
 export class TransactionDetailsPage {
     private readonly root: Locator;
@@ -9,6 +8,6 @@ export class TransactionDetailsPage {
     }
 
     get referenceId(): Locator {
-        return this.root.getByTestId(`${getTranslatedKey('transactions.details.fields.referenceID')}-value`);
+        return this.root.getByTestId('id-value');
     }
 }

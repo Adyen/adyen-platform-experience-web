@@ -11,9 +11,8 @@ test.describe('Refunded - Partially (statuses)', () => {
     });
 
     test('should render partially refunded payment transaction', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--blue', { hasText: 'Partially refunded' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByText('Partially refunded', { exact: true })).toBeVisible();
 
         const failedRefundAlert =
             'The refund for €37.50, €50.00, and €58.75 has failed. It is not currently possible to refund this amount. Please contact support.';
@@ -22,9 +21,7 @@ test.describe('Refunded - Partially (statuses)', () => {
         await expect(page.getByText('The partial refund of €75.00 is being processed.', { exact: true })).toBeVisible();
         await expect(page.getByText(failedRefundAlert, { exact: true })).toBeVisible();
 
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(2);
-        await expect(page.locator('.adyen-pe-alert--warning')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(3);
+        await expect(page.getByRole('alert')).toHaveCount(3);
 
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
     });

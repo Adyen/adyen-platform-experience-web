@@ -44,8 +44,8 @@ export default function StructuredList({
         <dl className={cx(SL_BASE_CLASS, classNames, { [SL_ALIGN_END]: align === 'end', [SL_EXPANDED_CLASS]: !condensed })} aria-label={ariaLabel}>
             {formattedItems.map((item, index) => (
                 <div
-                    data-testid={item.label}
-                    key={`${index}_${item.id || '0'}`}
+                    data-testid={item.id ?? item.label}
+                    key={`${index}_${item.uid || '0'}`}
                     className={cx(SL_ITEM_CLASS, {
                         [SL_ITEM_WITH_HIGHLIGHT_CLASS]: highlightable,
                         [SL_GRID_CLASS]: grid,
@@ -58,7 +58,7 @@ export default function StructuredList({
                             <Typography variant={typographyVariant}>{item.label}</Typography>
                         )}
                     </dt>
-                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)} data-testid={item.id ? `${item.id}-value` : undefined}>
+                    <dd className={cx(SL_CONTENT_CLASS, VALUE_COL_CLASS)} data-testid={`${item.id ?? item.label}-value`}>
                         {item.render ? (
                             item.render(item)
                         ) : renderValue ? (

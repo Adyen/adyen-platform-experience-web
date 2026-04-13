@@ -32,9 +32,9 @@ test.describe('Data customization', () => {
         const dataGridBody = dataGrid.getByRole('rowgroup').nth(1);
         const firstRow = dataGridBody.getByRole('row').nth(0);
 
-        const summaryCell = firstRow.locator(`[aria-labelledby=_summary]`);
-        const countryCell = firstRow.locator(`[aria-labelledby=_country]`);
-        const actionCell = firstRow.locator(`[aria-labelledby=_sendEmail]`);
+        const summaryCell = firstRow.getByTestId('_summary');
+        const countryCell = firstRow.getByTestId('_country');
+        const actionCell = firstRow.getByTestId('_sendEmail');
 
         const actionButton = actionCell.getByRole('button', { name: 'Send email', exact: true, disabled: false });
         const summaryLink = summaryCell.getByRole('link', { name: 'Summary', exact: true, disabled: false });

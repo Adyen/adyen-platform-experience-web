@@ -7,7 +7,7 @@ test.describe('Error - Theme Error', () => {
     test('Should display error when theme endpoint fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const component = page.locator('.adyen-pe-component');
+        const component = page.getByTestId('component-root');
 
         await expect(component.getByText('Settings', { exact: true })).toBeVisible();
 

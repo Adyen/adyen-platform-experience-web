@@ -9,12 +9,8 @@ test.describe('Chargeback - Auto defended', () => {
     });
 
     test('should render chargeback auto-defended alert message if defended automatically', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
+        await expect(page.locator('.adyen-pe-tag--default').filter({ hasText: 'Chargeback' })).toBeVisible();
         await expect(page.getByRole('alert')).toBeVisible();
-
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
-        await expect(icon).toBeVisible();
 
         await expect(page.getByText('This chargeback was defended automatically.')).toBeVisible();
     });

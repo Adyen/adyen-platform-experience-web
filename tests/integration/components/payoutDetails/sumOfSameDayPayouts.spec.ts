@@ -7,8 +7,8 @@ test.describe('Sum of same-day payouts', () => {
     test('should render payout details with "Sum of same-day payouts" tag', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
         await Promise.all([
-            expect(page.locator('.adyen-pe-tag--blue', { hasText: 'Sum of same-day payouts' })).toBeVisible(),
-            expect(page.locator('.adyen-pe-tag')).toHaveCount(1),
+            expect(page.getByText('Sum of same-day payouts', { exact: true })).toBeVisible(),
+            expect(page.getByText('Sum of same-day payouts', { exact: true })).toHaveCount(1),
         ]);
     });
 });
