@@ -5,5 +5,3 @@ export interface PaymentLinkSettingsProps extends UIElementProps {
 }
 
 export type PaymentLinkSettingsComponentProps = PaymentLinkSettingsProps;
-
-export interface PaymentLinkSettingsConfig {}

@@ -8,5 +8,3 @@ export interface PaymentLinkDetailsProps extends UIElementProps {
 }
 
 export type PaymentLinkDetailsComponentProps = PaymentLinkDetailsProps;
-
-export interface PaymentLinkDetailsConfig {}
