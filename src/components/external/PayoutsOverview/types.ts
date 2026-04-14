@@ -1,5 +1,5 @@
 import { UIElementProps, DataCustomizationObject, CustomDataRetrieved } from '../../types';
-import { IPayout, IPayoutDetails } from '../../../types';
+import { IPayout } from '../../../types';
 import { StringWithAutocompleteOptions } from '../../../utils/types';
 
 type PayoutsTableCols = 'createdAt' | 'payoutType' | 'netPayoutAmount' | 'fundingSource' | 'summary';
@@ -22,5 +22,3 @@ export interface PayoutsOverviewProps extends UIElementProps {
 }
 
 export type PayoutsOverviewComponentProps = PayoutsOverviewProps;
-
-export interface PayoutsOverviewConfig {}
