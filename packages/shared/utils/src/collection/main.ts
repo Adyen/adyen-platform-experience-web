@@ -17,7 +17,14 @@ export const getMappedValue: MapGetter = (key, map, factory) => {
 
 export const listFrom = <T extends string = string>(value?: string | any[], fallbackList = EMPTY_ARRAY as unknown as T[]) => {
     const stringedValue = `${value || ''}`.trim();
-    const stringedList = (stringedValue ? stringedValue.split(/(?:\s*,\s*)+/).filter(identity) : EMPTY_ARRAY) as T[];
+    const stringedList = (
+        stringedValue
+            ? stringedValue
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(identity)
+            : EMPTY_ARRAY
+    ) as T[];
     return stringedList.length ? stringedList : fallbackList;
 };
 

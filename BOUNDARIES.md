@@ -8,11 +8,11 @@
 
 ### `type:shared`
 
-Shared foundation libraries. `@integration-components/sdk` is the current transitional shared package; the remaining entries describe the planned split.
+Shared foundation libraries. `@integration-components/sdk-internal` is the current transitional shared package; the remaining entries describe the planned split.
 
 | Package | Status | Description |
 |---------|--------|-------------|
-| `@integration-components/sdk` | current | Transitional shared package that re-exports the existing root `src/` surface |
+| `@integration-components/sdk-internal` | current | Transitional shared package that re-exports the existing root `src/` surface |
 | `@integration-components/types` | planned | Shared types and API models |
 | `@integration-components/utils` | planned | Shared utilities |
 | `@integration-components/core` | planned | Runtime: config, HTTP, i18n, session |
@@ -38,7 +38,7 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 
 | Package | Status | Description |
 |---------|--------|-------------|
-| `@integration-components/publish` | current | Root aggregator. Target state: re-export only from each domain's `publish` layer |
+| `@integration-components/sdk` | current | Root aggregator. Target state: re-export only from each domain's `publish` layer |
 
 ## Cross-Project Rules
 
@@ -63,7 +63,7 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 ## Key Invariants
 
-1. `packages/publish/src/index.ts` imports domains **only** through `@integration-components/<domain>/publish`.
+1. `packages/sdk/src/index.ts` imports domains **only** through `@integration-components/<domain>/publish`.
 2. `domain/src` must remain **framework-agnostic** (no Preact/Vue imports).
 3. `preact/src` and `vue/src` must **never** import from each other.
 4. `publish/src` is the **only** layer allowed to compose what gets published.
