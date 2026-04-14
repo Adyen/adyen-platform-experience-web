@@ -43,7 +43,9 @@ export default defineConfig(({ mode }) => {
     return {
         resolve: {
             alias: {
+                '@integration-components/core': resolve(__dirname, 'packages/shared/core/src'),
                 '@integration-components/types': resolve(__dirname, 'packages/shared/types/src'),
+                '@integration-components/utils': resolve(__dirname, 'packages/shared/utils/src'),
             },
         },
         build: {

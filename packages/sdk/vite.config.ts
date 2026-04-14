@@ -38,7 +38,9 @@ export default defineConfig(({ mode }) => ({
     root: projectRoot,
     resolve: {
         alias: {
+            '@integration-components/core': resolve(rootDir, 'packages/shared/core/src'),
             '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
+            '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
         },
     },
     build: {
