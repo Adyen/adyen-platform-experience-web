@@ -1,3 +1,2 @@
-export { default, createInterval } from './main';
-export * from './constants';
-export * from './types';
+export * from '../../../../packages/shared/utils/src/primitives/time/interval/index';
+export { default } from '../../../../packages/shared/utils/src/primitives/time/interval/index';

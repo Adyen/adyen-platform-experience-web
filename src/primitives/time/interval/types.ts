@@ -1,5 +1,1 @@
-export interface Interval {
-    readonly cancel: () => void;
-    readonly delay: number;
-    readonly signal: AbortSignal;
-}
+export * from '../../../../packages/shared/utils/src/primitives/time/interval/types';
