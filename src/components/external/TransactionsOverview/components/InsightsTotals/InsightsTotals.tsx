@@ -71,13 +71,13 @@ const InsightsTotals = ({ currency, currenciesLookupResult, transactionsTotalsRe
                     />
 
                     <div className={classes.breakdowns}>
-                        <InsightsTotals.Breakdown
+                        <InsightsTotalsBreakdown
                             amount={data.incomings}
                             breakdown={data.breakdown.incomings}
                             currency={data.currency}
                             label={i18n.get('transactions.overview.totals.tags.incoming')}
                         />
-                        <InsightsTotals.Breakdown
+                        <InsightsTotalsBreakdown
                             amount={data.expenses}
                             breakdown={data.breakdown.expenses}
                             currency={data.currency}
@@ -95,7 +95,7 @@ interface BreakdownProps extends AmountDisplayProps {
     breakdown: readonly { category: ITransactionCategory; value: number }[];
 }
 
-InsightsTotals.Breakdown = ({ ariaLabel, breakdown, ...amountDisplayProps }: BreakdownProps) => {
+const InsightsTotalsBreakdown = ({ ariaLabel, breakdown, ...amountDisplayProps }: BreakdownProps) => {
     const { currency } = amountDisplayProps;
     const { i18n } = useCoreContext();
 

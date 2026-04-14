@@ -1,7 +1,7 @@
 import cx from 'classnames';
-import { Ref } from 'preact';
 import { MutableRef, useMemo } from 'preact/hooks';
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, Ref } from 'preact';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Img from '../../../Img';
 import Icon from '../../../Icon';
@@ -60,9 +60,35 @@ const SelectButtonElement = <T extends SelectItem>({
     );
 };
 
-const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
+const SelectButton = <T extends SelectItem>({
+    active,
+    clearable,
+    filterable,
+    multiSelect,
+    placeholder,
+    onClear,
+    readonly,
+    showList,
+    withoutCollapseIndicator,
+    buttonVariant,
+    isInvalid,
+    isValid,
+    name,
+    toggleList,
+    onButtonKeyDown,
+    toggleButtonRef,
+    ariaDescribedBy,
+    id,
+    renderButtonContent,
+    selectListId,
+    onInput,
+    onFilterInputKeyDown,
+    filterInputRef,
+    appliedFilterNumber,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
+}: SelectButtonProps<T> & { appliedFilterNumber: number }) => {
     const { i18n } = useCoreContext();
-    const { active, clearable, filterable, multiSelect, placeholder, onClear, readonly, showList, withoutCollapseIndicator } = props;
     const placeholderText = useMemo(() => placeholder?.trim() || i18n.get('common.inputs.select.placeholder'), [i18n, placeholder]);
     const buttonActiveItem = useMemo(() => (boolOrFalse(multiSelect) ? undefined : active[0]), [active, multiSelect]);
     const buttonTitleText = useMemo(() => buttonActiveItem?.name?.trim() || placeholderText, [buttonActiveItem, placeholderText]);
@@ -70,50 +96,50 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
 
     return (
         <SelectButtonElement
-            buttonVariant={props.buttonVariant}
+            buttonVariant={buttonVariant}
             active={active}
             disabled={readonly}
             aria-disabled={readonly}
             aria-expanded={showList}
             aria-haspopup="dialog"
-            aria-invalid={props.isInvalid}
+            aria-invalid={isInvalid}
             className={cx(DROPDOWN_BUTTON_CLASS, {
                 [DROPDOWN_BUTTON_ACTIVE_CLASS]: showList,
                 [DROPDOWN_BUTTON_HAS_SELECTION_CLASS]: !!active.length,
                 [DROPDOWN_BUTTON_READONLY_CLASS]: readonly,
-                [DROPDOWN_BUTTON_INVALID_CLASS]: props.isInvalid,
-                [DROPDOWN_BUTTON_VALID_CLASS]: props.isValid,
+                [DROPDOWN_BUTTON_INVALID_CLASS]: isInvalid,
+                [DROPDOWN_BUTTON_VALID_CLASS]: isValid,
             })}
             filterable={filterable}
-            name={props.name}
-            onClick={!readonly ? props.toggleList : undefined}
-            onKeyDown={!readonly ? props.onButtonKeyDown : undefined}
+            name={name}
+            onClick={!readonly ? toggleList : undefined}
+            onKeyDown={!readonly ? onButtonKeyDown : undefined}
             role={!filterable || showList ? 'button' : undefined}
             tabIndex={0}
             title={buttonTitleText}
-            toggleButtonRef={props.toggleButtonRef}
+            toggleButtonRef={toggleButtonRef}
             type={filterable ? undefined : 'button'}
-            aria-describedby={props.ariaDescribedBy}
-            id={props.id}
-            {...(showList && filterable ? {} : { 'aria-label': props['aria-label'], 'aria-labelledby': props['aria-labelledby'] })}
+            aria-describedby={ariaDescribedBy}
+            id={id}
+            {...(showList && filterable ? {} : { 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledby })}
         >
-            {props.renderButtonContent ? (
-                props.renderButtonContent({ item: buttonActiveItem })
+            {renderButtonContent ? (
+                renderButtonContent({ item: buttonActiveItem })
             ) : showList && filterable ? (
                 <input
                     aria-autocomplete="list"
-                    aria-label={props['aria-label']}
-                    aria-labelledby={props['aria-labelledby']}
-                    aria-controls={props.selectListId}
+                    aria-label={ariaLabel}
+                    aria-labelledby={ariaLabelledby}
+                    aria-controls={selectListId}
                     aria-expanded={showList}
-                    aria-owns={props.selectListId}
-                    aria-invalid={props.isInvalid}
+                    aria-owns={selectListId}
+                    aria-invalid={isInvalid}
                     autoComplete="off"
                     className="adyen-pe-filter-input"
-                    onInput={props.onInput}
-                    onKeyDown={props.onFilterInputKeyDown}
+                    onInput={onInput}
+                    onKeyDown={onFilterInputKeyDown}
                     placeholder={placeholderText}
-                    ref={props.filterInputRef}
+                    ref={filterInputRef}
                     role="combobox"
                     type="text"
                 />
@@ -123,10 +149,10 @@ const SelectButton = <T extends SelectItem>(props: SelectButtonProps<T> & { appl
                         <Img className={DROPDOWN_BUTTON_ICON_CLASS} src={buttonActiveItem.icon} alt={buttonActiveItem?.name?.trim() ?? ''} />
                     )}
                     <span className={DROPDOWN_BUTTON_TEXT_CLASS}>{buttonActiveItem?.selectedOptionName?.trim() || buttonTitleText}</span>
-                    {multiSelect && props.appliedFilterNumber > 0 && (
+                    {multiSelect && appliedFilterNumber > 0 && (
                         <div className={DROPDOWN_BUTTON_MULTI_SELECT_COUNTER_CLASS}>
                             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger={true}>
-                                {props.appliedFilterNumber}
+                                {appliedFilterNumber}
                             </Typography>
                         </div>
                     )}

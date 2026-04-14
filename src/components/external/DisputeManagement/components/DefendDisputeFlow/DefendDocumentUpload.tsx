@@ -55,13 +55,19 @@ export const DefendDocumentUpload = ({
                 }}
                 mapError={mapError}
                 onDelete={() => {
-                    document && removeFieldFromDefendPayload(document);
+                    if (document) {
+                        removeFieldFromDefendPayload(document);
+                    }
                 }}
                 key={document}
                 disabled={disabled}
                 required={required}
                 onChange={files => {
-                    files[0] ? addFileToDefendPayload(document, files[0]) : removeFieldFromDefendPayload(document);
+                    if (files[0]) {
+                        addFileToDefendPayload(document, files[0]);
+                    } else {
+                        removeFieldFromDefendPayload(document);
+                    }
                 }}
             />
         </div>

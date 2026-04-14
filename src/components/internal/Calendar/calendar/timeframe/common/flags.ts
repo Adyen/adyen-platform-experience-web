@@ -17,7 +17,7 @@ const createFlagsRecord = (() => {
                     valueOf: { value: () => flagsTruncated },
                 }),
                 withFreezeProxyHandlers({
-                    get: (target: {}, property: string | symbol) => {
+                    get: (target: object, property: string | symbol) => {
                         switch (property) {
                             case 'valueOf':
                                 return target.valueOf;

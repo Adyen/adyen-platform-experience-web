@@ -33,8 +33,9 @@ export const createReflexRegister = (() => {
             assertReflexAction<T>(action);
         }
 
-        if (record) [, actions] = record;
-        else {
+        if (record) {
+            [, actions] = record;
+        } else {
             const isCallbackRef = isFunction(_ref);
 
             const _updateCurrentInstance: RefAsCallback<T | undefined> = isCallbackRef
@@ -103,9 +104,14 @@ export const createReflexRegister = (() => {
         const [, actions] = _getRecordForRef(register, _ref as NonNullable<Ref>);
         const bindings = actions.get(action) || 0;
 
-        if (bindings === 1) actions.delete(action);
-        else if (bindings > 1) actions.set(action, bindings - 1);
-        if (actions.size === 0 && _ref) register.delete(_ref);
+        if (bindings === 1) {
+            actions.delete(action);
+        } else if (bindings > 1) {
+            actions.set(action, bindings - 1);
+        }
+        if (actions.size === 0 && _ref) {
+            register.delete(_ref);
+        }
     };
 
     return (): ReflexRegister => {

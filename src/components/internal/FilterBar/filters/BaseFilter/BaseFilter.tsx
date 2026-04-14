@@ -119,7 +119,7 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
     }, [props.value, editModalMounting, isValueEmpty, updateEditModalMounting, updateHasEmptyValue, updateHasInitialValue]);
 
     useEffect(() => {
-        committing && closeEditDialog();
+        if (committing) closeEditDialog();
     }, [committing, closeEditDialog]);
 
     useEffect(() => {
@@ -177,6 +177,8 @@ const BaseFilter = <T extends BaseFilterProps = BaseFilterProps>({ render, ['ari
                         closeEditDialog,
                         openEditDialog,
                         targetElement,
+                        ariaLabel,
+                        filterButtonId,
                     ]
                 )}
             </div>

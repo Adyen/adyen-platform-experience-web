@@ -13,7 +13,7 @@ export type SessionRefresherEmitter = Emitter<
     typeof INTERNAL_EVT_SESSION_READY | typeof INTERNAL_EVT_SESSION_REFRESHING_END | typeof INTERNAL_EVT_SESSION_REFRESHING_START
 >;
 
-export interface SessionDeadline<T extends any> {
+export interface SessionDeadline<T> {
     readonly elapse: () => void;
     get elapsed(): boolean | undefined;
     readonly on: SessionDeadlineEmitter['on'];
@@ -21,7 +21,7 @@ export interface SessionDeadline<T extends any> {
     get signal(): AbortSignal;
 }
 
-export interface SessionRefresher<T extends any> {
+export interface SessionRefresher<T> {
     readonly context: SessionRefresherContext<T>;
     readonly on: SessionRefresherEmitter['on'];
     get pending(): boolean;
@@ -32,7 +32,7 @@ export interface SessionRefresher<T extends any> {
     get signal(): AbortSignal;
 }
 
-export interface SessionRefresherContext<T extends any> {
+export interface SessionRefresherContext<T> {
     emitter: Emitter<SessionEventType>;
     specification: SessionSpecification<T>;
 }

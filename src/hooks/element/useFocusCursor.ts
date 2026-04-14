@@ -25,7 +25,7 @@ const useFocusCursor = (callback?: ReflexAction<Element>) => {
                     finallyCallback(current, previous);
                 }
             },
-            [callback]
+            [callback, finallyCallback]
         )
     );
 };

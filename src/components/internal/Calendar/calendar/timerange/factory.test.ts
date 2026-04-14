@@ -4,7 +4,7 @@ import createRangeTimestampsFactory from './factory';
 import type { RangeTimestamps } from './types';
 
 describe('createRangeTimestampsFactory', () => {
-    type RangeTimestampsAdditionalContextFromPropertyDescriptors<T extends Record<any, TypedPropertyDescriptor<any>> = {}> = Omit<
+    type RangeTimestampsAdditionalContextFromPropertyDescriptors<T extends Record<any, TypedPropertyDescriptor<any>> = Record<never, never>> = Omit<
         {
             [P in keyof T]: T[P] extends TypedPropertyDescriptor<infer U> ? U : never;
         },

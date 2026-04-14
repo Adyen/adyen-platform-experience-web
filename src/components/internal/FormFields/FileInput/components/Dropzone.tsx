@@ -26,6 +26,26 @@ const classes = {
     errorText: `${BASE_CLASS}__error-text`,
 };
 
+const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        const url = URL.createObjectURL(file);
+        const cleanup = () => URL.revokeObjectURL(url);
+
+        image.src = url;
+
+        image.onerror = err => {
+            cleanup();
+            reject(err);
+        };
+
+        image.onload = () => {
+            cleanup();
+            resolve({ width: image.width, height: image.height });
+        };
+    });
+};
+
 export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props, ref) => {
     const {
         id,
@@ -33,7 +53,7 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         children,
         disabled = false,
         required = false,
-        maxDimensions,
+        validDimensions,
         maxFileSize = DEFAULT_MAX_FILE_SIZE,
         allowedFileTypes = DEFAULT_FILE_TYPES,
         mapError,
@@ -70,7 +90,9 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
     };
 
     const handleFileChange = (event: Event) => {
-        largeFileErrorContext && setLargeFileErrorContext(undefined);
+        if (largeFileErrorContext) {
+            setLargeFileErrorContext(undefined);
+        }
         updateFiles(event.target as HTMLInputElement);
     };
 
@@ -108,18 +130,6 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
         [inputRef]
     );
 
-    const getImageDimensions = async (file: File): Promise<{ width: number; height: number }> => {
-        return new Promise((resolve, reject) => {
-            const image = new Image();
-            const url = URL.createObjectURL(file);
-            image.src = url;
-            image.onerror = reject;
-            image.onload = function () {
-                resolve({ width: image.width, height: image.height });
-            };
-        });
-    };
-
     const updateFiles = useCallback(
         async <T extends UploadedFileSource>(source?: T | null): Promise<void> => {
             const uploadedFiles = getUploadedFilesFromSource(source);
@@ -131,10 +141,10 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
             try {
                 const dimensionFilteredFiles = await Promise.all(
                     uploadedFiles.map(async file => {
-                        if (!maxDimensions || !maxDimensions?.width || !maxDimensions?.height) return file;
+                        if (!validDimensions || !validDimensions?.width || !validDimensions?.height) return file;
                         const dimensions = await getImageDimensions(file);
-                        if (!(maxDimensions?.width === dimensions.width) || !(maxDimensions?.height === dimensions.height)) {
-                            throw validationErrors.MAX_DIMENSIONS;
+                        if (!(validDimensions?.width === dimensions.width) || !(validDimensions?.height === dimensions.height)) {
+                            throw validationErrors.INVALID_DIMENSIONS;
                         }
                         return file;
                     })
@@ -159,12 +169,12 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                 switch (ex) {
                     case validationErrors.DISALLOWED_FILE_TYPE:
                     case validationErrors.VERY_LARGE_FILE:
-                    case validationErrors.MAX_DIMENSIONS:
+                    case validationErrors.INVALID_DIMENSIONS:
                         return updateInputValidationError(ex);
                 }
             }
         },
-        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles, maxDimensions]
+        [allowedFileTypes, maxFileSize, updateInputValidationError, uploadFiles, validDimensions]
     );
 
     return (
@@ -193,13 +203,13 @@ export const Dropzone = fixedForwardRef<DropzoneProps, HTMLInputElement>((props,
                     onChange={handleFileChange}
                     onInvalid={handleInputInvalid}
                     aria-invalid={isInvalid}
-                    data-testId="dropzone-input"
+                    data-testid="dropzone-input"
                 />
 
                 {/* Using the label element here to expose a user interaction surface for the file input element. */}
                 {/* The input element itself is visually hidden (not visible), but available to assistive technology. */}
                 {/* To preserve proper focus styling, this label element should always come after the input element. */}
-                <label className={classes.label} htmlFor={inputId}>
+                <label data-testid="dropzone-label" className={classes.label} htmlFor={inputId}>
                     {children ?? (
                         <div className={cx(classes.labelDefault)}>
                             {

@@ -38,7 +38,7 @@ export const TransactionsOverview = ({
     dataCustomization,
 }: TransactionOverviewProps) => {
     const [filters, setFilters] = useState(INITIAL_FILTERS);
-    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(Date.now());
+    const [lastFiltersChangeTimestamp, setLastFiltersChangeTimestamp] = useState(() => Date.now());
     const [insightsCurrency, setInsightsCurrency] = useState<string>();
 
     const filterBarState = useFilterBarState();
