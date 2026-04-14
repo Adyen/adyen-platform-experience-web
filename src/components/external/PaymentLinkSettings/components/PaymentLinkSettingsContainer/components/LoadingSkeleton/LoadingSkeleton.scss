@@ -1,5 +1,5 @@
-@use '../../../../../../../style';
-@use '../../../../../../../style/skeleton' as skeleton;
+@use '@integration-components/style';
+@use '@integration-components/style/skeleton' as skeleton;
 
 .adyen-pe-payment-link-settings {
     &__skeleton {

@@ -1,7 +1,7 @@
-@use '../../../../../style/skeleton' as skeleton;
-@use '../../../../../style' as style;
+@use '@integration-components/style/skeleton' as skeleton;
+@use '@integration-components/style' as style;
 /* stylelint-disable */
-@import '../../../../../style/breakpoints.scss';
+@use '@integration-components/style/breakpoints' as *;
 
 .adyen-pe-capital-offer-selection {
     display: flex;

@@ -46,6 +46,7 @@ export default defineConfig(({ mode }) => {
                 '@integration-components/core': resolve(__dirname, 'packages/shared/core/src'),
                 '@integration-components/types': resolve(__dirname, 'packages/shared/types/src'),
                 '@integration-components/utils': resolve(__dirname, 'packages/shared/utils/src'),
+                '@integration-components/style': resolve(__dirname, 'packages/shared/style/src'),
             },
         },
         build: {
@@ -91,6 +92,7 @@ export default defineConfig(({ mode }) => {
                 scss: {
                     api: 'modern-compiler',
                     silenceDeprecations: ['legacy-js-api'],
+                    loadPaths: [resolve(__dirname, 'src')],
                 },
             },
         },

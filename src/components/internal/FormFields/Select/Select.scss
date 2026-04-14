@@ -1,4 +1,4 @@
-@use '../../../../style';
+@use '@integration-components/style';
 
 %adyen-pe-dropdown-decoration {
     --adyen-pe-separation-margin: #{style.token(spacer-060)};

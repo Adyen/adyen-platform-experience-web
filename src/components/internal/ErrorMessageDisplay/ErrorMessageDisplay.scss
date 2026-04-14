@@ -1,5 +1,5 @@
-@use '../../../style';
-@use '../../../style/breakpoints' as breakpoints;
+@use '@integration-components/style';
+@use '@integration-components/style/breakpoints' as breakpoints;
 
 .adyen-pe-error-message-display {
     border-radius: style.token(border-radius-m);

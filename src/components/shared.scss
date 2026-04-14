@@ -1,8 +1,1 @@
-@use '../style';
-
-.adyen-pe {
-    &-component,
-    &-popover {
-        color: style.token(color-label-primary);
-    }
-}
+@use '@integration-components/style/shared';

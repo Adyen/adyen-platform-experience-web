@@ -1,7 +1,7 @@
 @use 'sass:math';
-@use '../../../../mixins';
-@use '../../../../../style/skeleton' as skeleton;
-@use '../../../../../style';
+@use '@integration-components/style/mixins';
+@use '@integration-components/style/skeleton' as skeleton;
+@use '@integration-components/style';
 
 $adyen-pe-one-eighth: math.div(1, 8);
 
