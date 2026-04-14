@@ -30,5 +30,3 @@ export interface DisputesOverviewProps extends UIElementProps {
 }
 
 export type DisputeOverviewComponentProps = DisputesOverviewProps;
-
-export interface DisputesOverviewConfig {}

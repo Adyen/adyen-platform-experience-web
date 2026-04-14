@@ -20,5 +20,3 @@ export interface ReportsOverviewProps extends UIElementProps {
 }
 
 export type ReportsOverviewComponentProps = ReportsOverviewProps;
-
-export interface ReportsOverviewConfig {}

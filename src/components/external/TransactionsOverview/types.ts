@@ -1,4 +1,4 @@
-import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus, ITransactionWithDetails } from '../../../types';
+import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '../../../types';
 import { UIElementProps, DataCustomizationObject, CustomDataRetrieved, DataGridCustomColumnConfig } from '../../types';
 import { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
 import { TranslationKey } from '../../../translations';
