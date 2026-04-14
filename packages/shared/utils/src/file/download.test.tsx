@@ -3,7 +3,7 @@
  */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockInstance, test, vi } from 'vitest';
 import { render, fireEvent, screen } from '@testing-library/preact';
-import { EndpointDownloadStreamData } from '../../types/api/endpoints';
+import { EndpointDownloadStreamData } from '../../../types/src/api/endpoints';
 import { downloadBlob } from './download';
 
 describe('downloadBlob', () => {

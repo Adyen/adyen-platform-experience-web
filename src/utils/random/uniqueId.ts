@@ -1,6 +1,2 @@
-export const uniqueId = (() => {
-    let counter = Date.now();
-    return (prefix = 'adyen-pe') => `${prefix}-${++counter}`;
-})();
-
-export default uniqueId;
+export { default } from '../../../packages/shared/utils/src/random/uniqueId';
+export * from '../../../packages/shared/utils/src/random/uniqueId';

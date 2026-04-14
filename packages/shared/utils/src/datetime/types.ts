@@ -18,7 +18,7 @@ export type DateTimeComponents = [
     hours?: number,
     minutes?: number,
     seconds?: number,
-    milliseconds?: number
+    milliseconds?: number,
 ];
 
 export type DateValue = Date | number | string;

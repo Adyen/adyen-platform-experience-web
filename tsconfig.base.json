@@ -30,6 +30,12 @@
             "@integration-components/types/*": [
                 "packages/shared/types/src/*"
             ],
+            "@integration-components/utils": [
+                "packages/shared/utils/src/index.ts"
+            ],
+            "@integration-components/utils/*": [
+                "packages/shared/utils/src/*"
+            ],
             "@integration-components/sdk-internal": [
                 "packages/shared/lib/src/index.ts"
             ],
