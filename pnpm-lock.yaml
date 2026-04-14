@@ -8,9 +8,10 @@ overrides:
   esbuild@0.25.2: 0.27.1
   js-yaml@3.14.1: 3.14.2
   js-yaml@4.1.0: 4.1.1
-  minimatch@<9.0.7: 10.1.2
+  minimatch@<9.0.7: '>=10.2.3'
   rollup@4.53.3: 4.59.0
   serialize-javascript@6.0.2: 7.0.3
+  picomatch: '>=4.0.4'
 
 pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
 
@@ -155,17 +156,17 @@ importers:
         specifier: ^3.3.1
         version: 3.3.4(webpack@5.98.0(esbuild@0.27.1))
       stylelint:
-        specifier: ^14.1.0
-        version: 14.16.1
+        specifier: ^17.5.0
+        version: 17.5.0(typescript@5.8.3)
       stylelint-config-recommended:
-        specifier: ^6.0.0
-        version: 6.0.0(stylelint@14.16.1)
+        specifier: ^17.0.0
+        version: 17.0.0(stylelint@17.5.0(typescript@5.8.3))
       stylelint-config-sass-guidelines:
-        specifier: ^9.0.1
-        version: 9.0.1(postcss@8.5.6)(stylelint@14.16.1)
+        specifier: ^13.0.0
+        version: 13.0.0(postcss@8.5.6)(stylelint@17.5.0(typescript@5.8.3))
       stylelint-scss:
-        specifier: ^4.2.0
-        version: 4.7.0(stylelint@14.16.1)
+        specifier: ^7.0.0
+        version: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
       ts-loader:
         specifier: ^9.2.6
         version: 9.5.2(typescript@5.8.3)(webpack@5.98.0(esbuild@0.27.1))
@@ -310,6 +311,12 @@ packages:
   '@bundled-es-modules/tough-cookie@0.1.6':
     resolution: {}
 
+  '@cacheable/memory@2.0.8':
+    resolution: {}
+
+  '@cacheable/utils@2.4.0':
+    resolution: {}
+
   '@changesets/apply-release-plan@7.0.14':
     resolution: {}
 
@@ -379,6 +386,13 @@ packages:
       '@csstools/css-parser-algorithms': ^3.0.5
       '@csstools/css-tokenizer': ^3.0.4
 
+  '@csstools/css-calc@3.1.1':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      '@csstools/css-parser-algorithms': ^4.0.0
+      '@csstools/css-tokenizer': ^4.0.0
+
   '@csstools/css-color-parser@3.0.10':
     resolution: {}
     engines: {node: '>=18'}
@@ -392,15 +406,46 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^3.0.4
 
+  '@csstools/css-parser-algorithms@4.0.0':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      '@csstools/css-tokenizer': ^4.0.0
+
+  '@csstools/css-syntax-patches-for-csstree@1.1.1':
+    resolution: {}
+    peerDependencies:
+      css-tree: ^3.2.1
+    peerDependenciesMeta:
+      css-tree:
+        optional: true
+
   '@csstools/css-tokenizer@3.0.4':
     resolution: {}
     engines: {node: '>=18'}
 
-  '@csstools/selector-specificity@2.2.0':
+  '@csstools/css-tokenizer@4.0.0':
     resolution: {}
-    engines: {node: ^14 || ^16 || >=18}
+    engines: {node: '>=20.19.0'}
+
+  '@csstools/media-query-list-parser@5.0.0':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
     peerDependencies:
-      postcss-selector-parser: ^6.0.10
+      '@csstools/css-parser-algorithms': ^4.0.0
+      '@csstools/css-tokenizer': ^4.0.0
+
+  '@csstools/selector-resolve-nested@4.0.0':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      postcss-selector-parser: ^7.1.1
+
+  '@csstools/selector-specificity@6.0.0':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      postcss-selector-parser: ^7.1.1
 
   '@emnapi/core@1.8.1':
     resolution: {}
@@ -667,14 +712,6 @@ packages:
       '@types/node':
         optional: true
 
-  '@isaacs/balanced-match@4.0.1':
-    resolution: {}
-    engines: {node: 20 || >=22}
-
-  '@isaacs/brace-expansion@5.0.1':
-    resolution: {}
-    engines: {node: 20 || >=22}
-
   '@jest/expect-utils@29.7.0':
     resolution: {}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -712,6 +749,15 @@ packages:
     resolution: {}
 
   '@jridgewell/trace-mapping@0.3.31':
+    resolution: {}
+
+  '@keyv/bigmap@1.3.1':
+    resolution: {}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      keyv: ^5.6.0
+
+  '@keyv/serialize@1.1.1':
     resolution: {}
 
   '@manypkg/find-root@1.1.0':
@@ -837,79 +883,66 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -943,6 +976,10 @@ packages:
 
   '@sinclair/typebox@0.27.8':
     resolution: {}
+
+  '@sindresorhus/merge-streams@4.0.0':
+    resolution: {}
+    engines: {node: '>=18'}
 
   '@standard-schema/spec@1.0.0':
     resolution: {}
@@ -991,6 +1028,12 @@ packages:
     peerDependencies:
       preact: ^8.0.0||^10.0.0
       storybook: ^10.2.12
+
+  '@stylistic/stylelint-plugin@5.0.1':
+    resolution: {}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      stylelint: ^17.0.0
 
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0':
     resolution: {}
@@ -1123,19 +1166,10 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {}
 
-  '@types/minimist@1.2.5':
-    resolution: {}
-
   '@types/node@12.20.55':
     resolution: {}
 
   '@types/node@24.10.13':
-    resolution: {}
-
-  '@types/normalize-package-data@2.4.4':
-    resolution: {}
-
-  '@types/parse-json@4.0.2':
     resolution: {}
 
   '@types/stack-utils@2.0.3':
@@ -1279,49 +1313,41 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -1510,6 +1536,10 @@ packages:
     resolution: {}
     engines: {node: '>=12'}
 
+  ansi-regex@6.2.2:
+    resolution: {}
+    engines: {node: '>=12'}
+
   ansi-styles@4.3.0:
     resolution: {}
     engines: {node: '>=8'}
@@ -1567,10 +1597,6 @@ packages:
     resolution: {}
     engines: {node: '>= 0.4'}
 
-  arrify@1.0.1:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
-
   assertion-error@2.0.1:
     resolution: {}
     engines: {node: '>=12'}
@@ -1617,8 +1643,9 @@ packages:
     peerDependencies:
       '@babel/core': ^7.12.10
 
-  balanced-match@2.0.0:
+  balanced-match@4.0.4:
     resolution: {}
+    engines: {node: 18 || 20 || >=22}
 
   baseline-browser-mapping@2.10.0:
     resolution: {}
@@ -1634,6 +1661,10 @@ packages:
 
   boolbase@1.0.0:
     resolution: {}
+
+  brace-expansion@5.0.4:
+    resolution: {}
+    engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
     resolution: {}
@@ -1656,6 +1687,9 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
 
+  cacheable@2.3.4:
+    resolution: {}
+
   call-bind-apply-helpers@1.0.2:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -1669,14 +1703,6 @@ packages:
     engines: {node: '>= 0.4'}
 
   callsites@3.1.0:
-    resolution: {}
-    engines: {node: '>=6'}
-
-  camelcase-keys@6.2.2:
-    resolution: {}
-    engines: {node: '>=8'}
-
-  camelcase@5.3.1:
     resolution: {}
     engines: {node: '>=6'}
 
@@ -1797,11 +1823,16 @@ packages:
   core-js@3.41.0:
     resolution: {}
 
-  cosmiconfig@7.1.0:
-    resolution: {}
-    engines: {node: '>=10'}
-
   cosmiconfig@8.3.6:
+    resolution: {}
+    engines: {node: '>=14'}
+    peerDependencies:
+      typescript: '>=4.9.5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
+  cosmiconfig@9.0.1:
     resolution: {}
     engines: {node: '>=14'}
     peerDependencies:
@@ -1819,9 +1850,9 @@ packages:
     resolution: {}
     engines: {node: '>= 8'}
 
-  css-functions-list@3.2.3:
+  css-functions-list@3.3.3:
     resolution: {}
-    engines: {node: '>=12 || >=16'}
+    engines: {node: '>=12'}
 
   css-loader@6.11.0:
     resolution: {}
@@ -1837,6 +1868,10 @@ packages:
 
   css-select@5.2.2:
     resolution: {}
+
+  css-tree@3.2.1:
+    resolution: {}
+    engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0}
 
   css-what@6.2.2:
     resolution: {}
@@ -1896,14 +1931,6 @@ packages:
     peerDependenciesMeta:
       supports-color:
         optional: true
-
-  decamelize-keys@1.1.1:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
-
-  decamelize@1.2.0:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
 
   decimal.js@10.5.0:
     resolution: {}
@@ -2023,6 +2050,10 @@ packages:
   entities@4.5.0:
     resolution: {}
     engines: {node: '>=0.12'}
+
+  env-paths@2.2.1:
+    resolution: {}
+    engines: {node: '>=6'}
 
   error-ex@1.3.2:
     resolution: {}
@@ -2258,14 +2289,13 @@ packages:
     resolution: {}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: ^3 || ^4
+      picomatch: '>=4.0.4'
     peerDependenciesMeta:
       picomatch:
         optional: true
 
-  file-entry-cache@6.0.1:
+  file-entry-cache@11.1.2:
     resolution: {}
-    engines: {node: ^10.12.0 || >=12.0.0}
 
   file-entry-cache@8.0.0:
     resolution: {}
@@ -2289,15 +2319,14 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
-  flat-cache@3.2.0:
-    resolution: {}
-    engines: {node: ^10.12.0 || >=12.0.0}
-
   flat-cache@4.0.1:
     resolution: {}
     engines: {node: '>=16'}
 
-  flatted@3.3.3:
+  flat-cache@6.1.21:
+    resolution: {}
+
+  flatted@3.4.2:
     resolution: {}
 
   for-each@0.3.5:
@@ -2314,9 +2343,6 @@ packages:
   fs-extra@8.1.0:
     resolution: {}
     engines: {node: '>=6 <7 || >=8'}
-
-  fs.realpath@1.0.0:
-    resolution: {}
 
   fsevents@2.3.2:
     resolution: {}
@@ -2345,6 +2371,10 @@ packages:
   get-caller-file@2.0.5:
     resolution: {}
     engines: {node: 6.* || 8.* || >= 10.*}
+
+  get-east-asian-width@1.5.0:
+    resolution: {}
+    engines: {node: '>=18'}
 
   get-intrinsic@1.3.0:
     resolution: {}
@@ -2376,9 +2406,6 @@ packages:
   glob-to-regexp@0.4.1:
     resolution: {}
 
-  glob@7.2.3:
-    resolution: {}
-
   global-modules@2.0.0:
     resolution: {}
     engines: {node: '>=6'}
@@ -2403,6 +2430,10 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
+  globby@16.1.1:
+    resolution: {}
+    engines: {node: '>=20'}
+
   globjoin@0.1.4:
     resolution: {}
 
@@ -2417,10 +2448,6 @@ packages:
     resolution: {}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  hard-rejection@2.1.0:
-    resolution: {}
-    engines: {node: '>=6'}
-
   has-bigints@1.1.0:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -2428,6 +2455,10 @@ packages:
   has-flag@4.0.0:
     resolution: {}
     engines: {node: '>=8'}
+
+  has-flag@5.0.1:
+    resolution: {}
+    engines: {node: '>=12'}
 
   has-property-descriptors@1.0.2:
     resolution: {}
@@ -2443,6 +2474,10 @@ packages:
   has-tostringtag@1.0.2:
     resolution: {}
     engines: {node: '>= 0.4'}
+
+  hashery@1.5.0:
+    resolution: {}
+    engines: {node: '>=20'}
 
   hasown@2.0.2:
     resolution: {}
@@ -2461,12 +2496,11 @@ packages:
   hermes-parser@0.25.1:
     resolution: {}
 
-  hosted-git-info@2.8.9:
+  hookified@1.15.1:
     resolution: {}
 
-  hosted-git-info@4.1.0:
+  hookified@2.1.0:
     resolution: {}
-    engines: {node: '>=10'}
 
   html-encoding-sniffer@4.0.0:
     resolution: {}
@@ -2475,9 +2509,9 @@ packages:
   html-escaper@2.0.2:
     resolution: {}
 
-  html-tags@3.3.1:
+  html-tags@5.1.0:
     resolution: {}
-    engines: {node: '>=8'}
+    engines: {node: '>=20.10'}
 
   http-proxy-agent@7.0.2:
     resolution: {}
@@ -2522,16 +2556,15 @@ packages:
     resolution: {}
     engines: {node: '>= 4'}
 
-  immutable@4.3.7:
+  immutable@4.3.8:
     resolution: {}
 
   import-fresh@3.3.1:
     resolution: {}
     engines: {node: '>=6'}
 
-  import-lazy@4.0.0:
+  import-meta-resolve@4.2.0:
     resolution: {}
-    engines: {node: '>=8'}
 
   imurmurhash@0.1.4:
     resolution: {}
@@ -2544,12 +2577,6 @@ packages:
   index-to-position@1.2.0:
     resolution: {}
     engines: {node: '>=18'}
-
-  inflight@1.0.6:
-    resolution: {}
-
-  inherits@2.0.4:
-    resolution: {}
 
   ini@1.3.8:
     resolution: {}
@@ -2654,9 +2681,9 @@ packages:
     resolution: {}
     engines: {node: '>=0.12.0'}
 
-  is-plain-obj@1.1.0:
+  is-path-inside@4.0.0:
     resolution: {}
-    engines: {node: '>=0.10.0'}
+    engines: {node: '>=12'}
 
   is-plain-object@5.0.0:
     resolution: {}
@@ -2833,6 +2860,9 @@ packages:
   keyv@4.5.4:
     resolution: {}
 
+  keyv@5.6.0:
+    resolution: {}
+
   kind-of@6.0.3:
     resolution: {}
     engines: {node: '>=0.10.0'}
@@ -2841,7 +2871,7 @@ packages:
     resolution: {}
     engines: {node: '>= 8'}
 
-  known-css-properties@0.26.0:
+  known-css-properties@0.37.0:
     resolution: {}
 
   kolorist@1.8.0:
@@ -2927,10 +2957,6 @@ packages:
   lru-cache@5.1.1:
     resolution: {}
 
-  lru-cache@6.0.0:
-    resolution: {}
-    engines: {node: '>=10'}
-
   lz-string@1.5.0:
     resolution: {}
     hasBin: true
@@ -2945,24 +2971,19 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
-  map-obj@1.0.1:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
-
-  map-obj@4.3.0:
-    resolution: {}
-    engines: {node: '>=8'}
-
   math-intrinsics@1.1.0:
     resolution: {}
     engines: {node: '>= 0.4'}
 
-  mathml-tag-names@2.1.3:
+  mathml-tag-names@4.0.0:
     resolution: {}
 
-  meow@9.0.0:
+  mdn-data@2.27.1:
     resolution: {}
-    engines: {node: '>=10'}
+
+  meow@14.1.0:
+    resolution: {}
+    engines: {node: '>=20'}
 
   merge-stream@2.0.0:
     resolution: {}
@@ -3001,13 +3022,9 @@ packages:
     peerDependencies:
       webpack: ^5.0.0
 
-  minimatch@10.1.2:
+  minimatch@10.2.4:
     resolution: {}
-    engines: {node: 20 || >=22}
-
-  minimist-options@4.1.0:
-    resolution: {}
-    engines: {node: '>= 6'}
+    engines: {node: 18 || 20 || >=22}
 
   mri@1.2.0:
     resolution: {}
@@ -3072,13 +3089,6 @@ packages:
   node-releases@2.0.27:
     resolution: {}
 
-  normalize-package-data@2.5.0:
-    resolution: {}
-
-  normalize-package-data@3.0.3:
-    resolution: {}
-    engines: {node: '>=10'}
-
   normalize-path@3.0.0:
     resolution: {}
     engines: {node: '>=0.10.0'}
@@ -3128,9 +3138,6 @@ packages:
   object.values@1.2.1:
     resolution: {}
     engines: {node: '>= 0.4'}
-
-  once@1.3.3:
-    resolution: {}
 
   onetime@5.1.2:
     resolution: {}
@@ -3222,10 +3229,6 @@ packages:
     resolution: {}
     engines: {node: '>=8'}
 
-  path-is-absolute@1.0.1:
-    resolution: {}
-    engines: {node: '>=0.10.0'}
-
   path-key@3.1.1:
     resolution: {}
     engines: {node: '>=8'}
@@ -3254,11 +3257,7 @@ packages:
   picocolors@1.1.1:
     resolution: {}
 
-  picomatch@2.3.1:
-    resolution: {}
-    engines: {node: '>=8.6'}
-
-  picomatch@4.0.3:
+  picomatch@4.0.4:
     resolution: {}
     engines: {node: '>=12'}
 
@@ -3319,11 +3318,11 @@ packages:
   postcss-resolve-nested-selector@0.1.6:
     resolution: {}
 
-  postcss-safe-parser@6.0.0:
+  postcss-safe-parser@7.0.1:
     resolution: {}
-    engines: {node: '>=12.0'}
+    engines: {node: '>=18.0'}
     peerDependencies:
-      postcss: ^8.3.3
+      postcss: ^8.4.31
 
   postcss-scss@4.0.9:
     resolution: {}
@@ -3331,23 +3330,22 @@ packages:
     peerDependencies:
       postcss: ^8.4.29
 
-  postcss-selector-parser@6.1.2:
-    resolution: {}
-    engines: {node: '>=4'}
-
   postcss-selector-parser@7.1.0:
     resolution: {}
     engines: {node: '>=4'}
 
-  postcss-sorting@7.0.1:
+  postcss-selector-parser@7.1.1:
     resolution: {}
-    peerDependencies:
-      postcss: ^8.3.9
+    engines: {node: '>=4'}
 
   postcss-value-parser@4.2.0:
     resolution: {}
 
   postcss@8.5.6:
+    resolution: {}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.8:
     resolution: {}
     engines: {node: ^10 || ^12 || >=14}
 
@@ -3386,6 +3384,10 @@ packages:
     resolution: {}
     engines: {node: '>=6'}
 
+  qified@0.9.0:
+    resolution: {}
+    engines: {node: '>=20'}
+
   quansync@0.2.10:
     resolution: {}
 
@@ -3394,10 +3396,6 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {}
-
-  quick-lru@4.0.1:
-    resolution: {}
-    engines: {node: '>=8'}
 
   react-dom@19.2.0:
     resolution: {}
@@ -3416,14 +3414,6 @@ packages:
   react@19.2.0:
     resolution: {}
     engines: {node: '>=0.10.0'}
-
-  read-pkg-up@7.0.1:
-    resolution: {}
-    engines: {node: '>=8'}
-
-  read-pkg@5.2.0:
-    resolution: {}
-    engines: {node: '>=8'}
 
   read-yaml-file@1.1.0:
     resolution: {}
@@ -3474,11 +3464,6 @@ packages:
   resolve-pkg-maps@1.0.0:
     resolution: {}
 
-  resolve@1.22.10:
-    resolution: {}
-    engines: {node: '>= 0.4'}
-    hasBin: true
-
   resolve@1.22.11:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -3498,10 +3483,6 @@ packages:
 
   rfdc@1.4.1:
     resolution: {}
-
-  rimraf@3.0.2:
-    resolution: {}
-    hasBin: true
 
   rollup-plugin-visualizer@5.14.0:
     resolution: {}
@@ -3592,10 +3573,6 @@ packages:
     resolution: {}
     engines: {node: '>= 10.13.0'}
 
-  semver@5.7.2:
-    resolution: {}
-    hasBin: true
-
   semver@6.3.1:
     resolution: {}
     hasBin: true
@@ -3666,6 +3643,10 @@ packages:
     resolution: {}
     engines: {node: '>=8'}
 
+  slash@5.1.0:
+    resolution: {}
+    engines: {node: '>=14.16'}
+
   slice-ansi@3.0.0:
     resolution: {}
     engines: {node: '>=8'}
@@ -3700,18 +3681,6 @@ packages:
     resolution: {}
 
   spawndamnit@3.0.1:
-    resolution: {}
-
-  spdx-correct@3.2.0:
-    resolution: {}
-
-  spdx-exceptions@2.5.0:
-    resolution: {}
-
-  spdx-expression-parse@3.0.1:
-    resolution: {}
-
-  spdx-license-ids@3.0.21:
     resolution: {}
 
   sprintf-js@1.0.3:
@@ -3770,6 +3739,10 @@ packages:
     resolution: {}
     engines: {node: '>=12'}
 
+  string-width@8.2.0:
+    resolution: {}
+    engines: {node: '>=20'}
+
   string.prototype.includes@2.0.1:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -3801,6 +3774,10 @@ packages:
     resolution: {}
     engines: {node: '>=12'}
 
+  strip-ansi@7.2.0:
+    resolution: {}
+    engines: {node: '>=12'}
+
   strip-bom@3.0.0:
     resolution: {}
     engines: {node: '>=4'}
@@ -3826,31 +3803,28 @@ packages:
   style-search@0.1.0:
     resolution: {}
 
-  stylelint-config-recommended@6.0.0:
+  stylelint-config-recommended@17.0.0:
     resolution: {}
+    engines: {node: '>=18.12.0'}
     peerDependencies:
-      stylelint: ^14.0.0
+      stylelint: ^16.23.0
 
-  stylelint-config-sass-guidelines@9.0.1:
+  stylelint-config-sass-guidelines@13.0.0:
     resolution: {}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    engines: {node: '>=20.19.0'}
     peerDependencies:
-      postcss: ^8.3.3
-      stylelint: ^14.0.1
+      postcss: ^8.4.21
+      stylelint: ^17.1.0
 
-  stylelint-order@5.0.0:
+  stylelint-scss@7.0.0:
     resolution: {}
+    engines: {node: '>=20.19.0'}
     peerDependencies:
-      stylelint: ^14.0.0
+      stylelint: ^16.8.2 || ^17.0.0
 
-  stylelint-scss@4.7.0:
+  stylelint@17.5.0:
     resolution: {}
-    peerDependencies:
-      stylelint: ^14.5.1 || ^15.0.0
-
-  stylelint@14.16.1:
-    resolution: {}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    engines: {node: '>=20.19.0'}
     hasBin: true
 
   supports-color@10.2.2:
@@ -3865,9 +3839,9 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
-  supports-hyperlinks@2.3.0:
+  supports-hyperlinks@4.4.0:
     resolution: {}
-    engines: {node: '>=8'}
+    engines: {node: '>=20'}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {}
@@ -3977,10 +3951,6 @@ packages:
     resolution: {}
     hasBin: true
 
-  trim-newlines@3.0.1:
-    resolution: {}
-    engines: {node: '>=8'}
-
   ts-api-utils@2.0.1:
     resolution: {}
     engines: {node: '>=18.12'}
@@ -4011,21 +3981,9 @@ packages:
     resolution: {}
     engines: {node: '>= 0.8.0'}
 
-  type-fest@0.18.1:
-    resolution: {}
-    engines: {node: '>=10'}
-
   type-fest@0.21.3:
     resolution: {}
     engines: {node: '>=10'}
-
-  type-fest@0.6.0:
-    resolution: {}
-    engines: {node: '>=8'}
-
-  type-fest@0.8.1:
-    resolution: {}
-    engines: {node: '>=8'}
 
   type-fest@4.37.0:
     resolution: {}
@@ -4062,6 +4020,10 @@ packages:
 
   undici-types@7.16.0:
     resolution: {}
+
+  unicorn-magic@0.4.0:
+    resolution: {}
+    engines: {node: '>=20'}
 
   universalify@0.1.2:
     resolution: {}
@@ -4102,12 +4064,6 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   util-deprecate@1.0.2:
-    resolution: {}
-
-  v8-compile-cache@2.3.0:
-    resolution: {}
-
-  validate-npm-package-license@3.0.4:
     resolution: {}
 
   vite-plugin-svgr@4.5.0:
@@ -4283,12 +4239,9 @@ packages:
     resolution: {}
     engines: {node: '>=10'}
 
-  wrappy@1.0.2:
+  write-file-atomic@7.0.1:
     resolution: {}
-
-  write-file-atomic@4.0.2:
-    resolution: {}
-    engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
+    engines: {node: ^20.17.0 || >=22.9.0}
 
   ws@8.18.1:
     resolution: {}
@@ -4320,24 +4273,13 @@ packages:
   yallist@3.1.1:
     resolution: {}
 
-  yallist@4.0.0:
-    resolution: {}
-
   yaml-ast-parser@0.0.43:
     resolution: {}
-
-  yaml@1.10.2:
-    resolution: {}
-    engines: {node: '>= 6'}
 
   yaml@2.7.0:
     resolution: {}
     engines: {node: '>= 14'}
     hasBin: true
-
-  yargs-parser@20.2.9:
-    resolution: {}
-    engines: {node: '>=10'}
 
   yargs-parser@21.1.1:
     resolution: {}
@@ -4535,6 +4477,18 @@ snapshots:
       '@types/tough-cookie': 4.0.5
       tough-cookie: 4.1.4
 
+  '@cacheable/memory@2.0.8':
+    dependencies:
+      '@cacheable/utils': 2.4.0
+      '@keyv/bigmap': 1.3.1(keyv@5.6.0)
+      hookified: 1.15.1
+      keyv: 5.6.0
+
+  '@cacheable/utils@2.4.0':
+    dependencies:
+      hashery: 1.5.0
+      keyv: 5.6.0
+
   '@changesets/apply-release-plan@7.0.14':
     dependencies:
       '@changesets/config': 3.1.2
@@ -4693,6 +4647,11 @@ snapshots:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
       '@csstools/css-tokenizer': 3.0.4
 
+  '@csstools/css-calc@3.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
+    dependencies:
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer': 4.0.0
+
   '@csstools/css-color-parser@3.0.10(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)':
     dependencies:
       '@csstools/color-helpers': 5.0.2
@@ -4704,11 +4663,30 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 3.0.4
 
+  '@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0)':
+    dependencies:
+      '@csstools/css-tokenizer': 4.0.0
+
+  '@csstools/css-syntax-patches-for-csstree@1.1.1(css-tree@3.2.1)':
+    optionalDependencies:
+      css-tree: 3.2.1
+
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@csstools/selector-specificity@2.2.0(postcss-selector-parser@6.1.2)':
+  '@csstools/css-tokenizer@4.0.0': {}
+
+  '@csstools/media-query-list-parser@5.0.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)':
     dependencies:
-      postcss-selector-parser: 6.1.2
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer': 4.0.0
+
+  '@csstools/selector-resolve-nested@4.0.0(postcss-selector-parser@7.1.1)':
+    dependencies:
+      postcss-selector-parser: 7.1.1
+
+  '@csstools/selector-specificity@6.0.0(postcss-selector-parser@7.1.1)':
+    dependencies:
+      postcss-selector-parser: 7.1.1
 
   '@emnapi/core@1.8.1':
     dependencies:
@@ -4820,7 +4798,7 @@ snapshots:
     dependencies:
       '@eslint/object-schema': 2.1.7
       debug: 4.4.3(supports-color@10.2.2)
-      minimatch: 10.1.2
+      minimatch: 10.2.4
     transitivePeerDependencies:
       - supports-color
 
@@ -4841,7 +4819,7 @@ snapshots:
       ignore: 5.3.2
       import-fresh: 3.3.1
       js-yaml: 4.1.1
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
@@ -4899,12 +4877,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@isaacs/balanced-match@4.0.1': {}
-
-  '@isaacs/brace-expansion@5.0.1':
-    dependencies:
-      '@isaacs/balanced-match': 4.0.1
-
   '@jest/expect-utils@29.7.0':
     dependencies:
       jest-get-type: 29.6.3
@@ -4953,6 +4925,14 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@keyv/bigmap@1.3.1(keyv@5.6.0)':
+    dependencies:
+      hashery: 1.5.0
+      hookified: 1.15.1
+      keyv: 5.6.0
+
+  '@keyv/serialize@1.1.1': {}
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -5066,7 +5046,7 @@ snapshots:
       https-proxy-agent: 7.0.6(supports-color@10.2.2)
       js-levenshtein: 1.1.6
       js-yaml: 4.1.1
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       pluralize: 8.0.0
       yaml-ast-parser: 0.0.43
     transitivePeerDependencies:
@@ -5075,13 +5055,13 @@ snapshots:
   '@rollup/pluginutils@4.2.1':
     dependencies:
       estree-walker: 2.0.2
-      picomatch: 2.3.1
+      picomatch: 4.0.4
 
   '@rollup/pluginutils@5.3.0(rollup@4.59.0)':
     dependencies:
       '@types/estree': 1.0.8
       estree-walker: 2.0.2
-      picomatch: 4.0.3
+      picomatch: 4.0.4
     optionalDependencies:
       rollup: 4.59.0
 
@@ -5162,6 +5142,8 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
+  '@sindresorhus/merge-streams@4.0.0': {}
+
   '@standard-schema/spec@1.0.0': {}
 
   '@storybook/builder-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
@@ -5210,6 +5192,17 @@ snapshots:
       preact: 10.28.2
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ts-dedent: 2.2.0
+
+  '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
+    dependencies:
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-tokenizer': 4.0.0
+      '@csstools/media-query-list-parser': 5.0.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      postcss: 8.5.8
+      postcss-selector-parser: 7.1.1
+      postcss-value-parser: 4.2.0
+      style-search: 0.1.0
+      stylelint: 17.5.0(typescript@5.8.3)
 
   '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@7.26.10)':
     dependencies:
@@ -5367,17 +5360,11 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/minimist@1.2.5': {}
-
   '@types/node@12.20.55': {}
 
   '@types/node@24.10.13':
     dependencies:
       undici-types: 7.16.0
-
-  '@types/normalize-package-data@2.4.4': {}
-
-  '@types/parse-json@4.0.2': {}
 
   '@types/stack-utils@2.0.3': {}
 
@@ -5469,7 +5456,7 @@ snapshots:
       debug: 4.4.3(supports-color@10.2.2)
       fast-glob: 3.3.3
       is-glob: 4.0.3
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       semver: 7.7.3
       ts-api-utils: 2.0.1(typescript@5.8.3)
       typescript: 5.8.3
@@ -5483,7 +5470,7 @@ snapshots:
       '@typescript-eslint/types': 8.51.0
       '@typescript-eslint/visitor-keys': 8.51.0
       debug: 4.4.3(supports-color@10.2.2)
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       semver: 7.7.3
       tinyglobby: 0.2.15
       ts-api-utils: 2.3.0(typescript@5.8.3)
@@ -5809,6 +5796,8 @@ snapshots:
 
   ansi-regex@6.1.0: {}
 
+  ansi-regex@6.2.2: {}
+
   ansi-styles@4.3.0:
     dependencies:
       color-convert: 2.0.1
@@ -5886,8 +5875,6 @@ snapshots:
       get-intrinsic: 1.3.0
       is-array-buffer: 3.0.5
 
-  arrify@1.0.1: {}
-
   assertion-error@2.0.1: {}
 
   ast-types-flow@0.0.8: {}
@@ -5928,7 +5915,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
 
-  balanced-match@2.0.0: {}
+  balanced-match@4.0.4: {}
 
   baseline-browser-mapping@2.10.0: {}
 
@@ -5939,6 +5926,10 @@ snapshots:
   big.js@5.2.2: {}
 
   boolbase@1.0.0: {}
+
+  brace-expansion@5.0.4:
+    dependencies:
+      balanced-match: 4.0.4
 
   braces@3.0.3:
     dependencies:
@@ -5965,6 +5956,14 @@ snapshots:
     dependencies:
       run-applescript: 7.1.0
 
+  cacheable@2.3.4:
+    dependencies:
+      '@cacheable/memory': 2.0.8
+      '@cacheable/utils': 2.4.0
+      hookified: 1.15.1
+      keyv: 5.6.0
+      qified: 0.9.0
+
   call-bind-apply-helpers@1.0.2:
     dependencies:
       es-errors: 1.3.0
@@ -5983,14 +5982,6 @@ snapshots:
       get-intrinsic: 1.3.0
 
   callsites@3.1.0: {}
-
-  camelcase-keys@6.2.2:
-    dependencies:
-      camelcase: 5.3.1
-      map-obj: 4.3.0
-      quick-lru: 4.0.1
-
-  camelcase@5.3.1: {}
 
   camelcase@6.3.0: {}
 
@@ -6094,20 +6085,21 @@ snapshots:
 
   core-js@3.41.0: {}
 
-  cosmiconfig@7.1.0:
-    dependencies:
-      '@types/parse-json': 4.0.2
-      import-fresh: 3.3.1
-      parse-json: 5.2.0
-      path-type: 4.0.0
-      yaml: 1.10.2
-
   cosmiconfig@8.3.6(typescript@5.8.3):
     dependencies:
       import-fresh: 3.3.1
       js-yaml: 4.1.1
       parse-json: 5.2.0
       path-type: 4.0.0
+    optionalDependencies:
+      typescript: 5.8.3
+
+  cosmiconfig@9.0.1(typescript@5.8.3):
+    dependencies:
+      env-paths: 2.2.1
+      import-fresh: 3.3.1
+      js-yaml: 4.1.1
+      parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.8.3
 
@@ -6121,7 +6113,7 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  css-functions-list@3.2.3: {}
+  css-functions-list@3.3.3: {}
 
   css-loader@6.11.0(webpack@5.98.0(esbuild@0.27.1)):
     dependencies:
@@ -6143,6 +6135,11 @@ snapshots:
       domhandler: 5.0.3
       domutils: 3.2.2
       nth-check: 2.1.1
+
+  css-tree@3.2.1:
+    dependencies:
+      mdn-data: 2.27.1
+      source-map-js: 1.2.1
 
   css-what@6.2.2: {}
 
@@ -6196,13 +6193,6 @@ snapshots:
       ms: 2.1.3
     optionalDependencies:
       supports-color: 10.2.2
-
-  decamelize-keys@1.1.1:
-    dependencies:
-      decamelize: 1.2.0
-      map-obj: 1.0.1
-
-  decamelize@1.2.0: {}
 
   decimal.js@10.5.0: {}
 
@@ -6329,6 +6319,8 @@ snapshots:
       strip-ansi: 6.0.1
 
   entities@4.5.0: {}
+
+  env-paths@2.2.1: {}
 
   error-ex@1.3.2:
     dependencies:
@@ -6520,7 +6512,7 @@ snapshots:
       eslint: 9.39.2
       eslint-import-context: 0.1.9(unrs-resolver@1.11.1)
       is-glob: 4.0.3
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       semver: 7.7.3
       stable-hash-x: 0.2.0
       unrs-resolver: 1.11.1
@@ -6544,7 +6536,7 @@ snapshots:
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
       language-tags: 1.0.9
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       object.fromentries: 2.0.8
       safe-regex-test: 1.1.0
       string.prototype.includes: 2.0.1
@@ -6572,7 +6564,7 @@ snapshots:
       estraverse: 5.3.0
       hasown: 2.0.2
       jsx-ast-utils: 3.3.5
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       object.entries: 1.1.8
       object.fromentries: 2.0.8
       object.values: 1.2.1
@@ -6640,7 +6632,7 @@ snapshots:
       is-glob: 4.0.3
       json-stable-stringify-without-jsonify: 1.0.1
       lodash.merge: 4.6.2
-      minimatch: 10.1.2
+      minimatch: 10.2.4
       natural-compare: 1.4.0
       optionator: 0.9.4
     transitivePeerDependencies:
@@ -6724,13 +6716,13 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.3):
+  fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
-  file-entry-cache@6.0.1:
+  file-entry-cache@11.1.2:
     dependencies:
-      flat-cache: 3.2.0
+      flat-cache: 6.1.21
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -6756,18 +6748,18 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  flat-cache@3.2.0:
-    dependencies:
-      flatted: 3.3.3
-      keyv: 4.5.4
-      rimraf: 3.0.2
-
   flat-cache@4.0.1:
     dependencies:
-      flatted: 3.3.3
+      flatted: 3.4.2
       keyv: 4.5.4
 
-  flatted@3.3.3: {}
+  flat-cache@6.1.21:
+    dependencies:
+      cacheable: 2.3.4
+      flatted: 3.4.2
+      hookified: 1.15.1
+
+  flatted@3.4.2: {}
 
   for-each@0.3.5:
     dependencies:
@@ -6786,8 +6778,6 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 4.0.0
       universalify: 0.1.2
-
-  fs.realpath@1.0.0: {}
 
   fsevents@2.3.2:
     optional: true
@@ -6811,6 +6801,8 @@ snapshots:
   gensync@1.0.0-beta.2: {}
 
   get-caller-file@2.0.5: {}
+
+  get-east-asian-width@1.5.0: {}
 
   get-intrinsic@1.3.0:
     dependencies:
@@ -6852,15 +6844,6 @@ snapshots:
 
   glob-to-regexp@0.4.1: {}
 
-  glob@7.2.3:
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 10.1.2
-      once: 1.3.3
-      path-is-absolute: 1.0.1
-
   global-modules@2.0.0:
     dependencies:
       global-prefix: 3.0.0
@@ -6889,6 +6872,15 @@ snapshots:
       merge2: 1.4.1
       slash: 3.0.0
 
+  globby@16.1.1:
+    dependencies:
+      '@sindresorhus/merge-streams': 4.0.0
+      fast-glob: 3.3.3
+      ignore: 7.0.5
+      is-path-inside: 4.0.0
+      slash: 5.1.0
+      unicorn-magic: 0.4.0
+
   globjoin@0.1.4: {}
 
   gopd@1.2.0: {}
@@ -6897,11 +6889,11 @@ snapshots:
 
   graphql@16.10.0: {}
 
-  hard-rejection@2.1.0: {}
-
   has-bigints@1.1.0: {}
 
   has-flag@4.0.0: {}
+
+  has-flag@5.0.1: {}
 
   has-property-descriptors@1.0.2:
     dependencies:
@@ -6917,6 +6909,10 @@ snapshots:
     dependencies:
       has-symbols: 1.1.0
 
+  hashery@1.5.0:
+    dependencies:
+      hookified: 1.15.1
+
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
@@ -6931,11 +6927,9 @@ snapshots:
     dependencies:
       hermes-estree: 0.25.1
 
-  hosted-git-info@2.8.9: {}
+  hookified@1.15.1: {}
 
-  hosted-git-info@4.1.0:
-    dependencies:
-      lru-cache: 6.0.0
+  hookified@2.1.0: {}
 
   html-encoding-sniffer@4.0.0:
     dependencies:
@@ -6943,7 +6937,7 @@ snapshots:
 
   html-escaper@2.0.2: {}
 
-  html-tags@3.3.1: {}
+  html-tags@5.1.0: {}
 
   http-proxy-agent@7.0.2:
     dependencies:
@@ -6981,27 +6975,20 @@ snapshots:
 
   ignore@7.0.5: {}
 
-  immutable@4.3.7: {}
+  immutable@4.3.8: {}
 
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
       resolve-from: 4.0.0
 
-  import-lazy@4.0.0: {}
+  import-meta-resolve@4.2.0: {}
 
   imurmurhash@0.1.4: {}
 
   indent-string@4.0.0: {}
 
   index-to-position@1.2.0: {}
-
-  inflight@1.0.6:
-    dependencies:
-      once: 1.3.3
-      wrappy: 1.0.2
-
-  inherits@2.0.4: {}
 
   ini@1.3.8: {}
 
@@ -7102,7 +7089,7 @@ snapshots:
 
   is-number@7.0.0: {}
 
-  is-plain-obj@1.1.0: {}
+  is-path-inside@4.0.0: {}
 
   is-plain-object@5.0.0: {}
 
@@ -7232,7 +7219,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
-      picomatch: 2.3.1
+      picomatch: 4.0.4
 
   jest-worker@27.5.1:
     dependencies:
@@ -7311,11 +7298,15 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
+  keyv@5.6.0:
+    dependencies:
+      '@keyv/serialize': 1.1.1
+
   kind-of@6.0.3: {}
 
   klona@2.0.6: {}
 
-  known-css-properties@0.26.0: {}
+  known-css-properties@0.37.0: {}
 
   kolorist@1.8.0: {}
 
@@ -7413,10 +7404,6 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lru-cache@6.0.0:
-    dependencies:
-      yallist: 4.0.0
-
   lz-string@1.5.0: {}
 
   magic-string@0.30.21:
@@ -7433,28 +7420,13 @@ snapshots:
     dependencies:
       semver: 7.7.3
 
-  map-obj@1.0.1: {}
-
-  map-obj@4.3.0: {}
-
   math-intrinsics@1.1.0: {}
 
-  mathml-tag-names@2.1.3: {}
+  mathml-tag-names@4.0.0: {}
 
-  meow@9.0.0:
-    dependencies:
-      '@types/minimist': 1.2.5
-      camelcase-keys: 6.2.2
-      decamelize: 1.2.0
-      decamelize-keys: 1.1.1
-      hard-rejection: 2.1.0
-      minimist-options: 4.1.0
-      normalize-package-data: 3.0.3
-      read-pkg-up: 7.0.1
-      redent: 3.0.0
-      trim-newlines: 3.0.1
-      type-fest: 0.18.1
-      yargs-parser: 20.2.9
+  mdn-data@2.27.1: {}
+
+  meow@14.1.0: {}
 
   merge-stream@2.0.0: {}
 
@@ -7463,7 +7435,7 @@ snapshots:
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
-      picomatch: 2.3.1
+      picomatch: 4.0.4
 
   mime-db@1.52.0: {}
 
@@ -7483,15 +7455,9 @@ snapshots:
       tapable: 2.2.1
       webpack: 5.98.0(esbuild@0.27.1)
 
-  minimatch@10.1.2:
+  minimatch@10.2.4:
     dependencies:
-      '@isaacs/brace-expansion': 5.0.1
-
-  minimist-options@4.1.0:
-    dependencies:
-      arrify: 1.0.1
-      is-plain-obj: 1.1.0
-      kind-of: 6.0.3
+      brace-expansion: 5.0.4
 
   mri@1.2.0: {}
 
@@ -7555,20 +7521,6 @@ snapshots:
 
   node-releases@2.0.27: {}
 
-  normalize-package-data@2.5.0:
-    dependencies:
-      hosted-git-info: 2.8.9
-      resolve: 1.22.10
-      semver: 5.7.2
-      validate-npm-package-license: 3.0.4
-
-  normalize-package-data@3.0.3:
-    dependencies:
-      hosted-git-info: 4.1.0
-      is-core-module: 2.16.1
-      semver: 7.7.3
-      validate-npm-package-license: 3.0.4
-
   normalize-path@3.0.0: {}
 
   normalize-range@0.1.2: {}
@@ -7622,10 +7574,6 @@ snapshots:
       call-bound: 1.0.4
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
-
-  once@1.3.3:
-    dependencies:
-      wrappy: 1.0.2
 
   onetime@5.1.2:
     dependencies:
@@ -7732,8 +7680,6 @@ snapshots:
 
   path-exists@4.0.0: {}
 
-  path-is-absolute@1.0.1: {}
-
   path-key@3.1.1: {}
 
   path-key@4.0.0: {}
@@ -7750,9 +7696,7 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@2.3.1: {}
-
-  picomatch@4.0.3: {}
+  picomatch@4.0.4: {}
 
   pidtree@0.6.0: {}
 
@@ -7795,31 +7739,33 @@ snapshots:
 
   postcss-resolve-nested-selector@0.1.6: {}
 
-  postcss-safe-parser@6.0.0(postcss@8.5.6):
+  postcss-safe-parser@7.0.1(postcss@8.5.8):
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.8
 
   postcss-scss@4.0.9(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
-
-  postcss-selector-parser@6.1.2:
-    dependencies:
-      cssesc: 3.0.0
-      util-deprecate: 1.0.2
 
   postcss-selector-parser@7.1.0:
     dependencies:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-sorting@7.0.1(postcss@8.5.6):
+  postcss-selector-parser@7.1.1:
     dependencies:
-      postcss: 8.5.6
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
 
   postcss-value-parser@4.2.0: {}
 
   postcss@8.5.6:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.8:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -7857,13 +7803,15 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  qified@0.9.0:
+    dependencies:
+      hookified: 2.1.0
+
   quansync@0.2.10: {}
 
   querystringify@2.2.0: {}
 
   queue-microtask@1.2.3: {}
-
-  quick-lru@4.0.1: {}
 
   react-dom@19.2.0(react@19.2.0):
     dependencies:
@@ -7877,19 +7825,6 @@ snapshots:
   react-is@18.3.1: {}
 
   react@19.2.0: {}
-
-  read-pkg-up@7.0.1:
-    dependencies:
-      find-up: 4.1.0
-      read-pkg: 5.2.0
-      type-fest: 0.8.1
-
-  read-pkg@5.2.0:
-    dependencies:
-      '@types/normalize-package-data': 2.4.4
-      normalize-package-data: 2.5.0
-      parse-json: 5.2.0
-      type-fest: 0.6.0
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -7947,12 +7882,6 @@ snapshots:
 
   resolve-pkg-maps@1.0.0: {}
 
-  resolve@1.22.10:
-    dependencies:
-      is-core-module: 2.16.1
-      path-parse: 1.0.7
-      supports-preserve-symlinks-flag: 1.0.0
-
   resolve@1.22.11:
     dependencies:
       is-core-module: 2.16.1
@@ -7975,14 +7904,10 @@ snapshots:
 
   rfdc@1.4.1: {}
 
-  rimraf@3.0.2:
-    dependencies:
-      glob: 7.2.3
-
   rollup-plugin-visualizer@5.14.0(rollup@4.59.0):
     dependencies:
       open: 8.4.2
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       source-map: 0.7.4
       yargs: 17.7.2
     optionalDependencies:
@@ -8063,7 +7988,7 @@ snapshots:
   sass@1.79.3:
     dependencies:
       chokidar: 4.0.3
-      immutable: 4.3.7
+      immutable: 4.3.8
       source-map-js: 1.2.1
 
   saxes@6.0.0:
@@ -8091,8 +8016,6 @@ snapshots:
       ajv: 8.18.0
       ajv-formats: 2.1.1(ajv@8.18.0)
       ajv-keywords: 5.1.0(ajv@8.18.0)
-
-  semver@5.7.2: {}
 
   semver@6.3.1: {}
 
@@ -8170,6 +8093,8 @@ snapshots:
 
   slash@3.0.0: {}
 
+  slash@5.1.0: {}
+
   slice-ansi@3.0.0:
     dependencies:
       ansi-styles: 4.3.0
@@ -8209,20 +8134,6 @@ snapshots:
     dependencies:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
-
-  spdx-correct@3.2.0:
-    dependencies:
-      spdx-expression-parse: 3.0.1
-      spdx-license-ids: 3.0.21
-
-  spdx-exceptions@2.5.0: {}
-
-  spdx-expression-parse@3.0.1:
-    dependencies:
-      spdx-exceptions: 2.5.0
-      spdx-license-ids: 3.0.21
-
-  spdx-license-ids@3.0.21: {}
 
   sprintf-js@1.0.3: {}
 
@@ -8285,6 +8196,11 @@ snapshots:
       emoji-regex: 9.2.2
       strip-ansi: 7.1.0
 
+  string-width@8.2.0:
+    dependencies:
+      get-east-asian-width: 1.5.0
+      strip-ansi: 7.2.0
+
   string.prototype.includes@2.0.1:
     dependencies:
       call-bind: 1.0.8
@@ -8343,6 +8259,10 @@ snapshots:
     dependencies:
       ansi-regex: 6.1.0
 
+  strip-ansi@7.2.0:
+    dependencies:
+      ansi-regex: 6.2.2
+
   strip-bom@3.0.0: {}
 
   strip-final-newline@3.0.0: {}
@@ -8359,74 +8279,72 @@ snapshots:
 
   style-search@0.1.0: {}
 
-  stylelint-config-recommended@6.0.0(stylelint@14.16.1):
+  stylelint-config-recommended@17.0.0(stylelint@17.5.0(typescript@5.8.3)):
     dependencies:
-      stylelint: 14.16.1
+      stylelint: 17.5.0(typescript@5.8.3)
 
-  stylelint-config-sass-guidelines@9.0.1(postcss@8.5.6)(stylelint@14.16.1):
+  stylelint-config-sass-guidelines@13.0.0(postcss@8.5.6)(stylelint@17.5.0(typescript@5.8.3)):
     dependencies:
+      '@stylistic/stylelint-plugin': 5.0.1(stylelint@17.5.0(typescript@5.8.3))
       postcss: 8.5.6
       postcss-scss: 4.0.9(postcss@8.5.6)
-      stylelint: 14.16.1
-      stylelint-order: 5.0.0(stylelint@14.16.1)
-      stylelint-scss: 4.7.0(stylelint@14.16.1)
+      stylelint: 17.5.0(typescript@5.8.3)
+      stylelint-scss: 7.0.0(stylelint@17.5.0(typescript@5.8.3))
 
-  stylelint-order@5.0.0(stylelint@14.16.1):
+  stylelint-scss@7.0.0(stylelint@17.5.0(typescript@5.8.3)):
     dependencies:
-      postcss: 8.5.6
-      postcss-sorting: 7.0.1(postcss@8.5.6)
-      stylelint: 14.16.1
-
-  stylelint-scss@4.7.0(stylelint@14.16.1):
-    dependencies:
+      css-tree: 3.2.1
+      is-plain-object: 5.0.0
+      known-css-properties: 0.37.0
+      mdn-data: 2.27.1
       postcss-media-query-parser: 0.2.3
       postcss-resolve-nested-selector: 0.1.6
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
-      stylelint: 14.16.1
+      stylelint: 17.5.0(typescript@5.8.3)
 
-  stylelint@14.16.1:
+  stylelint@17.5.0(typescript@5.8.3):
     dependencies:
-      '@csstools/selector-specificity': 2.2.0(postcss-selector-parser@6.1.2)
-      balanced-match: 2.0.0
+      '@csstools/css-calc': 3.1.1(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
+      '@csstools/css-syntax-patches-for-csstree': 1.1.1(css-tree@3.2.1)
+      '@csstools/css-tokenizer': 4.0.0
+      '@csstools/media-query-list-parser': 5.0.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
+      '@csstools/selector-resolve-nested': 4.0.0(postcss-selector-parser@7.1.1)
+      '@csstools/selector-specificity': 6.0.0(postcss-selector-parser@7.1.1)
       colord: 2.9.3
-      cosmiconfig: 7.1.0
-      css-functions-list: 3.2.3
+      cosmiconfig: 9.0.1(typescript@5.8.3)
+      css-functions-list: 3.3.3
+      css-tree: 3.2.1
       debug: 4.4.3(supports-color@10.2.2)
       fast-glob: 3.3.3
       fastest-levenshtein: 1.0.16
-      file-entry-cache: 6.0.1
+      file-entry-cache: 11.1.2
       global-modules: 2.0.0
-      globby: 11.1.0
+      globby: 16.1.1
       globjoin: 0.1.4
-      html-tags: 3.3.1
-      ignore: 5.3.2
-      import-lazy: 4.0.0
+      html-tags: 5.1.0
+      ignore: 7.0.5
+      import-meta-resolve: 4.2.0
       imurmurhash: 0.1.4
       is-plain-object: 5.0.0
-      known-css-properties: 0.26.0
-      mathml-tag-names: 2.1.3
-      meow: 9.0.0
+      mathml-tag-names: 4.0.0
+      meow: 14.1.0
       micromatch: 4.0.8
       normalize-path: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.5.6
-      postcss-media-query-parser: 0.2.3
-      postcss-resolve-nested-selector: 0.1.6
-      postcss-safe-parser: 6.0.0(postcss@8.5.6)
-      postcss-selector-parser: 6.1.2
+      postcss: 8.5.8
+      postcss-safe-parser: 7.0.1(postcss@8.5.8)
+      postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
-      resolve-from: 5.0.0
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      style-search: 0.1.0
-      supports-hyperlinks: 2.3.0
+      string-width: 8.2.0
+      supports-hyperlinks: 4.4.0
       svg-tags: 1.0.0
       table: 6.9.0
-      v8-compile-cache: 2.3.0
-      write-file-atomic: 4.0.2
+      write-file-atomic: 7.0.1
     transitivePeerDependencies:
       - supports-color
+      - typescript
 
   supports-color@10.2.2: {}
 
@@ -8438,10 +8356,10 @@ snapshots:
     dependencies:
       has-flag: 4.0.0
 
-  supports-hyperlinks@2.3.0:
+  supports-hyperlinks@4.4.0:
     dependencies:
-      has-flag: 4.0.0
-      supports-color: 7.2.0
+      has-flag: 5.0.1
+      supports-color: 10.2.2
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
@@ -8453,7 +8371,7 @@ snapshots:
 
   table@6.9.0:
     dependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
       lodash.truncate: 4.4.2
       slice-ansi: 4.0.0
       string-width: 4.2.3
@@ -8493,8 +8411,8 @@ snapshots:
 
   tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
 
   tinyrainbow@2.0.0: {}
 
@@ -8531,8 +8449,6 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
-  trim-newlines@3.0.1: {}
-
   ts-api-utils@2.0.1(typescript@5.8.3):
     dependencies:
       typescript: 5.8.3
@@ -8559,13 +8475,7 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@0.18.1: {}
-
   type-fest@0.21.3: {}
-
-  type-fest@0.6.0: {}
-
-  type-fest@0.8.1: {}
 
   type-fest@4.37.0: {}
 
@@ -8615,6 +8525,8 @@ snapshots:
 
   undici-types@7.16.0: {}
 
+  unicorn-magic@0.4.0: {}
+
   universalify@0.1.2: {}
 
   universalify@0.2.0: {}
@@ -8623,7 +8535,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       acorn: 8.16.0
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       webpack-virtual-modules: 0.6.2
 
   unrs-resolver@1.11.1:
@@ -8677,13 +8589,6 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  v8-compile-cache@2.3.0: {}
-
-  validate-npm-package-license@3.0.4:
-    dependencies:
-      spdx-correct: 3.2.0
-      spdx-expression-parse: 3.0.1
-
   vite-plugin-svgr@4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(yaml@2.7.0)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
@@ -8708,8 +8613,8 @@ snapshots:
   vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(yaml@2.7.0):
     dependencies:
       esbuild: 0.27.1
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
       postcss: 8.5.6
       rollup: 4.59.0
       tinyglobby: 0.2.15
@@ -8734,7 +8639,7 @@ snapshots:
       expect-type: 1.2.2
       magic-string: 0.30.21
       pathe: 2.0.3
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       std-env: 3.10.0
       tinybench: 2.9.0
       tinyexec: 0.3.2
@@ -8890,12 +8795,9 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  wrappy@1.0.2: {}
-
-  write-file-atomic@4.0.2:
+  write-file-atomic@7.0.1:
     dependencies:
-      imurmurhash: 0.1.4
-      signal-exit: 3.0.7
+      signal-exit: 4.1.0
 
   ws@8.18.1: {}
 
@@ -8911,15 +8813,9 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yallist@4.0.0: {}
-
   yaml-ast-parser@0.0.43: {}
 
-  yaml@1.10.2: {}
-
   yaml@2.7.0: {}
-
-  yargs-parser@20.2.9: {}
 
   yargs-parser@21.1.1: {}
 
