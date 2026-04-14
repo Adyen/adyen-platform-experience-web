@@ -7,6 +7,6 @@
         "./publish": "./publish/src/index.ts"
     },
     "dependencies": {
-        "@integration-components/sdk": "workspace:*"
+        "@integration-components/sdk-internal": "workspace:*"
     }
 }

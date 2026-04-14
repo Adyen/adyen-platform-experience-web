@@ -1,3 +1,1 @@
-import { components } from '../resources/SetupResource';
-
-export type ILegalEntity = components['schemas']['LegalEntitySetupResponseDTO'];
+export * from '../../../../packages/shared/types/src/api/models/setup';

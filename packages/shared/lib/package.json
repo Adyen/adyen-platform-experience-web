@@ -1,5 +1,5 @@
 {
-    "name": "@integration-components/sdk",
+    "name": "@integration-components/sdk-internal",
     "version": "0.0.1",
     "private": true,
     "type": "module",

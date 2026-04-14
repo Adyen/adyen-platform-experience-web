@@ -3,7 +3,7 @@
     "include": [],
     "files": ["../../src/index.ts", "../../src/declarations/scss.d.ts", "../../src/declarations/vite-env.d.ts", "../../src/declarations/svgr.d.ts"],
     "compilerOptions": {
-        "rootDir": "../../src",
+        "rootDir": "../..",
         "outDir": "../../dist/types",
         "noEmit": false,
         "emitDeclarationOnly": true

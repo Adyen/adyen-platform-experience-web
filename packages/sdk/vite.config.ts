@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
 import { getBuildEnvDefines } from '../../config/build-env-defines';
+import rootPkgJson from '../../package.json';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
@@ -15,7 +16,7 @@ const translationsDir = resolve(srcDir, 'translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
-const externalDependencies = ['classnames', 'core-js'];
+const externalDependencies = Object.keys(rootPkgJson.dependencies);
 
 const shouldExcludeAsset = (id: string) => {
     if (externalDependencies.includes(id)) {
@@ -35,6 +36,11 @@ const shouldExcludeAsset = (id: string) => {
 
 export default defineConfig(({ mode }) => ({
     root: projectRoot,
+    resolve: {
+        alias: {
+            '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
+        },
+    },
     build: {
         minify: true,
         lib: {

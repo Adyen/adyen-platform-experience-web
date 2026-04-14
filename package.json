@@ -29,25 +29,25 @@
     "**/*.css"
   ],
   "main": "./dist/cjs/index.js",
-  "module": "./dist/es/index.js",
-  "types": "./dist/types/index.d.ts",
+  "module": "./dist/es/packages/sdk/src/index.js",
+  "types": "./dist/types/src/index.d.ts",
   "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/types/src/index.d.ts",
       "require": {
-        "types": "./dist/types/index.d.ts",
+        "types": "./dist/types/src/index.d.ts",
         "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/types/index.d.ts",
-        "default": "./dist/es/index.js"
+        "types": "./dist/types/src/index.d.ts",
+        "default": "./dist/es/packages/sdk/src/index.js"
       }
     },
     "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
-    "build": "nx run @integration-components/publish:build",
+    "build": "nx run @integration-components/sdk:build",
     "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",

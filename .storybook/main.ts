@@ -28,7 +28,7 @@ const config: StorybookConfig = {
         return mergeConfig(config, {
             resolve: {
                 alias: {
-                    '@integration-components/sdk': resolve(rootDir, 'packages/shared/lib/src'),
+                    '@integration-components/sdk-internal': resolve(rootDir, 'packages/shared/lib/src'),
                     '@integration-components/reports': resolve(rootDir, 'packages/domains/reports'),
                 },
             },
