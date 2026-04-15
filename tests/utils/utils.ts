@@ -128,7 +128,7 @@ export const sleep = async (ms: number = 100) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export const getComponentRoot = (page: Page) => page.locator('.adyen-pe-component');
+export const getComponentRoot = (page: Page) => page.getByTestId('component-root');
 
 export const clickOutsideDialog = async (dialog: Locator) => {
     await expect(dialog).toBeVisible();

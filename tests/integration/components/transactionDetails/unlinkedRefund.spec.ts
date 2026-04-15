@@ -9,7 +9,7 @@ test.describe('Unlinked refund', () => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedAnalyticsEventProperties]]);
 
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Refund' })).toBeVisible();
+        await expect(page.getByText('Refund', { exact: true })).toBeVisible();
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Go to payment', exact: true })).toBeHidden();

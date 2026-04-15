@@ -166,9 +166,7 @@ test.describe('legalEntity from the US', () => {
         await expect(page.getByText('505 Brannan Street, San Francisco, CA 94107.')).toBeVisible();
 
         // Assert the paragraph is present
-        const legalParagraph = page.locator('p', {
-            hasText: 'If your application for business credit is denied',
-        });
+        const legalParagraph = page.getByText('If your application for business credit is denied');
         await expect(legalParagraph).toBeVisible();
 
         // Locate the link inside the paragraph
