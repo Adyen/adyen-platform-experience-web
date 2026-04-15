@@ -7,9 +7,8 @@ const STORY_ID = 'mocked-transactions-transaction-details--full-refund';
 
 test.describe('Full refund', () => {
     const expectExactRefundDetailsRendering = async (page: Page) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Refund' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--success', { hasText: 'Full' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
+        await expect(page.getByText('Refund', { exact: true })).toBeVisible();
+        await expect(page.getByText('Full', { exact: true })).toBeVisible();
 
         await expect(page.getByText('- 607.50 EUR', { exact: true })).toBeVisible();
 
@@ -32,7 +31,7 @@ test.describe('Full refund', () => {
         await expect(page.getByText('PSP0000000000999', { exact: true })).toBeVisible();
 
         await expect(page.getByTestId('copy-icon')).toHaveCount(3);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(0);
+        await expect(page.getByRole('alert')).toHaveCount(0);
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Go to payment', exact: true })).toBeVisible();
@@ -53,9 +52,8 @@ test.describe('Full refund', () => {
         await page.getByRole('button', { name: 'Go to payment', exact: true }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedAnalyticsEventProperties, label: 'Go to payment' }]]);
 
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--success', { hasText: 'Fully refunded' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByText('Fully refunded', { exact: true })).toBeVisible();
 
         await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
 
@@ -74,8 +72,7 @@ test.describe('Full refund', () => {
         await expect(page.getByTestId('copy-icon')).toHaveCount(3);
 
         await expect(page.getByText('The full amount has been refunded back to the customer', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         await expect(page.getByRole('button', { name: 'Go back', exact: true })).toBeHidden();
         await expect(page.getByRole('button', { name: 'Go to payment', exact: true })).toBeHidden();

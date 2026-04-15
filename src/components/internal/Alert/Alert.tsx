@@ -20,10 +20,18 @@ export const Alert = ({
     onClose,
     actions,
     variant = AlertVariantOption.DEFAULT,
+    'data-testid': dataTestId,
 }: AlertProps) => {
     const { i18n } = useCoreContext();
+    const hasActions = !!actions?.length;
+    const shouldShowCloseButton = onClose && (variant !== AlertVariantOption.TIP || closeButton);
+
     return (
-        <div className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)} role="alert">
+        <div
+            data-testid={dataTestId}
+            className={cx('adyen-pe-alert', `adyen-pe-alert--${type}`, `adyen-pe-alert--${variant}`, className)}
+            role="alert"
+        >
             <AlertIcon type={type} className="adyen-pe-alert__icon" />
             <div className="adyen-pe-alert__content-container">
                 <div className="adyen-pe-alert__content">
@@ -44,7 +52,7 @@ export const Alert = ({
                     )}
                     {children}
                 </div>
-                {!!actions?.length && (
+                {hasActions && (
                     <div className="adyen-pe-alert__actions">
                         {actions?.map((action, index) => (
                             <Button key={index} onClick={action.onClick} variant={ButtonVariant.TERTIARY}>
@@ -54,7 +62,7 @@ export const Alert = ({
                     </div>
                 )}
             </div>
-            {onClose && (variant !== AlertVariantOption.TIP || closeButton) && (
+            {shouldShowCloseButton && (
                 <div className="adyen-pe-alert__close-button">
                     <Button
                         iconButton

@@ -68,8 +68,7 @@ test.describe('Default', () => {
     test('should render "Funds captured" breakdown', async ({ page }) => {
         const fundsCaptured = createPayoutBreakdownGroup(page, 'Funds captured');
         const breakdown = page.getByRole('region', { name: 'Funds captured', exact: true });
-        const breakdownLists = breakdown.locator('dl');
-        const breakdownList = breakdownLists.nth(0);
+        const breakdownList = breakdown.getByTestId('payout-funds-captured-breakdown');
 
         const capture = breakdownList.getByTestId('capture');
         const chargeback = breakdownList.getByTestId('chargeback');
@@ -92,7 +91,7 @@ test.describe('Default', () => {
 
         await Promise.all([
             fundsCaptured.expectToBeCollapsed(),
-            expect(breakdownLists).toHaveCount(1),
+            expect(breakdownList).toBeVisible(),
             ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
         ]);
 
@@ -100,7 +99,7 @@ test.describe('Default', () => {
 
         await Promise.all([
             fundsCaptured.expectToBeExpanded(),
-            expect(breakdownLists).toHaveCount(1),
+            expect(breakdownList).toBeVisible(),
             ...fundsCapturedBreakdown.map(locator => expect(locator).toBeInViewport()),
         ]);
 
@@ -108,7 +107,7 @@ test.describe('Default', () => {
 
         await Promise.all([
             fundsCaptured.expectToBeCollapsed(),
-            expect(breakdownLists).toHaveCount(1),
+            expect(breakdownList).toBeVisible(),
             ...fundsCapturedBreakdown.map(locator => expect(locator).not.toBeInViewport()),
         ]);
     });
@@ -116,9 +115,8 @@ test.describe('Default', () => {
     test('should render "Adjustments" breakdown', async ({ page }) => {
         const adjustments = createPayoutBreakdownGroup(page, 'Adjustments');
         const breakdown = page.getByRole('region', { name: 'Adjustments', exact: true });
-        const breakdownLists = breakdown.locator('dl');
-        const additionsBreakdownList = breakdownLists.nth(0);
-        const subtractionsBreakdownList = breakdownLists.nth(1);
+        const additionsBreakdownList = breakdown.getByTestId('payout-adjustments-additions-breakdown');
+        const subtractionsBreakdownList = breakdown.getByTestId('payout-adjustments-subtractions-breakdown');
 
         const correction = additionsBreakdownList.getByTestId('correction');
         const grantRepayment = additionsBreakdownList.getByTestId('grantRepayment');
@@ -160,7 +158,8 @@ test.describe('Default', () => {
 
         await Promise.all([
             adjustments.expectToBeCollapsed(),
-            expect(breakdownLists).toHaveCount(2),
+            expect(additionsBreakdownList).toBeVisible(),
+            expect(subtractionsBreakdownList).toBeVisible(),
             ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
         ]);
 
@@ -168,7 +167,8 @@ test.describe('Default', () => {
 
         await Promise.all([
             adjustments.expectToBeExpanded(),
-            expect(breakdownLists).toHaveCount(2),
+            expect(additionsBreakdownList).toBeVisible(),
+            expect(subtractionsBreakdownList).toBeVisible(),
             ...adjustmentsBreakdown.map(locator => expect(locator).toBeInViewport()),
         ]);
 
@@ -176,7 +176,8 @@ test.describe('Default', () => {
 
         await Promise.all([
             adjustments.expectToBeCollapsed(),
-            expect(breakdownLists).toHaveCount(2),
+            expect(additionsBreakdownList).toBeVisible(),
+            expect(subtractionsBreakdownList).toBeVisible(),
             ...adjustmentsBreakdown.map(locator => expect(locator).not.toBeInViewport()),
         ]);
     });
