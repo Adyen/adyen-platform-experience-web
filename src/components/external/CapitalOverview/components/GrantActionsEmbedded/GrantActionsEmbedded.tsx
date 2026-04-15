@@ -1,5 +1,5 @@
 import { Fragment, FunctionalComponent } from 'preact';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import Alert from '../../../../internal/Alert/Alert';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -19,6 +19,8 @@ const CLASSNAMES = {
     actionButtonsContainer: 'adyen-pe-grant-actions-embedded__action-buttons-container',
     actionButton: 'adyen-pe-grant-actions-embedded__action-button',
 };
+
+const ANALYTICS_EVENT_DELAY_MS = 50;
 
 const sharedActionAnalyticsEventProps = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
@@ -43,6 +45,8 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     const { i18n, environment } = useCoreContext();
     const userEvents = useAnalyticsContext();
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
+    const completedActionsRef = useRef<Set<IMissingActionType>>(new Set());
+    const timeoutIdsRef = useRef<Map<IMissingActionType, ReturnType<typeof setTimeout>>>(new Map());
 
     const fetchToken = useCallback(async () => {
         const data = await getOnboardingConfiguration?.(EMPTY_OBJECT);
@@ -59,6 +63,14 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
             onComplete();
         }
     }, [areActionsCompleted, onComplete]);
+
+    useEffect(() => {
+        const timeoutIds = timeoutIdsRef.current;
+        return () => {
+            timeoutIds.forEach(timeoutId => clearTimeout(timeoutId));
+            timeoutIds.clear();
+        };
+    }, []);
 
     const loadKYCComponent = useCallback(
         async (actionType: IMissingActionType) => {
@@ -155,16 +167,37 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
         close();
     }, [activeAction, close]);
 
+    const handleClose = useCallback(
+        (actionType: IMissingActionType, analyticsProps: { subCategory: string; label: string }) => {
+            close();
+            const existingTimeout = timeoutIdsRef.current.get(actionType);
+            if (existingTimeout !== undefined) {
+                clearTimeout(existingTimeout);
+            }
+            const timeoutId = setTimeout(() => {
+                if (!completedActionsRef.current.has(actionType)) {
+                    userEvents.addEvent?.('Clicked button', {
+                        ...sharedActionAnalyticsEventProps,
+                        ...analyticsProps,
+                    });
+                }
+                completedActionsRef.current.delete(actionType);
+                timeoutIdsRef.current.delete(actionType);
+            }, ANALYTICS_EVENT_DELAY_MS);
+            timeoutIdsRef.current.set(actionType, timeoutId);
+        },
+        [close, userEvents]
+    );
+
     const handleBusinessFinancingClose = useCallback(() => {
-        close();
-        userEvents.addEvent?.('Clicked button', {
-            ...sharedActionAnalyticsEventProps,
+        handleClose('AnaCredit', {
             subCategory: 'Information',
             label: 'Dismissed AnaCredit information',
         });
-    }, [close, userEvents]);
+    }, [handleClose]);
 
     const handleBusinessFinancingComplete = useCallback(() => {
+        completedActionsRef.current.add('AnaCredit');
         completeAction();
         userEvents.addEvent?.('Clicked button', {
             ...sharedActionAnalyticsEventProps,
@@ -174,13 +207,11 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     }, [completeAction, userEvents]);
 
     const handleTermsOfServiceClose = useCallback(() => {
-        close();
-        userEvents.addEvent?.('Clicked button', {
-            ...sharedActionAnalyticsEventProps,
+        handleClose('signToS', {
             subCategory: 'Terms & conditions',
             label: 'Dismissed terms & conditions',
         });
-    }, [close, userEvents]);
+    }, [handleClose]);
 
     const handleTermsOfServiceAccept = useCallback(() => {
         userEvents.addEvent?.('Clicked button', {
@@ -191,6 +222,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     }, [userEvents]);
 
     const handleTermsOfServiceComplete = useCallback(() => {
+        completedActionsRef.current.add('signToS');
         completeAction();
         userEvents.addEvent?.('Clicked button', {
             ...sharedActionAnalyticsEventProps,
