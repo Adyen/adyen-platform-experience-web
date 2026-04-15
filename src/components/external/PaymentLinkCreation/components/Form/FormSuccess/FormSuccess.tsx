@@ -40,7 +40,7 @@ export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps)
                 setCopied(false);
                 copiedTimeoutRef.current = null;
             }, 3000);
-        } catch (e) {
+        } catch {
             // no-op
         }
     }, [paymentLinkUrl]);

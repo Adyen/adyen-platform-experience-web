@@ -20,7 +20,7 @@ const useDetachedRender = (callback: (targetElement: Element, ...args: any[]) =>
             setRender(undefined);
 
             return targetElement => setRender(targetElement instanceof Element ? () => render(targetElement) : undefined);
-        }, [callback, targetRef]),
+        }, [callback]),
         targetRef
     );
 

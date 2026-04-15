@@ -85,10 +85,12 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
         core.session.errorHandler = externalErrorHandler;
 
+        const componentRefGetter = () => this.compRef.current;
+
         return (
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
-                    componentRef={this.compRef}
+                    componentRef={componentRefGetter}
                     environment={core.options.environment || FALLBACK_ENV}
                     i18n={core.localization.i18n}
                     getCdnConfig={core.getCdnConfig}

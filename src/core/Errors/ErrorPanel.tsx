@@ -15,14 +15,14 @@ export interface ErrorPanelProps {
 }
 
 export function ErrorPanel({ id = 'ariaConsolidatedErrorField', heading = 'Errors:', errors, callbackFn, showPanel = false }: ErrorPanelProps) {
+    useEffect(() => {
+        if (!errors) return;
+        callbackFn?.(errors);
+    }, [errors, callbackFn]);
+
     if (!errors) return null;
 
     const { errorMessages } = errors;
-
-    // Perform passed callback, if specified
-    useEffect(() => {
-        callbackFn?.(errors);
-    }, [errors]);
 
     return (
         <div className={showPanel ? 'adyen-pe-error-panel' : 'adyen-pe-error-panel--sr-only'} id={id} aria-live="polite">

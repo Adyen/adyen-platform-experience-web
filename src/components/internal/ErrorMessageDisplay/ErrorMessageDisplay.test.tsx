@@ -84,20 +84,18 @@ describe('ErrorMessageDisplay', () => {
         });
 
         test('should render with desktop and mobile images', () => {
-            const { container } = render(
-                <ErrorMessageDisplay title={'testTitle' as TranslationKey} imageDesktop="desktop.svg" imageMobile="mobile.svg" />
-            );
+            render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} imageDesktop="desktop.svg" imageMobile="mobile.svg" />);
 
             const image = screen.getByRole('img');
             expect(image).toHaveAttribute('alt', '');
 
             // Verify picture element has correct sources for responsive images
-            const sources = container.querySelectorAll('source');
-            expect(sources).toHaveLength(2);
-            expect(sources[0]).toHaveAttribute('media', `(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
-            expect(sources[0]).toHaveAttribute('srcSet', 'desktop.svg');
-            expect(sources[1]).toHaveAttribute('media', `(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
-            expect(sources[1]).toHaveAttribute('srcSet', 'mobile.svg');
+            const sourceDesktop = screen.getByTestId('source-desktop');
+            const sourceMobile = screen.getByTestId('source-mobile');
+            expect(sourceDesktop).toHaveAttribute('media', `(min-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
+            expect(sourceDesktop).toHaveAttribute('srcSet', 'desktop.svg');
+            expect(sourceMobile).toHaveAttribute('media', `(max-width: ${IMAGE_BREAKPOINT_MEDIUM_PX}px)`);
+            expect(sourceMobile).toHaveAttribute('srcSet', 'mobile.svg');
         });
 
         test('should render with default image when withImage is true', () => {
@@ -118,34 +116,32 @@ describe('ErrorMessageDisplay', () => {
 
     describe('Conditional Styling', () => {
         test('should apply default styling classes', () => {
-            const { container } = render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} />);
+            render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} />);
 
-            const errorDisplay = container.querySelector('.adyen-pe-error-message-display--absolute-position');
-            const outlined = container.querySelector('.adyen-pe-error-message-display--outlined');
-
-            expect(errorDisplay).toBeInTheDocument();
-            expect(outlined).toBeInTheDocument();
+            const errorDisplay = screen.getByTestId('error-message-display');
+            expect(errorDisplay).toHaveClass('adyen-pe-error-message-display--absolute-position');
+            expect(errorDisplay).toHaveClass('adyen-pe-error-message-display--outlined');
         });
 
         test('should not apply outlined class when outlined is false', () => {
-            const { container } = render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} outlined={false} />);
+            render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} outlined={false} />);
 
-            const errorDisplay = container.querySelector('.adyen-pe-error-message-display--outlined');
-            expect(errorDisplay).not.toBeInTheDocument();
+            const errorDisplay = screen.getByTestId('error-message-display');
+            expect(errorDisplay).not.toHaveClass('adyen-pe-error-message-display--outlined');
         });
 
         test('should apply centered class when centered is true', () => {
-            const { container } = render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} centered={true} />);
+            render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} centered={true} />);
 
-            const errorDisplay = container.querySelector('.adyen-pe-error-message-display--centered');
-            expect(errorDisplay).toBeInTheDocument();
+            const errorDisplay = screen.getByTestId('error-message-display');
+            expect(errorDisplay).toHaveClass('adyen-pe-error-message-display--centered');
         });
 
         test('should apply background class when withBackground is true and outlined is false', () => {
-            const { container } = render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} withBackground={true} outlined={false} />);
+            render(<ErrorMessageDisplay title={'testTitle' as TranslationKey} withBackground={true} outlined={false} />);
 
-            const errorDisplay = container.querySelector('.adyen-pe-error-message-display--with-background');
-            expect(errorDisplay).toBeInTheDocument();
+            const errorDisplay = screen.getByTestId('error-message-display');
+            expect(errorDisplay).toHaveClass('adyen-pe-error-message-display--with-background');
         });
     });
 

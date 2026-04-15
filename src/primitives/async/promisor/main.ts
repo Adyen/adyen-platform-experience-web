@@ -4,15 +4,17 @@ import { enumerable, getter, isUndefined, tryResolve } from '../../../utils';
 import type { Promised } from '../../../utils/types';
 import type { Promisor } from './types';
 
-export const createPromisor = <T extends any, Params extends any[] = []>(
-    factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>
-) => {
+export const createPromisor = <T, Params extends any[] = []>(factory: (this: any, signal: AbortSignal, ...args: Params) => Promised<T>) => {
     const _abortable = createAbortable();
     const _deferred = createDeferred<T>();
     let _promise: Promisor<T, Params>['promise'] | undefined;
 
     const promisor = function (this: any, ...args) {
-        isUndefined(_promise) ? _deferred.refresh() : _abortable.abort();
+        if (isUndefined(_promise)) {
+            _deferred.refresh();
+        } else {
+            _abortable.abort();
+        }
 
         const currentPromise = tryResolve.call(this, factory, _abortable.refresh().signal, ...args) as Promise<T>;
 
@@ -21,11 +23,17 @@ export const createPromisor = <T extends any, Params extends any[] = []>(
             try {
                 const value = await currentPromise.finally(() => {
                     isLatestPromise = _promise === currentPromise;
-                    isLatestPromise && (_promise = undefined);
+                    if (isLatestPromise) {
+                        _promise = undefined;
+                    }
                 });
-                isLatestPromise && _deferred.resolve(value);
+                if (isLatestPromise) {
+                    _deferred.resolve(value);
+                }
             } catch (ex) {
-                isLatestPromise && _deferred.reject(ex);
+                if (isLatestPromise) {
+                    _deferred.reject(ex);
+                }
             }
         })();
 

@@ -71,7 +71,9 @@ export const CapitalOfferSummary = ({
 
     const onRequestFundsHandler = useCallback(() => {
         try {
-            grantOffer.id && requestFundsCallback(grantOffer.id);
+            if (grantOffer.id) {
+                requestFundsCallback(grantOffer.id);
+            }
         } finally {
             userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds' });
         }

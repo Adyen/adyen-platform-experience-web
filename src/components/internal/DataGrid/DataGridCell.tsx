@@ -1,9 +1,8 @@
 import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import { useDataGridContext } from './hooks/useDataGridContext';
-import { useEffect, useRef } from 'preact/hooks';
 import { cloneElement, isValidElement } from 'preact';
+import { useCallback } from 'preact/hooks';
 import cx from 'classnames';
-import { CellTextPosition } from './types';
 
 export default function DataGridCell({
     children,
@@ -12,16 +11,15 @@ export default function DataGridCell({
     ...props
 }: PropsWithChildren<HTMLAttributes<HTMLDivElement>> & { column: string; position?: string }) {
     const { registerCells } = useDataGridContext();
-    const ref = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (ref.current) {
-            registerCells({
-                column,
-                width: ref.current?.getBoundingClientRect().width,
-            });
-        }
-    }, [column, registerCells]);
+    const cellMeasureRef = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (!node) return;
+            const { width } = node.getBoundingClientRect();
+            registerCells({ column, width });
+        },
+        [column, registerCells]
+    );
 
     return (
         <div
@@ -34,8 +32,7 @@ export default function DataGridCell({
         >
             {children && isValidElement(children)
                 ? cloneElement(children, {
-                      ...children?.props,
-                      ref: ref,
+                      ref: cellMeasureRef,
                       style: { width: 'min-content' },
                   })
                 : null}

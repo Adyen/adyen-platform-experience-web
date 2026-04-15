@@ -34,9 +34,10 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
                 fetchOptions: { enabled: !!props.id && !!getDetail },
                 queryFn: async () => {
                     switch (props.type) {
-                        case 'payout':
+                        case 'payout': {
                             const queryParam = { query: { balanceAccountId: props.id, createdAt: props.date } };
                             return getDetail!(EMPTY_OBJECT, { ...queryParam });
+                        }
                     }
                 },
             }),
@@ -69,7 +70,7 @@ export default function DataOverviewDetails(props: ExternalUIComponentProps<Deta
             const detailsData = await props.dataCustomization?.details?.onDataRetrieve?.(data);
 
             setExtraFields(
-                props.dataCustomization?.details?.fields.reduce((acc, field) => {
+                props.dataCustomization?.details?.fields?.reduce((acc, field) => {
                     return TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) ||
                         PAYOUT_TABLE_FIELDS.includes(field.key as any) ||
                         field?.visibility === 'hidden'

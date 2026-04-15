@@ -57,7 +57,11 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     const handlePreQualifiedFundsRequest = useCallback(
         (data: IGrant) => {
-            onFundsRequest ? onFundsRequest(data) : setRequestedGrant(data);
+            if (onFundsRequest) {
+                onFundsRequest(data);
+            } else {
+                setRequestedGrant(data);
+            }
         },
         [onFundsRequest]
     );

@@ -101,7 +101,7 @@ export const AmountFilter = ({ updateFilters, selectedCurrencies, availableCurre
         }
 
         setFormattedValue(formattedValue);
-    }, [i18n, value]);
+    }, [i18n, value, formatAmount]);
 
     return (
         <BaseFilter<RangeFilterProps>

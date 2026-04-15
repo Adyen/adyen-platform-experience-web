@@ -17,21 +17,23 @@ export const useTooltipListeners = (): {
     const visibilityTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
     const clearVisibilityTimer = useRef(() => {
-        visibilityTimerRef.current && clearTimeout(visibilityTimerRef.current);
+        if (visibilityTimerRef.current) {
+            clearTimeout(visibilityTimerRef.current);
+        }
         visibilityTimerRef.current = undefined;
     }).current;
+
+    const hideTooltip = useCallback(() => {
+        clearVisibilityTimer();
+        setIsVisible(false);
+    }, [clearVisibilityTimer, setIsVisible]);
 
     const showTooltip = useCallback(() => {
         visibilityTimerRef.current ??= setTimeout(() => {
             visibilityTimerRef.current = setTimeout(hideTooltip, 15000);
             setIsVisible(true);
         }, 500);
-    }, [setIsVisible]);
-
-    const hideTooltip = useCallback(() => {
-        clearVisibilityTimer();
-        setIsVisible(false);
-    }, [setIsVisible]);
+    }, [hideTooltip, setIsVisible]);
 
     const onKeyDown = useCallback(
         (evt: KeyboardEvent) => {
