@@ -4380,7 +4380,7 @@ snapshots:
       classnames: 2.5.1
       preact: 10.28.2
     optionalDependencies:
-      '@rollup/rollup-darwin-x64': 4.53.3
+      '@rollup/rollup-darwin-x64': 4.59.0
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
