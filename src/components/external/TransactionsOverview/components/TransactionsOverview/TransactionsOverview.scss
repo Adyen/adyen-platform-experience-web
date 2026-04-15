@@ -1,7 +1,7 @@
 @use '../../../../internal/DataOverviewDisplay/styles' as *;
-@use '../../../../../style/breakpoints' as breakpoints;
-@use '../../../../../style';
-@use '../../../../mixins';
+@use '@integration-components/style/breakpoints' as breakpoints;
+@use '@integration-components/style';
+@use '@integration-components/style/mixins';
 
 .adyen-pe-transactions-overview {
     @include adyen-pe-data-overview;

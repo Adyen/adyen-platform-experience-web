@@ -37,6 +37,9 @@ importers:
       '@changesets/get-github-info':
         specifier: ^0.6.0
         version: 0.6.0
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:packages/shared/style
       '@nx/eslint':
         specifier: ^22.5.3
         version: 22.5.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.5.3)
@@ -214,8 +217,15 @@ importers:
       '@integration-components/sdk-internal':
         specifier: workspace:*
         version: link:../shared/lib
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../shared/style
+
+  packages/shared/core: {}
 
   packages/shared/lib: {}
+
+  packages/shared/style: {}
 
   packages/shared/types: {}
 

@@ -1,5 +1,5 @@
-@use '../../../../mixins';
-@use '../../../../../style';
+@use '@integration-components/style/mixins';
+@use '@integration-components/style';
 
 .adyen-pe-disputes-overview {
     display: flex;

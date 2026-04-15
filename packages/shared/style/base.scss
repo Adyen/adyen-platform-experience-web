@@ -1,4 +1,4 @@
-@use '../style';
+@use './variable-generator' as style;
 
 .adyen-pe {
     &-component,

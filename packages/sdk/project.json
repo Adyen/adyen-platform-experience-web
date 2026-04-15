@@ -4,5 +4,9 @@
     "projectType": "library",
     "sourceRoot": "packages/sdk/src",
     "tags": ["type:publish"],
-    "targets": {}
+    "targets": {
+        "build": {
+            "outputs": ["{workspaceRoot}/dist"]
+        }
+    }
 }

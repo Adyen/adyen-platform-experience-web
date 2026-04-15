@@ -1,5 +1,5 @@
-@use '../../../../../../style/index' as style;
-@use '../../../../../../style/breakpoints' as *;
+@use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as *;
 
 .adyen-pe-payment-link-creation-form {
     &__shopper-name-container {

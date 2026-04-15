@@ -26,7 +26,7 @@ export function getPreactViteLibConfig({
     const scss = {
         api: 'modern-compiler' as const,
         silenceDeprecations: ['legacy-js-api'],
-        ...(scssLoadPaths.length > 0 ? { loadPaths: scssLoadPaths } : {}),
+        loadPaths: [resolve(__dirname, '../node_modules'), ...scssLoadPaths],
     };
 
     const baseConfig = {

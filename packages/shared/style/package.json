@@ -1,0 +1,9 @@
+{
+    "name": "@integration-components/style",
+    "version": "0.0.1",
+    "private": true,
+    "exports": {
+        ".": "./index.scss",
+        "./*": "./*"
+    }
+}

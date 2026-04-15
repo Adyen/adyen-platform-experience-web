@@ -1,5 +1,5 @@
 @use '../../../../internal/DataOverviewDisplay/styles' as *;
-@use '../../../../../style';
+@use '@integration-components/style';
 
 .adyen-pe-payouts-overview {
     @include adyen-pe-data-overview;
