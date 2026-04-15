@@ -35,7 +35,7 @@ const config: StorybookConfig = {
             css: {
                 preprocessorOptions: {
                     scss: {
-                        loadPaths: [resolve(rootDir, 'src')],
+                        loadPaths: [resolve(rootDir, 'src'), resolve(rootDir, 'node_modules')],
                     },
                 },
             },

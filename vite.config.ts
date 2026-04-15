@@ -92,7 +92,7 @@ export default defineConfig(({ mode }) => {
                 scss: {
                     api: 'modern-compiler',
                     silenceDeprecations: ['legacy-js-api'],
-                    loadPaths: [resolve(__dirname, 'src')],
+                    loadPaths: [resolve(__dirname, 'src'), resolve(__dirname, 'node_modules')],
                 },
             },
         },
