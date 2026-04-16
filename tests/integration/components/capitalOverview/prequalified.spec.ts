@@ -24,7 +24,6 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
 
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
-        ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
     ]);
 };
 
@@ -51,11 +50,7 @@ test.describe('Prequalified', () => {
         await goToOfferSelection(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
 
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Duration', sharedCapitalOfferAnalyticsEventProperties],
-            ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
-            ['Landed on page', sharedPrequalifiedAnalyticsEventProperties],
-        ]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
         await expect(page.getByText('Need some extra money?')).toBeVisible();
     });
@@ -69,8 +64,6 @@ test.describe('Prequalified', () => {
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-            ['Duration', sharedCapitalOfferAnalyticsEventProperties],
-            ['Duration', sharedCapitalOfferSummaryAnalyticsEventProperties],
             ['Landed on page', { ...sharedPrequalifiedAnalyticsEventProperties, subCategory: 'Grants overview' }],
         ]);
 

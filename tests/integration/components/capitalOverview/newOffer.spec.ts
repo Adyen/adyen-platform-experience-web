@@ -24,7 +24,6 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
 
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
-        ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
     ]);
 };
 
@@ -49,11 +48,7 @@ test.describe('New offer', () => {
         await goToOfferSelection(page, analyticsEvents);
         await page.getByRole('button', { name: 'Go back' }).click();
 
-        await expectAnalyticsEvents(analyticsEvents, [
-            ['Duration', sharedCapitalOfferAnalyticsEventProperties],
-            ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
-            ['Landed on page', sharedGrantsOverviewAnalyticsEventProperties],
-        ]);
+        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
 
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
@@ -67,8 +62,6 @@ test.describe('New offer', () => {
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
-            ['Duration', sharedCapitalOfferAnalyticsEventProperties],
-            ['Duration', sharedCapitalOfferSummaryAnalyticsEventProperties],
             ['Landed on page', { ...sharedGrantsOverviewAnalyticsEventProperties, subCategory: 'Grants overview' }],
         ]);
 

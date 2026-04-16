@@ -19,7 +19,7 @@ export const getHandlerCallback = <T extends JsonBodyType>({
         if (networkError) {
             return HttpResponse.error();
         }
-        await delay(delayTime ?? 0);
+        await delay(delayTime ?? 200);
         return HttpResponse.json(response, { status: status || 200 });
     };
 };

@@ -22,6 +22,7 @@ export const endpoints = () =>
         capital: {
             anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
             createOffer: `${baseUrl}/capital/grantOffers/create`,
+            onboardingConfiguration: `${baseUrl}/capital/onboardingConfiguration`,
             dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
             dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
             grants: `${baseUrl}/capital/grants`,
