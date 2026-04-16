@@ -4,6 +4,7 @@ import { DisputesOverview, DisputeManagement } from '../../src';
 import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { getCustomDisputesData } from './utils/customDataRequest';
 
 const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes/Disputes Overview' };
 
@@ -46,6 +47,38 @@ export const NetworkError: ElementStory<typeof DisputesOverview> = {
     parameters: {
         msw: {
             ...DISPUTES_LIST_HANDLERS.networkError,
+        },
+    },
+};
+
+export const ListDataCustomization: ElementStory<typeof DisputesOverview> = {
+    name: 'List Data Customization',
+    args: {
+        coreOptions: {
+            translations: {
+                en_US: {
+                    _summary: 'Summary',
+                    _sendEmail: 'Action',
+                },
+            },
+        },
+        mockedApi: true,
+        dataCustomization: {
+            list: {
+                fields: [
+                    { key: 'disputeReason', visibility: 'hidden' },
+                    { key: '_summary' },
+                    { key: '_sendEmail' },
+                    { key: 'disputedAmount', align: 'left' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getCustomDisputesData(data));
+                        }, 200);
+                    });
+                },
+            },
         },
     },
 };
