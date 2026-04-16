@@ -70,6 +70,7 @@ export const DataCustomization: ElementStory<typeof DisputesOverview> = {
             list: {
                 fields: [
                     { key: 'disputeReason', visibility: 'hidden' },
+                    { key: 'reason', visibility: 'hidden' },
                     { key: '_summary' },
                     { key: '_sendEmail' },
                     { key: 'disputedAmount', align: 'left' },
