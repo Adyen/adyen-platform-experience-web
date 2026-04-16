@@ -8,7 +8,6 @@ import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
 import version from './config/version';
 import svgr from 'vite-plugin-svgr';
-import { shakeIcons } from './config/vite/plugins/shakeIcons';
 
 export default defineConfig(({ mode }) => {
     const currentVersion = version();
@@ -153,7 +152,6 @@ export default defineConfig(({ mode }) => {
                 esbuildOptions: { jsx: 'automatic' },
                 include: '**/*.svg?component',
             }),
-            shakeIcons(),
             preact(),
             isAnalyseMode &&
                 visualizer({

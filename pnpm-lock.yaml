@@ -65,9 +65,6 @@ importers:
       '@types/node':
         specifier: ^24.10.13
         version: 24.10.13
-      '@types/strip-comments':
-        specifier: ^2.0.4
-        version: 2.0.4
       '@types/testing-library__jest-dom':
         specifier: ^5.14.9
         version: 5.14.9
@@ -158,9 +155,6 @@ importers:
       storybook:
         specifier: ^10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      strip-comments:
-        specifier: ^2.0.1
-        version: 2.0.1
       style-loader:
         specifier: ^3.3.1
         version: 3.3.4(webpack@5.98.0(esbuild@0.27.1))
@@ -1216,9 +1210,6 @@ packages:
     resolution: {}
 
   '@types/statuses@2.0.5':
-    resolution: {}
-
-  '@types/strip-comments@2.0.4':
     resolution: {}
 
   '@types/testing-library__jest-dom@5.14.9':
@@ -3856,10 +3847,6 @@ packages:
     resolution: {}
     engines: {node: '>=4'}
 
-  strip-comments@2.0.1:
-    resolution: {}
-    engines: {node: '>=10'}
-
   strip-final-newline@3.0.0:
     resolution: {}
     engines: {node: '>=12'}
@@ -5485,8 +5472,6 @@ snapshots:
   '@types/stack-utils@2.0.3': {}
 
   '@types/statuses@2.0.5': {}
-
-  '@types/strip-comments@2.0.4': {}
 
   '@types/testing-library__jest-dom@5.14.9':
     dependencies:
@@ -8399,8 +8384,6 @@ snapshots:
       ansi-regex: 6.2.2
 
   strip-bom@3.0.0: {}
-
-  strip-comments@2.0.1: {}
 
   strip-final-newline@3.0.0: {}
 
