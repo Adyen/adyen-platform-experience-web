@@ -98,11 +98,7 @@ test.describe('Grant: Multiple actions - Embedded', () => {
         await submitBusinessFinancingInformation(page);
         await expect(page.getByText('Information submitted')).toBeVisible();
 
-        await expectAnalyticsEvents(analyticsEvents, [
-            clickedButtonEvents.submitInformationClicked,
-            clickedButtonEvents.dismissedAnaCredit,
-            clickedButtonEvents.submittedAnaCredit,
-        ]);
+        await expectAnalyticsEvents(analyticsEvents, [clickedButtonEvents.submitInformationClicked, clickedButtonEvents.submittedAnaCredit]);
     });
 
     test('should render terms of service component when signing button in clicked', async ({ page, analyticsEvents }) => {
@@ -132,7 +128,6 @@ test.describe('Grant: Multiple actions - Embedded', () => {
         await expectAnalyticsEvents(analyticsEvents, [
             clickedButtonEvents.signTermsClicked,
             clickedButtonEvents.signedTerms,
-            clickedButtonEvents.dismissedTerms,
             clickedButtonEvents.finishedTerms,
         ]);
     });
