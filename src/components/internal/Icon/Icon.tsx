@@ -41,7 +41,7 @@ export type IconName = keyof typeof icons;
 /**
  * Props for the Icon component.
  */
-interface IconProps {
+export interface IconProps {
     /**
      * The name of the icon to be displayed.
      */

@@ -1,0 +1,43 @@
+@use '../../../style';
+
+.adyen-pe-hello-world {
+    --adyen-pe-icon-size: 24px;
+    --adyen-pe-message-bleed: #{style.token(spacer-080)};
+    --adyen-pe-message-gap: #{style.token(spacer-050)};
+    --adyen-pe-message-gutter: #{style.token(spacer-070)};
+
+    align-items: center;
+    background-color: style.token(color-background-secondary);
+    border: 1px solid style.token(color-separator-secondary);
+    border-radius: style.token(border-radius-m);
+    bottom: var(--adyen-pe-message-bleed);
+    box-shadow:
+        0 2px 4px rgba(0, 17, 44, 0.04),
+        0 1px 2px rgba(0, 17, 44, 0.02),
+        0 0 0 1px rgba(0, 17, 44, 0.06);
+    color: style.token(color-label-primary);
+    display: flex;
+    gap: var(--adyen-pe-message-gap);
+    left: var(--adyen-pe-message-bleed);
+    padding: var(--adyen-pe-message-gutter);
+    position: absolute;
+    width: fit-content;
+    z-index: 10;
+
+    &__icon {
+        font-size: var(--adyen-pe-icon-size);
+        position: relative;
+        top: 1px;
+
+        svg {
+            display: block;
+        }
+    }
+
+    &__message {
+        font-size: style.token(text-subtitle-font-size);
+        font-weight: style.token(text-subtitle-font-weight);
+        line-height: style.token(text-subtitle-line-height);
+        margin: 0;
+    }
+}

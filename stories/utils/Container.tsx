@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/preact';
 import { AdyenPlatformExperience } from '../../src';
+import { createCdnRenderer } from '../../src/core/Assets/components/adapters/preact';
 import BaseElement from '../../src/components/external/BaseElement';
+import Icon from '../../src/components/internal/Icon';
 import sessionRequest from './sessionRequest';
 import './styles.scss';
 
@@ -32,6 +34,22 @@ export const Container = <T extends new (args: any) => any>({ component, compone
 
             Component = new component({ ...componentConfiguration, core });
             Component.mount(container.current ?? '');
+
+            if (container.current) {
+                const wrapper = document.createElement('div');
+                const renderer = createCdnRenderer(core);
+
+                // Insert wrapper after the PIE component container
+                (container.current as HTMLElement).insertAdjacentElement('afterend', wrapper);
+
+                await renderer({
+                    component: 'HelloWorld',
+                    container: wrapper,
+                    props: {
+                        components: { Icon },
+                    },
+                });
+            }
         })();
 
         return () => Component?.unmount();

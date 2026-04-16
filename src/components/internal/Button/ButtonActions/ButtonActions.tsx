@@ -7,7 +7,7 @@ import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import cx from 'classnames';
 
-interface ButtonActionsProps {
+export interface ButtonActionsProps {
     actions: ButtonActionsList;
     layout?: ButtonActionsLayout;
 }

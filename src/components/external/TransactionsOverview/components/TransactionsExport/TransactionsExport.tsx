@@ -4,6 +4,7 @@ import Icon from '../../../../internal/Icon';
 import Spinner from '../../../../internal/Spinner';
 import Alert from '../../../../internal/Alert/Alert';
 import Popover from '../../../../internal/Popover/Popover';
+import ThreeDotsLoader from '../../../../internal/ThreeDotsLoader';
 import Typography from '../../../../internal/Typography/Typography';
 import useUniqueId from '../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
@@ -13,11 +14,12 @@ import ToggleSwitch, { ToggleSwitchProps } from '../../../../internal/ToggleSwit
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import FilterButton from '../../../../internal/FilterBar/components/FilterButton/FilterButton';
 import { DEFAULT_EXPORT_COLUMNS, EXPORT_COLUMNS, TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '../../constants';
-import { ButtonActionObject, ButtonActionsLayoutBasic } from '../../../../internal/Button/ButtonActions/types';
+import { ButtonActionObject } from '../../../../internal/Button/ButtonActions/types';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { downloadBlob, EMPTY_ARRAY, isFunction, uniqueId } from '../../../../../utils';
+import { CdnComponent } from '../../../../../core/Assets/components/adapters/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -279,6 +281,11 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         [i18n, dismissExportError]
     );
 
+    const activeFiltersTags = useMemo(() => activeFilters.map(filter => <Tag label={i18n.get(filter)} key={filter} />), [activeFilters, i18n]);
+
+    const exportAlert = useMemo(() => i18n.get('transactions.overview.export.actions.download.info'), [i18n]);
+    const isExportColumnChecked = useCallback((value: (typeof EXPORT_COLUMNS)[number]) => exportColumns.includes(value), [exportColumns]);
+
     return canDownloadTransactions ? (
         <div className={classes.root}>
             <>
@@ -316,54 +323,35 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
                     targetElement={exportButtonRef}
                     title={exportButtonLabel}
                 >
-                    <div className={classes.popover} data-testid="transactions-export-popover">
-                        <div className={classes.popoverSections}>
-                            <div className={cx(classes.popoverSection, classes.filtersSection)} data-testid="transactions-export-filters">
-                                <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
-                                {activeFilters.map(filter => (
-                                    <Tag label={i18n.get(filter)} key={filter} />
-                                ))}
-                            </div>
-
-                            <div className={cx(classes.popoverSection, classes.columnsSection)}>
-                                <div role="group" aria-labelledby={exportColumnsTitleId}>
-                                    <SectionTitle id={exportColumnsTitleId}>{exportColumnsTitle}</SectionTitle>
-                                    <div className={classes.popoverSectionContent}>
-                                        <ExportColumn
-                                            ref={masterSwitchRef}
-                                            className={classes.popoverColumnAll}
-                                            aria-controls={masterSwitchAriaControls}
-                                            checked={masterSwitchChecked}
-                                            onChange={onExportColumnChange}
-                                            id={masterSwitchId}
-                                        >
-                                            {masterSwitchLabel}
-                                        </ExportColumn>
-
-                                        {columnSwitches.map(({ id, label, value }) => (
-                                            <ExportColumn
-                                                checked={exportColumns.includes(value)}
-                                                onChange={onExportColumnChange}
-                                                value={value}
-                                                key={value}
-                                                id={id}
-                                            >
-                                                {label}
-                                            </ExportColumn>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={classes.popoverActions}>
-                            <Alert
-                                type={AlertTypeOption.HIGHLIGHT}
-                                className={classes.popoverActionsAlert}
-                                title={i18n.get('transactions.overview.export.actions.download.info')}
-                            />
-                            <ButtonActions actions={[downloadAction, cancelAction]} layout={ButtonActionsLayoutBasic.BUTTONS_END} />
-                        </div>
-                    </div>
+                    <CdnComponent
+                        name="TransactionsExportPopover"
+                        loading={<ThreeDotsLoader className="adyen-pe-transactions-export__popover-loader" size="large" />}
+                        props={{
+                            activeFilters: activeFiltersTags,
+                            activeFiltersTitle,
+                            cancelAction,
+                            downloadAction,
+                            exportAlert,
+                            exportColumnsTitle,
+                            exportColumnsTitleId,
+                            masterSwitch: {
+                                id: masterSwitchId,
+                                checked: masterSwitchChecked,
+                                label: masterSwitchLabel,
+                                ariaControls: masterSwitchAriaControls,
+                                ref: masterSwitchRef,
+                            },
+                            columnSwitches,
+                            isExportColumnChecked,
+                            onExportColumnChange,
+                            components: {
+                                Alert,
+                                ButtonActions,
+                                ExportColumn,
+                                SectionTitle,
+                            },
+                        }}
+                    />
                 </Popover>
             )}
         </div>

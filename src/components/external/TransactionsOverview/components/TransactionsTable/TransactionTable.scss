@@ -1,6 +1,16 @@
 @use '../../../../../style';
 
 .adyen-pe-transactions-table {
+    &__cell-loader {
+        color: style.token(color-label-secondary);
+        inset: 0;
+        position: absolute;
+    }
+
+    .adyen-pe-data-grid__cell {
+        position: relative;
+    }
+
     &__amount {
         display: block;
         font-weight: style.token(text-body-stronger-font-weight);

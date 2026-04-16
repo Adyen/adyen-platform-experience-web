@@ -1,33 +1,5 @@
 /* stylelint-disable selector-no-qualifying-type */
-@use '../../../../../style';
-
-.adyen-pe-transactions-export {
-    margin-bottom: auto;
-    margin-left: auto;
-    padding-top: style.token(spacer-010);
-
-    &__button {
-        .adyen-pe-filter-button__label {
-            align-items: center;
-            display: flex;
-            gap: style.token(spacer-040);
-        }
-    }
-
-    &__error-alert {
-        align-items: center;
-        border: 0;
-        padding: style.token(spacer-050);
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: 100;
-
-        .adyen-pe-alert__icon {
-            height: auto;
-        }
-    }
-}
+@use '../../../style';
 
 .adyen-pe-transactions-export__popover {
     $adyen-pe-self: &;
@@ -35,12 +7,6 @@
     min-width: calc(320px);
     overflow: hidden;
     padding: 0 style.token(spacer-070) style.token(spacer-060);
-
-    &-loader {
-        color: style.token(color-label-secondary);
-        height: 352px;
-        width: 352px;
-    }
 
     &-sections {
         display: flex;

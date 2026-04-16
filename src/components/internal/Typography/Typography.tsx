@@ -6,7 +6,7 @@ import { memo, PropsWithChildren } from 'preact/compat';
 import './Typography.scss';
 import { ComponentChild } from 'preact';
 
-interface TypographyProps {
+export interface TypographyProps {
     id?: string;
     el?: TypographyElement;
     stronger?: boolean;

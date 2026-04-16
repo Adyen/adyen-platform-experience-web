@@ -23,9 +23,16 @@
  * } as const satisfies Record<CdnComponentName, () => Promise<any>>;
  * ```
  */
+import type { HelloWorldProps } from './HelloWorld';
+import type { PaymentMethodCellProps } from './PaymentMethodCell';
+import type { TransactionsExportPopoverProps } from './TransactionsExportPopover';
 
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-export interface CdnComponentRegistry {}
+export interface CdnComponentRegistry {
+    HelloWorld: HelloWorldProps;
+    PaymentMethodCell: PaymentMethodCellProps;
+    TransactionsExportPopover: TransactionsExportPopoverProps;
+}
 
 export type CdnComponentName = keyof CdnComponentRegistry;
 
@@ -36,7 +43,11 @@ export type CdnComponentName = keyof CdnComponentRegistry;
  * IMPORTANT: This object must contain loaders for ALL components in CdnComponentRegistry.
  * TypeScript will enforce this via the `satisfies` constraint.
  */
-const CDN_COMPONENT_LOADERS = {} as const satisfies Record<CdnComponentName, () => Promise<any>>;
+const CDN_COMPONENT_LOADERS = {
+    HelloWorld: () => import('./HelloWorld'),
+    PaymentMethodCell: () => import('./PaymentMethodCell'),
+    TransactionsExportPopover: () => import('./TransactionsExportPopover'),
+} as const satisfies Record<CdnComponentName, () => Promise<any>>;
 
 /**
  * Dynamically loads a CDN component using static import paths.

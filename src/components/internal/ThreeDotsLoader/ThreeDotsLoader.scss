@@ -1,0 +1,70 @@
+@use '../../../style';
+
+.adyen-pe-three-dots-loader {
+    @keyframes bounceThreeDots {
+        0%,
+        80%,
+        100% {
+            transform: scale(0);
+            opacity: 0.5;
+        }
+
+        40% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    &__loader {
+        --adyen-pe-three-dots-gap: 0;
+        --adyen-pe-three-dots-size: 0;
+
+        align-items: center;
+        display: flex;
+        gap: var(--adyen-pe-three-dots-gap);
+        justify-content: center;
+
+        // Size variants
+        &--small {
+            --adyen-pe-three-dots-size: #{style.token(spacer-040)};
+            --adyen-pe-three-dots-gap: #{style.token(spacer-020)};
+        }
+
+        &--medium {
+            --adyen-pe-three-dots-size: #{style.token(spacer-050)};
+            --adyen-pe-three-dots-gap: #{style.token(spacer-030)};
+        }
+
+        &--large {
+            --adyen-pe-three-dots-size: #{style.token(spacer-060)};
+            --adyen-pe-three-dots-gap: #{style.token(spacer-040)};
+        }
+    }
+
+    &__dot {
+        animation: bounceThreeDots 1.4s infinite ease-in-out both;
+        background-color: currentColor;
+        border-radius: 50%;
+        display: inline-block;
+        height: var(--adyen-pe-three-dots-size);
+        width: var(--adyen-pe-three-dots-size);
+
+        &:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        &:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+    }
+
+    &__wrapper {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
+        &--inline {
+            display: inline-flex;
+        }
+    }
+}
