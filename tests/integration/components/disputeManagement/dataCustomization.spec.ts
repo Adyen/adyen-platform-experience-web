@@ -9,7 +9,7 @@ test.describe('Data Customization', () => {
         await goToStory(page, { id: STORY_ID });
 
         const countryIcon = page.getByAltText('', { exact: true });
-        const summaryLink = page.getByRole('link', { name: 'Summary', exact: true, disabled: false });
+        const summaryLink = page.getByRole('link', { name: 'Go to Summary', exact: true, disabled: false });
         const actionButton = page.getByRole('button', { name: 'Send email', exact: true, disabled: false });
 
         await Promise.all([
