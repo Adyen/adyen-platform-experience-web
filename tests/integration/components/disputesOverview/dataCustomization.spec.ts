@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
 
-const STORY_ID = 'mocked-disputes-disputes-overview--list-data-customization';
+const STORY_ID = 'mocked-disputes-disputes-overview--data-customization';
 
 test.describe('Data customization', () => {
     test.beforeEach(async ({ page }) => {
@@ -51,5 +51,20 @@ test.describe('Data customization', () => {
         await page.getByRole('tab', { name: 'Ongoing & closed' }).click();
         await expect(dataGrid.getByRole('columnheader', { name: 'Summary', exact: true })).toBeVisible();
         await expect(dataGrid.getByRole('columnheader', { name: 'Action', exact: true })).toBeVisible();
+    });
+
+    test('should keep hidden fields hidden across tabs', async ({ page }) => {
+        const dataGrid = page.getByRole('table');
+
+        // Wait for columns to be visible
+        await expect(dataGrid.getByRole('columnheader', { name: 'Respond by', exact: true })).toBeVisible();
+
+        await expect(dataGrid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
+
+        await page.getByRole('tab', { name: 'Fraud alerts' }).click();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
+
+        await page.getByRole('tab', { name: 'Ongoing & closed' }).click();
+        await expect(dataGrid.getByRole('columnheader', { name: 'Reason', exact: true })).toBeHidden();
     });
 });

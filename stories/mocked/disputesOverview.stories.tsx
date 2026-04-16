@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DisputesOverview, DisputeManagement } from '../../src';
+import { DisputesOverview } from '../../src';
 import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
@@ -51,14 +51,17 @@ export const NetworkError: ElementStory<typeof DisputesOverview> = {
     },
 };
 
-export const ListDataCustomization: ElementStory<typeof DisputesOverview> = {
-    name: 'List Data Customization',
+export const DataCustomization: ElementStory<typeof DisputesOverview> = {
+    name: 'Data Customization',
     args: {
         coreOptions: {
             translations: {
                 en_US: {
+                    _store: 'Store',
+                    _product: 'Product',
                     _summary: 'Summary',
                     _sendEmail: 'Action',
+                    _country: 'Country',
                 },
             },
         },
@@ -79,26 +82,6 @@ export const ListDataCustomization: ElementStory<typeof DisputesOverview> = {
                     });
                 },
             },
-        },
-    },
-};
-
-export const DataCustomization: ElementStory<typeof DisputeManagement> = {
-    name: 'Data Customization',
-    args: {
-        coreOptions: {
-            translations: {
-                en_US: {
-                    _store: 'Store',
-                    _product: 'Product',
-                    _summary: 'Summary',
-                    _sendEmail: 'Email',
-                    _country: 'Country',
-                },
-            },
-        },
-        mockedApi: true,
-        dataCustomization: {
             details: {
                 fields: [
                     { key: 'id', visibility: 'hidden' },
