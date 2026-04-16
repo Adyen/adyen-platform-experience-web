@@ -3,7 +3,7 @@ import {
     ACTIVE_GRANT,
     FAILED_GRANT,
     PENDING_GRANT,
-    PENDING_GRANT_WITH_SIGN_TOS,
+    PENDING_GRANT_WITH_SINGLE_ACTION,
     REPAID_GRANT,
     REVOKED_GRANT,
     WRITTEN_OFF_GRANT,
@@ -39,7 +39,7 @@ describe('getGrantConfig', () => {
     });
 
     test('returns config for pending grant with actions', () => {
-        const config = getGrantConfig(PENDING_GRANT_WITH_SIGN_TOS);
+        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION);
         expect(config).toEqual<GrantConfig>({
             amount: ACTIVE_GRANT.grantAmount,
             amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
@@ -54,7 +54,27 @@ describe('getGrantConfig', () => {
             repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
             statusKey: 'capital.overview.grants.common.statuses.actionNeeded',
             statusTagVariant: TagVariant.WARNING,
-            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.signTerms',
+            statusTooltipKey: undefined,
+        });
+    });
+
+    test('returns config for pending grant with locally completed actions', () => {
+        const config = getGrantConfig(PENDING_GRANT_WITH_SINGLE_ACTION, true);
+        expect(config).toEqual<GrantConfig>({
+            amount: ACTIVE_GRANT.grantAmount,
+            amountLabelKey: 'capital.overview.grants.item.amounts.requestedFunds',
+            hasAlerts: true,
+            hasDetails: false,
+            hasUnscheduledRepaymentDetails: false,
+            isAmountColorSecondary: true,
+            isBackgroundFilled: false,
+            isGrantIdVisible: true,
+            isLabelColorSecondary: false,
+            isProgressBarVisible: false,
+            repaymentPeriodEndDate: new Date('2025-05-16T00:00:00'),
+            statusKey: 'capital.overview.grants.common.statuses.pending',
+            statusTagVariant: TagVariant.DEFAULT,
+            statusTooltipKey: 'capital.overview.grants.common.statuses.pending.description.awaitingFunds',
         });
     });
 

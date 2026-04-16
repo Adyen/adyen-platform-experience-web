@@ -2,9 +2,9 @@ import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
-const STORY_ID = 'mocked-capital-capital-overview--grant-missing-action-anacredit';
+const STORY_ID = 'mocked-capital-capital-overview--grant-multiple-actions-hosted';
 
-test.describe('Grant: Missing Action Anacredit', () => {
+test.describe('Grant: Multiple actions - Hosted', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
@@ -17,12 +17,29 @@ test.describe('Grant: Missing Action Anacredit', () => {
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
         await expect(
-            page.getByText('We need a bit more information to process your funds. Please complete this action by February 15, 2025:')
+            page.getByText('We need a bit more input from you to process your funds. Please complete these actions by February 15, 2025.')
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Submit information' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
     });
 
-    test('should go to Business Financing task when button in clicked', async ({ page, analyticsEvents }) => {
+    test('should go to terms of service page when signing button in clicked', async ({ page, analyticsEvents }) => {
+        const analyticsEventProperties = {
+            ...sharedGrantsOverviewAnalyticsEventProperties,
+            subCategory: 'Missing action',
+            label: 'Go to terms & conditions button clicked',
+        };
+
+        const redirectionURL = 'https://www.adyen.com/';
+
+        await page.getByRole('button', { name: 'Sign terms & conditions', exact: true }).click();
+        await page.waitForURL(redirectionURL, { waitUntil: 'domcontentloaded' });
+        expect(page.url()).toBe(redirectionURL);
+
+        await expectAnalyticsEvents(analyticsEvents, [['Clicked link', analyticsEventProperties]]);
+    });
+
+    test('should go to business financing page when information submit button in clicked', async ({ page, analyticsEvents }) => {
         const analyticsEventProperties = {
             ...sharedGrantsOverviewAnalyticsEventProperties,
             subCategory: 'Missing action',
