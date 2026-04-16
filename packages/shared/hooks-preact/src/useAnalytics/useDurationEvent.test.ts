@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
 import { useDurationEvent } from './useDurationEvent';
 import useComponentTiming from '../useComponentTiming';
-import useAnalyticsContext from '../../core/Context/analytics/useAnalyticsContext';
+import useAnalyticsContext from '../../../../../src/core/Context/analytics/useAnalyticsContext';
 
 vi.mock('../useComponentTiming');
 vi.mock('../../core/Context/analytics/useAnalyticsContext');

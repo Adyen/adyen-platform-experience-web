@@ -4,8 +4,8 @@
 import { renderHook } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import useTimezoneAwareDateFormatting from './useTimezoneAwareDateFormatting';
-import useCoreContext from '../core/Context/useCoreContext';
-import Localization from '../core/Localization/Localization';
+import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import Localization from '@integration-components/core/Localization';
 
 vi.mock('../core/Context/useCoreContext');
 

@@ -4,7 +4,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
-import { popoverUtil } from '../../components/internal/Popover/utils/popoverUtil';
+import { popoverUtil } from '../../../../../src/components/internal/Popover/utils/popoverUtil';
 import { ClickOutsideVariant, CONTROL_ELEMENT_PROPERTY, useClickOutside } from './useClickOutside';
 import { useRef, useEffect } from 'preact/hooks';
 

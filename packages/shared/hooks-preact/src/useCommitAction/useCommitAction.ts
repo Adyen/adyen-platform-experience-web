@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { ButtonVariant } from '../../components/internal/Button/types';
-import { ButtonActionObject } from '../../components/internal/Button/ButtonActions/types';
+import { ButtonVariant } from '../../../../../src/components/internal/Button/types';
+import { ButtonActionObject } from '../../../../../src/components/internal/Button/ButtonActions/types';
 import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './types';
-import useCoreContext from '../../core/Context/useCoreContext';
-import { boolOrFalse, EMPTY_OBJECT } from '../../utils';
+import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { boolOrFalse, EMPTY_OBJECT } from '@integration-components/utils';
 
 const useCommitAction = ({
     applyDisabled,

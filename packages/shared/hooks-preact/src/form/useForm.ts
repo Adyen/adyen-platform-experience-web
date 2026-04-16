@@ -1,6 +1,6 @@
 import { useRef, useCallback } from 'preact/hooks';
 import { UseFormOptions, UseFormReturn, InternalFormControl, FormState, FieldValue, FieldError, ValidationRules, FieldValues } from './types';
-import Localization from '../../core/Localization';
+import Localization from '@integration-components/core/Localization';
 
 export function getNestedValue(obj: any, path: string): any {
     const keys = path.split('.');

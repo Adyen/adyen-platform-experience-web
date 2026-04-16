@@ -223,6 +223,8 @@ importers:
 
   packages/shared/core: {}
 
+  packages/shared/hooks-preact: {}
+
   packages/shared/lib: {}
 
   packages/shared/style: {}

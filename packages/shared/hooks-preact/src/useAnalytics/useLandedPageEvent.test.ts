@@ -4,7 +4,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
 import { useLandedPageEvent } from './useLandedPageEvent';
-import useAnalyticsContext from '../../core/Context/analytics/useAnalyticsContext';
+import useAnalyticsContext from '../../../../../src/core/Context/analytics/useAnalyticsContext';
 
 vi.mock('../../core/Context/analytics/useAnalyticsContext');
 

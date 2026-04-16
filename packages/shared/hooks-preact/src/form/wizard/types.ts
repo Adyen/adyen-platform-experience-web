@@ -1,6 +1,6 @@
 import { FieldValues, UseFormReturn } from '../types';
-import { TranslationKey } from '../../../translations';
-import Localization from '../../../core/Localization';
+import { TranslationKey } from '../../../../../../src/translations';
+import Localization from '@integration-components/core/Localization';
 
 export interface WizardStepField<TFieldValues> {
     fieldName: FieldValues<TFieldValues>;

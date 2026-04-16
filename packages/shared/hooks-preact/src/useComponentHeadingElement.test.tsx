@@ -7,9 +7,9 @@ import { MutableRef, useRef } from 'preact/hooks';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/preact';
 import { ComponentHeadingType, useComponentHeadingElement, UseComponentHeadingElementProps } from './useComponentHeadingElement';
-import { CoreProviderProps } from '../core/Context/types';
-import { CoreContext } from '../core/Context/CoreContext';
-import CoreProvider from '../core/Context/CoreProvider';
+import { CoreProviderProps } from '../../../../src/core/Context/types';
+import { CoreContext } from '../../../../src/core/Context/CoreContext';
+import CoreProvider from '../../../../src/core/Context/CoreProvider';
 
 const coreProviderProps = {} as CoreProviderProps;
 
