@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { Controller } from '../../../../../../../hooks/form';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
@@ -84,18 +84,17 @@ export const ShopperPhoneField = () => {
         if (!phoneCode) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneCode') };
         }
-        const number = phoneNumberWithoutPhoneCode;
-        if (!number) {
+        if (!phoneNumberWithoutPhoneCode) {
             return { valid: false, message: i18n.get('payByLink.creation.fields.phoneNumber.errors.requiredPhoneNumber') };
         }
         return { valid: true };
-    }, [phoneCode, phoneNumberWithoutPhoneCode]);
+    }, [phoneCode, phoneNumberWithoutPhoneCode, i18n, isRequired]);
 
     if (shouldHideField) return null;
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name="telephoneNumber">
-            <FormField label={i18n.get('payByLink.creation.fields.shopperPhone.label')} optional={!isRequired}>
+            <FormField label={i18n.get('payByLink.creation.fields.shopperPhone.label')} optional={!isRequired} testId="form-field-telephoneNumber">
                 <Controller<PaymentLinkCreationFormValues>
                     name="telephoneNumber"
                     control={control}
@@ -136,6 +135,7 @@ export const ShopperPhoneField = () => {
                                 isValid={!fieldState.error && !!field.value}
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}
+                                errorTestId="field-error-telephoneNumber"
                                 maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.telephoneNumber.max}
                                 readonly={isReadOnly}
                             />

@@ -4,12 +4,12 @@ import useAnalyticsContext from '../../core/Context/analytics/useAnalyticsContex
 
 export const useLandedPageEvent = (eventProperties: AdditionalEventProperties) => {
     const userEvents = useAnalyticsContext();
-    const logEvent = useRef(true);
+    const logEventRef = useRef(true);
 
     useEffect(() => {
-        if (!logEvent.current) return;
+        if (!logEventRef.current) return;
         // Log event only on component mount
-        logEvent.current = false;
+        logEventRef.current = false;
         userEvents.addEvent?.('Landed on page', eventProperties);
     }, [userEvents, eventProperties]);
 };

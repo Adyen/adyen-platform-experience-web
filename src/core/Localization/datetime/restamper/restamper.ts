@@ -24,7 +24,9 @@ const restamper = (() => {
                     this.formatter = nextFormatter;
                 } catch (ex) {
                     // Silently ignore invalid timezone updates
-                    if (import.meta.env.DEV) console.error(ex);
+                    if (import.meta.env.DEV) {
+                        console.error(ex);
+                    }
                 }
             } else {
                 this.TIMEZONE = SYSTEM_TIMEZONE;
@@ -34,7 +36,9 @@ const restamper = (() => {
     }
 
     function restamp(this: RestampContext, ...args: [(string | number | Date)?]): RestampResult {
-        if (args.length === 0) return restamp.call(this, Date.now());
+        if (args.length === 0) {
+            return restamp.call(this, Date.now());
+        }
 
         const time = args[0];
         const timestamp = new Date(time as NonNullable<typeof time>).getTime();

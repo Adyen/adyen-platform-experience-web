@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi } from 'vitest';
 import { EMPTY_ARRAY } from '../value/constants';
-import { getMappedValue, listFrom, pickFrom, some, uniqueFlatten, uniqueFlattenReversed } from './main';
-import type { List } from '../types';
+import { getMappedValue, listFrom, pickFrom, some } from './main';
 
 describe('getMappedValue', () => {
     test('should return value for key in map collection', () => {
@@ -235,89 +234,5 @@ describe('some', () => {
         map.forEach(([predicate, bool], arr_like) => {
             expect(some(arr_like, predicate)).toBe(bool);
         });
-    });
-});
-
-describe('uniqueFlatten', () => {
-    const FLAT_LIST: List<any> = [3, 1, 2, 4, '5', '1', 5, 5, '3', 4, 1, 3];
-    const NESTED_LIST: List<any> = [[[3, 1, [2]], 4, [[['5']], '1', 5]], 5, '3', [[[4], 1]], 3];
-    const UNIQUE_ITEMS: List<any> = [3, 1, 2, 4, '5', '1', 5, '3'];
-
-    test('should always return a new set when `uniqueItems` set is not provided', () => {
-        const uniqueItemsForFlatList = uniqueFlatten(FLAT_LIST);
-        const uniqueItemsForNestedList = uniqueFlatten(NESTED_LIST);
-
-        expect(uniqueItemsForFlatList).toBeInstanceOf(Set);
-        expect(uniqueItemsForNestedList).toBeInstanceOf(Set);
-        expect(uniqueItemsForFlatList).not.toBe(uniqueItemsForNestedList);
-    });
-
-    test('should always return a reference to the `uniqueItems` set when it is provided', () => {
-        const uniqueItemsSet = new Set<any>();
-        const uniqueItemsForFlatList = uniqueFlatten(FLAT_LIST, uniqueItemsSet);
-        const uniqueItemsForNestedList = uniqueFlatten(NESTED_LIST, uniqueItemsSet);
-
-        expect(uniqueItemsForFlatList).toBe(uniqueItemsSet);
-        expect(uniqueItemsForNestedList).toBe(uniqueItemsSet);
-        expect(uniqueItemsForFlatList).toBe(uniqueItemsForNestedList);
-    });
-
-    test('should preserve the sequential order of list items in the returned set', () => {
-        let uniqueItemsForFlatList = uniqueFlatten(FLAT_LIST);
-        let uniqueItemsForNestedList = uniqueFlatten(NESTED_LIST);
-
-        expect([...uniqueItemsForFlatList]).toMatchObject(UNIQUE_ITEMS);
-        expect([...uniqueItemsForNestedList]).toMatchObject(UNIQUE_ITEMS);
-
-        const uniqueItemsSequence: List<any> = ['3', 1, '5', 0, '1', 2, 3, 4, 5];
-        const uniqueItemsSet = new Set<any>(['3', 1, '5', 0, '1', 2]);
-
-        uniqueItemsForFlatList = uniqueFlatten(FLAT_LIST, uniqueItemsSet);
-        uniqueItemsForNestedList = uniqueFlatten(NESTED_LIST, uniqueItemsSet);
-
-        expect([...uniqueItemsForFlatList]).toMatchObject(uniqueItemsSequence);
-        expect([...uniqueItemsForNestedList]).toMatchObject(uniqueItemsSequence);
-    });
-});
-
-describe('uniqueFlattenReversed', () => {
-    const FLAT_LIST: List<any> = [3, 1, 2, 4, '5', '1', 5, 5, '3', 4, 1, 3];
-    const NESTED_LIST: List<any> = [[[3, 1, [2]], 4, [[['5']], '1', 5]], 5, '3', [[[4], 1]], 3];
-    const UNIQUE_ITEMS: List<any> = [2, '5', '1', 5, '3', 4, 1, 3];
-
-    test('should always return a new set when `uniqueItems` set is not provided', () => {
-        const uniqueItemsForFlatList = uniqueFlattenReversed(FLAT_LIST);
-        const uniqueItemsForNestedList = uniqueFlattenReversed(NESTED_LIST);
-
-        expect(uniqueItemsForFlatList).toBeInstanceOf(Set);
-        expect(uniqueItemsForNestedList).toBeInstanceOf(Set);
-        expect(uniqueItemsForFlatList).not.toBe(uniqueItemsForNestedList);
-    });
-
-    test('should always return a reference to the `uniqueItems` set when it is provided', () => {
-        const uniqueItemsSet = new Set<any>();
-        const uniqueItemsForFlatList = uniqueFlattenReversed(FLAT_LIST, uniqueItemsSet);
-        const uniqueItemsForNestedList = uniqueFlattenReversed(NESTED_LIST, uniqueItemsSet);
-
-        expect(uniqueItemsForFlatList).toBe(uniqueItemsSet);
-        expect(uniqueItemsForNestedList).toBe(uniqueItemsSet);
-        expect(uniqueItemsForFlatList).toBe(uniqueItemsForNestedList);
-    });
-
-    test('should preserve the reverse sequential order of list items in the returned set', () => {
-        let uniqueItemsForFlatList = uniqueFlattenReversed(FLAT_LIST);
-        let uniqueItemsForNestedList = uniqueFlattenReversed(NESTED_LIST);
-
-        expect([...uniqueItemsForFlatList]).toMatchObject(UNIQUE_ITEMS);
-        expect([...uniqueItemsForNestedList]).toMatchObject(UNIQUE_ITEMS);
-
-        const uniqueItemsSequence: List<any> = [0, ...UNIQUE_ITEMS];
-        const uniqueItemsSet = new Set<any>(['3', 1, '5', 0, '1', 2]);
-
-        uniqueItemsForFlatList = uniqueFlattenReversed(FLAT_LIST, uniqueItemsSet);
-        uniqueItemsForNestedList = uniqueFlattenReversed(NESTED_LIST, uniqueItemsSet);
-
-        expect([...uniqueItemsForFlatList]).toMatchObject(uniqueItemsSequence);
-        expect([...uniqueItemsForNestedList]).toMatchObject(uniqueItemsSequence);
     });
 });

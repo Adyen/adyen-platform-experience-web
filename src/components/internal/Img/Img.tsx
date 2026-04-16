@@ -27,11 +27,12 @@ export default function Img(props: ImgProps) {
     useEffect(() => {
         const image = backgroundUrl ? new Image() : imageRef.current;
         if (image) {
+            // eslint-disable-next-line react-hooks/immutability
             image.src = backgroundUrl || src;
             image.onload = handleLoad;
         }
         setLoaded(!!image?.complete);
-    }, []);
+    }, [backgroundUrl, src]);
 
     if (backgroundUrl) {
         return <div style={{ backgroundUrl } as JSX.CSSProperties} {...props} className={classNames} />;

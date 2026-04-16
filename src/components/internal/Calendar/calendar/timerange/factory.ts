@@ -9,7 +9,7 @@ import {
     parseRangeTimestamp,
 } from './utils';
 
-const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
+const createRangeTimestampsFactory = <T extends Record<any, any> = Record<string, never>>(
     config = EMPTY_OBJECT as RangeTimestampsConfig,
     additionalContext = EMPTY_OBJECT as { [P in keyof T]: TypedPropertyDescriptor<T[P]> }
 ) => {
@@ -68,7 +68,11 @@ const createRangeTimestampsFactory = <T extends Record<any, any> = {}>(
                 // restamp timestamp to current target timezone before update range
                 const timestamp = parseRangeTimestamp(configContext.systemToTimezone(date)) ?? NOW;
 
-                withRangeFrom ? (to = timestamp) : (from = timestamp);
+                if (withRangeFrom) {
+                    to = timestamp;
+                } else {
+                    from = timestamp;
+                }
             }
 
             if (from > to) [from, to] = [to, from];

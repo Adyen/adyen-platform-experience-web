@@ -20,6 +20,7 @@ function InputBase(
         onBlur,
         onFocusHandler,
         errorMessage,
+        errorTestId,
         iconBeforeSlot,
         iconAfterSlot,
         dropdown,
@@ -111,6 +112,7 @@ function InputBase(
         isInvalid: iiv,
         isValid: iv,
         isCollatingErrors: ce,
+        errorTestId: eti,
         autoFocus,
         autofocus,
         ...newProps
@@ -167,7 +169,7 @@ function InputBase(
                     disableToggleFocusOnClose
                 />
             ) : null,
-        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly]
+        [dropdown, handleDropdownChange, isCollatingErrors, isDropdownReadOnly, selectClassNameModifiers]
     );
 
     return (
@@ -196,7 +198,7 @@ function InputBase(
             ) : (
                 inputElement
             )}
-            {isInvalid && errorMessage && <FieldError id={uniqueId} errorMessage={errorMessage} />}
+            {isInvalid && errorMessage && <FieldError id={uniqueId} errorMessage={errorMessage} testId={errorTestId} />}
         </>
     );
 }

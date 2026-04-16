@@ -51,7 +51,9 @@ const TimeRangeSelector = ({
     }, [calendarRef, customSelection, from, timestamp, to]);
 
     useEffect(() => {
-        selectedOption && onTimeRangeSelected?.(selectedOption);
+        if (selectedOption) {
+            onTimeRangeSelected?.(selectedOption);
+        }
     }, [selectedOption, onTimeRangeSelected]);
 
     return (

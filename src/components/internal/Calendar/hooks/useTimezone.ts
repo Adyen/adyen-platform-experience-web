@@ -39,7 +39,7 @@ const useTimezone = ({ timezone: tz, withClock = false }: UseTimezoneConfig = EM
     const shouldWatchClock = useMemo(() => boolOrFalse(withClock), [withClock]);
     const timezone = useMemo(() => getUsedTimezone(tz), [tz]);
 
-    const [timestamp, setTimestamp] = useState(Date.now());
+    const [timestamp, setTimestamp] = useState(() => Date.now());
     const [clockTime, GMTOffset] = useMemo(() => getTimezoneTime(timezone, timestamp), [timestamp, timezone]);
 
     useEffect(() => {

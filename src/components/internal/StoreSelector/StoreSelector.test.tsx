@@ -22,7 +22,7 @@ describe('StoreSelector', () => {
 
     test('should render null when stores array is empty', () => {
         const { container } = render(<StoreSelector stores={[]} selectedStoreId={undefined} setSelectedStoreId={mockSetSelectedStoreId} />);
-        expect(container.firstChild).toBeNull();
+        expect(container).toBeEmptyDOMElement();
     });
 
     test('should not render a button when there is only one store', () => {

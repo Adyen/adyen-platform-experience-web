@@ -13,7 +13,7 @@ export default class __TimeSlice__ {
     constructor(timezone?: string, time?: Time, timeEdge?: TimeFrameRangeEdge);
     constructor(...args: any[]) {
         if (args.length >= 3) {
-            let timestamp = new Date(args[1]).getTime();
+            const timestamp = new Date(args[1]).getTime();
 
             if (typeof args[2] !== 'symbol') {
                 this.#startTimestamp = timestamp || this.#startTimestamp;

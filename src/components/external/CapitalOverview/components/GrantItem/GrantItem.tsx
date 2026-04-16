@@ -72,7 +72,12 @@ export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDeta
                     <div id={elementIds.grantStatus}>
                         {grant.status === 'Active' ? (
                             <>
-                                <Typography id={elementIds.termEnds} variant={TypographyVariant.CAPTION} el={TypographyElement.SPAN}>
+                                <Typography
+                                    id={elementIds.termEnds}
+                                    variant={TypographyVariant.CAPTION}
+                                    el={TypographyElement.SPAN}
+                                    aria-hidden={true}
+                                >
                                     <Translation
                                         translationKey="capital.overview.grants.item.termEnds"
                                         fills={{

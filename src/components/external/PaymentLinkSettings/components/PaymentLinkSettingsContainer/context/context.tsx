@@ -70,7 +70,7 @@ export const PaymentLinkSettingsProvider = memo(
         const [activeMenuItem, setActiveMenuItem] = useState<PaymentLinkSettingsItem | null>(null);
         const [payload, setPayload] = useState<PaymentLinkSettingsPayload>(undefined);
         const [savedData, setSavedData] = useState<PaymentLinkSettingsData>(undefined);
-        const isValid = useRef(false);
+        const isValidRef = useRef(false);
         const [saveActionCalled, setSaveActionCalled] = useState<boolean | undefined>(false);
         const { filteredStores, selectedStore, setSelectedStore, isFetching: isLoadingStores, error: storesError, allStores } = useStores(storeIds);
         const [isSaving, setIsSaving] = useState(false);
@@ -84,7 +84,7 @@ export const PaymentLinkSettingsProvider = memo(
         }, [menuItemPreSelect]);
 
         const getIsValid = useCallback(() => {
-            return isValid.current;
+            return isValidRef.current;
         }, []);
 
         const { onSave } = useSaveAction(
@@ -118,11 +118,15 @@ export const PaymentLinkSettingsProvider = memo(
             switch (activeMenuItem) {
                 case MenuItem.theme:
                     setLoading(true);
-                    selectedStore && setFetchThemeEnabled(true);
+                    if (selectedStore) {
+                        setFetchThemeEnabled(true);
+                    }
                     break;
                 case MenuItem.termsAndConditions:
                     setLoading(true);
-                    selectedStore && setFetchTermsAndConditionsEnabled(true);
+                    if (selectedStore) {
+                        setFetchTermsAndConditionsEnabled(true);
+                    }
                     break;
             }
         }, [activeMenuItem, selectedStore, resetState]);
@@ -167,7 +171,9 @@ export const PaymentLinkSettingsProvider = memo(
         }, [activeData, setSavedData]);
 
         useEffect(() => {
-            if (!selectedStore) setSelectedStore(filteredStores?.[0]?.id);
+            if (!selectedStore) {
+                setSelectedStore(filteredStores?.[0]?.id);
+            }
         }, [filteredStores, selectedStore, setSelectedStore]);
 
         const onDataSave = useCallback(
@@ -178,12 +184,14 @@ export const PaymentLinkSettingsProvider = memo(
         );
 
         useEffect(() => {
-            if (themeError || termsAndConditionsError) setLoading(false);
+            if (themeError || termsAndConditionsError) {
+                setLoading(false);
+            }
         }, [themeError, termsAndConditionsError]);
 
         const setIsValid = useCallback((validity: boolean) => {
-            if (isValid.current !== validity) {
-                isValid.current = validity;
+            if (isValidRef.current !== validity) {
+                isValidRef.current = validity;
             }
         }, []);
 

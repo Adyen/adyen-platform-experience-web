@@ -30,7 +30,7 @@ const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ..
     const expandableCardRef = useRef<HTMLDivElement>(null);
     const expandButtonRef = useRef<HTMLButtonElement>(null);
     const expandedContentId = `elem-${useUniqueId()}`;
-    const isClosedFromOutside = useRef(false);
+    const isClosedFromOutsideRef = useRef(false);
     const isOpenRef = useRef(isOpen);
 
     const clickOutsideRef = useClickOutside<HTMLElement>(
@@ -38,7 +38,7 @@ const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ..
         useCallback(() => {
             if (isOpen) {
                 toggleIsOpen();
-                isClosedFromOutside.current = true;
+                isClosedFromOutsideRef.current = true;
             }
         }, [isOpen, toggleIsOpen])
     );
@@ -79,7 +79,9 @@ const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ..
 
         const resizeObserver = new ResizeObserver(entries => {
             for (const entry of entries) {
-                if (entry.target !== element) continue;
+                if (entry.target !== element) {
+                    continue;
+                }
                 setCollapsedCardHeight(element.offsetHeight || 0);
             }
         });
@@ -98,10 +100,10 @@ const ExpandableCard = ({ renderContent, children, filled, fullWidth, inFlow, ..
         } else {
             // We want to manually focus the expand button only when the card is collapsed by inside clicks
             // Therefore we skip the manual focus initially when isOpen is false and when we have outside clicks
-            if (isOpenRef.current !== isOpen && !isClosedFromOutside.current) {
+            if (isOpenRef.current !== isOpen && !isClosedFromOutsideRef.current) {
                 expandButtonRef.current?.focus();
             }
-            isClosedFromOutside.current = false;
+            isClosedFromOutsideRef.current = false;
         }
         isOpenRef.current = isOpen;
     }, [isOpen, clickOutsideRef]);

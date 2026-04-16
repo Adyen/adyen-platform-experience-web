@@ -23,7 +23,7 @@ export type DatePickerProps = Omit<CalendarProps, 'getGridLabel'> &
 const DatePicker = forwardRef((props: DatePickerProps, ref) => {
     const { i18n } = useCoreContext();
     const [controlsRenderer, controlsContainerRef] = useCalendarControlsRendering(props.renderControl);
-    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(performance.now());
+    const [lastUpdatedTimestamp, setLastUpdatedTimestamp] = useState<DOMHighResTimeStamp>(() => performance.now());
 
     const withTimezone = useMemo(() => boolOrTrue(props.showTimezoneInfo), [props.showTimezoneInfo]);
     const { clockTime: time, GMTOffset: offset } = useTimezone({ timezone: props.timezone, withClock: withTimezone });
@@ -37,16 +37,17 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
         [i18n]
     );
 
+    const { onHighlight: onHighlightProp } = props;
     const onHighlight = useCallback(() => {
         setLastUpdatedTimestamp(performance.now());
 
         if (calendarRef.current?.from && calendarRef.current?.to) {
-            props.onHighlight?.(+calendarRef.current?.from, +calendarRef.current?.to);
+            onHighlightProp?.(+calendarRef.current?.from, +calendarRef.current?.to);
         }
-    }, [setLastUpdatedTimestamp, props.onHighlight]);
+    }, [calendarRef, setLastUpdatedTimestamp, onHighlightProp]);
 
     return (
-        <div className={datePickerClassName}>
+        <div className={datePickerClassName} data-testid="date-picker">
             <div className={'adyen-pe-datepicker__selector-container'}>
                 <TimeRangeSelector
                     now={props.now}
@@ -79,7 +80,9 @@ const DatePicker = forwardRef((props: DatePickerProps, ref) => {
                 trackCurrentDay={true}
             />
             {withTimezone && (
-                <div className={'adyen-pe-datepicker__timezone'}>{i18n.get('common.filters.types.date.timezoneInfo', timezoneI18nOptions)}</div>
+                <div className={'adyen-pe-datepicker__timezone'} data-testid="date-picker-timezone">
+                    {i18n.get('common.filters.types.date.timezoneInfo', timezoneI18nOptions)}
+                </div>
             )}
         </div>
     );

@@ -22,7 +22,7 @@ const __INDEXED_PROTO__ = Object.freeze(
     })
 );
 
-export const createIndexed = <T extends Record<any, any> = {}, V = any>(
+export const createIndexed = <T extends object = object, V = any>(
     iterablePropertyDescriptorsOrSize: PropertyDescriptorMap | (() => number) | number,
     iteratorValueGetter: (index: number) => V
 ): Indexed<V> & T => {

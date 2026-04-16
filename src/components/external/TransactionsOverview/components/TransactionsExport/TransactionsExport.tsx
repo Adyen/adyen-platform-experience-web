@@ -149,12 +149,16 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
             const isMasterSwitch = checkbox.id === masterSwitchId;
 
             setExportColumns(exportColumns => {
-                if (isMasterSwitch) return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                if (isMasterSwitch) {
+                    return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                }
                 if (EXPORT_COLUMNS.includes(checkedColumn)) {
                     const columnIndex = exportColumns.indexOf(checkedColumn);
                     if (checked) {
                         // Include checked column
-                        if (columnIndex < 0) return [...exportColumns, checkedColumn];
+                        if (columnIndex < 0) {
+                            return [...exportColumns, checkedColumn];
+                        }
                     } else if (columnIndex >= 0) {
                         // Exclude unchecked column
                         return [...exportColumns.slice(0, columnIndex), ...exportColumns.slice(columnIndex + 1)];
@@ -168,9 +172,11 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const sendPopoverToggleEvent = useCallback(
         (popoverOpen: boolean) => {
-            popoverOpen
-                ? userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties)
-                : userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            if (popoverOpen) {
+                userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
+            } else {
+                userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            }
         },
         [userEvents]
     );
@@ -261,7 +267,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const renderAlertError = useCallback(
         () => (
-            <Alert onClose={dismissExportError} className={classes.errorAlert} type={AlertTypeOption.CRITICAL}>
+            <Alert
+                onClose={dismissExportError}
+                className={classes.errorAlert}
+                type={AlertTypeOption.CRITICAL}
+                data-testid="transactions-export-error-alert"
+            >
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
             </Alert>
         ),
@@ -305,9 +316,9 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
                     targetElement={exportButtonRef}
                     title={exportButtonLabel}
                 >
-                    <div className={classes.popover}>
+                    <div className={classes.popover} data-testid="transactions-export-popover">
                         <div className={classes.popoverSections}>
-                            <div className={cx(classes.popoverSection, classes.filtersSection)}>
+                            <div className={cx(classes.popoverSection, classes.filtersSection)} data-testid="transactions-export-filters">
                                 <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
                                 {activeFilters.map(filter => (
                                     <Tag label={i18n.get(filter)} key={filter} />

@@ -21,7 +21,7 @@ test.describe('PayByLinkOverview - With props to sub-components', () => {
         await page.getByRole('option', { name: 'NY001' }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
 
-        const merchantReferenceValue = await page.locator('input[name="reference"]').inputValue();
+        const merchantReferenceValue = await page.getByTestId('form-field-reference').getByRole('textbox').inputValue();
 
         expect(merchantReferenceValue).toBe('Prefilled Merchant Reference');
     });

@@ -16,7 +16,7 @@ export class TransactionsOverviewPage {
     public dateFilter: Locator;
     public firstRow: Locator;
 
-    constructor(page: Page, rootElementSelector = '.adyen-pe-transactions-overview-container') {
+    constructor(page: Page, rootElementSelector?: string) {
         this.dataGrid = new DataGridPage(page, rootElementSelector);
         this.dataGridBody = this.dataGrid.gridBody;
         this.firstRow = this.dataGrid.getRow();

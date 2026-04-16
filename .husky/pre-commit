@@ -1,15 +1,22 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+RED='\033[0;31m'
 GREEN='\033[0;32m'
-LIGHT_PURPLE='\033[1;35m'
 LIGHT_BLUE='\033[1;34m'
 NC='\033[0m'
 
 echo "----- ${LIGHT_BLUE}Pre-commit hook checks started${NC} -----"
 
-echo "${LIGHT_GREEN}Formatting code with prettier!${NC}"
-npx lint-staged --allow-empty
+echo "${GREEN}Running lint-staged (Prettier, Stylelint, ESLint)${NC}"
 
-# Sucessfull checking
-echo " ${GREEN}✓✓✓✓✓ prettier code format checked${NC}"
+if pnpm exec lint-staged --allow-empty; then
+    # Successful checking
+    echo " ${GREEN}✓✓✓✓✓ All checks passed (formatting, styles, linting)${NC}"
+else
+    # Failed checking
+    echo ""
+    echo " ${RED}✗✗✗✗✗ Pre-commit checks failed${NC}"
+    echo " ${RED}Please fix the errors above and try committing again${NC}"
+    exit 1
+fi

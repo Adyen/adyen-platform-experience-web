@@ -28,7 +28,7 @@ describe('BalanceAccountSelector', () => {
     test('should render selected balance account with description (if available)', () => {
         render(<BalanceAccountSelectorWrapper balanceAccounts={[...BALANCE_ACCOUNTS]} />);
 
-        const activeBalanceAccountDescription = BALANCE_ACCOUNTS[0]?.description!;
+        const activeBalanceAccountDescription = BALANCE_ACCOUNTS[0]!.description!;
         const buttonTextElement = within(screen.getByRole('button')).getByText(activeBalanceAccountDescription);
 
         expect(buttonTextElement).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe('BalanceAccountSelector', () => {
     test('should render selected balance account with id (if description is missing)', () => {
         render(<BalanceAccountSelectorWrapper balanceAccounts={BALANCE_ACCOUNTS_WITHOUT_DESCRIPTION} />);
 
-        const activeBalanceAccountId = BALANCE_ACCOUNTS_WITHOUT_DESCRIPTION[0]?.id!;
+        const activeBalanceAccountId = BALANCE_ACCOUNTS_WITHOUT_DESCRIPTION[0]!.id;
         const buttonTextElement = within(screen.getByRole('button')).getByText(activeBalanceAccountId);
 
         expect(buttonTextElement).toBeInTheDocument();

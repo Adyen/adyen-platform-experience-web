@@ -50,7 +50,7 @@ export function FormSelect<TFieldValues>({
         if (currentValue && !items.some(item => item.id === currentValue)) {
             setValue(fieldName, '');
         }
-    }, [getValues, setValue, items]);
+    }, [getValues, setValue, items, fieldName]);
 
     useEffect(() => {
         if (items && items.length === 1) {
@@ -60,7 +60,12 @@ export function FormSelect<TFieldValues>({
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired && !hideOptionalLabel} className={className}>
+            <FormField
+                label={label}
+                optional={!isRequired && !hideOptionalLabel}
+                className={className}
+                testId={fieldName ? `form-field-${fieldName}` : undefined}
+            >
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}
@@ -91,7 +96,13 @@ export function FormSelect<TFieldValues>({
                                     selected={field.value as string}
                                     fitPosition
                                 />
-                                {isInvalid && fieldState.error?.message && <FieldError errorMessage={fieldState.error?.message} withTopMargin />}
+                                {isInvalid && fieldState.error?.message && (
+                                    <FieldError
+                                        errorMessage={fieldState.error?.message}
+                                        testId={fieldName ? `field-error-${fieldName}` : undefined}
+                                        withTopMargin
+                                    />
+                                )}
                             </div>
                         );
                     }}

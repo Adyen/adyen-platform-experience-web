@@ -31,12 +31,12 @@ export type WithEitherPages<T extends PaginationType> = WithPageNeighbours<Which
 export type WithNextPage<T extends PaginationType> = WithNextPageNeighbour<WhichPageNeighbour<T>>;
 export type WithPrevPage<T extends PaginationType> = WithPrevPageNeighbour<WhichPageNeighbour<T>>;
 
-export type WithPaginationCursor<T extends Record<any, any> = {}> = T & { cursor?: string };
-export type WithPaginationLimit<T extends Record<any, any> = {}> = T & { limit?: number };
-export type WithPaginationOffset<T extends Record<any, any> = {}> = T & { offset: number };
-export type WithPaginationRecordSize<T extends Record<any, any> = {}> = T & { size?: number };
+export type WithPaginationCursor<T extends Record<any, any> = Record<never, never>> = T & { cursor?: string };
+export type WithPaginationLimit<T extends Record<any, any> = Record<never, never>> = T & { limit?: number };
+export type WithPaginationOffset<T extends Record<any, any> = Record<never, never>> = T & { offset: number };
+export type WithPaginationRecordSize<T extends Record<any, any> = Record<never, never>> = T & { size?: number };
 
-export type WithPaginationLimitSelection<T extends Record<any, any> = {}> = T & {
+export type WithPaginationLimitSelection<T extends Record<any, any> = Record<never, never>> = T & {
     limitOptions?: readonly number[];
     onLimitSelection?: (limit: number) => void;
 };
