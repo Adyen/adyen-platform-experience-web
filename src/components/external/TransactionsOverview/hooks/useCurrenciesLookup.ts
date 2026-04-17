@@ -76,7 +76,10 @@ const useCurrenciesLookup = ({ defaultCurrency, balances, totals }: UseCurrencyL
         [sortedCurrencies, defaultCurrency]
     );
 
-    return { currenciesDictionary, defaultCurrency, defaultCurrencySortedCurrencies, sortedCurrencies } as const;
+    return useMemo(
+        () => ({ currenciesDictionary, defaultCurrency, defaultCurrencySortedCurrencies, sortedCurrencies }) as const,
+        [currenciesDictionary, defaultCurrency, defaultCurrencySortedCurrencies, sortedCurrencies]
+    );
 };
 
 export default useCurrenciesLookup;
