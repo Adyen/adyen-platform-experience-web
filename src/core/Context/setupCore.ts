@@ -12,6 +12,7 @@ export interface CoreContextValue {
     getDatasetAsset: CoreProviderProps['getDatasetAsset'];
     getCdnConfig: CoreProviderProps['getCdnConfig'];
     getCdnDataset: CoreProviderProps['getCdnDataset'];
+    environment: CoreProviderProps['environment'];
 }
 
 export async function waitForI18n(i18n?: Localization['i18n']): Promise<void> {
@@ -30,5 +31,6 @@ export function createCoreContextValue(props: CoreProviderProps): CoreContextVal
         getDatasetAsset: props.getDatasetAsset,
         getCdnConfig: props.getCdnConfig,
         getCdnDataset: props.getCdnDataset,
+        environment: props.environment,
     };
 }

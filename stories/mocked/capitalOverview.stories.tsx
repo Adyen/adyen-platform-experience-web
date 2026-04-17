@@ -100,33 +100,63 @@ export const GrantPending: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const GrantMissingActionSignTOS: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Missing Action Sign TOS',
+export const GrantMultipleActionsEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple actions - Embedded',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.signTOS,
+        msw: CapitalOverviewMockedResponses.grantMultipleActionsEmbedded,
     },
 };
 
-export const GrantMissingActionAnacredit: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Missing Action Anacredit',
+export const GrantMultipleAsyncActionsEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple async actions - Embedded',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.anacredit,
+        msw: CapitalOverviewMockedResponses.grantMultipleAsyncActionsEmbedded,
     },
 };
 
-export const GrantMultipleActions: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple missing actions',
+export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple actions - Hosted',
     args: {
         mockedApi: true,
     },
     parameters: {
-        msw: CapitalOverviewMockedResponses.grantActions,
+        msw: CapitalOverviewMockedResponses.grantMultipleActionsHosted,
+    },
+};
+
+export const GrantMultipleAsyncActionsHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Multiple async actions - Hosted',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantMultipleAsyncActionsHosted,
+    },
+};
+
+export const GrantSingleActionEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Single action - Embedded',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantSingleActionEmbedded,
+    },
+};
+
+export const GrantSingleActionHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Grant: Single action - Hosted',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grantSingleActionHosted,
     },
 };
 
@@ -264,14 +294,26 @@ export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof C
     },
 };
 
-export const ErrorMissingActionsGeneric: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Missing actions - Generic',
+export const ErrorActionsEmbedded: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Actions Embedded',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorMissingActionsGeneric,
+            handlers: CapitalOverviewMockedResponses.errorActionsEmbedded,
+        },
+    },
+};
+
+export const ErrorActionsHosted: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - Actions Hosted',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOverviewMockedResponses.errorActionsHosted,
         },
     },
 };

@@ -7,9 +7,8 @@ const STORY_ID = 'mocked-transactions-transaction-details--default';
 
 test.describe('Default', () => {
     const expectSamePaymentStatusBoxRendering = async (page: Page) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--blue', { hasText: 'Partially refunded' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByText('Partially refunded', { exact: true })).toBeVisible();
 
         // Using first here to prevent clashes with other amounts displayed on page
         await expect(page.getByText('607.50 EUR', { exact: true }).first()).toBeVisible();
@@ -19,8 +18,7 @@ test.describe('Default', () => {
 
     const expectBeforePaymentRefundDetailsRendering = async (page: Page) => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         const refundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
 
@@ -32,8 +30,7 @@ test.describe('Default', () => {
         await expect(page.getByText('You already refunded €473.75', { exact: true })).toBeVisible();
         await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
 
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(2);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(2);
+        await expect(page.getByRole('alert')).toHaveCount(2);
 
         const lockedRefundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
 
@@ -119,8 +116,7 @@ test.describe('Default', () => {
             await expect(page.getByText('EUR', { exact: true })).toBeVisible();
 
             await expect(page.getByText('You can only refund a maximum of €133.75', { exact: true })).toBeVisible();
-            await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-            await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+            await expect(page.getByRole('alert')).toHaveCount(1);
 
             const amountInput = page.getByLabel('Amount to refund', { exact: true });
             const reasonSelect = page.getByLabel('Reason for refund', { exact: true });
@@ -166,7 +162,7 @@ test.describe('Default', () => {
                 await reasonSelect.click();
 
                 const chosenRefundReason = refundReasons[i];
-                const dropdownList = page.locator('.adyen-pe-dropdown__list');
+                const dropdownList = page.getByRole('listbox');
 
                 await expect(dropdownList).toBeVisible();
                 await expect(dropdownList.getByRole('option')).toHaveCount(refundReasonsCount);

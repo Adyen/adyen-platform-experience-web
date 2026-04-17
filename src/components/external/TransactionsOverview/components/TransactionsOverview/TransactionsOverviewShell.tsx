@@ -11,7 +11,7 @@ import TransactionsExport from '../TransactionsExport/TransactionsExport';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import './TransactionsOverview.scss';
 
-const TransactionsOverviewShell = ({ children }: PropsWithChildren<Record<never, never>>) => {
+const TransactionsOverviewShell = ({ children }: PropsWithChildren) => {
     const { filterBarState, hideTitle, isTransactionsView, transactionsListResult, transactionsViewState } = useTransactionsOverviewContext();
     const { activeView, onViewChange, viewTabs } = transactionsViewState;
     const { isMobileContainer } = filterBarState;

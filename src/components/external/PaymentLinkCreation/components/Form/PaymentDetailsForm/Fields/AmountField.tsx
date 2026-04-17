@@ -61,7 +61,13 @@ export const AmountField = () => {
 
     return (
         <VisibleField<PaymentLinkCreationFormValues> name={VALUE_FIELD_NAME}>
-            <FormField label={i18n.get('payByLink.creation.fields.amount.label')} optional={false} supportText={undefined} className={undefined}>
+            <FormField
+                label={i18n.get('payByLink.creation.fields.amount.label')}
+                optional={false}
+                supportText={undefined}
+                className={undefined}
+                testId="form-field-amount.value"
+            >
                 <Controller<PaymentLinkCreationFormValues>
                     name={VALUE_FIELD_NAME}
                     control={control}
@@ -88,7 +94,7 @@ export const AmountField = () => {
                                     maxValue={MAX_AMOUNT}
                                     readonly={{ amount: isAmountReadOnly, currency: isCurrencyReadOnly }}
                                 />
-                                {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} />}
+                                {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} testId="field-error-amount.value" />}
                             </>
                         );
                     }}

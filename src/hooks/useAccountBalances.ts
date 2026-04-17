@@ -80,14 +80,18 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
         cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
-    return {
-        balances,
-        error,
-        canRefresh,
-        refresh,
-        isAvailable: canGetBalances,
-        isWaiting: isFetching || (canGetBalances && !canFetchBalances && !data),
-    } as const;
+    return useMemo(
+        () =>
+            ({
+                balances,
+                error,
+                canRefresh,
+                refresh,
+                isAvailable: canGetBalances,
+                isWaiting: isFetching || (canGetBalances && !canFetchBalances && !data),
+            }) as const,
+        [balances, canFetchBalances, canGetBalances, canRefresh, data, error, isFetching, refresh]
+    );
 };
 
 export default useAccountBalances;

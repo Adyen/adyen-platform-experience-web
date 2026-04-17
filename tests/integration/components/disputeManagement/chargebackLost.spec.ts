@@ -9,7 +9,7 @@ test.describe('Chargeback - Lost', () => {
     });
 
     test('should render chargeback lost', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Lost' })).toBeVisible();
+        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
+        await expect(page.getByText('Lost', { exact: true })).toBeVisible();
     });
 });

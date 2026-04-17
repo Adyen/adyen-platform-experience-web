@@ -9,8 +9,8 @@ test.describe('Request for information - Acceptable', () => {
     });
 
     test('should complete the accept flow for request for information type', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Request for information' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag', { hasText: 'Unresponded' })).toBeVisible();
+        await expect(page.getByText('Request for information', { exact: true })).toBeVisible();
+        await expect(page.getByText('Unresponded', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Contact support to respond to this request for information.')).toBeVisible();
 
@@ -26,6 +26,6 @@ test.describe('Request for information - Acceptable', () => {
 
         await expect(page.getByText('Request for information has been accepted')).toBeVisible();
         await page.getByRole('button', { name: 'Show details' }).click();
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Request for information' })).toBeVisible();
+        await expect(page.getByText('Request for information', { exact: true })).toBeVisible();
     });
 });

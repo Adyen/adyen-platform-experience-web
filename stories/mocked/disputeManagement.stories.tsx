@@ -289,7 +289,7 @@ export const DataCustomization: ElementStory<typeof DisputeManagement> = {
                             _product: 'Coffee',
                             _summary: {
                                 type: 'link',
-                                value: 'Summary',
+                                value: 'Go to Summary',
                                 config: {
                                     href: CUSTOM_URL_EXAMPLE,
                                 },
