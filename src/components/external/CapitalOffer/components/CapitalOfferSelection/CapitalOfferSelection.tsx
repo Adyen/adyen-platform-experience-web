@@ -6,7 +6,6 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
@@ -199,8 +198,6 @@ export const CapitalOfferSelection = ({
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
-
-    useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
         <div className="adyen-pe-capital-offer-selection">

@@ -1,9 +1,10 @@
 import { Meta } from '@storybook/preact';
 import { ElementProps, ElementStory } from '../utils/types';
-import { DisputesOverview, DisputeManagement } from '../../src';
+import { DisputesOverview } from '../../src';
 import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
 import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { getCustomDisputesData } from './utils/customDataRequest';
 
 const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes/Disputes Overview' };
 
@@ -50,7 +51,7 @@ export const NetworkError: ElementStory<typeof DisputesOverview> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof DisputeManagement> = {
+export const DataCustomization: ElementStory<typeof DisputesOverview> = {
     name: 'Data Customization',
     args: {
         coreOptions: {
@@ -59,13 +60,29 @@ export const DataCustomization: ElementStory<typeof DisputeManagement> = {
                     _store: 'Store',
                     _product: 'Product',
                     _summary: 'Summary',
-                    _sendEmail: 'Email',
+                    _sendEmail: 'Action',
                     _country: 'Country',
                 },
             },
         },
         mockedApi: true,
         dataCustomization: {
+            list: {
+                fields: [
+                    { key: 'disputeReason', visibility: 'hidden' },
+                    { key: 'reason', visibility: 'hidden' },
+                    { key: '_summary' },
+                    { key: '_sendEmail' },
+                    { key: 'disputedAmount', align: 'left' },
+                ],
+                onDataRetrieve: data => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            resolve(getCustomDisputesData(data));
+                        }, 200);
+                    });
+                },
+            },
             details: {
                 fields: [
                     { key: 'id', visibility: 'hidden' },

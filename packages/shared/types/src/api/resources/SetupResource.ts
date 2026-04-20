@@ -48,6 +48,7 @@ export interface components {
             | 'getDynamicGrantOffer'
             | 'getDynamicGrantOffersConfiguration'
             | 'getGrants'
+            | 'getOnboardingConfiguration'
             | 'getNetworkTokenActivationData'
             | 'getPaymentLinks'
             | 'getPayout'

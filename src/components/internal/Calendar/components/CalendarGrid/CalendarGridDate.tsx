@@ -44,6 +44,7 @@ const CalendarGridDate = fixedForwardRef(
             const withinRange = flags.WITHIN_RANGE;
 
             props['data-today'] = flags.CURRENT;
+            if (flags.CURRENT) props['data-testid'] = 'calendar-current-day';
             props['data-first-week-day'] = flags.LINE_START;
             props['data-last-week-day'] = flags.LINE_END;
             props['data-weekend'] = flags.WEEKEND;

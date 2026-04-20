@@ -12,7 +12,6 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
-import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
 import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import './CapitalOffer.scss';
 
@@ -72,7 +71,6 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     }, [selectedOffer]);
 
     useLandedPageEvent({ ...sharedAnalyticsEventProperties, label: 'Capital offer' });
-    useDurationEvent(sharedAnalyticsEventProperties);
 
     return (
         <div className={CAPITAL_OFFER_CLASS_NAMES.base}>

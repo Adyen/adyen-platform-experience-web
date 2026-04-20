@@ -3,9 +3,9 @@ import { expect, type Locator } from '@playwright/test';
 export const extractTodayDateFromDatePicker = async (datePicker: Locator) => {
     await expect(datePicker).toBeVisible();
 
-    const monthAndYear = (await datePicker.locator('.adyen-pe-calendar__month-name').textContent()) ?? '';
-    const timezone = (await datePicker.locator('.adyen-pe-datepicker__timezone').textContent()) ?? '';
-    const date = (await datePicker.locator(`[data-today='1']`).textContent()) ?? '';
+    const monthAndYear = (await datePicker.getByTestId('calendar-month-name').textContent()) ?? '';
+    const timezone = (await datePicker.getByTestId('date-picker-timezone').textContent()) ?? '';
+    const date = (await datePicker.getByTestId('calendar-current-day').textContent()) ?? '';
     const month = monthAndYear.slice(0, 3);
     const year = monthAndYear.slice(-4);
 
@@ -24,7 +24,7 @@ export const selectTodayDateFromDatePicker = async (datePicker: Locator) => {
     const today = await extractTodayDateFromDatePicker(datePicker);
 
     // Select today's date from the calendar
-    await datePicker.locator(`[data-today='1']`).click();
+    await datePicker.getByTestId('calendar-current-day').click();
     await expect(dateRangePresetSelectButton).toHaveText('Custom');
 
     // Apply custom date range selection

@@ -88,14 +88,18 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
-    return {
-        totals,
-        error,
-        canRefresh,
-        refresh,
-        isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
-    } as const;
+    return useMemo(
+        () =>
+            ({
+                totals,
+                error,
+                canRefresh,
+                refresh,
+                isAvailable: canGetTransactionTotals,
+                isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
+            }) as const,
+        [canFetchTransactionTotals, canGetTransactionTotals, canRefresh, data, error, isFetching, refresh, totals]
+    );
 };
 
 export default useTransactionsTotals;

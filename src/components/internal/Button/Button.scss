@@ -1,5 +1,8 @@
 @use '@integration-components/style';
 
+//stylelint-disable no-invalid-position-at-import-rule
+@use '@integration-components/style/breakpoints' as *;
+
 .adyen-pe-button {
     $adyen-pe-button: &;
 
@@ -46,6 +49,14 @@
 
     &--hidden {
         display: none;
+    }
+
+    &--primary,
+    &--secondary {
+        @media (max-width: #{$adyen-pe-breakpoint-md}) {
+            min-height: 48px;
+            min-width: max(48px, min-content);
+        }
     }
 
     &--primary {
@@ -179,6 +190,14 @@
         align-items: center;
         display: inline-flex;
         justify-content: center;
+    }
+
+    &__icon-left {
+        margin-right: style.token(spacer-040);
+    }
+
+    &__icon-right {
+        margin-left: style.token(spacer-040);
     }
 
     &:disabled,

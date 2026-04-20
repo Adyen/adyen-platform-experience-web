@@ -16,6 +16,11 @@ export const sharedGrantsOverviewAnalyticsEventProperties = {
     subCategory: 'Grants overview',
 } as const;
 
+export const sharedActionAnalyticsEventProps = {
+    ...sharedCapitalOverviewAnalyticsEventProperties,
+    category: 'Missing action modal',
+};
+
 export const sharedPrequalifiedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
     subCategory: 'Prequalified',

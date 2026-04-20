@@ -4,8 +4,10 @@ import { getTranslatedKey } from '../../utils/utils';
 class FilterBarPage {
     public rootElement: Locator;
 
-    constructor(page: Page, rootElementSelector: string) {
-        this.rootElement = page.locator(rootElementSelector).getByTestId('filter-bar');
+    constructor(page: Page, rootElementSelector?: string) {
+        const rootElement = rootElementSelector ? page.locator(rootElementSelector) : page.getByTestId('component-root');
+
+        this.rootElement = rootElement.getByTestId('filter-bar');
     }
 
     getFilter(label: string) {

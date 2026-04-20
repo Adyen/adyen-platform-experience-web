@@ -16,5 +16,3 @@ export interface PayoutDetailsProps extends UIElementProps {
 }
 
 export type PayoutDetailsComponentProps = PayoutDetailsProps;
-
-export interface PayoutDetailsConfig {}

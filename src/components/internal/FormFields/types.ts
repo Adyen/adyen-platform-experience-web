@@ -45,6 +45,7 @@ export interface InputBaseProps {
     role?: JSX.HTMLAttributes<HTMLInputElement>['role'];
     min?: number;
     errorMessage?: string;
+    errorTestId?: string;
     lang?: HTMLInputElement['lang'];
     iconBeforeSlot?: ComponentChildren;
     iconAfterSlot?: ComponentChildren;

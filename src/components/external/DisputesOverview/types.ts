@@ -1,10 +1,10 @@
 import { UIElementProps, DataCustomizationObject, CustomDataRetrieved } from '../../types';
 import { IDisputeListItem } from '../../../types/api/models/disputes';
 import { StringWithAutocompleteOptions } from '../../../utils/types';
+import { DisputeDetailsCustomization } from '../DisputeManagement/types';
+import { DisputesTableFields as TableFields } from './components/DisputesTable/DisputesTable';
 
-type DisputesTableCols = 'createdAt' | 'disputeType' | 'status' | 'paymentMethod' | 'transactionId';
-
-export type DisputesTableFields = StringWithAutocompleteOptions<DisputesTableCols>;
+export type DisputesTableFields = StringWithAutocompleteOptions<TableFields>;
 
 export type DisputeStatusGroup = 'CHARGEBACKS' | 'FRAUD_ALERTS' | 'ONGOING_AND_CLOSED';
 
@@ -24,11 +24,9 @@ export interface DisputesOverviewProps extends UIElementProps {
     onRecordSelection?: (selection: { id: string; showModal: () => void }) => any;
     dataCustomization?: {
         list?: DisputesListCustomization;
-        details?: never;
+        details?: DisputeDetailsCustomization;
     };
     showDetails?: boolean;
 }
 
 export type DisputeOverviewComponentProps = DisputesOverviewProps;
-
-export interface DisputesOverviewConfig {}

@@ -4,13 +4,15 @@ class DataGridPage {
     public rootElement: Locator;
     public readonly gridBody: Locator;
 
-    constructor(page: Page, rootElementSelector: string) {
-        this.rootElement = page.locator(rootElementSelector).getByRole('table');
+    constructor(page: Page, rootElementSelector?: string) {
+        const rootElement = rootElementSelector ? page.locator(rootElementSelector) : page.getByTestId('component-root');
+
+        this.rootElement = rootElement.getByRole('table');
         this.gridBody = this.rootElement.getByRole('rowgroup').nth(1);
     }
 
-    getCell(label: string, row = 0) {
-        return this.getRow(row).locator(`div[aria-labelledby=${label}]`);
+    getCell(testId: string, row = 0) {
+        return this.getRow(row).getByTestId(testId);
     }
     getRow(row = 0) {
         return this.gridBody.getByRole('row').nth(row);

@@ -13,18 +13,18 @@ test.describe('Error - Totals', () => {
 
     test.describe('Transactions view', () => {
         test('should render totals error alert', async ({ page }) => {
-            const alert = page.locator('.adyen-pe-alert--warning');
+            const alert = page.getByRole('alert');
 
             await expect(alert).toBeVisible();
             await expect(alert.getByText('Something went wrong, we couldn’t load totals.', { exact: true })).toBeVisible();
             await expect(alert.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible();
 
             await expect(alert).toHaveCount(1);
-            await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+            await expect(page.getByRole('alert')).toHaveCount(1);
         });
 
         test('should refresh totals', async ({ page }) => {
-            const refreshButton = page.locator('.adyen-pe-alert--warning').getByRole('button', { name: 'Refresh', exact: true });
+            const refreshButton = page.getByRole('alert').getByRole('button', { name: 'Refresh', exact: true });
             const totalsRequest = page.waitForRequest(request => request.url().includes('/transactions/totals'));
             await refreshButton.click();
             await totalsRequest;

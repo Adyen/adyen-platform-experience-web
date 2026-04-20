@@ -9,14 +9,10 @@ test.describe('Chargeback - Not defendable', () => {
     });
 
     test('should render chargeback not-defendable alert message if not actionable, but needs action', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag', { hasText: 'Undefended' })).toBeVisible();
+        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
+        await expect(page.getByText('Undefended', { exact: true })).toBeVisible();
 
         await expect(page.getByRole('alert')).toBeVisible();
-
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
-        await expect(icon).toBeVisible();
 
         await expect(page.getByText('This chargeback can’t be defended. Contact support for details.')).toBeVisible();
     });

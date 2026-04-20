@@ -1,4 +1,11 @@
-import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src';
+import {
+    IDynamicOffersConfig,
+    IGBCapitalFundsCollection,
+    IGrant,
+    INLCapitalFundsCollection,
+    IOnboardingConfiguration,
+    IUSCapitalFundsCollection,
+} from '../../src';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {
@@ -138,7 +145,7 @@ export const PENDING_GRANT: IGrant = {
     status: 'Pending',
 };
 
-export const PENDING_GRANT_WITH_SIGN_TOS: IGrant = {
+export const PENDING_GRANT_WITH_SINGLE_ACTION: IGrant = {
     ...PENDING_GRANT,
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
@@ -150,13 +157,6 @@ export const PENDING_GRANT_WITH_MULTIPLE_ACTIONS: IGrant = {
     id: '14588ba8f278',
     offerExpiresAt: '2025-02-15',
     missingActions: [{ type: 'AnaCredit' }, { type: 'signToS' }],
-};
-
-export const PENDING_GRANT_WITH_ANACREDIT: IGrant = {
-    ...PENDING_GRANT,
-    id: '14588ba8f278',
-    offerExpiresAt: '2025-02-15',
-    missingActions: [{ type: 'AnaCredit' }],
 };
 
 export const REPAID_GRANT: IGrant = {
@@ -247,4 +247,9 @@ export const SIGN_TOS_ACTION_DETAILS = {
 
 export const ANACREDIT_ACTION_DETAILS = {
     url: 'https://www.adyen.com/capital',
+};
+
+export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
+    token: 'test-onboarding-token',
+    legalEntityId: 'test-legal-entity-id',
 };

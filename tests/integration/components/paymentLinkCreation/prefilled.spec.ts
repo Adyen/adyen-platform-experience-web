@@ -12,39 +12,39 @@ test.describe('Payment link creation - Link creation success', () => {
 
         // Step 2: Verify Payment Details are prefilled
         await expect(page.getByRole('button', { name: 'Custom', exact: true })).toBeVisible();
-        await expect(page.locator('input[name="linkValidity.quantity"]')).toHaveValue('3');
-        await expect(page.locator('button[name="linkValidity.durationUnit"]')).toHaveAttribute('title', 'weeks');
+        await expect(page.getByTestId('form-field-linkValidity.quantity').getByRole('spinbutton')).toHaveValue('3');
+        await expect(page.getByTestId('form-field-linkValidity.quantity').getByText('weeks', { exact: true })).toBeVisible();
         await expect(page.getByRole('button', { name: 'EUR' })).toBeVisible();
-        await expect(page.locator('input[name="amount.value"]')).toHaveValue('123.45');
-        await expect(page.locator('input[name="reference"]')).toHaveValue('SHP000001');
-        await expect(page.locator('button[name="linkType"]')).toHaveAttribute('title', 'Open');
-        await expect(page.locator('input[name="description"]')).toHaveValue('This is a test description');
+        await expect(page.getByTestId('form-field-amount.value').getByRole('spinbutton')).toHaveValue('123.45');
+        await expect(page.getByTestId('form-field-reference').getByRole('textbox')).toHaveValue('SHP000001');
+        await expect(page.getByTestId('form-field-linkType').getByText('Open', { exact: true })).toBeVisible();
+        await expect(page.getByTestId('form-field-description').getByRole('textbox')).toHaveValue('This is a test description');
         await expect(page.getByRole('button', { name: 'Tuesday, Dec 09, 2025' })).toBeVisible();
 
         await continueButton.click();
 
         // Step 3: Verify Customer Details are prefilled
-        await expect(page.locator('input[name="shopperReference"]')).toHaveValue('test');
-        await expect(page.locator('input[name="shopperName.firstName"]')).toHaveValue('John');
-        await expect(page.locator('input[name="shopperName.lastName"]')).toHaveValue('Doe');
-        await expect(page.locator('input[name="shopperEmail"]')).toHaveValue('test@example.com');
-        await expect(page.getByTitle('ES (+34)')).toBeVisible();
-        await expect(page.locator('input[name="telephoneNumber"]')).toHaveValue('3002119220');
-        await expect(page.locator('div[name="countryCode"]')).toHaveAttribute('title', 'Spain');
+        await expect(page.getByTestId('form-field-shopperReference').getByRole('textbox')).toHaveValue('test');
+        await expect(page.getByTestId('form-field-shopperName.firstName').getByRole('textbox')).toHaveValue('John');
+        await expect(page.getByTestId('form-field-shopperName.lastName').getByRole('textbox')).toHaveValue('Doe');
+        await expect(page.getByTestId('form-field-shopperEmail').getByRole('textbox')).toHaveValue('test@example.com');
+        await expect(page.getByTestId('form-field-telephoneNumber').getByText('ES (+34)', { exact: true })).toBeVisible();
+        await expect(page.getByTestId('form-field-telephoneNumber').getByRole('textbox')).toHaveValue('3002119220');
+        await expect(page.getByTestId('form-field-countryCode').getByText('Spain', { exact: true })).toBeVisible();
 
         // Delivery address
-        await expect(page.locator('input[name="deliveryAddress.street"]')).toHaveValue('Gran Via');
-        await expect(page.locator('input[name="deliveryAddress.houseNumberOrName"]')).toHaveValue('123');
-        await expect(page.locator('input[name="deliveryAddress.city"]')).toHaveValue('Madrid');
-        await expect(page.locator('input[name="deliveryAddress.postalCode"]')).toHaveValue('28001');
+        await expect(page.getByTestId('form-field-deliveryAddress.street').getByRole('textbox')).toHaveValue('Gran Via');
+        await expect(page.getByTestId('form-field-deliveryAddress.houseNumberOrName').getByRole('textbox')).toHaveValue('123');
+        await expect(page.getByTestId('form-field-deliveryAddress.city').getByRole('textbox')).toHaveValue('Madrid');
+        await expect(page.getByTestId('form-field-deliveryAddress.postalCode').getByRole('textbox')).toHaveValue('28001');
 
         // Billing address
-        await expect(page.locator('input[name="billingAddress.street"]')).toHaveValue('Calle 25 #34-12');
-        await expect(page.locator('input[name="billingAddress.houseNumberOrName"]')).toHaveValue('1');
-        await expect(page.locator('input[name="billingAddress.city"]')).toHaveValue('Medellin');
-        await expect(page.locator('input[name="billingAddress.postalCode"]')).toHaveValue('05001');
+        await expect(page.getByTestId('form-field-billingAddress.street').getByRole('textbox')).toHaveValue('Calle 25 #34-12');
+        await expect(page.getByTestId('form-field-billingAddress.houseNumberOrName').getByRole('textbox')).toHaveValue('1');
+        await expect(page.getByTestId('form-field-billingAddress.city').getByRole('textbox')).toHaveValue('Medellin');
+        await expect(page.getByTestId('form-field-billingAddress.postalCode').getByRole('textbox')).toHaveValue('05001');
 
-        await expect(page.getByTitle('English')).toBeVisible();
+        await expect(page.getByTestId('form-field-shopperLocale').getByText('English', { exact: true })).toBeVisible();
 
         await continueButton.click();
 

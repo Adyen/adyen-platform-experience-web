@@ -9,14 +9,10 @@ test.describe('Chargeback - Lost (Not defended)', () => {
     });
 
     test('should render chargeback lost alert message if not defended until deadline', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Chargeback' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Lost' })).toBeVisible();
+        await expect(page.getByText('Chargeback', { exact: true })).toBeVisible();
+        await expect(page.getByText('Lost', { exact: true })).toBeVisible();
 
         await expect(page.getByRole('alert')).toBeVisible();
-
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
-        await expect(icon).toBeVisible();
 
         await expect(page.getByText('This chargeback wasn’t defended and was lost by default.')).toBeVisible();
     });

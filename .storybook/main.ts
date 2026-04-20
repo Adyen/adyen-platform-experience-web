@@ -61,6 +61,7 @@ const config: StorybookConfig = {
                                         'vendor-storybook': '@storybook',
                                         'vendor-testing': '@testing-library',
                                         'vendor-utils': 'classnames',
+                                        'vendor-kyc': '@adyen/kyc-components',
                                     },
                                     'vendor-other'
                                 );

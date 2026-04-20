@@ -51,5 +51,8 @@ scripts/*/variables
 .smartlingrc
 platform-components-v1_cdn.tar.gz
 
+## Factory
+.factory/
+
 ## npm config
 .npmrc

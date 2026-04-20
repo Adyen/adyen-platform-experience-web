@@ -1,6 +1,6 @@
 import { IPayout, IReport, ITransaction } from '../../../src';
 import { CUSTOM_URL_EXAMPLE } from '../../utils/constants';
-import { IDispute } from '../../../src/types/api/models/disputes';
+import { IDisputeListItem } from '../../../src/types/api/models/disputes';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -102,7 +102,7 @@ export const getCustomReportsData = async (data: IReport[]) => {
     });
 };
 
-export const getCustomDisputesData = async (data: IDispute[]) => {
+export const getCustomDisputesData = async (data: IDisputeListItem[]) => {
     return data.map(dispute => {
         return {
             ...dispute,

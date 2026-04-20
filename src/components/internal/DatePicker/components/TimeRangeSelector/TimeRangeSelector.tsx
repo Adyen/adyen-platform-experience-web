@@ -34,11 +34,21 @@ const TimeRangeSelector = ({
         if (cachedTimestamp.current !== timestamp) {
             cachedTimestamp.current = timestamp;
 
+            const calFrom = calendarRef?.current?.from?.getTime();
+            const calTo = calendarRef?.current?.to?.getTime();
+
+            // Guard: If the calendar's internal state perfectly matches the intended
+            // programmatic preset state, we know the user did not manually intervene.
+            if (calFrom === from && calTo === to) {
+                rangeSelectionInProgress.current = false;
+                return;
+            }
+
             if (rangeSelectionInProgress.current) {
                 rangeSelectionInProgress.current = false;
             } else customSelection();
         }
-    }, [customSelection, timestamp]);
+    }, [calendarRef, customSelection, from, timestamp, to]);
 
     useEffect(() => {
         if (selectedOption) {

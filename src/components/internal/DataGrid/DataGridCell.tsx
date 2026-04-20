@@ -24,6 +24,7 @@ export default function DataGridCell({
     return (
         <div
             role="cell"
+            data-testid={column}
             className={cx('adyen-pe-data-grid__cell', {
                 'adyen-pe-data-grid__cell--right': position === 'right',
                 'adyen-pe-data-grid__cell--center': position === 'center',
