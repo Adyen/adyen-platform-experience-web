@@ -55,7 +55,10 @@
                 "packages/shared/hooks-preact/src/*"
             ],
             "@integration-components/reports/publish": [
-                "packages/domains/reports/publish/src/index.ts"
+                "packages/domains/reports/preact/publish/src/index.ts"
+            ],
+            "@integration-components/reports-vue/publish": [
+                "packages/domains/reports/vue/publish/src/index.ts"
             ]
         }
     }

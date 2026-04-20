@@ -210,11 +210,17 @@ importers:
         specifier: 4.0.10
         version: 4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0)
 
-  packages/domains/reports:
+  packages/domains/reports/preact:
     dependencies:
       '@integration-components/sdk-internal':
         specifier: workspace:*
-        version: link:../../shared/lib
+        version: link:../../../shared/lib
+
+  packages/domains/reports/vue:
+    dependencies:
+      '@integration-components/sdk-internal':
+        specifier: workspace:*
+        version: link:../../../shared/lib
 
   packages/sdk:
     dependencies:
