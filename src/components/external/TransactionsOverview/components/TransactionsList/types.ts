@@ -1,10 +1,10 @@
 import { IBalanceAccountBase } from '../../../../../types';
-import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../../../types';
+import { ExternalUIComponentProps, TransactionsOverviewComponentProps } from '../../../../types';
 import useTransactionsList from '../../hooks/useTransactionsList';
 import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 
 type PropsFromTransactionComponent = Pick<
-    ExternalUIComponentProps<TransactionOverviewComponentProps>,
+    ExternalUIComponentProps<TransactionsOverviewComponentProps>,
     'dataCustomization' | 'onContactSupport' | 'onRecordSelection' | 'showDetails'
 >;
 

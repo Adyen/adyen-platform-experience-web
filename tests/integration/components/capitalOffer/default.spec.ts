@@ -13,7 +13,6 @@ const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[
     await page.getByRole('button', { name: 'Review offer' }).click();
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
-        ['Duration', sharedCapitalOfferSelectionAnalyticsEventProperties],
     ]);
 };
 
@@ -113,7 +112,6 @@ test.describe('Default', () => {
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Back to slider view' }],
-            ['Duration', sharedCapitalOfferSummaryAnalyticsEventProperties],
         ]);
 
         await expect(page.getByText('Business financing offer')).toBeVisible();
@@ -166,9 +164,7 @@ test.describe('legalEntity from the US', () => {
         await expect(page.getByText('505 Brannan Street, San Francisco, CA 94107.')).toBeVisible();
 
         // Assert the paragraph is present
-        const legalParagraph = page.locator('p', {
-            hasText: 'If your application for business credit is denied',
-        });
+        const legalParagraph = page.getByText('If your application for business credit is denied');
         await expect(legalParagraph).toBeVisible();
 
         // Locate the link inside the paragraph

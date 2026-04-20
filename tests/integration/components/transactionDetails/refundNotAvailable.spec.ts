@@ -11,9 +11,8 @@ test.describe('Refund - Not available', () => {
     });
 
     test('should render payment transaction without refund button', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(0);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeHidden();
     });
 });

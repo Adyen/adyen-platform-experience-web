@@ -77,7 +77,13 @@ export function FormTextInput<TFieldValues>({
 
     return (
         <VisibleField name={fieldName}>
-            <FormField label={label} optional={!isRequired && !hideOptionalLabel} supportText={supportText} className={className}>
+            <FormField
+                label={label}
+                optional={!isRequired && !hideOptionalLabel}
+                supportText={supportText}
+                className={className}
+                testId={fieldName ? `form-field-${fieldName}` : undefined}
+            >
                 <Controller<TFieldValues>
                     name={fieldName}
                     control={control}
@@ -98,6 +104,7 @@ export function FormTextInput<TFieldValues>({
                                 isValid={!fieldState.error}
                                 isInvalid={isInvalid}
                                 errorMessage={fieldState.error?.message}
+                                errorTestId={fieldName ? `field-error-${fieldName}` : undefined}
                                 onDropdownInput={(...params) => {
                                     onDropdownInput?.(...params);
                                     if (isInvalid) {

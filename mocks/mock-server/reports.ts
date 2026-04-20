@@ -1,12 +1,13 @@
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
-import { getReports } from '../mock-data/reports';
+import { BALANCE_ACCOUNTS_SINGLE, getReports } from '../mock-data';
 
 const DEFAULT_SORT_DIRECTION = 'desc';
 
-const REPORTS = endpoints().reports;
-const DOWNLOAD = endpoints().downloadReport;
+const mockEndpoints = endpoints();
+const REPORTS = mockEndpoints.reports;
+const DOWNLOAD = mockEndpoints.downloadReport;
 const networkError = false;
 const serverError = false;
 const downloadError = false;
@@ -102,3 +103,48 @@ export const reportsMock = [
         });
     }),
 ];
+
+export const REPORTS_OVERVIEW_HANDLERS = {
+    singleBalanceAccount: {
+        handlers: [
+            http.get(mockEndpoints.balanceAccounts, () => {
+                return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
+            }),
+        ],
+    },
+    emptyList: {
+        handlers: [
+            http.get(REPORTS, () => {
+                return HttpResponse.json({ data: [], _links: {} });
+            }),
+        ],
+    },
+    errorList: {
+        handlers: [
+            http.get(REPORTS, () => {
+                return HttpResponse.error();
+            }),
+        ],
+    },
+    downloadError: {
+        handlers: [
+            http.get(DOWNLOAD, () => {
+                return new HttpResponse(
+                    JSON.stringify({
+                        type: 'https://docs.adyen.com/errors/forbidden',
+                        errorCode: '999_429_001',
+                        title: 'Forbidden',
+                        detail: 'Too many download requests',
+                        status: 429,
+                    }),
+                    {
+                        status: 429,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+            }),
+        ],
+    },
+};

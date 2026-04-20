@@ -1,0 +1,8 @@
+{
+    "name": "@integration-components/hooks-preact",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/shared/hooks-preact/src",
+    "tags": ["type:shared"],
+    "targets": {}
+}

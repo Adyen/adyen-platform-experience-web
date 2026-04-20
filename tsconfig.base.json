@@ -48,6 +48,12 @@
             "@integration-components/sdk-internal/*": [
                 "packages/shared/lib/src/*"
             ],
+            "@integration-components/hooks-preact": [
+                "packages/shared/hooks-preact/src/index.ts"
+            ],
+            "@integration-components/hooks-preact/*": [
+                "packages/shared/hooks-preact/src/*"
+            ],
             "@integration-components/reports/publish": [
                 "packages/domains/reports/publish/src/index.ts"
             ]

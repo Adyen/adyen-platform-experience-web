@@ -1,10 +1,7 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core, onErrorHandler } from '../core';
-import { IPayout, IPayoutDetails, IReport, ITransaction, ITransactionWithDetails } from '../types';
 import { AnchorHTMLAttributes } from 'preact/compat';
 import { StringWithAutocompleteOptions } from '../utils/types';
-import { TransactionDetailsFields } from './external';
-import { IDisputeListItem } from '../types/api/models/disputes';
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -79,12 +76,6 @@ export type _UIComponentProps<T> = BaseElementProps & Omit<UIElementProps, 'ref'
 
 export type ExternalUIComponentProps<T> = UIElementProps & T & {};
 
-type onRecordSelection<T extends { showModal: () => void }> = (selection: T) => any;
-
-interface _DataOverviewSelectionProps<T extends { showModal: () => void } = { showModal: () => void }> {
-    onRecordSelection?: onRecordSelection<T>;
-}
-
 export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
 
 export type DataGridCustomColumnConfig<k> = {
@@ -97,15 +88,6 @@ export type DataGridCustomColumnConfig<k> = {
 export type CustomColumn<T extends string> = {
     [k in T]: DataGridCustomColumnConfig<k>;
 }[T];
-
-interface _DataOverviewComponentProps {
-    allowLimitSelection?: boolean;
-    balanceAccountId?: string;
-    onFiltersChanged?: (filters: { [P in FilterParam]?: string }) => any;
-    preferredLimit?: 10 | 20;
-    showDetails?: boolean;
-    onContactSupport?: () => void;
-}
 
 export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
 
@@ -160,25 +142,11 @@ export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
-interface _CustomizableDataOverview<CustomizationOptions extends Record<string, DataCustomizationObject<any, any, any>>> {
-    dataCustomization?: CustomizationOptions;
-}
-
-type OverviewCustomizationProperties<Fields extends string, Data, DetailsFields extends string, DetailsData> = {
-    list?: DataCustomizationObject<Fields, Data[], CustomDataRetrieved[]>;
-    details?: DetailsDataCustomizationObject<DetailsFields, DetailsData, CustomDataRetrieved>;
-};
-
 export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
 export type { ReportsTableFields } from './external/ReportsOverview/types';
 
-export type { TransactionOverviewComponentProps } from './external/TransactionsOverview/types';
-export type {
-    TransactionsOverviewProps,
-    TransactionOverviewProps,
-    TransactionsTableFields,
-    TransactionsFilters,
-} from './external/TransactionsOverview/types';
+export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
+export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
 
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
 export type { StoreIds } from './external/PaymentLinksOverview/types';

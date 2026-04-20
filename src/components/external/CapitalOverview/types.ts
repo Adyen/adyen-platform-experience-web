@@ -1,4 +1,5 @@
-import { IGrant } from '../../../types';
+import { IGrant, IMissingActionType } from '../../../types';
+import { TranslationKey } from '../../../translations';
 import { UIElementProps } from '../../types';
 
 export interface CapitalOverviewProps extends UIElementProps {
@@ -13,3 +14,13 @@ export type CapitalComponentState = {
 };
 
 export type CapitalOverviewComponentProps = CapitalOverviewProps;
+
+type ActionConfig = {
+    buttonLabelKey: TranslationKey;
+    eventLabel: string;
+    successButtonLabelKey: TranslationKey;
+};
+
+export type ActionConfigs = {
+    [key in IMissingActionType]: ActionConfig;
+};

@@ -1,14 +1,8 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { TransactionOverviewProps } from '../../types';
-import { IBalanceAccountBase } from '../../../../../types';
-import { TransactionsListProps } from '../TransactionsList/types';
 import { classes, TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '../../constants';
+import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
 import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
-import useAccountBalances from '../../../../../hooks/useAccountBalances';
-import useTransactionsTotals from '../../hooks/useTransactionsTotals';
-import useTransactionsList from '../../hooks/useTransactionsList';
-import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 import TransactionsList from '../TransactionsList/TransactionsList';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import Balances from '../Balances/Balances';
@@ -24,26 +18,21 @@ const sharedAnalyticsEventProperties = {
     subCategory: TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
 } as const;
 
-interface TransactionsOverviewListProps
-    extends Omit<TransactionsListProps, 'loadingBalanceAccounts'>,
-        Pick<TransactionOverviewProps, 'balanceAccounts' | 'isLoadingBalanceAccount'> {
-    balanceAccount?: Readonly<IBalanceAccountBase>;
-    accountBalancesResult: ReturnType<typeof useAccountBalances>;
-    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
-    transactionsListResult: ReturnType<typeof useTransactionsList>;
-    transactionsTotalsResult: ReturnType<typeof useTransactionsTotals>;
-}
+const TransactionsOverviewList = () => {
+    const {
+        accountBalancesResult,
+        balanceAccounts,
+        currenciesLookupResult,
+        isLoadingBalanceAccount,
+        filters,
+        onContactSupport,
+        onRecordSelection,
+        showDetails,
+        transactionsListResult,
+        transactionsTotalsResult,
+        dataCustomization,
+    } = useTransactionsOverviewContext();
 
-const TransactionsOverviewList = ({
-    accountBalancesResult,
-    balanceAccount,
-    balanceAccounts,
-    currenciesLookupResult,
-    isLoadingBalanceAccount,
-    transactionsListResult,
-    transactionsTotalsResult,
-    ...transactionsListProps
-}: TransactionsOverviewListProps) => {
     const { i18n } = useCoreContext();
     const { error: balancesError, isWaiting: loadingBalances } = accountBalancesResult;
     const { error: totalsError, isWaiting: loadingTotals } = transactionsTotalsResult;
@@ -97,11 +86,14 @@ const TransactionsOverviewList = ({
             </div>
 
             <TransactionsList
-                balanceAccount={balanceAccount}
+                balanceAccount={filters.balanceAccount}
                 currenciesLookupResult={currenciesLookupResult}
+                dataCustomization={dataCustomization}
                 loadingBalanceAccounts={isLoadingBalanceAccount || !balanceAccounts}
+                onContactSupport={onContactSupport}
+                onRecordSelection={onRecordSelection}
+                showDetails={showDetails}
                 transactionsListResult={transactionsListResult}
-                {...transactionsListProps}
             />
         </>
     );

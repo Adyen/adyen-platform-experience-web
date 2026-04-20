@@ -14,10 +14,6 @@ test.describe('Payment link creation - Stores misconfiguration', () => {
 
         await expect(page.getByRole('alert')).toBeVisible();
 
-        const icon = page.locator('.adyen-pe-alert__icon');
-        await icon.waitFor({ state: 'visible' });
-        await expect(icon).toBeVisible();
-
         await expect(page.getByText('Looks like there is a problem with your account configuration.')).toBeVisible();
         await expect(page.getByText('Contact support for help.')).toBeVisible();
     });

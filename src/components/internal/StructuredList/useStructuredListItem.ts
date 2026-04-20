@@ -10,7 +10,8 @@ export const useStructuredListItems = (items: StructuredListItem[]) => {
             return {
                 key: item.key,
                 value: item.value,
-                id: item.id || uuid(),
+                id: item.id,
+                uid: item.id || uuid(),
                 label: item.label ?? i18n.get(item.key),
                 type: item.type,
                 config: item.config,

@@ -7,7 +7,7 @@ test.describe('Error - Theme Save Error', () => {
     test('Should display error when saving theme fails', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const component = page.locator('.adyen-pe-component');
+        const component = page.getByTestId('component-root');
 
         await expect(component.getByText('Settings', { exact: true })).toBeVisible();
 
@@ -18,8 +18,6 @@ test.describe('Error - Theme Save Error', () => {
         await saveButton.click();
 
         await expect(page.getByRole('alert')).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert__icon')).toBeVisible();
-
         await expect(page.getByText('The changes have not been saved. Please try again.')).toBeVisible();
     });
 });

@@ -1,26 +1,10 @@
 @use '@integration-components/style';
 
-.adyen-pe-grant-action {
-    &__button {
-        margin-top: style.token(spacer-030);
-    }
-
-    &__button-label {
-        font-weight: style.token(text-body-stronger-font-weight);
-    }
-
-    &__actions-container {
+.adyen-pe-grant-actions {
+    &__loading-container {
+        align-items: center;
         display: flex;
-        flex-direction: column;
-        font-size: style.token(text-body-font-size);
-        font-weight: style.token(text-body-stronger-font-weight);
-        gap: style.token(spacer-020);
-        padding-left: style.token(spacer-070);
-    }
-
-    &__actions-information {
-        display: flex;
-        flex-direction: column;
         gap: style.token(spacer-070);
+        padding: style.token(spacer-100);
     }
 }

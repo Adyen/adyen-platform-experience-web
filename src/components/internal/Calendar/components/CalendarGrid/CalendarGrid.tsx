@@ -8,7 +8,7 @@ const CalendarGrid = forwardRef(({ cursorRootProps, onlyCellsWithin, prepare, ge
     <ol className={'adyen-pe-calendar'} role="none" {...cursorRootProps}>
         {grid.map(block => (
             <li key={block.datetime} className={'adyen-pe-calendar__month'} role="none">
-                <div className={'adyen-pe-calendar__month-name'} role="none">
+                <div className={'adyen-pe-calendar__month-name'} role="none" data-testid="calendar-month-name">
                     <time dateTime={block.datetime} aria-hidden="true">
                         {block.label}
                     </time>

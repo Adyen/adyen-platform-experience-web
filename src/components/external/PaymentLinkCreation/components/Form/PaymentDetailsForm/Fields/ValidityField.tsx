@@ -175,6 +175,7 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                             label={i18n.get('payByLink.creation.fields.validity.label')}
                                             supportText={i18n.get('payByLink.creation.fields.validity.supportText')}
                                             optional={!isDurationUnitRequired && !isDurationQuantityRequired}
+                                            testId="form-field-linkValidity.durationUnit"
                                         >
                                             <Select
                                                 selected={validityValue}
@@ -186,7 +187,11 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                             />
                                         </FormField>
                                         {validityValue === FLEXIBLE_ID && (
-                                            <FormField label={i18n.get('payByLink.creation.fields.validity.customDuration.label')} optional={false}>
+                                            <FormField
+                                                label={i18n.get('payByLink.creation.fields.validity.customDuration.label')}
+                                                optional={false}
+                                                testId="form-field-linkValidity.quantity"
+                                            >
                                                 <InputBase
                                                     {...durationQuantityField}
                                                     dropdown={{
@@ -207,7 +212,9 @@ export const ValidityField: FunctionalComponent<ValidityFieldProps> = ({ configu
                                             </FormField>
                                         )}
                                     </div>
-                                    {isInvalid && errorMessage && <FieldError errorMessage={errorMessage} withTopMargin />}
+                                    {isInvalid && errorMessage && (
+                                        <FieldError errorMessage={errorMessage} testId="field-error-linkValidity.quantity" withTopMargin />
+                                    )}
                                 </div>
                             );
                         }}
