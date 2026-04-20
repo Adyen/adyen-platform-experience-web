@@ -3,7 +3,7 @@ import { http, HttpResponse } from 'msw';
 import { getWorker } from 'msw-storybook-addon';
 import { endpoints } from '../../../endpoints/endpoints';
 import { setupBasicResponse } from '../../../mocks/mock-server/setup';
-import { delay } from '../../../mocks/mock-server/utils/utils';
+import { delay } from '@integration-components/testing/msw';
 
 const worker = getWorker();
 

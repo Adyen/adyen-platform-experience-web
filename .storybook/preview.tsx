@@ -1,6 +1,6 @@
 import { Preview } from '@storybook/preact';
 import { Container } from '../stories/utils/Container';
-import { getMockHandlers } from '../mocks/mock-server/utils/utils';
+import { getMockHandlers } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../mocks/mock-server';
 

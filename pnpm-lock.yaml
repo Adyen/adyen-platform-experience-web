@@ -233,6 +233,8 @@ importers:
 
   packages/shared/style: {}
 
+  packages/shared/testing: {}
+
   packages/shared/types: {}
 
   packages/shared/utils: {}

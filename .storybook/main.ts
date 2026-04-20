@@ -30,6 +30,7 @@ const config: StorybookConfig = {
                 alias: {
                     '@integration-components/sdk-internal': resolve(rootDir, 'packages/shared/lib/src'),
                     '@integration-components/reports': resolve(rootDir, 'packages/domains/reports'),
+                    '@integration-components/testing': resolve(rootDir, 'packages/shared/testing/src'),
                 },
             },
             css: {

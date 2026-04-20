@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
-import { delay } from './utils/utils';
+import { delay } from '@integration-components/testing/msw';
 
 const trackPath = endpoints().sendTrackEvent;
 const engagePath = endpoints().sendEngageEvent;
