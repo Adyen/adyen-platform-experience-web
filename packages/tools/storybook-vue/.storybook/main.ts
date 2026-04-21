@@ -50,21 +50,6 @@ const config: StorybookConfig = {
         return mergeConfig(config, {
             define: getStorybookDefines(mode),
             plugins: [vue()],
-            resolve: {
-                // Mirrors root vite.config.ts. Required today because preview.ts imports
-                // @integration-components/testing/msw, which transitively pulls @integration-components/core,
-                // which imports @integration-components/utils — and the shared packages don't declare
-                // their inter-package workspace deps, so pnpm can't symlink them. Drop once IEX-2797
-                // fixes the shared package.json files.
-                alias: {
-                    '@integration-components/hooks-preact': resolve(rootDir, 'packages/shared/hooks-preact/src'),
-                    '@integration-components/core': resolve(rootDir, 'packages/shared/core/src'),
-                    '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
-                    '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
-                    '@integration-components/style': resolve(rootDir, 'packages/shared/style/src'),
-                    '@integration-components/testing': resolve(rootDir, 'packages/shared/testing/src'),
-                },
-            },
             css: {
                 preprocessorOptions: {
                     scss: {
