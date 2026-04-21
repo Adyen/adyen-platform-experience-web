@@ -44,5 +44,6 @@
         }
     ],
     "neverConnectToCloud": true,
-    "defaultBase": "origin/develop"
+    "defaultBase": "origin/develop",
+    "analytics": false
 }

@@ -1,10 +1,12 @@
 import { Preview } from '@storybook/preact';
-import { Container } from '../stories/utils/Container';
+import { Container } from '../src/utils/Container';
 import { getMockHandlers } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
-import { mocks } from '../mocks/mock-server';
+import { mocks } from '../../../../mocks/mock-server';
 
 initialize({}, [...getMockHandlers(mocks)]);
+
+let mockingEnabled = false;
 
 const preview: Preview = {
     parameters: {
@@ -55,10 +57,13 @@ const preview: Preview = {
     loaders: [
         async context => {
             const worker = getWorker();
-            if (context.args.mockedApi) {
+            const shouldMock = Boolean(context.args.mockedApi);
+            if (shouldMock && !mockingEnabled) {
                 await worker.start();
-            } else {
+                mockingEnabled = true;
+            } else if (!shouldMock && mockingEnabled) {
                 worker.stop();
+                mockingEnabled = false;
             }
 
             return { worker };

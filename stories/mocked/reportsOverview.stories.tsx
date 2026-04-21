@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { ReportsOverview } from '../../src';
 import { ReportsOverviewMeta } from '../components/reportsOverview';
 import { getCustomReportsData } from './utils/customDataRequest';

@@ -1,5 +1,5 @@
 import { PaymentLinksOverview } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
 import { PaymentLinksOverviewMeta } from '../components/paymentLinksOverview';
 import { PayByLinkOverviewMockedResponses } from '../../mocks/mock-server/payByLink';

@@ -4,5 +4,5 @@
         "moduleResolution": "bundler",
         "allowImportingTsExtensions": true
     },
-    "include": ["./**/*.ts", "./**/*.tsx", "../stories/**/*.ts", "../stories/**/*.tsx"]
+    "include": ["./**/*.ts", "../src/**/*.ts", "../src/**/*.vue"]
 }
