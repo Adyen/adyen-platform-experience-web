@@ -4,9 +4,9 @@ import { getMockHandlers } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../../../../mocks/mock-server';
 
-initialize({}, [...getMockHandlers(mocks)]);
+const allHandlers = [...getMockHandlers(mocks)];
 
-let mockingEnabled = false;
+initialize({}, []);
 
 const preview: Preview = {
     parameters: {
@@ -55,20 +55,15 @@ const preview: Preview = {
         },
     },
     loaders: [
+        mswLoader,
         async context => {
             const worker = getWorker();
-            const shouldMock = Boolean(context.args.mockedApi);
-            if (shouldMock && !mockingEnabled) {
-                await worker.start();
-                mockingEnabled = true;
-            } else if (!shouldMock && mockingEnabled) {
-                worker.stop();
-                mockingEnabled = false;
+            await worker.start();
+            if (context.args.mockedApi) {
+                worker.use(...allHandlers);
             }
-
             return { worker };
         },
-        mswLoader,
     ],
     render: (args, context) => {
         return <Container component={args.component} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;

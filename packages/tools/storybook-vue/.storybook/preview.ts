@@ -3,9 +3,12 @@ import { getMockHandlers } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
 import { mocks } from '../../../../mocks/mock-server';
 
-initialize({}, [...getMockHandlers(mocks)]);
+const allHandlers = [...getMockHandlers(mocks)];
 
-let mockingEnabled = false;
+// Register the worker once for the lifetime of the preview iframe with an empty
+// initial handler set; stories opt in to mocks via `mockedApi: true` in the loader
+// below. Keeping the worker running avoids races.
+initialize({}, []);
 
 // Globals are intentionally duplicated from storybook-preact instead of living in a
 // shared @integration-components/storybook-config package. Promote to a shared package
@@ -39,20 +42,19 @@ const preview: Preview = {
         fontFamily: undefined,
     },
     loaders: [
+        // mswLoader runs first so story-level `parameters.msw.handlers` get applied
+        // cleanly. Our loader below appends the global mocks on top for `mockedApi: true`
+        mswLoader,
         async context => {
             const worker = getWorker();
-            const shouldMock = Boolean(context.args.mockedApi);
-            if (shouldMock && !mockingEnabled) {
-                await worker.start();
-                mockingEnabled = true;
-            } else if (!shouldMock && mockingEnabled) {
-                worker.stop();
-                mockingEnabled = false;
+            // initialize() fires worker.start() without awaiting, so this guards against
+            // the story rendering before the SW is ready to intercept.
+            await worker.start();
+            if (context.args.mockedApi) {
+                worker.use(...allHandlers);
             }
-
             return { worker };
         },
-        mswLoader,
     ],
 };
 
