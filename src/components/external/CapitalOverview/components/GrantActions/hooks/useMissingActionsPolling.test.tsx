@@ -276,4 +276,61 @@ describe('useMissingActionsPolling', () => {
 
         expect(result.current.missingActions).toEqual(initialMissingActions);
     });
+
+    test('should reset polling state when grantId changes', async () => {
+        const mockGetGrants = getMockGetGrants();
+        const initialMissingActions: IMissingAction[] = [{ type: 'signToS' }];
+
+        mockGetGrants.mockResolvedValue({
+            data: [
+                {
+                    id: 'GRANT123',
+                    missingActions: [{ type: 'signToS' }],
+                } as Partial<IGrant> as IGrant,
+            ],
+        });
+
+        const { result, rerender } = renderHook(
+            ({ grantId, initialMissingActions }) =>
+                useMissingActionsPolling({
+                    grantId,
+                    initialMissingActions,
+                }),
+            {
+                initialProps: {
+                    grantId: 'GRANT123',
+                    initialMissingActions,
+                },
+            }
+        );
+
+        await waitFor(() => expect(mockGetGrants).toHaveBeenCalled(), { timeout: 500 });
+
+        act(() => {
+            result.current.forcePollingComplete();
+        });
+
+        expect(result.current.isPollingComplete).toBe(true);
+
+        const newMissingActions: IMissingAction[] = [{ type: 'AnaCredit' }];
+        mockGetGrants.mockResolvedValue({
+            data: [
+                {
+                    id: 'GRANT456',
+                    missingActions: [{ type: 'AnaCredit' }, { type: 'signToS' }],
+                } as Partial<IGrant> as IGrant,
+            ],
+        });
+
+        rerender({
+            grantId: 'GRANT456',
+            initialMissingActions: newMissingActions,
+        });
+
+        expect(result.current.isPollingComplete).toBe(false);
+        expect(result.current.missingActions).toEqual(newMissingActions);
+
+        await waitFor(() => expect(result.current.isPollingComplete).toBe(true), { timeout: 1000 });
+        expect(result.current.missingActions).toEqual([{ type: 'AnaCredit' }, { type: 'signToS' }]);
+    });
 });

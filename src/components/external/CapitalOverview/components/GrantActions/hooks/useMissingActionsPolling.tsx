@@ -33,6 +33,13 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
     });
 
     useEffect(() => {
+        pollCountRef.current = 0;
+        pollStartTimeRef.current = 0;
+        setIsPollingComplete(!shouldPoll);
+        setMissingActions(initialMissingActions);
+    }, [grantId, initialMissingActions, shouldPoll]);
+
+    useEffect(() => {
         if (!shouldPoll || isPollingComplete || isFetching) return;
 
         if (pollStartTimeRef.current === 0) {
