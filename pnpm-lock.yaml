@@ -12,8 +12,6 @@ overrides:
   rollup@4.53.3: 4.59.0
   serialize-javascript@6.0.2: 7.0.3
   picomatch: '>=4.0.4'
-  storybook: ^10.2.12
-  msw-storybook-addon: ^2.0.2
 
 pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
 
@@ -170,7 +168,7 @@ importers:
         specifier: ^12.3.0
         version: 12.6.0(sass@1.79.3)(webpack@5.98.0)
       storybook:
-        specifier: ^10.2.12
+        specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       style-loader:
         specifier: ^3.3.1
@@ -238,7 +236,7 @@ importers:
         specifier: 10.2.12
         version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       storybook:
-        specifier: ^10.2.12
+        specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   packages/shared/types: {}
@@ -282,7 +280,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.9.3))
       storybook:
-        specifier: ^10.2.12
+        specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite-plugin-svgr:
         specifier: ^4.5.0
@@ -322,7 +320,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.9.3))
       storybook:
-        specifier: ^10.2.12
+        specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
 packages:

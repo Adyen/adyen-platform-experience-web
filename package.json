@@ -157,9 +157,7 @@
       "minimatch@<9.0.7": ">=10.2.3",
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4",
-      "storybook": "^10.2.12",
-      "msw-storybook-addon": "^2.0.2"
+      "picomatch": ">=4.0.4"
     },
     "ignoredBuiltDependencies": [
       "core-js"
