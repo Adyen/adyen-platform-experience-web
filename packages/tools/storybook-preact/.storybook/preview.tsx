@@ -6,7 +6,10 @@ import { mocks } from '../../../../mocks/mock-server';
 
 const allHandlers = [...getMockHandlers(mocks)];
 
-initialize({}, []);
+// Register the default mock handlers at worker initialization so they serve as
+// the baseline. `mswLoader` then layers each story's `parameters.msw` handlers
+// on top via `worker.use(...)`, which correctly takes precedence over defaults.
+initialize({}, allHandlers);
 
 const preview: Preview = {
     parameters: {
@@ -55,15 +58,19 @@ const preview: Preview = {
         },
     },
     loaders: [
-        mswLoader,
         async context => {
             const worker = getWorker();
-            await worker.start();
             if (context.args.mockedApi) {
-                worker.use(...allHandlers);
+                await worker.start();
+            } else {
+                worker.stop();
             }
             return { worker };
         },
+        // mswLoader runs LAST so that story-level `parameters.msw` handlers are
+        // registered on top of the baseline defaults via `worker.use(...)` and
+        // therefore win when MSW matches requests.
+        mswLoader,
     ],
     render: (args, context) => {
         return <Container component={args.component} componentConfiguration={args} context={context} mockedApi={args.mockedApi} />;
