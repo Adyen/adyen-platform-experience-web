@@ -34,10 +34,10 @@ const getStorybookDefines = (mode: string) => {
 const rootDir = resolve(import.meta.dirname, '../../../..');
 
 const config: StorybookConfig = {
-    // Framework-scoped: only match Vue stories. Phase 1 ships a single placeholder
-    // smoke under packages/domains/reports/stories/vue/. Real domain Vue stories
-    // land in 04-03 under the same pattern.
-    stories: ['../../../../packages/domains/*/stories/vue/**/*.stories.*'],
+    // Framework-scoped under {domain}/vue/ — the preact/vue split is at the top level
+    // of each domain. Phase 1 ships a single placeholder smoke under
+    // packages/domains/reports/vue/stories/. Real domain Vue stories land in 04-03.
+    stories: ['../../../../packages/domains/*/vue/stories/**/*.stories.*'],
     staticDirs: ['../static'],
     framework: {
         name: '@storybook/vue3-vite',

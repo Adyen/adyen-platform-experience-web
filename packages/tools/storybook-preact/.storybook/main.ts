@@ -45,10 +45,10 @@ const findChunk = (id: string, mappings: Record<string, string | string[]>, fall
 
 const config: StorybookConfig = {
     stories: [
-        // Transitional root-level glob; removed in 03-02 once every story lives under packages/domains/*/stories/.
+        // Transitional root-level glob; removed in 03-02 once every story lives under packages/domains/*/preact/stories/.
         '../../../../stories/**/*.stories.*',
-        // Framework-scoped: excludes Vue stories.
-        '../../../../packages/domains/*/stories/preact/**/*.stories.*',
+        // Framework-scoped under {domain}/preact/ — the preact/vue split is at the top level of each domain.
+        '../../../../packages/domains/*/preact/stories/**/*.stories.*',
     ],
     staticDirs: ['../static', { from: resolve(rootDir, 'src/assets/datasets'), to: '/datasets' }],
     framework: {
