@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Requested funds",
     "capital.overview.grants.item.details.a11y.label": "Show grant details",
     "capital.overview.grants.item.details.requestedFunds": "Your requested funds were: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Please wait and don’t refresh the page. We are processing your request and it might take a minute.",
     "capital.overview.grants.item.progressBar.a11y.label": "Grant repayment",
     "capital.overview.grants.item.termEnds": "Term ends: %{date}",
     "capital.overview.grants.list.actions.newOffer": "See new offer",
