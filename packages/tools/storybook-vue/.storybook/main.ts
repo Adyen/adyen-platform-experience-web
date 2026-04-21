@@ -68,7 +68,9 @@ const config: StorybookConfig = {
             css: {
                 preprocessorOptions: {
                     scss: {
-                        loadPaths: [resolve(rootDir, 'node_modules')],
+                        api: 'modern-compiler',
+                        silenceDeprecations: ['legacy-js-api'],
+                        loadPaths: [resolve(rootDir, 'src'), resolve(rootDir, 'node_modules')],
                     },
                 },
             },
