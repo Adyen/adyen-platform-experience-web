@@ -141,8 +141,8 @@ export class UserEvents {
      */
     public addEvent(eventName: EventName, properties: AdditionalEventProperties) {
         const time = getEventTime();
-        const $insertId = getEventInsertId();
-        const completeEvent = { ...this.baseTrackingPayload, $insertId, time, ...properties } as AnalyticsEventPayload;
+        const $insert_id = getEventInsertId();
+        const completeEvent = { ...this.baseTrackingPayload, $insert_id, time, ...properties } as AnalyticsEventPayload;
         this.add({
             name: eventName,
             // type: 'add_event',
