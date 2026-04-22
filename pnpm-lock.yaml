@@ -20,8 +20,8 @@ importers:
   .:
     dependencies:
       '@adyen/kyc-components':
-        specifier: '>=4.0.0-compact.3 <4.0.0'
-        version: 4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)
+        specifier: '>=4.0.0-compact.8 <4.0.0'
+        version: 4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -248,7 +248,7 @@ packages:
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/kyc-components@4.0.0-compact.4':
+  '@adyen/kyc-components@4.0.0-compact.8':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -1829,6 +1829,14 @@ packages:
     peerDependencies:
       '@svgr/core': '*'
 
+  '@tanstack/preact-query@5.96.1':
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
+
+  '@tanstack/query-core@5.96.1':
+    resolution: {}
+
   '@testing-library/dom@8.20.1':
     resolution: {}
     engines: {node: '>=12'}
@@ -2152,6 +2160,35 @@ packages:
     resolution: {}
 
   '@vitest/utils@4.0.10':
+    resolution: {}
+
+  '@vue/compiler-core@3.5.31':
+    resolution: {}
+
+  '@vue/compiler-dom@3.5.31':
+    resolution: {}
+
+  '@vue/compiler-sfc@3.5.31':
+    resolution: {}
+
+  '@vue/compiler-ssr@3.5.31':
+    resolution: {}
+
+  '@vue/reactivity@3.5.31':
+    resolution: {}
+
+  '@vue/runtime-core@3.5.31':
+    resolution: {}
+
+  '@vue/runtime-dom@3.5.31':
+    resolution: {}
+
+  '@vue/server-renderer@3.5.31':
+    resolution: {}
+    peerDependencies:
+      vue: 3.5.31
+
+  '@vue/shared@3.5.31':
     resolution: {}
 
   '@webassemblyjs/ast@1.14.1':
@@ -2724,6 +2761,9 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
 
+  csstype@3.2.3:
+    resolution: {}
+
   damerau-levenshtein@1.0.8:
     resolution: {}
 
@@ -2915,6 +2955,10 @@ packages:
     engines: {node: '>=8.6'}
 
   entities@4.5.0:
+    resolution: {}
+    engines: {node: '>=0.12'}
+
+  entities@7.0.1:
     resolution: {}
     engines: {node: '>=0.12'}
 
@@ -3987,6 +4031,9 @@ packages:
   minimist@1.2.8:
     resolution: {}
 
+  mitt@3.0.1:
+    resolution: {}
+
   monogon@0.3.4:
     resolution: {}
     peerDependencies:
@@ -4353,7 +4400,15 @@ packages:
     resolution: {}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-custom-element@4.6.0:
+    resolution: {}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
+
   preact@10.28.2:
+    resolution: {}
+
+  preact@10.29.0:
     resolution: {}
 
   prelude-ls@1.2.1:
@@ -4464,6 +4519,10 @@ packages:
   regexp.prototype.flags@1.5.4:
     resolution: {}
     engines: {node: '>= 0.4'}
+
+  regexparam@3.0.0:
+    resolution: {}
+    engines: {node: '>=8'}
 
   regexpu-core@6.4.0:
     resolution: {}
@@ -5235,6 +5294,14 @@ packages:
       jsdom:
         optional: true
 
+  vue@3.5.31:
+    resolution: {}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   w3c-xmlserializer@5.0.0:
     resolution: {}
     engines: {node: '>=18'}
@@ -5318,6 +5385,11 @@ packages:
   word-wrap@1.2.5:
     resolution: {}
     engines: {node: '>=0.10.0'}
+
+  wouter-preact@3.9.0:
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
 
   wrap-ansi@6.2.0:
     resolution: {}
@@ -5408,25 +5480,28 @@ snapshots:
   '@adyen/adyen-document-viewer@1.4.2':
     dependencies:
       classnames: 2.5.1
-      preact: 10.28.2
+      preact: 10.29.0
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/kyc-components@4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)':
+  '@adyen/kyc-components@4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))':
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
-      '@adyen/ui-assets-icons-16': 7.6.0
-      '@preact/signals': 2.7.1(preact@10.28.2)
+      '@adyen/ui-assets-icons-16': 7.6.0(vue@3.5.31(typescript@5.8.3))
+      '@preact/signals': 2.7.1(preact@10.29.0)
+      '@tanstack/preact-query': 5.96.1(preact@10.29.0)
       classnames: 2.5.1
       container-query-polyfill: 1.0.2
       i18next: 25.8.4(typescript@5.8.3)
-      monogon: 0.3.4(preact@10.28.2)(react@19.2.0)
+      monogon: 0.3.4(preact@10.29.0)(react@19.2.0)(vue@3.5.31(typescript@5.8.3))
       named-slots: 0.4.2
       onfido-sdk-ui: 14.55.0
-      preact: 10.28.2
+      preact: 10.29.0
+      preact-custom-element: 4.6.0(preact@10.29.0)
+      wouter-preact: 3.9.0(preact@10.29.0)
     transitivePeerDependencies:
       - react
       - typescript
@@ -5434,7 +5509,9 @@ snapshots:
 
   '@adyen/openbankingsdk@0.2.3': {}
 
-  '@adyen/ui-assets-icons-16@7.6.0': {}
+  '@adyen/ui-assets-icons-16@7.6.0(vue@3.5.31(typescript@5.8.3))':
+    optionalDependencies:
+      vue: 3.5.31(typescript@5.8.3)
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -7018,10 +7095,10 @@ snapshots:
 
   '@preact/signals-core@1.13.0': {}
 
-  '@preact/signals@2.7.1(preact@10.28.2)':
+  '@preact/signals@2.7.1(preact@10.29.0)':
     dependencies:
       '@preact/signals-core': 1.13.0
-      preact: 10.28.2
+      preact: 10.29.0
 
   '@prefresh/babel-plugin@0.5.1': {}
 
@@ -7289,6 +7366,13 @@ snapshots:
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/preact-query@5.96.1(preact@10.29.0)':
+    dependencies:
+      '@tanstack/query-core': 5.96.1
+      preact: 10.29.0
+
+  '@tanstack/query-core@5.96.1': {}
 
   '@testing-library/dom@8.20.1':
     dependencies:
@@ -7673,6 +7757,69 @@ snapshots:
     dependencies:
       '@vitest/pretty-format': 4.0.10
       tinyrainbow: 3.0.3
+
+  '@vue/compiler-core@3.5.31':
+    dependencies:
+      '@babel/parser': 7.29.2
+      '@vue/shared': 3.5.31
+      entities: 7.0.1
+      estree-walker: 2.0.2
+      source-map-js: 1.2.1
+    optional: true
+
+  '@vue/compiler-dom@3.5.31':
+    dependencies:
+      '@vue/compiler-core': 3.5.31
+      '@vue/shared': 3.5.31
+    optional: true
+
+  '@vue/compiler-sfc@3.5.31':
+    dependencies:
+      '@babel/parser': 7.29.2
+      '@vue/compiler-core': 3.5.31
+      '@vue/compiler-dom': 3.5.31
+      '@vue/compiler-ssr': 3.5.31
+      '@vue/shared': 3.5.31
+      estree-walker: 2.0.2
+      magic-string: 0.30.21
+      postcss: 8.5.8
+      source-map-js: 1.2.1
+    optional: true
+
+  '@vue/compiler-ssr@3.5.31':
+    dependencies:
+      '@vue/compiler-dom': 3.5.31
+      '@vue/shared': 3.5.31
+    optional: true
+
+  '@vue/reactivity@3.5.31':
+    dependencies:
+      '@vue/shared': 3.5.31
+    optional: true
+
+  '@vue/runtime-core@3.5.31':
+    dependencies:
+      '@vue/reactivity': 3.5.31
+      '@vue/shared': 3.5.31
+    optional: true
+
+  '@vue/runtime-dom@3.5.31':
+    dependencies:
+      '@vue/reactivity': 3.5.31
+      '@vue/runtime-core': 3.5.31
+      '@vue/shared': 3.5.31
+      csstype: 3.2.3
+    optional: true
+
+  '@vue/server-renderer@3.5.31(vue@3.5.31(typescript@5.8.3))':
+    dependencies:
+      '@vue/compiler-ssr': 3.5.31
+      '@vue/shared': 3.5.31
+      vue: 3.5.31(typescript@5.8.3)
+    optional: true
+
+  '@vue/shared@3.5.31':
+    optional: true
 
   '@webassemblyjs/ast@1.14.1':
     dependencies:
@@ -8303,6 +8450,9 @@ snapshots:
       '@asamuzakjp/css-color': 3.2.0
       rrweb-cssom: 0.8.0
 
+  csstype@3.2.3:
+    optional: true
+
   damerau-levenshtein@1.0.8: {}
 
   data-urls@5.0.0:
@@ -8501,6 +8651,9 @@ snapshots:
       strip-ansi: 6.0.1
 
   entities@4.5.0: {}
+
+  entities@7.0.1:
+    optional: true
 
   env-paths@2.2.1: {}
 
@@ -9724,10 +9877,13 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  monogon@0.3.4(preact@10.28.2)(react@19.2.0):
+  mitt@3.0.1: {}
+
+  monogon@0.3.4(preact@10.29.0)(react@19.2.0)(vue@3.5.31(typescript@5.8.3)):
     optionalDependencies:
-      preact: 10.28.2
+      preact: 10.29.0
       react: 19.2.0
+      vue: 3.5.31(typescript@5.8.3)
 
   mri@1.2.0: {}
 
@@ -10116,7 +10272,13 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  preact-custom-element@4.6.0(preact@10.29.0):
+    dependencies:
+      preact: 10.29.0
+
   preact@10.28.2: {}
+
+  preact@10.29.0: {}
 
   prelude-ls@1.2.1: {}
 
@@ -10234,6 +10396,8 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  regexparam@3.0.0: {}
 
   regexpu-core@6.4.0:
     dependencies:
@@ -11093,6 +11257,17 @@ snapshots:
       - tsx
       - yaml
 
+  vue@3.5.31(typescript@5.8.3):
+    dependencies:
+      '@vue/compiler-dom': 3.5.31
+      '@vue/compiler-sfc': 3.5.31
+      '@vue/runtime-dom': 3.5.31
+      '@vue/server-renderer': 3.5.31(vue@3.5.31(typescript@5.8.3))
+      '@vue/shared': 3.5.31
+    optionalDependencies:
+      typescript: 5.8.3
+    optional: true
+
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
@@ -11215,6 +11390,12 @@ snapshots:
       stackback: 0.0.2
 
   word-wrap@1.2.5: {}
+
+  wouter-preact@3.9.0(preact@10.29.0):
+    dependencies:
+      mitt: 3.0.1
+      preact: 10.29.0
+      regexparam: 3.0.0
 
   wrap-ansi@6.2.0:
     dependencies:

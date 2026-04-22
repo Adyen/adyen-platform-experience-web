@@ -3,21 +3,22 @@ import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../hooks/useFetch';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../../utils';
-
-const MAX_POLL_COUNT = 60;
-const POLL_INTERVAL_MS = 1000;
+import { usePollingConfig } from '../../../../../../config/capital/usePollingConfig';
 
 type UseMissingActionsPollingParams = {
     grantId: string;
     initialMissingActions: IMissingAction[];
 };
 
-// TODO: Remove this hook when AnaCredit and SignTOS resolve at the same time.
 // Polls for missing actions because AnaCredit resolves slower than SignTOS, allowing both to be rendered together.
 export const useMissingActionsPolling = ({ grantId, initialMissingActions }: UseMissingActionsPollingParams) => {
     const { getGrants } = useConfigContext().endpoints;
+    const {
+        pollingConfig: { missingActions: missingActionsPollingConfig },
+    } = usePollingConfig();
     const shouldPoll = initialMissingActions.length <= 1;
     const pollCountRef = useRef(0);
+    const pollStartTimeRef = useRef(0);
     const [isPollingComplete, setIsPollingComplete] = useState(!shouldPoll);
     const [missingActions, setMissingActions] = useState<IMissingAction[]>(initialMissingActions);
 
@@ -32,23 +33,47 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
     });
 
     useEffect(() => {
+        pollCountRef.current = 0;
+        pollStartTimeRef.current = 0;
+        setIsPollingComplete(!shouldPoll);
+        setMissingActions(initialMissingActions);
+    }, [grantId, initialMissingActions, shouldPoll]);
+
+    useEffect(() => {
         if (!shouldPoll || isPollingComplete || isFetching) return;
+
+        if (pollStartTimeRef.current === 0) {
+            pollStartTimeRef.current = Date.now();
+        }
 
         const grant = data?.data?.find((grant: IGrant) => grant.id === grantId);
         const currentMissingActions = grant?.missingActions ?? initialMissingActions;
         setMissingActions(currentMissingActions);
 
-        if (currentMissingActions.length > 1 || pollCountRef.current >= MAX_POLL_COUNT) {
+        const elapsedTime = Date.now() - pollStartTimeRef.current;
+        const hasExceededDuration = elapsedTime >= missingActionsPollingConfig.maxDurationMs;
+        const hasMultipleActions = currentMissingActions.length > 1;
+
+        if (hasMultipleActions || hasExceededDuration) {
             setIsPollingComplete(true);
             return;
         }
 
+        const calculateNextInterval = () => {
+            if (missingActionsPollingConfig.strategy === 'exponentialBackoff') {
+                return missingActionsPollingConfig.initialIntervalMs * Math.pow(missingActionsPollingConfig.backoffMultiplier, pollCountRef.current);
+            }
+            return missingActionsPollingConfig.initialIntervalMs;
+        };
+
+        const nextInterval = calculateNextInterval();
+
         const timeoutId = setTimeout(() => {
             refetch();
-        }, POLL_INTERVAL_MS);
+        }, nextInterval);
 
         return () => clearTimeout(timeoutId);
-    }, [data, isFetching, refetch, grantId, isPollingComplete, shouldPoll, initialMissingActions]);
+    }, [data, isFetching, refetch, grantId, isPollingComplete, shouldPoll, initialMissingActions, missingActionsPollingConfig]);
 
     const forcePollingComplete = useCallback(() => setIsPollingComplete(true), []);
 
