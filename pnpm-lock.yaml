@@ -42,9 +42,18 @@ importers:
       '@changesets/get-github-info':
         specifier: ^0.6.0
         version: 0.6.0
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:packages/shared/hooks-preact
       '@integration-components/style':
         specifier: workspace:*
         version: link:packages/shared/style
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:packages/shared/testing
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:packages/shared/types
       '@nx/eslint':
         specifier: ^22.5.3
         version: 22.6.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.6.3)
@@ -223,15 +232,48 @@ importers:
         specifier: workspace:*
         version: link:../shared/style
 
-  packages/shared/core: {}
+  packages/shared/core:
+    dependencies:
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../utils
 
-  packages/shared/hooks-preact: {}
+  packages/shared/hooks-preact:
+    dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../core
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../utils
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
 
   packages/shared/lib: {}
 
   packages/shared/style: {}
 
   packages/shared/testing:
+    dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../core
+      '@integration-components/sdk-internal':
+        specifier: workspace:*
+        version: link:../lib
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../utils
     devDependencies:
       '@storybook/preact':
         specifier: 10.2.12

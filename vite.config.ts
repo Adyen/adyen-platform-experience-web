@@ -41,16 +41,7 @@ export default defineConfig(({ mode }) => {
     };
 
     return {
-        resolve: {
-            alias: {
-                '@integration-components/hooks-preact': resolve(__dirname, 'packages/shared/hooks-preact/src'),
-                '@integration-components/core': resolve(__dirname, 'packages/shared/core/src'),
-                '@integration-components/types': resolve(__dirname, 'packages/shared/types/src'),
-                '@integration-components/utils': resolve(__dirname, 'packages/shared/utils/src'),
-                '@integration-components/style': resolve(__dirname, 'packages/shared/style/src'),
-                '@integration-components/testing': resolve(__dirname, 'packages/shared/testing/src'),
-            },
-        },
+
         build: {
             minify: true,
             lib: {
