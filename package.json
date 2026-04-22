@@ -76,7 +76,7 @@
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
-    "@adyen/kyc-components": ">=4.0.0-compact.3 <4.0.0",
+    "@adyen/kyc-components": ">=4.0.0-compact.8 <4.0.0",
     "classnames": "^2.5.1",
     "core-js": "^3.36.0"
   },

@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Haettu laina",
     "capital.overview.grants.item.details.a11y.label": "Näytä lainan tiedot",
     "capital.overview.grants.item.details.requestedFunds": "Pyytämäsi varat olivat: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Odota hetki, äläkä päivitä sivua. Käsittelemme pyyntöäsi, ja se voi kestää hetken.",
     "capital.overview.grants.item.progressBar.a11y.label": "Lainan takaisinmaksu",
     "capital.overview.grants.item.termEnds": "Laina-aika päättyy %{date}",
     "capital.overview.grants.list.actions.newOffer": "Näytä uusi tarjous",

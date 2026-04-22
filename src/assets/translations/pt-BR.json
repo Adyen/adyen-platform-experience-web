@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Fundos solicitados",
     "capital.overview.grants.item.details.a11y.label": "Mostrar detalhes do subsídio",
     "capital.overview.grants.item.details.requestedFunds": "Seus fundos solicitados foram: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Aguarde e não atualize a página. Estamos processando a solicitação; pode levar um minuto.",
     "capital.overview.grants.item.progressBar.a11y.label": "Reembolso de subsídio",
     "capital.overview.grants.item.termEnds": "Término: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Ver nova oferta",

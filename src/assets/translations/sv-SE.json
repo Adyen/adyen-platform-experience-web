@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Ansökta medel",
     "capital.overview.grants.item.details.a11y.label": "Visa detaljer om bidrag",
     "capital.overview.grants.item.details.requestedFunds": "Dina ansökta medel var: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Vänta och uppdatera inte sidan. Vi behandlar din begäran, vilket kan ta en liten stund.",
     "capital.overview.grants.item.progressBar.a11y.label": "Återbetalning av bidrag",
     "capital.overview.grants.item.termEnds": "Löptid upphör: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Se nytt erbjudande",

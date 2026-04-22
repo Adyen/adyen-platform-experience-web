@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Fonds demandés",
     "capital.overview.grants.item.details.a11y.label": "Afficher les détails de la subvention",
     "capital.overview.grants.item.details.requestedFunds": "Les fonds que vous avez demandés s'élevaient à : %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Veuillez patienter et ne pas actualiser la page. Nous traitons votre demande. Cela peut prendre quelques instants.",
     "capital.overview.grants.item.progressBar.a11y.label": "Remboursement de la subvention",
     "capital.overview.grants.item.termEnds": "Fin de la période : %{date}",
     "capital.overview.grants.list.actions.newOffer": "Voir la nouvelle offre",
