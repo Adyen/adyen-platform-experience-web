@@ -1,4 +1,4 @@
-import { parseDate } from '../../../utils';
+import { parseDate, uuid } from '../../../utils';
 
 export function bytesToBase64(bytes: Uint8Array) {
     const binString = Array.from(bytes, (byte: number) => String.fromCodePoint(byte)).join('');
@@ -16,6 +16,8 @@ export const encodeAnalyticsEvent = (event: any) => {
         return null;
     }
 };
+
+export const getEventInsertId = () => uuid();
 
 export const getEventTime = (time?: number | string | Date) => {
     const timestamp = parseDate(time) ?? Date.now();
