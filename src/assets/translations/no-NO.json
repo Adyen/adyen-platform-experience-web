@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Forespurt beløp",
     "capital.overview.grants.item.details.a11y.label": "Vis detaljer om bidraget",
     "capital.overview.grants.item.details.requestedFunds": "Beløpet du ba om, var: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Vent et øyeblikk – ikke oppdater siden. Vi behandler forespørselen, og det kan ta litt tid.",
     "capital.overview.grants.item.progressBar.a11y.label": "Tilbakebetaling av bidraget",
     "capital.overview.grants.item.termEnds": "Løpetiden utløper: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Se nytt tilbud",

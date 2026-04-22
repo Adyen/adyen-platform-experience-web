@@ -81,12 +81,12 @@
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
-    "@adyen/kyc-components": ">=4.0.0-compact.3 <4.0.0",
+    "@adyen/kyc-components": ">=4.0.0-compact.8 <4.0.0",
     "classnames": "^2.5.1",
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
-    "preact": "^10.28.2"
+    "preact": "catalog:"
   },
   "devDependencies": {
     "@integration-components/hooks-preact": "workspace:*",
@@ -159,7 +159,8 @@
       "minimatch@<9.0.7": ">=10.2.3",
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4"
+      "picomatch": ">=4.0.4",
+      "preact": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "core-js"
