@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Fondi richiesti",
     "capital.overview.grants.item.details.a11y.label": "Mostra i dettagli della sovvenzione",
     "capital.overview.grants.item.details.requestedFunds": "I fondi richiesti erano: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Attendi senza aggiornare la pagina. Stiamo elaborando la tua richiesta. L'operazione potrebbe impiegare circa un minuto.",
     "capital.overview.grants.item.progressBar.a11y.label": "Rimborso della sovvenzione",
     "capital.overview.grants.item.termEnds": "Termine ultimo: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Vedi la nuova offerta",

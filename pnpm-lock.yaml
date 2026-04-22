@@ -20,8 +20,8 @@ importers:
   .:
     dependencies:
       '@adyen/kyc-components':
-        specifier: '>=4.0.0-compact.3 <4.0.0'
-        version: 4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
+        specifier: '>=4.0.0-compact.8 <4.0.0'
+        version: 4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -234,7 +234,7 @@ importers:
     devDependencies:
       '@storybook/preact':
         specifier: 10.2.12
-        version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 10.2.12(preact@10.29.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       storybook:
         specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -257,13 +257,13 @@ importers:
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.10.2
-        version: 2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))
+        version: 2.10.2(@babel/core@7.26.10)(preact@10.29.0)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))
       '@storybook/preact':
         specifier: 10.2.12
-        version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+        version: 10.2.12(preact@10.29.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/preact-vite':
         specifier: 10.2.12
-        version: 10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+        version: 10.2.12(esbuild@0.27.1)(preact@10.29.0)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
       concurrently:
         specifier: ^7.0.0
         version: 7.6.0
@@ -334,7 +334,7 @@ packages:
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/kyc-components@4.0.0-compact.4':
+  '@adyen/kyc-components@4.0.0-compact.8':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -1929,6 +1929,14 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@svgr/core': '*'
+
+  '@tanstack/preact-query@5.96.1':
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
+
+  '@tanstack/query-core@5.96.1':
+    resolution: {}
 
   '@testing-library/dom@8.20.1':
     resolution: {}
@@ -4203,6 +4211,9 @@ packages:
   minimist@1.2.8:
     resolution: {}
 
+  mitt@3.0.1:
+    resolution: {}
+
   monogon@0.3.4:
     resolution: {}
     peerDependencies:
@@ -4575,7 +4586,15 @@ packages:
     resolution: {}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-custom-element@4.6.0:
+    resolution: {}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
+
   preact@10.28.2:
+    resolution: {}
+
+  preact@10.29.0:
     resolution: {}
 
   prelude-ls@1.2.1:
@@ -4725,6 +4744,10 @@ packages:
   regexp.prototype.flags@1.5.4:
     resolution: {}
     engines: {node: '>= 0.4'}
+
+  regexparam@3.0.0:
+    resolution: {}
+    engines: {node: '>=8'}
 
   regexpu-core@6.4.0:
     resolution: {}
@@ -5633,6 +5656,11 @@ packages:
     resolution: {}
     engines: {node: '>=0.10.0'}
 
+  wouter-preact@3.9.0:
+    resolution: {}
+    peerDependencies:
+      preact: ^10.0.0
+
   wrap-ansi@6.2.0:
     resolution: {}
     engines: {node: '>=8'}
@@ -5722,25 +5750,28 @@ snapshots:
   '@adyen/adyen-document-viewer@1.4.2':
     dependencies:
       classnames: 2.5.1
-      preact: 10.28.2
+      preact: 10.29.0
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/kyc-components@4.0.0-compact.4(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))':
+  '@adyen/kyc-components@4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))':
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
       '@adyen/ui-assets-icons-16': 7.6.0(vue@3.5.31(typescript@5.8.3))
-      '@preact/signals': 2.7.1(preact@10.28.2)
+      '@preact/signals': 2.7.1(preact@10.29.0)
+      '@tanstack/preact-query': 5.96.1(preact@10.29.0)
       classnames: 2.5.1
       container-query-polyfill: 1.0.2
       i18next: 25.8.4(typescript@5.8.3)
-      monogon: 0.3.4(preact@10.28.2)(react@19.2.0)(vue@3.5.31(typescript@5.8.3))
+      monogon: 0.3.4(preact@10.29.0)(react@19.2.0)(vue@3.5.31(typescript@5.8.3))
       named-slots: 0.4.2
       onfido-sdk-ui: 14.55.0
-      preact: 10.28.2
+      preact: 10.29.0
+      preact-custom-element: 4.6.0(preact@10.29.0)
+      wouter-preact: 3.9.0(preact@10.29.0)
     transitivePeerDependencies:
       - react
       - typescript
@@ -7332,18 +7363,38 @@ snapshots:
       - preact
       - supports-color
 
+  '@preact/preset-vite@2.10.2(@babel/core@7.26.10)(preact@10.29.0)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))':
+    dependencies:
+      '@babel/core': 7.26.10
+      '@babel/plugin-transform-react-jsx': 7.25.9(@babel/core@7.26.10)
+      '@babel/plugin-transform-react-jsx-development': 7.25.9(@babel/core@7.26.10)
+      '@prefresh/vite': 2.4.6(preact@10.29.0)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))
+      '@rollup/pluginutils': 4.2.1
+      babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.26.10)
+      debug: 4.4.3(supports-color@10.2.2)
+      picocolors: 1.1.1
+      vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0)
+      vite-prerender-plugin: 0.5.12(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))
+    transitivePeerDependencies:
+      - preact
+      - supports-color
+
   '@preact/signals-core@1.13.0': {}
 
-  '@preact/signals@2.7.1(preact@10.28.2)':
+  '@preact/signals@2.7.1(preact@10.29.0)':
     dependencies:
       '@preact/signals-core': 1.13.0
-      preact: 10.28.2
+      preact: 10.29.0
 
   '@prefresh/babel-plugin@0.5.1': {}
 
   '@prefresh/core@1.5.3(preact@10.28.2)':
     dependencies:
       preact: 10.28.2
+
+  '@prefresh/core@1.5.3(preact@10.29.0)':
+    dependencies:
+      preact: 10.29.0
 
   '@prefresh/utils@1.2.0': {}
 
@@ -7355,6 +7406,18 @@ snapshots:
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.28.2
+      vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@prefresh/vite@2.4.6(preact@10.29.0)(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))':
+    dependencies:
+      '@babel/core': 7.26.10
+      '@prefresh/babel-plugin': 0.5.1
+      '@prefresh/core': 1.5.3(preact@10.29.0)
+      '@prefresh/utils': 1.2.0
+      '@rollup/pluginutils': 4.2.1
+      preact: 10.29.0
       vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
@@ -7508,11 +7571,11 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  '@storybook/preact-vite@10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+  '@storybook/preact-vite@10.2.12(esbuild@0.27.1)(preact@10.29.0)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
     dependencies:
       '@storybook/builder-vite': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.0)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
-      '@storybook/preact': 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
-      preact: 10.28.2
+      '@storybook/preact': 10.2.12(preact@10.29.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      preact: 10.29.0
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     transitivePeerDependencies:
       - esbuild
@@ -7524,6 +7587,13 @@ snapshots:
     dependencies:
       '@storybook/global': 5.0.0
       preact: 10.28.2
+      storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      ts-dedent: 2.2.0
+
+  '@storybook/preact@10.2.12(preact@10.29.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
+    dependencies:
+      '@storybook/global': 5.0.0
+      preact: 10.29.0
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ts-dedent: 2.2.0
 
@@ -7642,6 +7712,13 @@ snapshots:
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/preact-query@5.96.1(preact@10.29.0)':
+    dependencies:
+      '@tanstack/query-core': 5.96.1
+      preact: 10.29.0
+
+  '@tanstack/query-core@5.96.1': {}
 
   '@testing-library/dom@8.20.1':
     dependencies:
@@ -10232,9 +10309,11 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  monogon@0.3.4(preact@10.28.2)(react@19.2.0)(vue@3.5.31(typescript@5.8.3)):
+  mitt@3.0.1: {}
+
+  monogon@0.3.4(preact@10.29.0)(react@19.2.0)(vue@3.5.31(typescript@5.8.3)):
     optionalDependencies:
-      preact: 10.28.2
+      preact: 10.29.0
       react: 19.2.0
       vue: 3.5.31(typescript@5.8.3)
 
@@ -10659,7 +10738,13 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  preact-custom-element@4.6.0(preact@10.29.0):
+    dependencies:
+      preact: 10.29.0
+
   preact@10.28.2: {}
+
+  preact@10.29.0: {}
 
   prelude-ls@1.2.1: {}
 
@@ -10848,6 +10933,8 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  regexparam@3.0.0: {}
 
   regexpu-core@6.4.0:
     dependencies:
@@ -11952,6 +12039,12 @@ snapshots:
       babel-walk: 3.0.0-canary-5
 
   word-wrap@1.2.5: {}
+
+  wouter-preact@3.9.0(preact@10.29.0):
+    dependencies:
+      mitt: 3.0.1
+      preact: 10.29.0
+      regexparam: 3.0.0
 
   wrap-ansi@6.2.0:
     dependencies:

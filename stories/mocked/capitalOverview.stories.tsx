@@ -109,16 +109,6 @@ export const GrantMultipleActionsEmbedded: ElementStory<typeof CapitalOverview> 
     },
 };
 
-export const GrantMultipleAsyncActionsEmbedded: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple async actions - Embedded',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantMultipleAsyncActionsEmbedded,
-    },
-};
-
 export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Multiple actions - Hosted',
     args: {
@@ -126,16 +116,6 @@ export const GrantMultipleActionsHosted: ElementStory<typeof CapitalOverview> = 
     },
     parameters: {
         msw: CapitalOverviewMockedResponses.grantMultipleActionsHosted,
-    },
-};
-
-export const GrantMultipleAsyncActionsHosted: ElementStory<typeof CapitalOverview> = {
-    name: 'Grant: Multiple async actions - Hosted',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grantMultipleAsyncActionsHosted,
     },
 };
 
