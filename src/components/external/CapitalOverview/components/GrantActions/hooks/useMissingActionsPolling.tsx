@@ -14,7 +14,9 @@ type UseMissingActionsPollingParams = {
 export const useMissingActionsPolling = ({ grantId, initialMissingActions }: UseMissingActionsPollingParams) => {
     const { getGrants } = useConfigContext().endpoints;
     const {
-        pollingConfig: { missingActions: missingActionsPollingConfig },
+        pollingConfig: {
+            missingActions: { initialIntervalMs, maxDurationMs, backoffMultiplier },
+        },
     } = usePollingConfig();
     const shouldPoll = initialMissingActions.length <= 1;
     const pollCountRef = useRef(0);
@@ -50,13 +52,11 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
         const currentMissingActions = grant?.missingActions ?? initialMissingActions;
         setMissingActions(currentMissingActions);
 
-        const nextInterval =
-            missingActionsPollingConfig.initialIntervalMs *
-            Math.pow(missingActionsPollingConfig.backoffMultiplier, Math.max(0, pollCountRef.current));
+        const nextInterval = initialIntervalMs * Math.pow(backoffMultiplier, Math.max(0, pollCountRef.current));
         const elapsedTime = Date.now() - pollStartTimeRef.current;
         const nextElapsedTime = elapsedTime + nextInterval;
 
-        const willExceedDuration = nextElapsedTime >= missingActionsPollingConfig.maxDurationMs;
+        const willExceedDuration = nextElapsedTime >= maxDurationMs;
         const hasMultipleActions = currentMissingActions.length > 1;
 
         if (hasMultipleActions || willExceedDuration) {
@@ -69,7 +69,18 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
         }, nextInterval);
 
         return () => clearTimeout(timeoutId);
-    }, [data, isFetching, refetch, grantId, isPollingComplete, shouldPoll, initialMissingActions, missingActionsPollingConfig]);
+    }, [
+        data,
+        isFetching,
+        refetch,
+        grantId,
+        isPollingComplete,
+        shouldPoll,
+        initialMissingActions,
+        initialIntervalMs,
+        backoffMultiplier,
+        maxDurationMs,
+    ]);
 
     const forcePollingComplete = useCallback(() => setIsPollingComplete(true), []);
 
