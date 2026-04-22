@@ -86,7 +86,7 @@
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
-    "preact": "^10.28.2"
+    "preact": "catalog:"
   },
   "devDependencies": {
     "@integration-components/style": "workspace:*",
@@ -156,7 +156,8 @@
       "minimatch@<9.0.7": ">=10.2.3",
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4"
+      "picomatch": ">=4.0.4",
+      "preact": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "core-js"
