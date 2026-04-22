@@ -99,7 +99,7 @@ describe('useMissingActionsPolling', () => {
         expect(result.current.missingActions).toEqual(mockGrant.missingActions);
     });
 
-    test('should continue polling until maxDurationMs when single action persists', async () => {
+    test('should continue polling while within maxDurationMs when single action persists', async () => {
         const mockGetGrants = getMockGetGrants();
         const initialMissingActions: IMissingAction[] = [{ type: 'signToS' }];
 
@@ -117,7 +117,7 @@ describe('useMissingActionsPolling', () => {
         expect(result.current.isPollingComplete).toBe(false);
     });
 
-    test('should stop polling after maxDurationMs is exceeded', async () => {
+    test('should stop polling before next interval would exceed maxDurationMs', async () => {
         const mockGetGrants = getMockGetGrants();
         const initialMissingActions: IMissingAction[] = [{ type: 'signToS' }];
 

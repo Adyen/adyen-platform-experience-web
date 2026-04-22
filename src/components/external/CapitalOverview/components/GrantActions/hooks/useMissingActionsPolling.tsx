@@ -24,7 +24,7 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
 
     const { data, isFetching, refetch } = useFetch({
         fetchOptions: {
-            enabled: shouldPoll,
+            enabled: false,
             onSuccess: useCallback(() => {
                 pollCountRef.current += 1;
             }, []),
@@ -50,20 +50,19 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
         const currentMissingActions = grant?.missingActions ?? initialMissingActions;
         setMissingActions(currentMissingActions);
 
+        const nextInterval =
+            missingActionsPollingConfig.initialIntervalMs *
+            Math.pow(missingActionsPollingConfig.backoffMultiplier, Math.max(0, pollCountRef.current));
         const elapsedTime = Date.now() - pollStartTimeRef.current;
-        const hasExceededDuration = elapsedTime >= missingActionsPollingConfig.maxDurationMs;
+        const nextElapsedTime = elapsedTime + nextInterval;
+
+        const willExceedDuration = nextElapsedTime >= missingActionsPollingConfig.maxDurationMs;
         const hasMultipleActions = currentMissingActions.length > 1;
 
-        if (hasMultipleActions || hasExceededDuration) {
+        if (hasMultipleActions || willExceedDuration) {
             setIsPollingComplete(true);
             return;
         }
-
-        const calculateNextInterval = () => {
-            return missingActionsPollingConfig.initialIntervalMs * Math.pow(missingActionsPollingConfig.backoffMultiplier, pollCountRef.current);
-        };
-
-        const nextInterval = calculateNextInterval();
 
         const timeoutId = setTimeout(() => {
             refetch();
