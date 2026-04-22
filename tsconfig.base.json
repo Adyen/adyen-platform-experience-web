@@ -54,6 +54,12 @@
             "@integration-components/hooks-preact/*": [
                 "packages/shared/hooks-preact/src/*"
             ],
+            "@integration-components/testing": [
+                "packages/shared/testing/src/index.ts"
+            ],
+            "@integration-components/testing/*": [
+                "packages/shared/testing/src/*"
+            ],
             "@integration-components/reports/publish": [
                 "packages/domains/reports/publish/src/index.ts"
             ]

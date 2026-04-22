@@ -1,0 +1,8 @@
+{
+    "name": "@integration-components/testing",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/shared/testing/src",
+    "tags": ["type:shared"],
+    "targets": {}
+}

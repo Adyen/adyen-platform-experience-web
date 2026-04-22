@@ -1,9 +1,9 @@
-import { paths as BalanceAccountPaths } from '../../../src/types/api/resources/BalanceAccountsResource';
-import { paths as PayoutsPaths } from '../../../src/types/api/resources/PayoutsResource';
-import { paths as TransactionsPaths } from '../../../src/types/api/resources/TransactionsResource';
-import { paths as TransactionsPathsV2 } from '../../../src/types/api/resources/TransactionsResourceV2';
-import { paths as ReportsPaths } from '../../../src/types/api/resources/ReportsResource';
-import { _RequiresParameter } from '../../../src/core/ConfigContext';
+import { paths as BalanceAccountPaths } from '@integration-components/types/api/resources/BalanceAccountsResource';
+import { paths as PayoutsPaths } from '@integration-components/types/api/resources/PayoutsResource';
+import { paths as TransactionsPaths } from '@integration-components/types/api/resources/TransactionsResource';
+import { paths as TransactionsPathsV2 } from '@integration-components/types/api/resources/TransactionsResourceV2';
+import { paths as ReportsPaths } from '@integration-components/types/api/resources/ReportsResource';
+import { _RequiresParameter } from '@integration-components/core/ConfigContext.types';
 
 export type AllowedHttpMethods = 'get' | 'post';
 export type AvailableVersions = 1 | 2;
