@@ -74,23 +74,11 @@ const config: StorybookConfig = {
                 }),
             ],
             resolve: {
-                // Mirrors root vite.config.ts. Workaround for IEX-2797: shared packages in
-                // packages/shared/* don't declare their inter-package deps, so pnpm doesn't
-                // symlink them and Vite can't resolve transitive imports without aliases.
-                // Drop this block once the shared packages declare workspace:* deps correctly.
+                // Force a single copy of msw-storybook-addon across the tool package and repo root.
+                // pnpm otherwise creates separate virtual paths (one per resolved peer); each copy
+                // has its own module-scoped `api` variable, so initialize() and getWorker() read
+                // different state -> "[MSW] Failed to retrieve the worker" in the built preview.
                 alias: {
-                    '@integration-components/hooks-preact': resolve(rootDir, 'packages/shared/hooks-preact/src'),
-                    '@integration-components/core': resolve(rootDir, 'packages/shared/core/src'),
-                    '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
-                    '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
-                    '@integration-components/style': resolve(rootDir, 'packages/shared/style/src'),
-                    '@integration-components/sdk-internal': resolve(rootDir, 'packages/shared/lib/src'),
-                    '@integration-components/reports': resolve(rootDir, 'packages/domains/reports/preact'),
-                    '@integration-components/testing': resolve(rootDir, 'packages/shared/testing/src'),
-                    // Force a single copy of msw-storybook-addon across the tool package and repo root.
-                    // pnpm otherwise creates separate virtual paths (one per resolved peer); each copy
-                    // has its own module-scoped `api` variable, so initialize() and getWorker() read
-                    // different state -> "[MSW] Failed to retrieve the worker" in the built preview.
                     'msw-storybook-addon': resolve(rootDir, 'node_modules/msw-storybook-addon'),
                 },
                 dedupe: ['msw-storybook-addon', 'msw', 'msw/browser'],

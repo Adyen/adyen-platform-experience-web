@@ -7,6 +7,20 @@
     "types": "./src/index.ts",
     "exports": {
         ".": "./src/index.ts",
-        "./*": "./src/*"
+        "./package.json": "./package.json",
+        "./form": "./src/form/index.ts",
+        "./form/wizard/WizardFormContext": "./src/form/wizard/WizardFormContext.tsx",
+        "./useCommitAction": "./src/useCommitAction/index.ts",
+        "./useModalDetails": "./src/useModalDetails/index.ts",
+        "./useReactiveState": "./src/useReactiveState/index.ts",
+        "./*": "./src/*.ts"
+    },
+    "dependencies": {
+        "@integration-components/core": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "preact": "^10.28.2"
     }
 }
