@@ -1,31 +1,4 @@
 export const LEGAL_ENTITY = {
-    individual: {
-        email: 'test@test.com',
-        phone: {
-            number: '+31612345678',
-            type: 'mobile',
-        },
-        birthData: {
-            dateOfBirth: '1970-01-01',
-        },
-        identificationData: {
-            number: '*****6789',
-            type: 'nationalIdNumber',
-            nationalIdExempt: false,
-        },
-        name: {
-            firstName: 'James',
-            lastName: 'Bond',
-        },
-        nationality: 'NL',
-        residentialAddress: {
-            city: 'City',
-            country: 'NL',
-            postalCode: '1111AA',
-            street: 'My street',
-            street2: '1',
-        },
-    },
     organization: {
         type: 'privateCompany',
         legalName: 'Apple',
@@ -47,7 +20,17 @@ export const LEGAL_ENTITY = {
             stateOrProvince: 'IL',
         },
     },
-    type: 'individual',
+    entityAssociations: [
+        {
+            legalEntityId: 'test-signatory-id',
+            type: 'signatory',
+            jobTitle: 'CFO',
+            associatorId: 'test-id',
+            entityType: 'individual',
+            name: 'John Dough',
+        },
+    ],
+    type: 'organization',
     documentDetails: [
         {
             id: 'test-id',

@@ -1,4 +1,4 @@
-import { HttpMethod } from '../../../src/core/Http/types';
+import { HttpMethod } from '@integration-components/core';
 
 export const AnalyticsEndpoints = {
     sendEngageEvent: {

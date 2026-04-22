@@ -1,5 +1,5 @@
 import { TransactionsOverview } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { http, HttpResponse } from 'msw';
 import { TransactionsOverviewMeta } from '../components/transactionsOverview';
 import { Meta } from '@storybook/preact';

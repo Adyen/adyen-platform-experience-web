@@ -1,5 +1,17 @@
 import { http, HttpResponse, PathParams } from 'msw';
-import { compareDates, delay, getPaginationLinks } from './utils/utils';
+import {
+    CapitalComponentManage,
+    compareDates,
+    delay,
+    DisputesComponentManage,
+    getPaginationLinks,
+    PayByLinkComponentManageLinks,
+    PayByLinkComponentView,
+    PayoutsOverviewComponentView,
+    ReportsOverviewComponentView,
+    TransactionsOverviewComponentManageRefunds,
+    TransactionsOverviewComponentView,
+} from '@integration-components/testing/msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { IPaymentLinkStatusGroup } from '../../src';
 import {
@@ -17,16 +29,6 @@ import {
 } from '../mock-data';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
-import {
-    CapitalComponentManage,
-    DisputesComponentManage,
-    PayByLinkComponentManageLinks,
-    PayByLinkComponentView,
-    PayoutsOverviewComponentView,
-    ReportsOverviewComponentView,
-    TransactionsOverviewComponentManageRefunds,
-    TransactionsOverviewComponentView,
-} from './utils/rolesToEndpointsMapping';
 
 const DELAY_TIME = 300;
 

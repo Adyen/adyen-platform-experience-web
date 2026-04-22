@@ -1,7 +1,6 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '../../../../../stories/utils/types';
+import { ElementProps, ElementStory, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { ReportsOverview } from '../publish/src';
-import { enabledDisabledCallbackRadioControls } from '../../../../../stories/utils/controls';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = {
     title: 'Reports/Reports Overview (via package)',

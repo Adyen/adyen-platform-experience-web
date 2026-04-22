@@ -1,6 +1,6 @@
 import { endpoints } from '../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
-import { compareDates, delay, getPaginationLinks } from './utils/utils';
+import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { BALANCE_ACCOUNTS_SINGLE, getReports } from '../mock-data';
 
 const DEFAULT_SORT_DIRECTION = 'desc';

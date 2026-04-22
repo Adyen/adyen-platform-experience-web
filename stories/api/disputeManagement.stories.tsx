@@ -1,8 +1,8 @@
 import { Meta } from '@storybook/preact';
 import { DisputeManagement } from '../../src';
 import { DisputeManagementMeta } from '../components/disputeManagement';
-import { ElementProps, ElementStory, SessionControls } from '../utils/types';
-import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { ElementProps, ElementStory, SessionControls } from '@integration-components/testing/storybook-helpers';
+import { EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'API-connected/Disputes/Dispute Management' };
 

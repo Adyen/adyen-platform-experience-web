@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { PaymentLinksOverview, PaymentLinkSettings } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkSettingsMeta } from '../components/paymentLinkSettings';
 import {
     PayByLinkOverviewMockedResponses,

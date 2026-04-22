@@ -1,5 +1,5 @@
 import { setupWorker } from 'msw/browser';
-import { getMockHandlers } from './utils/utils';
+import { getMockHandlers } from '@integration-components/testing/msw';
 import { analyticsMock } from './analytics';
 import { balanceAccountMock } from './balanceAccounts';
 import { capitalMock } from './capital';

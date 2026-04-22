@@ -1,0 +1,30 @@
+{
+    "name": "@integration-components/tools-storybook-vue",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "storybook": "node .storybook/dev.js",
+        "storybook:build": "cross-env USE_TEST_CDN=true storybook build"
+    },
+    "dependencies": {
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "vue": "^3.5.13"
+    },
+    "devDependencies": {
+        "@storybook/vue3": "10.2.12",
+        "@storybook/vue3-vite": "10.2.12",
+        "@vitejs/plugin-vue": "^6.0.5",
+        "cross-env": "^7.0.3",
+        "dotenv": "^17.2.3",
+        "msw": "^2.4.5",
+        "msw-storybook-addon": "^2.0.2",
+        "storybook": "10.2.12"
+    },
+    "msw": {
+        "workerDirectory": [
+            "static"
+        ]
+    }
+}

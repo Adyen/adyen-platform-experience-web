@@ -1,10 +1,10 @@
 import { Meta } from '@storybook/preact';
 import { legaEntityDecorator } from '../mocked/utils/setupRequestConfig';
-import { EMPTY_SETUP_LEGAL_ENTITY_OBJECT } from '../utils/constants';
-import { ElementProps, SetupControls } from '../utils/types';
+import { EMPTY_SETUP_LEGAL_ENTITY_OBJECT } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { CapitalOffer } from '../../src';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { enabledDisabledCallbackRadioControls } from '../utils/controls';
+import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { action } from 'storybook/actions';
 
 export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {

@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Anmodede midler",
     "capital.overview.grants.item.details.a11y.label": "Vis tilskudsoplysninger",
     "capital.overview.grants.item.details.requestedFunds": "Dine anmodede midler var: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Vent... Opdater ikke siden. Vi behandler din anmodning, og det kan tage et øjeblik.",
     "capital.overview.grants.item.progressBar.a11y.label": "Tilbagebetaling af tilskud",
     "capital.overview.grants.item.termEnds": "Periode slutter: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Se nyt tilbud",
