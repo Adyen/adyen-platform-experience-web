@@ -7,7 +7,7 @@ import * as ConfigContext from '../../../../../../core/ConfigContext';
 import * as CoreContext from '../../../../../../core/Context/useCoreContext';
 import { useMissingActionsPolling } from './useMissingActionsPolling';
 import { IGrant, IMissingAction } from '../../../../../../types';
-import { PollingConfig } from '../../../../../../config/capital/usePollingConfig';
+import { PollingConfig } from './usePollingConfig';
 
 vi.mock('../../../../../../core/ConfigContext');
 vi.mock('../../../../../../core/Context/useCoreContext');
@@ -26,7 +26,6 @@ describe('useMissingActionsPolling', () => {
             initialIntervalMs: 50,
             backoffMultiplier: 1.5,
             maxDurationMs: 1000,
-            strategy: 'exponentialBackoff',
         },
     };
 
@@ -141,7 +140,7 @@ describe('useMissingActionsPolling', () => {
         await waitFor(() => expect(result.current.isPollingComplete).toBe(true), { timeout: 1500 });
     });
 
-    test('should use exponential backoff intervals when strategy is exponentialBackoff', async () => {
+    test('should use exponential backoff intervals', async () => {
         const mockGetGrants = getMockGetGrants();
         const initialMissingActions: IMissingAction[] = [{ type: 'signToS' }];
 
@@ -170,49 +169,6 @@ describe('useMissingActionsPolling', () => {
         const intervals = timestamps.slice(1).map((ts, i) => ts - timestamps[i]!);
         expect(intervals[0]).toBeGreaterThanOrEqual(50);
         expect(intervals[1]).toBeGreaterThan(intervals[0]!);
-    });
-
-    test('should use fixed intervals when strategy is not exponentialBackoff', async () => {
-        const fixedConfig: PollingConfig = {
-            missingActions: {
-                initialIntervalMs: 100,
-                backoffMultiplier: 1.5,
-                maxDurationMs: 500,
-                strategy: 'fixed',
-            },
-        };
-        mockCoreContext(fixedConfig);
-
-        const mockGetGrants = getMockGetGrants();
-        const initialMissingActions: IMissingAction[] = [{ type: 'signToS' }];
-
-        const timestamps: number[] = [];
-        mockGetGrants.mockImplementation(async () => {
-            timestamps.push(Date.now());
-            return {
-                data: [
-                    {
-                        id: 'GRANT123',
-                        missingActions: [{ type: 'signToS' }],
-                    } as Partial<IGrant> as IGrant,
-                ],
-            };
-        });
-
-        renderHook(() =>
-            useMissingActionsPolling({
-                grantId: 'GRANT123',
-                initialMissingActions,
-            })
-        );
-
-        await waitFor(() => expect(mockGetGrants).toHaveBeenCalledTimes(3), { timeout: 1000 });
-
-        const intervals = timestamps.slice(1).map((ts, i) => ts - timestamps[i]!);
-        intervals.forEach(interval => {
-            expect(interval).toBeGreaterThanOrEqual(95);
-            expect(interval).toBeLessThan(150);
-        });
     });
 
     test('forcePollingComplete should stop polling immediately', async () => {

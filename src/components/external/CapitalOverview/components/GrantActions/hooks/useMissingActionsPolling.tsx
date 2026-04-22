@@ -3,7 +3,7 @@ import { useConfigContext } from '../../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../../hooks/useFetch';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { EMPTY_OBJECT } from '../../../../../../utils';
-import { usePollingConfig } from '../../../../../../config/capital/usePollingConfig';
+import { usePollingConfig } from './usePollingConfig';
 
 type UseMissingActionsPollingParams = {
     grantId: string;
@@ -60,10 +60,7 @@ export const useMissingActionsPolling = ({ grantId, initialMissingActions }: Use
         }
 
         const calculateNextInterval = () => {
-            if (missingActionsPollingConfig.strategy === 'exponentialBackoff') {
-                return missingActionsPollingConfig.initialIntervalMs * Math.pow(missingActionsPollingConfig.backoffMultiplier, pollCountRef.current);
-            }
-            return missingActionsPollingConfig.initialIntervalMs;
+            return missingActionsPollingConfig.initialIntervalMs * Math.pow(missingActionsPollingConfig.backoffMultiplier, pollCountRef.current);
         };
 
         const nextInterval = calculateNextInterval();

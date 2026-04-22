@@ -1,14 +1,12 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import useCoreContext from '../../core/Context/useCoreContext';
-import localPollingConfig from './pollingConfig.json';
+import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import localPollingConfig from '../../../../../../config/capital/pollingConfig.json';
 
-export type PollingStrategy = 'fixed' | 'exponentialBackoff';
-
+// The following structure enables us to have polling with exponential backoff intervals. If the `backoffMultiplier` is 1, the polling will happen on fixed intervals.
 export interface MissingActionsPollingConfig {
     initialIntervalMs: number;
     backoffMultiplier: number;
     maxDurationMs: number;
-    strategy: PollingStrategy;
 }
 
 export interface PollingConfig {
