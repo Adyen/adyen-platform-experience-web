@@ -1,5 +1,5 @@
 import { StoryObj } from '@storybook/preact';
-import { CoreOptions } from '../../src';
+import { CoreOptions } from '@integration-components/sdk-internal';
 
 type GlobalStoriesProps = {
     mockedApi?: boolean;

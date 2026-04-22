@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { PaymentLinkDetails } from '../../src';
 import { PaymentLinkDetailsMeta } from '../components/paymentLinkDetails';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkDetailsMockedResponses } from '../../mocks/mock-server/payByLink';
 
 const meta: Meta<ElementProps<typeof PaymentLinkDetails>> = { ...PaymentLinkDetailsMeta, title: 'Mocked/Pay by Link/Payment Link Details' };

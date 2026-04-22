@@ -1,0 +1,30 @@
+{
+    "name": "@integration-components/tools-storybook-preact",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "packages/tools/storybook-preact/src",
+    "tags": ["type:tool", "scope:storybook-preact"],
+    "targets": {
+        "storybook": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook"
+            }
+        },
+        "storybook:build": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:build"
+            },
+            "outputs": ["{projectRoot}/storybook-static"],
+            "cache": true
+        },
+        "storybook:static": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:static"
+            },
+            "outputs": ["{projectRoot}/storybook-static"]
+        }
+    }
+}

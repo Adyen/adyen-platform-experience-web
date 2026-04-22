@@ -62,9 +62,12 @@
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "pnpm run storybook",
-    "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'node .storybook/dev.js'",
-    "storybook:build": "cross-env USE_TEST_CDN=true storybook build",
-    "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 storybook build && vite preview --outDir storybook-static --config vite.config.ts",
+    "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'nx run @integration-components/tools-storybook-preact:storybook'",
+    "storybook:vue": "nx run @integration-components/tools-storybook-vue:storybook",
+    "storybook:build": "nx run @integration-components/tools-storybook-preact:storybook:build",
+    "storybook:build:preact": "nx run @integration-components/tools-storybook-preact:storybook:build",
+    "storybook:build:vue": "nx run @integration-components/tools-storybook-vue:storybook:build",
+    "storybook:static": "nx run @integration-components/tools-storybook-preact:storybook:static",
     "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
@@ -83,7 +86,7 @@
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
-    "preact": "^10.28.2"
+    "preact": "catalog:"
   },
   "devDependencies": {
     "@integration-components/style": "workspace:*",
@@ -96,8 +99,7 @@
     "@nx/vitest": "^22.5.3",
     "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.10.2",
-    "@storybook/preact": "^10.2.12",
-    "@storybook/preact-vite": "^10.2.12",
+    "@storybook/preact": "10.2.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/preact": "^3.2.3",
     "@testing-library/user-event": "^14.6.1",
@@ -132,7 +134,7 @@
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.77.6",
     "sass-loader": "^12.3.0",
-    "storybook": "^10.2.12",
+    "storybook": "10.2.12",
     "style-loader": "^3.3.1",
     "stylelint": "^17.5.0",
     "stylelint-config-recommended": "^17.0.0",
@@ -146,11 +148,6 @@
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "4.0.10"
   },
-  "msw": {
-    "workerDirectory": [
-      "static"
-    ]
-  },
   "pnpm": {
     "overrides": {
       "esbuild@0.25.2": "0.27.1",
@@ -159,7 +156,8 @@
       "minimatch@<9.0.7": ">=10.2.3",
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4"
+      "picomatch": ">=4.0.4",
+      "preact": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "core-js"

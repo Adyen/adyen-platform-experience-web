@@ -1,0 +1,10 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "jsx": "preserve",
+        "types": ["node"]
+    },
+    "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts"],
+    "include": ["src/**/*.ts", "src/**/*.vue", ".storybook/**/*.ts"]
+}

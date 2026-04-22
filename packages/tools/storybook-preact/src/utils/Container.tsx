@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/preact';
-import { AdyenPlatformExperience } from '../../src';
-import BaseElement from '../../src/components/external/BaseElement';
-import sessionRequest from './sessionRequest';
+import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
+import type BaseElement from '../../../../../src/components/external/BaseElement';
+import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import './styles.scss';
 
 interface IContainer<T extends new (...args: any) => any> {
@@ -25,7 +25,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 environment: 'test',
                 locale: context.globals.locale,
                 onSessionCreate: async () => {
-                    return await sessionRequest(context.args.session);
+                    return await getMySessionToken(context.args.session);
                 },
                 ...(context.args.coreOptions ?? {}),
             });

@@ -5,9 +5,11 @@ import { endpoints } from '../../../endpoints/endpoints';
 import { setupBasicResponse } from '../../../mocks/mock-server/setup';
 import { delay } from '@integration-components/testing/msw';
 
-const worker = getWorker();
-
+// Resolve the worker lazily inside the decorator. Calling `getWorker()` at
+// module top level crashes in production builds, where this module can be
+// eagerly evaluated before `preview.tsx` has run `initialize(...)`.
 export const legaEntityDecorator: Decorator = (Story, context) => {
+    const worker = getWorker();
     const legalEntity = context.args.legalEntity ?? {};
     worker.use(
         http.post(endpoints().setup, async () => {

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '../../../utils/utils';
-import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { openPayoutDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-payouts-payouts-overview--data-customization';

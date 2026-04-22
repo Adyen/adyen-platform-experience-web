@@ -1,12 +1,12 @@
 import { PayoutsOverview } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PayoutsOverviewMeta } from '../components/payoutsOverview';
 import { Meta } from '@storybook/preact';
 import { getCustomPayoutsData } from './utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
-import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/payouts';
 
 const meta: Meta<ElementProps<typeof PayoutsOverview>> = { ...PayoutsOverviewMeta, title: 'Mocked/Payouts/Payouts Overview' };

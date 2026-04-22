@@ -1,5 +1,5 @@
 import { IPayout, IReport, ITransaction } from '../../../src';
-import { CUSTOM_URL_EXAMPLE } from '../../utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { IDisputeListItem } from '../../../src/types/api/models/disputes';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];

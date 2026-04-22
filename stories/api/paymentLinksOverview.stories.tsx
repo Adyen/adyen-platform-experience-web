@@ -1,8 +1,8 @@
 import { PaymentLinksOverview } from '../../src';
-import { ElementProps, ElementStory, SessionControls } from '../utils/types';
+import { ElementProps, ElementStory, SessionControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
 import { PaymentLinksOverviewMeta } from '../components/paymentLinksOverview';
-import { EMPTY_SESSION_OBJECT } from '../utils/constants';
+import { EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<typeof PaymentLinksOverview>> = {
     ...PaymentLinksOverviewMeta,

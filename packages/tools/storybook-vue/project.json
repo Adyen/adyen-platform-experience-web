@@ -1,0 +1,23 @@
+{
+    "name": "@integration-components/tools-storybook-vue",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "packages/tools/storybook-vue/src",
+    "tags": ["type:tool", "scope:storybook-vue"],
+    "targets": {
+        "storybook": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook"
+            }
+        },
+        "storybook:build": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:build"
+            },
+            "outputs": ["{projectRoot}/storybook-static"],
+            "cache": true
+        }
+    }
+}
