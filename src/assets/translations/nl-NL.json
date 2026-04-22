@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Aangevraagde financiering",
     "capital.overview.grants.item.details.a11y.label": "Subsidiedetails weergeven",
     "capital.overview.grants.item.details.requestedFunds": "Je aangevraagde financiering bedroeg: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Wacht even en vernieuw de pagina niet. We zijn je aanvraag aan het verwerken, dit kan even duren.",
     "capital.overview.grants.item.progressBar.a11y.label": "Terugbetaling van subsidies",
     "capital.overview.grants.item.termEnds": "Einddatum voorwaarden: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Nieuw aanbod bekijken",
