@@ -6,16 +6,14 @@ import { useFetch } from '../../../../../hooks/useFetch';
 import { GrantActionsEmbedded } from '../GrantActionsEmbedded/GrantActionsEmbedded';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { GrantActionsHosted } from '../GrantActionsHosted/GrantActionsHosted';
-import Card from '../../../../internal/Card/Card';
-import Spinner from '../../../../internal/Spinner';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { AlertTypeOption } from '../../../../internal/Alert/types';
+import Alert from '../../../../internal/Alert/Alert';
 import './GrantActions.scss';
 import { useMissingActionsPolling } from './hooks/useMissingActionsPolling';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyVariant } from '../../../../internal/Typography/types';
 
 const CLASSNAMES = {
-    loadingContainer: 'adyen-pe-grant-actions__loading-container',
+    actionsTitleSkeleton: 'adyen-pe-grant-actions__actions-title-skeleton',
+    actionsDescriptionSkeleton: 'adyen-pe-grant-actions__actions-description-skeleton',
 };
 
 type GrantActionsProps = {
@@ -33,7 +31,6 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({
     className,
     onComplete,
 }) => {
-    const { i18n } = useCoreContext();
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
     const { missingActions, isPollingComplete, forcePollingComplete } = useMissingActionsPolling({ grantId, initialMissingActions });
 
@@ -53,14 +50,12 @@ export const GrantActions: FunctionalComponent<GrantActionsProps> = ({
 
     if (!isPollingComplete || onboardingConfigurationQuery.isFetching) {
         return (
-            <Card classNameModifiers={className ? [className] : []} filled noOutline noPadding>
-                <div className={CLASSNAMES.loadingContainer}>
-                    <Spinner size="large" inline />
-                    <Typography variant={TypographyVariant.BODY} strongest>
-                        {i18n.get('capital.overview.grants.item.processingLongRequest')}
-                    </Typography>
-                </div>
-            </Card>
+            <Alert
+                className={className}
+                type={AlertTypeOption.WARNING}
+                title={<div className={CLASSNAMES.actionsTitleSkeleton}></div>}
+                description={<div className={CLASSNAMES.actionsDescriptionSkeleton}></div>}
+            />
         );
     }
 

@@ -84,7 +84,6 @@
     "capital.overview.grants.item.amounts.requestedFunds": "Angeforderte Geldmittel",
     "capital.overview.grants.item.details.a11y.label": "Zuschussdetails anzeigen",
     "capital.overview.grants.item.details.requestedFunds": "Ihre angeforderten Geldmittel sind: %{amount}",
-    "capital.overview.grants.item.processingLongRequest": "Bitte warten Sie und aktualisieren Sie die Seite nicht. Wir bearbeiten Ihre Anfrage, was einen Moment dauern kann.",
     "capital.overview.grants.item.progressBar.a11y.label": "Zuschussrückzahlung",
     "capital.overview.grants.item.termEnds": "Laufzeitende: %{date}",
     "capital.overview.grants.list.actions.newOffer": "Neues Angebot sehen",
