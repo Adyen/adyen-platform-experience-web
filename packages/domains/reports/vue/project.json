@@ -1,8 +1,0 @@
-{
-    "name": "@integration-components/reports-vue",
-    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-    "projectType": "library",
-    "sourceRoot": "packages/domains/reports/vue",
-    "tags": ["scope:reports", "type:domain"],
-    "targets": {}
-}
