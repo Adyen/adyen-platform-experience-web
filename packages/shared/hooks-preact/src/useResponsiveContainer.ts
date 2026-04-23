@@ -1,4 +1,4 @@
-import { BREAKPOINTS } from '../../../../src/constants';
+import { BREAKPOINTS } from '@integration-components/utils';
 import type { ValueOfRecord } from '@integration-components/utils/types';
 import { useContainerQuery } from './useContainerQuery';
 

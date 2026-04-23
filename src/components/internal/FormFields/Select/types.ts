@@ -1,7 +1,10 @@
 import { Ref, VNode } from 'preact';
 import { AriaAttributes, HTMLAttributes } from 'preact/compat';
+import type { SelectChangeEvent, SelectItem } from '@integration-components/types';
 import { CommitActionProperties } from '../../../../hooks/useCommitAction';
 import { ButtonVariant } from '../../Button/types';
+
+export type { SelectChangeEvent, SelectItem };
 
 type _Selected<T> = T | readonly T[];
 
@@ -9,21 +12,6 @@ type _ListItemRenderData<T extends SelectItem> = Pick<SelectItemProps<T>, 'item'
     contentClassName?: HTMLAttributes<any>['className'];
     iconClassName?: HTMLAttributes<any>['className'];
 };
-
-export type SelectChangeEvent<T = string> = {
-    target: {
-        value: T;
-        name?: string;
-    };
-};
-
-export interface SelectItem<T extends string = string> {
-    disabled?: boolean;
-    icon?: string;
-    id: T;
-    name: string;
-    selectedOptionName?: string;
-}
 
 export interface SelectProps<T extends SelectItem> extends Pick<AriaAttributes, 'aria-label' | 'aria-labelledby'> {
     className?: string;

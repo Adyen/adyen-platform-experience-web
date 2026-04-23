@@ -89,10 +89,12 @@
     "preact": "catalog:"
   },
   "devDependencies": {
+    "@integration-components/core": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",
+    "@integration-components/utils": "workspace:*",
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",

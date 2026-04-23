@@ -4,11 +4,11 @@
 import { renderHook, act, waitFor } from '@testing-library/preact';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import { useStores } from './useStores';
-import { useConfigContext } from '../core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from './useFetch';
-import { STORES } from '../../mocks/mock-data';
+import { STORES } from '../../../../mocks/mock-data';
 
-vi.mock('../core/ConfigContext');
+vi.mock('@integration-components/core/preact');
 vi.mock('./useFetch');
 
 const mockUseConfigContext = vi.mocked(useConfigContext);

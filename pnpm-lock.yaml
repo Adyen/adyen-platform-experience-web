@@ -42,6 +42,9 @@ importers:
       '@changesets/get-github-info':
         specifier: ^0.6.0
         version: 0.6.0
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:packages/shared/core
       '@integration-components/hooks-preact':
         specifier: workspace:*
         version: link:packages/shared/hooks-preact
@@ -54,6 +57,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:packages/shared/types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:packages/shared/utils
       '@nx/eslint':
         specifier: ^22.5.3
         version: 22.6.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.6.3)
@@ -240,6 +246,9 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../utils
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
 
   packages/shared/hooks-preact:
     dependencies:

@@ -3,7 +3,7 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/preact';
-import { SelectItem } from '../components/internal/FormFields/Select/types';
+import type { SelectItem } from '@integration-components/types';
 import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
 import useMultiSelectionFilterProps from './useMultiSelectionFilterProps';
 
