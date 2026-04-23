@@ -31,6 +31,9 @@ export async function http<T>(options: HttpOptions): Promise<T> {
     const versionPath = versionless ? '' : apiVersion;
     const url = new URL(`${baseUrl}${versionPath}${normalizeUrl(path)}`);
 
+    // Collapse forward-slashes in the url path
+    url.pathname = url.pathname.replace(/\/+/g, '/');
+
     if (options.params) {
         options.params.forEach((value, param) => {
             const decodedValue = decodeURIComponent(value);
