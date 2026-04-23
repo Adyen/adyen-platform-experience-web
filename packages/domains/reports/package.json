@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "exports": {
-        "./publish": "./publish/src/index.ts"
+        "./publish": "./preact/publish/src/index.ts"
     },
     "dependencies": {
         "@integration-components/sdk-internal": "workspace:*"

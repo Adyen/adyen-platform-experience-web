@@ -5,5 +5,12 @@
         "types": ["node"]
     },
     "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"],
-    "include": ["publish/src/**/*.ts"]
+    "include": [
+        "./preact/publish/src/**/*.ts",
+        "./preact/publish/src/**/*.tsx",
+        "./preact/src/**/*.ts",
+        "./preact/src/**/*.tsx",
+        "./vue/publish/src/**/*.ts",
+        "./vue/src/**/*.ts"
+    ]
 }

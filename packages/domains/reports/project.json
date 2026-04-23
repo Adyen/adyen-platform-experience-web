@@ -2,7 +2,7 @@
     "name": "@integration-components/reports",
     "$schema": "../../../node_modules/nx/schemas/project-schema.json",
     "projectType": "library",
-    "sourceRoot": "packages/domains/reports",
+    "sourceRoot": "packages/domains/reports/preact",
     "tags": ["scope:reports", "type:domain"],
     "targets": {}
 }
