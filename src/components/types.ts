@@ -105,8 +105,7 @@ export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
 
-export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
-export type { ReportsTableFields } from './external/ReportsOverview/types';
+export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields } from '@integration-components/reports/publish';
 
 export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
 export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';

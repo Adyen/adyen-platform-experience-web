@@ -4,9 +4,16 @@
     "private": true,
     "type": "module",
     "exports": {
-        "./publish": "./preact/publish/src/index.ts"
+        "./publish": "./preact/publish/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
-        "@integration-components/sdk-internal": "workspace:*"
+        "@integration-components/core": "workspace:*",
+        "@integration-components/hooks-preact": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
     }
 }

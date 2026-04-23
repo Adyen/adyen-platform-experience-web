@@ -6,10 +6,13 @@
     },
     "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"],
     "include": [
+        "./domain/src/**/*.ts",
         "./preact/publish/src/**/*.ts",
         "./preact/publish/src/**/*.tsx",
         "./preact/src/**/*.ts",
         "./preact/src/**/*.tsx",
+        "./preact/stories/**/*.ts",
+        "./preact/stories/**/*.tsx",
         "./vue/publish/src/**/*.ts",
         "./vue/src/**/*.ts"
     ]

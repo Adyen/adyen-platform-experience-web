@@ -91,6 +91,7 @@
   "devDependencies": {
     "@integration-components/core": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",
+    "@integration-components/reports": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",

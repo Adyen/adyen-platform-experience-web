@@ -48,6 +48,9 @@ importers:
       '@integration-components/hooks-preact':
         specifier: workspace:*
         version: link:packages/shared/hooks-preact
+      '@integration-components/reports':
+        specifier: workspace:*
+        version: link:packages/domains/reports
       '@integration-components/style':
         specifier: workspace:*
         version: link:packages/shared/style
@@ -225,9 +228,24 @@ importers:
 
   packages/domains/reports:
     dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../../shared/core
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:../../shared/hooks-preact
       '@integration-components/sdk-internal':
         specifier: workspace:*
         version: link:../../shared/lib
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../../shared/style
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../../shared/types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
 
   packages/sdk:
     dependencies:

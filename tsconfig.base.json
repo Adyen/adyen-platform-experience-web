@@ -9,7 +9,11 @@
         "esModuleInterop": true,
         "strict": true,
         "noUncheckedIndexedAccess": true,
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
         "importHelpers": true,
         "skipLibCheck": true,
         "sourceMap": true,
@@ -20,20 +24,54 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@integration-components/types": ["packages/shared/types/src/index.ts"],
-            "@integration-components/types/*": ["packages/shared/types/src/*"],
-            "@integration-components/utils": ["packages/shared/utils/src/index.ts"],
-            "@integration-components/utils/*": ["packages/shared/utils/src/*"],
-            "@integration-components/core": ["packages/shared/core/src/index.ts"],
-            "@integration-components/core/*": ["packages/shared/core/src/*"],
-            "@integration-components/core/preact": ["packages/shared/core/src/preact/index.ts"],
-            "@integration-components/sdk-internal": ["packages/shared/lib/src/index.ts"],
-            "@integration-components/sdk-internal/*": ["packages/shared/lib/src/*"],
-            "@integration-components/hooks-preact": ["packages/shared/hooks-preact/src/index.ts"],
-            "@integration-components/hooks-preact/*": ["packages/shared/hooks-preact/src/*"],
-            "@integration-components/testing": ["packages/shared/testing/src/index.ts"],
-            "@integration-components/testing/*": ["packages/shared/testing/src/*"],
-            "@integration-components/reports/publish": ["packages/domains/reports/preact/publish/src/index.ts"]
+            "@integration-components/types": [
+                "packages/shared/types/src/index.ts"
+            ],
+            "@integration-components/types/*": [
+                "packages/shared/types/src/*"
+            ],
+            "@integration-components/utils": [
+                "packages/shared/utils/src/index.ts"
+            ],
+            "@integration-components/utils/*": [
+                "packages/shared/utils/src/*"
+            ],
+            "@integration-components/core": [
+                "packages/shared/core/src/index.ts"
+            ],
+            "@integration-components/core/*": [
+                "packages/shared/core/src/*"
+            ],
+            "@integration-components/core/preact": [
+                "packages/shared/core/src/preact/index.ts"
+            ],
+            "@integration-components/sdk-internal": [
+                "packages/shared/lib/src/index.ts"
+            ],
+            "@integration-components/sdk-internal/*": [
+                "packages/shared/lib/src/*"
+            ],
+            "@integration-components/hooks-preact": [
+                "packages/shared/hooks-preact/src/index.ts"
+            ],
+            "@integration-components/hooks-preact/*": [
+                "packages/shared/hooks-preact/src/*"
+            ],
+            "@integration-components/testing": [
+                "packages/shared/testing/src/index.ts"
+            ],
+            "@integration-components/testing/*": [
+                "packages/shared/testing/src/*"
+            ],
+            "@integration-components/reports/publish": [
+                "packages/domains/reports/preact/publish/src/index.ts"
+            ],
+            "@integration-components/reports/preact": [
+                "packages/domains/reports/preact/src/index.ts"
+            ],
+            "@integration-components/reports/domain": [
+                "packages/domains/reports/domain/src/index.ts"
+            ]
         }
     }
 }

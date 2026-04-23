@@ -3,7 +3,7 @@ export * from './PayoutsOverview';
 export * from './TransactionDetails';
 export * from './TransactionsOverview';
 export * from './CapitalOffer';
-export * from './ReportsOverview';
+export { ReportsOverview } from '@integration-components/reports/publish';
 export * from './CapitalOverview';
 export * from './DisputesOverview';
 export * from './DisputeManagement';
