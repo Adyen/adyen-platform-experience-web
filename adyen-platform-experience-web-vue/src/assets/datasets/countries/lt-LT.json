@@ -1,0 +1,982 @@
+[
+    {
+        "id": "AF",
+        "name": "Afganistanas"
+    },
+    {
+        "id": "IE",
+        "name": "Airija"
+    },
+    {
+        "id": "AX",
+        "name": "Alandų Salos"
+    },
+    {
+        "id": "AL",
+        "name": "Albanija"
+    },
+    {
+        "id": "DZ",
+        "name": "Alžyras"
+    },
+    {
+        "id": "AS",
+        "name": "Amerikos Samoa"
+    },
+    {
+        "id": "AD",
+        "name": "Andora"
+    },
+    {
+        "id": "AI",
+        "name": "Angilija"
+    },
+    {
+        "id": "AO",
+        "name": "Angola"
+    },
+    {
+        "id": "AQ",
+        "name": "Antarktida"
+    },
+    {
+        "id": "AG",
+        "name": "Antigva ir Barbuda"
+    },
+    {
+        "id": "AR",
+        "name": "Argentina"
+    },
+    {
+        "id": "AM",
+        "name": "Armėnija"
+    },
+    {
+        "id": "AW",
+        "name": "Aruba"
+    },
+    {
+        "id": "AU",
+        "name": "Australija"
+    },
+    {
+        "id": "AT",
+        "name": "Austrija"
+    },
+    {
+        "id": "AZ",
+        "name": "Azerbaidžanas"
+    },
+    {
+        "id": "BS",
+        "name": "Bahamos"
+    },
+    {
+        "id": "BH",
+        "name": "Bahreinas"
+    },
+    {
+        "id": "BY",
+        "name": "Baltarusija"
+    },
+    {
+        "id": "BD",
+        "name": "Bangladešas"
+    },
+    {
+        "id": "BB",
+        "name": "Barbadosas"
+    },
+    {
+        "id": "BE",
+        "name": "Belgija"
+    },
+    {
+        "id": "BZ",
+        "name": "Belizas"
+    },
+    {
+        "id": "BJ",
+        "name": "Beninas"
+    },
+    {
+        "id": "BM",
+        "name": "Bermuda"
+    },
+    {
+        "id": "GW",
+        "name": "Bisau Gvinėja"
+    },
+    {
+        "id": "BO",
+        "name": "Bolivija"
+    },
+    {
+        "id": "BA",
+        "name": "Bosnija ir Hercegovina"
+    },
+    {
+        "id": "BW",
+        "name": "Botsvana"
+    },
+    {
+        "id": "BR",
+        "name": "Brazilija"
+    },
+    {
+        "id": "BN",
+        "name": "Brunėjus"
+    },
+    {
+        "id": "BG",
+        "name": "Bulgarija"
+    },
+    {
+        "id": "BF",
+        "name": "Burkina Fasas"
+    },
+    {
+        "id": "BI",
+        "name": "Burundis"
+    },
+    {
+        "id": "BT",
+        "name": "Butanas"
+    },
+    {
+        "id": "BV",
+        "name": "Buvė Sala"
+    },
+    {
+        "id": "CF",
+        "name": "Centrinės Afrikos Respublika"
+    },
+    {
+        "id": "TD",
+        "name": "Čadas"
+    },
+    {
+        "id": "CZ",
+        "name": "Čekija"
+    },
+    {
+        "id": "CL",
+        "name": "Čilė"
+    },
+    {
+        "id": "DK",
+        "name": "Danija"
+    },
+    {
+        "id": "VG",
+        "name": "Didžiosios Britanijos Mergelių Salos"
+    },
+    {
+        "id": "DM",
+        "name": "Dominika"
+    },
+    {
+        "id": "DO",
+        "name": "Dominikos Respublika"
+    },
+    {
+        "id": "CI",
+        "name": "Dramblio Kaulo Krantas"
+    },
+    {
+        "id": "JE",
+        "name": "Džersis"
+    },
+    {
+        "id": "DJ",
+        "name": "Džibutis"
+    },
+    {
+        "id": "EG",
+        "name": "Egiptas"
+    },
+    {
+        "id": "EC",
+        "name": "Ekvadoras"
+    },
+    {
+        "id": "ER",
+        "name": "Eritrėja"
+    },
+    {
+        "id": "EE",
+        "name": "Estija"
+    },
+    {
+        "id": "ET",
+        "name": "Etiopija"
+    },
+    {
+        "id": "FO",
+        "name": "Farerų Salos"
+    },
+    {
+        "id": "FJ",
+        "name": "Fidžis"
+    },
+    {
+        "id": "PH",
+        "name": "Filipinai"
+    },
+    {
+        "id": "FK",
+        "name": "Folklando Salos"
+    },
+    {
+        "id": "GA",
+        "name": "Gabonas"
+    },
+    {
+        "id": "GY",
+        "name": "Gajana"
+    },
+    {
+        "id": "GM",
+        "name": "Gambija"
+    },
+    {
+        "id": "GH",
+        "name": "Gana"
+    },
+    {
+        "id": "GG",
+        "name": "Gernsis"
+    },
+    {
+        "id": "GI",
+        "name": "Gibraltaras"
+    },
+    {
+        "id": "GR",
+        "name": "Graikija"
+    },
+    {
+        "id": "GD",
+        "name": "Grenada"
+    },
+    {
+        "id": "GL",
+        "name": "Grenlandija"
+    },
+    {
+        "id": "GE",
+        "name": "Gruzija"
+    },
+    {
+        "id": "GU",
+        "name": "Guamas"
+    },
+    {
+        "id": "GP",
+        "name": "Gvadelupa"
+    },
+    {
+        "id": "GT",
+        "name": "Gvatemala"
+    },
+    {
+        "id": "GN",
+        "name": "Gvinėja"
+    },
+    {
+        "id": "HT",
+        "name": "Haitis"
+    },
+    {
+        "id": "HM",
+        "name": "Herdo ir Makdonaldo Salos"
+    },
+    {
+        "id": "HN",
+        "name": "Hondūras"
+    },
+    {
+        "id": "IN",
+        "name": "Indija"
+    },
+    {
+        "id": "IO",
+        "name": "Indijos Vandenyno Britų Sritis"
+    },
+    {
+        "id": "ID",
+        "name": "Indonezija"
+    },
+    {
+        "id": "HK",
+        "name": "Ypatingasis Administracinis Kinijos Regionas Honkongas"
+    },
+    {
+        "id": "MO",
+        "name": "Ypatingasis Administracinis Kinijos Regionas Makao"
+    },
+    {
+        "id": "IQ",
+        "name": "Irakas"
+    },
+    {
+        "id": "IR",
+        "name": "Iranas"
+    },
+    {
+        "id": "IS",
+        "name": "Islandija"
+    },
+    {
+        "id": "ES",
+        "name": "Ispanija"
+    },
+    {
+        "id": "IT",
+        "name": "Italija"
+    },
+    {
+        "id": "IL",
+        "name": "Izraelis"
+    },
+    {
+        "id": "JM",
+        "name": "Jamaika"
+    },
+    {
+        "id": "JP",
+        "name": "Japonija"
+    },
+    {
+        "id": "YE",
+        "name": "Jemenas"
+    },
+    {
+        "id": "JO",
+        "name": "Jordanija"
+    },
+    {
+        "id": "GB",
+        "name": "Jungtinė Karalystė"
+    },
+    {
+        "id": "US",
+        "name": "Jungtinės Valstijos"
+    },
+    {
+        "id": "AE",
+        "name": "Jungtiniai Arabų Emyratai"
+    },
+    {
+        "id": "UM",
+        "name": "Jungtinių Valstijų Mažosios Tolimosios Salos"
+    },
+    {
+        "id": "VI",
+        "name": "Jungtinių Valstijų Mergelių Salos"
+    },
+    {
+        "id": "ME",
+        "name": "Juodkalnija"
+    },
+    {
+        "id": "KY",
+        "name": "Kaimanų Salos"
+    },
+    {
+        "id": "CX",
+        "name": "Kalėdų Sala"
+    },
+    {
+        "id": "KH",
+        "name": "Kambodža"
+    },
+    {
+        "id": "CM",
+        "name": "Kamerūnas"
+    },
+    {
+        "id": "CA",
+        "name": "Kanada"
+    },
+    {
+        "id": "QA",
+        "name": "Kataras"
+    },
+    {
+        "id": "KZ",
+        "name": "Kazachstanas"
+    },
+    {
+        "id": "KE",
+        "name": "Kenija"
+    },
+    {
+        "id": "CN",
+        "name": "Kinija"
+    },
+    {
+        "id": "CY",
+        "name": "Kipras"
+    },
+    {
+        "id": "KG",
+        "name": "Kirgizija"
+    },
+    {
+        "id": "KI",
+        "name": "Kiribatis"
+    },
+    {
+        "id": "CC",
+        "name": "Kokosų (Kilingo) Salos"
+    },
+    {
+        "id": "CO",
+        "name": "Kolumbija"
+    },
+    {
+        "id": "KM",
+        "name": "Komorai"
+    },
+    {
+        "id": "CG",
+        "name": "Kongas-Brazavilis"
+    },
+    {
+        "id": "CD",
+        "name": "Kongas-Kinšasa"
+    },
+    {
+        "id": "XK",
+        "name": "Kosovas"
+    },
+    {
+        "id": "CR",
+        "name": "Kosta Rika"
+    },
+    {
+        "id": "HR",
+        "name": "Kroatija"
+    },
+    {
+        "id": "CU",
+        "name": "Kuba"
+    },
+    {
+        "id": "CK",
+        "name": "Kuko Salos"
+    },
+    {
+        "id": "KW",
+        "name": "Kuveitas"
+    },
+    {
+        "id": "LA",
+        "name": "Laosas"
+    },
+    {
+        "id": "LV",
+        "name": "Latvija"
+    },
+    {
+        "id": "PL",
+        "name": "Lenkija"
+    },
+    {
+        "id": "LS",
+        "name": "Lesotas"
+    },
+    {
+        "id": "LB",
+        "name": "Libanas"
+    },
+    {
+        "id": "LR",
+        "name": "Liberija"
+    },
+    {
+        "id": "LY",
+        "name": "Libija"
+    },
+    {
+        "id": "LI",
+        "name": "Lichtenšteinas"
+    },
+    {
+        "id": "LT",
+        "name": "Lietuva"
+    },
+    {
+        "id": "LU",
+        "name": "Liuksemburgas"
+    },
+    {
+        "id": "MG",
+        "name": "Madagaskaras"
+    },
+    {
+        "id": "YT",
+        "name": "Majotas"
+    },
+    {
+        "id": "MY",
+        "name": "Malaizija"
+    },
+    {
+        "id": "MW",
+        "name": "Malavis"
+    },
+    {
+        "id": "MV",
+        "name": "Maldyvai"
+    },
+    {
+        "id": "ML",
+        "name": "Malis"
+    },
+    {
+        "id": "MT",
+        "name": "Malta"
+    },
+    {
+        "id": "MP",
+        "name": "Marianos Šiaurinės Salos"
+    },
+    {
+        "id": "MA",
+        "name": "Marokas"
+    },
+    {
+        "id": "MH",
+        "name": "Maršalo Salos"
+    },
+    {
+        "id": "MQ",
+        "name": "Martinika"
+    },
+    {
+        "id": "MU",
+        "name": "Mauricijus"
+    },
+    {
+        "id": "MR",
+        "name": "Mauritanija"
+    },
+    {
+        "id": "MX",
+        "name": "Meksika"
+    },
+    {
+        "id": "IM",
+        "name": "Meno Sala"
+    },
+    {
+        "id": "MM",
+        "name": "Mianmaras (Birma)"
+    },
+    {
+        "id": "FM",
+        "name": "Mikronezija"
+    },
+    {
+        "id": "MD",
+        "name": "Moldova"
+    },
+    {
+        "id": "MC",
+        "name": "Monakas"
+    },
+    {
+        "id": "MN",
+        "name": "Mongolija"
+    },
+    {
+        "id": "MS",
+        "name": "Montseratas"
+    },
+    {
+        "id": "MZ",
+        "name": "Mozambikas"
+    },
+    {
+        "id": "NA",
+        "name": "Namibija"
+    },
+    {
+        "id": "NC",
+        "name": "Naujoji Kaledonija"
+    },
+    {
+        "id": "NZ",
+        "name": "Naujoji Zelandija"
+    },
+    {
+        "id": "NR",
+        "name": "Nauru"
+    },
+    {
+        "id": "NP",
+        "name": "Nepalas"
+    },
+    {
+        "id": "AN",
+        "name": "Netherlands Antilles"
+    },
+    {
+        "id": "NL",
+        "name": "Nyderlandai"
+    },
+    {
+        "id": "NG",
+        "name": "Nigerija"
+    },
+    {
+        "id": "NE",
+        "name": "Nigeris"
+    },
+    {
+        "id": "NI",
+        "name": "Nikaragva"
+    },
+    {
+        "id": "NU",
+        "name": "Niujė"
+    },
+    {
+        "id": "NF",
+        "name": "Norfolko sala"
+    },
+    {
+        "id": "NO",
+        "name": "Norvegija"
+    },
+    {
+        "id": "OM",
+        "name": "Omanas"
+    },
+    {
+        "id": "PK",
+        "name": "Pakistanas"
+    },
+    {
+        "id": "PW",
+        "name": "Palau"
+    },
+    {
+        "id": "PS",
+        "name": "Palestinos teritorija"
+    },
+    {
+        "id": "PA",
+        "name": "Panama"
+    },
+    {
+        "id": "PG",
+        "name": "Papua Naujoji Gvinėja"
+    },
+    {
+        "id": "PY",
+        "name": "Paragvajus"
+    },
+    {
+        "id": "PE",
+        "name": "Peru"
+    },
+    {
+        "id": "ZA",
+        "name": "Pietų Afrika"
+    },
+    {
+        "id": "GS",
+        "name": "Pietų Džordžija ir Pietų Sandvičo salos"
+    },
+    {
+        "id": "KR",
+        "name": "Pietų Korėja"
+    },
+    {
+        "id": "PN",
+        "name": "Pitkerno salos"
+    },
+    {
+        "id": "PT",
+        "name": "Portugalija"
+    },
+    {
+        "id": "FR",
+        "name": "Prancūzija"
+    },
+    {
+        "id": "GF",
+        "name": "Prancūzijos Gviana"
+    },
+    {
+        "id": "TF",
+        "name": "Prancūzijos Pietų sritys"
+    },
+    {
+        "id": "PF",
+        "name": "Prancūzijos Polinezija"
+    },
+    {
+        "id": "PR",
+        "name": "Puerto Rikas"
+    },
+    {
+        "id": "GQ",
+        "name": "Pusiaujo Gvinėja"
+    },
+    {
+        "id": "RE",
+        "name": "Reunjonas"
+    },
+    {
+        "id": "TL",
+        "name": "Rytų Timoras"
+    },
+    {
+        "id": "RW",
+        "name": "Ruanda"
+    },
+    {
+        "id": "RO",
+        "name": "Rumunija"
+    },
+    {
+        "id": "RU",
+        "name": "Rusija"
+    },
+    {
+        "id": "SB",
+        "name": "Saliamono Salos"
+    },
+    {
+        "id": "SV",
+        "name": "Salvadoras"
+    },
+    {
+        "id": "WS",
+        "name": "Samoa"
+    },
+    {
+        "id": "SM",
+        "name": "San Marinas"
+    },
+    {
+        "id": "ST",
+        "name": "San Tomė ir Prinsipė"
+    },
+    {
+        "id": "SA",
+        "name": "Saudo Arabija"
+    },
+    {
+        "id": "SC",
+        "name": "Seišeliai"
+    },
+    {
+        "id": "SN",
+        "name": "Senegalas"
+    },
+    {
+        "id": "PM",
+        "name": "Sen Pjeras ir Mikelonas"
+    },
+    {
+        "id": "KN",
+        "name": "Sent Kitsas ir Nevis"
+    },
+    {
+        "id": "LC",
+        "name": "Sent Lusija"
+    },
+    {
+        "id": "RS",
+        "name": "Serbija"
+    },
+    {
+        "id": "SL",
+        "name": "Siera Leonė"
+    },
+    {
+        "id": "SG",
+        "name": "Singapūras"
+    },
+    {
+        "id": "SY",
+        "name": "Sirija"
+    },
+    {
+        "id": "SK",
+        "name": "Slovakija"
+    },
+    {
+        "id": "SI",
+        "name": "Slovėnija"
+    },
+    {
+        "id": "SO",
+        "name": "Somalis"
+    },
+    {
+        "id": "SD",
+        "name": "Sudanas"
+    },
+    {
+        "id": "FI",
+        "name": "Suomija"
+    },
+    {
+        "id": "SR",
+        "name": "Surinamas"
+    },
+    {
+        "id": "SJ",
+        "name": "Svalbardas ir Janas Majenas"
+    },
+    {
+        "id": "SZ",
+        "name": "Svazilandas"
+    },
+    {
+        "id": "KP",
+        "name": "Šiaurės Korėja"
+    },
+    {
+        "id": "MK",
+        "name": "Šiaurės Makedonija"
+    },
+    {
+        "id": "LK",
+        "name": "Šri Lanka"
+    },
+    {
+        "id": "SH",
+        "name": "Šv. Elenos Sala"
+    },
+    {
+        "id": "SE",
+        "name": "Švedija"
+    },
+    {
+        "id": "CH",
+        "name": "Šveicarija"
+    },
+    {
+        "id": "VC",
+        "name": "Šventasis Vincentas ir Grenadinai"
+    },
+    {
+        "id": "TJ",
+        "name": "Tadžikija"
+    },
+    {
+        "id": "TH",
+        "name": "Tailandas"
+    },
+    {
+        "id": "TW",
+        "name": "Taivanas"
+    },
+    {
+        "id": "TZ",
+        "name": "Tanzanija"
+    },
+    {
+        "id": "TC",
+        "name": "Terkso ir Kaikoso Salos"
+    },
+    {
+        "id": "TG",
+        "name": "Togas"
+    },
+    {
+        "id": "TK",
+        "name": "Tokelau"
+    },
+    {
+        "id": "TO",
+        "name": "Tonga"
+    },
+    {
+        "id": "TT",
+        "name": "Trinidadas ir Tobagas"
+    },
+    {
+        "id": "TN",
+        "name": "Tunisas"
+    },
+    {
+        "id": "TR",
+        "name": "Turkija"
+    },
+    {
+        "id": "TM",
+        "name": "Turkmėnistanas"
+    },
+    {
+        "id": "TV",
+        "name": "Tuvalu"
+    },
+    {
+        "id": "UG",
+        "name": "Uganda"
+    },
+    {
+        "id": "UA",
+        "name": "Ukraina"
+    },
+    {
+        "id": "UY",
+        "name": "Urugvajus"
+    },
+    {
+        "id": "UZ",
+        "name": "Uzbekistanas"
+    },
+    {
+        "id": "EH",
+        "name": "Vakarų Sachara"
+    },
+    {
+        "id": "VU",
+        "name": "Vanuatu"
+    },
+    {
+        "id": "VA",
+        "name": "Vatikano Miesto Valstybė"
+    },
+    {
+        "id": "VE",
+        "name": "Venesuela"
+    },
+    {
+        "id": "HU",
+        "name": "Vengrija"
+    },
+    {
+        "id": "VN",
+        "name": "Vietnamas"
+    },
+    {
+        "id": "DE",
+        "name": "Vokietija"
+    },
+    {
+        "id": "WF",
+        "name": "Volisas ir Futūna"
+    },
+    {
+        "id": "ZM",
+        "name": "Zambija"
+    },
+    {
+        "id": "ZW",
+        "name": "Zimbabvė"
+    },
+    {
+        "id": "CV",
+        "name": "Žaliasis Kyšulys"
+    }
+]

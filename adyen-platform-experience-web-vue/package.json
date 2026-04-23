@@ -1,0 +1,67 @@
+{
+    "name": "@adyen/adyen-platform-experience-web-vue",
+    "version": "0.0.0",
+    "private": false,
+    "type": "module",
+    "apiVersion": "v1",
+    "main": "./dist/es/index.js",
+    "module": "./dist/es/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/es/index.js"
+        },
+        "./style.css": "./dist/adyen-platform-experience-web-vue.css"
+    },
+    "sideEffects": [
+        "**/*.css"
+    ],
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "start": "pnpm run storybook",
+        "build": "vite build && vue-tsc -p tsconfig.build.json",
+        "preview": "vite preview",
+        "storybook": "node .storybook/dev.js",
+        "storybook:build": "storybook build",
+        "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
+        "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
+        "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts"
+    },
+    "dependencies": {
+        "@adyen/bento-vue3": "^1.90.0",
+        "vue-i18n": "^11"
+    },
+    "peerDependencies": {
+        "vue": "^3.3.0"
+    },
+    "devDependencies": {
+        "@adyen/ui-assets-icons-16": "^7.7.2",
+        "@storybook/vue3": "^10.1.10",
+        "@storybook/vue3-vite": "^10.1.10",
+        "@types/node": "^24.10.13",
+        "@vitejs/plugin-vue": "^6.0.3",
+        "cross-env": "^10.1.0",
+        "dotenv": "^16.4.7",
+        "msw": "^2.4.5",
+        "msw-storybook-addon": "^2.0.2",
+        "openapi-typescript": "^7.10.1",
+        "sass": "^1.77.6",
+        "storybook": "^10.1.10",
+        "terser": "^5.46.0",
+        "typescript": "^5.8.3",
+        "vite": "^7.3.0",
+        "vite-plugin-vue-devtools": "^8.0.5",
+        "vitest": "^4.0.18",
+        "vue": "^3.5.26",
+        "vue-tsc": "^2.2.4"
+    },
+    "msw": {
+        "workerDirectory": [
+            "../../static",
+            "../static"
+        ]
+    }
+}
