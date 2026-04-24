@@ -1,5 +1,6 @@
 import { ExternalComponentType } from '../../../components/types';
-import { getEventTime } from './utils';
+import { getEventInsertId, getEventTime } from './utils';
+import { getUserAgent } from '../../runtime';
 
 export type MixpanelProperty = string | number | boolean | any[] | null | undefined;
 
@@ -107,10 +108,10 @@ export class UserEvents {
 
     constructor(componentName?: ExternalComponentType) {
         this.baseTrackingPayload = {
-            ...(componentName ? { componentName: componentName } : {}),
+            ...(componentName ? { componentName } : {}),
             category: 'pie',
             subCategory: 'pie component',
-            userAgent: navigator.userAgent,
+            userAgent: getUserAgent(),
         };
         this.sharedEventProperties = {};
     }
@@ -140,7 +141,8 @@ export class UserEvents {
      */
     public addEvent(eventName: EventName, properties: AdditionalEventProperties) {
         const time = getEventTime();
-        const completeEvent = { ...this.baseTrackingPayload, time, ...properties } as AnalyticsEventPayload;
+        const $insert_id = getEventInsertId();
+        const completeEvent = { ...this.baseTrackingPayload, $insert_id, time, ...properties } as AnalyticsEventPayload;
         this.add({
             name: eventName,
             // type: 'add_event',

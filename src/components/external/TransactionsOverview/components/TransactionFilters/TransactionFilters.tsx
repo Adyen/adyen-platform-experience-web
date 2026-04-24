@@ -8,10 +8,9 @@ import {
 import { compareTransactionsFilters } from '../utils';
 import { FilterBar } from '../../../../internal/FilterBar';
 import { selectionOptionsFor } from '../MultiSelectionFilter';
-import { IBalanceAccountBase } from '../../../../../types';
 import { TransactionsFilters as Filters } from '../../types';
-import { FilterBarState } from '../../../../internal/FilterBar/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
 import useBalanceAccountSelection from '../../../../../hooks/useBalanceAccountSelection';
@@ -32,53 +31,49 @@ const balanceAccountFilterChangedCallback = (() => {
     };
 })();
 
-export interface TransactionsFiltersProps extends Omit<FilterBarState, 'setShowingFilters'> {
-    availableCurrencies: readonly string[];
-    balanceAccounts?: IBalanceAccountBase[];
-    isTransactionsView: boolean;
-    insightsCurrency?: string;
-    onChange?: (filters: Readonly<Filters>) => void;
-    setInsightsCurrency?: (currency?: string) => void;
-}
+const TransactionsFilters = () => {
+    // prettier-ignore
+    const {
+        filterBarState,
+        isTransactionsView,
+        balanceAccounts,
+        currenciesLookupResult,
+        insightsCurrency,
+        onFiltersChange,
+        setInsightsCurrency,
+    } = useTransactionsOverviewContext();
 
-const TransactionsFilters = ({
-    availableCurrencies,
-    balanceAccounts,
-    isTransactionsView,
-    onChange,
-    insightsCurrency,
-    setInsightsCurrency,
-    ...filterBarProps
-}: TransactionsFiltersProps) => {
     const { i18n } = useCoreContext();
+    const { setShowingFilters, ...filterBarProps } = filterBarState;
 
+    const availableCurrencies = currenciesLookupResult.sortedCurrencies;
     const eventSubCategory = isTransactionsView ? TRANSACTION_ANALYTICS_SUBCATEGORY_LIST : TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS;
-    const initialFilters = useRef<Filters>({ ...INITIAL_FILTERS });
+    const initialFiltersRef = useRef<Filters>({ ...INITIAL_FILTERS });
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
-    const [statuses, setStatuses] = useState(initialFilters.current.statuses);
-    const [categories, setCategories] = useState(initialFilters.current.categories);
-    const [currencies, setCurrencies] = useState(initialFilters.current.currencies);
-    const [createdDate, setCreatedDate] = useState(initialFilters.current.createdDate);
-    const [paymentPspReference, setPaymentPspReference] = useState(initialFilters.current.paymentPspReference);
-    const [balanceAccount, setBalanceAccount] = useState(initialFilters.current.balanceAccount);
+    const [statuses, setStatuses] = useState(() => initialFiltersRef.current.statuses);
+    const [categories, setCategories] = useState(() => initialFiltersRef.current.categories);
+    const [currencies, setCurrencies] = useState(() => initialFiltersRef.current.currencies);
+    const [createdDate, setCreatedDate] = useState(() => initialFiltersRef.current.createdDate);
+    const [paymentPspReference, setPaymentPspReference] = useState(() => initialFiltersRef.current.paymentPspReference);
+    const [balanceAccount, setBalanceAccount] = useState(() => initialFiltersRef.current.balanceAccount);
 
     const currentFilters = useMemo(
         () => ({ balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses }) as const,
         [balanceAccount, categories, createdDate, currencies, paymentPspReference, statuses]
     );
 
-    const cachedAvailableCurrencies = useRef<typeof availableCurrencies>();
-    const cachedCurrentFilters = useRef<typeof currentFilters>();
-    const canResetFilters = useMemo(() => compareTransactionsFilters(currentFilters, initialFilters.current), [currentFilters]);
+    const cachedAvailableCurrenciesRef = useRef<typeof availableCurrencies>();
+    const cachedCurrentFiltersRef = useRef<typeof currentFilters>();
+    const canResetFilters = useMemo(() => compareTransactionsFilters(currentFilters, initialFiltersRef.current), [currentFilters]);
 
     const resetFilters = useCallback(() => {
-        setStatuses(initialFilters.current.statuses);
-        setCategories(initialFilters.current.categories);
-        setCurrencies(initialFilters.current.currencies);
-        setCreatedDate(initialFilters.current.createdDate);
-        setPaymentPspReference(initialFilters.current.paymentPspReference);
-        setBalanceAccount(initialFilters.current.balanceAccount);
+        setStatuses(initialFiltersRef.current.statuses);
+        setCategories(initialFiltersRef.current.categories);
+        setCurrencies(initialFiltersRef.current.currencies);
+        setCreatedDate(initialFiltersRef.current.createdDate);
+        setPaymentPspReference(initialFiltersRef.current.paymentPspReference);
+        setBalanceAccount(initialFiltersRef.current.balanceAccount);
     }, []);
 
     // const statusesFilterOptions = useMemo(() => selectionOptionsFor(TRANSACTION_STATUSES), []);
@@ -111,25 +106,25 @@ const TransactionsFilters = ({
     });
 
     useEffect(() => {
-        if (cachedAvailableCurrencies.current === availableCurrencies) return;
+        if (cachedAvailableCurrenciesRef.current === availableCurrencies) return;
         if (balanceAccountFilterChanged(currentFilters)) {
-            setCurrencies(initialFilters.current.currencies);
+            setCurrencies(initialFiltersRef.current.currencies);
             setInsightsCurrency?.(currentFilters.balanceAccount?.defaultCurrencyCode);
         }
-        cachedAvailableCurrencies.current = availableCurrencies;
+        cachedAvailableCurrenciesRef.current = availableCurrencies;
     }, [availableCurrencies, currentFilters, balanceAccountFilterChanged, setInsightsCurrency]);
 
     useEffect(() => {
-        if (cachedCurrentFilters.current !== currentFilters) {
-            cachedCurrentFilters.current = currentFilters;
-            onChange?.(currentFilters);
+        if (cachedCurrentFiltersRef.current !== currentFilters) {
+            cachedCurrentFiltersRef.current = currentFilters;
+            onFiltersChange?.(currentFilters);
         }
-    }, [onChange, currentFilters]);
+    }, [onFiltersChange, currentFilters]);
 
     useEffect(() => {
-        if (!initialFilters.current.balanceAccount && balanceAccount) {
+        if (!initialFiltersRef.current.balanceAccount && balanceAccount) {
             // Update initial balance account selection (first selection only)
-            initialFilters.current.balanceAccount = balanceAccount;
+            initialFiltersRef.current.balanceAccount = balanceAccount;
         }
     }, [balanceAccount]);
 

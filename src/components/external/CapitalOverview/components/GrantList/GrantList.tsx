@@ -20,7 +20,11 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
     const goToNextStep = useCallback(() => setIsCapitalOfferVisible(true), []);
 
     const goBackToList = useCallback(() => {
-        onOfferDismiss ? onOfferDismiss(goBackToPreviousStep) : goBackToPreviousStep();
+        if (onOfferDismiss) {
+            onOfferDismiss(goBackToPreviousStep);
+        } else {
+            goBackToPreviousStep();
+        }
     }, [goBackToPreviousStep, onOfferDismiss]);
 
     const handleFundsRequest = useCallback(

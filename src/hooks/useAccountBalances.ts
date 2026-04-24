@@ -11,8 +11,8 @@ export interface UseAccountBalancesProps {
 
 const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
-    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
-    const fetchTimestampRef = useRef<number>();
+    const [fetchTimestamp, setFetchTimestamp] = useState(() => performance.now());
+    const [lastFetchTimestamp, setLastFetchTimestamp] = useState<number>();
 
     const abortable = useRef(createAbortable()).current;
     const balanceAccountId = balanceAccount?.id;
@@ -21,7 +21,7 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     const { getBalances } = useConfigContext().endpoints;
     const canGetBalances = isFunction(getBalances);
     const canFetchBalances = canGetBalances && fetchEnabled;
-    const shouldFetchBalances = canFetchBalances && fetchTimestampRef.current !== fetchTimestamp;
+    const shouldFetchBalances = canFetchBalances && lastFetchTimestamp !== fetchTimestamp;
 
     const fetchBalances = useCallback(async () => {
         if (shouldFetchBalances) {
@@ -29,9 +29,13 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
             try {
                 const path: Parameters<NonNullable<typeof getBalances>>[1]['path'] = { balanceAccountId };
                 const json = await getBalances({ signal }, { path });
-                if (!signal.aborted) return json?.data;
+                if (!signal.aborted) {
+                    return json?.data;
+                }
             } catch (error) {
-                if (!signal.aborted) throw error;
+                if (!signal.aborted) {
+                    throw error;
+                }
             }
         }
     }, [abortable, balanceAccountId, getBalances, shouldFetchBalances]);
@@ -41,13 +45,15 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
         queryFn: fetchBalances,
     });
 
-    const cachedIsFetching = useRef(isFetching);
+    const cachedIsFetchingRef = useRef(isFetching);
     const canRefresh = !isFetching && canFetchBalances;
     const balances = useMemo<readonly Readonly<IBalance>[]>(() => (Array.isArray(data) ? data : []), [data]);
 
     const refresh = useCallback(() => {
-        if (canRefresh) setPendingRefresh(true);
-    }, [canRefresh, isFetching]);
+        if (canRefresh) {
+            setPendingRefresh(true);
+        }
+    }, [canRefresh]);
 
     useEffect(() => {
         if (balanceAccountId) {
@@ -66,22 +72,26 @@ const useAccountBalances = ({ balanceAccount }: UseAccountBalancesProps) => {
     }, [pendingRefresh]);
 
     useEffect(() => {
-        if (cachedIsFetching.current && !isFetching) {
+        if (cachedIsFetchingRef.current && !isFetching) {
             // Last fetch request has finished,
             // update fetch timestamp
-            fetchTimestampRef.current = fetchTimestamp;
+            setLastFetchTimestamp(fetchTimestamp);
         }
-        cachedIsFetching.current = isFetching;
+        cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
-    return {
-        balances,
-        error,
-        canRefresh,
-        refresh,
-        isAvailable: canGetBalances,
-        isWaiting: isFetching || (canGetBalances && !canFetchBalances && !data),
-    } as const;
+    return useMemo(
+        () =>
+            ({
+                balances,
+                error,
+                canRefresh,
+                refresh,
+                isAvailable: canGetBalances,
+                isWaiting: isFetching || (canGetBalances && !canFetchBalances && !data),
+            }) as const,
+        [balances, canFetchBalances, canGetBalances, canRefresh, data, error, isFetching, refresh]
+    );
 };
 
 export default useAccountBalances;

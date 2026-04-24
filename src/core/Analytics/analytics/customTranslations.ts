@@ -1,7 +1,8 @@
 import Localization from '../../Localization';
 import currentTranslations from '../../../assets/translations/en-US.json' with { type: 'json' };
 import { SUPPORTED_LOCALES } from '../../Localization/constants/localization';
-import { encodeAnalyticsEvent, getEventTime } from './utils';
+import { encodeAnalyticsEvent, getEventInsertId, getEventTime } from './utils';
+import { getUserAgent } from '../../runtime';
 
 export const oldTranslationKeys = new Set([
     'account',
@@ -799,15 +800,15 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
             const baseEventProperties = {
                 category: 'PIE',
                 subCategory: 'Core',
-                locale: locale,
+                locale,
                 sdkVersion: process.env.VITE_VERSION,
-                userAgent: navigator.userAgent,
+                userAgent: getUserAgent(),
             };
 
             if (!SUPPORTED_LOCALES.includes(locale as any)) {
                 const newLanguageEvent = encodeAnalyticsEvent({
                     event: 'Added new language',
-                    properties: { ...baseEventProperties, time: getEventTime() },
+                    properties: { ...baseEventProperties, time: getEventTime(), $insert_id: getEventInsertId() },
                 });
                 if (newLanguageEvent) {
                     payloads.push(newLanguageEvent);
@@ -823,7 +824,12 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                     if (oldCustomizedKeys.length > 0) {
                         const oldTranslationsEvent = encodeAnalyticsEvent({
                             event: 'Customized old translation',
-                            properties: { ...baseEventProperties, keys: oldCustomizedKeys, time: getEventTime() },
+                            properties: {
+                                ...baseEventProperties,
+                                keys: oldCustomizedKeys,
+                                time: getEventTime(),
+                                $insert_id: getEventInsertId(),
+                            },
                         });
                         if (oldTranslationsEvent) {
                             payloads.push(oldTranslationsEvent);
@@ -835,7 +841,7 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                     // This event is permanent to keep track of all the customizations that user made to translations
                     const allTranslationsEvent = encodeAnalyticsEvent({
                         event: 'Customized translation',
-                        properties: { ...baseEventProperties, keys: matchingCustomizedKeys, time: getEventTime() },
+                        properties: { ...baseEventProperties, keys: matchingCustomizedKeys, time: getEventTime(), $insert_id: getEventInsertId() },
                     });
                     if (allTranslationsEvent) {
                         payloads.push(allTranslationsEvent);

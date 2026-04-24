@@ -47,7 +47,7 @@ export const TransactionDataContent = ({
         refundLocked,
     } = useRefundMetadata(transaction);
 
-    const cachedRefundLocked = useRef(refundLocked);
+    const cachedRefundLockedRef = useRef(refundLocked);
     const refundIsLocked = useMemo(() => refundLocked || locked, [refundLocked, locked]);
     const refundIsDisabled = useMemo(() => refundDisabled || refundIsLocked, [refundDisabled, refundIsLocked]);
 
@@ -59,7 +59,7 @@ export const TransactionDataContent = ({
     });
 
     useEffect(() => {
-        if ((cachedRefundLocked.current = refundLocked)) {
+        if ((cachedRefundLockedRef.current = refundLocked)) {
             // Refund has been locked while a refund is still in progress
             // Rely only on the refundLocked state
             // Reset the local locked state

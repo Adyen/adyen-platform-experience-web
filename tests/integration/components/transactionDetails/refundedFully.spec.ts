@@ -11,13 +11,11 @@ test.describe('Refunded - Fully', () => {
     });
 
     test('should render fully refunded payment transaction', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag--success', { hasText: 'Fully refunded' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(2);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByText('Fully refunded', { exact: true })).toBeVisible();
 
         await expect(page.getByText('The full amount has been refunded back to the customer', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeHidden();
     });

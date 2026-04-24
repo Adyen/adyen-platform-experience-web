@@ -8,7 +8,7 @@ type _DateRangeContext = {
     toDate: Date;
 };
 
-export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<_DateRangeContext> &
+export type DateRangeContext<T extends Record<any, any> = Record<never, never>> = Readonly<_DateRangeContext> &
     Readonly<{
         from: RangeTimestamps['from'];
         to: RangeTimestamps['to'];
@@ -17,7 +17,7 @@ export type DateRangeContext<T extends Record<any, any> = {}> = Readonly<_DateRa
         timezone: RangeTimestamps['timezone'];
     } & Omit<RangeTimestamps<T>, 'from' | 'now' | 'timezone' | 'to'>;
 
-export const getDateRangeContext = <T extends Record<any, any> = {}>(
+export const getDateRangeContext = <T extends Record<any, any> = Record<never, never>>(
     factory: () => RangeTimestamps<T> & Partial<_DateRangeContext>
 ): DateRangeContext<T> => {
     const rangeContext = factory();

@@ -6,19 +6,13 @@ import { PopoverContainerPosition, PopoverContainerVariant } from './types';
 import { render, screen, waitFor } from '@testing-library/preact';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'preact';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import Popover from './Popover';
 
-interface PopoverContext {
-    dismiss: () => any;
-    applyAction: () => any;
-}
-
 describe('Popover component', () => {
-    beforeEach<PopoverContext>(context => {
-        context.dismiss = vi.fn();
-        context.applyAction = vi.fn();
-
+    const renderPopover = (props?: { dismiss?: () => any; applyAction?: () => any }) => {
+        const dismiss = props?.dismiss ?? vi.fn();
+        const applyAction = props?.applyAction ?? vi.fn();
         const buttonEl = createRef();
 
         render(
@@ -31,7 +25,7 @@ describe('Popover component', () => {
                         title={'Test Popover'}
                         open={true}
                         disableFocusTrap={true}
-                        dismiss={context.dismiss}
+                        dismiss={dismiss}
                         dismissible={true}
                         variant={PopoverContainerVariant.TOOLTIP}
                         position={PopoverContainerPosition.BOTTOM}
@@ -39,7 +33,7 @@ describe('Popover component', () => {
                             {
                                 title: 'apply',
                                 variant: ButtonVariant.PRIMARY,
-                                event: context.applyAction,
+                                event: applyAction,
                                 disabled: false,
                             },
                         ]}
@@ -49,18 +43,23 @@ describe('Popover component', () => {
                 )}
             </div>
         );
-    });
+
+        return { dismiss, applyAction };
+    };
 
     test('should automatically focus', async () => {
+        renderPopover();
         const inputEl = screen.getByTestId('mock-textbox');
         await waitFor(() => {
             expect(inputEl).toHaveFocus();
         });
     });
 
-    test<PopoverContext>('should call dismiss on click outside', async ({ dismiss }) => {
+    test('should call dismiss on click outside', async () => {
+        const dismiss = vi.fn();
+        renderPopover({ dismiss });
+
         const titleEl = screen.getByText(/Test Popover/i);
-        const buttonEl = screen.getByRole('button', { name: 'Popover Controller' });
         const outsideEl = screen.getByText('Outside of component');
         const inputEl = screen.getByTestId('mock-textbox');
 
@@ -76,7 +75,10 @@ describe('Popover component', () => {
         expect(dismiss).toBeCalledTimes(1);
     });
 
-    test<PopoverContext>('should call dismiss on esc keyboard action', async ({ dismiss }) => {
+    test('should call dismiss on esc keyboard action', async () => {
+        const dismiss = vi.fn();
+        renderPopover({ dismiss });
+
         await userEvent.keyboard('[Escape]');
         const buttonEl = screen.getByRole('button', { name: 'Popover Controller' });
         const popoverEl = screen.getByTestId('mock-textbox');
@@ -85,7 +87,10 @@ describe('Popover component', () => {
         expect(popoverEl).not.toHaveFocus();
     });
 
-    test<PopoverContext>('should have dismiss icon', async ({ dismiss }) => {
+    test('should have dismiss icon', async () => {
+        const dismiss = vi.fn();
+        renderPopover({ dismiss });
+
         const closeButton = screen.getByLabelText(/close/i);
         expect(closeButton).toBeInTheDocument();
 
@@ -93,7 +98,10 @@ describe('Popover component', () => {
         expect(dismiss).toBeCalledTimes(1);
     });
 
-    test<PopoverContext>('should have action button and call function on click', async ({ applyAction }) => {
+    test('should have action button and call function on click', async () => {
+        const applyAction = vi.fn();
+        renderPopover({ applyAction });
+
         const applyButton = screen.getByLabelText(/apply/i);
         expect(applyButton).toBeInTheDocument();
 
@@ -113,7 +121,7 @@ describe('Popover component', () => {
 });
 
 describe('Popover component close', () => {
-    beforeEach(() => {
+    test('should not appear', () => {
         const buttonEl = createRef();
 
         render(
@@ -124,9 +132,7 @@ describe('Popover component close', () => {
                 </Popover>
             </div>
         );
-    });
 
-    test('should not appear', () => {
         const inputEl = screen.queryByRole('textbox');
         expect(inputEl).not.toBeInTheDocument();
     });

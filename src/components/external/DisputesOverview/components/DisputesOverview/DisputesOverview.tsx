@@ -8,6 +8,9 @@ import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatfo
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IBalanceAccountBase } from '../../../../../types';
 import { isFunction, listFrom, noop } from '../../../../../utils';
+import { useCustomColumnsData } from '../../../../../hooks/useCustomColumnsData';
+import hasCustomField from '../../../../utils/customData/hasCustomField';
+import mergeRecords from '../../../../utils/customData/mergeRecords';
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../hooks/useBalanceAccountSelection';
 import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverviewFilterParams';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
@@ -20,8 +23,8 @@ import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROU
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { useCursorPaginatedRecords } from '../../../../internal/Pagination/hooks';
 import { Header } from '../../../../internal/Header';
-import { DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
-import { DisputesTable } from '../DisputesTable/DisputesTable';
+import { CustomDataRetrieved, DisputeOverviewComponentProps, ExternalUIComponentProps, FilterParam } from '../../../../types';
+import { DisputesTable, FIELDS } from '../DisputesTable/DisputesTable';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeManagementModal } from '../DisputeManagementModal/DisputeManagementModal';
 import { TabComponentProps } from '../../../../internal/Tabs/types';
@@ -67,7 +70,9 @@ const DisputesOverviewTabsDropdown = ({
 
     useEffect(() => {
         const currentTab = DISPUTE_STATUS_GROUPS_TABS.find(tab => tab.id === statusGroup);
-        currentTab && onChange(currentTab);
+        if (currentTab) {
+            onChange(currentTab);
+        }
     }, [onChange, statusGroup]);
 
     useEffect(() => setStatusGroup(activeTab), [activeTab]);
@@ -201,6 +206,20 @@ export const DisputesOverview = ({
         filters,
     });
 
+    const mergeCustomData = useCallback(
+        ({ records, retrievedData }: { records: IDisputeListItem[]; retrievedData: CustomDataRetrieved[] }) =>
+            mergeRecords(records, retrievedData, (modifiedRecord, record) => modifiedRecord.disputePspReference === record.disputePspReference),
+        []
+    );
+
+    const hasCustomColumn = useMemo(() => hasCustomField(dataCustomization?.list?.fields, FIELDS), [dataCustomization?.list?.fields]);
+    const { customRecords, loadingCustomRecords } = useCustomColumnsData<IDisputeListItem>({
+        records,
+        hasCustomColumn,
+        onDataRetrieve: dataCustomization?.list?.onDataRetrieve,
+        mergeCustomData,
+    });
+
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails(modalOptions);
 
     const onRowClick = useCallback(
@@ -227,7 +246,9 @@ export const DisputesOverview = ({
 
     const onStatusGroupChange = useCallback<NonNullable<TabComponentProps<IDisputeStatusGroup>['onChange']>>(
         ({ id: statusGroup }) => {
-            debounceTimeoutIdRef.current && clearTimeout(debounceTimeoutIdRef.current);
+            if (debounceTimeoutIdRef.current) {
+                clearTimeout(debounceTimeoutIdRef.current);
+            }
 
             debounceTimeoutIdRef.current = setTimeout(() => {
                 requestAnimationFrame(() => setStatusGroupFetchPending(false));
@@ -255,11 +276,13 @@ export const DisputesOverview = ({
 
     const refreshDisputesList = useCallback(
         (gotoStatusGroup?: IDisputeStatusGroup) => {
-            gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup
-                ? setStatusGroupActiveTab(gotoStatusGroup)
-                : // Refresh the current disputes list status group,
-                  // by updating the last refresh timestamp filter parameter
-                  updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+            if (gotoStatusGroup && DISPUTE_STATUS_GROUPS_VALUES.includes(gotoStatusGroup) && gotoStatusGroup !== statusGroup) {
+                setStatusGroupActiveTab(gotoStatusGroup);
+            } else {
+                // Refresh the current disputes list status group,
+                // by updating the last refresh timestamp filter parameter
+                updateFilters({ [LAST_REFRESH_TIMESTAMP_PARAM]: performance.now() } as any);
+            }
         },
         [statusGroup, updateFilters]
     );
@@ -345,8 +368,15 @@ export const DisputesOverview = ({
                     <DisputesTable
                         activeBalanceAccount={activeBalanceAccount}
                         balanceAccountId={activeBalanceAccount?.id}
-                        loading={statusGroupFetchPending || fetching || isLoadingBalanceAccount || !balanceAccounts || !activeBalanceAccount}
-                        data={records}
+                        loading={
+                            statusGroupFetchPending ||
+                            fetching ||
+                            isLoadingBalanceAccount ||
+                            !balanceAccounts ||
+                            !activeBalanceAccount ||
+                            loadingCustomRecords
+                        }
+                        data={dataCustomization?.list?.onDataRetrieve ? customRecords : records}
                         showPagination={true}
                         limit={limit}
                         limitOptions={limitOptions}
@@ -355,6 +385,7 @@ export const DisputesOverview = ({
                         error={error as AdyenPlatformExperienceError}
                         onRowClick={onRowClick}
                         statusGroup={statusGroup}
+                        customColumns={dataCustomization?.list?.fields}
                         {...paginationProps}
                     />
                 </DisputeManagementModal>

@@ -2,9 +2,9 @@ import { isFunction } from '../../../../utils';
 import { ITransaction } from '../../../../types';
 import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../internal/Pagination/constants';
-import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/TransactionsTable';
+import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/fields';
 import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
-import { CustomDataRetrieved, TransactionOverviewComponentProps } from '../../../types';
+import { CustomDataRetrieved, TransactionsOverviewComponentProps } from '../../../types';
 import { useCursorPaginatedRecords } from '../../../internal/Pagination/hooks';
 import { useCustomColumnsData } from '../../../../hooks/useCustomColumnsData';
 import { useConfigContext } from '../../../../core/ConfigContext';
@@ -14,7 +14,7 @@ import hasCustomField from '../../../utils/customData/hasCustomField';
 import mergeRecords from '../../../utils/customData/mergeRecords';
 
 export interface UseTransactionsListProps
-    extends Pick<TransactionOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
+    extends Pick<TransactionsOverviewComponentProps, 'allowLimitSelection' | 'dataCustomization' | 'onFiltersChanged' | 'preferredLimit'> {
     fetchEnabled: boolean;
     filters: Readonly<TransactionsFilters>;
     now: number;
@@ -33,7 +33,7 @@ const useTransactionsList = ({
 
     const filterParams = useMemo(() => getTransactionsFilterParams(filters, now), [filters, now]);
     const initialFilterParams = useRef(filterParams).current;
-    const cachedFilterParams = useRef(initialFilterParams);
+    const cachedFilterParamsRef = useRef(initialFilterParams);
     const canFetchTransactions = isFunction(getTransactions) && fetchEnabled;
 
     const fetchTransactions = useCallback(
@@ -85,8 +85,8 @@ const useTransactionsList = ({
     const { customRecords, loadingCustomRecords } = useCustomColumnsData<ITransaction>({ hasCustomColumn, mergeCustomData, onDataRetrieve, records });
 
     useEffect(() => {
-        if (cachedFilterParams.current !== filterParams) {
-            cachedFilterParams.current = filterParams;
+        if (cachedFilterParamsRef.current !== filterParams) {
+            cachedFilterParamsRef.current = filterParams;
             updateFilters?.(filterParams);
         }
     }, [filterParams, updateFilters]);

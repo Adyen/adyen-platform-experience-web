@@ -11,7 +11,6 @@ import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -71,7 +70,9 @@ export const CapitalOfferSummary = ({
 
     const onRequestFundsHandler = useCallback(() => {
         try {
-            grantOffer.id && requestFundsCallback(grantOffer.id);
+            if (grantOffer.id) {
+                requestFundsCallback(grantOffer.id);
+            }
         } finally {
             userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Request funds' });
         }
@@ -156,8 +157,6 @@ export const CapitalOfferSummary = ({
 
         return summaryItems;
     }, [grantOffer, i18n, maximumRepaymentPeriod]);
-
-    useDurationEvent(sharedAnalyticsEventProperties);
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />

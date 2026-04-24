@@ -18,6 +18,7 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../internal/Popover/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { downloadBlob, EMPTY_ARRAY, isFunction, uniqueId } from '../../../../../utils';
+import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { AlertTypeOption } from '../../../../internal/Alert/types';
@@ -26,7 +27,6 @@ import { fixedForwardRef } from '../../../../../utils/preact';
 import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '../../../../../translations';
 import { Tag } from '../../../../internal/Tag/Tag';
-import { TransactionsFilters } from '../../types';
 import { PropsWithChildren } from 'preact/compat';
 import { classes } from './constants';
 import './TransactionsExport.scss';
@@ -68,8 +68,10 @@ const SectionTitle = ({ children, ...textProps }: PropsWithChildren<{ id?: strin
     </Text>
 );
 
-const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; filters: Readonly<TransactionsFilters>; now: number }) => {
+const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
+    const { filters, lastFiltersChangeTimestamp } = useTransactionsOverviewContext();
     const { i18n } = useCoreContext();
+
     const userEvents = useAnalyticsContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
@@ -91,12 +93,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
         ] as const;
 
         const exportParams = {
-            ...getTransactionsFilterQueryParams(filters, now),
+            ...getTransactionsFilterQueryParams(filters, lastFiltersChangeTimestamp),
             sortDirection: 'desc' as const,
         };
 
         return [activeFilters, exportParams];
-    }, [filters, now]);
+    }, [filters, lastFiltersChangeTimestamp]);
 
     const { downloadTransactions } = useConfigContext().endpoints;
     const canDownloadTransactions = isFunction(downloadTransactions);
@@ -149,12 +151,16 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
             const isMasterSwitch = checkbox.id === masterSwitchId;
 
             setExportColumns(exportColumns => {
-                if (isMasterSwitch) return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                if (isMasterSwitch) {
+                    return checked ? EXPORT_COLUMNS : EMPTY_ARRAY;
+                }
                 if (EXPORT_COLUMNS.includes(checkedColumn)) {
                     const columnIndex = exportColumns.indexOf(checkedColumn);
                     if (checked) {
                         // Include checked column
-                        if (columnIndex < 0) return [...exportColumns, checkedColumn];
+                        if (columnIndex < 0) {
+                            return [...exportColumns, checkedColumn];
+                        }
                     } else if (columnIndex >= 0) {
                         // Exclude unchecked column
                         return [...exportColumns.slice(0, columnIndex), ...exportColumns.slice(columnIndex + 1)];
@@ -168,9 +174,11 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const sendPopoverToggleEvent = useCallback(
         (popoverOpen: boolean) => {
-            popoverOpen
-                ? userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties)
-                : userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            if (popoverOpen) {
+                userEvents.addEvent?.('Cancelled export', sharedAnalyticsEventProperties);
+            } else {
+                userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Export' });
+            }
         },
         [userEvents]
     );
@@ -261,7 +269,12 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
 
     const renderAlertError = useCallback(
         () => (
-            <Alert onClose={dismissExportError} className={classes.errorAlert} type={AlertTypeOption.CRITICAL}>
+            <Alert
+                onClose={dismissExportError}
+                className={classes.errorAlert}
+                type={AlertTypeOption.CRITICAL}
+                data-testid="transactions-export-error-alert"
+            >
                 <Typography variant={TypographyVariant.BODY}>{i18n.get('transactions.overview.export.actions.error')}</Typography>
             </Alert>
         ),
@@ -305,9 +318,9 @@ const TransactionsExport = ({ disabled, filters, now }: { disabled?: boolean; fi
                     targetElement={exportButtonRef}
                     title={exportButtonLabel}
                 >
-                    <div className={classes.popover}>
+                    <div className={classes.popover} data-testid="transactions-export-popover">
                         <div className={classes.popoverSections}>
-                            <div className={cx(classes.popoverSection, classes.filtersSection)}>
+                            <div className={cx(classes.popoverSection, classes.filtersSection)} data-testid="transactions-export-filters">
                                 <SectionTitle>{`${activeFiltersTitle}:`}</SectionTitle>
                                 {activeFilters.map(filter => (
                                     <Tag label={i18n.get(filter)} key={filter} />

@@ -18,6 +18,7 @@ type FetchOptions<ReturnType> = {
     errorLevel: ErrorLevel;
     keepPrevData: boolean;
     onSuccess?: (data: ReturnType) => void;
+    onError?: (error: Error) => void;
 };
 
 type UseFetchConfig<QueryFn extends (...args: any) => Promise<any>> = {
@@ -28,14 +29,14 @@ type UseFetchConfig<QueryFn extends (...args: any) => Promise<any>> = {
     queryFn: QueryFn;
 };
 export function useFetch<QueryFn extends (...args: any) => Promise<any>, T extends Awaited<ReturnType<QueryFn>>>({
-    fetchOptions: { keepPrevData, onSuccess, enabled } = { keepPrevData: true },
+    fetchOptions: { keepPrevData, onSuccess, onError, enabled } = { keepPrevData: true },
     queryFn,
 }: // params,
 UseFetchConfig<QueryFn>): State<T> {
     // TODO cache endpoint calls
     //const cache = useRef<Cache<T>>(new Map());
     // Used to prevent state update if the component is unmounted
-    const cancelRequest = useRef<boolean>(false);
+    const cancelRequestRef = useRef<boolean>(false);
     const initialState: State<T> = {
         error: undefined,
         data: undefined,
@@ -66,25 +67,26 @@ UseFetchConfig<QueryFn>): State<T> {
         dispatch({ type: 'loading' });
 
         try {
-            if (cancelRequest.current) return;
+            if (cancelRequestRef.current) return;
             const data = await queryFn();
             // cache.current.set(url.href, data);
             onSuccess?.(data);
             dispatch({ type: 'fetched', payload: data });
         } catch (error) {
-            if (cancelRequest.current) return;
+            if (cancelRequestRef.current) return;
+            onError?.(error as Error);
             dispatch({ type: 'error', payload: error as Error });
         }
-    }, [dispatch, queryFn, onSuccess]);
+    }, [dispatch, queryFn, onSuccess, onError]);
 
     useEffect(() => {
-        cancelRequest.current = false;
+        cancelRequestRef.current = false;
 
         if (boolOrTrue(enabled)) void fetchData();
 
         // Avoid a possible state update after the component was unmounted
         return () => {
-            cancelRequest.current = true;
+            cancelRequestRef.current = true;
         };
     }, [enabled, fetchData]);
 

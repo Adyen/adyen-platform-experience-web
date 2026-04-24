@@ -6,6 +6,7 @@ import { ConfigProvider } from '../../../core/ConfigContext';
 import CoreProvider from '../../../core/Context/CoreProvider';
 import BaseElement from '../BaseElement';
 import './UIElement.scss';
+import { FALLBACK_ENV } from '../../../core/utils';
 
 export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUIElement {
     protected componentRef: UIElement<P> | null = null;
@@ -84,10 +85,13 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
 
         core.session.errorHandler = externalErrorHandler;
 
+        const componentRefGetter = () => this.compRef.current;
+
         return (
             <ConfigProvider type={this.type} session={core.session} key={performance.now()}>
                 <CoreProvider
-                    componentRef={this.compRef}
+                    componentRef={componentRefGetter}
+                    environment={core.options.environment || FALLBACK_ENV}
                     i18n={core.localization.i18n}
                     getCdnConfig={core.getCdnConfig}
                     getImageAsset={core.getImageAsset}
@@ -99,7 +103,7 @@ export class UIElement<P> extends BaseElement<P & UIElementProps> implements IUI
                 >
                     <AnalyticsProvider componentName={this.displayName} analyticsEnabled={core?.analyticsEnabled ?? true}>
                         {this.componentToRender && (
-                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)}>
+                            <section ref={this.compRef} className={cx('adyen-pe-component', this.customClassNames)} data-testid="component-root">
                                 <div className="adyen-pe-component__container">{this.componentToRender()}</div>
                             </section>
                         )}

@@ -21,16 +21,16 @@ export interface UseTransactionsTotalsProps {
 
 const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQueryParams, now }: UseTransactionsTotalsProps) => {
     const [pendingRefresh, setPendingRefresh] = useState(false);
-    const [fetchTimestamp, setFetchTimestamp] = useState(performance.now());
-    const fetchTimestampRef = useRef<number>();
+    const [fetchTimestamp, setFetchTimestamp] = useState(() => performance.now());
+    const [lastFetchTimestamp, setLastFetchTimestamp] = useState<number>();
 
     const abortable = useRef(createAbortable()).current;
-    const cachedFilters = useRef(filters);
+    const cachedFiltersRef = useRef(filters);
 
     const { getTransactionTotals } = useConfigContext().endpoints;
     const canGetTransactionTotals = isFunction(getTransactionTotals);
     const canFetchTransactionTotals = canGetTransactionTotals && fetchEnabled;
-    const shouldFetchTransactionTotals = canFetchTransactionTotals && fetchTimestampRef.current !== fetchTimestamp;
+    const shouldFetchTransactionTotals = canFetchTransactionTotals && lastFetchTimestamp !== fetchTimestamp;
 
     const fetchTransactionTotals = useCallback(async () => {
         if (shouldFetchTransactionTotals) {
@@ -50,24 +50,24 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
         queryFn: fetchTransactionTotals,
     });
 
-    const cachedIsFetching = useRef(isFetching);
+    const cachedIsFetchingRef = useRef(isFetching);
     const canRefresh = !isFetching && canFetchTransactionTotals;
     const totals = useMemo<readonly Readonly<ITransactionTotal>[]>(() => (Array.isArray(data) ? data : []), [data]);
 
     const refresh = useCallback(() => {
         if (canRefresh) setPendingRefresh(true);
-    }, [canRefresh, isFetching]);
+    }, [canRefresh]);
 
     useEffect(() => {
-        if (cachedFilters.current === filters) return;
+        if (cachedFiltersRef.current === filters) return;
 
-        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFilters.current, applicableFilters);
+        const applicableFiltersDidChange = compareTransactionsFilters(filters, cachedFiltersRef.current, applicableFilters);
 
         if (applicableFiltersDidChange) {
             // The applicable filters have changed,
             // hence a new fetch request is required
             setFetchTimestamp(performance.now());
-            cachedFilters.current = filters;
+            cachedFiltersRef.current = filters;
         }
     }, [filters, applicableFilters]);
 
@@ -80,22 +80,26 @@ const useTransactionsTotals = ({ applicableFilters, fetchEnabled, filters, getQu
     }, [pendingRefresh]);
 
     useEffect(() => {
-        if (cachedIsFetching.current && !isFetching) {
+        if (cachedIsFetchingRef.current && !isFetching) {
             // Last fetch request has finished,
             // update fetch timestamp
-            fetchTimestampRef.current = fetchTimestamp;
+            setLastFetchTimestamp(fetchTimestamp);
         }
-        cachedIsFetching.current = isFetching;
+        cachedIsFetchingRef.current = isFetching;
     }, [isFetching, fetchTimestamp]);
 
-    return {
-        totals,
-        error,
-        canRefresh,
-        refresh,
-        isAvailable: canGetTransactionTotals,
-        isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
-    } as const;
+    return useMemo(
+        () =>
+            ({
+                totals,
+                error,
+                canRefresh,
+                refresh,
+                isAvailable: canGetTransactionTotals,
+                isWaiting: isFetching || (canGetTransactionTotals && !canFetchTransactionTotals && !data),
+            }) as const,
+        [canFetchTransactionTotals, canGetTransactionTotals, canRefresh, data, error, isFetching, refresh, totals]
+    );
 };
 
 export default useTransactionsTotals;

@@ -54,7 +54,7 @@ export const getLocalisedAmount = (
         return hideCurrency
             ? formatAmountWithoutCurrency(formatterLocale, formatterOptions, decimalAmount)
             : decimalAmount.toLocaleString(formatterLocale, formatterOptions);
-    } catch (e) {
+    } catch {
         return stringAmount;
     }
 };
@@ -79,7 +79,7 @@ export const getLocalisedPercentage = (percent = 0, locale: string): string | nu
 
     try {
         return decimalPercent.toLocaleString(locale, localeOptions);
-    } catch (e) {
+    } catch {
         return null;
     }
 };

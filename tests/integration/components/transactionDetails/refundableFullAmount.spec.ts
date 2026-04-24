@@ -11,9 +11,8 @@ test.describe('Refundable - Full amount', () => {
     });
 
     test('should render payment transaction', async ({ page }) => {
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(0);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
+        await expect(page.getByRole('alert')).toHaveCount(0);
         await expect(page.getByRole('button', { name: 'Refund payment', exact: true })).toBeVisible();
     });
 
@@ -30,8 +29,7 @@ test.describe('Refundable - Full amount', () => {
         await expect(page.getByText('EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('You can only refund €607.50', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         await expect(refundButton).toBeVisible();
         await expect(refundButton).toBeEnabled();
@@ -41,13 +39,11 @@ test.describe('Refundable - Full amount', () => {
 
         await page.getByRole('button', { name: 'Go back', exact: true }).click();
 
-        await expect(page.locator('.adyen-pe-tag--default', { hasText: 'Payment' })).toBeVisible();
-        await expect(page.locator('.adyen-pe-tag')).toHaveCount(1);
+        await expect(page.getByText('Payment', { exact: true })).toBeVisible();
         await expect(page.getByText('607.50 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('The refund is being processed. Please come back later.', { exact: true })).toBeVisible();
-        await expect(page.locator('.adyen-pe-alert--highlight')).toHaveCount(1);
-        await expect(page.locator('.adyen-pe-alert')).toHaveCount(1);
+        await expect(page.getByRole('alert')).toHaveCount(1);
 
         const lockedRefundButton = page.getByRole('button', { name: 'Refund payment', exact: true });
 

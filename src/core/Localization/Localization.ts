@@ -132,7 +132,9 @@ export default class Localization {
             this.#translationsLoader.locale = locale;
             if (this.#locale === this.#translationsLoader.locale) return;
             this.#refreshTranslations(this.#customTranslations);
-        } else this.locale = FALLBACK_LOCALE;
+        } else {
+            this.locale = FALLBACK_LOCALE;
+        }
     }
 
     get ready(): Promise<void> {
@@ -162,7 +164,9 @@ export default class Localization {
         }
 
         const currentRefreshDone = () => {
-            if (this.#currentRefresh === currentRefresh) this.#markRefreshAsDone?.();
+            if (this.#currentRefresh === currentRefresh) {
+                this.#markRefreshAsDone?.();
+            }
         };
 
         const currentRefresh = (this.#currentRefresh = (async () => {
@@ -230,7 +234,9 @@ export default class Localization {
                         }
 
                         // Path compression (for shorter subsequent lookups)
-                        if (i > 1) this.#keySwapConfig[key] = translationKey;
+                        if (i > 1) {
+                            this.#keySwapConfig[key] = translationKey;
+                        }
                     }
 
                     return translation;

@@ -3,7 +3,7 @@ import { createPromisor } from '../../../async/promisor';
 import { EVT_SESSION_EXPIRED } from '../constants';
 import type { SessionRefresher } from './types';
 
-export const _canAutofresh = async <T extends any>(refresher: SessionRefresher<T>) => {
+export const _canAutofresh = async <T>(refresher: SessionRefresher<T>) => {
     const { specification } = refresher.context;
 
     const canAutofresh = await tryResolve(async () => {
@@ -14,7 +14,7 @@ export const _canAutofresh = async <T extends any>(refresher: SessionRefresher<T
     return boolOrFalse(canAutofresh);
 };
 
-export const createSessionAutofresher = <T extends any>(refresher: SessionRefresher<T>) => {
+export const createSessionAutofresher = <T>(refresher: SessionRefresher<T>) => {
     let _unlistenExpired = refresher.context.emitter.on(EVT_SESSION_EXPIRED, () => _autofresh(false));
     let _autofreshSignal: AbortSignal | undefined;
 
