@@ -1,0 +1,27 @@
+{
+    "name": "@integration-components/reports-vue",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./publish": "./publish/src/index.ts"
+    },
+    "dependencies": {
+        "@integration-components/core": "workspace:*",
+        "@integration-components/composables-vue": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@adyen/bento-vue3": "^1.90.0",
+        "@adyen/ui-assets-icons-16": "^7.7.2",
+        "vue-i18n": "^11"
+    },
+    "devDependencies": {
+        "@integration-components/tools-storybook-vue": "workspace:*",
+        "@storybook/vue3": "10.2.12"
+    },
+    "peerDependencies": {
+        "vue": "^3.5.13"
+    }
+}

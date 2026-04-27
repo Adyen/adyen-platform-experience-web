@@ -25,14 +25,19 @@
             "@integration-components/utils": ["packages/shared/utils/src/index.ts"],
             "@integration-components/utils/*": ["packages/shared/utils/src/*"],
             "@integration-components/core": ["packages/shared/core/src/index.ts"],
+            "@integration-components/core/vue": ["packages/shared/core/src/vue/index.ts"],
             "@integration-components/core/*": ["packages/shared/core/src/*"],
             "@integration-components/sdk-internal": ["packages/shared/lib/src/index.ts"],
             "@integration-components/sdk-internal/*": ["packages/shared/lib/src/*"],
             "@integration-components/hooks-preact": ["packages/shared/hooks-preact/src/index.ts"],
             "@integration-components/hooks-preact/*": ["packages/shared/hooks-preact/src/*"],
+            "@integration-components/composables-vue": ["packages/shared/composables-vue/src/index.ts"],
+            "@integration-components/composables-vue/*": ["packages/shared/composables-vue/src/*"],
             "@integration-components/testing": ["packages/shared/testing/src/index.ts"],
             "@integration-components/testing/*": ["packages/shared/testing/src/*"],
-            "@integration-components/reports/publish": ["packages/domains/reports/preact/publish/src/index.ts"]
+            "@integration-components/tools-storybook-vue/utils": ["packages/tools/storybook-vue/src/utils/index.ts"],
+            "@integration-components/reports/publish": ["packages/domains/reports/preact/publish/src/index.ts"],
+            "@integration-components/reports/vue/publish": ["packages/domains/reports/vue/publish/src/index.ts"]
         }
     }
 }

@@ -1,0 +1,24 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-reports-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &__description {
+            margin-bottom: 8px;
+            color: style.token(color-label-secondary);
+        }
+    }
+
+    &__toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}

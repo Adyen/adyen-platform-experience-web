@@ -1,5 +1,5 @@
 {
-    "name": "@integration-components/core",
+    "name": "@integration-components/composables-vue",
     "version": "0.0.1",
     "private": true,
     "type": "module",
@@ -8,25 +8,14 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
-        "./Analytics": "./src/Analytics/index.ts",
-        "./Localization": "./src/Localization/index.ts",
-        "./vue": "./src/vue/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@integration-components/core": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*"
     },
     "peerDependencies": {
-        "vue": "^3.5.13",
-        "vue-i18n": "^11"
-    },
-    "peerDependenciesMeta": {
-        "vue": {
-            "optional": true
-        },
-        "vue-i18n": {
-            "optional": true
-        }
+        "vue": "^3.5.13"
     }
 }

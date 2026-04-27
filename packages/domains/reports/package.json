@@ -4,9 +4,11 @@
     "private": true,
     "type": "module",
     "exports": {
-        "./publish": "./preact/publish/src/index.ts"
+        "./publish": "./preact/publish/src/index.ts",
+        "./vue/publish": "./vue/publish/src/index.ts"
     },
     "dependencies": {
-        "@integration-components/sdk-internal": "workspace:*"
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/reports-vue": "workspace:*"
     }
 }
