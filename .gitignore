@@ -12,6 +12,7 @@ stats.json
 stats.html
 .DS_Store
 /*.tgz
+*.tar.gz
 
 # IntelliJ
 .idea
@@ -49,7 +50,6 @@ scripts/*/variables
 
 ## credentials
 .smartlingrc
-platform-components-v1_cdn.tar.gz
 
 ## Factory
 .factory/

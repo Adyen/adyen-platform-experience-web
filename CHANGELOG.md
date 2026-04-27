@@ -1,5 +1,12 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.11.0
+
+### Minor Changes
+
+- 0e4ee1b: In the Capital Overview component, we embedded the flows for providing additional information and signing terms and conditions - avoiding redirects to hosted onboarding when not necessary.
+- 552f304: Added support for custom data in the Disputes Overview component, and managed visibility for existing columns
+
 ## 1.10.2
 
 ### Patch Changes
