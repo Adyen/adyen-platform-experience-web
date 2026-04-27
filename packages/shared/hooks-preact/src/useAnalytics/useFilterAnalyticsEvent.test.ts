@@ -3,13 +3,13 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
-import * as UseAnalyticsContext from '../../core/Context/analytics/useAnalyticsContext';
+import { useAnalyticsContext } from '@integration-components/core/preact';
 import useFilterAnalyticsEvent, { UseFilterAnalyticsEventProps } from './useFilterAnalyticsEvent';
 
-vi.mock('../../core/Context/analytics/useAnalyticsContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useFilterAnalyticsEvent', () => {
-    const mockUseAnalyticsContext = vi.mocked(UseAnalyticsContext.default);
+    const mockUseAnalyticsContext = vi.mocked(useAnalyticsContext);
 
     beforeEach(() => {
         vi.clearAllMocks();

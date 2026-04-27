@@ -50,7 +50,11 @@ const config: StorybookConfig = {
         // Framework-scoped under {domain}/preact/ — the preact/vue split is at the top level of each domain.
         '../../../../packages/domains/*/preact/stories/**/*.stories.*',
     ],
-    staticDirs: ['../static', { from: resolve(rootDir, 'src/assets/datasets'), to: '/datasets' }],
+    staticDirs: [
+        '../static',
+        { from: resolve(rootDir, 'src/assets/datasets'), to: '/datasets' },
+        { from: resolve(rootDir, 'src/assets'), to: '/src/assets' },
+    ],
     framework: {
         name: '@storybook/preact-vite',
         options: {},

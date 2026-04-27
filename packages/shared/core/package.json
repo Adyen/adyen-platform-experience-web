@@ -10,10 +10,14 @@
         "./package.json": "./package.json",
         "./Analytics": "./src/Analytics/index.ts",
         "./Localization": "./src/Localization/index.ts",
+        "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "preact": "^10.28.2"
     }
 }

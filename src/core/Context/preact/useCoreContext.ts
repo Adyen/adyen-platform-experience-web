@@ -1,6 +1,1 @@
-import { useContext } from 'preact/hooks';
-import { CoreContext } from './CoreContext';
-
-const useCoreContext = () => useContext(CoreContext);
-
-export default useCoreContext;
+export { useCoreContext as default } from '@integration-components/core/preact';

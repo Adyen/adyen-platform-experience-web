@@ -26,6 +26,7 @@
             "@integration-components/utils/*": ["packages/shared/utils/src/*"],
             "@integration-components/core": ["packages/shared/core/src/index.ts"],
             "@integration-components/core/*": ["packages/shared/core/src/*"],
+            "@integration-components/core/preact": ["packages/shared/core/src/preact/index.ts"],
             "@integration-components/sdk-internal": ["packages/shared/lib/src/index.ts"],
             "@integration-components/sdk-internal/*": ["packages/shared/lib/src/*"],
             "@integration-components/hooks-preact": ["packages/shared/hooks-preact/src/index.ts"],

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { AdditionalEventProperties } from '@integration-components/core/Analytics/analytics/user-events';
 import useAnalyticsContext from '../../../../../src/core/Context/analytics/useAnalyticsContext';
-import useComponentTiming from '../../../../../src/hooks/useComponentTiming';
+import useComponentTiming from '../useComponentTiming';
 
 export const useDurationEvent = (eventProperties: AdditionalEventProperties) => {
     const { duration } = useComponentTiming();
