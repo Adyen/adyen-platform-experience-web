@@ -1,0 +1,23 @@
+{
+    "name": "@integration-components/core",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./package.json": "./package.json",
+        "./Analytics": "./src/Analytics/index.ts",
+        "./Localization": "./src/Localization/index.ts",
+        "./preact": "./src/preact/index.ts",
+        "./*": "./src/*.ts"
+    },
+    "dependencies": {
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "preact": "^10.28.2"
+    }
+}

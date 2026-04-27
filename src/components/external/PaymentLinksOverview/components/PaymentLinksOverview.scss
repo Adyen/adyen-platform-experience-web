@@ -1,6 +1,6 @@
 @use '../../../internal/DataOverviewDisplay/styles' as *;
-@use '../../../../style';
-@use '../../../mixins';
+@use '@integration-components/style';
+@use '@integration-components/style/mixins';
 
 .adyen-pe-payment-links-overview {
     @include adyen-pe-data-overview;

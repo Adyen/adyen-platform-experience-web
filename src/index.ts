@@ -1,5 +1,4 @@
 import { Core, CoreOptions, TranslationSourceRecord } from './core';
-import './components/shared.scss';
 import './style/index.scss';
 
 export * from './core';

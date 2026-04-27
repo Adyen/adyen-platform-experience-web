@@ -1,0 +1,12 @@
+{
+    "name": "@integration-components/sdk",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/sdk/src",
+    "tags": ["type:publish"],
+    "targets": {
+        "build": {
+            "outputs": ["{workspaceRoot}/dist"]
+        }
+    }
+}

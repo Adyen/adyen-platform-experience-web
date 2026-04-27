@@ -1,4 +1,4 @@
-@use '../../../style';
+@use '@integration-components/style';
 
 $adyen-pe-slider-track-color: style.token(color-background-selected);
 $adyen-pe-slider-progress-color: style.token(color-background-highlight-strong);

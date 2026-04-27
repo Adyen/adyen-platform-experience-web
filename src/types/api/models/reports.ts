@@ -1,4 +1,1 @@
-import { Schema } from '../utils';
-import { components } from '../resources/ReportsResource';
-
-export type IReport = Schema<components, 'GeneratedReport'>;
+export * from '../../../../packages/shared/types/src/api/models/reports';

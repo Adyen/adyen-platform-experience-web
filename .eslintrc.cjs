@@ -70,6 +70,13 @@ module.exports = {
                     'src/utils/testing/**/*.{ts,tsx}',
                     'src/**/__testing__/**/*.{ts,tsx}',
                     'src/**/testing/**/*.{ts,tsx}',
+                    // Transitional re-export forwarders into workspace packages; the targets
+                    // are private workspace:* packages that get bundled into the library, so
+                    // they stay in devDependencies. IEX-2797 tracks deleting these forwarders.
+                    'src/hooks/**/*.{ts,tsx}',
+                    'src/components/**/*.{ts,tsx}',
+                    'src/constants/**/*.{ts,tsx}',
+                    'src/core/**/*.{ts,tsx}',
                 ],
                 includeTypes: false,
             },

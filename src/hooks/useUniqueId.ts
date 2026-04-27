@@ -1,8 +1,2 @@
-import { useRef } from 'preact/hooks';
-import { uniqueId } from '../utils';
-
-export const useUniqueId = () => {
-    return useRef(uniqueId().replace(/.*?(?=\d+$)/, '')).current;
-};
-
-export default useUniqueId;
+export { default } from '@integration-components/hooks-preact/useUniqueId';
+export * from '@integration-components/hooks-preact/useUniqueId';

@@ -1,4 +1,4 @@
-@use '../../../style' as style;
+@use '@integration-components/style' as style;
 
 .adyen-pe-capital-header__subtitle {
     color: style.token(color-label-secondary);

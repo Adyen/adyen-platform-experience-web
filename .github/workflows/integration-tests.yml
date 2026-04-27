@@ -51,13 +51,13 @@ jobs:
         uses: ./.github/actions/setup-env
 
       - name: Build Storybook static files
-        run: USE_CDN=false TEST_ENV=1 pnpm exec storybook build
+        run: USE_CDN=false TEST_ENV=1 pnpm run storybook:build:preact
 
       - name: Upload Storybook static artifact
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ github.sha }}
-          path: storybook-static/
+          path: packages/tools/storybook-preact/storybook-static/
           retention-days: 1
 
   e2e-local-mocked-api:

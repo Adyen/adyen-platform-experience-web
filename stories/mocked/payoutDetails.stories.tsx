@@ -1,8 +1,8 @@
 import { PayoutDetails } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
-import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { PAYOUTS_WITH_DETAILS } from '../../mocks/mock-data';
 import { PAYOUT_DETAILS_HANDLERS } from '../../mocks/mock-server/payouts';
 

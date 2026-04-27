@@ -1,0 +1,9 @@
+packages:
+  - "packages/**"
+
+# Single source of truth for shared dependency versions across the workspace.
+# The root `pnpm.overrides.preact` references `catalog:` so bumping preact here
+# forces every resolution in the tree (including transitive deps like
+# @adyen/kyc-components that declare a different exact version) to converge.
+catalog:
+  preact: ^10.28.2

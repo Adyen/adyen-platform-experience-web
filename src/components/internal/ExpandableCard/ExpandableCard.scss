@@ -1,6 +1,6 @@
-@use '../../../style';
+@use '@integration-components/style';
 // stylelint-disable no-invalid-position-at-import-rule
-@import '../../../style/breakpoints.scss';
+@use '@integration-components/style/breakpoints' as *;
 
 .adyen-pe-expandable-card {
     $adyen-pe-expandable-card: &;
@@ -15,7 +15,9 @@
         overflow: hidden;
 
         &--overlay {
-            box-shadow: 0 2px 4px 0 rgba(#00112c, 0.04), 0 6px 12px 0 rgba(#00112c, 0.08);
+            box-shadow:
+                0 2px 4px 0 rgba(#00112c, 0.04),
+                0 6px 12px 0 rgba(#00112c, 0.08);
             position: absolute;
             top: 0;
             z-index: 100;

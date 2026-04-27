@@ -1,0 +1,13 @@
+{
+    "name": "@integration-components/sdk",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build && tsc --project tsconfig-build.json"
+    },
+    "dependencies": {
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*"
+    }
+}

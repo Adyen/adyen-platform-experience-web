@@ -1,4 +1,2 @@
-export { default } from './restamper';
-export { SYSTEM_TIMEZONE } from './constants';
-export { systemToTimezone, timezoneToSystem } from './utils';
-export * from './types';
+export * from '../../../../../packages/shared/utils/src/datetime/restamper/index';
+export { default } from '../../../../../packages/shared/utils/src/datetime/restamper/index';

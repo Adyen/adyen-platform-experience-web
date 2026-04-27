@@ -1,9 +1,9 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { DisputesOverview } from '../../src';
 import { DisputesOverviewMeta } from '../components/disputesOverview';
 import { DISPUTES_LIST_HANDLERS } from '../../mocks/mock-server/disputes';
-import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { getCustomDisputesData } from './utils/customDataRequest';
 
 const meta: Meta<ElementProps<typeof DisputesOverview>> = { ...DisputesOverviewMeta, title: 'Mocked/Disputes/Disputes Overview' };

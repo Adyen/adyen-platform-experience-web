@@ -29,40 +29,45 @@
     "**/*.css"
   ],
   "main": "./dist/cjs/index.js",
-  "module": "./dist/es/index.js",
-  "types": "./dist/types/index.d.ts",
-  "style": "dist/style.css",
+  "module": "./dist/es/packages/sdk/src/index.js",
+  "types": "./dist/types/src/index.d.ts",
+  "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
+      "types": "./dist/types/src/index.d.ts",
       "require": {
-        "types": "./dist/types/index.d.ts",
+        "types": "./dist/types/src/index.d.ts",
         "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/types/index.d.ts",
-        "default": "./dist/es/index.js"
+        "types": "./dist/types/src/index.d.ts",
+        "default": "./dist/es/packages/sdk/src/index.js"
       }
     },
     "./adyen-platform-experience-web.css": "./dist/adyen-platform-experience-web.css"
   },
   "scripts": {
-    "build": "rm -rf ./dist && vite build --config vite.config.ts && tsc --project tsconfig-build.json",
+    "build": "nx run @integration-components/sdk:build",
     "build:umd": "vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:umd:test": "cross-env USE_TEST_CDN=true vite --mode umd build --config vite.config.ts && tsc --project tsconfig-build.json",
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
+    "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
+    "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix && pnpm run lint:playwright-selectors",
     "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "pnpm run storybook",
-    "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'node .storybook/dev.js'",
-    "storybook:build": "cross-env USE_TEST_CDN=true storybook build",
-    "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 storybook build && vite preview --outDir storybook-static --config vite.config.ts",
+    "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'nx run @integration-components/tools-storybook-preact:storybook'",
+    "storybook:vue": "nx run @integration-components/tools-storybook-vue:storybook",
+    "storybook:build": "nx run @integration-components/tools-storybook-preact:storybook:build",
+    "storybook:build:preact": "nx run @integration-components/tools-storybook-preact:storybook:build",
+    "storybook:build:vue": "nx run @integration-components/tools-storybook-vue:storybook:build",
+    "storybook:static": "nx run @integration-components/tools-storybook-preact:storybook:static",
     "test": "cross-env TEST_ENV=1 vitest --config vite.config.ts",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
@@ -81,16 +86,25 @@
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
-    "preact": "^10.28.2"
+    "preact": "catalog:"
   },
   "devDependencies": {
+    "@integration-components/core": "workspace:*",
+    "@integration-components/hooks-preact": "workspace:*",
+    "@integration-components/style": "workspace:*",
+    "@integration-components/testing": "workspace:*",
+    "@integration-components/types": "workspace:*",
+    "@integration-components/utils": "workspace:*",
     "@adyen/bento-design-tokens": "^1.7.1",
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
+    "@nx/eslint": "^22.5.3",
+    "@nx/eslint-plugin": "^22.5.3",
+    "@nx/vite": "^22.5.3",
+    "@nx/vitest": "^22.5.3",
     "@playwright/test": "^1.56.0",
     "@preact/preset-vite": "^2.10.2",
-    "@storybook/preact": "^10.2.12",
-    "@storybook/preact-vite": "^10.2.12",
+    "@storybook/preact": "10.2.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/preact": "^3.2.3",
     "@testing-library/user-event": "^14.6.1",
@@ -118,13 +132,14 @@
     "mini-css-extract-plugin": "^2.4.5",
     "msw": "^2.4.5",
     "msw-storybook-addon": "^2.0.2",
+    "nx": "^22.5.3",
     "openapi-typescript": "^7.10.1",
     "postcss": "^8.3.11",
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.77.6",
     "sass-loader": "^12.3.0",
-    "storybook": "^10.2.12",
+    "storybook": "10.2.12",
     "style-loader": "^3.3.1",
     "stylelint": "^17.5.0",
     "stylelint-config-recommended": "^17.0.0",
@@ -132,15 +147,11 @@
     "stylelint-scss": "^7.0.0",
     "ts-loader": "^9.2.6",
     "tslib": "^2.8.1",
+    "tsx": "^4.21.0",
     "typescript": "5.8.3",
     "vite": "^7.2.4",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "4.0.10"
-  },
-  "msw": {
-    "workerDirectory": [
-      "static"
-    ]
   },
   "pnpm": {
     "overrides": {
@@ -150,7 +161,8 @@
       "minimatch@<9.0.7": ">=10.2.3",
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4"
+      "picomatch": ">=4.0.4",
+      "preact": "catalog:"
     },
     "ignoredBuiltDependencies": [
       "core-js"
@@ -158,6 +170,7 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "msw",
+      "nx",
       "unrs-resolver"
     ]
   }

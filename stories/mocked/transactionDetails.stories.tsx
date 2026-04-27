@@ -1,9 +1,9 @@
 import { Meta } from '@storybook/preact';
 import { TransactionDetails } from '../../src';
-import { ElementProps, ElementStory } from '../utils/types';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { TRANSACTION_DETAILS_HANDLERS } from '../../mocks/mock-server/transactions';
 import { TransactionDetailsMeta } from '../components/transactionDetails';
-import { CUSTOM_URL_EXAMPLE } from '../utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 
 const meta: Meta<ElementProps<typeof TransactionDetails>> = { ...TransactionDetailsMeta, title: 'Mocked/Transactions/Transaction Details' };
 const sharedArgs = { id: '4B7N9Q2Y6R1W5M8T', mockedApi: true };

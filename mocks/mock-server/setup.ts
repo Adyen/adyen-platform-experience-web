@@ -1,10 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
-import { delay } from './utils/utils';
 import { EndpointName } from '../../src/types/api/endpoints';
 import { HttpMethod } from '../../src/core/Http/types';
 import {
     CapitalComponentManage,
+    delay,
     DisputesComponentManage,
     PayByLinkComponentManageLinks,
     PayByLinkComponentManageSettings,
@@ -13,7 +13,7 @@ import {
     ReportsOverviewComponentView,
     TransactionsOverviewComponentManageRefunds,
     TransactionsOverviewComponentView,
-} from './utils/rolesToEndpointsMapping';
+} from '@integration-components/testing/msw';
 
 const networkError = false;
 const path = endpoints().setup;

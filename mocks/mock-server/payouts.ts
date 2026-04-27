@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { BALANCE_ACCOUNTS_SINGLE, PAYOUTS_WITH_DETAILS } from '../mock-data';
-import { compareDates, delay, getPaginationLinks } from './utils/utils';
+import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { endpoints } from '../../endpoints/endpoints';
 import type { IPayout, IPayoutDetails } from '../../src';
 

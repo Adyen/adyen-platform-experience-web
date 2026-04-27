@@ -1,6 +1,6 @@
-@use '../../../../../style/variable-generator' as style;
-@use '../../../../../style/breakpoints' as *;
-@use '../../../../../style/skeleton' as skeleton;
+@use '@integration-components/style/variable-generator' as style;
+@use '@integration-components/style/breakpoints' as *;
+@use '@integration-components/style/skeleton' as skeleton;
 
 .adyen-pe-payment-link-creation-form {
     display: flex;

@@ -1,7 +1,7 @@
 import { test, expect } from '../../../fixtures/analytics/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
-import { CUSTOM_URL_EXAMPLE } from '../../../../stories/utils/constants';
+import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { openTransactionDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--data-customization';

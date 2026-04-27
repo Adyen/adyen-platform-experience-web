@@ -1,0 +1,49 @@
+{
+    "$schema": "./node_modules/nx/schemas/nx-schema.json",
+    "namedInputs": {
+        "production": [
+            "default",
+            "sharedGlobals",
+            "!{workspaceRoot}/*",
+            "!{projectRoot}/eslint.config.[jt]s",
+            "!{projectRoot}/vite.config.ts",
+            "!{projectRoot}/vitest.config.ts",
+            "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)"
+        ],
+        "default": ["{workspaceRoot}/package.json", "{projectRoot}/**/*", "sharedGlobals"],
+        "sharedGlobals": [
+            {
+                "runtime": "node -p \"process.versions.node.split('.')[0]\""
+            },
+            {
+                "externalDependencies": ["vite"]
+            }
+        ]
+    },
+    "targetDefaults": {
+        "build": {
+            "cache": true
+        },
+        "unit": {
+            "cache": true
+        }
+    },
+    "plugins": [
+        {
+            "plugin": "@nx/vite/plugin",
+            "options": {
+                "buildTargetName": "build",
+                "serveTargetName": "dev"
+            }
+        },
+        {
+            "plugin": "@nx/vitest",
+            "options": {
+                "testTargetName": "unit"
+            }
+        }
+    ],
+    "neverConnectToCloud": true,
+    "defaultBase": "origin/develop",
+    "analytics": false
+}

@@ -1,4 +1,4 @@
-@use '../../../style';
+@use '@integration-components/style';
 
 .adyen-pe-progress-bar {
     $adyen-progress-bar-fill-color: style.token(color-decorative-blue);

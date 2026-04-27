@@ -1,4 +1,5 @@
-import { createDynamicTranslationFactory, createKeyFactoryFromConfig, KeyFactoryFunction, TranslationFallbackFunction } from './factory';
+import { createDynamicTranslationFactory, createKeyFactoryFromConfig } from '@integration-components/core';
+import type { KeyFactoryFunction, TranslationFallbackFunction } from '@integration-components/core';
 import { IDisputeReasonCategory, IDisputeStatus, IDisputeType } from '../../../types/api/models/disputes';
 import { DISPUTE_REASON_CATEGORIES, DISPUTE_STATUSES, DISPUTE_TYPES } from '../disputes/constants';
 import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/constants';

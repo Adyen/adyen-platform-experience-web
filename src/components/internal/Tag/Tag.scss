@@ -1,4 +1,4 @@
-@use '../../../style';
+@use '@integration-components/style';
 
 @mixin adyen-pe-tag--light {
     background: style.token(color-background-primary);
