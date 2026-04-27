@@ -138,7 +138,7 @@ export function useReportsList(props: () => UseReportsListProps) {
 
     function mergeRecords(original: IReport[], modified: CustomDataRetrieved[]): IReport[] {
         return original.map(record => {
-            const match = modified.find(m => (m as any).createdAt === record.createdAt);
+            const match = modified.find(m => m.createdAt === record.createdAt);
             return match ? ({ ...match, ...record } as IReport) : record;
         });
     }

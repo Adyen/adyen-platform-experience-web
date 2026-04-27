@@ -35,7 +35,7 @@ export class UIElement<Props extends Record<string, any>> {
         // vue-i18n instance to be installed on the Vue app. Install a minimal
         // instance here so mounted components (and nested Bento primitives)
         // resolve without throwing "Need to install with `app.use` function".
-        const locale = (this._props as Record<string, any>)?.core?.options?.locale || 'en-US';
+        const locale = this._props?.core?.options?.locale || 'en-US';
         this._app.use(
             createVueI18n({
                 legacy: false,

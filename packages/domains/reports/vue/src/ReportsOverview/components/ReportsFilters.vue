@@ -192,7 +192,7 @@ watch(
     () => props.balanceAccounts,
     accounts => {
         if (accounts?.length && !selectedBalanceAccountId.value) {
-            selectedBalanceAccountId.value = accounts[0]!.id;
+            selectedBalanceAccountId.value = accounts[0]?.id;
         }
     },
     { immediate: true }

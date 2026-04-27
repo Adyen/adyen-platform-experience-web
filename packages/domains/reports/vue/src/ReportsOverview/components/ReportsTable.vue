@@ -6,6 +6,7 @@ import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoColumn, BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { IReport } from '@integration-components/types';
 import { TABLE_CLASS, DISABLED_BUTTONS_TIMEOUT } from '../constants';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 import '../styles/ReportsTable.scss';
 
 const props = defineProps<{
@@ -55,8 +56,8 @@ function removeAlert() {
     alert.value = null;
 }
 
-function onDownloadErrorAlert(error?: Error) {
-    const errorCode = (error as any)?.errorCode;
+function onDownloadErrorAlert(error?: AdyenPlatformExperienceError) {
+    const errorCode = error?.errorCode;
     if (errorCode === '999_429_001') {
         alert.value = {
             title: i18n.get('reports.overview.errors.download'),
@@ -115,7 +116,7 @@ async function handleDownload(item: IReport) {
             URL.revokeObjectURL(url);
         }
     } catch (e) {
-        onDownloadErrorAlert(e as Error);
+        onDownloadErrorAlert(e as AdyenPlatformExperienceError);
     }
 }
 
