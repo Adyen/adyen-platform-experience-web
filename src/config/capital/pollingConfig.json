@@ -2,7 +2,6 @@
     "missingActions": {
         "initialIntervalMs": 500,
         "backoffMultiplier": 1,
-        "maxDurationMs": 3000,
-        "strategy": "exponentialBackoff"
+        "maxDurationMs": 3000
     }
 }
