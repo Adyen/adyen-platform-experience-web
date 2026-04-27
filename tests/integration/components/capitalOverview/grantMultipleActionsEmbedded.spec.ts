@@ -8,6 +8,12 @@ const STORY_ID = 'mocked-capital-capital-overview--grant-multiple-actions-embedd
 
 const submitBusinessFinancingInformation = async (page: Page) => {
     await page.getByRole('button', { name: 'Submit information', exact: true }).click();
+
+    // Fill out required field
+    const balanceSheetTotalInput = page.getByRole('textbox', { name: /Balance sheet total/i });
+    await balanceSheetTotalInput.fill('100');
+    await balanceSheetTotalInput.blur();
+
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('button', { name: 'Submit', exact: true }).click();
     await page.getByRole('button', { name: 'Finish' }).click();
@@ -22,7 +28,7 @@ const signTermsOfService = async (page: Page) => {
             'I have read and I accept these terms and confirm that I am a legal representative authorized to accept these terms on behalf of the company. I have taken notice of the privacy statement (www.adyen.com/policies-and-disclaimer/privacy-policy) and I consent to my (personal) data being used for the purposes described therein.'
         )
         .click();
-    await page.getByRole('button', { name: 'Sign and continue' }).click();
+    await page.getByRole('button', { name: 'Sign', exact: true }).click();
 };
 
 const completeTermsOfService = async (page: Page) => {
