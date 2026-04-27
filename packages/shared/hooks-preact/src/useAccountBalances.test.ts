@@ -4,20 +4,20 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/preact';
 import useAccountBalances from './useAccountBalances';
-import * as ConfigContext from '../core/ConfigContext';
-import { IBalanceAccountBase } from '../types';
+import { useConfigContext } from '@integration-components/core/preact';
+import type { IBalanceAccountBase } from '@integration-components/types';
 
-vi.mock('../core/ConfigContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useAccountBalances', () => {
-    const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);
+    const mockUseConfigContext = vi.mocked(useConfigContext);
 
     const getMockBalancesEndpoint = () => {
         const mockBalancesEndpoint = vi.fn();
 
         mockUseConfigContext.mockReturnValue({
             endpoints: { getBalances: mockBalancesEndpoint },
-        } as unknown as ReturnType<(typeof ConfigContext)['useConfigContext']>);
+        } as unknown as ReturnType<typeof useConfigContext>);
 
         return mockBalancesEndpoint;
     };
@@ -38,7 +38,7 @@ describe('useAccountBalances', () => {
 
         mockUseConfigContext.mockReturnValue({
             endpoints: { getBalances: undefined },
-        } as unknown as ReturnType<(typeof ConfigContext)['useConfigContext']>);
+        } as unknown as ReturnType<typeof useConfigContext>);
 
         const { result, rerender } = renderHook((balanceAccount?: IBalanceAccountBase) => useAccountBalances({ balanceAccount }));
         expect(result.current).toStrictEqual(expectedResult);

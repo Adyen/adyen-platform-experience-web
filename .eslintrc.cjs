@@ -74,6 +74,9 @@ module.exports = {
                     // are private workspace:* packages that get bundled into the library, so
                     // they stay in devDependencies. IEX-2797 tracks deleting these forwarders.
                     'src/hooks/**/*.{ts,tsx}',
+                    'src/components/**/*.{ts,tsx}',
+                    'src/constants/**/*.{ts,tsx}',
+                    'src/core/**/*.{ts,tsx}',
                 ],
                 includeTypes: false,
             },

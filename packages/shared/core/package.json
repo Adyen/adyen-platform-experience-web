@@ -11,6 +11,7 @@
         "./Analytics": "./src/Analytics/index.ts",
         "./Localization": "./src/Localization/index.ts",
         "./vue": "./src/vue/index.ts",
+        "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
@@ -18,6 +19,7 @@
         "@integration-components/utils": "workspace:*"
     },
     "peerDependencies": {
+        "preact": "^10.28.2",
         "vue": "^3.5.13",
         "vue-i18n": "^11"
     },

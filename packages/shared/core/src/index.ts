@@ -20,6 +20,9 @@ export type {
     TranslationOptions,
 } from './Localization';
 
+export { createKeyFactoryFromConfig, createDynamicTranslationFactory } from './translation/factory';
+export type { KeyFactoryConfig, KeyFactoryFunction, TranslationFactoryFunction, TranslationFallbackFunction } from './translation/factory';
+
 export { AuthSession } from './session/AuthSession';
 export { default as AuthSessionSpecification } from './session/AuthSessionSpecification';
 

@@ -3,12 +3,17 @@ export * from './async/constants';
 export * from './async/main';
 export * from './collection/main';
 export * from './common';
+export * from './customData/hasCustomField';
+export * from './customData/mergeRecords';
+export * from './datetime/formats';
 export * from './datetime/main';
 export * from './datetime/restamper';
 
 export * from './file/download';
 export * from './file/size';
 export * from './file/upload';
+
+export * from './layout/breakpoints';
 
 export * from './primitives/async/abortable';
 export * from './primitives/async/deferred';

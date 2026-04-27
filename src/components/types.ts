@@ -1,7 +1,42 @@
 import UIElement from './external/UIElement/UIElement';
-import { Core, onErrorHandler } from '../core';
-import { AnchorHTMLAttributes } from 'preact/compat';
+import { Core } from '../core';
 import { StringWithAutocompleteOptions } from '../utils/types';
+import type {
+    BaseElementProps as _BaseElementProps,
+    BaseElementState,
+    CustomColumn,
+    CustomButtonObject,
+    CustomDataObject,
+    CustomDataRetrieved,
+    CustomIconObject,
+    CustomLinkObject,
+    CustomTextObject,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+    ExternalUIComponentProps,
+    OnDataRetrievedCallback,
+    UIElementProps,
+    UIElementStatus,
+    _UIComponentProps as __UIComponentProps,
+} from '@integration-components/types';
+
+export { FilterParam } from '@integration-components/types';
+
+export type {
+    CustomButtonObject,
+    CustomColumn,
+    CustomDataObject,
+    CustomDataRetrieved,
+    CustomIconObject,
+    CustomLinkObject,
+    CustomTextObject,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+    ExternalUIComponentProps,
+    OnDataRetrievedCallback,
+    UIElementProps,
+    UIElementStatus,
+};
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -20,7 +55,7 @@ export const enum InteractionKeyCode {
     DELETE = 'Delete',
 }
 
-export interface BaseElementProps {
+export interface BaseElementProps extends _BaseElementProps {
     core: Core<any, any>;
 }
 
@@ -38,16 +73,7 @@ export interface IFormElement<P> {
     setState(newState: object): void;
 }
 
-export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
-
 export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => void) => void;
-
-export interface UIElementProps {
-    hideTitle?: boolean;
-    onContactSupport?: () => void;
-    onError?: onErrorHandler;
-    ref?: any;
-}
 
 export interface FormProps<P> {
     onChange?: (state: any, element: UIElement<P> | null) => void;
@@ -59,74 +85,11 @@ export interface FormProps<P> {
     triggerValidation?: SetTriggerValidation;
 }
 
-export type BaseElementState = {
-    errors?: {
-        [key: string]: any;
-    };
-    valid?: {
-        [key: string]: boolean;
-    };
-    fieldProblems?: {
-        [key: string]: any;
-    };
-    isValid?: boolean;
-};
+export type { BaseElementState };
 
-export type _UIComponentProps<T> = BaseElementProps & Omit<UIElementProps, 'ref'> & T & {};
-
-export type ExternalUIComponentProps<T> = UIElementProps & T & {};
+export type _UIComponentProps<T> = __UIComponentProps<T>;
 
 export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
-
-export type DataGridCustomColumnConfig<k> = {
-    key: k;
-    flex?: number;
-    align?: 'right' | 'left' | 'center';
-    visibility?: 'visible' | 'hidden';
-};
-
-export type CustomColumn<T extends string> = {
-    [k in T]: DataGridCustomColumnConfig<k>;
-}[T];
-
-export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
-
-interface BaseCustomObject {
-    value: any;
-}
-
-type BaseDetails = {
-    className?: string;
-};
-
-export interface CustomIconObject extends BaseCustomObject {
-    type: 'icon';
-    config: BaseDetails & { src: string; alt?: string };
-}
-
-export interface CustomTextObject extends BaseCustomObject {
-    type: 'text';
-    config?: BaseDetails;
-}
-
-export interface CustomLinkObject extends BaseCustomObject {
-    type: 'link';
-    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
-}
-
-export interface CustomButtonObject extends BaseCustomObject {
-    type: 'button';
-    config: BaseDetails & { action: () => void };
-}
-
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
-
-export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
-
-export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
-    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
-};
 
 export type DetailsCustomFieldConfig<k> = {
     key: k;
@@ -175,20 +138,5 @@ export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from
 export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
 
 export type { PayoutDetailsComponentProps, PayoutDetailsProps } from './external/PayoutDetails/types';
-
-export const enum FilterParam {
-    BALANCE_ACCOUNT = 'balanceAccount',
-    CATEGORIES = 'categories',
-    CURRENCIES = 'currencies',
-    CREATED_SINCE = 'createdSince',
-    CREATED_UNTIL = 'createdUntil',
-    STATUSES = 'statuses',
-    MIN_AMOUNT = 'minAmount',
-    MAX_AMOUNT = 'maxAmount',
-    LINK_TYPES = 'linkTypes',
-    MERCHANT_REFERENCE = 'merchantReference',
-    PAYMENT_LINK_ID = 'paymentLinkId',
-    STORE_IDS = 'storeIds',
-}
 
 export type { ExternalComponentType } from '@integration-components/types';

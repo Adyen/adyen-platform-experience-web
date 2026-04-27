@@ -9,6 +9,7 @@
         ".": "./src/index.ts",
         "./package.json": "./package.json",
         "./datetime/restamper": "./src/datetime/restamper/index.ts",
+        "./primitives/async/abortable": "./src/primitives/async/abortable/index.ts",
         "./primitives/reactive/reflex": "./src/primitives/reactive/reflex/index.ts",
         "./*": "./src/*.ts"
     }
