@@ -21,8 +21,8 @@ importers:
   .:
     dependencies:
       '@adyen/kyc-components':
-        specifier: '>=4.0.0-compact.8 <4.0.0'
-        version: 4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
+        specifier: '>=4.0.0-compact.9 <4.0.0'
+        version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -377,7 +377,7 @@ packages:
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/kyc-components@4.0.0-compact.8':
+  '@adyen/kyc-components@4.0.0-compact.9':
     resolution: {}
     engines: {node: '>=20', pnpm: '>=10.16.0'}
 
@@ -385,7 +385,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
 
-  '@adyen/ui-assets-icons-16@7.6.0':
+  '@adyen/ui-assets-icons-16@7.9.0':
     resolution: {}
     peerDependencies:
       vue: ~2.7 || ~3
@@ -990,7 +990,7 @@ packages:
     resolution: {}
     engines: {node: '>=6.9.0'}
 
-  '@babel/runtime@7.28.6':
+  '@babel/runtime@7.29.2':
     resolution: {}
     engines: {node: '>=6.9.0'}
 
@@ -1738,21 +1738,25 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@22.6.3':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@22.6.3':
     resolution: {}
@@ -1809,10 +1813,10 @@ packages:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x || 6.x || 7.x
 
-  '@preact/signals-core@1.13.0':
+  '@preact/signals-core@1.14.1':
     resolution: {}
 
-  '@preact/signals@2.7.1':
+  '@preact/signals@2.9.0':
     resolution: {}
     peerDependencies:
       preact: ^10.28.2
@@ -1894,66 +1898,79 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -2359,41 +2376,49 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -3858,10 +3883,10 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
-  i18next@25.8.4:
+  i18next@25.10.10:
     resolution: {}
     peerDependencies:
-      typescript: ^5
+      typescript: ^5 || ^6
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5997,16 +6022,16 @@ snapshots:
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/kyc-components@4.0.0-compact.8(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))':
+  '@adyen/kyc-components@4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))':
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
-      '@adyen/ui-assets-icons-16': 7.6.0(vue@3.5.31(typescript@5.8.3))
-      '@preact/signals': 2.7.1(preact@10.28.2)
+      '@adyen/ui-assets-icons-16': 7.9.0(vue@3.5.31(typescript@5.8.3))
+      '@preact/signals': 2.9.0(preact@10.28.2)
       '@tanstack/preact-query': 5.96.1(preact@10.28.2)
       classnames: 2.5.1
       container-query-polyfill: 1.0.2
-      i18next: 25.8.4(typescript@5.8.3)
+      i18next: 25.10.10(typescript@5.8.3)
       monogon: 0.3.4(preact@10.28.2)(react@19.2.0)(vue@3.5.31(typescript@5.8.3))
       named-slots: 0.4.2
       onfido-sdk-ui: 14.55.0
@@ -6020,7 +6045,7 @@ snapshots:
 
   '@adyen/openbankingsdk@0.2.3': {}
 
-  '@adyen/ui-assets-icons-16@7.6.0(vue@3.5.31(typescript@5.8.3))':
+  '@adyen/ui-assets-icons-16@7.9.0(vue@3.5.31(typescript@5.8.3))':
     optionalDependencies:
       vue: 3.5.31(typescript@5.8.3)
 
@@ -6809,7 +6834,7 @@ snapshots:
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@babel/runtime@7.28.6': {}
+  '@babel/runtime@7.29.2': {}
 
   '@babel/template@7.27.0':
     dependencies:
@@ -7553,7 +7578,7 @@ snapshots:
       '@babel/plugin-transform-runtime': 7.29.0(@babel/core@7.26.10)
       '@babel/preset-env': 7.29.2(@babel/core@7.26.10)
       '@babel/preset-typescript': 7.28.5(@babel/core@7.26.10)
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.2
       '@nx/devkit': 22.6.3(nx@22.6.3)
       '@nx/workspace': 22.6.3
       '@zkochan/js-yaml': 0.0.7
@@ -7722,11 +7747,11 @@ snapshots:
       - preact
       - supports-color
 
-  '@preact/signals-core@1.13.0': {}
+  '@preact/signals-core@1.14.1': {}
 
-  '@preact/signals@2.7.1(preact@10.28.2)':
+  '@preact/signals@2.9.0(preact@10.28.2)':
     dependencies:
-      '@preact/signals-core': 1.13.0
+      '@preact/signals-core': 1.14.1
       preact: 10.28.2
 
   '@prefresh/babel-plugin@0.5.1': {}
@@ -8848,7 +8873,7 @@ snapshots:
 
   babel-plugin-macros@3.1.0:
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.2
       cosmiconfig: 7.1.0
       resolve: 1.22.11
 
@@ -10111,9 +10136,9 @@ snapshots:
 
   husky@7.0.4: {}
 
-  i18next@25.8.4(typescript@5.8.3):
+  i18next@25.10.10(typescript@5.8.3):
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.2
     optionalDependencies:
       typescript: 5.8.3
 
