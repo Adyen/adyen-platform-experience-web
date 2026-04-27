@@ -53,6 +53,3 @@ scripts/*/variables
 
 ## Factory
 .factory/
-
-## npm config
-.npmrc

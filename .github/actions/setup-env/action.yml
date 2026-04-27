@@ -30,6 +30,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --registry=https://registry.npmjs.org/
+      run: |
+        pnpm install
       env:
         HUSKY: "0"
