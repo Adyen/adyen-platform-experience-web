@@ -1,9 +1,8 @@
-@use '../../../internal/DataOverviewDisplay/styles' as *;
 @use '@integration-components/style';
 @use '@integration-components/style/mixins';
 
 .adyen-pe-payment-links-overview {
-    @include adyen-pe-data-overview;
+    @include mixins.adyen-pe-data-overview;
     display: flex;
     flex-direction: column;
     gap: style.token(spacer-070);

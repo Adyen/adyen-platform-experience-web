@@ -1,10 +1,9 @@
-@use '../../../../internal/DataOverviewDisplay/styles' as *;
 @use '@integration-components/style/breakpoints' as breakpoints;
 @use '@integration-components/style';
 @use '@integration-components/style/mixins';
 
 .adyen-pe-transactions-overview {
-    @include adyen-pe-data-overview;
+    @include mixins.adyen-pe-data-overview;
 
     &--xs {
         @include mixins.adyen-pe-error-message-display-mobile-fix {
