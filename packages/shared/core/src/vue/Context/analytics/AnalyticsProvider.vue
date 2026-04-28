@@ -71,7 +71,7 @@ const userEvents = computed<UserEvents>(() => {
     };
 });
 
-provide(ANALYTICS_CONTEXT_KEY, userEvents.value);
+provide(ANALYTICS_CONTEXT_KEY, userEvents);
 
 onMounted(() => {
     if (props.analyticsEnabled) {

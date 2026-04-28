@@ -1,17 +1,10 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { IBalanceAccountBase, IReport } from '@integration-components/types';
-
-export interface CustomDataObject {
-    type?: 'text' | 'link' | 'icon' | 'button';
-    value: any;
-    config?: Record<string, any>;
-}
-
-export type CustomDataRetrieved = Record<string, CustomDataObject | Record<string, any> | string | number | boolean>;
+import type { CustomColumn, IBalanceAccountBase, IReport, OnDataRetrievedCallback } from '@integration-components/types';
+import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 export interface DataCustomizationList<Fields extends string> {
-    fields?: { key: Fields; flex?: number; align?: 'right' | 'left' | 'center'; visibility?: 'visible' | 'hidden' }[];
-    onDataRetrieve?: (data: IReport[]) => Promise<CustomDataRetrieved[]> | CustomDataRetrieved[];
+    fields?: CustomColumn<StringWithAutocompleteOptions<Fields>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
 }
 
 // ── Component prop types ──

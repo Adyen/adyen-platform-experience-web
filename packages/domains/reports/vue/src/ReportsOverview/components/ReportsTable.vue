@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted, watch } from 'vue';
 import { BentoDataGrid, BentoButton } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
+import { useCustomColumnsData } from '@integration-components/composables-vue';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoColumn, BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
-import type { IReport } from '@integration-components/types';
+import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
+import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { TABLE_CLASS, DISABLED_BUTTONS_TIMEOUT } from '../constants';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import '../styles/ReportsTable.scss';
+
+export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
+export type ReportsTableFields = (typeof FIELDS)[number];
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -16,7 +21,8 @@ const props = defineProps<{
     onContactSupport?: () => void;
     showPagination: boolean;
     data: IReport[] | undefined;
-    customColumns?: any[];
+    customColumns?: CustomColumn<StringWithAutocompleteOptions<ReportsTableFields>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<IReport[]>;
     hasNext?: boolean;
     hasPrevious?: boolean;
     goToNextPage?: () => void;
@@ -28,7 +34,10 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { endpoints, refreshing } = useConfigContext();
+// Keep the reactive proxy here — destructuring `useConfigContext()` would unwrap
+// the `refreshing` primitive into a one-time snapshot and capture a stale
+// `endpoints` reference, breaking reactivity when the session is refreshed.
+const config = useConfigContext();
 
 // ── Download freeze logic ──
 const frozen = ref(false);
@@ -88,7 +97,7 @@ function getReportType(type: string): string {
 
 // ── Download handler ──
 async function handleDownload(item: IReport) {
-    const { downloadReport } = endpoints;
+    const downloadReport = config.endpoints.downloadReport;
     if (typeof downloadReport !== 'function') return;
 
     freeze();
@@ -120,26 +129,76 @@ async function handleDownload(item: IReport) {
     }
 }
 
+// ── Custom columns ──
+const STANDARD_FIELDS = new Set<string>(FIELDS);
+
+const customFieldKeys = computed<string[]>(() =>
+    (props.customColumns ?? [])
+        .filter(c => !!c && c.visibility !== 'hidden')
+        .map(c => (typeof c?.key === 'string' ? c.key.trim() : ''))
+        .filter((k): k is string => !!k && !STANDARD_FIELDS.has(k))
+);
+
+const hasCustomColumn = computed(() => customFieldKeys.value.length > 0);
+
+const { customRecords, loadingCustomRecords } = useCustomColumnsData<IReport>({
+    records: () => props.data ?? [],
+    hasCustomColumn: () => hasCustomColumn.value,
+    onDataRetrieve: () => props.onDataRetrieve,
+    mergeCustomData: ({ records, retrievedData }) =>
+        records.map(record => {
+            const match = (retrievedData as CustomDataRetrieved[]).find(m => m.createdAt === record.createdAt);
+            // Custom data layers on top of the original record so consumer-supplied
+            // custom fields (the whole point of `onDataRetrieve`) are not silently
+            // overwritten by the original record.
+            return match ? ({ ...record, ...match } as IReport & Record<string, any>) : record;
+        }),
+});
+
 // ── Grid columns ──
-const isLoading = computed(() => props.loading || refreshing);
+const isLoading = computed(() => props.loading || config.refreshing || loadingCustomRecords.value);
 
 const columns = computed<BentoColumn[]>(() => {
     const cols: BentoColumn[] = [
         { field: 'createdAt', label: i18n.get('reports.overview.list.fields.createdAt'), autoWidth: true },
         { field: 'reportType', label: i18n.get('reports.overview.list.fields.reportType'), autoWidth: true },
     ];
+
+    if (Array.isArray(props.customColumns)) {
+        for (const column of props.customColumns) {
+            if (!column || typeof column.key !== 'string') continue;
+            const key = column.key.trim();
+            if (!key || STANDARD_FIELDS.has(key)) continue;
+            if (column.visibility === 'hidden') continue;
+            const labelKey = `reports.overview.list.fields.${key}`;
+            cols.push({
+                field: key,
+                label: i18n.has(labelKey) ? i18n.get(labelKey) : key,
+                autoWidth: true,
+            });
+        }
+    }
+
     return cols;
 });
 
 // ── Grid data ──
 const gridData = computed<BentoDatagridDataItem[]>(() => {
-    if (!props.data) return [];
-    return props.data.map((report: IReport, idx: number) => ({
-        id: `${report.createdAt}-${idx}`,
-        createdAt: formatReportDate(report.createdAt ?? ''),
-        reportType: getReportType(report.type ?? ''),
-        _raw: report,
-    }));
+    const source = customRecords.value as Array<IReport & Record<string, any>>;
+    if (!source.length) return [];
+    const keys = customFieldKeys.value;
+    return source.map((report, idx) => {
+        const row: BentoDatagridDataItem = {
+            id: `${report.createdAt}-${idx}`,
+            createdAt: formatReportDate(report.createdAt ?? ''),
+            reportType: getReportType(report.type ?? ''),
+            _raw: report,
+        };
+        for (const key of keys) {
+            row[key] = report[key];
+        }
+        return row;
+    });
 });
 
 // ── Row actions ──
@@ -181,8 +240,15 @@ function handleItemsPage(size: number) {
     props.updateLimit?.(size);
 }
 
-// Clear alert when loading starts
-if (props.loading) alert.value = null;
+// Clear alert whenever a new fetch begins. This must be a watcher; a top-level
+// `if (props.loading) ...` would only run once during component setup.
+watch(
+    () => props.loading,
+    loading => {
+        if (loading) alert.value = null;
+    },
+    { immediate: true }
+);
 </script>
 
 <template>

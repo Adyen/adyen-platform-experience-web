@@ -50,24 +50,11 @@ const reportsListResult = useReportsList(() => ({
     allowLimitSelection: props.allowLimitSelection,
     preferredLimit: props.preferredLimit,
     onFiltersChanged: props.onFiltersChanged,
-    dataCustomization: props.dataCustomization,
 }));
 
 const isLoading = computed(
-    () =>
-        reportsListResult.fetching.value ||
-        props.isLoadingBalanceAccount ||
-        !props.balanceAccounts ||
-        !activeBalanceAccount.value ||
-        reportsListResult.loadingCustomRecords.value
+    () => reportsListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !activeBalanceAccount.value
 );
-
-const displayData = computed(() => {
-    if (props.dataCustomization?.list?.onDataRetrieve) {
-        return reportsListResult.customRecords.value;
-    }
-    return reportsListResult.records.value;
-});
 </script>
 
 <template>
@@ -86,11 +73,12 @@ const displayData = computed(() => {
         <ReportsTable
             :balance-account-id="activeBalanceAccount?.id"
             :loading="isLoading"
-            :data="displayData"
+            :data="reportsListResult.records.value"
             :show-pagination="true"
             :error="reportsListResult.error.value as Error | undefined"
             :on-contact-support="props.onContactSupport"
             :custom-columns="props.dataCustomization?.list?.fields"
+            :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"
             :has-next="reportsListResult.hasNext.value"
             :has-previous="reportsListResult.hasPrevious.value"
             :go-to-next-page="reportsListResult.goToNextPage"

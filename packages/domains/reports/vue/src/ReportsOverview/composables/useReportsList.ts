@@ -1,8 +1,9 @@
 import { ref, computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
+import { isFunction } from '@integration-components/utils';
 import type { IReport } from '@integration-components/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
-import type { CustomDataRetrieved, ReportsListResponse } from '../types';
+import type { ReportsListResponse } from '../types';
 
 interface UseReportsListProps {
     fetchEnabled: boolean;
@@ -12,22 +13,12 @@ interface UseReportsListProps {
     allowLimitSelection?: boolean;
     preferredLimit?: number;
     onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
-    dataCustomization?: {
-        list?: {
-            fields?: any[];
-            onDataRetrieve?: (data: IReport[]) => Promise<CustomDataRetrieved[]> | CustomDataRetrieved[];
-        };
-    };
 }
 
-const isFunction = <T>(value?: T): value is T & ((...args: any[]) => any) => typeof value === 'function';
-
 export function useReportsList(props: () => UseReportsListProps) {
-    const { endpoints } = useConfigContext();
+    const config = useConfigContext();
 
     const records = ref<IReport[] | undefined>(undefined);
-    const customRecords = ref<IReport[] | undefined>(undefined);
-    const loadingCustomRecords = ref(false);
     const error = ref<Error | undefined>(undefined);
     const fetching = ref(false);
     const limit = ref(props().preferredLimit ?? DEFAULT_PAGE_LIMIT);
@@ -38,8 +29,9 @@ export function useReportsList(props: () => UseReportsListProps) {
     const page = ref(0);
     let abortController: AbortController | null = null;
     let isPaginating = false;
+    let pendingFetchAfterPaginate = false;
 
-    const getReports = computed(() => endpoints.getReports);
+    const getReports = computed(() => config.endpoints.getReports);
     const canFetch = computed(() => isFunction(getReports.value) && props().fetchEnabled);
     const limitOptions = computed(() => (props().allowLimitSelection !== false ? LIMIT_OPTIONS : undefined));
 
@@ -56,7 +48,7 @@ export function useReportsList(props: () => UseReportsListProps) {
 
         try {
             const { balanceAccountId, createdSince, createdUntil } = props();
-            const query: NonNullable<Parameters<NonNullable<typeof endpoints.getReports>>[1]>['query'] = {
+            const query: NonNullable<Parameters<NonNullable<typeof config.endpoints.getReports>>[1]>['query'] = {
                 limit: limit.value,
                 type: 'payout',
                 balanceAccountId: balanceAccountId ?? '',
@@ -72,9 +64,6 @@ export function useReportsList(props: () => UseReportsListProps) {
                 hasPrevious.value = !!json?._links?.prev?.cursor;
                 cursor.value = json?._links?.next?.cursor;
                 prevCursor.value = json?._links?.prev?.cursor;
-
-                // Process custom data
-                await processCustomData(json?.data);
 
                 // Notify filter changes
                 const { onFiltersChanged } = props();
@@ -95,52 +84,14 @@ export function useReportsList(props: () => UseReportsListProps) {
                 fetching.value = false;
             }
             isPaginating = false;
-        }
-    }
-
-    async function processCustomData(data: IReport[] | undefined) {
-        if (!data) {
-            customRecords.value = data;
-            return;
-        }
-        const { dataCustomization } = props();
-        const onDataRetrieve = dataCustomization?.list?.onDataRetrieve;
-        const fields = dataCustomization?.list?.fields;
-        const hasCustomColumn = hasCustomField(fields);
-
-        if (hasCustomColumn && isFunction(onDataRetrieve)) {
-            loadingCustomRecords.value = true;
-            try {
-                const retrievedData = await onDataRetrieve(data);
-                if (Array.isArray(retrievedData)) {
-                    customRecords.value = mergeRecords(data, retrievedData);
-                } else {
-                    customRecords.value = data;
-                }
-            } catch {
-                customRecords.value = data;
-            } finally {
-                loadingCustomRecords.value = false;
+            if (pendingFetchAfterPaginate && !signal.aborted) {
+                pendingFetchAfterPaginate = false;
+                page.value = 0;
+                cursor.value = undefined;
+                prevCursor.value = undefined;
+                fetchReports();
             }
-        } else {
-            customRecords.value = data;
         }
-    }
-
-    function hasCustomField(fields?: any[]): boolean {
-        if (!Array.isArray(fields)) return false;
-        const standardFields = new Set(['createdAt', 'dateAndReportType', 'reportType', 'reportFile']);
-        return fields.some(field => {
-            const key = typeof field === 'object' ? field?.key?.trim() : undefined;
-            return typeof key === 'string' && key && !standardFields.has(key);
-        });
-    }
-
-    function mergeRecords(original: IReport[], modified: CustomDataRetrieved[]): IReport[] {
-        return original.map(record => {
-            const match = modified.find(m => m.createdAt === record.createdAt);
-            return match ? ({ ...match, ...record } as IReport) : record;
-        });
     }
 
     const goToNextPage = () => {
@@ -179,8 +130,11 @@ export function useReportsList(props: () => UseReportsListProps) {
         fetchKey,
         (newKey: string | null, oldKey: string | null | undefined) => {
             if (!newKey) return;
-            if (isPaginating) return;
-            if (oldKey !== null) {
+            if (isPaginating) {
+                pendingFetchAfterPaginate = true;
+                return;
+            }
+            if (oldKey !== null && oldKey !== undefined) {
                 page.value = 0;
                 cursor.value = undefined;
                 prevCursor.value = undefined;
@@ -194,8 +148,6 @@ export function useReportsList(props: () => UseReportsListProps) {
         error,
         fetching,
         records,
-        customRecords,
-        loadingCustomRecords,
         page,
         limit,
         limitOptions,

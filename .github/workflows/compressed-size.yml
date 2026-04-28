@@ -52,7 +52,7 @@ jobs:
         env:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
         run: |
-          pnpm config set //registry.npmjs.org/:_authToken "${NPM_READ_ONLY_TOKEN}"
+          printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" >> .npmrc
 
       - uses: preactjs/compressed-size-action@v2
         with:

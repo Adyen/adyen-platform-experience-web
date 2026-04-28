@@ -37,5 +37,5 @@ runs:
         HUSKY: "0"
         NPM_READ_ONLY_TOKEN: ${{ inputs.NPM_READ_ONLY_TOKEN }}
       run: |
-        pnpm config set //registry.npmjs.org/:_authToken "${NPM_READ_ONLY_TOKEN}"
+        printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" >> .npmrc
         pnpm install --registry=https://registry.npmjs.org/
