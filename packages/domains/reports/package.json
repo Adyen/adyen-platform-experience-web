@@ -4,9 +4,28 @@
     "private": true,
     "type": "module",
     "exports": {
-        "./publish": "./preact/publish/src/index.ts"
+        "./publish": "./publish/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
-        "@integration-components/sdk-internal": "workspace:*"
+        "@integration-components/core": "workspace:*",
+        "@integration-components/hooks-preact": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/utils": "workspace:*"
+    },
+    "peerDependencies": {
+        "preact": "catalog:"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.56.0",
+        "@storybook/preact": "10.2.12",
+        "@storybook/vue3": "10.2.12",
+        "dotenv": "^17.2.3",
+        "msw": "^2.4.5",
+        "vue": "^3.5.13"
     }
 }

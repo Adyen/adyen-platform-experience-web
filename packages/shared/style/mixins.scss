@@ -1,5 +1,25 @@
 @use './index' as style;
 
+%adyen-pe-data-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    .adyen-pe-data-overview-header__description {
+        color: style.token(color-label-primary);
+        margin-bottom: style.token(spacer-030);
+    }
+
+    .adyen-pe-filter-bar {
+        margin: calc(#{style.token(spacer-050)} * -1) 0;
+    }
+}
+
+@mixin adyen-pe-data-overview {
+    @extend %adyen-pe-data-overview;
+    @content;
+}
+
 @mixin adyen-pe-error-message-display-mobile-fix {
     // Ensure to add style declaration for the closest positioned ancestor of the error-message-display
     // wrapper element, by setting its CSS position to "absolute" | "fixed" | "relative" | "sticky".

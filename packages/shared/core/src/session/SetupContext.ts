@@ -20,6 +20,19 @@ import type { EndpointName, SetupEndpoint } from '@integration-components/types/
 import type { HttpMethod, HttpOptions } from '../Http/types';
 import { encodeAnalyticsEvent } from '../Analytics/analytics/utils';
 
+// Declaration merging is used here to type runtime-defined class members
+// without emitting class field initializers (which would conflict with
+// constructor-time assignments). This pattern is also compatible with
+// Playwright's babel transformer, which cannot parse `declare` class fields.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface SetupContext {
+    loadingContext?: Core<any>['loadingContext'];
+    analyticsPayload?: Array<URLSearchParams> | undefined;
+    analyticsEnabled?: boolean;
+    refresh: (signal: AbortSignal) => Promise<void>;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class SetupContext {
     private _endpoints: SetupContextObject['endpoints'] = EMPTY_OBJECT;
     private _extraConfig: SetupContextObject['extraConfig'] = EMPTY_OBJECT;
@@ -35,11 +48,6 @@ export class SetupContext {
         const abortSignal = isAbortSignal(signal) ? abortSignalForAny([signal, promisorSignal]) : promisorSignal;
         return this._fetchSetupEndpoint(abortSignal);
     });
-
-    declare public loadingContext?: Core<any>['loadingContext'];
-    declare public analyticsPayload?: Array<URLSearchParams> | undefined;
-    declare public analyticsEnabled?: boolean;
-    declare public readonly refresh: (signal: AbortSignal) => Promise<void>;
 
     constructor(private readonly _session: SessionContext<SessionObject, any[]>) {
         let _refreshPromise: Promise<void> | undefined;
