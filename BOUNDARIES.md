@@ -65,6 +65,21 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
 
+### MSW endpoint ownership
+
+When extracting a domain, follow this convention to keep mock endpoint URLs decoupled:
+
+| Constant                                  | Owner                                              |
+| ----------------------------------------- | -------------------------------------------------- |
+| `MSW_BASE_URL` (regex base URL)           | `@integration-components/testing/msw`              |
+| `BALANCE_ACCOUNTS_ENDPOINT` (cross-cutting) | `@integration-components/testing/msw`            |
+| Domain-specific paths (e.g. `/reports`)   | `packages/domains/<domain>/mocks/endpoints.ts`     |
+
+- Each extracted domain owns its endpoint paths and re-exports them as a `*_ENDPOINTS` object built from `MSW_BASE_URL`.
+- Cross-cutting endpoints used by multiple domains live in the shared msw package; never duplicated per domain.
+- When a domain is extracted, remove its entries from root `endpoints/endpoints.ts` once no root consumer references them.
+- Root `endpoints/endpoints.ts` shrinks toward empty as more domains extract.
+
 ## Key Invariants
 
 1. `packages/sdk/src/index.ts` imports domains **only** through `@integration-components/<domain>/publish`.

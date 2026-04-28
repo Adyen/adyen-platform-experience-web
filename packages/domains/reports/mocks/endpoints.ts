@@ -1,7 +1,7 @@
-const API_BASE_URL = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
+import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL } from '@integration-components/testing/msw';
 
 export const REPORTS_ENDPOINTS = {
-    balanceAccounts: `${API_BASE_URL}/balanceAccounts`,
-    reports: `${API_BASE_URL}/reports`,
-    downloadReport: `${API_BASE_URL}/reports/download`,
+    balanceAccounts: BALANCE_ACCOUNTS_ENDPOINT,
+    reports: `${MSW_BASE_URL}/reports`,
+    downloadReport: `${MSW_BASE_URL}/reports/download`,
 } as const;
