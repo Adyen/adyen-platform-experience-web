@@ -1,6 +1,5 @@
 import type { CoreOptions, onErrorHandler } from './types';
-import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
-import { AuthSession } from './ConfigContext/session/AuthSession';
+import { CoreBase } from '../../packages/shared/core/src/CoreBase';
 import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
@@ -8,40 +7,32 @@ import { AssetOptions, Assets } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 
-class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
+class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> extends CoreBase<
+    CoreOptions<AvailableTranslations, CustomTranslations>
+> {
     public static readonly version = process.env.VITE_VERSION!;
 
     public components: BaseElement<any>[] = [];
-    public options: CoreOptions<AvailableTranslations, CustomTranslations>;
 
     public localization: Localization;
-    public loadingContext: string;
-    public analyticsEnabled: boolean;
-    public session = new AuthSession();
     public onError?: onErrorHandler;
     public getImageAsset: (props: AssetOptions) => string;
     public getDatasetAsset: (props: AssetOptions) => string;
-    public getCdnConfig: (props: { name: string; extension?: string; subFolder?: string }) => Promise<any>;
-    public getCdnDataset: <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
     private hasWarnedAboutServerSideInitialization = false;
-    private readyCustomTranslationsAnalytics: boolean;
+    private readyCustomTranslationsAnalytics = false;
 
     // [TODO]: Change the error handling strategy.
 
     constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
-        this.options = { environment: FALLBACK_ENV, ...options };
-        const { cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl, apiUrl } = resolveEnvironment(this.options.environment);
+        super(options);
+        const { cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl } = this.resolveEnvironment();
 
         this.localization = new Localization(options.locale, options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
-        this.loadingContext = options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
         this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
-        this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
-        this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
-        this.readyCustomTranslationsAnalytics = false;
-        this.analyticsEnabled = options?.analytics?.enabled ?? true;
-        this.session.analyticsEnabled = this.analyticsEnabled;
+
+        // Apply options now that localization is initialised.
         this.setOptions(options);
     }
 
@@ -68,7 +59,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
      * @param options - props to update
      * @returns this - the element instance
      */
-    public update = async (options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> => {
+    public override update = async (options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> => {
         this.setOptions(options);
         await this.initialize();
 
@@ -105,22 +96,13 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     /**
      * @internal
-     * Enhances the config object passed when AdyenPlatformExperience is initialised (environment, clientKey, etc...)
-     * (Re)Initializes core properties & processes (i18n, etc...)
-     * @param options - the config object passed when AdyenPlatformExperience is initialised
-     * @returns this
+     * Reacts to option changes by propagating locale / custom translations to Localization.
      */
-    private setOptions = (options: Partial<typeof this.options>): this => {
-        this.options = { ...this.options, ...options };
-
+    protected onOptionsChanged(_options: Partial<typeof this.options>): void {
+        if (!this.localization) return;
         this.localization.locale = this.options?.locale;
         this.localization.customTranslations = this.options?.translations;
-
-        this.session.loadingContext = this.loadingContext;
-        this.session.onSessionCreate = this.options.onSessionCreate;
-
-        return this;
-    };
+    }
 
     private setTranslationsPayload() {
         if (this.localization) {

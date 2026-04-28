@@ -63,7 +63,7 @@
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
     "start": "pnpm run storybook",
     "storybook": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'nx run @integration-components/tools-storybook-preact:storybook'",
-    "storybook:vue": "nx run @integration-components/tools-storybook-vue:storybook",
+    "storybook:vue": "concurrently --kill-others-on-fail 'pnpm run types:watch' 'nx run @integration-components/tools-storybook-vue:storybook'",
     "storybook:build": "nx run @integration-components/tools-storybook-preact:storybook:build",
     "storybook:build:preact": "nx run @integration-components/tools-storybook-preact:storybook:build",
     "storybook:build:vue": "nx run @integration-components/tools-storybook-vue:storybook:build",

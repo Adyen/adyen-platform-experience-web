@@ -7,10 +7,15 @@
         "storybook": "node .storybook/dev.js",
         "storybook:build": "cross-env USE_TEST_CDN=true storybook build"
     },
+    "exports": {
+        "./utils": "./src/utils/index.ts"
+    },
     "dependencies": {
+        "@integration-components/core": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
-        "vue": "^3.5.13"
+        "vue": "^3.5.13",
+        "vue-i18n": "^11"
     },
     "devDependencies": {
         "@storybook/vue3": "10.2.12",

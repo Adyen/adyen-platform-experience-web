@@ -24,10 +24,10 @@ export const usePushAnalyticEvent = () => {
                 {
                     ...(componentName
                         ? {
-                            query: {
-                                component: componentName,
-                            },
-                        }
+                              query: {
+                                  component: componentName,
+                              },
+                          }
                         : EMPTY_OBJECT),
                 }
             ),

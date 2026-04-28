@@ -6,6 +6,9 @@ inputs:
   GITHUB_TOKEN:
     description: 'Github token used to checkout repo'
     default: ${{ github.token }}
+  NPM_READ_ONLY_TOKEN:
+    description: 'NPM read-only token used to authenticate against the private npm registry'
+    required: true
 
 runs:
   using: composite
@@ -30,6 +33,9 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --registry=https://registry.npmjs.org/
       env:
         HUSKY: "0"
+        NPM_READ_ONLY_TOKEN: ${{ inputs.NPM_READ_ONLY_TOKEN }}
+      run: |
+        printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" >> .npmrc
+        pnpm install --registry=https://registry.npmjs.org/
