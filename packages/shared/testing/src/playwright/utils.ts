@@ -1,4 +1,4 @@
-import keys from '../../../../../src/assets/translations/en-US.json' with { type: 'json' };
+import keys from '../../../../../src/assets/translations/en-US.json';
 import type { PageAnalyticsEvent } from '../fixtures/analytics/events';
 import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
