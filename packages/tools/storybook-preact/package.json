@@ -15,14 +15,14 @@
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.10.2",
-        "@storybook/preact": "10.2.12",
-        "@storybook/preact-vite": "10.2.12",
+        "@storybook/preact": "10.3.5",
+        "@storybook/preact-vite": "10.3.5",
         "concurrently": "^7.0.0",
         "cross-env": "^7.0.3",
         "dotenv": "^17.2.3",
         "msw": "^2.4.5",
         "msw-storybook-addon": "^2.0.2",
-        "storybook": "10.2.12",
+        "storybook": "10.3.5",
         "vite-plugin-svgr": "^4.5.0"
     },
     "msw": {
