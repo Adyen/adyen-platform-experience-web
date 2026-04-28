@@ -56,8 +56,8 @@
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' --fix && pnpm run lint:playwright-selectors",
-    "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}'",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' 'packages/domains/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' 'packages/domains/**/*.scss' --fix && pnpm run lint:playwright-selectors",
+    "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}' 'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
     "schemas:variables": "bash scripts/generate-ts-schemas/setup-openapi-ts.sh",
@@ -76,8 +76,8 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput",
-    "types:watch": "tsc --preserveWatchOutput --watch && tsc --project tsconfig-build.json --watch",
+    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/domains/reports/tsconfig.json",
+    "types:watch": "tsc --preserveWatchOutput --watch && tsc --noEmit --project packages/domains/reports/tsconfig.json --watch && tsc --project tsconfig-build.json --watch",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {

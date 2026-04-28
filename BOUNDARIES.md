@@ -61,6 +61,10 @@ Enforced via ESLint path restrictions within each domain package once the target
 | `vue/src`     | `domain/src`, `type:shared` packages                   | `preact/src`, `publish/src`                            |
 | `publish/src` | `preact/src` (current) or `vue/src` (after switchover) | `domain/src` directly, other domains                   |
 
+### Transitional exceptions
+
+Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
+
 ## Key Invariants
 
 1. `packages/sdk/src/index.ts` imports domains **only** through `@integration-components/<domain>/publish`.

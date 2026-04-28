@@ -1,20 +1,41 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { ReportsOverview } from '@integration-components/reports/publish';
+import type { IReport } from '@integration-components/types';
 import { ReportsOverviewMeta } from './reportsOverview.meta';
-import { getCustomReportsData } from '../../../../../stories/mocked/utils/customDataRequest';
 import { http, HttpResponse } from 'msw';
-import { endpoints } from '../../../../../endpoints/endpoints';
 import { REPORTS } from '../../mocks/mock-data/reports';
 import { REPORTS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/reports';
+import { REPORTS_ENDPOINTS } from '../../mocks/endpoints';
 
 const meta: Meta<ElementProps<typeof ReportsOverview>> = { ...ReportsOverviewMeta, title: 'Mocked/Reports/Reports Overview' };
 const DEFAULT_STORY_ARGS = { mockedApi: true } as const;
 const DEFAULT_REPORTS = REPORTS['BA32272223222B5CTDQPM6W2H'];
+const getCustomReportsData = async (data: IReport[]) => {
+    return data.map(report => {
+        return {
+            ...report,
+            _summary: {
+                type: 'link',
+                value: 'Summary',
+                config: {
+                    href: CUSTOM_URL_EXAMPLE,
+                },
+            },
+            _sendEmail: {
+                type: 'button',
+                value: 'Send email',
+                config: {
+                    action: () => console.log('Action'),
+                },
+            },
+        } as const;
+    });
+};
 
 const CUSTOM_COLUMNS_MOCK_HANDLER = {
     handlers: [
-        http.get(endpoints().reports, () => {
+        http.get(REPORTS_ENDPOINTS.reports, () => {
             return HttpResponse.json({
                 data: [
                     { ...DEFAULT_REPORTS?.[0], createdAt: Date.now() },

@@ -1,5 +1,5 @@
-import { sessionAwareTest } from '../../../../../../tests/contract/utils/session-request-function';
-import { getRequestURL } from '../../../../../../tests/contract/utils/utils';
+import { sessionAwareTest } from '@integration-components/testing/playwright/session-request-function';
+import { getRequestURL } from '@integration-components/testing/playwright/contract-utils';
 import { expect } from '@playwright/test';
 import { ENVS } from './env_constants';
 import process from 'node:process';

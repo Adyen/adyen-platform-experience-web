@@ -1,14 +1,20 @@
-import { endpoints } from '../../../../../endpoints/endpoints';
 import { http, HttpResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
-import { BALANCE_ACCOUNTS_SINGLE } from '../../../../../mocks/mock-data';
 import { getReports } from '../mock-data/reports';
+import { REPORTS_ENDPOINTS } from '../endpoints';
 
 const DEFAULT_SORT_DIRECTION = 'desc';
 
-const mockEndpoints = endpoints();
-const REPORTS = mockEndpoints.reports;
-const DOWNLOAD = mockEndpoints.downloadReport;
+const BALANCE_ACCOUNTS_SINGLE = [
+    {
+        description: 'S. Hopper - Main Account',
+        id: 'BA32272223222B5CTDQPM6W2H',
+        timeZone: 'America/Sao_Paulo',
+        defaultCurrencyCode: 'USD',
+    },
+] as const;
+const REPORTS = REPORTS_ENDPOINTS.reports;
+const DOWNLOAD = REPORTS_ENDPOINTS.downloadReport;
 const networkError = false;
 const serverError = false;
 const downloadError = false;
@@ -108,7 +114,7 @@ export const reportsMock = [
 export const REPORTS_OVERVIEW_HANDLERS = {
     singleBalanceAccount: {
         handlers: [
-            http.get(mockEndpoints.balanceAccounts, () => {
+            http.get(REPORTS_ENDPOINTS.balanceAccounts, () => {
                 return HttpResponse.json({ data: BALANCE_ACCOUNTS_SINGLE });
             }),
         ],

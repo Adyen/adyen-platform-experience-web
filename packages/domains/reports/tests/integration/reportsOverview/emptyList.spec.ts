@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../../../../tests/utils/utils';
+import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-reports-reports-overview--empty-list';
 

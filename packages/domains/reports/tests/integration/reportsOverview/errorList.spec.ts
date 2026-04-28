@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../../../../tests/utils/utils';
+import { goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-reports-reports-overview--error-list';
 
@@ -9,12 +9,10 @@ test.describe('Error - list', () => {
     });
 
     test('should show error message', async ({ page }) => {
-        const errorMessage = page.locator('p').filter({ hasText: "We couldn't load your reports." });
-
         await Promise.all([
             expect(page.getByText('Something went wrong.', { exact: true })).toBeVisible(),
-            expect(errorMessage).toContainText("We couldn't load your reports."),
-            expect(errorMessage).toContainText('Try refreshing the page or come back later.'),
+            expect(page.getByText("We couldn't load your reports.", { exact: false })).toBeVisible(),
+            expect(page.getByText('Try refreshing the page or come back later.', { exact: false })).toBeVisible(),
             expect(page.getByRole('button', { name: 'Refresh', exact: true })).toBeVisible(),
         ]);
     });

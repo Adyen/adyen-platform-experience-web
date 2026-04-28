@@ -70,6 +70,11 @@ module.exports = {
                     'src/utils/testing/**/*.{ts,tsx}',
                     'src/**/__testing__/**/*.{ts,tsx}',
                     'src/**/testing/**/*.{ts,tsx}',
+                    // Domain workspace packages: tests, stories, and mocks are dev-only;
+                    // the published entrypoints (publish/, preact/src/, domain/src/, vue/publish/) never import them.
+                    'packages/domains/*/tests/**/*.{ts,tsx}',
+                    'packages/domains/*/**/stories/**/*.{ts,tsx}',
+                    'packages/domains/*/mocks/**/*.{ts,tsx}',
                     // Transitional re-export forwarders into workspace packages; the targets
                     // are private workspace:* packages that get bundled into the library, so
                     // they stay in devDependencies. IEX-2797 tracks deleting these forwarders.
@@ -169,16 +174,11 @@ module.exports = {
             },
         },
         {
-            files: [
-                '**/tests/**/*.[jt]s?(x)',
-                '**/?(*.)+(spec|test).[jt]s?(x)',
-            ],
+            files: ['**/tests/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
             extends: ['plugin:testing-library/react'],
         },
         {
-            files: [
-                '**/tests/**/*.[jt]s?(x)',
-            ],
+            files: ['**/tests/**/*.[jt]s?(x)'],
             rules: {
                 'testing-library/prefer-screen-queries': 'off',
             },

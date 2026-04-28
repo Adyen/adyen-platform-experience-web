@@ -1,6 +1,10 @@
 import { type Page, test, expect } from '@playwright/test';
-import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } from '../../../../../../tests/utils/utils';
-import { resetDatePicker, selectDateRangeResetFromDatePicker, selectTodayDateFromDatePicker } from '../../../../../../tests/utils/datePicker';
+import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } from '@integration-components/testing/playwright/utils';
+import {
+    resetDatePicker,
+    selectDateRangeResetFromDatePicker,
+    selectTodayDateFromDatePicker,
+} from '@integration-components/testing/playwright/datePicker';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
 const INITIAL_DATETIME = '2024-07-17T00:00:00.000Z';

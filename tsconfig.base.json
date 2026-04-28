@@ -64,7 +64,7 @@
                 "packages/shared/testing/src/*"
             ],
             "@integration-components/reports/publish": [
-                "packages/domains/reports/preact/publish/src/index.ts"
+                "packages/domains/reports/publish/src/index.ts"
             ],
             "@integration-components/reports/preact": [
                 "packages/domains/reports/preact/src/index.ts"

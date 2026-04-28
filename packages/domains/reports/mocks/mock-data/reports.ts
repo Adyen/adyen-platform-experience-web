@@ -406,6 +406,4 @@ export const REPORTS: { [balanceAccountId: string]: IReport[] } = {
         },
     ],
 };
-// TODO: Remove ts-ignore when OpenAPI contract changes payout field to non-optional
-// @ts-ignore
-export const getReports = balanceAccountId => REPORTS?.[balanceAccountId] ?? [];
+export const getReports = (balanceAccountId: string) => REPORTS?.[balanceAccountId] ?? [];
