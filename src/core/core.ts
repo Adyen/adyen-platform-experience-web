@@ -7,6 +7,7 @@ import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
+import { CSSOverrideTracker } from './css';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
     public static readonly version = process.env.VITE_VERSION!;
@@ -26,6 +27,9 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
 
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics: boolean;
+    private cssOverrideTracker = new CSSOverrideTracker({
+        onReport: report => console.log(report),
+    });
 
     // [TODO]: Change the error handling strategy.
 
@@ -59,6 +63,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
                     this.readyCustomTranslationsAnalytics = true;
                 }
             }
+            this.cssOverrideTracker.start();
             return this;
         });
     }
