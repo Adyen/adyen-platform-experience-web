@@ -48,9 +48,15 @@ jobs:
           node-version: 24.9.0
           cache: 'pnpm'
 
+      - name: Configure npm registry auth
+        env:
+          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+        run: |
+          printf '//registry.npmjs.org/:_authToken=%s\n' "${NPM_READ_ONLY_TOKEN}" >> .npmrc
+
       - uses: preactjs/compressed-size-action@v2
         with:
-          install-script: "pnpm install --frozen-lockfile --registry=https://registry.npmjs.org/"
+          install-script: "pnpm install --frozen-lockfile"
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           pattern: "**/dist/**/*.js"
           exclude: "{**/*.map,**/node_modules/**,**/src}"
