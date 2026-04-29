@@ -1,4 +1,4 @@
-import { identity, isFunction } from '../../../../../../../../../src/utils';
+import { identity, isFunction } from '@integration-components/utils';
 import { SelectItem } from '../../../../../../../../../src/components/internal/FormFields/Select/types';
 import { SelectionOptionsList } from './types';
 

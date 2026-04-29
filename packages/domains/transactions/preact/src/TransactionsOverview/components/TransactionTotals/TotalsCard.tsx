@@ -1,11 +1,11 @@
 import { memo } from 'preact/compat';
 import { useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import ExpandableCard from '../../../../../../../../src/components/internal/ExpandableCard/ExpandableCard';
 import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalItem';
 import { ITransactionTotalWithKey, TotalsCardProps } from './types';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';
-import { uniqueId } from '../../../../../../../../src/utils';
+import { uniqueId } from '@integration-components/utils';
 
 export const TotalsCard = memo(({ totals, isLoading, hiddenField, fullWidth, ...ariaAttributes }: TotalsCardProps) => {
     const { i18n } = useCoreContext();

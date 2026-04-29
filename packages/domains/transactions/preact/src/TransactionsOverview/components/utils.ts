@@ -1,6 +1,6 @@
 import { getDateRangeTimestamps } from '../../../../../../../src/components/internal/Calendar/calendar/timerange/utils';
-import { IPaymentMethod } from '../../../../../../../src/types';
-import { EMPTY_OBJECT } from '../../../../../../../src/utils';
+import { IPaymentMethod } from '@integration-components/types';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 

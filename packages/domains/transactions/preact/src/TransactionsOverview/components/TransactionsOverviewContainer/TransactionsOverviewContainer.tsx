@@ -1,6 +1,7 @@
-import useBalanceAccounts from '../../../../../../../../src/hooks/useBalanceAccounts';
+import { useBalanceAccounts } from '@integration-components/hooks-preact';
 import DataOverviewContainer from '../../../../../../../../src/components/internal/DataOverviewContainer/DataOverviewContainer';
-import type { ExternalUIComponentProps, TransactionsOverviewComponentProps } from '../../../../../../../../src/components/types';
+import type { ExternalUIComponentProps } from '@integration-components/types';
+import type { TransactionsOverviewComponentProps } from '../../types';
 import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';
 import { BASE_CLASS } from './constants';
 

@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import Icon from '../../../../../../../../src/components/internal/Icon';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { Tooltip } from '../../../../../../../../src/components/internal/Tooltip/Tooltip';
 import { useMemo } from 'preact/hooks';

@@ -5,11 +5,11 @@ import { SummaryItemColumnConfig, SummaryItemProps } from './types';
 import { Tooltip } from '../../../../../../../../src/components/internal/Tooltip/Tooltip';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import classNames from 'classnames';
 import { useCallback, useEffect } from 'preact/hooks';
 import './SummaryItem.scss';
-import { containerQueries, useResponsiveContainer } from '../../../../../../../../src/hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 
 export const SummaryItem = ({
     columnConfigs,

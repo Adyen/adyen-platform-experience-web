@@ -3,11 +3,11 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/preact';
-import * as ConfigContext from '../../../../../../../src/core/ConfigContext';
+import * as ConfigContext from '@integration-components/core/preact';
 import useTransactionsTotals, { GetQueryParams, UseTransactionsTotalsProps } from './useTransactionsTotals';
 import { TransactionsFilters } from '../types';
 
-vi.mock('../../../../../../../src/core/ConfigContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useTransactionsTotals', () => {
     const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);

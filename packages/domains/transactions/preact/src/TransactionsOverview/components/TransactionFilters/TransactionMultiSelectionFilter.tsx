@@ -1,5 +1,5 @@
 import MultiSelectionFilter from '../MultiSelectionFilter';
-import useMultiSelectionFilterProps, { UseMultiSelectionFilterPropsConfig } from '../../../../../../../../src/hooks/useMultiSelectionFilterProps';
+import { useMultiSelectionFilterProps, UseMultiSelectionFilterPropsConfig } from '@integration-components/hooks-preact';
 
 export interface TransactionMultiSelectionFilterProps<T extends string> extends UseMultiSelectionFilterPropsConfig<T> {
     placeholder: string;

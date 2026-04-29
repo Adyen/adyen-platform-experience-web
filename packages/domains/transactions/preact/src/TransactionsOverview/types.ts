@@ -2,14 +2,14 @@ import { useFilterBarState } from '../../../../../../src/components/internal/Fil
 import useCurrenciesLookup from './hooks/useCurrenciesLookup';
 import useTransactionsList from './hooks/useTransactionsList';
 import useTransactionsTotals from './hooks/useTransactionsTotals';
-import useAccountBalances from '../../../../../../src/hooks/useAccountBalances';
+import { useAccountBalances } from '@integration-components/hooks-preact';
 import useTransactionsViewSwitcher from './hooks/useTransactionsViewSwitcher';
-import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '../../../../../../src/types';
-import { CustomDataRetrieved, DataCustomizationObject, DataGridCustomColumnConfig, UIElementProps } from '../../../../../../src/components/types';
+import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
+import { CustomDataRetrieved, DataCustomizationObject, DataGridCustomColumnConfig, UIElementProps } from '@integration-components/types';
 import { RangeTimestamps } from '../../../../../../src/components/internal/Calendar/calendar/timerange';
-import { TranslationKey } from '../../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 import { PropsWithChildren } from 'preact/compat';
-import { StringWithAutocompleteOptions } from '../../../../../../src/utils/types';
+import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 import { TransactionsTableCols } from './components/TransactionsTable/fields';
 import { TransactionDetailsCustomization } from '../TransactionDetails';

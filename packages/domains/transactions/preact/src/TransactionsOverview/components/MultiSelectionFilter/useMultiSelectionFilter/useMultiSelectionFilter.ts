@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { listFrom } from '../../../../../../../../../src/utils';
+import { listFrom } from '@integration-components/utils';
 import { selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
 import type { SelectChangeEvent } from '../../../../../../../../../src/components/internal/FormFields/Select/types';

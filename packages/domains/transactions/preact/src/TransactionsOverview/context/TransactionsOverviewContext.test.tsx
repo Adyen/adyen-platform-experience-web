@@ -7,8 +7,9 @@ import { PropsWithChildren } from 'preact/compat';
 import { TransactionsView } from '../types';
 import { TransactionsOverviewProvider, useTransactionsOverviewContext } from './TransactionsOverviewContext';
 
-vi.mock('../../../../../../../src/hooks/useAccountBalances', () => ({
-    default: () => ({ balances: [], error: undefined, isWaiting: false, canRefresh: false, refresh: vi.fn() }),
+vi.mock('@integration-components/hooks-preact', async importOriginal => ({
+    ...(await importOriginal<object>()),
+    useAccountBalances: () => ({ balances: [], error: undefined, isWaiting: false, canRefresh: false, refresh: vi.fn() }),
 }));
 
 vi.mock('../../../../../../../src/components/internal/FilterBar', () => ({

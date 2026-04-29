@@ -4,7 +4,7 @@
 import { renderHook } from '@testing-library/preact';
 import { describe, expect, test } from 'vitest';
 import useCurrenciesLookup, { UseCurrencyLookupProps } from './useCurrenciesLookup';
-import { IBalance, ITransactionTotal } from '../../../../../../../src/types';
+import { IBalance, ITransactionTotal } from '@integration-components/types';
 
 describe('useCurrenciesLookup', () => {
     const MOCK_BALANCES: Readonly<IBalance>[] = [

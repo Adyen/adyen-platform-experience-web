@@ -1,5 +1,5 @@
 import { AriaAttributes } from 'preact/compat';
-import { IBalance } from '../../../../../../../../src/types';
+import { IBalance } from '@integration-components/types';
 
 export type BalancesCardProps = {
     balances: readonly Readonly<IBalance>[];

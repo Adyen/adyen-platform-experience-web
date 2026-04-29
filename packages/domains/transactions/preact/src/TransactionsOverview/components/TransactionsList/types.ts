@@ -1,5 +1,6 @@
-import { IBalanceAccountBase } from '../../../../../../../../src/types';
-import { ExternalUIComponentProps, TransactionsOverviewComponentProps } from '../../../../../../../../src/components/types';
+import { IBalanceAccountBase } from '@integration-components/types';
+import { ExternalUIComponentProps } from '@integration-components/types';
+import { TransactionsOverviewComponentProps } from '../../types';
 import useTransactionsList from '../../hooks/useTransactionsList';
 import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
 

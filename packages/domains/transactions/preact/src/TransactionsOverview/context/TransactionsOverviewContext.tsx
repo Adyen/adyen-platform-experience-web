@@ -6,7 +6,7 @@ import { useFilterBarState } from '../../../../../../../src/components/internal/
 import useTransactionsList from '../hooks/useTransactionsList';
 import useTransactionsTotals, { GetQueryParams } from '../hooks/useTransactionsTotals';
 import useTransactionsViewSwitcher from '../hooks/useTransactionsViewSwitcher';
-import useAccountBalances from '../../../../../../../src/hooks/useAccountBalances';
+import { useAccountBalances } from '@integration-components/hooks-preact';
 import useCurrenciesLookup from '../hooks/useCurrenciesLookup';
 
 const INSIGHTS_FILTERS_SET = new Set<keyof TransactionsFilters>(['balanceAccount', 'createdDate']);

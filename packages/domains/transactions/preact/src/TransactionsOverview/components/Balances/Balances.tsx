@@ -2,8 +2,8 @@ import { memo } from 'preact/compat';
 import { BalancesCard } from './BalancesCard';
 import { BASE_CLASS, ITEM_CLASS } from './constants';
 import { BalancesProps } from './types';
-import { containerQueries, useResponsiveContainer } from '../../../../../../../../src/hooks/useResponsiveContainer';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { useCoreContext } from '@integration-components/core/preact';
 import './Balances.scss';
 
 const Balances = memo(({ balances, loadingBalances }: BalancesProps) => {

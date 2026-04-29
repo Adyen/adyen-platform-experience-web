@@ -8,7 +8,7 @@ import { useTransactionsOverviewContext } from '../../context/TransactionsOvervi
 import SegmentedControl from '../../../../../../../../src/components/internal/SegmentedControl/SegmentedControl';
 import TransactionsFilters from '../TransactionFilters/TransactionFilters';
 import TransactionsExport from '../TransactionsExport/TransactionsExport';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import './TransactionsOverview.scss';
 
 const TransactionsOverviewShell = ({ children }: PropsWithChildren) => {

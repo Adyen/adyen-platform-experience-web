@@ -1,6 +1,7 @@
-import { _UIComponentProps, ExternalComponentType, TransactionsOverviewComponentProps } from '../../../../../../src/components/types';
+import { _UIComponentProps, ExternalComponentType } from '@integration-components/types';
 import Transactions from './components/TransactionsOverviewContainer/TransactionsOverviewContainer';
-import UIElement from '../../../../../../src/components/external/UIElement/UIElement';
+import { UIElement } from '@integration-components/core/preact';
+import type { TransactionsOverviewComponentProps } from './types';
 
 export class TransactionsElement extends UIElement<TransactionsOverviewComponentProps> {
     public static type: ExternalComponentType = 'transactions';

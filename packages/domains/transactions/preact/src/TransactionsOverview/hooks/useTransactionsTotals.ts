@@ -1,10 +1,10 @@
-import { useFetch } from '../../../../../../../src/hooks/useFetch';
-import { useConfigContext } from '../../../../../../../src/core/ConfigContext';
+import { useFetch } from '@integration-components/hooks-preact';
+import { useConfigContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { compareTransactionsFilters, getTransactionsFilterQueryParams } from '../components/utils';
-import { createAbortable } from '../../../../../../../src/primitives/async/abortable';
-import { isFunction } from '../../../../../../../src/utils';
-import { ITransactionTotal } from '../../../../../../../src/types';
+import { createAbortable } from '@integration-components/utils/primitives/async/abortable';
+import { isFunction } from '@integration-components/utils';
+import { ITransactionTotal } from '@integration-components/types';
 import { TransactionsFilters } from '../types';
 
 type AllQueryParams = ReturnType<typeof getTransactionsFilterQueryParams>;

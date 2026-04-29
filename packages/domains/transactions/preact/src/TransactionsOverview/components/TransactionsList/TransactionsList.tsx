@@ -1,12 +1,12 @@
 import { useCallback } from 'preact/hooks';
 import { TransactionsListProps } from './types';
-import { ITransaction } from '../../../../../../../../src/types';
+import { ITransaction } from '@integration-components/types';
 import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import { sharedTransactionDetailsEventProperties } from '../../../TransactionDetails/constants';
-import AdyenPlatformExperienceError from '../../../../../../../../src/core/Errors/AdyenPlatformExperienceError';
-import useAnalyticsContext from '../../../../../../../../src/core/Context/analytics/useAnalyticsContext';
-import useModalDetails from '../../../../../../../../src/hooks/useModalDetails/useModalDetails';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { useAnalyticsContext } from '@integration-components/core/preact';
+import useModalDetails from '@integration-components/hooks-preact/useModalDetails';
 
 const TransactionsList = ({
     balanceAccount,

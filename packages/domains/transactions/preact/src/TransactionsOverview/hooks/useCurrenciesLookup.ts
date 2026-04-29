@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { IBalance, ITransactionTotal } from '../../../../../../../src/types';
+import { IBalance, ITransactionTotal } from '@integration-components/types';
 
 const getCurrencyLookupRecord = (currency: string, lookupMap?: Map<string, CurrencyLookupRecord>) => {
     let lookupRecord = lookupMap?.get(currency);

@@ -1,5 +1,5 @@
-import { TranslationKey } from '../../../../../../src/translations';
-import { ITransaction, ITransactionCategory, ITransactionStatus } from '../../../../../../src/types';
+import { TranslationKey } from '@integration-components/core';
+import { ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
 import { TransactionsDateRange, TransactionsFilters, TransactionsView } from './types';
 import * as RangePreset from '../../../../../../src/components/internal/Calendar/calendar/timerange/presets';
 

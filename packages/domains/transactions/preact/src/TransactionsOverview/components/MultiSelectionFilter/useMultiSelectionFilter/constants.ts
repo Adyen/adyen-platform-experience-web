@@ -1,5 +1,5 @@
-import { FilterParam } from '../../../../../../../../../src/components/types';
-import type { ITransactionCategory, ITransactionStatus } from '../../../../../../../../../src/types';
+import { FilterParam } from '@integration-components/types';
+import type { ITransactionCategory, ITransactionStatus } from '@integration-components/types';
 import type { TransactionsOverviewMultiSelectionFilterParam } from './types';
 
 export const TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS = [FilterParam.CURRENCIES, FilterParam.CATEGORIES, FilterParam.STATUSES] as const;

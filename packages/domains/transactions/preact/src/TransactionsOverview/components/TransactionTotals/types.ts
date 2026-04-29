@@ -1,5 +1,5 @@
 import { AriaAttributes } from 'preact/compat';
-import { ITransactionTotal } from '../../../../../../../../src/types';
+import { ITransactionTotal } from '@integration-components/types';
 
 export type TotalsCardProps = {
     totals: readonly Readonly<ITransactionTotal>[];
