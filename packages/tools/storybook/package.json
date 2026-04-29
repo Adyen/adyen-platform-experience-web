@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./storybook-helpers": "./src/storybook-helpers/index.ts"
+    },
     "scripts": {
         "storybook:preact": "node scripts/dev.js src/.storybook/preact",
         "storybook:vue": "node scripts/dev.js src/.storybook/vue",
@@ -15,7 +19,7 @@
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
-        "vue": "^3.5.13",
+        "vue": "catalog:",
         "vue-i18n": "^11"
     },
     "devDependencies": {

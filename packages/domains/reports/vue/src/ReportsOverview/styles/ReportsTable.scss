@@ -1,0 +1,21 @@
+.adyen-pe-reports-table {
+    position: relative;
+
+    &-alert {
+        border: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    &-date-report-type {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &--date {
+            opacity: 0.7;
+        }
+    }
+}
