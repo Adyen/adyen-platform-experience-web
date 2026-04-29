@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
 import { BLACKLISTED_CHARS } from './constants';
 import { assertInteger, assertPositive } from './utils';
-import { boolOrFalse, enumerable, identity, struct } from '../../../../../../../../src/utils';
+import { boolOrFalse, enumerable, identity, struct } from '@integration-components/utils';
 import type { InputNormalizer } from './types';
 
 export const createInputNormalizer = (maxChars = Infinity) => {

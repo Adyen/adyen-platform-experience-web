@@ -1,7 +1,7 @@
 import TransactionData from './components/TransactionData';
-import { _UIComponentProps, ExternalComponentType } from '../../../../../../src/components/types';
+import { _UIComponentProps, ExternalComponentType } from '@integration-components/types';
 import { TransactionDetailsProps } from './types';
-import UIElement from '../../../../../../src/components/external/UIElement/UIElement';
+import { UIElement } from '@integration-components/core/preact';
 
 export class TransactionElement extends UIElement<TransactionDetailsProps> {
     public static type: ExternalComponentType = 'transactionDetails';

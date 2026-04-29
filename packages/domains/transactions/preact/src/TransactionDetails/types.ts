@@ -1,5 +1,5 @@
-import { IBalanceAccountBase, ILineItem, IRefundReason, ITransactionWithDetails } from '../../../../../../src/types';
-import { CustomDataRetrieved, DetailsDataCustomizationObject, ExternalUIComponentProps } from '../../../../../../src/components/types';
+import { IBalanceAccountBase, ILineItem, IRefundReason, ITransactionWithDetails } from '@integration-components/types';
+import { CustomDataRetrieved, DetailsDataCustomizationObject, ExternalUIComponentProps } from '@integration-components/types';
 
 export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
 

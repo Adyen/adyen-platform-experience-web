@@ -8,11 +8,11 @@ import {
     sharedTransactionDetailsEventProperties,
 } from '../../constants';
 import { memo } from 'preact/compat';
-import { clamp } from '../../../../../../../../src/utils';
+import { clamp } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import useAnalyticsContext from '../../../../../../../../src/core/Context/analytics/useAnalyticsContext';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
-import useComponentTiming from '../../../../../../../../src/hooks/useComponentTiming';
+import { useAnalyticsContext } from '@integration-components/core/preact';
+import { useCoreContext } from '@integration-components/core/preact';
+import { useComponentTiming } from '@integration-components/hooks-preact';
 // import useRefundLineItems from '../../hooks/useRefundLineItems';
 import PaymentRefundActions from './PaymentRefundActions';
 import PaymentRefundAmount from './PaymentRefundAmount';
@@ -25,8 +25,8 @@ import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDetails 
 import { TypographyElement, TypographyModifier, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { AlertTypeOption, AlertVariantOption } from '../../../../../../../../src/components/internal/Alert/types';
 import { ButtonVariant } from '../../../../../../../../src/components/internal/Button/types';
-import { ILineItem, IRefundMode } from '../../../../../../../../src/types';
-import { TranslationKey } from '../../../../../../../../src/translations';
+import { ILineItem, IRefundMode } from '@integration-components/types';
+import { TranslationKey } from '@integration-components/core';
 import { IconName } from '../../../../../../../../src/components/internal/Icon/Icon';
 import Icon from '../../../../../../../../src/components/internal/Icon';
 import cx from 'classnames';

@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
-import { boolOrFalse, isFunction } from '../../../../../../../../src/utils';
-import { useConfigContext } from '../../../../../../../../src/core/ConfigContext';
+import { boolOrFalse, isFunction } from '@integration-components/utils';
+import { useConfigContext } from '@integration-components/core/preact';
 import { RefundMode, RefundedState, TransactionDetails } from '../../types';
-import { IRefundMode } from '../../../../../../../../src/types';
+import { IRefundMode } from '@integration-components/types';
 import { REFUND_STATUSES } from '../../constants';
 
 export const useRefundMetadata = (transaction?: TransactionDetails) => {

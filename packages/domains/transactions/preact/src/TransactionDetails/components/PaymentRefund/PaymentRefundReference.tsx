@@ -10,10 +10,10 @@ import {
 } from '../../constants';
 import { h } from 'preact';
 import { useRef, useState } from 'preact/hooks';
-import { uniqueId } from '../../../../../../../../src/utils';
+import { uniqueId } from '@integration-components/utils';
 import { useInputNormalizer } from '../../hooks/useInputNormalizer';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import TextArea from '../../../../../../../../src/components/internal/FormFields/TextArea';
 

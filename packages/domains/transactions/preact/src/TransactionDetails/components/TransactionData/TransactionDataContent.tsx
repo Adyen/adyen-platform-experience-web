@@ -4,12 +4,12 @@ import useRefundMetadata from '../../hooks/useRefundMetadata';
 import useTransaction from '../../hooks/useTransaction';
 import DataOverviewDetailsSkeleton from '../../../../../../../../src/components/internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
-import { useLandedPageEvent } from '../../../../../../../../src/hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '@integration-components/hooks-preact/useAnalytics/useLandedPageEvent';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
 import { sharedTransactionDetailsEventProperties } from '../../constants';
-import { EMPTY_ARRAY } from '../../../../../../../../src/utils';
-import { ILineItem } from '../../../../../../../../src/types';
+import { EMPTY_ARRAY } from '@integration-components/utils';
+import { ILineItem } from '@integration-components/types';
 import './TransactionData.scss';
 
 type UseTransactionResult = ReturnType<typeof useTransaction>;

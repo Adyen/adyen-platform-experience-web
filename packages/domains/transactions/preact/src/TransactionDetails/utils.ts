@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT } from '../../../../../../src/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { RefundType, TransactionDetails } from './types';
 import { TagVariant } from '../../../../../../src/components/internal/Tag/types';
 

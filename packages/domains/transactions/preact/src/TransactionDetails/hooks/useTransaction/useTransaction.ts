@@ -1,10 +1,10 @@
-import useBalanceAccounts from '../../../../../../../../src/hooks/useBalanceAccounts';
+import { useBalanceAccounts } from '@integration-components/hooks-preact';
 import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useConfigContext } from '../../../../../../../../src/core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 import { TransactionNavigator } from './transactionNavigator/types';
-import { EMPTY_OBJECT, isFunction } from '../../../../../../../../src/utils';
-import { useFetch } from '../../../../../../../../src/hooks/useFetch';
+import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
+import { useFetch } from '@integration-components/hooks-preact';
 import { TransactionDetails } from '../../types';
 
 const getTransactionNavigatorState = (transactionNavigator: TransactionNavigator) => {
