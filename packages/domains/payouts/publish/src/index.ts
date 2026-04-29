@@ -1,10 +1,2 @@
-export { PayoutsOverview, PayoutDetails } from '../../preact/src';
-export type {
-    PayoutsOverviewComponentProps,
-    PayoutsOverviewProps,
-    PayoutsTableFields,
-    PayoutsListCustomization,
-    PayoutDetailsComponentProps,
-    PayoutDetailsProps,
-    PayoutDetailsCustomization,
-} from '../../domain/src';
+export * from '../../preact/publish/src';
+export type * from '../../preact/publish/src';
