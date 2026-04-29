@@ -6,7 +6,7 @@ import { capitalMock } from './capital';
 import { disputesMocks } from './disputes';
 import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from './payByLink';
-import { payoutsMocks } from './payouts';
+import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/payouts';
 import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';

@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
 import { SKELETON_CLASS, SKELETON_CONTAINER, SKELETON_LOADING, STATUS_SKELETON } from './constants';
+import './DataOverviewDetailsSkeleton.scss';
 
 const DataOverviewDetailsSkeleton = ({ skeletonRowNumber = 0 }: { skeletonRowNumber?: number }) => {
     const className = cx(SKELETON_CLASS, SKELETON_LOADING);
