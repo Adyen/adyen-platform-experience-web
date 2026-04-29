@@ -362,6 +362,12 @@ importers:
       preact:
         specifier: ^10.28.2
         version: 10.28.2
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.31(typescript@5.8.3)
+      vue-i18n:
+        specifier: ^11
+        version: 11.3.2(vue@3.5.31(typescript@5.8.3))
     devDependencies:
       vitest:
         specifier: '*'
@@ -1717,6 +1723,22 @@ packages:
       '@types/node':
         optional: true
 
+  '@intlify/core-base@11.3.2':
+    resolution: {}
+    engines: {node: '>= 16'}
+
+  '@intlify/devtools-types@11.3.2':
+    resolution: {}
+    engines: {node: '>= 16'}
+
+  '@intlify/message-compiler@11.3.2':
+    resolution: {}
+    engines: {node: '>= 16'}
+
+  '@intlify/shared@11.3.2':
+    resolution: {}
+    engines: {node: '>= 16'}
+
   '@jest/diff-sequences@30.3.0':
     resolution: {}
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
@@ -2617,6 +2639,9 @@ packages:
     resolution: {}
 
   '@vue/compiler-vue2@2.7.16':
+    resolution: {}
+
+  '@vue/devtools-api@6.6.4':
     resolution: {}
 
   '@vue/language-core@2.2.12':
@@ -5913,6 +5938,12 @@ packages:
     peerDependencies:
       vue: '>=2'
 
+  vue-i18n@11.3.2:
+    resolution: {}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      vue: ^3.0.0
+
   vue-inbrowser-compiler-independent-utils@4.71.1:
     resolution: {}
     peerDependencies:
@@ -7456,6 +7487,24 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
+  '@intlify/core-base@11.3.2':
+    dependencies:
+      '@intlify/devtools-types': 11.3.2
+      '@intlify/message-compiler': 11.3.2
+      '@intlify/shared': 11.3.2
+
+  '@intlify/devtools-types@11.3.2':
+    dependencies:
+      '@intlify/core-base': 11.3.2
+      '@intlify/shared': 11.3.2
+
+  '@intlify/message-compiler@11.3.2':
+    dependencies:
+      '@intlify/shared': 11.3.2
+      source-map-js: 1.2.1
+
+  '@intlify/shared@11.3.2': {}
+
   '@jest/diff-sequences@30.3.0': {}
 
   '@jest/expect-utils@29.7.0':
@@ -8560,6 +8609,8 @@ snapshots:
     dependencies:
       de-indent: 1.0.2
       he: 1.2.0
+
+  '@vue/devtools-api@6.6.4': {}
 
   '@vue/language-core@2.2.12(typescript@5.8.3)':
     dependencies:
@@ -12258,6 +12309,14 @@ snapshots:
       ts-map: 1.0.3
       vue: 3.5.31(typescript@5.8.3)
       vue-inbrowser-compiler-independent-utils: 4.71.1(vue@3.5.31(typescript@5.8.3))
+
+  vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)):
+    dependencies:
+      '@intlify/core-base': 11.3.2
+      '@intlify/devtools-types': 11.3.2
+      '@intlify/shared': 11.3.2
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.31(typescript@5.8.3)
 
   vue-inbrowser-compiler-independent-utils@4.71.1(vue@3.5.31(typescript@5.8.3)):
     dependencies:
