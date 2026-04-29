@@ -1,5 +1,4 @@
-export * from './PayoutDetails';
-export * from './PayoutsOverview';
+export { PayoutDetails, PayoutsOverview } from '@integration-components/payouts/publish';
 export * from './TransactionDetails';
 export * from './TransactionsOverview';
 export * from './CapitalOffer';
