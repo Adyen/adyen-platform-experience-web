@@ -38,7 +38,10 @@
             "@integration-components/reports/domain": ["packages/domains/reports/domain/src/index.ts"],
             "@integration-components/payouts/publish": ["packages/domains/payouts/publish/src/index.ts"],
             "@integration-components/payouts/preact": ["packages/domains/payouts/preact/src/index.ts"],
-            "@integration-components/payouts/domain": ["packages/domains/payouts/domain/src/index.ts"]
+            "@integration-components/payouts/domain": ["packages/domains/payouts/domain/src/index.ts"],
+            "@integration-components/transactions/publish": ["packages/domains/transactions/publish/src/index.ts"],
+            "@integration-components/transactions/preact": ["packages/domains/transactions/preact/src/index.ts"],
+            "@integration-components/transactions/domain": ["packages/domains/transactions/domain/src/index.ts"]
         }
     }
 }

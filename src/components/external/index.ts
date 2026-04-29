@@ -1,6 +1,6 @@
 export { PayoutDetails, PayoutsOverview } from '@integration-components/payouts/publish';
-export * from './TransactionDetails';
-export * from './TransactionsOverview';
+export { TransactionDetails, TransactionsOverview } from '@integration-components/transactions/publish';
+export type { TransactionDetailsCustomization, TransactionDetailsFields } from '@integration-components/transactions/publish';
 export * from './CapitalOffer';
 export { ReportsOverview } from '@integration-components/reports/publish';
 export * from './CapitalOverview';

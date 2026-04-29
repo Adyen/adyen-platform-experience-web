@@ -10,7 +10,7 @@ import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/p
 import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
-import { transactionsMocks } from './transactions';
+import { transactionsMocks } from '../../packages/domains/transactions/mocks/mock-server/transactions';
 
 export const mocks = [
     analyticsMock,

@@ -1,4 +1,4 @@
-import { DetailsWithExtraData } from '../TransactionDetails';
+import { DetailsWithExtraData } from '@integration-components/types';
 import { CustomDataRetrieved, DetailsDataCustomizationObject } from '../../types';
 import { IDisputeDetail } from '../../../types/api/models/disputes';
 import { DISPUTE_DETAILS_RESERVED_FIELDS_SET } from './components/DisputesData/constants';

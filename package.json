@@ -76,8 +76,8 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/domains/reports/tsconfig.json && tsc --noEmit --project packages/domains/payouts/tsconfig.json",
-    "types:watch": "tsc --preserveWatchOutput --watch && tsc --noEmit --project packages/domains/reports/tsconfig.json --watch && tsc --noEmit --project packages/domains/payouts/tsconfig.json --watch && tsc --project tsconfig-build.json --watch",
+    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/domains/reports/tsconfig.json && tsc --noEmit --project packages/domains/payouts/tsconfig.json && tsc --noEmit --project packages/domains/transactions/tsconfig.json",
+    "types:watch": "tsc --preserveWatchOutput --watch && tsc --noEmit --project packages/domains/reports/tsconfig.json --watch && tsc --noEmit --project packages/domains/payouts/tsconfig.json --watch && tsc --noEmit --project packages/domains/transactions/tsconfig.json --watch && tsc --project tsconfig-build.json --watch",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
@@ -93,6 +93,7 @@
     "@integration-components/hooks-preact": "workspace:*",
     "@integration-components/payouts": "workspace:*",
     "@integration-components/reports": "workspace:*",
+    "@integration-components/transactions": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",

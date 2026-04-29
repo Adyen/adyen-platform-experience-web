@@ -28,10 +28,10 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 | Package                                 | Status  | Tags                                 |
 | --------------------------------------- | ------- | ------------------------------------ |
 | `@integration-components/reports`       | current | `type:domain`, `scope:reports`       |
-| `@integration-components/payouts`       | planned | `type:domain`, `scope:payouts`       |
+| `@integration-components/payouts`       | current | `type:domain`, `scope:payouts`       |
+| `@integration-components/transactions`  | current | `type:domain`, `scope:transactions`  |
 | `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
 | `@integration-components/disputes`      | planned | `type:domain`, `scope:disputes`      |
-| `@integration-components/transactions`  | planned | `type:domain`, `scope:transactions`  |
 | `@integration-components/capital`       | planned | `type:domain`, `scope:capital`       |
 
 ### `type:publish`

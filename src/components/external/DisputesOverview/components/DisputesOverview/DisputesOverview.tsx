@@ -16,7 +16,7 @@ import useDefaultOverviewFilterParams from '../../../../../hooks/useDefaultOverv
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../internal/FilterBar';
 import DateFilter from '../../../../internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../internal/FormFields/Select/BalanceAccountSelector';
-import MultiSelectionFilter, { useMultiSelectionFilter } from '../../../TransactionsOverview/components/MultiSelectionFilter';
+import { MultiSelectionFilter, useMultiSelectionFilter } from '@integration-components/transactions/preact';
 import { BASE_CLASS, BASE_XS_CLASS, EARLIEST_DISPUTES_SINCE_DATE, TABS_CONTAINER_CLASS } from './constants';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../internal/Pagination/constants';
 import { DISPUTE_PAYMENT_SCHEMES, DISPUTE_REASON_CATEGORIES, DISPUTE_STATUS_GROUPS } from '../../../../utils/disputes/constants';

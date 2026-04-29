@@ -1,0 +1,22 @@
+import AdyenPlatformExperienceError from '../../../../../../../../src/core/Errors/AdyenPlatformExperienceError';
+import type { PaginationProps, WithPaginationLimitSelection } from '../../../../../../../../src/components/internal/Pagination/types';
+import type { IAmount, IBalanceAccountBase, ITransaction } from '../../../../../../../../src/types';
+import { StringWithAutocompleteOptions } from '../../../../../../../../src/utils/types';
+import { TransactionsTableCols } from './fields';
+import { CustomColumn } from '../../../../../../../../src/components/types';
+
+export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
+
+export interface TransactionTableProps extends WithPaginationLimitSelection<PaginationProps> {
+    activeBalanceAccount?: IBalanceAccountBase;
+    availableCurrencies: IAmount['currency'][] | undefined;
+    loading: boolean;
+    error: AdyenPlatformExperienceError | undefined;
+    hasMultipleCurrencies: boolean;
+    onContactSupport?: () => void;
+    onRowClick: (value: ITransaction) => void;
+    showDetails?: boolean;
+    showPagination: boolean;
+    transactions: ITransaction[] | undefined;
+    customColumns?: CustomColumn<TransactionsTableFields>[];
+}

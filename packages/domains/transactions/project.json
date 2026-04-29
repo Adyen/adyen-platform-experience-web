@@ -1,0 +1,8 @@
+{
+    "name": "@integration-components/transactions",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/transactions",
+    "tags": ["scope:transactions", "type:domain"],
+    "targets": {}
+}
