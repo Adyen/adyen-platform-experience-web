@@ -1,5 +1,5 @@
 import { test as base, APIRequestContext, request } from '@playwright/test';
-import { resolveEnvironment } from '@integration-components/core';
+import { resolveEnvironment } from '@integration-components/core/utils';
 import { getHeaders } from './contract-utils';
 import process from 'node:process';
 import dotenv from 'dotenv';
