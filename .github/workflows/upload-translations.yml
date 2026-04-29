@@ -28,7 +28,7 @@ jobs:
       - name: Run setup steps for translation tasks
         uses: ./.github/actions/setup-smartling
         with:
-          npm_token: ${{ secrets.NPM_SMARTLING_BOT_READ_TOKEN }}
+          npm_token: ${{ secrets.NPM_READ_ONLY_TOKEN }}
           project_id: ${{ secrets.SMARTLING_PROJECT_ID }}
           user_identifier: ${{ secrets.SMARTLING_USER_IDENTIFIER }}
           user_secret: ${{ secrets.SMARTLING_USER_SECRET }}
