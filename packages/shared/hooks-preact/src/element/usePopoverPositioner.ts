@@ -1,7 +1,7 @@
 import { h, Ref } from 'preact';
 import { MutableRef, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import getIntersectionObserver from '../../../../../src/components/internal/Popover/utils/utils';
-import { PopoverContainerPosition, PopoverContainerVariant } from '../../../../../src/components/internal/Popover/types';
+import getIntersectionObserver from '@integration-components/ui-primitives-preact/Popover/utils/utils';
+import { PopoverContainerPosition, PopoverContainerVariant } from '@integration-components/ui-primitives-preact/Popover/types';
 import { isRefObject } from '@integration-components/utils/primitives/reactive/reflex/helpers';
 import type { Reflexable } from '@integration-components/utils/primitives/reactive/reflex';
 import type { Nullable } from '@integration-components/utils/types';

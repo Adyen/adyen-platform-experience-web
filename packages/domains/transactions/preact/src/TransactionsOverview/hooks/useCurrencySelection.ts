@@ -1,7 +1,7 @@
 import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { FilterType } from '@integration-components/core/Analytics/analytics/user-events';
-import type { SelectItem } from '../../../../../../../src/components/internal/FormFields/Select/types';
+import type { SelectItem } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
 
 export interface UseCurrencySelectionProps {
     availableCurrencies?: readonly string[];

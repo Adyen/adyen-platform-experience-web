@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { CellTextPosition } from '../../../../src/components/internal/DataGrid/types';
+import { CellTextPosition } from '@integration-components/ui-primitives-preact/DataGrid/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '../../../../src/components/types';
 import useCoreContext from '../../../../src/core/Context/useCoreContext';
 import { EMPTY_OBJECT, isUndefined } from '@integration-components/utils';

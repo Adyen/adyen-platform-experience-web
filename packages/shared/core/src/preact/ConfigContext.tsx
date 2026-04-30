@@ -5,7 +5,7 @@ import componentAvailabilityErrors from '../session/utils/sessionAwareComponentA
 import { createConfigController } from '../setupConfig';
 import type { ConfigProviderProps } from '../ConfigContext.types';
 import { asyncNoop, EMPTY_OBJECT, isUndefined, noop } from '@integration-components/utils';
-import { ErrorMessageDisplay } from '../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 
 const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
     endpoints: EMPTY_OBJECT,

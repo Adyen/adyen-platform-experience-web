@@ -6,11 +6,11 @@ import { useDurationEvent } from '@integration-components/hooks-preact/useAnalyt
 import TransactionsList from '../TransactionsList/TransactionsList';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import Balances from '../Balances/Balances';
-import Alert from '../../../../../../../../src/components/internal/Alert/Alert';
-import Button from '../../../../../../../../src/components/internal/Button';
+import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import Button from '@integration-components/ui-primitives-preact/Button';
 import { useCoreContext } from '@integration-components/core/preact';
-import { AlertTypeOption } from '../../../../../../../../src/components/internal/Alert/types';
-import { ButtonVariant } from '../../../../../../../../src/components/internal/Button/types';
+import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import { TranslationKey } from '@integration-components/core';
 
 const sharedAnalyticsEventProperties = {

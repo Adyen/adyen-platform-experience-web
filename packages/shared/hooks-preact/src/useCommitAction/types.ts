@@ -1,4 +1,4 @@
-import { ButtonActionObject } from '../../../../../src/components/internal/Button/ButtonActions/types';
+import { ButtonActionObject } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
 
 export enum CommitAction {
     NONE = 0,

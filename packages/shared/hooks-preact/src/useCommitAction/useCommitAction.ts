@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { ButtonVariant } from '../../../../../src/components/internal/Button/types';
-import { ButtonActionObject } from '../../../../../src/components/internal/Button/ButtonActions/types';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import { ButtonActionObject } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
 import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './types';
 import useCoreContext from '../../../../../src/core/Context/useCoreContext';
 import { boolOrFalse, EMPTY_OBJECT } from '@integration-components/utils';

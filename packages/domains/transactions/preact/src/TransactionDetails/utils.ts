@@ -1,6 +1,6 @@
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { RefundType, TransactionDetails } from './types';
-import { TagVariant } from '../../../../../../src/components/internal/Tag/types';
+import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
 
 export const getAmountStyleForTransaction = (transaction?: TransactionDetails) => {
     switch (transaction?.status) {

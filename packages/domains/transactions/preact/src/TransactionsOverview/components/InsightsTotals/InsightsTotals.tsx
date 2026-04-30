@@ -5,15 +5,15 @@ import { classes } from './constants';
 import { TranslationKey } from '@integration-components/core';
 import { ITransactionCategory } from '@integration-components/types';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
-import { StructuredListItem } from '../../../../../../../../src/components/internal/StructuredList/types';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import { ErrorMessageDisplay } from '../../../../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { StructuredListItem } from '@integration-components/ui-primitives-preact/StructuredList/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import AmountDisplay, { AmountDisplayProps } from '../AmountDisplay/AmountDisplay';
 import { useCoreContext } from '@integration-components/core/preact';
 import useTransactionsTotals from '../../hooks/useTransactionsTotals';
 import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
 import './InsightsTotals.scss';
 
 interface InsightsTotalsProps {

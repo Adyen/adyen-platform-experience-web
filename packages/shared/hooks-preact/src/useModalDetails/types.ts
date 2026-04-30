@@ -1,5 +1,5 @@
 import { TranslationKey } from '../../../../../src/translations';
-import { ModalSize } from '../../../../../src/components/internal/Modal/types';
+import { ModalSize } from '@integration-components/ui-primitives-preact/Modal/types';
 
 type CallbackFunction<T> = (arg: T) => void;
 

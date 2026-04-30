@@ -1,18 +1,18 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { IPaymentLinkDetails } from '../../../../../types';
-import ButtonActions from '../../../../../components/internal/Button/ButtonActions/ButtonActions';
+import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import { useModalContext } from '../../../../internal/Modal/Modal';
-import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
+import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
+import { ButtonActionsList } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
 import './PaymentLinkExpiration.scss';
-import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
+import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-expiration',

@@ -1,6 +1,6 @@
-import Typography from '../../Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../Typography/types';
-import Icon from '../../Icon';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
 import './StoreSelectorButton.scss';
 
 interface StoreSelectorButtonContentProps {

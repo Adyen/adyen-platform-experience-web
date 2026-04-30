@@ -1,7 +1,7 @@
 import { TranslationKey } from '@integration-components/core';
 import { ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
 import { TransactionsDateRange, TransactionsFilters, TransactionsView } from './types';
-import * as RangePreset from '../../../../../../src/components/internal/Calendar/calendar/timerange/presets';
+import * as RangePreset from '@integration-components/ui-primitives-preact/Calendar/calendar/timerange/presets';
 
 const ROOT_CLASS = 'adyen-pe-transactions';
 export const BASE_CLASS = ROOT_CLASS + '-overview';

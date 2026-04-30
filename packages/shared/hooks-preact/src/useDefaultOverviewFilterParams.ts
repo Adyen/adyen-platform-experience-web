@@ -5,7 +5,7 @@ import {
     TIME_RANGE_SELECTION_PRESET_OPTION_KEYS,
     TimeRangeOptions,
     UseTimeRangeSelectionConfig,
-} from '../../../../src/components/internal/DatePicker/components/TimeRangeSelector';
+} from '@integration-components/ui-primitives-preact/DatePicker/components/TimeRangeSelector';
 import { FilterParam } from '../../../../src/components/types';
 
 // Default multi-selection filter parameters for the transactions overview.

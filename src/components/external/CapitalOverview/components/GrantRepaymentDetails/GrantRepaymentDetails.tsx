@@ -3,13 +3,13 @@ import { useMemo } from 'preact/hooks';
 import useUniqueId from '../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import type { GrantAdjustmentDetailsProps } from '../GrantAdjustmentDetails/types';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { AccountDetails } from '../AccountDetails/AccountDetails';
 import { GrantAdjustmentDetails } from '../GrantAdjustmentDetails/GrantAdjustmentDetails';
 import './GrantRepaymentDetails.scss';
-import { Divider } from '../../../../internal/Divider/Divider';
-import { Translation } from '../../../../internal/Translation';
+import { Divider } from '@integration-components/ui-primitives-preact/Divider/Divider';
+import { Translation } from '@integration-components/ui-primitives-preact/Translation';
 
 const BASE_CLASS = 'adyen-pe-grant-repayment-details';
 

@@ -18,6 +18,7 @@
     "dependencies": {
         "@integration-components/core": "workspace:*",
         "@integration-components/types": "workspace:*",
+        "@integration-components/ui-primitives-preact": "workspace:*",
         "@integration-components/utils": "workspace:*"
     },
     "peerDependencies": {
