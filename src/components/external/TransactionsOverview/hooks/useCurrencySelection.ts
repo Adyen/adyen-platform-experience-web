@@ -1,6 +1,6 @@
-import useFilterAnalyticsEvent from '../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '../../../../hooks/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { FilterType } from '../../../../core/Analytics/analytics/user-events';
+import type { FilterType } from '../../../../core/EventDispatcher/eventDispatcher/user-events';
 import type { SelectItem } from '../../../internal/FormFields/Select/types';
 
 export interface UseCurrencySelectionProps {

@@ -7,7 +7,7 @@ import { CommitAction } from '../../../../../hooks/useCommitAction';
 import { TextFilterProps } from '../../../../internal/FilterBar/filters/TextFilter/types';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { FilterEditModalRenderProps } from '../../../../internal/FilterBar/filters/BaseFilter/types';
-import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '../../../../../hooks/useEventDispatcher/useFilterAnalyticsEvent';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import TextFilter from '../../../../internal/FilterBar/filters/TextFilter';
 import Typography from '../../../../internal/Typography/Typography';

@@ -4,10 +4,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/preact';
 import type { SelectItem } from '@integration-components/types';
-import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from './useEventDispatcher/useFilterAnalyticsEvent';
 import useMultiSelectionFilterProps from './useMultiSelectionFilterProps';
 
-vi.mock('./useAnalytics/useFilterAnalyticsEvent');
+vi.mock('./useEventDispatcher/useFilterAnalyticsEvent');
 
 describe('useMultiSelectionFilterProps', () => {
     const mockLogEvent = vi.fn();

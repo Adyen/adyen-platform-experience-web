@@ -8,7 +8,7 @@ import { isCustomDataObject } from '../../../../internal/DataGrid/components/Tab
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../constants';
 import normalizeCustomFields from '../../../../utils/customData/normalizeCustomFields';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import StructuredList from '../../../../internal/StructuredList';
 import Typography from '../../../../internal/Typography/Typography';
@@ -196,7 +196,7 @@ interface PaymentDetailsPropertiesCopyTextProps {
 }
 
 PaymentDetailsProperties.CopyText = memo(({ trackingName, ...copyTextProps }: PaymentDetailsPropertiesCopyTextProps) => {
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const onCopyText = useCallback(() => {
         if (trackingName) {

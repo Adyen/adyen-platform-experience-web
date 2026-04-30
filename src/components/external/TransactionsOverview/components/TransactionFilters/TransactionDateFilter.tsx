@@ -19,7 +19,7 @@ import { getDateRangeTimestamps } from '../../../../internal/Calendar/calendar/t
 import { DateFilterProps, DateRangeFilterParam } from '../../../../internal/FilterBar/filters/DateFilter/types';
 import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../internal/Calendar/calendar/timerange';
 import DateFilterCore from '../../../../internal/FilterBar/filters/DateFilter/DateFilterCore';
-import useFilterAnalyticsEvent from '../../../../../hooks/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '../../../../../hooks/useEventDispatcher/useFilterAnalyticsEvent';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 export interface TransactionDateFilterProps {

@@ -3,7 +3,7 @@ import { createRef, RefObject, JSX } from 'preact';
 import { FALLBACK_ENV } from '../utils';
 import type { ExternalComponentType } from '@integration-components/types';
 import type { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../../../../src/components/types';
-import { AnalyticsProvider } from './AnalyticsProvider';
+import { AnalyticsProvider } from './EventDispatcherProvider';
 import { ConfigProvider } from './ConfigContext';
 import CoreProvider from './CoreProvider';
 import BaseElement from './BaseElement';

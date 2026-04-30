@@ -47,8 +47,8 @@ export type {
 export { setupAnalytics } from './setupAnalytics';
 export type { AnalyticsSetupOptions, AnalyticsSetupResult } from './setupAnalytics';
 
-export { default as Analytics } from './Analytics';
-export type { AnalyticsOptions, Experiment } from './Analytics/types';
+export { default as Analytics } from './EventDispatcher';
+export type { AnalyticsOptions, Experiment } from './EventDispatcher/types';
 
 export { API_ENVIRONMENTS, CDN_ENVIRONMENTS } from './constants';
 export {
