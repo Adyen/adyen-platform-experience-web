@@ -85,10 +85,22 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
      * `Localization`, hand off to the subclass hook, then sync the session.
      */
     protected setOptions(options: Partial<O>): this {
+        const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
+
         this.options = { ...this.options, ...options };
 
         this.localization.locale = this.options.locale;
         this.localization.customTranslations = this.options.translations;
+
+        if (environmentChanged) {
+            const { apiUrl, cdnAssetsUrl, cdnConfigUrl } = this.resolveEnvironment();
+
+            this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
+            this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
+            this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
+            this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
+            this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
+        }
 
         this.onOptionsChanged(options);
 
