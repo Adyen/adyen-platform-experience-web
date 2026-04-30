@@ -1,4 +1,4 @@
-import { operations } from '../../../../src/types/api/resources/TransactionsResourceV2';
+import { operations } from '@integration-components/types/api/resources/TransactionsResourceV2';
 import { ExtractResponseType } from '../../../../src/types/api/endpoints';
 import dotenv from 'dotenv';
 

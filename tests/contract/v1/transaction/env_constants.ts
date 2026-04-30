@@ -1,4 +1,4 @@
-import { operations } from '../../../../src/types/api/resources/TransactionsResource';
+import { operations } from '@integration-components/types/api/resources/TransactionsResource';
 import { ExtractResponseType } from '../../../../src/types/api/endpoints';
 import process from 'node:process';
 import dotenv from 'dotenv';
