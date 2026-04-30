@@ -1,5 +1,5 @@
 import { ComponentChildren } from 'preact';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 
 export type TranslationFill = ComponentChildren | TranslationFillFunc;
 export type TranslationFillFunc = (placeholder: string, index: number, repetitionIndex: number) => ComponentChildren;

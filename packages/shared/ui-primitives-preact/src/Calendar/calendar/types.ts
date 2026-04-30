@@ -31,8 +31,8 @@ import {
     CALENDAR_CONTROLS,
     CALENDAR_SELECTIONS,
 } from './constants';
-import { Indexed } from '../../../../../../src/primitives/auxiliary/indexed';
-import { WatchListCallable } from '../../../../../../src/primitives/reactive/watchlist';
+import { Indexed } from '@integration-components/utils/primitives/auxiliary/indexed';
+import { WatchListCallable } from '@integration-components/utils/primitives/reactive/watchlist';
 
 export type WithGetSetProperty<T = any> = {
     get _(): T;

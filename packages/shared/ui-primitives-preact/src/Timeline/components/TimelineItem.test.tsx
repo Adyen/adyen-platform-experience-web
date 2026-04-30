@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useCallback, useState } from 'preact/hooks';
 import { TimelineItem } from './TimelineItem';
 import { TimelineContext, TimelineContextValue } from '../context';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 vi.mock('../../../../core/Context/useCoreContext');
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
-import { Controller } from '../../../../../src/hooks/form';
-import { FieldValues } from '../../../../../src/hooks/form/types';
-import { useWizardFormContext } from '../../../../../src/hooks/form/wizard/WizardFormContext';
+import { Controller } from '@integration-components/hooks-preact/form';
+import { FieldValues } from '@integration-components/hooks-preact/form/types';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import FormField from './FormField';
 import { CalendarInput } from '../FormFields/CalendarInput/CalendarInput';
 import { VisibleField } from './VisibleField';

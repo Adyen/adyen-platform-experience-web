@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { FilterParam } from '../../../../../../../src/components/types';
+import { FilterParam } from '@integration-components/types';
 import { AmountFilter } from './AmountFilter';
 import { expect, test } from 'vitest';
 import { render, screen, within } from '@testing-library/preact';

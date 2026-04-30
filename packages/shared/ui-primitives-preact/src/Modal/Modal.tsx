@@ -1,9 +1,9 @@
 import { ButtonVariant } from '../Button/types';
-import { useClickOutside } from '../../../../../src/hooks/element/useClickOutside';
-import { containerQueries, useResponsiveContainer } from '../../../../../src/hooks/useResponsiveContainer';
-import tabbable, { getDeepActiveElement } from '../../../../../src/primitives/dom/tabbableRoot/tabbable';
-import useFocusTrap from '../../../../../src/hooks/element/useFocusTrap';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useClickOutside } from '@integration-components/hooks-preact/element/useClickOutside';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
+import tabbable, { getDeepActiveElement } from '@integration-components/utils/primitives/dom/tabbableRoot/tabbable';
+import useFocusTrap from '@integration-components/hooks-preact/element/useFocusTrap';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useContext, useEffect, useRef } from 'preact/hooks';
 import { createContext } from 'preact';
 import { ModalProps } from './types';

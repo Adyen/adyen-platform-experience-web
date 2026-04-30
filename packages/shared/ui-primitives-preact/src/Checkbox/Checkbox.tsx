@@ -3,7 +3,7 @@ import Icon from '../Icon';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { uniqueId } from '../../../../../src/utils';
+import { uniqueId } from '@integration-components/utils';
 import { CheckboxProps } from './types';
 import { h } from 'preact';
 import './Checkbox.scss';

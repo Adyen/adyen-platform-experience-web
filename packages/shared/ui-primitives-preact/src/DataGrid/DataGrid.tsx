@@ -10,7 +10,7 @@ import { useMemo } from 'preact/hooks';
 import { DataGridProvider } from './utils/DataGridProvider';
 import { useDataGridContext } from './hooks/useDataGridContext';
 import { TableHeaderCell } from './components/TableHeaderCell';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 export const INITIAL_STATE = Object.freeze({
     activeIndex: -1,

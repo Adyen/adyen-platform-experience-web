@@ -1,9 +1,9 @@
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { fixedForwardRef } from '../../preact-utils';
 import UploadedFile from './components/UploadedFile';
 import Dropzone from './components/Dropzone';
-import { isFunction } from '../../../../../../src/utils';
+import { isFunction } from '@integration-components/utils';
 import { BASE_CLASS, validationErrors } from './constants';
 import { FileInputProps, ValidationError } from './types';
 import './FileInput.scss';

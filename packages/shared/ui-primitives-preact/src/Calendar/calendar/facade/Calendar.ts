@@ -29,17 +29,17 @@ import {
 } from '../constants';
 import { withTimezone } from '../utils';
 import { MonthFrame, TimeFrame /* , YearFrame */ } from '../timeframe';
-import { createIndexed } from '../../../../../../../src/primitives/auxiliary/indexed';
-import { createEffectStack, EffectStack } from '../../../../../../../src/primitives/reactive/effectStack';
-import { systemToTimezone, timezoneToSystem } from '../../../../../../../src/core/Localization/datetime/restamper';
-import today from '../../../../../../../src/primitives/time/today';
+import { createIndexed } from '@integration-components/utils/primitives/auxiliary/indexed';
+import { createEffectStack, EffectStack } from '@integration-components/utils/primitives/reactive/effectStack';
+import { systemToTimezone, timezoneToSystem } from '@integration-components/utils/datetime/restamper';
+import today from '@integration-components/utils/primitives/time/today';
 import {
     createWatchlist,
     isWatchlistUnsubscribeToken,
     WatchList,
     WatchListCallable,
     WatchListSubscriptionCallback,
-} from '../../../../../../../src/primitives/reactive/watchlist';
+} from '@integration-components/utils/primitives/reactive/watchlist';
 import {
     boolify,
     boolOrTrue,
@@ -54,7 +54,7 @@ import {
     struct,
     structFrom,
     withFreezeProxyHandlers,
-} from '../../../../../../../src/utils';
+} from '@integration-components/utils';
 import {
     CalendarConfig,
     CalendarDayOfWeekData,

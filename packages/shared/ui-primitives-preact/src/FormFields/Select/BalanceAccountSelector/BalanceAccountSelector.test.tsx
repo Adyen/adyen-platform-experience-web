@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import { render, screen, within } from '@testing-library/preact';
 import { BALANCE_ACCOUNTS } from '../../../../../../../mocks/mock-data';
 import BalanceAccountSelector from './BalanceAccountSelector';
-import useBalanceAccountSelection from '../../../../../../../src/hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection from '@integration-components/hooks-preact/useBalanceAccountSelection';
 
 describe('BalanceAccountSelector', () => {
     type BalanceAccountSelectorWrapperProps = {

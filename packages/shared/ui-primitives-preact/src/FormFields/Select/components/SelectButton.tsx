@@ -2,14 +2,14 @@ import cx from 'classnames';
 import { MutableRef, useMemo } from 'preact/hooks';
 import { HTMLAttributes, PropsWithChildren } from 'preact/compat';
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, Ref } from 'preact';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Img from '../../../Img';
 import Icon from '../../../Icon';
 import Button from '../../../Button';
 import { ButtonVariant } from '../../../Button/types';
 import Typography from '../../../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
-import { boolOrFalse } from '../../../../../../../src/utils';
+import { boolOrFalse } from '@integration-components/utils';
 import { DEFAULT_BUTTON_CLASSNAME } from '../../../Button/constants';
 import { getModifierClasses } from '../../../preact-utils';
 import {

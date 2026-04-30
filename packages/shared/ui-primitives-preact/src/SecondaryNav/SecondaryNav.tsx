@@ -1,7 +1,7 @@
 import './SecondaryNav.scss';
 import cx from 'classnames';
 import { Divider } from '../Divider/Divider';
-import { containerQueries, useResponsiveContainer } from '../../../../../src/hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
 import { useCallback } from 'preact/hooks';
 import { VNode } from 'preact';
 import Icon from '../Icon';

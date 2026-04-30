@@ -1,5 +1,5 @@
-import { UseReactiveStateRecord } from '../../../../../src/hooks/useReactiveState/types';
-import { TranslationKey } from '../../../../../src/translations';
+import { UseReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
+import { TranslationKey } from '@integration-components/core';
 
 export const enum PageNeighbour {
     NEXT = 'next',

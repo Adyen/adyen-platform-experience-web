@@ -1,8 +1,8 @@
 import { TabComponentProps } from './types';
 import { AriaAttributes } from 'preact/compat';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import useTabbedControl from '../../../../../src/hooks/useTabbedControl';
+import { useCoreContext } from '@integration-components/core/preact';
+import useTabbedControl from '@integration-components/hooks-preact/useTabbedControl';
 import Typography from '../Typography/Typography';
 import './Tabs.scss';
 

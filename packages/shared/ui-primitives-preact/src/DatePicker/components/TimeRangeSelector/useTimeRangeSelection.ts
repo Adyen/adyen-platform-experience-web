@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
-import type { RestampContext } from '../../../../../../../src/core/Localization/datetime/restamper';
-import type { TranslationKey } from '../../../../../../../src/translations';
+import { useCoreContext } from '@integration-components/core/preact';
+import type { RestampContext } from '@integration-components/utils/datetime/restamper';
+import type { TranslationKey } from '@integration-components/core';
 import { RangeTimestamp, RangeTimestamps } from '../../../Calendar/calendar/timerange';
 import * as RangePreset from '../../../Calendar/calendar/timerange/presets';
 

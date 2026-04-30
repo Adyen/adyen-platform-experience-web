@@ -1,7 +1,7 @@
 import TimeFrame from './TimeFrame';
 import { computeTimestampOffset, getEdgesDistance } from '../../utils';
 import { YEAR_MONTHS } from '../../constants';
-import { isBitSafeInteger, isInfinity, isString, isUndefined, struct, structFrom, withFreezeProxyHandlers } from '../../../../../../../../src/utils';
+import { isBitSafeInteger, isInfinity, isString, isUndefined, struct, structFrom, withFreezeProxyHandlers } from '@integration-components/utils';
 import { CalendarDayOfWeekData, Time, TimeFlag, TimeFrameBlock, TimeFrameSelection } from '../../types';
 
 export default class YearFrame extends TimeFrame {

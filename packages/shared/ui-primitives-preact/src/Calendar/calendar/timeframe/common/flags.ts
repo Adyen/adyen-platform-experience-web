@@ -1,5 +1,5 @@
 import { CalendarFlagsRecord, TimeFlag, TimeFlagProp } from '../../types';
-import { isString, struct, withFreezeProxyHandlers } from '../../../../../../../../src/utils';
+import { isString, struct, withFreezeProxyHandlers } from '@integration-components/utils';
 
 const createFlagsRecord = (() => {
     const CACHE = {} as { [K: number]: CalendarFlagsRecord };

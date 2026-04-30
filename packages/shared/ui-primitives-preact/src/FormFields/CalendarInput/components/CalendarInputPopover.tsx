@@ -5,7 +5,7 @@ import { DEFAULT_FIRST_WEEK_DAY } from '../../../Calendar/calendar/timerange/pre
 import calendar from '../../../Calendar/calendar';
 import { CalendarProps } from '../../../Calendar/types';
 import useCalendarControlsRendering from '../../../Calendar/hooks/useCalendarControlsRendering';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { MutableRef } from 'preact/hooks';
 
 interface CalendarInputPopoverProps {

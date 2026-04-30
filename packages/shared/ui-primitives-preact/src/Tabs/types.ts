@@ -1,5 +1,5 @@
 import { ComponentChild } from 'preact';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 
 export type TabProps<TabId extends string> = {
     content: ComponentChild;

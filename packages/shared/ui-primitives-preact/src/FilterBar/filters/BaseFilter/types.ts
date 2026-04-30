@@ -1,6 +1,6 @@
 import { JSX } from 'preact';
 import { AriaAttributes } from 'preact/compat';
-import { CommitAction } from '../../../../../../../src/hooks/useCommitAction';
+import { CommitAction } from '@integration-components/hooks-preact/useCommitAction';
 import { PopoverContainerSize } from '../../../Popover/types';
 
 export interface BaseFilterProps {

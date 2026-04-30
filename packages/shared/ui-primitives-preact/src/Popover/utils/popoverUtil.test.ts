@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { CONTROL_ELEMENT_PROPERTY } from '../../../../../../src/hooks/element/useClickOutside';
+import { CONTROL_ELEMENT_PROPERTY } from '@integration-components/hooks-preact/element/useClickOutside';
 import { popoverUtil } from './popoverUtil';
 
 describe('popoverUtil', () => {

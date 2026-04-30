@@ -2,7 +2,7 @@ import Icon from '../../../Icon';
 import Button from '../../../Button/Button';
 import Typography from '../../../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../Typography/types';
-import { getHumanReadableFileSize } from '../../../../../../../src/utils';
+import { getHumanReadableFileSize } from '@integration-components/utils';
 import { ButtonVariant } from '../../../Button/types';
 import { Translation } from '../../../Translation';
 import { UploadedFileProps } from '../types';

@@ -1,4 +1,4 @@
-import { boolOrTrue, EMPTY_OBJECT, enumerable, isPlainObject, struct, structFrom } from '../../../../../../../src/utils';
+import { boolOrTrue, EMPTY_OBJECT, enumerable, isPlainObject, struct, structFrom } from '@integration-components/utils';
 
 type PropertyDescriptor<T = any> = {
     configurable?: boolean;

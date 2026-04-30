@@ -1,7 +1,7 @@
 import __TimeSlice__ from './TimeSlice';
 import { RANGE_FROM, RANGE_TO } from '../constants';
 import { TimeSlice, TimeSliceFactory } from '../types';
-import { getter, struct } from '../../../../../../../src/utils';
+import { getter, struct } from '@integration-components/utils';
 import { withTimezone } from '../utils';
 
 const factory = ((...args: any[]) => {

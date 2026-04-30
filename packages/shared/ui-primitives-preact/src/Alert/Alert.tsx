@@ -2,7 +2,7 @@ import cx from 'classnames';
 import Button from '../Button';
 import { ButtonVariant } from '../Button/types';
 import Icon from '../Icon';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import { AlertIcon } from './AlertIcon';

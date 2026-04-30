@@ -1,7 +1,7 @@
 import { ComponentChildren, VNode } from 'preact';
 import { CustomCell } from './DataGrid';
-import { TranslationKey } from '../../../../../src/translations';
-import { StringWithAutocompleteOptions } from '../../../../../src/utils/types';
+import { TranslationKey } from '@integration-components/core';
+import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
 export type CellTextPosition = 'center' | 'right' | 'left';
 

@@ -11,8 +11,8 @@ import {
     WithPaginationOffset,
     WithPaginationRecordSize,
 } from '../types';
-import { ReactiveStateRecord, UseReactiveStateRecord } from '../../../../../../src/hooks/useReactiveState/types';
-import type { Promised } from '../../../../../../src/utils/types';
+import { ReactiveStateRecord, UseReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
+import type { Promised } from '@integration-components/utils/types';
 
 export type PaginatedRecordsFetcherParams<FilterValue, FilterParam extends string> = Partial<Record<FilterParam, FilterValue>> &
     Required<WithPaginationLimit> & {

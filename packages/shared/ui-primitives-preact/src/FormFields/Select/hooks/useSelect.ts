@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { EMPTY_ARRAY } from '../../../../../../../src/utils';
+import { EMPTY_ARRAY } from '@integration-components/utils';
 import { SelectItem, SelectProps } from '../types';
 
 const useSelect = <T extends SelectItem>({ items, multiSelect, selected }: Pick<SelectProps<T>, 'items' | 'multiSelect' | 'selected'>) => {

@@ -1,9 +1,9 @@
-import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '../../../../../../../src/hooks/useBalanceAccountSelection';
+import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from '@integration-components/hooks-preact/useBalanceAccountSelection';
 import { memo } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
 import Select from '..';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
-import { containerQueries, useResponsiveContainer } from '../../../../../../../src/hooks/useResponsiveContainer';
+import { useCoreContext } from '@integration-components/core/preact';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
 import { renderDefaultSingleSelectionCheckedness } from '../components/SelectListItem';
 import { SelectItem, SelectProps } from '../types';
 import './BalanceAccountSelector.scss';

@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'preact';
 import { ReactNode } from 'preact/compat';
 import cx from 'classnames';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { Tooltip } from '../Tooltip/Tooltip';
 import { ButtonVariant } from '../Button/types';
 import Button from '../Button';

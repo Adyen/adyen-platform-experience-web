@@ -2,9 +2,9 @@ import { JSX } from 'preact';
 import cx from 'classnames';
 import Button from '../Button';
 import Typography from '../Typography/Typography';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 import { useCallback } from 'preact/hooks';
 import './ErrorMessageDisplay.scss';
 

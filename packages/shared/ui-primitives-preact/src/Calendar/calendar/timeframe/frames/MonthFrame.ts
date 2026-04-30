@@ -2,7 +2,7 @@ import TimeFrame from './TimeFrame';
 import { getWeekendDays } from '../common/utils';
 import { computeTimestampOffset, getEdgesDistance, getMonthDays, getTimezoneDateParts, startOfMonth, startOfWeek, withTimezone } from '../../utils';
 import { DAY_MS, DAY_OF_WEEK_FORMATS, MAXIMUM_MONTH_UNITS } from '../../constants';
-import { systemToTimezone, timezoneToSystem } from '../../../../../../../../src/core/Localization/datetime/restamper';
+import { systemToTimezone, timezoneToSystem } from '@integration-components/utils/datetime/restamper';
 import createFlagsRecord from '../common/flags';
 import {
     enumerable,
@@ -13,7 +13,7 @@ import {
     struct,
     structFrom,
     withFreezeProxyHandlers,
-} from '../../../../../../../../src/utils';
+} from '@integration-components/utils';
 import {
     CalendarDayOfWeekData,
     DayOfWeekLabelFormat,

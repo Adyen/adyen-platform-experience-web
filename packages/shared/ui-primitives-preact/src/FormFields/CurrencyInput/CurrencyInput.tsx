@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import InputBase from '../InputBase';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import { EMPTY_OBJECT, uniqueId } from '../../../../../../src/utils';
+import { useCoreContext } from '@integration-components/core/preact';
+import { EMPTY_OBJECT, uniqueId } from '@integration-components/utils';
 import { CURRENCY_INPUT_BASE_CLASS } from './constants';
-import { useFetch } from '../../../../../../src/hooks/useFetch';
-import { useConfigContext } from '../../../../../../src/core/ConfigContext';
-import { IPaymentLinkCurrency } from '../../../../../../src/types';
+import { useFetch } from '@integration-components/hooks-preact/useFetch';
+import { useConfigContext } from '@integration-components/core/preact';
+import { IPaymentLinkCurrency } from '@integration-components/types';
 import { formatAmount, getCurrencyExponent } from '../../../../../../src/utils/currency/main';
 
 const PRIORITIZED_CURRENCY_CODES = ['EUR', 'GBP', 'USD'] as const;

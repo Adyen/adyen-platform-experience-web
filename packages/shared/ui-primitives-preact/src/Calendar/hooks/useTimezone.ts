@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import restamper, { RestampContext } from '../../../../../../src/core/Localization/datetime/restamper';
-import {
-    getGMTSuffixForTimezoneOffset,
-    getTimezoneOffsetFromFormattedDateString,
-} from '../../../../../../src/core/Localization/datetime/restamper/utils';
-import { isWatchlistUnsubscribeToken } from '../../../../../../src/primitives/reactive/watchlist';
-import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT } from '../../../../../../src/utils';
-import clock from '../../../../../../src/primitives/time/clock';
+import restamper, { RestampContext } from '@integration-components/utils/datetime/restamper';
+import { getGMTSuffixForTimezoneOffset, getTimezoneOffsetFromFormattedDateString } from '@integration-components/utils/datetime/restamper/utils';
+import { isWatchlistUnsubscribeToken } from '@integration-components/utils/primitives/reactive/watchlist';
+import { boolOrFalse, EMPTY_ARRAY, EMPTY_OBJECT } from '@integration-components/utils';
+import clock from '@integration-components/utils/primitives/time/clock';
 
 export type UseTimezoneConfig = {
     timezone?: RestampContext['TIMEZONE'];

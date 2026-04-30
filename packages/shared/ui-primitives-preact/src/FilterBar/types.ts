@@ -1,6 +1,6 @@
 import type { Dispatch } from 'preact/compat';
 import type { StateUpdater } from 'preact/hooks';
-import type { TranslationKey } from '../../../../../src/translations';
+import type { TranslationKey } from '@integration-components/core';
 
 export interface FilterBarMobileSwitchProps extends FilterBarState {
     ariaLabelKey?: TranslationKey;

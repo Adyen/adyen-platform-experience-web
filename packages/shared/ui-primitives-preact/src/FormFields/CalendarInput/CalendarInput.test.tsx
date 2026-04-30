@@ -4,9 +4,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { CalendarInput } from './CalendarInput';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import useTimezoneAwareDateFormatting from '../../../../../../src/hooks/useTimezoneAwareDateFormatting';
-import Localization from '../../../../../../src/core/Localization/Localization';
+import { useCoreContext } from '@integration-components/core/preact';
+import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
+import Localization from '@integration-components/core/Localization/Localization';
 
 vi.mock('../../../../core/Context/useCoreContext');
 vi.mock('../../../../hooks/useTimezoneAwareDateFormatting');

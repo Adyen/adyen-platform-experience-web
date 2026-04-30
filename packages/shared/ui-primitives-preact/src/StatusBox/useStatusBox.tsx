@@ -1,8 +1,8 @@
 import { useMemo } from 'preact/hooks';
 import { DATE_FORMAT_TRANSACTION_DETAILS } from '../../../../../src/constants';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import useTimezoneAwareDateFormatting from '../../../../../src/hooks/useTimezoneAwareDateFormatting';
-import { IAmount, IBankAccount, IPaymentMethod } from '../../../../../src/types';
+import { useCoreContext } from '@integration-components/core/preact';
+import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
+import { IAmount, IBankAccount, IPaymentMethod } from '@integration-components/types';
 import { getDisplayablePaymentMethod, getPaymentMethodType } from './utils';
 
 type StatusBoxDataProps = {

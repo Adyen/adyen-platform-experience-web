@@ -1,4 +1,4 @@
-import { identity, isFunction, noop, sameValue } from '../../../../../../src/utils';
+import { identity, isFunction, noop, sameValue } from '@integration-components/utils';
 import { MemoComparator, MemoComparatorGetters, MemoComparatorProp } from './types';
 
 export const memoComparator = (() => {

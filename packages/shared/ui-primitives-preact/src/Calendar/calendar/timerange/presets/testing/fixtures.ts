@@ -1,4 +1,4 @@
-import { getter } from '../../../../../../../../../src/utils';
+import { getter } from '@integration-components/utils';
 import { asTimestamp } from './helpers';
 import type { RangeTimestamps } from '../../types';
 

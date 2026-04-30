@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { RequestPageCallback, RequestPageCallbackParams, UsePaginationSetupConfig } from './types';
-import useBooleanState from '../../../../../../src/hooks/useBooleanState';
-import useMounted from '../../../../../../src/hooks/useMounted';
+import useBooleanState from '@integration-components/hooks-preact/useBooleanState';
+import useMounted from '@integration-components/hooks-preact/useMounted';
 import { PaginationType, UsePagination } from '../types';
 import { getClampedPageLimit } from '../utils';
-import { clamp, noop } from '../../../../../../src/utils';
+import { clamp, noop } from '@integration-components/utils';
 
 const usePagination = <Pagination extends PaginationType>(
     paginationSetupConfig: UsePaginationSetupConfig<Pagination>,

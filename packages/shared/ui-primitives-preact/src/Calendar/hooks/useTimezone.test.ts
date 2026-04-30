@@ -4,10 +4,10 @@
 import { renderHook } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 import useTimezone, { getTimezoneTime, getUsedTimezone } from './useTimezone';
-import clock from '../../../../../../src/primitives/time/clock';
+import clock from '@integration-components/utils/primitives/time/clock';
 
 // Mock clock module to enable spying on subscriptions and unsubscriptions
-vi.mock(import('../../../../../../src/primitives/time/clock'), async importOriginal => {
+vi.mock(import('@integration-components/utils/primitives/time/clock'), async importOriginal => {
     const mod = await importOriginal();
     const originalClock = mod.default;
     const originalSubscribe = originalClock.subscribe;

@@ -5,8 +5,8 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/preact';
 import { userEvent } from '@testing-library/user-event';
 import { ErrorMessageDisplay, IMAGE_BREAKPOINT_MEDIUM_PX } from './ErrorMessageDisplay';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import { TranslationKey } from '../../../../../src/translations';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TranslationKey } from '@integration-components/core';
 
 vi.mock('../../../core/Context/useCoreContext');
 

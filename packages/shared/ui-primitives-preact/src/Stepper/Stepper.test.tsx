@@ -4,7 +4,7 @@
 import { render, fireEvent, screen } from '@testing-library/preact';
 import { describe, expect, vi, beforeEach, test } from 'vitest';
 import { Stepper } from './Stepper';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 vi.mock('../../../core/Context/useCoreContext', () => ({
     default: vi.fn(),

@@ -1,6 +1,6 @@
 import { ComponentChildren } from 'preact';
-import { FieldValues } from '../../../../../src/hooks/form/types';
-import { useWizardFormContext } from '../../../../../src/hooks/form/wizard/WizardFormContext';
+import { FieldValues } from '@integration-components/hooks-preact/form/types';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 
 interface VisibleFieldProps<TFieldValues> {
     name: FieldValues<TFieldValues>;

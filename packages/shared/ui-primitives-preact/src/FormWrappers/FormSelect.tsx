@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'preact/hooks';
-import { Controller } from '../../../../../src/hooks/form';
+import { Controller } from '@integration-components/hooks-preact/form';
 import Select from '../FormFields/Select';
-import { useWizardFormContext } from '../../../../../src/hooks/form/wizard/WizardFormContext';
-import { FieldValues, ValidationRules } from '../../../../../src/hooks/form/types';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
+import { FieldValues, ValidationRules } from '@integration-components/hooks-preact/form/types';
 import FormField from './FormField';
 import { VisibleField } from './VisibleField';
 import { SelectChangeEvent } from '../FormFields/Select/types';

@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { isString, isUndefined } from '../../../../../../src/utils';
+import { isString, isUndefined } from '@integration-components/utils';
 import { RequestPageCallback, RequestPageCallbackParams } from './types';
 import { PaginationType, UsePagination, WithEitherPages, WithNextPage, WithPrevPage } from '../types';
 import usePagination from './usePagination';

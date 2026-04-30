@@ -1,9 +1,9 @@
 import Icon from '../Icon';
 import Button from '../Button';
 import Select from '../FormFields/Select';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useMemo } from 'preact/hooks';
-import { EMPTY_ARRAY, isNullish } from '../../../../../src/utils';
+import { EMPTY_ARRAY, isNullish } from '@integration-components/utils';
 import { SelectChangeEvent, SelectItem } from '../FormFields/Select/types';
 import { ButtonVariant } from '../Button/types';
 import { Translation } from '../Translation';

@@ -1,10 +1,10 @@
-import Localization from '../../../../../../../src/core/Localization';
-import useTimezoneAwareDateFormatting from '../../../../../../../src/hooks/useTimezoneAwareDateFormatting';
+import Localization from '@integration-components/core/Localization';
+import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { BASE_LOCALE } from '../../../../../../../src/core/Localization/datetime/restamper/constants';
-import { EMPTY_OBJECT } from '../../../../../../../src/utils';
-import { CommitAction } from '../../../../../../../src/hooks/useCommitAction';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { BASE_LOCALE } from '@integration-components/utils/datetime/restamper/constants';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { CommitAction } from '@integration-components/hooks-preact/useCommitAction';
+import { useCoreContext } from '@integration-components/core/preact';
 import { CalendarHandle } from '../../../Calendar/types';
 import DatePicker from '../../../DatePicker';
 import BaseFilter from '../BaseFilter';

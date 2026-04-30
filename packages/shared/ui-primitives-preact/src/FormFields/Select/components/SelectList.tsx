@@ -1,7 +1,7 @@
-import { containerQueries, useResponsiveContainer } from '../../../../../../../src/hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
 import { PopoverContainerPosition, PopoverContainerSize, PopoverContainerVariant, PopoverProps } from '../../../Popover/types';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
-import { boolOrFalse, isFunction } from '../../../../../../../src/utils';
+import { useCoreContext } from '@integration-components/core/preact';
+import { boolOrFalse, isFunction } from '@integration-components/utils';
 import { fixedForwardRef } from '../../../preact-utils';
 import cx from 'classnames';
 import { ForwardedRef, memo } from 'preact/compat';

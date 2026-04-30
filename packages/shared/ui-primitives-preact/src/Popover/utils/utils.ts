@@ -1,4 +1,4 @@
-import { enumerable, isUndefined, struct, structFrom } from '../../../../../../src/utils';
+import { enumerable, isUndefined, struct, structFrom } from '@integration-components/utils';
 
 type ObserverCallback = (entry: IntersectionObserverEntry) => void;
 

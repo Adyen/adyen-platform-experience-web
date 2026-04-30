@@ -1,5 +1,5 @@
-import type { Restamper, RestamperWithTimezone } from '../../../../../../../src/core/Localization/datetime/restamper';
-import type { Struct } from '../../../../../../../src/utils/types';
+import type { Restamper, RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
+import type { Struct } from '@integration-components/utils/types';
 
 export type RangeTimestamp = number;
 export type RangeTimestampOffsets = readonly [number?, number?, number?, number?, number?, number?, number?];

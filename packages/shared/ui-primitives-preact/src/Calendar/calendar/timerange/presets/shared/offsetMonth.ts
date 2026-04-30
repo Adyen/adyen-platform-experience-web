@@ -1,4 +1,4 @@
-import { clamp } from '../../../../../../../../../src/utils';
+import { clamp } from '@integration-components/utils';
 import createRangeTimestampsFactory from '../../factory';
 import type { RangeTimestampOffsets } from '../../types';
 import { nowTimestamp } from '../../utils';

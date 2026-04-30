@@ -24,9 +24,9 @@ import {
     SHIFT_PERIOD,
 } from '../../constants';
 import createFlagsRecord from '../common/flags';
-import { createIndexed } from '../../../../../../../../src/primitives/auxiliary/indexed';
-import type { WatchListCallable } from '../../../../../../../../src/primitives/reactive/watchlist';
-import { BASE_LOCALE } from '../../../../../../../../src/core/Localization/datetime/restamper/constants';
+import { createIndexed } from '@integration-components/utils/primitives/auxiliary/indexed';
+import type { WatchListCallable } from '@integration-components/utils/primitives/reactive/watchlist';
+import { BASE_LOCALE } from '@integration-components/utils/datetime/restamper/constants';
 import {
     clamp,
     enumerable,
@@ -39,8 +39,8 @@ import {
     mid,
     mod,
     struct,
-} from '../../../../../../../../src/utils';
-import today from '../../../../../../../../src/primitives/time/today';
+} from '@integration-components/utils';
+import today from '@integration-components/utils/primitives/time/today';
 import {
     CalendarBlock,
     CalendarBlockCellData,

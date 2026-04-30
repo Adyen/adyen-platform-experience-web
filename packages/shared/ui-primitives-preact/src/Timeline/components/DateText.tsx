@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
 import { TimelineDateFormat, TimelineDateUnit } from '../types';
-import useTimezoneAwareDateFormatting from '../../../../../../src/hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
 
 interface DateTextProps {
     date: Date;

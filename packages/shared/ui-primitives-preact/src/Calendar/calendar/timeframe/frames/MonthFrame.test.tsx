@@ -1,12 +1,12 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi, beforeAll, afterAll } from 'vitest';
-import { BASE_LOCALE, SYSTEM_TIMEZONE } from '../../../../../../../../src/core/Localization/datetime/restamper/constants';
-import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from '../../../../../../../../src/core/Localization/datetime/restamper/testing/fixtures';
-import { systemToTimezone, timezoneToSystem } from '../../../../../../../../src/core/Localization/datetime/restamper';
-import { setupTimers } from '../../../../../../../../src/primitives/time/__testing__/fixtures';
+import { BASE_LOCALE, SYSTEM_TIMEZONE } from '@integration-components/utils/datetime/restamper/constants';
+import { TIMEZONE_PAST_DATES_TEST_ORIGIN_DATE } from '@integration-components/utils/datetime/restamper/testing/fixtures';
+import { systemToTimezone, timezoneToSystem } from '@integration-components/utils/datetime/restamper';
+import { setupTimers } from '@integration-components/utils/primitives/time/__testing__/fixtures';
 import { getTimezoneDateParts, getWeekDayIndex, withTimezone } from '../../utils';
 import { FirstWeekDay, WeekDay } from '../../types';
-import { mod } from '../../../../../../../../src/utils';
+import { mod } from '@integration-components/utils';
 import { DAY_MS } from '../../constants';
 import MonthFrame from './MonthFrame';
 

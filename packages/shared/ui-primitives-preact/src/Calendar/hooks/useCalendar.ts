@@ -1,11 +1,11 @@
 import { Ref } from 'preact';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import type { ReflexAction } from '../../../../../../src/primitives/reactive/reflex';
+import { useCoreContext } from '@integration-components/core/preact';
+import type { ReflexAction } from '@integration-components/utils/primitives/reactive/reflex';
 import { getDateObjectFromTimestamp } from '../calendar/utils';
-import { EMPTY_OBJECT, isFunction } from '../../../../../../src/utils';
+import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { CalendarGridCursorRootProps, CalendarHandle, CalendarProps } from '../types';
-import useFocusCursor from '../../../../../../src/hooks/element/useFocusCursor';
+import useFocusCursor from '@integration-components/hooks-preact/element/useFocusCursor';
 import calendar from '../calendar';
 
 const useCalendar = (

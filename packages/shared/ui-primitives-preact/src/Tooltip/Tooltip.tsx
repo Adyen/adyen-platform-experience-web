@@ -3,7 +3,7 @@ import { PopoverContainerVariant } from '../Popover/types';
 import { useTooltipListeners } from './useTooltipListeners';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
-import useUniqueIdentifier from '../../../../../src/hooks/element/useUniqueIdentifier';
+import useUniqueIdentifier from '@integration-components/hooks-preact/element/useUniqueIdentifier';
 import classNames from 'classnames';
 import { cloneElement, VNode } from 'preact';
 import { PropsWithChildren } from 'preact/compat';

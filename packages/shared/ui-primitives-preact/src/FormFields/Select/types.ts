@@ -1,7 +1,7 @@
 import { Ref, VNode } from 'preact';
 import { AriaAttributes, HTMLAttributes } from 'preact/compat';
 import type { SelectChangeEvent, SelectItem } from '@integration-components/types';
-import { CommitActionProperties } from '../../../../../../src/hooks/useCommitAction';
+import { CommitActionProperties } from '@integration-components/hooks-preact/useCommitAction';
 import { ButtonVariant } from '../../Button/types';
 
 export type { SelectChangeEvent, SelectItem };

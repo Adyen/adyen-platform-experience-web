@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { boolOrFalse, EMPTY_OBJECT } from '../../../../../../src/utils';
+import { boolOrFalse, EMPTY_OBJECT } from '@integration-components/utils';
 import {
     BasePaginatedRecordsInitOptions,
     PaginatedRecordsFetcherReturnValue,
@@ -12,8 +12,8 @@ import usePageLimit from './usePageLimit';
 import useCursorPagination from './useCursorPagination';
 import useOffsetPagination from './useOffsetPagination';
 import usePaginatedRecordsFilters from './usePaginatedRecordsFilters';
-import useBooleanState from '../../../../../../src/hooks/useBooleanState';
-import useMounted from '../../../../../../src/hooks/useMounted';
+import useBooleanState from '@integration-components/hooks-preact/useBooleanState';
+import useMounted from '@integration-components/hooks-preact/useMounted';
 import {
     PageNeighbour,
     PaginatedResponseData,
@@ -22,8 +22,8 @@ import {
     PaginationType,
     WithEitherPages,
 } from '../types';
-import AdyenPlatformExperienceError from '../../../../../../src/core/Errors/AdyenPlatformExperienceError';
-import { ReactiveStateRecord } from '../../../../../../src/hooks/useReactiveState/types';
+import AdyenPlatformExperienceError from '@integration-components/core/AdyenPlatformExperienceError';
+import { ReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
 
 const offsetPaginatedResponseFields = ['hasNext', 'hasPrevious'] as const;
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import { uuid } from '../../../../../src/utils';
+import { useCoreContext } from '@integration-components/core/preact';
+import { uuid } from '@integration-components/utils';
 import { StructuredListItem } from './types';
 
 export const useStructuredListItems = (items: StructuredListItem[]) => {

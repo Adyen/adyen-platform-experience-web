@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'preact/compat';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
 import cx from 'classnames';

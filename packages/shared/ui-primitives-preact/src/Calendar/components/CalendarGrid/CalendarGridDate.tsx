@@ -2,7 +2,7 @@ import { memo } from 'preact/compat';
 import { property, propsProperty } from './utils';
 import { CalendarGridDateProps, CalendarGridDateRenderProps } from './types';
 import { fixedForwardRef, getClassName, memoComparator } from '../../../preact-utils';
-import { EMPTY_OBJECT } from '../../../../../../../src/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { CalendarGridRenderToken } from '../../types';
 
 const DEFAULT_DATE_CELL_CLASSNAME = 'adyen-pe-calendar__cell adyen-pe-calendar__cell--date';

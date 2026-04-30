@@ -1,4 +1,4 @@
-import { clamp } from '../../../../../src/utils';
+import { clamp } from '@integration-components/utils';
 
 /**
  * Calculates the progress percentage of a slider based on the current value, min/max range, and step size.

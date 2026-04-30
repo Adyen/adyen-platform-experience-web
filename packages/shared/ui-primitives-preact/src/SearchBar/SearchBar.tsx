@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { forwardRef, TargetedEvent } from 'preact/compat';
 import { JSX } from 'preact';
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import InputBase from '../FormFields/InputBase';
 import { InputBaseProps } from '../FormFields/types';
 import './SearchBar.scss';

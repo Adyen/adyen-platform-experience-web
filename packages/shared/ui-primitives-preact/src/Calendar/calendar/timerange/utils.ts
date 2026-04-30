@@ -10,7 +10,7 @@ import type {
     RangeTimestampsConfigWithFromOffsets,
     RangeTimestampsConfigWithoutOffsets,
 } from './types';
-import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '../../../../../../../src/core/Localization/datetime/restamper';
+import { Restamper, RestamperWithTimezone, systemToTimezone, timezoneToSystem } from '@integration-components/utils/datetime/restamper';
 import {
     clamp,
     enumerable,
@@ -22,7 +22,7 @@ import {
     isUndefined,
     noop,
     struct,
-} from '../../../../../../../src/utils';
+} from '@integration-components/utils';
 
 export const createRangeTimestampsConfigRestampingContext = (restamper: RestamperWithTimezone) =>
     Object.freeze({

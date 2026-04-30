@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import Img from '../../../Img';
 import Icon from '../../../Icon';
 import type { SelectItem, SelectItemProps } from '../types';
-import { boolOrFalse } from '../../../../../../../src/utils';
+import { boolOrFalse } from '@integration-components/utils';
 import {
     DROPDOWN_ELEMENT_ACTIVE_CLASS,
     DROPDOWN_ELEMENT_CHECKBOX_CLASS,

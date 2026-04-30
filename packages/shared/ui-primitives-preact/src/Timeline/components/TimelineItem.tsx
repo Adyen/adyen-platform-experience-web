@@ -12,9 +12,9 @@ import { Tag } from '../../Tag/Tag';
 import StructuredList from '../../StructuredList/StructuredList';
 import Icon from '../../Icon';
 import './TimelineItem.scss';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import { TranslationKey } from '../../../../../../src/translations';
-import useUniqueId from '../../../../../../src/hooks/useUniqueId';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TranslationKey } from '@integration-components/core';
+import useUniqueId from '@integration-components/hooks-preact/useUniqueId';
 
 const UNIT_TRANSLATION_KEYS: Record<TimelineDateUnit, TranslationKey> = {
     day: 'common.timeline.timelineItem.timeGap.unit.day',

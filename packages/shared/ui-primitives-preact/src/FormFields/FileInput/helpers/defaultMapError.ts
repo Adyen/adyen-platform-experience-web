@@ -1,4 +1,4 @@
-import { TranslationKey } from '../../../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 import { validationErrors } from '../constants';
 import { ValidationError } from '../types';
 

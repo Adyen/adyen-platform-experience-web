@@ -1,7 +1,7 @@
-import { useConfigContext } from '../../../../../../src/core/ConfigContext';
-import { useFetch } from '../../../../../../src/hooks/useFetch';
-import { DownloadStreamEndpoint, EndpointDownloadStreamData } from '../../../../../../src/types/api/endpoints';
-import { EMPTY_OBJECT } from '../../../../../../src/utils';
+import { useConfigContext } from '@integration-components/core/preact';
+import { useFetch } from '@integration-components/hooks-preact/useFetch';
+import { DownloadStreamEndpoint, EndpointDownloadStreamData } from '@integration-components/types/api/endpoints';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 
 const useDownload = (
     endpointName: DownloadStreamEndpoint,

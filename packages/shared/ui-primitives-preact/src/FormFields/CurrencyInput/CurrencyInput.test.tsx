@@ -4,11 +4,11 @@
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { CurrencyInput } from './CurrencyInput';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import { useConfigContext } from '../../../../../../src/core/ConfigContext';
-import { useFetch } from '../../../../../../src/hooks/useFetch';
+import { useCoreContext } from '@integration-components/core/preact';
+import { useConfigContext } from '@integration-components/core/preact';
+import { useFetch } from '@integration-components/hooks-preact/useFetch';
 import * as currencyUtils from '../../../../../../src/utils/currency/main';
-import Localization from '../../../../../../src/core/Localization/Localization';
+import Localization from '@integration-components/core/Localization/Localization';
 
 vi.mock('../../../../core/Context/useCoreContext');
 vi.mock('../../../../core/ConfigContext');

@@ -1,5 +1,5 @@
 import { TagProps } from '../Tag/types';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 
 export type TimelineShowMorePlacement = 'bottom' | 'after-first' | 'before-last';
 

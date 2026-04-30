@@ -4,8 +4,8 @@
 import { afterEach, beforeEach, describe, expect, vi, test } from 'vitest';
 import { act, render, screen, fireEvent } from '@testing-library/preact';
 import { SearchBar } from './SearchBar';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import { TranslationKey } from '../../../../../src/translations';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TranslationKey } from '@integration-components/core';
 
 vi.mock('../../../core/Context/useCoreContext', () => ({
     default: vi.fn(),

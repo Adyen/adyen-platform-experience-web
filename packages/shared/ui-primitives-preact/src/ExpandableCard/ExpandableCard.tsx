@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import { isFunction } from '../../../../../src/utils';
+import { isFunction } from '@integration-components/utils';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { ExpandableCardContentRender, ExpandableCardProps } from './types';
-import { useClickOutside } from '../../../../../src/hooks/element/useClickOutside';
-import useUniqueId from '../../../../../src/hooks/useUniqueId';
+import { useClickOutside } from '@integration-components/hooks-preact/element/useClickOutside';
+import useUniqueId from '@integration-components/hooks-preact/useUniqueId';
 import BaseButton from '../BaseButton';
 import Icon from '../Icon';
 import './ExpandableCard.scss';

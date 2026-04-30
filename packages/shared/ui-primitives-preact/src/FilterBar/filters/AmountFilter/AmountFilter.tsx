@@ -3,9 +3,9 @@ import { FilterEditModalRenderProps, FilterProps } from '../BaseFilter/types';
 import { RangeFilterBody, RangeFilterProps } from './types';
 import { RangeSelection } from './RangeSelection';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { EMPTY_OBJECT, isUndefined } from '../../../../../../../src/utils';
+import { EMPTY_OBJECT, isUndefined } from '@integration-components/utils';
 import { PopoverContainerSize } from '../../../Popover/types';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { AMOUNT_MULTIPLIER } from './constants';
 
 const enum AmountFormat {

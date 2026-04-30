@@ -1,4 +1,4 @@
-import { CONTROL_ELEMENT_PROPERTY } from '../../../../../../src/hooks/element/useClickOutside';
+import { CONTROL_ELEMENT_PROPERTY } from '@integration-components/hooks-preact/element/useClickOutside';
 
 export const popoverUtil = (<T extends Element, U extends (...args: any[]) => any>() => {
     let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];

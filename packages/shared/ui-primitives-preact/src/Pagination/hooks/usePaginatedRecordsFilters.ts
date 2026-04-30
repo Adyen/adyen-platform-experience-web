@@ -1,7 +1,7 @@
-import { EMPTY_OBJECT } from '../../../../../../src/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { UsePaginatedRecordsFilters } from './types';
-import useReactiveState from '../../../../../../src/hooks/useReactiveState';
-import { ReactiveStateRecord } from '../../../../../../src/hooks/useReactiveState/types';
+import useReactiveState from '@integration-components/hooks-preact/useReactiveState';
+import { ReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
 
 const usePaginatedRecordsFilters = <FilterValue, FilterParam extends string>(
     filterParams: ReactiveStateRecord<FilterValue, FilterParam> = EMPTY_OBJECT as ReactiveStateRecord<FilterValue, FilterParam>,

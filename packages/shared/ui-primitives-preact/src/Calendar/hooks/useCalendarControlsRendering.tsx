@@ -1,9 +1,9 @@
 import { ButtonVariant } from '../../Button/types';
 import { useCallback } from 'preact/hooks';
-import { isFunction } from '../../../../../../src/utils';
+import { isFunction } from '@integration-components/utils';
 import { CalendarControlRenderer, CalendarRenderControl } from '../types';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
-import useDetachedRender from '../../../../../../src/hooks/element/useDetachedRender';
+import { useCoreContext } from '@integration-components/core/preact';
+import useDetachedRender from '@integration-components/hooks-preact/element/useDetachedRender';
 import Button from '../../Button';
 import Icon from '../../Icon';
 

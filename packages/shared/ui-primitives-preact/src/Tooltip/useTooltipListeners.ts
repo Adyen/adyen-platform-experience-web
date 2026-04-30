@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'preact/hooks';
 import { InteractionKeyCode } from '../../../../../src/components/types';
-import useBooleanState from '../../../../../src/hooks/useBooleanState';
+import useBooleanState from '@integration-components/hooks-preact/useBooleanState';
 
 export interface TooltipListeners {
     onfocusin(): void;

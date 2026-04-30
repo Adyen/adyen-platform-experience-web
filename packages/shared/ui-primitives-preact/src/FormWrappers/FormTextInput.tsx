@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { useWizardFormContext } from '../../../../../src/hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import FormField from './FormField';
-import { Controller } from '../../../../../src/hooks/form';
+import { Controller } from '@integration-components/hooks-preact/form';
 import InputBase from '../FormFields/InputBase';
-import { FieldValues, ValidationRules } from '../../../../../src/hooks/form/types';
+import { FieldValues, ValidationRules } from '@integration-components/hooks-preact/form/types';
 import { InputFieldDropdownProps } from '../FormFields/types';
 import { VisibleField } from './VisibleField';
 import { TargetedEvent } from 'preact/compat';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 interface FormTextInputProps<TFieldValues> {
     fieldName: FieldValues<TFieldValues>;

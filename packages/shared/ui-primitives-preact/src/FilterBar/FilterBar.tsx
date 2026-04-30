@@ -1,15 +1,15 @@
 import cx from 'classnames';
 import Button from '../Button';
 import Icon from '../Icon';
-import { isFunction } from '../../../../../src/utils';
+import { isFunction } from '@integration-components/utils';
 import { ButtonVariant } from '../Button/types';
 import { PropsWithChildren } from 'preact/compat';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import { containerQueries, useResponsiveContainer } from '../../../../../src/hooks/useResponsiveContainer';
+import { useCoreContext } from '@integration-components/core/preact';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
 import type { FilterBarMobileSwitchProps, FilterBarProps } from './types';
 import './FilterBar.scss';
-import useUniqueId from '../../../../../src/hooks/useUniqueId';
+import useUniqueId from '@integration-components/hooks-preact/useUniqueId';
 
 const MOBILE_SWITCH_CLASS = 'adyen-pe-filter-bar-mobile-switch';
 

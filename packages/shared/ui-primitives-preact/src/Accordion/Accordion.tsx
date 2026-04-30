@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { useCallback, useLayoutEffect, useRef, useState } from 'preact/hooks';
-import useUniqueId from '../../../../../src/hooks/useUniqueId';
+import useUniqueId from '@integration-components/hooks-preact/useUniqueId';
 import {
     ACCORDION_BASE_CLASS,
     ACCORDION_CONTENT_CLASS,

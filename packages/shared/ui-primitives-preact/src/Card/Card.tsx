@@ -1,7 +1,7 @@
 import { HTMLAttributes } from 'preact';
 import classNames from 'classnames';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { uuid } from '../../../../../src/utils';
+import { uuid } from '@integration-components/utils';
 import { InteractionKeyCode } from '../../../../../src/components/types';
 import Icon from '../Icon';
 import {

@@ -3,7 +3,7 @@ import cx from 'classnames';
 import './ProgressBar.scss';
 import Typography from '../Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
-import { clamp } from '../../../../../src/utils';
+import { clamp } from '@integration-components/utils';
 import { Tooltip } from '../Tooltip/Tooltip';
 
 interface ProgressBarProps {

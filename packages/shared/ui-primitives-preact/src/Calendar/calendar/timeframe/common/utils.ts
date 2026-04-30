@@ -1,6 +1,6 @@
 import { FRAME_SIZES, WEEKEND_DAYS_SEED } from '../../constants';
 import { FirstWeekDay, TimeFrameSize, WeekDay } from '../../types';
-import { mod } from '../../../../../../../../src/utils';
+import { mod } from '@integration-components/utils';
 
 export const downsizeTimeFrame = (size: TimeFrameSize, maxsize: number): TimeFrameSize => {
     if (maxsize >= size) return size;

@@ -1,7 +1,7 @@
-import restamper, { systemToTimezone, timezoneToSystem } from '../../../../../../src/core/Localization/datetime/restamper';
-import { BASE_LOCALE, BASE_FORMAT_OPTIONS } from '../../../../../../src/core/Localization/datetime/restamper/constants';
-import { DEFAULT_DATETIME_FORMAT } from '../../../../../../src/core/Localization/constants/localization';
-import { EMPTY_ARRAY, EMPTY_OBJECT, identity, isInfinity, isUndefined, mod } from '../../../../../../src/utils';
+import restamper, { systemToTimezone, timezoneToSystem } from '@integration-components/utils/datetime/restamper';
+import { BASE_LOCALE, BASE_FORMAT_OPTIONS } from '@integration-components/utils/datetime/restamper/constants';
+import { DEFAULT_DATETIME_FORMAT } from '@integration-components/core/Localization/constants/localization';
+import { EMPTY_ARRAY, EMPTY_OBJECT, identity, isInfinity, isUndefined, mod } from '@integration-components/utils';
 import type { Month, MonthDays, Time, WeekDay } from './types';
 
 const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+),\s+(\d{2}):(\d{2}):(\d{2}).(\d{3})/;

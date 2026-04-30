@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'preact/compat';
-import { ValueOfRecord } from '../../../../../../src/utils/types';
+import { ValueOfRecord } from '@integration-components/utils/types';
 import { validationErrors } from './constants';
 
 export interface BaseFileInputProps {

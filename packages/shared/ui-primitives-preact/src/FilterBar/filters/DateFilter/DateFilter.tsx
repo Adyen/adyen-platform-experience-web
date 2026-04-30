@@ -1,12 +1,12 @@
 import { UseTimeRangeSelectionConfig } from '../../../DatePicker/components/TimeRangeSelector';
 import DateFilterCore from './DateFilterCore';
-import useDefaultOverviewFilterParams from '../../../../../../../src/hooks/useDefaultOverviewFilterParams';
-import { FilterParam } from '../../../../../../../src/components/types';
+import useDefaultOverviewFilterParams from '@integration-components/hooks-preact/useDefaultOverviewFilterParams';
+import { FilterParam } from '@integration-components/types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { DateFilterProps, DateRangeFilterParam } from './types';
 import { UsePaginatedRecords } from '../../../Pagination/hooks/types';
-import { EMPTY_OBJECT } from '../../../../../../../src/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 
 type DataOverviewDateFilterProps = Pick<UsePaginatedRecords<any, string, FilterParam>, 'canResetFilters' | 'filters' | 'updateFilters'> &
     ReturnType<typeof useDefaultOverviewFilterParams> & {

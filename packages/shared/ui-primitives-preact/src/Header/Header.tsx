@@ -2,11 +2,11 @@ import { HTMLAttributes } from 'preact';
 import { FC } from 'preact/compat';
 import cx from 'classnames';
 import Typography from '../Typography/Typography';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
-import useComponentHeadingElement, { ComponentHeadingType } from '../../../../../src/hooks/useComponentHeadingElement';
+import { useCoreContext } from '@integration-components/core/preact';
+import useComponentHeadingElement, { ComponentHeadingType } from '@integration-components/hooks-preact/useComponentHeadingElement';
 import { TypographyElement, TypographyVariant } from '../Typography/types';
-import type { TranslationKey } from '../../../../../src/translations';
-import type { UIElementProps } from '../../../../../src/components/types';
+import type { TranslationKey } from '@integration-components/core';
+import type { UIElementProps } from '@integration-components/types';
 import { Divider } from '../Divider/Divider';
 import './Header.scss';
 

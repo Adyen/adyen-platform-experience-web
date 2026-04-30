@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { useImageUrl } from '../../../../../src/hooks/useImageUrl';
+import { useImageUrl } from '@integration-components/hooks-preact/useImageUrl';
 import { useMemo } from 'preact/hooks';
 
 interface ImageProps {

@@ -1,6 +1,6 @@
-import { FilterParam } from '../../../../../../../src/components/types';
+import { FilterParam } from '@integration-components/types';
 import { BaseFilterProps } from '../BaseFilter/types';
-import { ReactiveStateRecord } from '../../../../../../../src/hooks/useReactiveState/types';
+import { ReactiveStateRecord } from '@integration-components/hooks-preact/useReactiveState/types';
 
 type RangeOptions = 'minAmount' | 'maxAmount';
 export interface RangeFilterProps extends BaseFilterProps {

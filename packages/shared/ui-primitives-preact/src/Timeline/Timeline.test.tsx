@@ -5,7 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/preact';
 import { describe, expect, test, vi, beforeEach } from 'vitest';
 import Timeline from './Timeline';
 import { TimelineItem } from './components/TimelineItem';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 vi.mock('../../../core/Context/useCoreContext');
 

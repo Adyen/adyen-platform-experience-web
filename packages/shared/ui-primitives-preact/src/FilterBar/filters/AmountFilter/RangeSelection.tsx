@@ -3,10 +3,10 @@ import { RangeFilterBody } from './types';
 import InputBase from '../../../FormFields/InputBase';
 import './AmountFilter.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { CommitAction } from '../../../../../../../src/hooks/useCommitAction';
-import useCoreContext from '../../../../../../../src/core/Context/useCoreContext';
+import { CommitAction } from '@integration-components/hooks-preact/useCommitAction';
+import { useCoreContext } from '@integration-components/core/preact';
 import { AMOUNT_MULTIPLIER } from './constants';
-import { isUndefined } from '../../../../../../../src/utils';
+import { isUndefined } from '@integration-components/utils';
 
 export const RangeSelection = ({
     onChange,

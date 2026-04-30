@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'preact/hooks';
 import { DEFAULT_PAGE_LIMIT } from '../constants';
 import { getClampedPageLimit } from '../utils';
-import { isNumber, mid } from '../../../../../../src/utils';
+import { isNumber, mid } from '@integration-components/utils';
 import { BasePaginatedRecordsInitOptions } from './types';
 
 export const getNearestFromSortedUniqueNums = (nums: number[], target: number): number => {

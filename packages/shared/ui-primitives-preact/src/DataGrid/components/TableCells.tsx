@@ -3,7 +3,7 @@ import DataGridCell from '../DataGridCell';
 import { DataGridColumn } from '../types';
 import { CustomCell } from '../DataGrid';
 import Icon from './Icon';
-import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObject } from '../../../../../../src/components/types';
+import { CustomButtonObject, CustomDataObject, CustomIconObject, CustomLinkObject } from '@integration-components/types';
 import Button from '../../Button';
 import Link from '../../Link/Link';
 import { ButtonVariant } from '../../Button/types';

@@ -1,7 +1,7 @@
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { ComponentChildren, Fragment, FunctionalComponent } from 'preact';
 import { TranslationFill, TranslationFillFunc, TranslationProps } from './types';
-import { isFunction, uniqueId } from '../../../../../src/utils';
+import { isFunction, uniqueId } from '@integration-components/utils';
 import { useMemo } from 'preact/hooks';
 
 const normalizeFill = (fill: TranslationFill): TranslationFillFunc => {

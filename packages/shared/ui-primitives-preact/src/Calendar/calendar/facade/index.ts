@@ -1,6 +1,6 @@
 import Calendar from './Calendar';
 import { CONTROLS_ALL, CONTROLS_MINIMAL, CONTROLS_NONE, RANGE_FROM, RANGE_TO, SELECT_MANY, SELECT_NONE, SELECT_ONE } from '../constants';
-import { ALREADY_RESOLVED_PROMISE, enumerable, isFunction, isNumber, struct } from '../../../../../../../src/utils';
+import { ALREADY_RESOLVED_PROMISE, enumerable, isFunction, isNumber, struct } from '@integration-components/utils';
 import timeslice, { sinceNow, UNBOUNDED_SLICE, untilNow } from '../timeslice';
 import { CalendarFacade } from '../types';
 

@@ -1,11 +1,11 @@
 import { WITH_ERROR_CLASS } from './constants';
 import { ErrorMessageDisplay } from '../ErrorMessageDisplay/ErrorMessageDisplay';
-import { useConfigContext } from '../../../../../src/core/ConfigContext';
-import { TranslationKey } from '../../../../../src/translations';
+import { useConfigContext } from '@integration-components/core/preact';
+import { TranslationKey } from '@integration-components/core';
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import { getErrorMessage } from '../../../../../src/components/utils/getErrorMessage';
-import AdyenPlatformExperienceError from '../../../../../src/core/Errors/AdyenPlatformExperienceError';
+import AdyenPlatformExperienceError from '@integration-components/core/AdyenPlatformExperienceError';
 
 type DataOverviewContainerProps = PropsWithChildren<{
     balanceAccountsError?: Error;

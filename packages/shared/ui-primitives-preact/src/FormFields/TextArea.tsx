@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import { isUndefined } from '../../../../../src/utils';
+import { isUndefined } from '@integration-components/utils';
 import cx from 'classnames';
 import './FormFields.scss';
 import { TextareaHTMLAttributes } from 'preact/compat';

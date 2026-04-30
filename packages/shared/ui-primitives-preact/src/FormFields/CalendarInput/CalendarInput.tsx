@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback, useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { CalendarProps } from '../../Calendar/types';
 import { DATE_FORMAT_DELIVERY_DATE } from '../../../../../../src/constants';
-import useTimezoneAwareDateFormatting from '../../../../../../src/hooks/useTimezoneAwareDateFormatting';
+import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
 import { CalendarInputButton } from './components/CalendarInputButton';
 import { CalendarInputPopover } from './components/CalendarInputPopover';
 

@@ -1,5 +1,5 @@
 import { useCallback, useReducer } from 'preact/hooks';
-import useReflex from '../../../../../../src/hooks/useReflex';
+import useReflex from '@integration-components/hooks-preact/useReflex';
 import { InteractionKeyCode } from '../../../../../../src/components/types';
 import { INITIAL_STATE } from '../DataGrid';
 

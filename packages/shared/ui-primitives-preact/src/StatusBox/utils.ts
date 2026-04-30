@@ -1,4 +1,4 @@
-import { IBankAccount, IPaymentMethod } from '../../../../../src/types';
+import { IBankAccount, IPaymentMethod } from '@integration-components/types';
 import { parsePaymentMethodType } from '@integration-components/transactions/preact';
 
 type PaymentOptionsType = {

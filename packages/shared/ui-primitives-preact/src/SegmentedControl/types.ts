@@ -1,5 +1,5 @@
 import { ComponentChild } from 'preact';
-import { TranslationKey } from '../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 
 export interface SegmentedControlItem<ItemId extends string> {
     content: ComponentChild;
