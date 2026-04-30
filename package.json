@@ -56,7 +56,7 @@
     "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx}' 'packages/domains/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' 'packages/domains/**/*.scss' --fix && pnpm run lint:playwright-selectors",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint '{src,packages,stories,mocks,tests}/**/*.{js,ts,tsx}' --quiet && stylelint '{src,packages}/**/*.scss' --fix && pnpm run lint:playwright-selectors",
     "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}' 'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
