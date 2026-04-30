@@ -133,11 +133,11 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
      * Apply a partial options patch and re-initialize. Subclasses can override
      * to add extra behavior (e.g. remounting registered components).
      */
-    public update = async (options: Partial<O> = EMPTY_OBJECT as Partial<O>): Promise<this> => {
+    public async update(options: Partial<O> = EMPTY_OBJECT as Partial<O>): Promise<this> {
         this.setOptions(options);
         await this.initialize();
         return this;
-    };
+    }
 }
 
 export default CoreBase;

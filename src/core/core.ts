@@ -16,7 +16,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
      * @param options - props to update
      * @returns this - the element instance
      */
-    public override update = async (options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> => {
+    public override async update(options: Partial<typeof this.options> = EMPTY_OBJECT): Promise<this> {
         this.setOptions(options);
         await this.initialize();
 
@@ -28,7 +28,7 @@ class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomT
         });
 
         return this;
-    };
+    }
 
     /**
      * Remove the reference of a component
