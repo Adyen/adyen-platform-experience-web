@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
 import { useMemo, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import ExpandableCard from '../../../../../../../../src/components/internal/ExpandableCard/ExpandableCard';
+import ExpandableCard from '@integration-components/ui-primitives-preact/ExpandableCard/ExpandableCard';
 import { TransactionTotalItem } from '../TransactionTotalItem/TransactionTotalItem';
 import { ITransactionTotalWithKey, TotalsCardProps } from './types';
 import { useMaxWidthsState } from '../../hooks/useMaxWidths';

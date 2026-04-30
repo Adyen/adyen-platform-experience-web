@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
-import Icon from '../../../../internal/Icon';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import SuccessIcon from '../../../../internal/SuccessIcon/SuccessIcon';
-import Typography from '../../../../internal/Typography/Typography';
+import Button from '@integration-components/ui-primitives-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import SuccessIcon from '@integration-components/ui-primitives-preact/SuccessIcon/SuccessIcon';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { isFunction } from '../../../../../utils';
 import { DisputeManagementProps } from '../../types';

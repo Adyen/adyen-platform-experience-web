@@ -3,7 +3,7 @@ import useCoreContext from '../../../../../../../../core/Context/useCoreContext'
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback } from 'preact/hooks';
 import { TargetedEvent } from 'preact';
-import { FormTextInput } from '../../../../../../../internal/FormWrappers/FormTextInput';
+import { FormTextInput } from '@integration-components/ui-primitives-preact/FormWrappers/FormTextInput';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 

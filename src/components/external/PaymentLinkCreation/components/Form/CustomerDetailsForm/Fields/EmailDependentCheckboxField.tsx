@@ -1,14 +1,14 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useWatch } from '../../../../../../../hooks/form';
-import Icon from '../../../../../../internal/Icon';
-import Typography from '../../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../../internal/Typography/types';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { uuid } from '../../../../../../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import cx from 'classnames';
-import { VisibleField } from '../../../../../../internal/FormWrappers/VisibleField';
-import { Tooltip } from '../../../../../../internal/Tooltip/Tooltip';
+import { VisibleField } from '@integration-components/ui-primitives-preact/FormWrappers/VisibleField';
+import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
 
 // TODO: CURRENTLY NOT USED - Enable this feature if we decide to implement the email-dependent checkboxes
 interface EmailDependentCheckboxFieldProps {

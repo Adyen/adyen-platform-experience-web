@@ -9,17 +9,17 @@ import {
 } from '../../constants';
 import cx from 'classnames';
 import { memo } from 'preact/compat';
-import { Tag } from '../../../../../../../../src/components/internal/Tag/Tag';
-import { TagVariant } from '../../../../../../../../src/components/internal/Tag/types';
+import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
 import { ARIA_ERROR_SUFFIX } from '@integration-components/core/Errors/constants';
 import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import InputBase from '../../../../../../../../src/components/internal/FormFields/InputBase';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import InputBase from '@integration-components/ui-primitives-preact/FormFields/InputBase';
 import { useUniqueId } from '@integration-components/hooks-preact';
-import Icon from '../../../../../../../../src/components/internal/Icon';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
 
 interface PaymentRefundAmountProps {
     currency: string;

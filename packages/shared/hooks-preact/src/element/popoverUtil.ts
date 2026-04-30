@@ -1,0 +1,59 @@
+export const CONTROL_ELEMENT_PROPERTY: unique symbol = Symbol('__control.Elem.');
+
+export const popoverUtil = (<T extends Element, U extends (...args: any[]) => any>() => {
+    let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];
+
+    const closePopoversOutsideOfClick = (eventPath: EventTarget[]) => {
+        const clickedOnControlElement = eventPath.some(
+            path =>
+                path instanceof Element &&
+                popoverRefs.some(popoverRef => {
+                    const controlElement = (popoverRef.element as any)[CONTROL_ELEMENT_PROPERTY];
+                    return controlElement instanceof Element && controlElement.contains(path as Node);
+                })
+        );
+        if (clickedOnControlElement) return;
+
+        const index = eventPath.reduce((index: number, path: EventTarget) => {
+            const pathMatchIndex = path instanceof Element ? popoverRefs.findIndex(popoverRef => popoverRef.element === path) : -1;
+            if (index === -1 && pathMatchIndex !== -1) {
+                return pathMatchIndex;
+            }
+            return index;
+        }, -1);
+
+        if (index === -1) {
+            closeNestedPopovers(0);
+        } else if (index + 1 <= popoverRefs.length - 1) {
+            closeNestedPopovers(index + 1);
+        }
+    };
+
+    const remove = (currentRef: T) => {
+        const index = popoverRefs.findIndex(refs => refs.element === currentRef);
+        if (index >= 0) {
+            popoverRefs.splice(index, 1);
+        }
+    };
+
+    const add = (currentRef: T, callback: U | undefined) => {
+        const index = popoverRefs.findIndex(refs => refs.element === currentRef);
+        if (index >= 0) return;
+        popoverRefs.push({ element: currentRef, callback: callback });
+    };
+
+    const closeNestedPopovers = (fromIndex: number) => {
+        const popoverLength = popoverRefs.length;
+        for (let i = fromIndex; i < popoverLength; i++) {
+            popoverRefs?.[i]?.callback?.();
+        }
+        popoverRefs.splice(fromIndex);
+    };
+
+    const closeAll = () => {
+        popoverRefs.forEach(ref => ref?.callback?.());
+        popoverRefs = [];
+    };
+
+    return { add, remove, closeAll, closePopoversOutsideOfClick };
+})();

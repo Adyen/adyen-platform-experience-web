@@ -4,14 +4,14 @@ import { uniqueId } from '@integration-components/utils';
 import { TransactionDetails } from '../../types';
 import { TX_TIMELINE_LABEL, TX_TIMELINE_VALUE } from '../../constants';
 import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '@integration-components/transactions/domain';
-import { StructuredListItem, StructuredListProps } from '../../../../../../../../src/components/internal/StructuredList/types';
-import { TimelineDateFormat, TimelineTimestamp } from '../../../../../../../../src/components/internal/Timeline/types';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import { TimelineItem } from '../../../../../../../../src/components/internal/Timeline/components/TimelineItem';
+import { StructuredListItem, StructuredListProps } from '@integration-components/ui-primitives-preact/StructuredList/types';
+import { TimelineDateFormat, TimelineTimestamp } from '@integration-components/ui-primitives-preact/Timeline/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import { TimelineItem } from '@integration-components/ui-primitives-preact/Timeline/components/TimelineItem';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
-import Timeline from '../../../../../../../../src/components/internal/Timeline/Timeline';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
+import Timeline from '@integration-components/ui-primitives-preact/Timeline/Timeline';
 
 export interface PaymentDetailsTimelineProps {
     transaction: TransactionDetails;

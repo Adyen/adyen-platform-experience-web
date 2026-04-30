@@ -18,8 +18,8 @@ Shared foundation libraries. `@integration-components/sdk-internal` is the curre
 | `@integration-components/core`                 | planned | Runtime: config, HTTP, i18n, session                                         |
 | `@integration-components/style`                | planned | SCSS foundation, tokens, mixins                                              |
 | `@integration-components/testing`              | planned | MSW setup, fixtures, test utilities                                          |
-| `@integration-components/hooks-preact`         | planned | Shared Preact hooks                                                          |
-| `@integration-components/ui-primitives-preact` | planned | Shared Preact UI components                                                  |
+| `@integration-components/hooks-preact`         | current | Shared Preact hooks                                                          |
+| `@integration-components/ui-primitives-preact` | current | Shared Preact UI components                                                  |
 
 ### `type:domain`, `scope:<name>`
 
@@ -63,14 +63,11 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 ### Transitional exceptions
 
-Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
-
-Payouts inherits the same `src/components/internal/*` exception and additionally has one Preact-coupled utility deep-import. Transactions inherits both exceptions and additionally has one Preact-only helper deep-import:
+The shared Preact UI primitives now live in `@integration-components/ui-primitives-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-primitives-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`, `StoreSelector`.
 
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx`, `packages/domains/transactions/preact/src/TransactionDetails/components/TransactionData/TransactionData.tsx` | Cannot move to `@integration-components/utils` because it returns JSX and depends on the `CopyText` UI primitive (still in root `src/components/internal/CopyText/`). Will migrate alongside `CopyText` when the shared Preact UI primitives package is bootstrapped. |
-| `src/utils/preact/fixedForwardRef`                | `packages/domains/transactions/preact/src/TransactionsOverview/components/TransactionsExport/TransactionsExport.tsx`, `packages/domains/transactions/preact/src/TransactionsOverview/components/SummaryItem/SummaryItemLabel.tsx` | Preact-specific HoC with no shared home today (`@integration-components/utils` is framework-agnostic and `@integration-components/ui-primitives-preact` has not been bootstrapped). Will migrate alongside the shared Preact UI primitives package. |
+| `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx`, `packages/domains/transactions/preact/src/TransactionDetails/components/TransactionData/TransactionData.tsx` | Returns JSX and is tightly coupled to other root utilities; extraction is tracked separately and will land once a Preact-friendly home for these helpers is decided. |
 
 Do not introduce new exceptions of this kind in subsequent domains. Either reuse these entries (if the same import is already covered) or promote the dependency to a shared package before extracting.
 

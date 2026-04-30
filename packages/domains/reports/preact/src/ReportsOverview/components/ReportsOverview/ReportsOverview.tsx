@@ -6,12 +6,12 @@ import { hasCustomField, isFunction, mergeRecords } from '@integration-component
 import { useBalanceAccountSelection, useCustomColumnsData, useDefaultOverviewFilterParams } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
 import type { ReportsOverviewComponentProps } from '@integration-components/reports/domain';
-import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../../../../../src/components/internal/FilterBar';
-import DateFilter from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/DateFilter';
-import BalanceAccountSelector from '../../../../../../../../src/components/internal/FormFields/Select/BalanceAccountSelector';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../../../../../src/components/internal/Pagination/constants';
-import { useCursorPaginatedRecords } from '../../../../../../../../src/components/internal/Pagination/hooks';
-import { Header } from '../../../../../../../../src/components/internal/Header';
+import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '@integration-components/ui-primitives-preact/FilterBar';
+import DateFilter from '@integration-components/ui-primitives-preact/FilterBar/filters/DateFilter/DateFilter';
+import BalanceAccountSelector from '@integration-components/ui-primitives-preact/FormFields/Select/BalanceAccountSelector';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-primitives-preact/Pagination/constants';
+import { useCursorPaginatedRecords } from '@integration-components/ui-primitives-preact/Pagination/hooks';
+import { Header } from '@integration-components/ui-primitives-preact/Header';
 import { FIELDS, ReportsTable } from '../ReportsTable/ReportsTable';
 import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';

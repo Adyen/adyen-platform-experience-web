@@ -14,7 +14,7 @@ import './CapitalOverview.scss';
 import Unqualified from '../Unqualified';
 import { PreQualified } from '../PreQualified/PreQualified';
 import { GrantList } from '../GrantList/GrantList';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 

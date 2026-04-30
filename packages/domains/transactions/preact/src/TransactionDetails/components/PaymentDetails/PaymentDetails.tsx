@@ -1,4 +1,4 @@
-import Tabs from '../../../../../../../../src/components/internal/Tabs/Tabs';
+import Tabs from '@integration-components/ui-primitives-preact/Tabs/Tabs';
 import PaymentRefundAlerts from './PaymentRefundAlerts';
 import PaymentDetailsActions from './PaymentDetailsActions';
 import PaymentDetailsProperties from './PaymentDetailsProperties';
@@ -9,7 +9,7 @@ import PaymentDetailsTimeline from './PaymentDetailsTimeline';
 import { useCoreContext } from '@integration-components/core/preact';
 import { ActiveView, DetailsTab, RefundedState, TransactionDetails, TransactionDetailsProps } from '../../types';
 import { REFUND_STATUSES, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DETAILS_TABS } from '../../constants';
-import { TabProps } from '../../../../../../../../src/components/internal/Tabs/types';
+import { TabProps } from '@integration-components/ui-primitives-preact/Tabs/types';
 import { useEffect, useMemo, useState } from 'preact/hooks';
 
 export interface PaymentDetailsProps {

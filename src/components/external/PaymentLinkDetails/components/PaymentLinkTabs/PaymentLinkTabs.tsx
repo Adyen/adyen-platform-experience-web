@@ -1,20 +1,20 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
-import StructuredList from '../../../../internal/StructuredList';
-import { ListValue, StructuredListItem, StructuredListItemType } from '../../../../internal/StructuredList/types';
-import Tabs from '../../../../internal/Tabs/Tabs';
+import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
+import { ListValue, StructuredListItem, StructuredListItemType } from '@integration-components/ui-primitives-preact/StructuredList/types';
+import Tabs from '@integration-components/ui-primitives-preact/Tabs/Tabs';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '../../../../../constants';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { IPaymentLinkDetails, IPaymentLinkShopperAddress } from '../../../../../types';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../../components/internal/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { PaymentLinkActivity } from '../PaymentLinkActivity/PaymentLinkActivity';
-import { TabProps } from 'src/components/internal/Tabs/types';
+import { TabProps } from '@integration-components/ui-primitives-preact/Tabs/types';
 import './PaymentLinkTabs.scss';
 import { TranslationKey } from '../../../../../translations';
-import CopyText from '../../../../internal/CopyText/CopyText';
+import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
 import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../constants';
-import Link from '../../../../internal/Link/Link';
+import Link from '@integration-components/ui-primitives-preact/Link/Link';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-tabs',

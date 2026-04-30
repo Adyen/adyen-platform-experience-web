@@ -1,12 +1,49 @@
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import {
-    getTimeRangeSelectionDefaultPresetOptions,
-    TIME_RANGE_SELECTION_PRESET_OPTION_KEYS,
-    TimeRangeOptions,
-    UseTimeRangeSelectionConfig,
-} from '../../../../src/components/internal/DatePicker/components/TimeRangeSelector';
+import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS, type TimeRangeOptions, type UseTimeRangeSelectionConfig } from '@integration-components/types';
 import { FilterParam } from '../../../../src/components/types';
+
+type RangeTimestamps = { from: number; to: number; now?: number | Date | null; timezone?: unknown };
+
+const getStartOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999).getTime();
+
+const getOffsetDate = (date: Date, days: number) => {
+    const offsetDate = new Date(date);
+    offsetDate.setDate(offsetDate.getDate() + days);
+    return offsetDate;
+};
+
+const getOffsetMonth = (date: Date, months: number) => {
+    const offsetDate = new Date(date);
+    offsetDate.setMonth(offsetDate.getMonth() + months);
+    return offsetDate;
+};
+
+const createRange = (from: number, to: number): RangeTimestamps => ({ from, to }) as RangeTimestamps;
+
+const getTimeRangeSelectionDefaultPresetOptions = (): UseTimeRangeSelectionConfig<RangeTimestamps>['options'] => {
+    const now = new Date();
+    const dayOfWeek = now.getDay() || 7;
+    const thisWeekStart = getOffsetDate(now, 1 - dayOfWeek);
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastMonthStart = getOffsetMonth(thisMonthStart, -1);
+    const lastMonthEnd = new Date(thisMonthStart.getTime() - 1);
+
+    return Object.freeze({
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_7_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -6)), now.getTime()),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -29)), now.getTime()),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_90_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -89)), now.getTime()),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_WEEK]: createRange(getStartOfDay(thisWeekStart), now.getTime()),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_WEEK]: createRange(
+            getStartOfDay(getOffsetDate(thisWeekStart, -7)),
+            getEndOfDay(getOffsetDate(thisWeekStart, -1))
+        ),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_MONTH]: createRange(getStartOfDay(thisMonthStart), now.getTime()),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_MONTH]: createRange(getStartOfDay(lastMonthStart), getEndOfDay(lastMonthEnd)),
+        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE]: createRange(getStartOfDay(new Date(now.getFullYear(), 0, 1)), now.getTime()),
+    });
+};
 
 // Default multi-selection filter parameters for the transactions overview.
 // Inlined here to keep `type:shared` packages from depending on `type:domain` packages.
@@ -19,7 +56,7 @@ const DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS = Object.freez
 const getDefaultFilterParams = (
     type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'paymentLinks',
     timeRange?: TimeRangeOptions,
-    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig['options']>
+    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig<RangeTimestamps>['options']>
 ) => {
     const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
     const defaultTimeRange = timeRange
@@ -54,7 +91,7 @@ const useDefaultOverviewFilterParams = (
     filterType: Parameters<typeof getDefaultFilterParams>[0],
     balanceAccount?: ReturnType<typeof useBalanceAccountSelection>['activeBalanceAccount'],
     timeRange?: TimeRangeOptions,
-    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig['options']>
+    timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig<RangeTimestamps>['options']>
 ) => {
     const [nowTimestamp, setNowTimestamp] = useState(() => Date.now());
     const params = getDefaultFilterParams(filterType, timeRange, timeRangeOptionsSubset);

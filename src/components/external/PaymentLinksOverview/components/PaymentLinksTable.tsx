@@ -5,8 +5,8 @@ import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDa
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
 import { useTableColumns } from '../../../../hooks/useTableColumns';
 import { TranslationKey } from '../../../../translations';
-import DataGrid from '../../../internal/DataGrid';
-import Pagination from '../../../internal/Pagination';
+import DataGrid from '@integration-components/ui-primitives-preact/DataGrid';
+import Pagination from '@integration-components/ui-primitives-preact/Pagination';
 import { PaymentLinkTableProps } from './types';
 import {
     BASE_TABLE_GRID_CLASS,
@@ -15,18 +15,18 @@ import {
     MOBILE_TABLE_CELL_CLASS,
     PAYMENT_LINK_STATUSES,
 } from './constants';
-import { Tag } from '../../../internal/Tag/Tag';
-import { TagVariant } from '../../../internal/Tag/types';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
+import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { IPaymentLinkStatus } from '../../../../types';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
     DATE_FORMAT_RESPONSE_DEADLINE,
 } from '../../../../constants';
-import { DAY_MS } from '../../../internal/Calendar/calendar/constants';
-import { Tooltip } from '../../../internal/Tooltip/Tooltip';
+import { DAY_MS } from '@integration-components/ui-primitives-preact/Calendar/calendar/constants';
+import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
 import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
 import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';

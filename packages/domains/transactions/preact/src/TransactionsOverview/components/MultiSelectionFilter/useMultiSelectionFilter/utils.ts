@@ -1,5 +1,5 @@
 import { identity, isFunction } from '@integration-components/utils';
-import { SelectItem } from '../../../../../../../../../src/components/internal/FormFields/Select/types';
+import { SelectItem } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
 import { SelectionOptionsList } from './types';
 
 export const selectionOptionsFor = <T extends string = string>(list: SelectionOptionsList<T>, mapOptionName?: (id: T) => string | undefined) => {

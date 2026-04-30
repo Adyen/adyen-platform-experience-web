@@ -1,9 +1,9 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
-import { ButtonVariant } from '../../../../internal/Button/types';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import Button from '../../../../internal/Button/Button';
+import Button from '@integration-components/ui-primitives-preact/Button/Button';
 import { getPaymentLinkErrorMessage } from './getPaymentLinkErrorMessage';
 
 type PaymentLinkErrorProps = {

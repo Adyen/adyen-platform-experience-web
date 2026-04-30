@@ -1,6 +1,6 @@
 import AdyenPlatformExperienceError from '../../../core/Errors/AdyenPlatformExperienceError';
 import { ErrorMessage, getCommonErrorMessage } from '../getCommonErrorCode';
-import CopyText from '../../internal/CopyText/CopyText';
+import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
 
 export const COMMON_CAPITAL_ERROR_MESSAGE = {
     contactSupportForHelp: 'common.errors.contactSupport',

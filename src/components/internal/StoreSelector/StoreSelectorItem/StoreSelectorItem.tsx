@@ -1,5 +1,5 @@
-import Typography from '../../Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import './StoreSelectorItem.scss';
 
 interface StoreSelectorItemProps {

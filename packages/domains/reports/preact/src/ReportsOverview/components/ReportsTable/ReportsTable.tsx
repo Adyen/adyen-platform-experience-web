@@ -13,16 +13,16 @@ import {
     useTimezoneAwareDateFormatting,
 } from '@integration-components/hooks-preact';
 import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
-import Alert from '../../../../../../../../src/components/internal/Alert/Alert';
-import Icon from '../../../../../../../../src/components/internal/Icon';
-import { AlertTypeOption } from '../../../../../../../../src/components/internal/Alert/types';
-import DownloadButton from '../../../../../../../../src/components/internal/Button/DownloadButton/DownloadButton';
-import DataGrid from '../../../../../../../../src/components/internal/DataGrid';
-import DataOverviewError from '../../../../../../../../src/components/internal/DataOverviewError/DataOverviewError';
-import Pagination from '../../../../../../../../src/components/internal/Pagination';
-import { PaginationProps, WithPaginationLimitSelection } from '../../../../../../../../src/components/internal/Pagination/types';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
+import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
+import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
+import DownloadButton from '@integration-components/ui-primitives-preact/Button/DownloadButton/DownloadButton';
+import DataGrid from '@integration-components/ui-primitives-preact/DataGrid';
+import DataOverviewError from '@integration-components/ui-primitives-preact/DataOverviewError/DataOverviewError';
+import Pagination from '@integration-components/ui-primitives-preact/Pagination';
+import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-primitives-preact/Pagination/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
