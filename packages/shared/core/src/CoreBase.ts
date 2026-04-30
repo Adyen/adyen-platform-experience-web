@@ -86,6 +86,8 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
      */
     protected setOptions(options: Partial<O>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
+        const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
+        const analyticsChanged = options.analytics !== undefined;
 
         this.options = { ...this.options, ...options };
 
@@ -100,6 +102,14 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
             this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
             this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
             this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
+        } else if (loadingContextChanged) {
+            const { apiUrl } = this.resolveEnvironment();
+            this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
+        }
+
+        if (analyticsChanged) {
+            this.analyticsEnabled = this.options.analytics?.enabled ?? true;
+            this.session.analyticsEnabled = this.analyticsEnabled;
         }
 
         this.onOptionsChanged(options);
