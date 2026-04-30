@@ -5,6 +5,7 @@ import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
 import { getEnvironment } from '../../../../envs/getEnvs.ts';
 import { realApiProxies } from '../../../../endpoints/realApiProxies.js';
+import rootPackageJson from '../../../../package.json' with { type: 'json' };
 
 // Inlined env defines. Importing config/build-env-defines.ts would pull its
 // transitive src/ imports through Storybook's loader; only the runtime env vars
@@ -30,6 +31,7 @@ const getStorybookDefines = (mode: string) => {
         'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(testCdnAssets),
+        'process.env.VITE_VERSION': JSON.stringify(rootPackageJson.version),
     };
 };
 
