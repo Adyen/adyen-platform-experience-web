@@ -20,7 +20,7 @@ const expectedBuildEnvDefineKeys = [
     'process.env.VITE_LOCAL_ASSETS',
     'process.env.VITE_MODE',
     'process.env.VITE_TEST_CDN_ASSETS',
-    'process.env.VITE_VERSION',
+    'process.env.SDK_VERSION',
 ].sort();
 
 test('getPreactViteLibConfig injects build environment defines', async () => {

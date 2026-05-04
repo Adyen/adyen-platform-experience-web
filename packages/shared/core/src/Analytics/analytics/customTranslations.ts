@@ -801,7 +801,7 @@ export const getCustomTranslationsAnalyticsPayload = (customTranslations: Locali
                 category: 'PIE',
                 subCategory: 'Core',
                 locale,
-                sdkVersion: process.env.VITE_VERSION,
+                sdkVersion: process.env.SDK_VERSION,
                 userAgent: getUserAgent(),
             };
 

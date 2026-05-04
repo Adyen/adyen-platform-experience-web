@@ -19,7 +19,7 @@ export const getBuildEnvDefines = (mode: string) => {
         'process.env.VITE_COMMIT_BRANCH': JSON.stringify(COMMIT_BRANCH),
         'process.env.VITE_COMMIT_HASH': JSON.stringify(COMMIT_HASH),
         'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-        'process.env.VITE_VERSION': JSON.stringify(ADYEN_FP_VERSION),
+        'process.env.SDK_VERSION': JSON.stringify(ADYEN_FP_VERSION),
         'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(session.accountHolder || null),
         'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevelopment ? session.autoRefresh === 'true' || null : undefined),
         'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevelopment ? session.maxAgeMs || null : undefined),
