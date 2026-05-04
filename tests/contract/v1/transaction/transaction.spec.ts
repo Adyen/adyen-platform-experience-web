@@ -1,7 +1,7 @@
 import { getRequestURL } from '../../utils/utils';
 import { sessionAwareTest } from '../../utils/session-request-function';
 import { ExtractResponseType } from '../../../../src/types/api/endpoints';
-import { operations } from '@integration-components/types/api/resources/TransactionsResource';
+import { operations } from '@integration-components/types/api/resources/TransactionsResourceV1';
 import { APIRequestContext, expect } from '@playwright/test';
 import { ENVS } from './env_constants';
 import process from 'node:process';

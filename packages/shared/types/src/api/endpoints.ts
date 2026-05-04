@@ -1,31 +1,31 @@
-import { operations as BalanceAccountOps } from './resources/BalanceAccountsResource';
-import { operations as PayoutsOps } from './resources/PayoutsResource';
-import { operations as TransactionsOps } from './resources/TransactionsResource';
-import { operations as TransactionsOpsV2 } from './resources/TransactionsResourceV2';
-import { operations as ReportsOps } from './resources/ReportsResource';
-import { operations as DisputesOps } from './resources/DisputesResource';
-import { operations as CapitalGrantOfferOps } from './resources/CapitalGrantOffersResource';
-import { operations as CapitalGrantsOps } from './resources/CapitalGrantsResource';
-import { operations as CapitalMissingActionsOps } from './resources/CapitalMissingActionsResource';
-import { components as SetupResource } from './resources/SetupResource';
-import { operations as AnalyticsOps } from './resources/PlatformComponentsUxdsResource';
-import { operations as PayByLinkOps } from './resources/PayByLinkResource';
-import { operations as OnboardingConfigurationOps } from './resources/OnboardingConfigurationResource';
+import { operations as balanceAccountsOps } from './resources/BalanceAccountsResourceV1';
+import { operations as payoutsOps } from './resources/PayoutsResourceV1';
+import { operations as transactionsV1Ops } from './resources/TransactionsResourceV1';
+import { operations as transactionsV2Ops } from './resources/TransactionsResourceV2';
+import { operations as reportsOps } from './resources/ReportsResourceV1';
+import { operations as disputesOps } from './resources/DisputesResourceV1';
+import { operations as capitalGrantOfferOps } from './resources/CapitalGrantOffersResourceV1';
+import { operations as capitalGrantsOps } from './resources/CapitalGrantsResourceV1';
+import { operations as capitalMissingActionsOps } from './resources/CapitalMissingActionsResourceV1';
+import { components as setupResource } from './resources/SetupResourceV1';
+import { operations as analyticsOps } from './resources/PlatformComponentsUxdsResourceV1';
+import { operations as payByLinkOps } from './resources/PayByLinkResourceV1';
+import { operations as onboardingConfigurationOps } from './resources/OnboardingConfigurationResourceV1';
 
-export type EndpointsOperations = AnalyticsOps &
-    BalanceAccountOps &
-    CapitalGrantOfferOps &
-    CapitalGrantsOps &
-    CapitalMissingActionsOps &
-    OnboardingConfigurationOps &
-    PayoutsOps &
-    ReportsOps &
-    Omit<TransactionsOps, keyof TransactionsOpsV2> &
-    TransactionsOpsV2 &
-    DisputesOps &
-    PayByLinkOps & {};
+export type EndpointsOperations = analyticsOps &
+    balanceAccountsOps &
+    capitalGrantOfferOps &
+    capitalGrantsOps &
+    capitalMissingActionsOps &
+    onboardingConfigurationOps &
+    payoutsOps &
+    reportsOps &
+    Omit<transactionsV1Ops, keyof transactionsV2Ops> &
+    transactionsV2Ops &
+    disputesOps &
+    payByLinkOps & {};
 
-export type EndpointName = Extract<keyof EndpointsOperations, SetupResource['schemas']['EndpointName']>;
+export type EndpointName = Extract<keyof EndpointsOperations, setupResource['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport' | 'downloadTransactions';
 // TODO: Remove exception for expirePayByLinkPaymentLink after BE changes the response from 200 to 204
@@ -41,7 +41,7 @@ export type EndpointData<T extends EndpointName> = T extends DownloadStreamEndpo
       ? EndpointJSONData<T>
       : never;
 
-export type SetupEndpointResponse = SetupResource['schemas']['SetupEndpointResponse'];
+export type SetupEndpointResponse = setupResource['schemas']['SetupEndpointResponse'];
 
 export type SetupEndpoint = Record<EndpointName, SetupEndpointResponse>;
 

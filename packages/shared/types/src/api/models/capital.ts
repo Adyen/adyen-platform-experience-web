@@ -1,15 +1,15 @@
 import { Schema } from '../utils';
-import { components as CapitalResourceComponents } from '../resources/CapitalGrantOffersResource';
-import { components as CapitalGrantsResourceComponents } from '../resources/CapitalGrantsResource';
-import { components as OnboardingConfigurationResourceComponents } from '../resources/OnboardingConfigurationResource';
+import { components as capitalGrantOffersComponents } from '../resources/CapitalGrantOffersResourceV1';
+import { components as capitalGrantsComponents } from '../resources/CapitalGrantsResourceV1';
+import { components as onboardingConfigurationComponents } from '../resources/OnboardingConfigurationResourceV1';
 
-export type IDynamicOffersConfig = Schema<CapitalResourceComponents, 'DynamicOffersResponseDTO'>;
-export type IGrant = Schema<CapitalGrantsResourceComponents, 'GrantResponseDTO'>;
-export type INLCapitalFundsCollection = Schema<CapitalGrantsResourceComponents, 'NLCapitalFundsCollection'>;
-export type IUSCapitalFundsCollection = Schema<CapitalGrantsResourceComponents, 'USCapitalFundsCollection'>;
-export type IGBCapitalFundsCollection = Schema<CapitalGrantsResourceComponents, 'GBCapitalFundsCollection'>;
-export type IGrantOfferResponseDTO = Schema<CapitalResourceComponents, 'GrantOfferResponseDTO'>;
-export type IGrantStatus = Schema<CapitalGrantsResourceComponents, 'GrantStatus'>;
-export type IMissingAction = Schema<CapitalGrantsResourceComponents, 'MissingActionDTO'>;
-export type IMissingActionType = Schema<CapitalGrantsResourceComponents, 'MissingActionType'>;
-export type IOnboardingConfiguration = Schema<OnboardingConfigurationResourceComponents, 'OnboardingConfigurationResponseDTO'>;
+export type IDynamicOffersConfig = Schema<capitalGrantOffersComponents, 'DynamicOffersResponseDTO'>;
+export type IGrant = Schema<capitalGrantsComponents, 'GrantResponseDTO'>;
+export type INLCapitalFundsCollection = Schema<capitalGrantsComponents, 'NLCapitalFundsCollection'>;
+export type IUSCapitalFundsCollection = Schema<capitalGrantsComponents, 'USCapitalFundsCollection'>;
+export type IGBCapitalFundsCollection = Schema<capitalGrantsComponents, 'GBCapitalFundsCollection'>;
+export type IGrantOfferResponseDTO = Schema<capitalGrantOffersComponents, 'GrantOfferResponseDTO'>;
+export type IGrantStatus = Schema<capitalGrantsComponents, 'GrantStatus'>;
+export type IMissingAction = Schema<capitalGrantsComponents, 'MissingActionDTO'>;
+export type IMissingActionType = Schema<capitalGrantsComponents, 'MissingActionType'>;
+export type IOnboardingConfiguration = Schema<onboardingConfigurationComponents, 'OnboardingConfigurationResponseDTO'>;
