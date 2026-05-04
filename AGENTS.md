@@ -49,7 +49,7 @@ BaseElement → UIElement → ComponentNameElement → Container → Presentatio
 ```
 
 - **`BaseElement`** — Base class handling mounting/unmounting into the host DOM (`mount()`, `unmount()`, `update()`).
-- **`UIElement`** — Extends `BaseElement`, wraps `componentToRender()` in the provider stack: `ConfigProvider` → `CoreProvider` → `AnalyticsProvider`.
+- **`UIElement`** — Extends `BaseElement`, wraps `componentToRender()` in the provider stack: `ConfigProvider` → `CoreProvider` → `EventDispatcherProvider`.
 - **`ComponentNameElement`** — Thin subclass that sets the component `type` and points `componentToRender` at its container.
 - **Container** (`ComponentNameContainer`) — Owns data fetching, state, and orchestration logic. Delegates rendering to presentational children.
 - **Presentational** (`ComponentName`) — Pure UI; receives data and callbacks via props.

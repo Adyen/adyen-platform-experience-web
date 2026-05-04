@@ -6,7 +6,7 @@ const useEventDispatcherContext = () => {
     const context = useContext(EventDispatcherContext);
 
     if (!context) {
-        throw new Error('Cannot use EventDispatcherContext without <AnalyticsProvider>');
+        throw new Error('Cannot use EventDispatcherContext without <EventDispatcherProvider>');
     }
 
     return context;

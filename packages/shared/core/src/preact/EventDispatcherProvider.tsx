@@ -7,13 +7,13 @@ import { usePushAnalyticEvent } from './useEventDispatcher/usePushAnalyticEvent'
 import type { ExternalComponentType } from '@integration-components/types';
 import { EventDispatcherContext } from './EventDispatcherContext';
 
-export interface AnalyticsProviderProps {
+export interface EventDispatcherProviderProps {
     componentName?: ExternalComponentType;
     analyticsEnabled: boolean;
     children?: ComponentChildren;
 }
 
-export const AnalyticsProvider = ({ children, componentName, analyticsEnabled }: PropsWithChildren<AnalyticsProviderProps>) => {
+export const EventDispatcherProvider = ({ children, componentName, analyticsEnabled }: PropsWithChildren<EventDispatcherProviderProps>) => {
     const pushAnalyticsEvent = usePushAnalyticEvent();
 
     const pushEvent = useCallback(

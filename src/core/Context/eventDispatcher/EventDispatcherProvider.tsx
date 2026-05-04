@@ -1,2 +1,2 @@
-export { AnalyticsProvider } from './preact/EventDispatcherProvider';
-export type { AnalyticsProviderProps } from './preact/EventDispatcherProvider';
+export { EventDispatcherProvider } from './preact/EventDispatcherProvider';
+export type { EventDispatcherProviderProps } from './preact/EventDispatcherProvider';
