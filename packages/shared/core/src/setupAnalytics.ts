@@ -15,7 +15,7 @@ export function setupAnalytics({ analyticsEnabled, componentName }: AnalyticsSet
     const userEvents = createUserEvents(analyticsEnabled, componentName);
 
     userEvents.updateBaseTrackingPayload?.({
-        sdkVersion: process.env.VITE_VERSION,
+        sdkVersion: process.env.SDK_VERSION,
     });
 
     return {

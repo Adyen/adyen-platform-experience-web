@@ -29,7 +29,7 @@ const getStorybookDefines = (mode: string) => {
         'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(testCdnAssets),
-        'process.env.VITE_VERSION': JSON.stringify(rootPackageJson.version),
+        'process.env.SDK_VERSION': JSON.stringify(rootPackageJson.version),
     };
 };
 
