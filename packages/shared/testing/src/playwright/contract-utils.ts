@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: './envs/.env' });
 
 export const getHeaders = ({ token, contentType }: { token: string; contentType?: string }) => {
-    const sdkVersion = process.env.VITE_VERSION;
+    const sdkVersion = process.env.SDK_VERSION;
     return {
         headers: {
             Authorization: `Bearer ${token}`,

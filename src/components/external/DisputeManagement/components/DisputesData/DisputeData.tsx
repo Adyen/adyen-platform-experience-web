@@ -355,7 +355,7 @@ export const DisputeData = ({
                             {...statusBoxOptions}
                             tag={
                                 <>
-                                    {disputeType && <Tag label={disputeType} />}
+                                    {disputeType && <Tag label={disputeType} testId="dispute-type-tag" />}
                                     {!isFraudNotification && <DisputeStatusTag dispute={dispute.dispute} />}
                                 </>
                             }

@@ -2,9 +2,10 @@ import cx from 'classnames';
 import { TagProps, TagVariant } from './types';
 import './Tag.scss';
 import { memo, PropsWithChildren } from 'preact/compat';
-export const Tag = memo(({ variant = TagVariant.DEFAULT, label, children }: PropsWithChildren<TagProps>) => {
+export const Tag = memo(({ variant = TagVariant.DEFAULT, label, testId, children }: PropsWithChildren<TagProps>) => {
     return (
         <div
+            data-testid={testId}
             className={cx('adyen-pe-tag', {
                 // [TODO]: These Bento tag variants definitions are outdated
                 'adyen-pe-tag--success': variant === TagVariant.SUCCESS,

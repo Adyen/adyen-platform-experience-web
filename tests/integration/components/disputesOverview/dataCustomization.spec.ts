@@ -27,8 +27,8 @@ test.describe('Data customization', () => {
         const dataGridBody = dataGrid.getByRole('rowgroup').nth(1);
         const firstRow = dataGridBody.getByRole('row').nth(0);
 
-        const summaryCell = firstRow.locator(`[aria-labelledby=_summary]`);
-        const actionCell = firstRow.locator(`[aria-labelledby=_sendEmail]`);
+        const summaryCell = firstRow.getByRole('cell').filter({ has: page.getByRole('link', { name: 'Summary', exact: true }) });
+        const actionCell = firstRow.getByRole('cell').filter({ has: page.getByRole('button', { name: 'Send email', exact: true }) });
 
         await expect(summaryCell.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
         await expect(actionCell.getByRole('button', { name: 'Send email', exact: true })).toBeVisible();

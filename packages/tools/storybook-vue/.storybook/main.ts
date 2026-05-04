@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import { getEnvironment } from '../../../../envs/getEnvs.ts';
 import { realApiProxies } from '../../../../endpoints/realApiProxies.js';
+import rootPackageJson from '../../../../package.json' with { type: 'json' };
 
 // Inlined env-variable defines. See the equivalent block in storybook-preact
 // main.ts for the rationale (avoids transitive directory imports).
@@ -28,6 +29,7 @@ const getStorybookDefines = (mode: string) => {
         'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
         'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
         'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(testCdnAssets),
+        'process.env.SDK_VERSION': JSON.stringify(rootPackageJson.version),
     };
 };
 
