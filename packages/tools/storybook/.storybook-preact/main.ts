@@ -1,39 +1,11 @@
-import { StorybookConfig } from '@storybook/preact-vite';
+import svgr from 'vite-plugin-svgr';
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
-import svgr from 'vite-plugin-svgr';
 import { getEnvironment } from '../../../../envs/getEnvs.ts';
+import { getBaseEnvDefines } from '../../../../config/defines/base-env.ts';
 import { realApiProxies } from '../../../../endpoints/realApiProxies.js';
-import rootPackageJson from '../../../../package.json' with { type: 'json' };
-
-// Inlined env defines. Importing config/build-env-defines.ts would pull its
-// transitive src/ imports through Storybook's loader; only the runtime env vars
-// are needed here, so we compute them directly.
-const getStorybookDefines = (mode: string) => {
-    const isDevelopment = mode === 'development';
-    const isTestEnv = process.env.TEST_ENV === '1';
-    const { api, app } = getEnvironment(mode);
-    const { session } = api;
-    const localAssets = app.useCdn == 'true' ? null : isDevelopment || isTestEnv;
-    const testCdnAssets = isDevelopment || app.useTestCdn ? true : null;
-
-    return {
-        'process.env.VITE_APP_PORT': JSON.stringify(app.port || null),
-        'process.env.VITE_APP_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || app.url || null),
-        'process.env.VITE_APP_LOADING_CONTEXT': JSON.stringify(isDevelopment ? app.loadingContext || null : null),
-        'process.env.VITE_LOCAL_ASSETS': JSON.stringify(localAssets),
-        'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
-        'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(session.accountHolder || null),
-        'process.env.SESSION_AUTO_REFRESH': JSON.stringify(isDevelopment ? session.autoRefresh === 'true' || null : undefined),
-        'process.env.SESSION_MAX_AGE_MS': JSON.stringify(isDevelopment ? session.maxAgeMs || null : undefined),
-        'process.env.SESSION_PERMISSIONS': JSON.stringify(session.permissions || null),
-        'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV),
-        'process.env.USE_CDN': JSON.stringify(app.useCdn ?? null),
-        'process.env.VITE_TEST_CDN_ASSETS': JSON.stringify(testCdnAssets),
-        'process.env.SDK_VERSION': JSON.stringify(rootPackageJson.version),
-    };
-};
+import type { StorybookConfig } from '@storybook/preact-vite';
 
 const rootDir = resolve(import.meta.dirname, '../../../..');
 
@@ -66,7 +38,7 @@ const config: StorybookConfig = {
         const { api } = getEnvironment(mode);
 
         return mergeConfig(config, {
-            define: getStorybookDefines(mode),
+            define: getBaseEnvDefines(mode),
             json: {
                 stringify: true,
             },
