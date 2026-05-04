@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    '/v1/capital/grants': {
+    '/v1/capital/capitalStates': {
         parameters: {
             query?: never;
             header?: never;
@@ -12,32 +12,12 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get Grants
-         * @description Get AccountHolders grants
+         * Get Capital State
+         * @description Returns the capital state with active grants and offers
          */
-        get: operations['getGrants'];
+        get: operations['getCapitalState'];
         put?: never;
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    '/v1/capital/grants/{grantOfferId}': {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Request Funds
-         * @description Submits grant offer request
-         */
-        post: operations['requestFunds'];
         delete?: never;
         options?: never;
         head?: never;
@@ -56,6 +36,19 @@ export interface components {
              * @description The numeric value of the amount, in [minor units](https://docs.adyen.com/development-resources/currency-codes#minor-units).
              */
             value: number;
+        };
+        /** @enum {string} */
+        CapitalState: 'NOT_ELIGIBLE' | 'OFFER_ELIGIBLE' | 'REQUESTED_OR_ACTIVE_GRANT' | 'EARLY_RENEWAL_ELIGIBLE';
+        CapitalStateDTO: {
+            activeOrRequestedGrants: components['schemas']['GrantResponseDTO'][];
+            capitalState: components['schemas']['CapitalState'];
+            dynamicOffer?: components['schemas']['DynamicOffersResponseDTO'];
+        };
+        DynamicOffersResponseDTO: {
+            maxAmount: components['schemas']['Amount'];
+            minAmount: components['schemas']['Amount'];
+            /** Format: int32 */
+            step: number;
         };
         FundsCollectionDetailDTO: {
             beneficiaryName: string;
@@ -111,9 +104,6 @@ export interface components {
         };
         /** @enum {string} */
         GrantStatus: 'Pending' | 'Active' | 'Repaid' | 'Failed' | 'WrittenOff' | 'Revoked';
-        GrantsResponseDTO: {
-            data: components['schemas']['GrantResponseDTO'][];
-        };
         MissingActionDTO: {
             type: components['schemas']['MissingActionType'];
         };
@@ -163,9 +153,11 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getGrants: {
+    getCapitalState: {
         parameters: {
-            query?: never;
+            query: {
+                accountHolderId: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -178,29 +170,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['GrantsResponseDTO'];
-                };
-            };
-        };
-    };
-    requestFunds: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                grantOfferId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK - the request has succeeded. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['GrantResponseDTO'];
+                    'application/json': components['schemas']['CapitalStateDTO'];
                 };
             };
         };
