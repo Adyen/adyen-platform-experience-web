@@ -19,8 +19,8 @@ type ApplyDateFilterOptions = {
 
 export const applyDateFilter = (page: Page, options?: ApplyDateFilterOptions) => {
     const { earliestDate, latestDate } = options || {};
-    const _minTimestamp = (now: Date) => _getTimestamp(new Date(earliestDate?.(now.getTime())), -Infinity);
-    const _maxTimestamp = (now: Date) => _getTimestamp(new Date(latestDate?.(now.getTime())), Infinity);
+    const _minTimestamp = (now: Date) => _getTimestamp(earliestDate?.(now.getTime()) ?? new Date(NaN), -Infinity);
+    const _maxTimestamp = (now: Date) => _getTimestamp(latestDate?.(now.getTime()) ?? new Date(NaN), Infinity);
 
     return async (from: Date | number | string = Date(), to: Date | number | string = from) => {
         const applyButton = page.getByLabel(getTranslatedKey('common.actions.apply.labels.default'));
