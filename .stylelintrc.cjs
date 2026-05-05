@@ -3,6 +3,12 @@ const bemPattern = '^.[adyen|fp]*(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0
 module.exports = {
     extends: ['stylelint-config-recommended', 'stylelint-config-sass-guidelines'],
     plugins: ['stylelint-scss'],
+    overrides: [
+        {
+            files: ['**/*.vue'],
+            customSyntax: 'postcss-html',
+        },
+    ],
     ignoreFiles: [
         'netlify/edge-functions/proxy-requests.ts',
         'src/style/bento/**/*.scss',
