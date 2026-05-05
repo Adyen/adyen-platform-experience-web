@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ github.sha }}
-          path: packages/tools/storybook-preact/storybook-static/
+          path: packages/tools/storybook/storybook-static/
           retention-days: 1
 
   e2e-local-mocked-api:
