@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { ITransactionCategory } from '../../../../../src';
 import { expectAnalyticsEvents, sleep } from '../../../../utils/utils';
-import { expect, type PageAnalyticsEvent } from '../../../../fixtures/analytics/events';
+import { expect, type PageAnalyticsEvent } from '../../../../fixtures/eventDispatcher/events';
 import {
     sharedTransactionDetailsAnalyticsEventProperties,
     sharedTransactionsInsightsAnalyticsEventProperties,

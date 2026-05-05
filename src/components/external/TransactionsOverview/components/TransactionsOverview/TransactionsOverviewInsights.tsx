@@ -1,6 +1,6 @@
 import { TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS } from '../../constants';
-import { useDurationEvent } from '../../../../../hooks/useAnalytics/useDurationEvent';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useDurationEvent } from '../../../../../hooks/useEventDispatcher/useDurationEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import InsightsTotals from '../InsightsTotals/InsightsTotals';
 

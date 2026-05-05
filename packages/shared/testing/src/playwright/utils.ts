@@ -1,5 +1,5 @@
 import keys from '../../../../../src/assets/translations/en-US.json' with { type: 'json' };
-import type { PageAnalyticsEvent } from '../fixtures/analytics/events';
+import type { PageAnalyticsEvent } from '../fixtures/eventDispatcher/events';
 import { expect, type Locator, type Page } from '@playwright/test';
 import dotenv from 'dotenv';
 

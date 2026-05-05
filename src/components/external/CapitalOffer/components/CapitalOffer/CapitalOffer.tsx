@@ -12,7 +12,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import './CapitalOffer.scss';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';

@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/analytics/events';
+import { test, expect } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
