@@ -2,7 +2,7 @@ import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
@@ -29,7 +29,7 @@ import { Translation } from '../../../../internal/Translation';
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const [areActionsLocallyCompleted, setActionsLocallyCompleted] = useState(false);
     const grantConfig = useMemo(() => getGrantConfig(grant, areActionsLocallyCompleted), [grant, areActionsLocallyCompleted]);

@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { ITransactionCategory } from '../../../../../src';
 import { expectAnalyticsEvents, sleep } from '../../../../utils/utils';
-import { expect, type PageAnalyticsEvent } from '../../../../fixtures/analytics/events';
+import { expect, type PageAnalyticsEvent } from '../../../../fixtures/eventDispatcher/events';
 import {
     sharedTransactionDetailsAnalyticsEventProperties,
     sharedTransactionsInsightsAnalyticsEventProperties,
@@ -33,7 +33,7 @@ export const downloadTransactions = async (
 
     if (downloadPromise) {
         const download = await downloadPromise;
-        download && expect(download.suggestedFilename()).toBe('transactions.csv');
+        if (download) expect(download.suggestedFilename()).toBe('transactions.csv');
     }
 };
 

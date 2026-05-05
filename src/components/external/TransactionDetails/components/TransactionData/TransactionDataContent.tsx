@@ -4,7 +4,7 @@ import useRefundMetadata from '../../hooks/useRefundMetadata';
 import useTransaction from '../../hooks/useTransaction';
 import DataOverviewDetailsSkeleton from '../../../../internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useModalContext } from '../../../../internal/Modal/Modal';
 import { sharedTransactionDetailsEventProperties } from '../../constants';

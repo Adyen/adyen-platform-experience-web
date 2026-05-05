@@ -23,7 +23,7 @@ All external components inherit from this. Provides `mount(domNode)`, `unmount()
 Extends `BaseElement`. Wraps component output in the **provider stack**:
 
 ```
-ConfigProvider → CoreProvider → AnalyticsProvider → <section> → componentToRender()
+ConfigProvider → CoreProvider → EventDispatcherProvider → <section> → componentToRender()
 ```
 
 Provides session, i18n, CDN assets, analytics, and error handling to all descendants.

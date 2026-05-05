@@ -1,4 +1,4 @@
-import { BaseEventProperties } from '../../../../../core/Analytics/analytics/user-events';
+import { BaseEventProperties } from '../../../../../core/EventDispatcher/eventDispatcher/user-events';
 
 export const CAPITAL_OFFER_CLASS_NAMES = {
     base: 'adyen-pe-capital-offer',

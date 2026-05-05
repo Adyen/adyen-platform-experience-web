@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { setupAnalytics } from './setupAnalytics';
-import type { EventQueueItem } from './Analytics/analytics/user-events';
+import type { EventQueueItem } from './EventDispatcher/eventDispatcher/user-events';
 
 describe('setupAnalytics', () => {
     afterEach(() => {

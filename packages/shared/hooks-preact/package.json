@@ -20,6 +20,10 @@
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*"
     },
+    "devDependencies": {
+        "@testing-library/preact": "*",
+        "vitest": "*"
+    },
     "peerDependencies": {
         "preact": "^10.28.2"
     }

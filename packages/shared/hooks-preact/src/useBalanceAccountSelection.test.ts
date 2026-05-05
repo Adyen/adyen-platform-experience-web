@@ -4,12 +4,12 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/preact';
 import useCoreContext from '../../../../src/core/Context/useCoreContext';
-import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from './useEventDispatcher/useFilterAnalyticsEvent';
 import useBalanceAccountSelection, { ALL_BALANCE_ACCOUNTS_SELECTION_ID } from './useBalanceAccountSelection';
 import type { IBalanceAccountBase } from '@integration-components/types';
 
 vi.mock('../core/Context/useCoreContext');
-vi.mock('./useAnalytics/useFilterAnalyticsEvent');
+vi.mock('./useEventDispatcher/useFilterAnalyticsEvent');
 
 describe('useBalanceAccountSelection', () => {
     const mockLogEvent = vi.fn();

@@ -11,8 +11,8 @@ import {
     selectSingleCurrencyFromMultiSelectFilter,
     setExactPspReference,
 } from './shared/utils';
-import { test, expect } from '../../../fixtures/analytics/events';
-import { expectAnalyticsEvents, getTranslatedKey, goToStory } from '../../../utils/utils';
+import { test, expect } from '../../../fixtures/eventDispatcher/events';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';
