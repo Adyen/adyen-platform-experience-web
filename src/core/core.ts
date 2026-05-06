@@ -5,11 +5,11 @@ import BaseElement from '../components/external/BaseElement';
 import Localization, { TranslationSourceRecord } from './Localization';
 import { EMPTY_OBJECT } from '../utils';
 import { AssetOptions, Assets } from './Assets/Assets';
-import { getCustomTranslationsAnalyticsPayload } from './Analytics/analytics/customTranslations';
+import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 
 class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
-    public static readonly version = process.env.VITE_VERSION!;
+    public static readonly version = process.env.SDK_VERSION!;
 
     public components: BaseElement<any>[] = [];
     public options: CoreOptions<AvailableTranslations, CustomTranslations>;

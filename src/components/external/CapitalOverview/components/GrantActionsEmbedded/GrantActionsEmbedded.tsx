@@ -10,7 +10,7 @@ import { IMissingAction, IMissingActionType } from '../../../../../types';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import Modal from '../../../../internal/Modal';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useActionsAlertTitles } from '../../hooks';
 import Icon from '../../../../internal/Icon';
 import './GrantActionsEmbedded.scss';
@@ -43,7 +43,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     onComplete,
 }) => {
     const { i18n, environment } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
     const completedActionsRef = useRef<Set<IMissingActionType>>(new Set());
     const timeoutIdsRef = useRef<Map<IMissingActionType, ReturnType<typeof setTimeout>>>(new Map());

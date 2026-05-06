@@ -8,7 +8,7 @@ import Typography from '../../../../internal/Typography/Typography';
 import useUniqueId from '../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useDownload from '../../../../internal/Button/DownloadButton/useDownload';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import ToggleSwitch, { ToggleSwitchProps } from '../../../../internal/ToggleSwitch/ToggleSwitch';
 import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
 import FilterButton from '../../../../internal/FilterBar/components/FilterButton/FilterButton';
@@ -72,7 +72,7 @@ const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
     const { filters, lastFiltersChangeTimestamp } = useTransactionsOverviewContext();
     const { i18n } = useCoreContext();
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const [popoverOpen, setPopoverOpen] = useState(false);

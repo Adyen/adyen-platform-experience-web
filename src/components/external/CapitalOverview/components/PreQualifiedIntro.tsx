@@ -1,9 +1,9 @@
 import { useCallback } from 'preact/hooks';
 import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
-import { useLandedPageEvent } from '../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import InfoBox from '../../../internal/InfoBox';
 import Button from '../../../internal/Button/Button';
-import useAnalyticsContext from '../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOffersConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
@@ -25,7 +25,7 @@ const PreQualifiedIntro = ({
     onOfferOptionsRequest: () => void;
 }) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const onOfferOptionsRequestWithTracking = useCallback<typeof onOfferOptionsRequest>(() => {
         try {

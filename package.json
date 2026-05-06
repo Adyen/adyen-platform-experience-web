@@ -53,10 +53,10 @@
     "build:analyse": "vite build --mode analyse --config vite.config.ts",
     "build:publish": "pnpm run build && pnpm pack",
     "changeset": "changeset",
-    "format": "prettier --write 'src/**/*.{ts,js,css,scss,html}'",
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,css,scss,html,vue}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint '{src,packages,stories,mocks,tests}/**/*.{js,ts,tsx}' --quiet && stylelint '{src,packages}/**/*.scss' --fix && pnpm run lint:playwright-selectors",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint '{src,packages,stories,mocks,tests}/**/*.{js,ts,tsx,vue}' --quiet && stylelint '{src,packages}/**/*.scss' --fix && pnpm run lint:playwright-selectors",
     "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}' 'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
@@ -89,6 +89,9 @@
     "preact": "catalog:"
   },
   "devDependencies": {
+    "@adyen/bento-design-tokens": "^1.7.1",
+    "@changesets/cli": "2.29.8",
+    "@changesets/get-github-info": "^0.6.0",
     "@integration-components/core": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",
     "@integration-components/payouts": "workspace:*",
@@ -97,9 +100,6 @@
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",
     "@integration-components/utils": "workspace:*",
-    "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "2.29.8",
-    "@changesets/get-github-info": "^0.6.0",
     "@nx/eslint": "^22.5.3",
     "@nx/eslint-plugin": "^22.5.3",
     "@nx/vite": "^22.5.3",
@@ -164,7 +164,9 @@
       "rollup@4.53.3": "4.59.0",
       "serialize-javascript@6.0.2": "7.0.3",
       "picomatch": ">=4.0.4",
-      "preact": "catalog:"
+      "preact": "catalog:",
+      "typescript": "5.8.3",
+      "@types/node": "24.10.13"
     },
     "ignoredBuiltDependencies": [
       "core-js"

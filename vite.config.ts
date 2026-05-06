@@ -4,9 +4,9 @@ import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { realApiProxies } from './endpoints/realApiProxies';
+import { getBuildEnvDefines } from './config/defines/build-env';
 import { getEnvironment } from './envs/getEnvs';
 import packageJson from './package.json';
-import { getBuildEnvDefines } from './config/build-env-defines';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig(({ mode }) => {
