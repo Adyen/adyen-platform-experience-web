@@ -1,1 +1,2 @@
-export { ReportsOverview } from '@integration-components/sdk-internal';
+export { ReportsOverview } from '../../src';
+export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields, ReportsListCustomization } from '../../../domain/src';

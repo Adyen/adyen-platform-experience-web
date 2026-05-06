@@ -29,6 +29,7 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
         }
 
         // use analytics events in the test
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         await use(analyticsEvents);
     },
 });

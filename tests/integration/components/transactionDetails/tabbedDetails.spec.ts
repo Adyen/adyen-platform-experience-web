@@ -36,7 +36,7 @@ test.describe('Tabbed details', () => {
 
             await expect(labels).toHaveCount(2);
 
-            for (let label of allLabels) {
+            for (const label of allLabels) {
                 await expect(label).toBeVisible();
             }
         }
@@ -84,7 +84,7 @@ test.describe('Tabbed details', () => {
 
             await expect(elems).toHaveCount(2);
 
-            for (let label of allElems) {
+            for (const label of allElems) {
                 await expect(label).toBeVisible();
             }
         }
@@ -104,7 +104,7 @@ test.describe('Tabbed details', () => {
 
             await expect(elems).toHaveCount(3);
 
-            for (let label of allElems) {
+            for (const label of allElems) {
                 await expect(label).toBeVisible();
             }
         }
@@ -119,7 +119,7 @@ test.describe('Tabbed details', () => {
 
             await expect(elems).toHaveCount(2);
 
-            for (let label of allElems) {
+            for (const label of allElems) {
                 await expect(label).toBeVisible();
             }
         }

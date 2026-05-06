@@ -7,15 +7,15 @@ configuration context, localization (i18n), analytics, and HTTP communication.
 
 ## Directory Layout
 
-| Directory                | Purpose                                                            |
-| ------------------------ | ------------------------------------------------------------------ |
-| `ConfigContext/`         | Session provider, auth session management, endpoint resolution     |
-| `ConfigContext/session/` | `AuthSession` class — token refresh, session lifecycle             |
-| `Context/`               | Preact context providers: `CoreProvider`, `EventDispatcherProvider`      |
-| `Localization/`          | i18n system: locale loading, translation resolution, formatting    |
-| `Analytics/`             | Analytics event tracking, user events, custom translation payloads |
-| `Http/`                  | HTTP client utilities, error types, request handling               |
-| `Errors/`                | Error classes and error handling utilities                         |
+| Directory                | Purpose                                                             |
+| ------------------------ | ------------------------------------------------------------------- |
+| `ConfigContext/`         | Session provider, auth session management, endpoint resolution      |
+| `ConfigContext/session/` | `AuthSession` class — token refresh, session lifecycle              |
+| `Context/`               | Preact context providers: `CoreProvider`, `EventDispatcherProvider` |
+| `Localization/`          | i18n system: locale loading, translation resolution, formatting     |
+| `Analytics/`             | Analytics event tracking, user events, custom translation payloads  |
+| `Http/`                  | HTTP client utilities, error types, request handling                |
+| `Errors/`                | Error classes and error handling utilities                          |
 
 ## Key Files
 

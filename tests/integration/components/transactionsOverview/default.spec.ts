@@ -12,7 +12,7 @@ import {
     setExactPspReference,
 } from './shared/utils';
 import { test, expect } from '../../../fixtures/eventDispatcher/events';
-import { expectAnalyticsEvents, getTranslatedKey, goToStory } from '../../../utils/utils';
+import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
 
 const STORY_ID = 'mocked-transactions-transactions-overview--default';

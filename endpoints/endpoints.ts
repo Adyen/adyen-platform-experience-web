@@ -1,9 +1,10 @@
-const baseUrl = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
+import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL as baseUrl } from '@integration-components/testing/msw';
+
 const datasetBaseUrl = '/datasets';
 
 export const endpoints = () =>
     ({
-        balanceAccounts: `${baseUrl}/balanceAccounts`,
+        balanceAccounts: BALANCE_ACCOUNTS_ENDPOINT,
         balances: `${baseUrl}/balanceAccounts/:id/balances`,
         payouts: `${baseUrl}/payouts`,
         payout: `${baseUrl}/payouts/breakdown`,
@@ -16,8 +17,6 @@ export const endpoints = () =>
         setup: `${baseUrl}/setup`,
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
-        reports: `${baseUrl}/reports`,
-        downloadReport: `${baseUrl}/reports/download`,
         stores: `${baseUrl}/stores`,
         capital: {
             anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,

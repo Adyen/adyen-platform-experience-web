@@ -33,7 +33,7 @@ export const downloadTransactions = async (
 
     if (downloadPromise) {
         const download = await downloadPromise;
-        download && expect(download.suggestedFilename()).toBe('transactions.csv');
+        if (download) expect(download.suggestedFilename()).toBe('transactions.csv');
     }
 };
 

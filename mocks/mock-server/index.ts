@@ -7,7 +7,7 @@ import { disputesMocks } from './disputes';
 import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from './payByLink';
 import { payoutsMocks } from './payouts';
-import { reportsMock } from './reports';
+import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
 import { transactionsMocks } from './transactions';

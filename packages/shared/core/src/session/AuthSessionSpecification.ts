@@ -9,12 +9,20 @@ import type { onErrorHandler } from '../types';
 
 type _AuthSessionSpecification = SessionSpecification<SessionObject, Parameters<typeof _http>>;
 
+// Declaration merging is used here to type runtime-defined class members
+// (`autoRefresh` and `onRefresh` are installed via `Object.defineProperties`
+// in the constructor) without emitting class field initializers. This pattern
+// is also compatible with Playwright's babel transformer, which cannot parse
+// `declare` class fields.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface AuthSessionSpecification {
+    errorHandler: onErrorHandler | null;
+    readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
+    readonly onRefresh: _AuthSessionSpecification['onRefresh'];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class AuthSessionSpecification implements _AuthSessionSpecification {
-    declare public errorHandler: onErrorHandler | null;
-
-    declare public readonly autoRefresh: _AuthSessionSpecification['autoRefresh'];
-    declare public readonly onRefresh: _AuthSessionSpecification['onRefresh'];
-
     constructor(public onSessionCreate?: SessionRequest) {
         this._errorHandler = this._errorHandler.bind(this);
 

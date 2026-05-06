@@ -1,8 +1,8 @@
-@use '../../../../internal/DataOverviewDisplay/styles' as *;
 @use '@integration-components/style';
+@use '@integration-components/style/mixins';
 
 .adyen-pe-payouts-overview {
-    @include adyen-pe-data-overview;
+    @include mixins.adyen-pe-data-overview;
 
     &-display {
         &__spinner-container {

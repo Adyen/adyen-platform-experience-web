@@ -15,7 +15,11 @@
     },
     "dependencies": {
         "@integration-components/types": "workspace:*",
-        "@integration-components/utils": "workspace:*"
+        "@integration-components/utils": "workspace:*",
+        "classnames": "*"
+    },
+    "devDependencies": {
+        "vitest": "*"
     },
     "peerDependencies": {
         "preact": "^10.28.2"
