@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { test, expect } from '@integration-components/testing/fixtures/analytics/events';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, getClipboardContent, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedAnalyticsEventProperties, sharedCopyButtonAnalyticsEventProperties } from './shared/constants';
 

@@ -8,8 +8,7 @@ import { isCustomDataObject } from '../../../../../../../../src/components/inter
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../constants';
 import { normalizeCustomFields } from '@integration-components/utils';
-import { useAnalyticsContext } from '@integration-components/core/preact';
-import { useCoreContext } from '@integration-components/core/preact';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import Icon from '../../../../../../../../src/components/internal/DataGrid/components/Icon';
@@ -196,7 +195,7 @@ interface PaymentDetailsPropertiesCopyTextProps {
 }
 
 PaymentDetailsProperties.CopyText = memo(({ trackingName, ...copyTextProps }: PaymentDetailsPropertiesCopyTextProps) => {
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const onCopyText = useCallback(() => {
         if (trackingName) {

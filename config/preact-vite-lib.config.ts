@@ -1,8 +1,8 @@
 import { resolve } from 'node:path';
-import { defineConfig, mergeConfig, type UserConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
+import { defineConfig, mergeConfig, type UserConfig } from 'vite';
+import { getBuildEnvDefines } from './defines/build-env';
 import svgr from 'vite-plugin-svgr';
-import { getBuildEnvDefines } from './build-env-defines';
 
 interface PreactViteLibOptions {
     projectRoot: string;

@@ -10,8 +10,7 @@ import {
 import { memo } from 'preact/compat';
 import { clamp } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { useAnalyticsContext } from '@integration-components/core/preact';
-import { useCoreContext } from '@integration-components/core/preact';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useComponentTiming } from '@integration-components/hooks-preact';
 // import useRefundLineItems from '../../hooks/useRefundLineItems';
 import PaymentRefundActions from './PaymentRefundActions';
@@ -65,7 +64,7 @@ const PaymentRefund = ({ disabled, refreshTransaction, setActiveView, setLocked,
     const showDetails = useCallback(() => setActiveView(ActiveView.DETAILS), [setActiveView]);
 
     const { duration } = useComponentTiming();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     useEffect(() => {
         if (!loggedEntryEventRef.current) {

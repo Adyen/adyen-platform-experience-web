@@ -19,7 +19,7 @@ import { getDateRangeTimestamps } from '../../../../../../../../src/components/i
 import { DateFilterProps, DateRangeFilterParam } from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/types';
 import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../../../../../src/components/internal/Calendar/calendar/timerange';
 import DateFilterCore from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/DateFilterCore';
-import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
 
 export interface TransactionDateFilterProps {

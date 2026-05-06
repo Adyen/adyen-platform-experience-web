@@ -1,4 +1,4 @@
-import { test, expect } from '@integration-components/testing/fixtures/analytics/events';
+import { test, expect } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import { sharedTransactionsListAnalyticsEventProperties } from './shared/constants';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';

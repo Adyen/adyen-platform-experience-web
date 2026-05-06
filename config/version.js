@@ -1,26 +1,28 @@
 import childProcess from 'child_process';
-import packageJson from '../package.json';
+import packageJson from '../package.json' with { type: 'json' };
 import { uuid } from '../src/utils';
 
+export const SDK_VERSION = packageJson.version;
+
 const currentVersion = () => {
+    const BUILD_ID = `@adyen/adyen-pe-web-${uuid()}`;
     let COMMIT_HASH = null;
     let COMMIT_BRANCH = null;
-    const ADYEN_BUILD_ID = `@adyen/adyen-pe-web-${uuid()}`;
 
     try {
         COMMIT_HASH = childProcess.execSync('git rev-parse --short HEAD').toString().trim();
         COMMIT_BRANCH = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 
-        console.log(`Building version ${packageJson.version} (revision ${COMMIT_HASH} from branch ${COMMIT_BRANCH}). Build id ${ADYEN_BUILD_ID}`);
+        console.log(`Building version ${SDK_VERSION} (revision ${COMMIT_HASH} from branch ${COMMIT_BRANCH}). Build id ${BUILD_ID}`);
     } catch (e) {
         console.warn(e.message);
     }
 
     return {
-        ADYEN_FP_VERSION: packageJson.version,
+        BUILD_ID,
         COMMIT_BRANCH,
         COMMIT_HASH,
-        ADYEN_BUILD_ID,
+        SDK_VERSION,
     };
 };
 

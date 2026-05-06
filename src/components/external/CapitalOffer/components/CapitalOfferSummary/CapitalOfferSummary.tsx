@@ -10,7 +10,7 @@ import './CapitalOfferSummary.scss';
 import Button from '../../../../internal/Button/Button';
 import { ButtonVariant } from '../../../../internal/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -45,7 +45,7 @@ export const CapitalOfferSummary = ({
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const expectedRepaymentDate = useMemo(() => {
         const date = getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays);

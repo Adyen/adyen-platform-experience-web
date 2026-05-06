@@ -1,18 +1,10 @@
 import { http, HttpResponse } from 'msw';
+import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
 import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { getReports } from '../mock-data/reports';
 import { REPORTS_ENDPOINTS } from '../endpoints';
 
 const DEFAULT_SORT_DIRECTION = 'desc';
-
-const BALANCE_ACCOUNTS_SINGLE = [
-    {
-        description: 'S. Hopper - Main Account',
-        id: 'BA32272223222B5CTDQPM6W2H',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'USD',
-    },
-] as const;
 const REPORTS = REPORTS_ENDPOINTS.reports;
 const DOWNLOAD = REPORTS_ENDPOINTS.downloadReport;
 const networkError = false;

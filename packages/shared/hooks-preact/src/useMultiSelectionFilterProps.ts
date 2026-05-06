@@ -1,8 +1,8 @@
 import { useCallback } from 'preact/hooks';
 import { listFrom } from '@integration-components/utils';
 import type { SelectItem } from '@integration-components/types';
-import type { FilterType } from '@integration-components/core/Analytics/analytics/user-events';
-import useFilterAnalyticsEvent from './useAnalytics/useFilterAnalyticsEvent';
+import type { FilterType } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
+import useFilterAnalyticsEvent from './useEventDispatcher/useFilterAnalyticsEvent';
 
 export interface UseMultiSelectionFilterPropsConfig<T extends string> {
     eventCategory?: string;

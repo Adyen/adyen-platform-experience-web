@@ -5,7 +5,7 @@ import { FilterParam } from '@integration-components/types';
 import { hasCustomField, isFunction, mergeRecords } from '@integration-components/utils';
 import { useBalanceAccountSelection, useCustomColumnsData, useDefaultOverviewFilterParams } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
-import type { ReportsOverviewComponentProps } from '@integration-components/reports/domain';
+import { EARLIEST_PAYOUT_SINCE_DATE, REPORTS_OVERVIEW_CLASS_NAMES, type ReportsOverviewComponentProps } from '@integration-components/reports/domain';
 import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../../../../../src/components/internal/FilterBar';
 import DateFilter from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/DateFilter';
 import BalanceAccountSelector from '../../../../../../../../src/components/internal/FormFields/Select/BalanceAccountSelector';
@@ -13,7 +13,6 @@ import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../../../../../src/c
 import { useCursorPaginatedRecords } from '../../../../../../../../src/components/internal/Pagination/hooks';
 import { Header } from '../../../../../../../../src/components/internal/Header';
 import { FIELDS, ReportsTable } from '../ReportsTable/ReportsTable';
-import { BASE_CLASS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import './ReportsOverview.scss';
 
 export const ReportsOverview = ({
@@ -87,7 +86,7 @@ export const ReportsOverview = ({
     }, [filters, refreshNowTimestamp]);
 
     return (
-        <div className={BASE_CLASS}>
+        <div className={REPORTS_OVERVIEW_CLASS_NAMES.base}>
             <Header hideTitle={hideTitle} titleKey="reports.overview.title" subtitleKey="reports.overview.generateInfo">
                 <FilterBarMobileSwitch {...filterBarState} />
             </Header>

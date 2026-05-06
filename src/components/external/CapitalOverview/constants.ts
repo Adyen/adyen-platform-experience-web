@@ -1,4 +1,4 @@
-import { BaseEventProperties } from '../../../core/Analytics/analytics/user-events';
+import { BaseEventProperties } from '../../../core/EventDispatcher/eventDispatcher/user-events';
 import { ActionConfigs } from './types';
 
 export const CAPITAL_OVERVIEW_CLASS_NAMES = {

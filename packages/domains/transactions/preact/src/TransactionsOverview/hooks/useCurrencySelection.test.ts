@@ -4,9 +4,9 @@
 import { renderHook, act } from '@testing-library/preact';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import useCurrencySelection from './useCurrencySelection';
-import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 
-vi.mock('@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent');
+vi.mock('@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent');
 
 describe('useCurrencySelection', () => {
     const logEventMock = vi.fn();
