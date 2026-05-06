@@ -7,10 +7,10 @@ import { operations as disputesOps } from './resources/DisputesResourceV1';
 import { operations as capitalGrantOfferOps } from './resources/CapitalGrantOffersResourceV1';
 import { operations as capitalGrantsOps } from './resources/CapitalGrantsResourceV1';
 import { operations as capitalMissingActionsOps } from './resources/CapitalMissingActionsResourceV1';
-import { components as setupResource } from './resources/SetupResourceV1';
 import { operations as analyticsOps } from './resources/PlatformComponentsUxdsResourceV1';
 import { operations as payByLinkOps } from './resources/PayByLinkResourceV1';
 import { operations as onboardingConfigurationOps } from './resources/OnboardingConfigurationResourceV1';
+import { components as setupComponents } from './resources/SetupResourceV1';
 
 export type EndpointsOperations = analyticsOps &
     balanceAccountsOps &
@@ -25,7 +25,7 @@ export type EndpointsOperations = analyticsOps &
     disputesOps &
     payByLinkOps & {};
 
-export type EndpointName = Extract<keyof EndpointsOperations, setupResource['schemas']['EndpointName']>;
+export type EndpointName = Extract<keyof EndpointsOperations, setupComponents['schemas']['EndpointName']>;
 
 type CSVEndpoints = 'downloadReport' | 'downloadTransactions';
 // TODO: Remove exception for expirePayByLinkPaymentLink after BE changes the response from 200 to 204
@@ -41,7 +41,7 @@ export type EndpointData<T extends EndpointName> = T extends DownloadStreamEndpo
       ? EndpointJSONData<T>
       : never;
 
-export type SetupEndpointResponse = setupResource['schemas']['SetupEndpointResponse'];
+export type SetupEndpointResponse = setupComponents['schemas']['SetupEndpointResponse'];
 
 export type SetupEndpoint = Record<EndpointName, SetupEndpointResponse>;
 
