@@ -17,7 +17,7 @@ export interface paths {
          * Create Grant Offer
          * @description This action verifies offer conditions and makes grant ready for user to accept it
          */
-        post: operations['createGrantOfferV2'];
+        post: operations['createGrantOffer'];
         delete?: never;
         options?: never;
         head?: never;
@@ -35,7 +35,7 @@ export interface paths {
          * Get Dynamic Grant Offer
          * @description Get grant offer details for specific parameters
          */
-        get: operations['getDynamicGrantOfferV2'];
+        get: operations['getDynamicGrantOffer'];
         put?: never;
         post?: never;
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
          * Get dynamic offers
          * @description Given dynamic offers for the account holder
          */
-        get: operations['getDynamicGrantOffersConfigurationV2'];
+        get: operations['getDynamicGrantOffersConfiguration'];
         put?: never;
         post?: never;
         delete?: never;
@@ -81,6 +81,7 @@ export interface components {
             /** Format: int64 */
             amount: number;
             currency: string;
+            selectedEstimatedRepaymentTermDaysInDays: string;
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];
@@ -116,10 +117,10 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    createGrantOfferV2: {
+    createGrantOffer: {
         parameters: {
             query: {
-                accountHolderId: string;
+                accountHolderId?: string;
             };
             header?: never;
             path?: never;
@@ -142,10 +143,10 @@ export interface operations {
             };
         };
     };
-    getDynamicGrantOfferV2: {
+    getDynamicGrantOffer: {
         parameters: {
             query: {
-                accountHolderId: string;
+                accountHolderId?: string;
                 amount: number;
                 currency: string;
             };
@@ -166,10 +167,10 @@ export interface operations {
             };
         };
     };
-    getDynamicGrantOffersConfigurationV2: {
+    getDynamicGrantOffersConfiguration: {
         parameters: {
             query: {
-                accountHolderId: string;
+                accountHolderId?: string;
             };
             header?: never;
             path?: never;
