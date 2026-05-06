@@ -1,4 +1,4 @@
-import { IPayout, IReport, ITransaction } from '../../../src';
+import { IPayout, ITransaction } from '../../../src';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
 import { IDisputeListItem } from '../../../src/types/api/models/disputes';
 
@@ -78,28 +78,6 @@ export const getCustomTransactionDataById = (id: string) => {
             },
         },
     };
-};
-
-export const getCustomReportsData = async (data: IReport[]) => {
-    return data.map(report => {
-        return {
-            ...report,
-            _summary: {
-                type: 'link',
-                value: 'Summary',
-                config: {
-                    href: CUSTOM_URL_EXAMPLE,
-                },
-            },
-            _sendEmail: {
-                type: 'button',
-                value: 'Send email',
-                config: {
-                    action: () => console.log('Action'),
-                },
-            },
-        } as const;
-    });
 };
 
 export const getCustomDisputesData = async (data: IDisputeListItem[]) => {

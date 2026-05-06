@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'preact/hooks';
 import { classes, TRANSACTION_ANALYTICS_CATEGORY, TRANSACTION_ANALYTICS_SUBCATEGORY_LIST } from '../../constants';
 import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
-import { useLandedPageEvent } from '@integration-components/hooks-preact/useAnalytics/useLandedPageEvent';
-import { useDurationEvent } from '@integration-components/hooks-preact/useAnalytics/useDurationEvent';
+import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
+import { useDurationEvent } from '@integration-components/hooks-preact/useEventDispatcher/useDurationEvent';
 import TransactionsList from '../TransactionsList/TransactionsList';
 import TransactionTotals from '../TransactionTotals/TransactionTotals';
 import Balances from '../Balances/Balances';

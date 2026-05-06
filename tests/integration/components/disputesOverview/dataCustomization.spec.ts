@@ -27,15 +27,16 @@ test.describe('Data customization', () => {
         const dataGridBody = dataGrid.getByRole('rowgroup').nth(1);
         const firstRow = dataGridBody.getByRole('row').nth(0);
 
-        const sendEmailButton = firstRow.getByRole('button', { name: 'Send email', exact: true });
+        const summaryCell = firstRow.getByRole('cell').filter({ has: page.getByRole('link', { name: 'Summary', exact: true }) });
+        const actionCell = firstRow.getByRole('cell').filter({ has: page.getByRole('button', { name: 'Send email', exact: true }) });
 
-        await expect(firstRow.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
-        await expect(sendEmailButton).toBeVisible();
+        await expect(summaryCell.getByRole('link', { name: 'Summary', exact: true })).toBeVisible();
+        await expect(actionCell.getByRole('button', { name: 'Send email', exact: true })).toBeVisible();
 
         const messages: string[] = [];
         page.once('console', message => messages.push(message.text()));
 
-        await sendEmailButton.click();
+        await actionCell.getByRole('button').click();
         expect(messages).toContain('Action');
     });
 

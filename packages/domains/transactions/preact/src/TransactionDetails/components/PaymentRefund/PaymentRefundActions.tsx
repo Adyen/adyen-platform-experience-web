@@ -6,7 +6,7 @@ import { ButtonVariant } from '../../../../../../../../src/components/internal/B
 import { ButtonActionsLayoutBasic } from '../../../../../../../../src/components/internal/Button/ButtonActions/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
-import useAnalyticsContext from '../../../../../../../../src/core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
 import useMutation from '../../../../../../../../src/hooks/useMutation/useMutation';
 import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
 
@@ -68,7 +68,7 @@ const PaymentRefundActions = ({
           ? refundButtonLabelWithAmount
           : refundButtonLabelsWithoutAmount.idle;
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const primaryAction = {
         disabled: refundDisabled,

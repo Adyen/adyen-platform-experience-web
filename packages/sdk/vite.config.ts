@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { preact } from '@preact/preset-vite';
 import svgr from 'vite-plugin-svgr';
-import { getBuildEnvDefines } from '../../config/build-env-defines';
+import { getBuildEnvDefines } from '../../config/defines/build-env';
 import rootPkgJson from '../../package.json';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');

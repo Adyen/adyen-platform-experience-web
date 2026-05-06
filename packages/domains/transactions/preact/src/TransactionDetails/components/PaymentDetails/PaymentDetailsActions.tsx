@@ -11,7 +11,7 @@ import {
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
-import useAnalyticsContext from '../../../../../../../../src/core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
 import Icon from '../../../../../../../../src/components/internal/Icon';
 
@@ -32,7 +32,7 @@ const PaymentDetailsActions = ({
     transaction,
     transactionNavigator,
 }: PaymentDetailsActionsProps) => {
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { currentTransaction: currentTransactionId, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
     const { i18n } = useCoreContext();
 

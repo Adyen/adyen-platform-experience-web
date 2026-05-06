@@ -5,7 +5,7 @@ import { TransactionDetailsModal } from './TransactionDetailsModal';
 import { TransactionsTable } from '../TransactionsTable/TransactionsTable';
 import { sharedTransactionDetailsEventProperties } from '../../../TransactionDetails/constants';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
-import { useAnalyticsContext } from '@integration-components/core/preact';
+import { useEventDispatcherContext } from '@integration-components/core/preact';
 import useModalDetails from '@integration-components/hooks-preact/useModalDetails';
 
 const TransactionsList = ({
@@ -18,7 +18,7 @@ const TransactionsList = ({
     showDetails,
     transactionsListResult,
 }: TransactionsListProps) => {
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { sortedCurrencies } = currenciesLookupResult;
 
     const { updateDetails, resetDetails, selectedDetail } = useModalDetails({

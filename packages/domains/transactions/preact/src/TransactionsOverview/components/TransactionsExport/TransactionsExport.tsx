@@ -8,7 +8,7 @@ import Typography from '../../../../../../../../src/components/internal/Typograp
 import { useUniqueId } from '@integration-components/hooks-preact';
 import { useCoreContext } from '@integration-components/core/preact';
 import useDownload from '../../../../../../../../src/components/internal/Button/DownloadButton/useDownload';
-import { useAnalyticsContext } from '@integration-components/core/preact';
+import { useEventDispatcherContext } from '@integration-components/core/preact';
 import ToggleSwitch, { ToggleSwitchProps } from '../../../../../../../../src/components/internal/ToggleSwitch/ToggleSwitch';
 import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
 import FilterButton from '../../../../../../../../src/components/internal/FilterBar/components/FilterButton/FilterButton';
@@ -72,7 +72,7 @@ const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
     const { filters, lastFiltersChangeTimestamp } = useTransactionsOverviewContext();
     const { i18n } = useCoreContext();
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const [popoverOpen, setPopoverOpen] = useState(false);

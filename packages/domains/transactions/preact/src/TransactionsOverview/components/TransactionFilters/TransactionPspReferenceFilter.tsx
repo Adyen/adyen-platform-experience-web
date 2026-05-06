@@ -7,7 +7,7 @@ import { CommitAction } from '@integration-components/hooks-preact/useCommitActi
 import { TextFilterProps } from '../../../../../../../../src/components/internal/FilterBar/filters/TextFilter/types';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { FilterEditModalRenderProps } from '../../../../../../../../src/components/internal/FilterBar/filters/BaseFilter/types';
-import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
 import TextFilter from '../../../../../../../../src/components/internal/FilterBar/filters/TextFilter';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';

@@ -4,7 +4,7 @@ import { AdyenPlatformExperienceError, TranslationKey } from '@integration-compo
 import type { CustomColumn, IReport } from '@integration-components/types';
 import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { getReportType } from '@integration-components/reports/domain';
+import { getReportType, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_CLASS_NAMES } from '@integration-components/reports/domain';
 import {
     containerQueries,
     useFreezePeriod,
@@ -23,7 +23,6 @@ import Pagination from '../../../../../../../../src/components/internal/Paginati
 import { PaginationProps, WithPaginationLimitSelection } from '../../../../../../../../src/components/internal/Pagination/types';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import { BASE_CLASS, DATE_TYPE_CLASS, DATE_TYPE_DATE_SECTION_CLASS, DISABLED_BUTTONS_TIMEOUT } from './constants';
 import './ReportsTable.scss';
 
 export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
@@ -57,7 +56,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
 }) => {
     const { i18n } = useCoreContext();
     const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-    const { freeze, frozen } = useFreezePeriod(DISABLED_BUTTONS_TIMEOUT);
+    const { freeze, frozen } = useFreezePeriod(REPORTS_DOWNLOAD_DISABLED_TIMEOUT);
     const [alert, setAlert] = useState<null | { title: string; description: string }>(null);
     const { refreshing } = useConfigContext();
     const isLoading = useMemo(() => loading || refreshing, [loading, refreshing]);
@@ -117,8 +116,8 @@ export const ReportsTable: FC<ReportsTableProps> = ({
     if (loading) setAlert(null);
 
     return (
-        <div className={BASE_CLASS}>
-            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={'adyen-pe-reports-table-alert'} {...alert} />}
+        <div className={REPORTS_TABLE_CLASS_NAMES.base}>
+            {alert && <Alert onClose={removeAlert} type={AlertTypeOption.WARNING} className={REPORTS_TABLE_CLASS_NAMES.alert} {...alert} />}
             <DataGrid
                 errorDisplay={errorDisplay}
                 error={error}
@@ -142,14 +141,18 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                     },
                     dateAndReportType: ({ item }) => {
                         return (
-                            <div className={DATE_TYPE_CLASS}>
+                            <div className={REPORTS_TABLE_CLASS_NAMES.dateReportType}>
                                 {item?.type && (
                                     <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
                                         {getReportType(i18n, item.type)}
                                     </Typography>
                                 )}
                                 <time dateTime={item.createdAt}>
-                                    <Typography className={DATE_TYPE_DATE_SECTION_CLASS} el={TypographyElement.SPAN} variant={TypographyVariant.BODY}>
+                                    <Typography
+                                        className={REPORTS_TABLE_CLASS_NAMES.dateReportTypeDate}
+                                        el={TypographyElement.SPAN}
+                                        variant={TypographyVariant.BODY}
+                                    >
                                         {dateFormat(item.createdAt, DATE_FORMAT_REPORTS)}
                                     </Typography>
                                 </time>
@@ -171,7 +174,7 @@ export const ReportsTable: FC<ReportsTableProps> = ({
                         };
                         return (
                             <DownloadButton
-                                className={'adyen-pe-reports-table--download'}
+                                className={REPORTS_TABLE_CLASS_NAMES.download}
                                 endpointName={'downloadReport'}
                                 disabled={frozen}
                                 requestParams={queryParam}
