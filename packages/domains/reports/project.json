@@ -4,5 +4,21 @@
     "projectType": "library",
     "sourceRoot": "packages/domains/reports",
     "tags": ["scope:reports", "type:domain"],
-    "targets": {}
+    "targets": {
+        "types:check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/reports/tsconfig.json"
+            },
+            "outputs": [],
+            "cache": true
+        },
+        "types:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/reports/tsconfig.json --watch"
+            },
+            "cache": false
+        }
+    }
 }
