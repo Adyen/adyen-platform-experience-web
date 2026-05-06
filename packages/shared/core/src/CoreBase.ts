@@ -87,7 +87,7 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
     protected setOptions(options: Partial<O>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
-        const analyticsChanged = options.analytics !== undefined;
+        const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
 
         this.options = { ...this.options, ...options };
 
@@ -112,7 +112,7 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
             this.session.analyticsEnabled = this.analyticsEnabled;
         }
 
-        this.onOptionsChanged(options);
+        this.onOptionsChanged?.(options);
 
         this.session.loadingContext = this.loadingContext;
         this.session.onSessionCreate = this.options.onSessionCreate;
@@ -126,7 +126,7 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
      * Called from `setOptions` *after* `this.options` has been merged and shared
      * localization state has been refreshed.
      */
-    protected onOptionsChanged(_options: Partial<O>): void {}
+    protected onOptionsChanged?(options: Partial<O>): void;
 
     /**
      * Emit the SSR warning at most once, await translation readiness, and register
