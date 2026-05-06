@@ -13,6 +13,8 @@ overrides:
   serialize-javascript@6.0.2: 7.0.3
   picomatch: '>=4.0.4'
   preact: ^10.28.2
+  typescript: 5.8.3
+  '@types/node': 24.10.13
 
 pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
 
@@ -94,7 +96,7 @@ importers:
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@8.20.1)
       '@types/node':
-        specifier: ^24.10.13
+        specifier: 24.10.13
         version: 24.10.13
       '@types/testing-library__jest-dom':
         specifier: ^5.14.9
@@ -372,13 +374,13 @@ importers:
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.10.2
-        version: 2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+        version: 2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
       '@storybook/preact':
         specifier: 10.2.12
         version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/preact-vite':
         specifier: 10.2.12
-        version: 10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+        version: 10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
       concurrently:
         specifier: ^7.0.0
         version: 7.6.0
@@ -390,16 +392,16 @@ importers:
         version: 17.2.3
       msw:
         specifier: ^2.4.5
-        version: 2.7.3(@types/node@24.12.0)(typescript@5.9.3)
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       msw-storybook-addon:
         specifier: ^2.0.2
-        version: 2.0.2(msw@2.7.3(@types/node@24.12.0)(typescript@5.9.3))
+        version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))
       storybook:
         specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vite-plugin-svgr:
         specifier: ^4.5.0
-        version: 4.5.0(rollup@4.59.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+        version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
 
   packages/tools/storybook-vue:
     dependencies:
@@ -411,17 +413,17 @@ importers:
         version: link:../../shared/testing
       vue:
         specifier: ^3.5.13
-        version: 3.5.31(typescript@5.9.3)
+        version: 3.5.31(typescript@5.8.3)
     devDependencies:
       '@storybook/vue3':
         specifier: 10.2.12
-        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.9.3))
+        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       '@storybook/vue3-vite':
         specifier: 10.2.12
-        version: 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.9.3))(webpack@5.98.0(esbuild@0.27.1))
+        version: 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.8.3))(webpack@5.98.0(esbuild@0.27.1))
       '@vitejs/plugin-vue':
         specifier: ^6.0.5
-        version: 6.0.5(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.9.3))
+        version: 6.0.5(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.8.3))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -430,10 +432,10 @@ importers:
         version: 17.2.3
       msw:
         specifier: ^2.4.5
-        version: 2.7.3(@types/node@24.12.0)(typescript@5.9.3)
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       msw-storybook-addon:
         specifier: ^2.0.2
-        version: 2.0.2(msw@2.7.3(@types/node@24.12.0)(typescript@5.9.3))
+        version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))
       storybook:
         specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1624,7 +1626,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
     peerDependencies:
-      '@types/node': '>=18'
+      '@types/node': 24.10.13
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -1633,7 +1635,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
     peerDependencies:
-      '@types/node': '>=18'
+      '@types/node': 24.10.13
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -1642,7 +1644,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
     peerDependencies:
-      '@types/node': '>=18'
+      '@types/node': 24.10.13
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -1655,7 +1657,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
     peerDependencies:
-      '@types/node': '>=18'
+      '@types/node': 24.10.13
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -1810,21 +1812,25 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@22.6.3':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@22.6.3':
     resolution: {}
@@ -1868,7 +1874,7 @@ packages:
   '@phenomnomnominal/tsquery@6.1.4':
     resolution: {}
     peerDependencies:
-      typescript: ^3 || ^4 || ^5
+      typescript: 5.8.3
 
   '@playwright/test@1.56.0':
     resolution: {}
@@ -1966,66 +1972,79 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -2278,13 +2297,7 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {}
 
-  '@types/node@12.20.55':
-    resolution: {}
-
   '@types/node@24.10.13':
-    resolution: {}
-
-  '@types/node@24.12.0':
     resolution: {}
 
   '@types/parse-json@4.0.2':
@@ -2314,20 +2327,20 @@ packages:
     peerDependencies:
       '@typescript-eslint/parser': ^8.51.0
       eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/parser@8.51.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/project-service@8.51.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/scope-manager@8.26.0':
     resolution: {}
@@ -2341,14 +2354,14 @@ packages:
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/type-utils@8.51.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/types@8.26.0':
     resolution: {}
@@ -2362,27 +2375,27 @@ packages:
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <5.9.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/typescript-estree@8.51.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/utils@8.26.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <5.9.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/utils@8.51.0':
     resolution: {}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <6.0.0'
+      typescript: 5.8.3
 
   '@typescript-eslint/visitor-keys@8.26.0':
     resolution: {}
@@ -2431,41 +2444,49 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -2571,7 +2592,7 @@ packages:
   '@vue/language-core@2.2.12':
     resolution: {}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3125,7 +3146,7 @@ packages:
     resolution: {}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: '>=4.9.5'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3134,7 +3155,7 @@ packages:
     resolution: {}
     engines: {node: '>=14'}
     peerDependencies:
-      typescript: '>=4.9.5'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3933,7 +3954,7 @@ packages:
   i18next@25.10.10:
     resolution: {}
     peerDependencies:
-      typescript: ^5 || ^6
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4524,7 +4545,7 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
-      typescript: '>= 4.8.x'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -4668,7 +4689,7 @@ packages:
     resolution: {}
     hasBin: true
     peerDependencies:
-      typescript: ^5.x
+      typescript: 5.8.3
 
   optionator@0.9.4:
     resolution: {}
@@ -5569,13 +5590,13 @@ packages:
     resolution: {}
     engines: {node: '>=18.12'}
     peerDependencies:
-      typescript: '>=4.8.4'
+      typescript: 5.8.3
 
   ts-api-utils@2.3.0:
     resolution: {}
     engines: {node: '>=18.12'}
     peerDependencies:
-      typescript: '>=4.8.4'
+      typescript: 5.8.3
 
   ts-dedent@2.2.0:
     resolution: {}
@@ -5585,7 +5606,7 @@ packages:
     resolution: {}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.8.3
       webpack: ^5.0.0
 
   ts-map@1.0.3:
@@ -5640,11 +5661,6 @@ packages:
     engines: {node: '>= 0.4'}
 
   typescript@5.8.3:
-    resolution: {}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
-  typescript@5.9.3:
     resolution: {}
     engines: {node: '>=14.17'}
     hasBin: true
@@ -5732,7 +5748,7 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
+      '@types/node': 24.10.13
       jiti: '>=1.21.0'
       less: ^4.0.0
       lightningcss: ^1.21.0
@@ -5772,7 +5788,7 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
+      '@types/node': 24.10.13
       jiti: '>=1.21.0'
       less: ^4.0.0
       lightningcss: ^1.21.0
@@ -5814,7 +5830,7 @@ packages:
     peerDependencies:
       '@edge-runtime/vm': '*'
       '@types/debug': ^4.1.12
-      '@types/node': ^20.0.0 || ^22.0.0 || >=24.0.0
+      '@types/node': 24.10.13
       '@vitest/browser-playwright': 4.0.10
       '@vitest/browser-preview': 4.0.10
       '@vitest/browser-webdriverio': 4.0.10
@@ -5851,7 +5867,7 @@ packages:
   vue-component-meta@2.2.12:
     resolution: {}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -5875,7 +5891,7 @@ packages:
   vue@3.5.31:
     resolution: {}
     peerDependencies:
-      typescript: '*'
+      typescript: 5.8.3
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -7393,13 +7409,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@inquirer/confirm@5.1.6(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/core': 10.1.7(@types/node@24.12.0)
-      '@inquirer/type': 3.0.4(@types/node@24.12.0)
-    optionalDependencies:
-      '@types/node': 24.12.0
-
   '@inquirer/core@10.1.7(@types/node@24.10.13)':
     dependencies:
       '@inquirer/figures': 1.0.10
@@ -7413,19 +7422,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.10.13
 
-  '@inquirer/core@10.1.7(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/figures': 1.0.10
-      '@inquirer/type': 3.0.4(@types/node@24.12.0)
-      ansi-escapes: 4.3.2
-      cli-width: 4.1.0
-      mute-stream: 2.0.0
-      signal-exit: 4.1.0
-      wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.2
-    optionalDependencies:
-      '@types/node': 24.12.0
-
   '@inquirer/external-editor@1.0.2(@types/node@24.10.13)':
     dependencies:
       chardet: 2.1.0
@@ -7438,10 +7434,6 @@ snapshots:
   '@inquirer/type@3.0.4(@types/node@24.10.13)':
     optionalDependencies:
       '@types/node': 24.10.13
-
-  '@inquirer/type@3.0.4(@types/node@24.12.0)':
-    optionalDependencies:
-      '@types/node': 24.12.0
 
   '@jest/diff-sequences@30.3.0': {}
 
@@ -7513,7 +7505,7 @@ snapshots:
   '@manypkg/find-root@1.1.0':
     dependencies:
       '@babel/runtime': 7.27.0
-      '@types/node': 12.20.55
+      '@types/node': 24.10.13
       find-up: 4.1.0
       fs-extra: 8.1.0
 
@@ -7605,7 +7597,7 @@ snapshots:
       eslint: 9.39.2
       semver: 7.7.3
       tslib: 2.8.1
-      typescript: 5.9.3
+      typescript: 5.8.3
     optionalDependencies:
       '@zkochan/js-yaml': 0.0.7
     transitivePeerDependencies:
@@ -7778,18 +7770,18 @@ snapshots:
       - preact
       - supports-color
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/plugin-transform-react-jsx': 7.25.9(@babel/core@7.26.10)
       '@babel/plugin-transform-react-jsx-development': 7.25.9(@babel/core@7.26.10)
-      '@prefresh/vite': 2.4.6(preact@10.28.2)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+      '@prefresh/vite': 2.4.6(preact@10.28.2)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.26.10)
       debug: 4.4.3(supports-color@10.2.2)
       picocolors: 1.1.1
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
-      vite-prerender-plugin: 0.5.12(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite-prerender-plugin: 0.5.12(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -7821,7 +7813,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@prefresh/vite@2.4.6(preact@10.28.2)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
+  '@prefresh/vite@2.4.6(preact@10.28.2)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
     dependencies:
       '@babel/core': 7.26.10
       '@prefresh/babel-plugin': 0.5.1
@@ -7829,7 +7821,7 @@ snapshots:
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.28.2
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -7954,25 +7946,25 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@storybook/builder-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+  '@storybook/builder-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
     dependencies:
-      '@storybook/csf-plugin': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+      '@storybook/csf-plugin': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ts-dedent: 2.2.0
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
     transitivePeerDependencies:
       - esbuild
       - rollup
       - webpack
 
-  '@storybook/csf-plugin@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+  '@storybook/csf-plugin@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
     dependencies:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       unplugin: 2.3.11
     optionalDependencies:
       esbuild: 0.27.1
       rollup: 4.59.0
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
       webpack: 5.98.0(esbuild@0.27.1)
 
   '@storybook/global@5.0.0': {}
@@ -7982,9 +7974,9 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  '@storybook/preact-vite@10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
+  '@storybook/preact-vite@10.2.12(esbuild@0.27.1)(preact@10.28.2)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))':
     dependencies:
-      '@storybook/builder-vite': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+      '@storybook/builder-vite': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
       '@storybook/preact': 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       preact: 10.28.2
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -8001,28 +7993,28 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       ts-dedent: 2.2.0
 
-  '@storybook/vue3-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.9.3))(webpack@5.98.0(esbuild@0.27.1))':
+  '@storybook/vue3-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.8.3))(webpack@5.98.0(esbuild@0.27.1))':
     dependencies:
-      '@storybook/builder-vite': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
-      '@storybook/vue3': 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.9.3))
+      '@storybook/builder-vite': 10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(webpack@5.98.0(esbuild@0.27.1))
+      '@storybook/vue3': 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       magic-string: 0.30.21
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      typescript: 5.9.3
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
-      vue-component-meta: 2.2.12(typescript@5.9.3)
-      vue-docgen-api: 4.79.2(vue@3.5.31(typescript@5.9.3))
+      typescript: 5.8.3
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vue-component-meta: 2.2.12(typescript@5.8.3)
+      vue-docgen-api: 4.79.2(vue@3.5.31(typescript@5.8.3))
     transitivePeerDependencies:
       - esbuild
       - rollup
       - vue
       - webpack
 
-  '@storybook/vue3@10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.9.3))':
+  '@storybook/vue3@10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))':
     dependencies:
       '@storybook/global': 5.0.0
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
-      vue: 3.5.31(typescript@5.9.3)
+      vue: 3.5.31(typescript@5.8.3)
       vue-component-type-helpers: 3.2.6
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
@@ -8086,17 +8078,6 @@ snapshots:
       '@svgr/babel-preset': 8.1.0(@babel/core@7.26.10)
       camelcase: 6.3.0
       cosmiconfig: 8.3.6(typescript@5.8.3)
-      snake-case: 3.0.4
-    transitivePeerDependencies:
-      - supports-color
-      - typescript
-
-  '@svgr/core@8.1.0(typescript@5.9.3)':
-    dependencies:
-      '@babel/core': 7.26.10
-      '@svgr/babel-preset': 8.1.0(@babel/core@7.26.10)
-      camelcase: 6.3.0
-      cosmiconfig: 8.3.6(typescript@5.9.3)
       snake-case: 3.0.4
     transitivePeerDependencies:
       - supports-color
@@ -8218,13 +8199,7 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
-  '@types/node@12.20.55': {}
-
   '@types/node@24.10.13':
-    dependencies:
-      undici-types: 7.16.0
-
-  '@types/node@24.12.0':
     dependencies:
       undici-types: 7.16.0
 
@@ -8433,11 +8408,11 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@vitejs/plugin-vue@6.0.5(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.9.3))':
+  '@vitejs/plugin-vue@6.0.5(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))(vue@3.5.31(typescript@5.8.3))':
     dependencies:
       '@rolldown/pluginutils': 1.0.0-rc.2
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
-      vue: 3.5.31(typescript@5.9.3)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vue: 3.5.31(typescript@5.8.3)
 
   '@vitest/coverage-v8@4.0.10(vitest@4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
     dependencies:
@@ -8574,7 +8549,7 @@ snapshots:
       de-indent: 1.0.2
       he: 1.2.0
 
-  '@vue/language-core@2.2.12(typescript@5.9.3)':
+  '@vue/language-core@2.2.12(typescript@5.8.3)':
     dependencies:
       '@volar/language-core': 2.4.15
       '@vue/compiler-dom': 3.5.31
@@ -8585,7 +8560,7 @@ snapshots:
       muggle-string: 0.4.1
       path-browserify: 1.0.1
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 5.8.3
 
   '@vue/reactivity@3.5.31':
     dependencies:
@@ -8608,13 +8583,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.31
       '@vue/shared': 3.5.31
       vue: 3.5.31(typescript@5.8.3)
-    optional: true
-
-  '@vue/server-renderer@3.5.31(vue@3.5.31(typescript@5.9.3))':
-    dependencies:
-      '@vue/compiler-ssr': 3.5.31
-      '@vue/shared': 3.5.31
-      vue: 3.5.31(typescript@5.9.3)
 
   '@vue/shared@3.5.31': {}
 
@@ -9209,15 +9177,6 @@ snapshots:
       path-type: 4.0.0
     optionalDependencies:
       typescript: 5.8.3
-
-  cosmiconfig@8.3.6(typescript@5.9.3):
-    dependencies:
-      import-fresh: 3.3.1
-      js-yaml: 4.1.1
-      parse-json: 5.2.0
-      path-type: 4.0.0
-    optionalDependencies:
-      typescript: 5.9.3
 
   cosmiconfig@9.0.1(typescript@5.8.3):
     dependencies:
@@ -10490,7 +10449,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.10.13
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -10772,11 +10731,6 @@ snapshots:
       is-node-process: 1.2.0
       msw: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
 
-  msw-storybook-addon@2.0.2(msw@2.7.3(@types/node@24.12.0)(typescript@5.9.3)):
-    dependencies:
-      is-node-process: 1.2.0
-      msw: 2.7.3(@types/node@24.12.0)(typescript@5.9.3)
-
   msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3):
     dependencies:
       '@bundled-es-modules/cookie': 2.0.1
@@ -10799,31 +10753,6 @@ snapshots:
       yargs: 17.7.2
     optionalDependencies:
       typescript: 5.8.3
-    transitivePeerDependencies:
-      - '@types/node'
-
-  msw@2.7.3(@types/node@24.12.0)(typescript@5.9.3):
-    dependencies:
-      '@bundled-es-modules/cookie': 2.0.1
-      '@bundled-es-modules/statuses': 1.0.1
-      '@bundled-es-modules/tough-cookie': 0.1.6
-      '@inquirer/confirm': 5.1.6(@types/node@24.12.0)
-      '@mswjs/interceptors': 0.37.6
-      '@open-draft/deferred-promise': 2.2.0
-      '@open-draft/until': 2.1.0
-      '@types/cookie': 0.6.0
-      '@types/statuses': 2.0.5
-      graphql: 16.10.0
-      headers-polyfill: 4.0.3
-      is-node-process: 1.2.0
-      outvariant: 1.4.3
-      path-to-regexp: 6.3.0
-      picocolors: 1.1.1
-      strict-event-emitter: 0.5.1
-      type-fest: 4.37.0
-      yargs: 17.7.2
-    optionalDependencies:
-      typescript: 5.9.3
     transitivePeerDependencies:
       - '@types/node'
 
@@ -12088,8 +12017,6 @@ snapshots:
 
   typescript@5.8.3: {}
 
-  typescript@5.9.3: {}
-
   unbox-primitive@1.1.0:
     dependencies:
       call-bound: 1.0.4
@@ -12185,12 +12112,12 @@ snapshots:
       - supports-color
       - typescript
 
-  vite-plugin-svgr@4.5.0(rollup@4.59.0)(typescript@5.9.3)(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)):
+  vite-plugin-svgr@4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
-      '@svgr/core': 8.1.0(typescript@5.9.3)
+      '@svgr/core': 8.1.0(typescript@5.8.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.8.3))
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -12206,7 +12133,7 @@ snapshots:
       stack-trace: 1.0.0-pre2
       vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
 
-  vite-prerender-plugin@0.5.12(vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)):
+  vite-prerender-plugin@0.5.12(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)):
     dependencies:
       kolorist: 1.8.0
       magic-string: 0.30.21
@@ -12214,7 +12141,7 @@ snapshots:
       simple-code-frame: 1.3.0
       source-map: 0.7.4
       stack-trace: 1.0.0-pre2
-      vite: 7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
 
   vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0):
     dependencies:
@@ -12232,23 +12159,7 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.7.0
 
-  vite@7.2.4(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0):
-    dependencies:
-      esbuild: 0.27.1
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
-      postcss: 8.5.6
-      rollup: 4.59.0
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 24.12.0
-      fsevents: 2.3.3
-      sass: 1.79.3
-      terser: 5.46.1
-      tsx: 4.21.0
-      yaml: 2.7.0
-
-  vite@7.3.1(@types/node@24.12.0)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0):
+  vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0):
     dependencies:
       esbuild: 0.27.4
       fdir: 6.5.0(picomatch@4.0.4)
@@ -12257,7 +12168,7 @@ snapshots:
       rollup: 4.59.0
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.10.13
       fsevents: 2.3.3
       sass: 1.79.3
       terser: 5.46.1
@@ -12346,20 +12257,20 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-component-meta@2.2.12(typescript@5.9.3):
+  vue-component-meta@2.2.12(typescript@5.8.3):
     dependencies:
       '@volar/typescript': 2.4.15
-      '@vue/language-core': 2.2.12(typescript@5.9.3)
+      '@vue/language-core': 2.2.12(typescript@5.8.3)
       path-browserify: 1.0.1
       vue-component-type-helpers: 2.2.12
     optionalDependencies:
-      typescript: 5.9.3
+      typescript: 5.8.3
 
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.2.6: {}
 
-  vue-docgen-api@4.79.2(vue@3.5.31(typescript@5.9.3)):
+  vue-docgen-api@4.79.2(vue@3.5.31(typescript@5.8.3)):
     dependencies:
       '@babel/parser': 7.29.2
       '@babel/types': 7.29.0
@@ -12372,12 +12283,12 @@ snapshots:
       pug: 3.0.4
       recast: 0.23.11
       ts-map: 1.0.3
-      vue: 3.5.31(typescript@5.9.3)
-      vue-inbrowser-compiler-independent-utils: 4.71.1(vue@3.5.31(typescript@5.9.3))
+      vue: 3.5.31(typescript@5.8.3)
+      vue-inbrowser-compiler-independent-utils: 4.71.1(vue@3.5.31(typescript@5.8.3))
 
-  vue-inbrowser-compiler-independent-utils@4.71.1(vue@3.5.31(typescript@5.9.3)):
+  vue-inbrowser-compiler-independent-utils@4.71.1(vue@3.5.31(typescript@5.8.3)):
     dependencies:
-      vue: 3.5.31(typescript@5.9.3)
+      vue: 3.5.31(typescript@5.8.3)
 
   vue@3.5.31(typescript@5.8.3):
     dependencies:
@@ -12388,17 +12299,6 @@ snapshots:
       '@vue/shared': 3.5.31
     optionalDependencies:
       typescript: 5.8.3
-    optional: true
-
-  vue@3.5.31(typescript@5.9.3):
-    dependencies:
-      '@vue/compiler-dom': 3.5.31
-      '@vue/compiler-sfc': 3.5.31
-      '@vue/runtime-dom': 3.5.31
-      '@vue/server-renderer': 3.5.31(vue@3.5.31(typescript@5.9.3))
-      '@vue/shared': 3.5.31
-    optionalDependencies:
-      typescript: 5.9.3
 
   w3c-xmlserializer@5.0.0:
     dependencies:
