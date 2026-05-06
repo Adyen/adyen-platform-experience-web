@@ -3,11 +3,7 @@ import { CustomDataRetrieved, DetailsDataCustomizationObject, ExternalUIComponen
 
 export type TransactionDetailsCustomization = DetailsDataCustomizationObject<TransactionDetailsFields, TransactionDetails, CustomDataRetrieved>;
 
-export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<any, any, any>> {
-    dataCustomization?: {
-        details?: T;
-    };
-}
+export type { DetailsWithExtraData } from '@integration-components/types';
 
 export type TransactionDetails = ITransactionWithDetails & {
     balanceAccount?: IBalanceAccountBase;

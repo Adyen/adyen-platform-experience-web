@@ -65,6 +65,14 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
 
+Payouts inherits the same `src/components/internal/*` exception and additionally has one Preact-coupled utility deep-import:
+
+| Import                                            | Consumer                                                                            | Reason                                                                                                                        |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx` | Cannot move to `@integration-components/utils` because it returns JSX and depends on the `CopyText` UI primitive (still in root `src/components/internal/CopyText/`). Will migrate alongside `CopyText` when the shared Preact UI primitives package is bootstrapped. |
+
+Do not introduce new exceptions of this kind in subsequent domains. Either reuse this entry (if the same import is already covered) or promote the dependency to a shared package before extracting.
+
 ### MSW endpoint ownership
 
 When extracting a domain, follow this convention to keep mock endpoint URLs decoupled:

@@ -1,0 +1,24 @@
+{
+    "name": "@integration-components/payouts",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/payouts",
+    "tags": ["scope:payouts", "type:domain"],
+    "targets": {
+        "types:check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/payouts/tsconfig.json"
+            },
+            "outputs": [],
+            "cache": true
+        },
+        "types:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/payouts/tsconfig.json --watch"
+            },
+            "cache": false
+        }
+    }
+}

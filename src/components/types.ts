@@ -1,6 +1,5 @@
 import UIElement from './external/UIElement/UIElement';
 import { Core } from '../core';
-import { StringWithAutocompleteOptions } from '../utils/types';
 import type {
     BaseElementProps as _BaseElementProps,
     BaseElementState,
@@ -8,11 +7,14 @@ import type {
     CustomButtonObject,
     CustomDataObject,
     CustomDataRetrieved,
+    CustomDetailsField,
     CustomIconObject,
     CustomLinkObject,
     CustomTextObject,
     DataCustomizationObject,
     DataGridCustomColumnConfig,
+    DetailsCustomFieldConfig,
+    DetailsDataCustomizationObject,
     ExternalUIComponentProps,
     OnDataRetrievedCallback,
     UIElementProps,
@@ -27,11 +29,14 @@ export type {
     CustomColumn,
     CustomDataObject,
     CustomDataRetrieved,
+    CustomDetailsField,
     CustomIconObject,
     CustomLinkObject,
     CustomTextObject,
     DataCustomizationObject,
     DataGridCustomColumnConfig,
+    DetailsCustomFieldConfig,
+    DetailsDataCustomizationObject,
     ExternalUIComponentProps,
     OnDataRetrievedCallback,
     UIElementProps,
@@ -91,20 +96,6 @@ export type _UIComponentProps<T> = __UIComponentProps<T>;
 
 export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
 
-export type DetailsCustomFieldConfig<k> = {
-    key: k;
-    visibility?: 'visible' | 'hidden';
-};
-
-export type CustomDetailsField<T extends string> = {
-    [k in T]: DetailsCustomFieldConfig<k>;
-}[T];
-
-export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
-    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
-};
-
 export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields } from '@integration-components/reports/publish';
 
 export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
@@ -113,16 +104,21 @@ export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFi
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
 export type { StoreIds } from './external/PaymentLinksOverview/types';
 
-export type { PayoutsOverviewComponentProps, PayoutsOverviewProps } from './external/PayoutsOverview/types';
-export type { PayoutsTableFields } from './external/PayoutsOverview/types';
+export type {
+    PayoutsOverviewComponentProps,
+    PayoutsOverviewProps,
+    PayoutsTableFields,
+    PayoutDetailsComponentProps,
+    PayoutDetailsProps,
+} from '@integration-components/payouts/publish';
 
 export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
 export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
 
 export type DeepPartial<T> = T extends object
     ? {
-        [K in keyof T]?: DeepPartial<T[K]>;
-    }
+          [K in keyof T]?: DeepPartial<T[K]>;
+      }
     : T;
 
 export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
@@ -135,7 +131,5 @@ export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig
 export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from './external/PaymentLinkSettings/types';
 
 export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
-
-export type { PayoutDetailsComponentProps, PayoutDetailsProps } from './external/PayoutDetails/types';
 
 export type { ExternalComponentType } from '@integration-components/types';
