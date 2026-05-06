@@ -1,25 +1,5 @@
-import type { IBalance, IBalanceAccountBase } from '../../src';
-
-export const BALANCE_ACCOUNTS: readonly [IBalanceAccountBase, IBalanceAccountBase, IBalanceAccountBase] = [
-    {
-        description: 'S. Hopper - Main Account',
-        id: 'BA32272223222B5CTDQPM6W2H',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'USD',
-    },
-    {
-        description: 'S. Hopper - Secondary Account',
-        id: 'BA32272223222B5CTDQPM6W2G',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'EUR',
-    },
-    {
-        // One more balance account (without description) for completeness
-        id: 'BA32272223222B5CTDQPM6W2K',
-        timeZone: 'America/Sao_Paulo',
-        defaultCurrencyCode: 'USD',
-    },
-] as const;
+import { BALANCE_ACCOUNTS, BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures/balanceAccounts';
+import type { IBalance } from '../../src';
 
 export const BALANCES: Record<string, IBalance[]> = {
     [BALANCE_ACCOUNTS[0].id]: [
@@ -55,4 +35,4 @@ export const BALANCES: Record<string, IBalance[]> = {
     ],
 };
 
-export const BALANCE_ACCOUNTS_SINGLE = [BALANCE_ACCOUNTS[0]];
+export { BALANCE_ACCOUNTS, BALANCE_ACCOUNTS_SINGLE };
