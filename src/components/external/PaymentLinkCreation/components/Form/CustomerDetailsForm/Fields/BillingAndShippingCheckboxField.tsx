@@ -3,9 +3,9 @@ import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { StateUpdater, useCallback } from 'preact/hooks';
 import { Dispatch } from 'preact/compat';
-import Icon from '../../../../../../internal/Icon';
-import Typography from '../../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../../internal/Typography/types';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { uuid } from '../../../../../../../utils';
 
 interface BillingAndShippingCheckboxFieldProps {

@@ -1,16 +1,16 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { GRANT_DETAILS_CLASS_NAMES } from './constants';
 import { GrantDetailsProps } from './types';
 import './GrantDetails.scss';
-import StructuredList from '../../../../internal/StructuredList';
-import { StructuredListItem } from '../../../../internal/StructuredList/types';
+import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
+import { StructuredListItem } from '@integration-components/ui-primitives-preact/StructuredList/types';
 import { getPercentage } from '../../../CapitalOffer/components/utils/utils';
-import { Translation } from '../../../../internal/Translation';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
+import { Translation } from '@integration-components/ui-primitives-preact/Translation';
+import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 
 export const GrantDetails: FunctionalComponent<GrantDetailsProps> = ({ grant }) => {

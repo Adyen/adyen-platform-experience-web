@@ -2,10 +2,10 @@ import { REFUND_REASONS, TX_DATA_CONTAINER, TX_DATA_INPUT_CONTAINER, TX_DATA_INP
 import { RefundReason } from '../../types';
 import { useCallback, useMemo } from 'preact/hooks';
 import { getTransactionRefundReason } from '@integration-components/transactions/domain';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import Select from '../../../../../../../../src/components/internal/FormFields/Select';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
 import { useUniqueId } from '@integration-components/hooks-preact';
 
 export interface PaymentRefundReasonProps {

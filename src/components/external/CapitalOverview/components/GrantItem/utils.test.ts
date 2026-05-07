@@ -9,7 +9,7 @@ import {
     WRITTEN_OFF_GRANT,
 } from '../../../../../../mocks/mock-data';
 import { getGrantConfig } from './utils';
-import { TagVariant } from '../../../../internal/Tag/types';
+import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
 import { GrantConfig } from './types';
 
 describe('getGrantConfig', () => {

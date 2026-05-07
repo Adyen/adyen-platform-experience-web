@@ -1,9 +1,9 @@
 import { useCallback } from 'preact/hooks';
-import Select from '../FormFields/Select';
+import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
 import { StoreSelectorButtonContent } from './StoreSelectorButton/StoreSelectorButton';
 import { StoreSelectorItem } from './StoreSelectorItem/StoreSelectorItem';
 import { StoreSelectorItemParams, StoreSelectorProps } from './types';
-import { SelectChangeEvent } from '../FormFields/Select/types';
+import { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
 import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
 import './StoreSelector.scss';
 

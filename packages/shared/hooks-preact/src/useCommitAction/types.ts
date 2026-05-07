@@ -1,4 +1,4 @@
-import { ButtonActionObject } from '../../../../../src/components/internal/Button/ButtonActions/types';
+import type { ButtonActionObject } from '@integration-components/types';
 
 export enum CommitAction {
     NONE = 0,

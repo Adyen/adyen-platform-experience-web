@@ -7,10 +7,10 @@ import type { CustomColumn, ExternalUIComponentProps, IPayoutDetails } from '@in
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { useBalanceAccounts, useFetch } from '@integration-components/hooks-preact';
 import type { PayoutDetailsCustomization } from '@integration-components/payouts/domain';
-import { useModalContext } from '../../../../../../../src/components/internal/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
 import { getErrorMessage } from '../../../../../../../src/components/utils/getErrorMessage';
-import { ErrorMessageDisplay } from '../../../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
-import { Header } from '../../../../../../../src/components/internal/Header';
+import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
+import { Header } from '@integration-components/ui-primitives-preact/Header';
 import { PayoutData } from '../../PayoutDetails/components/PayoutData';
 import { PAYOUT_TABLE_FIELDS } from '../../PayoutsOverview/components/PayoutsTable/PayoutsTable';
 import { DetailsComponentProps } from './types';

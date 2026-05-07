@@ -5,7 +5,7 @@ import { noop } from '../../../../../../utils';
 import { IPaymentLinkSettingsContext, MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from './types';
 import { DEFAULT_MENU_ITEM, MenuItem } from './constants';
 import { useStores } from '../../../../../../hooks/useStores';
-import { SecondaryNavItem } from '../../../../../internal/SecondaryNav';
+import { SecondaryNavItem } from '@integration-components/ui-primitives-preact/SecondaryNav';
 import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
 import { useSaveAction } from '../../../hooks/useSaveAction';

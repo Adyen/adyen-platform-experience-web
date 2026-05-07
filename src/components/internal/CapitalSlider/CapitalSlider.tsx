@@ -1,10 +1,10 @@
 import './CapitalSlider.scss';
-import Slider from '../Slider';
+import Slider from '@integration-components/ui-primitives-preact/Slider';
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
 import uniqueId from '../../../utils/random/uniqueId';
-import Typography from '../Typography/Typography';
-import { TypographyVariant } from '../Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { IDynamicOffersConfig } from '../../../types';
 import cx from 'classnames';

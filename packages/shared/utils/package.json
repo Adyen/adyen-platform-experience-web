@@ -10,7 +10,12 @@
         "./package.json": "./package.json",
         "./datetime/restamper": "./src/datetime/restamper/index.ts",
         "./primitives/async/abortable": "./src/primitives/async/abortable/index.ts",
+        "./primitives/auxiliary/indexed": "./src/primitives/auxiliary/indexed/index.ts",
+        "./primitives/reactive/effectStack": "./src/primitives/reactive/effectStack/index.ts",
         "./primitives/reactive/reflex": "./src/primitives/reactive/reflex/index.ts",
+        "./primitives/reactive/watchlist": "./src/primitives/reactive/watchlist/index.ts",
+        "./primitives/time/clock": "./src/primitives/time/clock/index.ts",
+        "./primitives/time/today": "./src/primitives/time/today/index.ts",
         "./*": "./src/*.ts"
     }
 }

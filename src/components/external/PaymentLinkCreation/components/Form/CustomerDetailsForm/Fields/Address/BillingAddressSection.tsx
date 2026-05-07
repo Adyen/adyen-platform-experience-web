@@ -1,6 +1,6 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
-import Typography from '../../../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../../../internal/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { BillingStreetField } from './BillingStreetField';
 import { BillingHouseNumberField } from './BillingHouseNumberField';
 import { BillingCountryField } from './BillingCountryField';

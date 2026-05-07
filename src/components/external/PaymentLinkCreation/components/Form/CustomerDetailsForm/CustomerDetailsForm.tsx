@@ -4,7 +4,7 @@ import { CountryRegionField } from './Fields/CountryRegionField';
 import { LanguageField } from './Fields/LanguageField';
 import { BillingAndShippingCheckboxField } from './Fields/BillingAndShippingCheckboxField';
 import { StateUpdater } from 'preact/hooks';
-import { FormTextInput } from '../../../../../internal/FormWrappers/FormTextInput';
+import { FormTextInput } from '@integration-components/ui-primitives-preact/FormWrappers/FormTextInput';
 import { PaymentLinkCreationFormValues } from '../../types';
 // import { EmailDependentCheckboxField } from './Fields/EmailDependentCheckboxField';
 import { DeliveryAddressSection } from './Fields/Address/DeliveryAddressSection';

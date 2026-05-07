@@ -1,6 +1,6 @@
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
-import { FormTextInput } from '../../../../../../internal/FormWrappers/FormTextInput';
+import { FormTextInput } from '@integration-components/ui-primitives-preact/FormWrappers/FormTextInput';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../constants';
 import { PaymentLinkCreationFormValues } from '../../../types';
 

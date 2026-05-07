@@ -1,14 +1,14 @@
 import { useCallback } from 'preact/hooks';
 import { CAPITAL_OVERVIEW_CLASS_NAMES, sharedCapitalOverviewAnalyticsEventProperties } from '../constants';
 import { useLandedPageEvent } from '../../../../hooks/useEventDispatcher/useLandedPageEvent';
-import InfoBox from '../../../internal/InfoBox';
-import Button from '../../../internal/Button/Button';
+import InfoBox from '@integration-components/ui-primitives-preact/InfoBox';
+import Button from '@integration-components/ui-primitives-preact/Button/Button';
 import useEventDispatcherContext from '../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { IDynamicOffersConfig } from '../../../../types';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyVariant } from '../../../internal/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,

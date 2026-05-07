@@ -12,7 +12,7 @@ vi.mock('@integration-components/hooks-preact', async importOriginal => ({
     useAccountBalances: () => ({ balances: [], error: undefined, isWaiting: false, canRefresh: false, refresh: vi.fn() }),
 }));
 
-vi.mock('../../../../../../../src/components/internal/FilterBar', () => ({
+vi.mock('@integration-components/ui-primitives-preact/FilterBar', () => ({
     useFilterBarState: () => ({ filterBarElementId: 'transactions-filter-bar', isMobileContainer: false, showingFilters: false }),
 }));
 

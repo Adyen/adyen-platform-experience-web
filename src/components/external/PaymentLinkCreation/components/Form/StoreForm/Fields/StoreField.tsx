@@ -1,8 +1,8 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 
-import { FormSelect } from '../../../../../../internal/FormWrappers/FormSelect';
-import { SelectChangeEvent } from '../../../../../../internal/FormFields/Select/types';
+import { FormSelect } from '@integration-components/ui-primitives-preact/FormWrappers/FormSelect';
+import { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useCallback } from 'preact/hooks';
 
