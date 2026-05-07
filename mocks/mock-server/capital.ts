@@ -22,10 +22,10 @@ import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateGrant } from './utils/utils';
 import { delay, getHandlerCallback, mocksFactory } from '@integration-components/testing/msw';
-import { paths as CapitalGrantOfferPaths } from '../../src/types/api/resources/CapitalGrantOffersResource';
-import { paths as CapitalGrantsPaths } from '../../src/types/api/resources/CapitalGrantsResource';
-import { paths as CapitalMissingActionsPaths } from '../../src/types/api/resources/CapitalMissingActionsResource';
-import { paths as OnboardingSessionPaths } from '../../src/types/api/resources/OnboardingConfigurationResource';
+import { paths as capitalGrantOffersPaths } from '../../packages/shared/types/src/api/resources/CapitalGrantOffersResourceV1';
+import { paths as capitalGrantsPaths } from '../../packages/shared/types/src/api/resources/CapitalGrantsResourceV1';
+import { paths as capitalMissingActionsPaths } from '../../packages/shared/types/src/api/resources/CapitalMissingActionsResourceV1';
+import { paths as onboardingSessionPaths } from '../../packages/shared/types/src/api/resources/OnboardingConfigurationResourceV1';
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
@@ -131,7 +131,7 @@ const commonHandlers = {
     ],
 };
 
-const capitalFactory = mocksFactory<CapitalGrantOfferPaths & CapitalGrantsPaths & CapitalMissingActionsPaths & OnboardingSessionPaths>();
+const capitalFactory = mocksFactory<capitalGrantOffersPaths & capitalGrantsPaths & capitalMissingActionsPaths & onboardingSessionPaths>();
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
