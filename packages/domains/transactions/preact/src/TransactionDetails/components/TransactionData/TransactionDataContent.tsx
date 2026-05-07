@@ -4,7 +4,7 @@ import useRefundMetadata from '../../hooks/useRefundMetadata';
 import useTransaction from '../../hooks/useTransaction';
 import DataOverviewDetailsSkeleton from '@integration-components/ui-primitives-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { ActiveView, TransactionDetails, TransactionDetailsProps } from '../../types';
-import { useLandedPageEvent } from '@integration-components/hooks-preact/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
 import { sharedTransactionDetailsEventProperties } from '../../constants';

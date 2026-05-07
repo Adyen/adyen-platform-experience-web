@@ -8,7 +8,7 @@ import Typography from '@integration-components/ui-primitives-preact/Typography/
 import { useUniqueId } from '@integration-components/hooks-preact';
 import { useCoreContext } from '@integration-components/core/preact';
 import useDownload from '@integration-components/ui-primitives-preact/Button/DownloadButton/useDownload';
-import { useAnalyticsContext } from '@integration-components/core/preact';
+import { useEventDispatcherContext } from '@integration-components/core/preact';
 import ToggleSwitch, { ToggleSwitchProps } from '@integration-components/ui-primitives-preact/ToggleSwitch/ToggleSwitch';
 import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
 import FilterButton from '@integration-components/ui-primitives-preact/FilterBar/components/FilterButton/FilterButton';
@@ -72,7 +72,7 @@ const TransactionsExport = ({ disabled }: { disabled?: boolean }) => {
     const { filters, lastFiltersChangeTimestamp } = useTransactionsOverviewContext();
     const { i18n } = useCoreContext();
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
 
     const [popoverOpen, setPopoverOpen] = useState(false);

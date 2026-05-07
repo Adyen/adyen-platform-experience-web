@@ -1,4 +1,4 @@
-import { createUserEvents, type EventQueueItem, type UserEvents } from './Analytics/analytics/user-events';
+import { createUserEvents, type EventQueueItem, type UserEvents } from './EventDispatcher/eventDispatcher/user-events';
 import type { ExternalComponentType } from '@integration-components/types';
 
 export interface AnalyticsSetupOptions {
@@ -15,7 +15,7 @@ export function setupAnalytics({ analyticsEnabled, componentName }: AnalyticsSet
     const userEvents = createUserEvents(analyticsEnabled, componentName);
 
     userEvents.updateBaseTrackingPayload?.({
-        sdkVersion: process.env.VITE_VERSION,
+        sdkVersion: process.env.SDK_VERSION,
     });
 
     return {

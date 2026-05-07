@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/analytics/events';
+import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import {
     sharedCapitalOfferAnalyticsEventProperties,

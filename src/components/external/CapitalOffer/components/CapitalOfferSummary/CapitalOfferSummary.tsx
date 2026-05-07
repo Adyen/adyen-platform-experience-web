@@ -10,7 +10,7 @@ import './CapitalOfferSummary.scss';
 import Button from '@integration-components/ui-primitives-preact/Button/Button';
 import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
 import { EMPTY_OBJECT } from '../../../../../utils';
@@ -45,7 +45,7 @@ export const CapitalOfferSummary = ({
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const expectedRepaymentDate = useMemo(() => {
         const date = getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays);

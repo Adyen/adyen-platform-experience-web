@@ -19,7 +19,7 @@ import { getDateRangeTimestamps } from '@integration-components/ui-primitives-pr
 import { DateFilterProps, DateRangeFilterParam } from '@integration-components/ui-primitives-preact/FilterBar/filters/DateFilter/types';
 import createRangeTimestampsFactory, { RangeTimestamps } from '@integration-components/ui-primitives-preact/Calendar/calendar/timerange';
 import DateFilterCore from '@integration-components/ui-primitives-preact/FilterBar/filters/DateFilter/DateFilterCore';
-import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
 
 export interface TransactionDateFilterProps {

@@ -18,7 +18,7 @@ import {
 import type { EndpointHttpCallables, EndpointSuccessResponse, SessionObject, SetupContextObject, SetupResponse } from '../ConfigContext.types';
 import type { EndpointName, SetupEndpoint } from '@integration-components/types/api/endpoints';
 import type { HttpMethod, HttpOptions } from '../Http/types';
-import { encodeAnalyticsEvent } from '../Analytics/analytics/utils';
+import { encodeAnalyticsEvent } from '../EventDispatcher/eventDispatcher/utils';
 
 // Declaration merging is used here to type runtime-defined class members
 // without emitting class field initializers (which would conflict with

@@ -5,7 +5,7 @@ import StructuredList from '@integration-components/ui-primitives-preact/Structu
 import Button from '@integration-components/ui-primitives-preact/Button/Button';
 import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
@@ -100,7 +100,7 @@ export const CapitalOfferSelection = ({
     requestedAmount,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const initialValue = useMemo(() => {
         if (dynamicOffersConfig)

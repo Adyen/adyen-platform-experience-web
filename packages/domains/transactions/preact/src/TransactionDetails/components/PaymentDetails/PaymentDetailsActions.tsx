@@ -11,8 +11,7 @@ import {
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import { useAnalyticsContext } from '@integration-components/core/preact';
-import { useCoreContext } from '@integration-components/core/preact';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import Icon from '@integration-components/ui-primitives-preact/Icon';
 
 export interface PaymentDetailsActionsProps {
@@ -32,7 +31,7 @@ const PaymentDetailsActions = ({
     transaction,
     transactionNavigator,
 }: PaymentDetailsActionsProps) => {
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { currentTransaction: currentTransactionId, canNavigateBackward, canNavigateForward, backward, forward } = transactionNavigator;
     const { i18n } = useCoreContext();
 

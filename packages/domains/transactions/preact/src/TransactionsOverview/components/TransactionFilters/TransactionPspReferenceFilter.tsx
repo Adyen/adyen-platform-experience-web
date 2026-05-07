@@ -7,7 +7,7 @@ import { CommitAction } from '@integration-components/hooks-preact/useCommitActi
 import { TextFilterProps } from '@integration-components/ui-primitives-preact/FilterBar/filters/TextFilter/types';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { FilterEditModalRenderProps } from '@integration-components/ui-primitives-preact/FilterBar/filters/BaseFilter/types';
-import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useAnalytics/useFilterAnalyticsEvent';
+import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
 import TextFilter from '@integration-components/ui-primitives-preact/FilterBar/filters/TextFilter';
 import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';

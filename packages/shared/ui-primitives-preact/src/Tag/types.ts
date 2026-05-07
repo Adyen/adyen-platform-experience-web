@@ -14,4 +14,5 @@ export enum TagVariant {
 export interface TagProps {
     variant?: TagVariant;
     label?: string;
+    testId?: string;
 }

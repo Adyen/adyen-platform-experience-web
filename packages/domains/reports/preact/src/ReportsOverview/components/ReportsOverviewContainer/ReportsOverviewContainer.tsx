@@ -1,9 +1,8 @@
 import { useBalanceAccounts } from '@integration-components/hooks-preact';
 import type { ExternalUIComponentProps } from '@integration-components/types';
-import type { ReportsOverviewComponentProps } from '@integration-components/reports/domain';
+import { REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES, type ReportsOverviewComponentProps } from '@integration-components/reports/domain';
 import DataOverviewContainer from '@integration-components/ui-primitives-preact/DataOverviewContainer/DataOverviewContainer';
 import { ReportsOverview } from '../ReportsOverview/ReportsOverview';
-import { BASE_CLASS } from './constants';
 
 function ReportsOverviewContainer({ ...props }: ExternalUIComponentProps<ReportsOverviewComponentProps>) {
     const { balanceAccounts, isBalanceAccountIdWrong, isFetching, error } = useBalanceAccounts(props.balanceAccountId);
@@ -11,7 +10,7 @@ function ReportsOverviewContainer({ ...props }: ExternalUIComponentProps<Reports
     return (
         <DataOverviewContainer
             balanceAccountsError={error}
-            className={BASE_CLASS}
+            className={REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES.base}
             errorMessage={'reports.overview.errors.unavailable'}
             isBalanceAccountIdWrong={isBalanceAccountIdWrong}
             onContactSupport={props.onContactSupport}

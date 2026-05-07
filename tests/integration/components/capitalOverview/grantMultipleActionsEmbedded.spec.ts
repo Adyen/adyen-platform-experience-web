@@ -1,5 +1,5 @@
-import { test, expect } from '../../../fixtures/analytics/events';
-import type { PageAnalyticsEvent } from '../../../fixtures/analytics/events';
+import { test, expect } from '../../../fixtures/eventDispatcher/events';
+import type { PageAnalyticsEvent } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedActionAnalyticsEventProps, sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 import type { Page } from '@playwright/test';

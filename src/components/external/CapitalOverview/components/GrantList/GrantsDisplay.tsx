@@ -8,9 +8,9 @@ import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import SegmentedControl from '@integration-components/ui-primitives-preact/SegmentedControl/SegmentedControl';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
@@ -39,7 +39,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const [activeGrants, inactiveGrants] = useMemo(() => {
         const active: IGrant[] = [];

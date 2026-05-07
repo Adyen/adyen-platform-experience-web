@@ -1,14 +1,12 @@
 import cx from 'classnames';
 import { useEffect, useMemo } from 'preact/hooks';
-import { useConfigContext } from '@integration-components/core/preact';
 import { RefundReason, RefundResult } from '../../types';
 import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import { ButtonActionsLayoutBasic } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import { useAnalyticsContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
-import { useCoreContext } from '@integration-components/core/preact';
 
 export interface PaymentRefundActionsProps {
     beginRefund: () => void;
@@ -68,7 +66,7 @@ const PaymentRefundActions = ({
           ? refundButtonLabelWithAmount
           : refundButtonLabelsWithoutAmount.idle;
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const primaryAction = {
         disabled: refundDisabled,

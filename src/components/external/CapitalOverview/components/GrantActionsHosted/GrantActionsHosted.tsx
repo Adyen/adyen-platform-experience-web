@@ -1,7 +1,7 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
 import Button from '@integration-components/ui-primitives-preact/Button';
@@ -29,7 +29,7 @@ type GrantActionsHostedProps = {
 
 export const GrantActionsHosted: FunctionalComponent<GrantActionsHostedProps> = ({ className, expirationDate, missingActions }) => {
     const { i18n, updateCore } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { anaCreditActionDetails, signToSActionDetails } = useConfigContext().endpoints;
 
     const [loadingAction, setLoadingAction] = useState<IMissingActionType | null>(null);
