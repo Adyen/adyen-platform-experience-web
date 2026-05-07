@@ -1,0 +1,114 @@
+import classNames from 'classnames';
+import { VNode } from 'preact';
+import { AriaAttributes } from 'preact/compat';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { useCoreContext } from '@integration-components/core/preact';
+import AdyenPlatformExperienceError from '@integration-components/core/AdyenPlatformExperienceError';
+import type { DownloadStreamEndpoint } from '@integration-components/types/api/endpoints';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
+import { downloadBlob } from '@integration-components/utils';
+import Spinner from '../../Spinner';
+import Icon from '../../Icon';
+import Button from '../Button';
+import { ButtonVariant } from '../types';
+import useDownload from './useDownload';
+import './DownloadButton.scss';
+
+interface DownloadButtonProps {
+    requestParams: any;
+    iconButton?: boolean;
+    endpointName: DownloadStreamEndpoint;
+    className?: string;
+    disabled?: boolean;
+    onDownloadRequested?: () => void;
+    setError?: (error?: AdyenPlatformExperienceError) => any;
+    errorDisplay?: VNode<any>;
+    errorMessage?: (error: any) => VNode<any>;
+}
+
+function DownloadButton({
+    className,
+    disabled,
+    endpointName,
+    requestParams,
+    setError,
+    errorDisplay,
+    onDownloadRequested,
+    iconButton = false,
+    errorMessage,
+    ...ariaAttributeProps
+}: DownloadButtonProps & Pick<AriaAttributes, 'aria-describedby' | 'aria-label' | 'aria-labelledby'>) {
+    const { i18n } = useCoreContext();
+    const [fetchData, setFetchData] = useState(false);
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const { data, error, isFetching } = useDownload(endpointName, requestParams, fetchData);
+
+    useEffect(() => {
+        if (fetchData) {
+            setFetchData(false);
+        }
+    }, [fetchData]);
+
+    useEffect(() => {
+        if (data) {
+            downloadBlob(data);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (setError && error) {
+            setError(error as AdyenPlatformExperienceError);
+        }
+    }, [error, setError]);
+
+    const onClick = () => {
+        setFetchData(true);
+        onDownloadRequested?.();
+    };
+
+    const buttonIcon = useMemo(() => (isFetching ? <Spinner size={'small'} /> : <Icon name="download" />), [isFetching]);
+
+    const buttonLabel = useMemo(() => {
+        if (iconButton) {
+            return buttonIcon;
+        } else {
+            return isFetching ? `${i18n.get('common.actions.download.labels.inProgress')}..` : i18n.get('common.actions.download.labels.default');
+        }
+    }, [buttonIcon, i18n, isFetching, iconButton]);
+
+    return (
+        <>
+            <div
+                className={classNames('adyen-pe-download', {
+                    'adyen-pe-download-icon-button-container': iconButton,
+                })}
+            >
+                {isSmContainer ? (
+                    <Button iconButton={true} variant={ButtonVariant.TERTIARY} onClick={onClick} {...ariaAttributeProps}>
+                        {buttonIcon}
+                    </Button>
+                ) : (
+                    <Button
+                        className={classNames(
+                            'adyen-pe-download__button',
+                            { 'adyen-pe-download__button--loading': isFetching, 'adyen-pe-download__button--icon': iconButton },
+                            className
+                        )}
+                        disabled={disabled || isFetching}
+                        variant={iconButton ? ButtonVariant.TERTIARY : ButtonVariant.SECONDARY}
+                        onClick={onClick}
+                        {...(!iconButton && { iconLeft: buttonIcon })}
+                        {...ariaAttributeProps}
+                    >
+                        {buttonLabel}
+                    </Button>
+                )}
+                {error && errorDisplay && <div className={'adyen-pe-download__error'}>{errorDisplay}</div>}
+            </div>
+            {/* [TODO]: Remove errorMessage prop and rely on errorDisplay for rendering error  */}
+            {error && errorMessage && errorMessage(error)}
+        </>
+    );
+}
+
+export default DownloadButton;

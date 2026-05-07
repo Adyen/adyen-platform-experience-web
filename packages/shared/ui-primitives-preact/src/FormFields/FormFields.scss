@@ -1,0 +1,346 @@
+@use '@integration-components/style';
+
+.adyen-pe-field-wrapper {
+    display: flex;
+    width: 100%;
+}
+
+.adyen-pe-field--20 {
+    width: 20%;
+}
+
+.adyen-pe-field--30 {
+    width: 30%;
+}
+
+.adyen-pe-field--40 {
+    width: 40%;
+}
+
+.adyen-pe-field--50 {
+    width: 50%;
+}
+
+.adyen-pe-field--60 {
+    width: 60%;
+}
+
+.adyen-pe-field--70 {
+    width: 70%;
+}
+
+.adyen-pe-field--80 {
+    width: 80%;
+}
+
+.adyen-pe-field--col-70 {
+    width: calc(70% - #{style.token(spacer-040)});
+}
+
+.adyen-pe-field--col-30 {
+    width: calc(30% - #{style.token(spacer-040)});
+}
+
+.adyen-pe-field--col-50 {
+    width: calc(50% - #{style.token(spacer-040)});
+}
+
+.adyen-pe-field-wrapper > .adyen-pe-field:first-child {
+    margin-right: style.token(spacer-040);
+
+    [dir='rtl'] & {
+        margin-left: style.token(spacer-040);
+        margin-right: 0;
+    }
+}
+
+.adyen-pe-field-wrapper > .adyen-pe-field:nth-child(2) {
+    margin-left: style.token(spacer-040);
+
+    [dir='rtl'] & {
+        margin-left: 0;
+        margin-right: style.token(spacer-040);
+    }
+}
+
+.adyen-pe-field-wrapper:last-of-type > .adyen-pe-field {
+    margin-bottom: 0;
+}
+
+.adyen-pe-input {
+    background: style.token(color-background-primary);
+    border: 1px solid style.token(color-outline-secondary);
+    border-radius: style.token(border-radius-m);
+    color: style.token(color-label-primary);
+    display: block;
+    font-family: inherit;
+    font-size: style.token(text-body-font-size);
+    height: 40px;
+    outline: none;
+    padding: style.token(spacer-030) style.token(spacer-040);
+    position: relative;
+    transition:
+        border 0.2s ease-out,
+        box-shadow 0.2s ease-out;
+    width: 100%;
+
+    &__container {
+        align-items: center;
+        background: style.token(color-background-primary);
+        border: 1px solid style.token(color-outline-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-direction: row;
+        height: 40px;
+        position: relative;
+        transition:
+            border 0.2s ease-out,
+            box-shadow 0.2s ease-out;
+        width: 100%;
+
+        &:hover {
+            border-color: style.token(color-outline-primary-hover);
+        }
+
+        &:focus-within {
+            background: style.token(color-background-primary);
+            outline: 1px solid style.token(color-outline-selected);
+        }
+
+        &--readonly {
+            &,
+            &:focus-within {
+                background-color: style.token(color-background-disabled);
+                border: 0;
+                outline: none;
+            }
+        }
+    }
+
+    &__container > * {
+        flex-shrink: 0;
+    }
+
+    &__container > input {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        flex: 1;
+        height: auto;
+        padding: style.token(spacer-030) style.token(spacer-040);
+
+        &:hover {
+            border: 0;
+            outline: none;
+        }
+
+        &:is(:focus, :active):not(.adyen-pe-input--invalid) {
+            background: transparent;
+            border: 0;
+            outline: none;
+        }
+
+        &:is(:focus, :active):hover:not(.adyen-pe-input--invalid) {
+            outline: none;
+        }
+    }
+
+    &__slot-before {
+        display: flex;
+        margin-left: style.token(spacer-040);
+    }
+
+    &__slot-after {
+        display: flex;
+        margin-right: style.token(spacer-040);
+    }
+
+    &__dropdown {
+        align-items: center;
+        display: flex;
+        pointer-events: auto;
+
+        .adyen-pe-dropdown {
+            &__button {
+                background-color: transparent;
+                border: 0;
+                font-size: style.token(text-body-font-size);
+                letter-spacing: 0;
+                padding: 0;
+            }
+
+            :hover {
+                box-shadow: none;
+            }
+        }
+
+        &--start {
+            height: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            padding: style.token(spacer-020);
+        }
+
+        &--end {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
+.adyen-pe-dropdown {
+    &--input-field {
+        align-items: center;
+        background: style.token(color-background-secondary);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        height: 100%;
+        padding: style.token(spacer-030) style.token(spacer-040);
+    }
+
+    &--readonly {
+        background-color: style.token(color-background-disabled);
+
+        &:hover {
+            color: style.token(color-label-disabled);
+        }
+    }
+
+    .adyen-pe-button--tertiary {
+        font-weight: style.token(text-caption-font-weight);
+        text-decoration: none;
+    }
+}
+
+.adyen-pe-input:hover {
+    border-color: style.token(color-outline-primary-hover);
+}
+
+.adyen-pe-input:required {
+    box-shadow: none;
+}
+
+.adyen-pe-input-wrapper {
+    display: block;
+    position: relative;
+}
+
+.adyen-pe-input-wrapper--block {
+    display: block;
+}
+
+.adyen-pe-input-wrapper--autoresizable-textarea {
+    display: flex;
+    overflow: hidden;
+
+    > textarea {
+        overflow-y: scroll;
+        resize: none;
+    }
+}
+
+.adyen-pe-input__inline-validation {
+    height: 16px;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+
+    [dir='rtl'] & {
+        left: 14px;
+        right: auto;
+    }
+
+    [dir='ltr'] & {
+        left: auto;
+        right: 14px;
+    }
+}
+
+.adyen-pe-input__inline-validation--valid {
+    color: style.token(color-label-on-background-success-weak);
+}
+
+.adyen-pe-input__inline-validation--invalid {
+    color: style.token(color-label-critical);
+}
+
+.adyen-pe-input--error,
+.adyen-pe-input--invalid,
+.adyen-pe-input--error:hover,
+.adyen-pe-input--invalid:hover {
+    border-color: style.token(color-outline-critical-hover);
+}
+
+.adyen-pe-input--invalid {
+    border-width: style.token(border-width-attention);
+}
+
+.adyen-pe-input::placeholder {
+    color: style.token(color-label-secondary);
+    font-weight: style.token(text-body-font-weight);
+}
+
+.adyen-pe-input--date {
+    padding-right: 30px;
+}
+
+.adyen-pe-input:active,
+.adyen-pe-input:focus,
+.adyen-pe-input--focus,
+.adyen-pe-input:active:hover,
+.adyen-pe-input:focus:hover,
+.adyen-pe-input--focus:hover {
+    &:not(.adyen-pe-input--invalid) {
+        background: style.token(color-background-primary);
+        outline: 1px solid style.token(color-outline-selected);
+    }
+}
+
+.adyen-pe-input.adyen-pe-input[readonly],
+.adyen-pe-input.adyen-pe-input[readonly]:hover {
+    &:not(.adyen-pe-input--invalid) {
+        background-color: style.token(color-background-disabled);
+        border-color: transparent;
+        color: style.token(color-label-disabled);
+        cursor: not-allowed;
+        outline: none;
+
+        .adyen-pe-dropdown--input-field {
+            background-color: style.token(color-background-disabled);
+
+            &:hover {
+                color: style.token(color-label-disabled);
+            }
+        }
+
+        &:focus-within {
+            outline: none;
+        }
+    }
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type */
+.adyen-pe-input[type='number']::-webkit-inner-spin-button,
+.adyen-pe-input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    margin: 0;
+}
+
+/* stylelint-disable-next-line selector-no-qualifying-type */
+.adyen-pe-input[type='number'] {
+    appearance: textfield;
+}
+
+/* stylelint-disable selector-no-qualifying-type */
+.adyen-pe-input[type='search']::-webkit-search-cancel-button,
+.adyen-pe-input[type='search']::-webkit-search-decoration,
+.adyen-pe-input[type='search']::-webkit-search-results-button,
+.adyen-pe-input[type='search']::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+/* stylelint-enable selector-no-qualifying-type */

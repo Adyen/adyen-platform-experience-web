@@ -1,0 +1,51 @@
+@use '@integration-components/style';
+
+.adyen-pe-structured-list {
+    $adyen-pe-structured-list: &;
+
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+
+    &--expanded {
+        gap: style.token(spacer-050);
+    }
+
+    &__grid {
+        display: flex;
+
+        @for $i from 3 through 9 {
+            &--width-#{$i}-of-12 {
+                flex: 0 0 calc($i / 12 * 100%);
+            }
+        }
+    }
+
+    &__item {
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+    }
+
+    &__item--has-highlight:hover {
+        background-color: style.token(color-background-primary-hover);
+        transition: background-color 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    }
+
+    &__label {
+        color: style.token(color-label-secondary);
+        overflow-wrap: anywhere;
+    }
+
+    &__content {
+        color: style.token(color-label-primary);
+        display: flex;
+        margin: 0;
+        overflow-wrap: anywhere;
+
+        #{$adyen-pe-structured-list}--align-end & {
+            justify-content: flex-end;
+            text-align: end;
+        }
+    }
+}

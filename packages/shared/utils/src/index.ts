@@ -1,5 +1,6 @@
 export * from './abort/main';
 export * from './async/constants';
+export * from './async/debounce';
 export * from './async/main';
 export * from './collection/main';
 export * from './common';
