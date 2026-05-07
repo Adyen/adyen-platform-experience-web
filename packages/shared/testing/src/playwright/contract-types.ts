@@ -1,14 +1,14 @@
-import { paths as BalanceAccountPaths } from '@integration-components/types/api/resources/BalanceAccountsResource';
-import { paths as PayoutsPaths } from '@integration-components/types/api/resources/PayoutsResource';
-import { paths as TransactionsPaths } from '@integration-components/types/api/resources/TransactionsResource';
-import { paths as TransactionsPathsV2 } from '@integration-components/types/api/resources/TransactionsResourceV2';
-import { paths as ReportsPaths } from '@integration-components/types/api/resources/ReportsResource';
+import { paths as balanceAccountsPaths } from '@integration-components/types/api/resources/BalanceAccountsResourceV1';
+import { paths as payoutsPaths } from '@integration-components/types/api/resources/PayoutsResourceV1';
+import { paths as transactionsPathsV1 } from '@integration-components/types/api/resources/TransactionsResourceV1';
+import { paths as transactionsPathsV2 } from '@integration-components/types/api/resources/TransactionsResourceV2';
+import { paths as reportsPaths } from '@integration-components/types/api/resources/ReportsResourceV1';
 import { _RequiresParameter } from '@integration-components/core/ConfigContext.types';
 
 export type AllowedHttpMethods = 'get' | 'post';
 export type AvailableVersions = 1 | 2;
 
-type _EndpointUrl = ReportsPaths & TransactionsPaths & TransactionsPathsV2 & PayoutsPaths & BalanceAccountPaths;
+type _EndpointUrl = reportsPaths & transactionsPathsV1 & transactionsPathsV2 & payoutsPaths & balanceAccountsPaths;
 type _StripVersion<T extends keyof Record<string, any>> = T extends `/v${number}/${infer Rest}` ? `/${Rest}` : T;
 type _WithVersion<T extends string, V extends AvailableVersions = 1> = T extends `${infer Rest}` ? `/v${V}${Rest}` : `/v${V}${T}`;
 
