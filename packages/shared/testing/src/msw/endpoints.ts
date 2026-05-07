@@ -10,3 +10,4 @@
 export const MSW_BASE_URL = 'https://platform-components-external-test.adyen.com/platform-components-external/api/v([0-9]+)';
 
 export const BALANCE_ACCOUNTS_ENDPOINT = `${MSW_BASE_URL}/balanceAccounts`;
+export const SETUP_ENDPOINT = `${MSW_BASE_URL}/setup`;
