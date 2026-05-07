@@ -81,7 +81,7 @@ export interface components {
             /** Format: int64 */
             amount: number;
             currency: string;
-            selectedEstimatedRepaymentTermDaysInDays: string;
+            selectedEstimatedRepaymentTermDaysInDays: number;
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];

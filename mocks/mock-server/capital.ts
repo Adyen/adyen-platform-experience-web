@@ -20,20 +20,21 @@ import {
 } from '../mock-data';
 import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
-import { calculateGrant } from './utils/utils';
+import { calculateSelectedOffer, calculateOffers } from './utils/utils';
 import { delay, getHandlerCallback, mocksFactory } from '@integration-components/testing/msw';
-import { paths as capitalGrantOffersPaths } from '../../packages/shared/types/src/api/resources/CapitalGrantOffersResourceV1';
+import { paths as capitalGrantOffersPaths } from '../../packages/shared/types/src/api/resources/CapitalGrantOffersResourceV2';
 import { paths as capitalGrantsPaths } from '../../packages/shared/types/src/api/resources/CapitalGrantsResourceV1';
 import { paths as capitalMissingActionsPaths } from '../../packages/shared/types/src/api/resources/CapitalMissingActionsResourceV1';
 import { paths as onboardingSessionPaths } from '../../packages/shared/types/src/api/resources/OnboardingConfigurationResourceV1';
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
+import { ICreateGrantOfferRequest } from '@integration-components/types';
 
 const mockEndpoints = endpoints().capital;
 const networkError = false;
 
-const ASYNC_ACTION_DELAY_MS = Number(process.env.TEST_ENV) === 1 ? 0 : 3000;
+const ASYNC_ACTION_DELAY_MS = Number(process.env.TEST_ENV) === 1 ? 0 : 2000;
 
 const EMPTY_GRANTS_LIST = getHandlerCallback({
     response: {
@@ -48,10 +49,11 @@ let retries = 0;
 const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }, retriesLimit?: number) => {
     const url = new URL(request.url);
     const { amount, currency } = { amount: url.searchParams.get('amount'), currency: url.searchParams.get('currency') };
+    const numberAmount = Number(amount);
 
-    if (!amount || !currency) return;
+    if (!numberAmount || !currency) return;
 
-    const response = calculateGrant(amount, currency);
+    const response = calculateOffers(numberAmount, currency, DYNAMIC_CAPITAL_OFFER.maxAmount.value);
     await delay(400);
 
     if (retries < (retriesLimit || 0)) {
@@ -68,11 +70,10 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
 };
 
 const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
-    const { amount, currency } = (await request.json()) as { amount: number; currency: string };
-
-    const response = calculateGrant(amount, currency);
+    const { amount, currency, selectedEstimatedRepaymentTermDaysInDays } = (await request.json()) as ICreateGrantOfferRequest;
+    const offer = calculateSelectedOffer(amount, currency, selectedEstimatedRepaymentTermDaysInDays);
     await delay(400);
-    return HttpResponse.json({ ...response, id: uuid() });
+    return HttpResponse.json({ ...offer, id: uuid() });
 };
 
 export const capitalMock = [
