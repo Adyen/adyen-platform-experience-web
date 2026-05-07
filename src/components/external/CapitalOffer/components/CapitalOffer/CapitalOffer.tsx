@@ -48,7 +48,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             onSuccess: onSuccess,
         },
         queryFn: useCallback(async () => {
-            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT);
+            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
         }, [getDynamicGrantOffersConfiguration]),
     });
 
