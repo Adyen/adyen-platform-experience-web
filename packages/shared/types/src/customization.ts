@@ -40,3 +40,23 @@ export type DataCustomizationObject<Columns extends string, DataRetrieved, Callb
     fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
     onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
 };
+
+export type DetailsCustomFieldConfig<k> = {
+    key: k;
+    visibility?: 'visible' | 'hidden';
+};
+
+export type CustomDetailsField<T extends string> = {
+    [k in T]: DetailsCustomFieldConfig<k>;
+}[T];
+
+export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
+    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
+    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
+};
+
+export interface DetailsWithExtraData<T extends DetailsDataCustomizationObject<any, any, any>> {
+    dataCustomization?: {
+        details?: T;
+    };
+}

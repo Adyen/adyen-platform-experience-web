@@ -6,14 +6,9 @@ import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/constants
 import { RefundReason } from '../../external/TransactionDetails/types';
 
 export { getReportType } from '@integration-components/reports/domain';
+export { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
-
-const payoutAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.adjustments.types.' });
-export const getPayoutAdjustmentType = createDynamicTranslationFactory(payoutAdjustmentTypeKeyFactory, originalValueFallback);
-
-const payoutFundsCapturedTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.fundsCaptured.types.' });
-export const getPayoutFundsCapturedType = createDynamicTranslationFactory(payoutFundsCapturedTypeKeyFactory, originalValueFallback);
 
 const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
 export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);

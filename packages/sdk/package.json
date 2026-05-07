@@ -9,5 +9,10 @@
     "dependencies": {
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/style": "workspace:*"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.10.2",
+        "vite": "^7.2.4",
+        "vite-plugin-svgr": "^4.5.0"
     }
 }

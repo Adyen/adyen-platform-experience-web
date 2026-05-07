@@ -50,6 +50,9 @@ importers:
       '@integration-components/hooks-preact':
         specifier: workspace:*
         version: link:packages/shared/hooks-preact
+      '@integration-components/payouts':
+        specifier: workspace:*
+        version: link:packages/domains/payouts
       '@integration-components/reports':
         specifier: workspace:*
         version: link:packages/domains/reports
@@ -228,6 +231,58 @@ importers:
         specifier: 4.0.10
         version: 4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
 
+  packages/domains/payouts:
+    dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../../shared/core
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:../../shared/hooks-preact
+      '@integration-components/sdk-internal':
+        specifier: workspace:*
+        version: link:../../shared/lib
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../../shared/style
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../../shared/testing
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../../shared/types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
+      classnames:
+        specifier: ^2.5.1
+        version: 2.5.1
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.56.0
+        version: 1.56.0
+      '@storybook/preact':
+        specifier: 10.2.12
+        version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      '@storybook/vue3':
+        specifier: 10.2.12
+        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      msw:
+        specifier: ^2.4.5
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
+      vitest:
+        specifier: 4.0.10
+        version: 4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.31(typescript@5.8.3)
+
   packages/domains/reports:
     dependencies:
       '@integration-components/core':
@@ -282,6 +337,16 @@ importers:
       '@integration-components/style':
         specifier: workspace:*
         version: link:../shared/style
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.2(@babel/core@7.26.10)(preact@10.28.2)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+      vite:
+        specifier: ^7.2.4
+        version: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite-plugin-svgr:
+        specifier: ^4.5.0
+        version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
 
   packages/shared/core:
     dependencies:
@@ -506,10 +571,6 @@ packages:
     resolution: {}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-annotate-as-pure@7.25.9':
-    resolution: {}
-    engines: {node: '>=6.9.0'}
-
   '@babel/helper-annotate-as-pure@7.27.3':
     resolution: {}
     engines: {node: '>=6.9.0'}
@@ -684,12 +745,6 @@ packages:
       '@babel/core': ^7.0.0-0
 
   '@babel/plugin-syntax-import-attributes@7.28.6':
-    resolution: {}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-
-  '@babel/plugin-syntax-jsx@7.25.9':
     resolution: {}
     engines: {node: '>=6.9.0'}
     peerDependencies:
@@ -6158,10 +6213,6 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
 
-  '@babel/helper-annotate-as-pure@7.25.9':
-    dependencies:
-      '@babel/types': 7.28.5
-
   '@babel/helper-annotate-as-pure@7.27.3':
     dependencies:
       '@babel/types': 7.28.5
@@ -6378,11 +6429,6 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
       '@babel/helper-plugin-utils': 7.28.6
-
-  '@babel/plugin-syntax-jsx@7.25.9(@babel/core@7.26.10)':
-    dependencies:
-      '@babel/core': 7.26.10
-      '@babel/helper-plugin-utils': 7.26.5
 
   '@babel/plugin-syntax-jsx@7.28.6(@babel/core@7.26.10)':
     dependencies:
@@ -6676,11 +6722,11 @@ snapshots:
   '@babel/plugin-transform-react-jsx@7.25.9(@babel/core@7.26.10)':
     dependencies:
       '@babel/core': 7.26.10
-      '@babel/helper-annotate-as-pure': 7.25.9
-      '@babel/helper-module-imports': 7.25.9
-      '@babel/helper-plugin-utils': 7.26.5
-      '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.26.10)
-      '@babel/types': 7.28.5
+      '@babel/helper-annotate-as-pure': 7.27.3
+      '@babel/helper-module-imports': 7.28.6
+      '@babel/helper-plugin-utils': 7.28.6
+      '@babel/plugin-syntax-jsx': 7.28.6(@babel/core@7.26.10)
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -8060,7 +8106,7 @@ snapshots:
 
   '@svgr/hast-util-to-babel-ast@8.0.0':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
       entities: 4.5.0
 
   '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.8.3))':
@@ -8423,14 +8469,14 @@ snapshots:
       chai: 6.2.1
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
+  '@vitest/mocker@4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))':
     dependencies:
       '@vitest/spy': 4.0.10
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
-      vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -12144,7 +12190,7 @@ snapshots:
   vitest@4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0):
     dependencies:
       '@vitest/expect': 4.0.10
-      '@vitest/mocker': 4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
+      '@vitest/mocker': 4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0))
       '@vitest/pretty-format': 4.0.10
       '@vitest/runner': 4.0.10
       '@vitest/snapshot': 4.0.10
@@ -12161,7 +12207,7 @@ snapshots:
       tinyexec: 0.3.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.2.4(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vite: 7.3.1(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.10.13

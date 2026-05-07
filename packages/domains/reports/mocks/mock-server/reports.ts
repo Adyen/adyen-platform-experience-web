@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
+import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures';
 import { compareDates, delay, getPaginationLinks } from '@integration-components/testing/msw';
-import { BALANCE_ACCOUNTS_SINGLE } from '@integration-components/testing/fixtures/balanceAccounts';
 import { getReports } from '../mock-data/reports';
 import { REPORTS_ENDPOINTS } from '../endpoints';
 
