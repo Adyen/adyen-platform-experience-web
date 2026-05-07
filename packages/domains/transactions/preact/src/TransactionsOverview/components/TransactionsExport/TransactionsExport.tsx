@@ -23,7 +23,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks'
 import { useConfigContext } from '@integration-components/core/preact';
 import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
 import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import { fixedForwardRef } from '@integration-components/hooks-preact/fixedForwardRef';
+import { fixedForwardRef } from '@integration-components/ui-primitives-preact/preact-utils';
 import { getTransactionsFilterQueryParams } from '../utils';
 import { TranslationKey } from '@integration-components/core';
 import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
