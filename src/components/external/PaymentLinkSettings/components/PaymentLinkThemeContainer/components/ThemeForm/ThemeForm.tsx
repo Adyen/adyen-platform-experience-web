@@ -1,13 +1,13 @@
-import InputText from '../../../../../../internal/FormFields/InputText';
-import Typography from '../../../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../../../internal/Typography/types';
+import InputText from '@integration-components/ui-primitives-preact/FormFields/InputText';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import useUniqueId from '../../../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { logoOptions, logoOptionsList } from './constants';
 import './ThemeForm.scss';
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { h } from 'preact';
-import Icon from '../../../../../../internal/Icon';
+import Icon from '@integration-components/ui-primitives-preact/Icon';
 import usePaymentLinkSettingsContext from '../../../PaymentLinkSettingsContainer/context/context';
 import { LogoTypes, ThemeFormDataRequest, ThemeFormProps } from '../../types';
 import LogoPreview from '../LogoPreview/LogoPreview';

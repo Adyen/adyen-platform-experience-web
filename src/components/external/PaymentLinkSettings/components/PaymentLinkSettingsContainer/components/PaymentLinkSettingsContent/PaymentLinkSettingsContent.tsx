@@ -2,8 +2,8 @@ import TermsAndConditionsContainer from '../../../TermsAndConditions/TermsAndCon
 import PaymentLinkThemeContainer from '../../../PaymentLinkThemeContainer/PaymentLinkThemeContainer';
 import { MenuItem } from '../../context/constants';
 import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
-import Alert from '../../../../../../internal/Alert/Alert';
-import { AlertTypeOption, AlertVariantOption } from '../../../../../../internal/Alert/types';
+import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-primitives-preact/Alert/types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import usePaymentLinkSettingsContext from '../../context/context';
 import PaymentLinkSettingsContentLoading from '../PaymentLinkSettingsContentLoading/PaymentLinkSettingsContentLoading';

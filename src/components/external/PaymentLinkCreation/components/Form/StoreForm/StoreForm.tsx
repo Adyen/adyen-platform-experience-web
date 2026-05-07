@@ -1,6 +1,6 @@
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import Alert from '../../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../../internal/Alert/types';
+import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
 import StoreField from './Fields/StoreField';
 
 import { StateUpdater, useMemo } from 'preact/hooks';

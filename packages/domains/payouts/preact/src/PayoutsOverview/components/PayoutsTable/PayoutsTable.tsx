@@ -8,12 +8,12 @@ import { useConfigContext, useCoreContext } from '@integration-components/core/p
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import DataGrid from '../../../../../../../../src/components/internal/DataGrid';
-import DataOverviewError from '../../../../../../../../src/components/internal/DataOverviewError/DataOverviewError';
-import Pagination from '../../../../../../../../src/components/internal/Pagination';
-import { PaginationProps, WithPaginationLimitSelection } from '../../../../../../../../src/components/internal/Pagination/types';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
+import DataGrid from '@integration-components/ui-primitives-preact/DataGrid';
+import DataOverviewError from '@integration-components/ui-primitives-preact/DataOverviewError/DataOverviewError';
+import Pagination from '@integration-components/ui-primitives-preact/Pagination';
+import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-primitives-preact/Pagination/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { BASE_CLASS, NET_PAYOUT_CLASS } from './constants';
 import './PayoutsTable.scss';
 

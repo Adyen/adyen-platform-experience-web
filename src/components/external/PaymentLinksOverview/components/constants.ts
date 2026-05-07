@@ -1,6 +1,6 @@
 import { TranslationKey } from '../../../../translations';
 import { IPaymentLinkFilterStatusGroup, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType } from '../../../../types';
-import { TabComponentProps } from '../../../internal/Tabs/types';
+import { TabComponentProps } from '@integration-components/ui-primitives-preact/Tabs/types';
 
 export const BASE_CLASS = 'adyen-pe-payment-links-overview';
 export const BASE_DETAILS_CLASS = 'adyen-pe-payment-link-details';

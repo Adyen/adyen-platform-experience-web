@@ -2,18 +2,18 @@ import { memo } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TranslationKey } from '@integration-components/core';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
-import { StructuredListProps } from '../../../../../../../../src/components/internal/StructuredList/types';
+import { StructuredListProps } from '@integration-components/ui-primitives-preact/StructuredList/types';
 import { getTransactionRefundReason } from '@integration-components/transactions/domain';
-import { isCustomDataObject } from '../../../../../../../../src/components/internal/DataGrid/components/TableCells';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { isCustomDataObject } from '@integration-components/ui-primitives-preact/DataGrid/components/TableCells';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../constants';
 import { normalizeCustomFields } from '@integration-components/utils';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
-import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import Icon from '../../../../../../../../src/components/internal/DataGrid/components/Icon';
-import CopyText from '../../../../../../../../src/components/internal/CopyText/CopyText';
-import Link from '../../../../../../../../src/components/internal/Link/Link';
+import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Icon from '@integration-components/ui-primitives-preact/DataGrid/components/Icon';
+import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
+import Link from '@integration-components/ui-primitives-preact/Link/Link';
 import cx from 'classnames';
 
 const copyButtonAnalyticsEventProperties = {

@@ -1,6 +1,6 @@
 import './PaymentLinkThemeContainer.scss';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import usePaymentLinkSettingsContext from '../PaymentLinkSettingsContainer/context/context';
 import { useEffect, useMemo, useState } from 'preact/hooks';

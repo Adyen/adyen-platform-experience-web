@@ -1,11 +1,11 @@
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import AnchorButton from '../../../../internal/AnchorButton/AnchorButton';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import AnchorButton from '@integration-components/ui-primitives-preact/AnchorButton/AnchorButton';
+import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
 import { SupportedLocation } from '../../../../internal/CapitalHeader/constants';
-import Card from '../../../../internal/Card/Card';
-import { Translation } from '../../../../internal/Translation';
-import { TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
+import Card from '@integration-components/ui-primitives-preact/Card/Card';
+import { Translation } from '@integration-components/ui-primitives-preact/Translation';
+import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
 import { SUMMARY_TEXT_EMAIL } from '../CapitalOfferSummary/constants';
 import './CapitalOfferLegalNotice.scss';
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { boolOrFalse } from '@integration-components/utils';
 import type { TranslationKey } from '@integration-components/core';
 import type { ExternalUIComponentProps } from '@integration-components/types';
-import { useModalContext } from '../../../../../../../src/components/internal/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
 import type { DetailsComponentProps } from './types';
 
 type _BaseUseDataOverviewDetailsTitleProps = Pick<ExternalUIComponentProps<DetailsComponentProps>, 'hideTitle' | 'type'>;
