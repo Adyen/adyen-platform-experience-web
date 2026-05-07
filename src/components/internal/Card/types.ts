@@ -1,6 +1,7 @@
 import { ComponentChild } from 'preact';
 
 export interface CardProps {
+    onClick?: () => void;
     onClickHandler?: () => void;
     title?: string;
     subTitle?: string;

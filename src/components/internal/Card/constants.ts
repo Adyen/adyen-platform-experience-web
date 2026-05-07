@@ -12,3 +12,4 @@ export const CARD_NO_PADDING = `${CARD_BASE_CLASS}--no-padding`;
 export const CARD_FILLED = `${CARD_BASE_CLASS}--filled`;
 export const CARD_FOOTER = `${CARD_BASE_CLASS}__footer`;
 export const CARD_COMPACT = `${CARD_BASE_CLASS}--compact`;
+export const CARD_CLICKABLE = `${CARD_BASE_CLASS}--clickable`;
