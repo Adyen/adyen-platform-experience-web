@@ -10,6 +10,17 @@ import type { AnalyticsConfig, DevEnvironment, onErrorHandler } from './types';
 import type { CustomTranslations as Translations, TranslationSourceRecord } from '../../../../src/translations';
 
 /**
+ * Minimal contract that framework-specific element classes (Preact BaseElement,
+ * Vue UIElement, ...) must satisfy so Core can manage them uniformly.
+ */
+export interface ManagedElement {
+    readonly _id: string;
+    readonly core: unknown;
+    update(props: any): any;
+    unmount(): any;
+}
+
+/**
  * Minimal options surface shared by every Core subclass (Preact / Vue / future frameworks).
  * Framework-specific Cores can extend this to refine `locale` typing, etc.
  */
@@ -36,12 +47,13 @@ export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; s
 /**
  * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
  * environment, session wiring, the shared `Localization` instance, asset getters, CDN
- * helpers and the generic `initialize()` / `update()` lifecycle.
+ * helpers, the component registry, and the generic `initialize()` / `update()` lifecycle.
  *
- * Subclasses only need to add framework-specific surface (e.g. Preact's component
- * registry, Vue's `i18n` adapter).
+ * Framework-specific rendering / mounting / unmounting lives in the element classes
+ * (Preact `BaseElement`, Vue `UIElement`, ...), not here.
  */
-export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
+export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
+    public static readonly version = process.env.SDK_VERSION!;
     public options: O;
     public loadingContext: string;
     public analyticsEnabled: boolean;
@@ -52,6 +64,7 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
     public getDatasetAsset: (props: AssetOptions) => string;
     public getCdnConfig: CdnFetcher;
     public getCdnDataset: CdnFetcher;
+    public components: ManagedElement[] = [];
 
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
@@ -120,6 +133,10 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
         return this;
     }
 
+    public get i18n() {
+        return this.localization.i18n;
+    }
+
     /**
      * Optional subclass hook for framework-specific reactions to option changes
      * (e.g. rebuilding env-bound assets when `options.environment` changes).
@@ -152,14 +169,42 @@ export abstract class CoreBase<O extends CoreOptionsBase = CoreOptionsBase> {
     }
 
     /**
-     * Apply a partial options patch and re-initialize. Subclasses can override
-     * to add extra behavior (e.g. remounting registered components).
+     * Apply a partial options patch, re-initialize, and propagate the update to
+     * every registered component that belongs to this Core instance.
      */
     public async update(options: Partial<O> = EMPTY_OBJECT as Partial<O>): Promise<this> {
         this.setOptions(options);
         await this.initialize();
+
+        this.components.forEach(component => {
+            if (component.core === this) {
+                component.update({ ...this.options });
+            }
+        });
+
         return this;
     }
+
+    /**
+     * Remove the reference of a component
+     * @param component - reference to the component to be removed
+     * @returns this - the element instance
+     */
+    public remove = (component: ManagedElement): this => {
+        this.components = this.components.filter(c => c._id !== component._id);
+        component.unmount();
+        return this;
+    };
+
+    /**
+     * @internal
+     * Register components in core to be able to update them all at once
+     */
+    public registerComponent = (component: ManagedElement) => {
+        if (component.core === this) {
+            this.components.push(component);
+        }
+    };
 }
 
-export default CoreBase;
+export default Core;

@@ -71,5 +71,5 @@ export {
 
 export type { CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
 
-export { CoreBase } from './CoreBase';
-export type { CoreOptionsBase, ResolvedEnvironment, CdnFetcher } from './CoreBase';
+export { Core } from './Core';
+export type { CoreOptionsBase, ResolvedEnvironment, CdnFetcher, ManagedElement } from './Core';
