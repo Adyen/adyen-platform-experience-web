@@ -125,8 +125,6 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
             this.session.analyticsEnabled = this.analyticsEnabled;
         }
 
-        this.onOptionsChanged?.(options);
-
         this.session.loadingContext = this.loadingContext;
         this.session.onSessionCreate = this.options.onSessionCreate;
 
@@ -136,14 +134,6 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
     public get i18n() {
         return this.localization.i18n;
     }
-
-    /**
-     * Optional subclass hook for framework-specific reactions to option changes
-     * (e.g. rebuilding env-bound assets when `options.environment` changes).
-     * Called from `setOptions` *after* `this.options` has been merged and shared
-     * localization state has been refreshed.
-     */
-    protected onOptionsChanged?(options: Partial<O>): void;
 
     /**
      * Emit the SSR warning at most once, await translation readiness, and register
