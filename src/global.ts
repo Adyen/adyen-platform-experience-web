@@ -1,10 +1,10 @@
-// Pulls in the global augmentations (AdyenPlatformExperienceSDK, Window) from the declaration file.
+// Pulls in the global augmentations (AdyenPlatformExperienceMetadata, Window) from the declaration file.
 // Using `import type` rather than a triple-slash reference to avoid @typescript-eslint/triple-slash-reference errors.
 import type {} from './declarations/global';
 import { Core } from './core';
 
 /** A property with this name will be exposed via the global (window) object. */
-const globalKey = 'AdyenPlatformExperienceSDK' satisfies keyof typeof window;
+const globalKey = 'AdyenPlatformExperienceMetadata' satisfies keyof typeof window;
 
 /**
  * Creates a null-prototype object whose properties are non-writable and non-configurable.
@@ -23,7 +23,7 @@ const fixedStruct = <T extends Record<string, any>>(obj: T) => {
 };
 
 if (typeof window !== 'undefined' && !(globalKey in window)) {
-    const globalObj: AdyenPlatformExperienceSDK = {
+    const globalObj: AdyenPlatformExperienceMetadata = {
         version: Core.version,
     } as const;
 
