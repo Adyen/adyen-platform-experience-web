@@ -8,7 +8,7 @@
         "src/declarations/svgr.d.ts"
     ],
     "compilerOptions": {
-        "rootDir": "src",
+        "rootDir": ".",
         "noEmit": false,
         "emitDeclarationOnly": true
     }

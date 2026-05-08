@@ -4,6 +4,7 @@
         "noEmitOnError": true,
         "resolveJsonModule": true,
         "noEmit": true,
+        "rootDir": ".",
         "outDir": "./dist",
         "declarationDir": "./dist/types",
         "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
