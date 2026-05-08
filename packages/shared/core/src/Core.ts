@@ -5,9 +5,8 @@ import { Assets, AssetOptions } from './Assets/Assets';
 import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDispatcher/customTranslations';
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
-import type { SessionRequest } from './ConfigContext.types';
-import type { AnalyticsConfig, DevEnvironment, onErrorHandler } from './types';
-import type { CustomTranslations as Translations, TranslationSourceRecord } from '../../../../src/translations';
+import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
+import type { TranslationSourceRecord } from '../../../../src/translations';
 
 /**
  * Minimal contract that framework-specific element classes (Preact BaseElement,
@@ -20,28 +19,6 @@ export interface ManagedElement {
     unmount(): any;
 }
 
-/**
- * Minimal options surface shared by every Core subclass (Preact / Vue / future frameworks).
- * Framework-specific Cores can extend this to refine `locale` typing, etc.
- */
-export interface CoreOptionsBase {
-    environment?: DevEnvironment;
-    locale?: string;
-    onSessionCreate: SessionRequest;
-    onError?: onErrorHandler;
-    analytics?: AnalyticsConfig;
-    loadingContext?: string;
-    availableTranslations?: TranslationSourceRecord[];
-    translations?: Translations;
-}
-
-export interface ResolvedEnvironment {
-    apiUrl: string;
-    cdnTranslationsUrl: string;
-    cdnAssetsUrl: string;
-    cdnConfigUrl: string;
-}
-
 export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
 
 /**
@@ -52,36 +29,32 @@ export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; s
  * Framework-specific rendering / mounting / unmounting lives in the element classes
  * (Preact `BaseElement`, Vue `UIElement`, ...), not here.
  */
-export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
+
+export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], CustomTranslations extends object = Record<never, never>> {
     public static readonly version = process.env.SDK_VERSION!;
-    public options: O;
-    public loadingContext: string;
-    public analyticsEnabled: boolean;
+    public options: CoreOptions<AvailableTranslations, CustomTranslations>;
+    public loadingContext!: string;
+    public analyticsEnabled!: boolean;
     public session = new AuthSession();
     public localization: Localization;
     public onError?: onErrorHandler;
-    public getImageAsset: (props: AssetOptions) => string;
-    public getDatasetAsset: (props: AssetOptions) => string;
-    public getCdnConfig: CdnFetcher;
-    public getCdnDataset: CdnFetcher;
+    public getImageAsset!: (props: AssetOptions) => string;
+    public getDatasetAsset!: (props: AssetOptions) => string;
+    public getCdnConfig!: CdnFetcher;
+    public getCdnDataset!: CdnFetcher;
     public components: ManagedElement[] = [];
 
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
 
-    constructor(options: O) {
-        this.options = { environment: FALLBACK_ENV, ...options } as O;
-        const { apiUrl, cdnTranslationsUrl, cdnAssetsUrl, cdnConfigUrl } = this.resolveEnvironment();
+    constructor(options: CoreOptions<AvailableTranslations, CustomTranslations>) {
+        this.options = { environment: FALLBACK_ENV, ...options };
+        const { cdnTranslationsUrl, cdnConfigUrl } = this.resolveEnvironment();
 
-        this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
-        this.analyticsEnabled = this.options.analytics?.enabled ?? true;
-        this.session.analyticsEnabled = this.analyticsEnabled;
-        this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
-        this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
+        this.applyEnvironmentAssets();
+        this.applyAnalyticsOptions();
 
         this.localization = new Localization(this.options.locale, this.options.availableTranslations, cdnTranslationsUrl, cdnConfigUrl);
-        this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
-        this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
 
         this.setOptions(this.options);
     }
@@ -97,7 +70,7 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
      * Merge incoming options, propagate locale / custom translations to the shared
      * `Localization`, hand off to the subclass hook, then sync the session.
      */
-    protected setOptions(options: Partial<O>): this {
+    protected setOptions(options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>>): this {
         const environmentChanged = options.environment !== undefined && options.environment !== this.options.environment;
         const loadingContextChanged = options.loadingContext !== undefined && options.loadingContext !== this.options.loadingContext;
         const analyticsChanged = options.analytics !== undefined && options.analytics !== this.options.analytics;
@@ -108,27 +81,34 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
         this.localization.customTranslations = this.options.translations;
 
         if (environmentChanged) {
-            const { apiUrl, cdnAssetsUrl, cdnConfigUrl } = this.resolveEnvironment();
-
-            this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
-            this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
-            this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
-            this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
-            this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
+            this.applyEnvironmentAssets();
         } else if (loadingContextChanged) {
             const { apiUrl } = this.resolveEnvironment();
             this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
         }
 
         if (analyticsChanged) {
-            this.analyticsEnabled = this.options.analytics?.enabled ?? true;
-            this.session.analyticsEnabled = this.analyticsEnabled;
+            this.applyAnalyticsOptions();
         }
 
         this.session.loadingContext = this.loadingContext;
         this.session.onSessionCreate = this.options.onSessionCreate;
 
         return this;
+    }
+
+    private applyEnvironmentAssets(): void {
+        const { apiUrl, cdnAssetsUrl, cdnConfigUrl } = this.resolveEnvironment();
+        this.loadingContext = this.options.loadingContext || process.env.VITE_APP_LOADING_CONTEXT || apiUrl;
+        this.getCdnConfig = getConfigFromCdn({ url: cdnConfigUrl });
+        this.getCdnDataset = getDatasetFromCdn({ url: `${cdnAssetsUrl}/datasets` });
+        this.getImageAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'svg', subFolder: 'images' });
+        this.getDatasetAsset = new Assets(cdnAssetsUrl).getAsset({ extension: 'json', mainFolder: 'datasets' });
+    }
+
+    private applyAnalyticsOptions(): void {
+        this.analyticsEnabled = this.options.analytics?.enabled ?? true;
+        this.session.analyticsEnabled = this.analyticsEnabled;
     }
 
     public get i18n() {
@@ -162,7 +142,11 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
      * Apply a partial options patch, re-initialize, and propagate the update to
      * every registered component that belongs to this Core instance.
      */
-    public async update(options: Partial<O> = EMPTY_OBJECT as Partial<O>): Promise<this> {
+    public async update(
+        options: Partial<CoreOptions<AvailableTranslations, CustomTranslations>> = EMPTY_OBJECT as Partial<
+            CoreOptions<AvailableTranslations, CustomTranslations>
+        >
+    ): Promise<this> {
         this.setOptions(options);
         await this.initialize();
 
@@ -180,21 +164,21 @@ export class Core<O extends CoreOptionsBase = CoreOptionsBase> {
      * @param component - reference to the component to be removed
      * @returns this - the element instance
      */
-    public remove = (component: ManagedElement): this => {
+    public remove(component: ManagedElement): this {
         this.components = this.components.filter(c => c._id !== component._id);
         component.unmount();
         return this;
-    };
+    }
 
     /**
      * @internal
      * Register components in core to be able to update them all at once
      */
-    public registerComponent = (component: ManagedElement) => {
+    public registerComponent(component: ManagedElement) {
         if (component.core === this) {
             this.components.push(component);
         }
-    };
+    }
 }
 
 export default Core;
