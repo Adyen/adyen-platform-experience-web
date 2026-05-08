@@ -1,5 +1,5 @@
-import { getEnvironment } from '../../envs/getEnvs';
-import { SDK_VERSION } from '../version';
+import { getEnvironment } from '../../envs/getEnvs.ts';
+import { SDK_VERSION } from '../version.ts';
 
 export const getBaseEnvDefines = (mode: string) => {
     const { api, app } = getEnvironment(mode);

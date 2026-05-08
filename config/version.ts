@@ -1,6 +1,6 @@
 import childProcess from 'child_process';
 import packageJson from '../package.json' with { type: 'json' };
-import { uuid } from '../src/utils';
+import { uuid } from '../packages/shared/utils/src/random/uuid.ts';
 
 export const SDK_VERSION = packageJson.version;
 
@@ -14,7 +14,7 @@ const currentVersion = () => {
         COMMIT_BRANCH = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
 
         console.log(`Building version ${SDK_VERSION} (revision ${COMMIT_HASH} from branch ${COMMIT_BRANCH}). Build id ${BUILD_ID}`);
-    } catch (e) {
+    } catch (e: any) {
         console.warn(e.message);
     }
 

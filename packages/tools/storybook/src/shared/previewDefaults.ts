@@ -1,19 +1,15 @@
-import type { Preview } from '@storybook/vue3';
 import { getMockHandlers } from '@integration-components/testing/msw';
 import { mswLoader, initialize, getWorker } from 'msw-storybook-addon';
-import { mocks } from '../../../../mocks/mock-server';
+import { mocks } from '../../../../../mocks/mock-server';
 
 const allHandlers = [...getMockHandlers(mocks)];
 
-// Register the worker once for the lifetime of the preview iframe with an empty
-// initial handler set; stories opt in to mocks via `mockedApi: true` in the loader
-// below. Keeping the worker running avoids races.
-initialize({}, []);
+// Register the default mock handlers at worker initialization so they serve as
+// the baseline. `mswLoader` then layers each story's `parameters.msw` handlers
+// on top via `worker.use(...)`, which correctly takes precedence over defaults.
+initialize({}, allHandlers);
 
-// Globals are intentionally duplicated from storybook-preact instead of living in a
-// shared @integration-components/storybook-config package. Promote to a shared package
-// only if concrete drift between the two Storybooks appears.
-const preview: Preview = {
+export const sharedPreviewConfig = {
     parameters: {
         controls: {
             hideNoControlsWarning: true,
@@ -41,21 +37,37 @@ const preview: Preview = {
         locale: 'en-US',
         fontFamily: undefined,
     },
+    argTypes: {
+        mockedApi: {
+            table: {
+                disable: true,
+            },
+        },
+        component: {
+            table: {
+                disable: true,
+            },
+        },
+        balanceAccountId: { type: 'string' as const },
+        skipDecorators: {
+            table: {
+                disable: true,
+            },
+        },
+    },
     loaders: [
-        // mswLoader runs first so story-level `parameters.msw.handlers` get applied
-        // cleanly. Our loader below appends the global mocks on top for `mockedApi: true`
-        mswLoader,
-        async context => {
+        async (context: { args: { mockedApi?: boolean } }) => {
             const worker = getWorker();
-            // initialize() fires worker.start() without awaiting, so this guards against
-            // the story rendering before the SW is ready to intercept.
-            await worker.start();
             if (context.args.mockedApi) {
-                worker.use(...allHandlers);
+                await worker.start();
+            } else {
+                worker.stop();
             }
             return { worker };
         },
+        // mswLoader runs LAST so that story-level `parameters.msw` handlers are
+        // registered on top of the baseline defaults via `worker.use(...)` and
+        // therefore win when MSW matches requests.
+        mswLoader,
     ],
 };
-
-export default preview;
