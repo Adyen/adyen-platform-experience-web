@@ -1,6 +1,6 @@
 import childProcess from 'child_process';
 import packageJson from '../package.json' with { type: 'json' };
-import { uuid } from '../packages/shared/utils/src/random/uuid';
+import { uuid } from '../packages/shared/utils/src/random/uuid.ts';
 
 export const SDK_VERSION = packageJson.version;
 

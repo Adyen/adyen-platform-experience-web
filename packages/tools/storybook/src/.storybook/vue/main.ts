@@ -1,9 +1,9 @@
 import vue from '@vitejs/plugin-vue';
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
-import { getEnvironment } from '../../../../../../envs/getEnvs';
-import { getBaseEnvDefines } from '../../../../../../config/defines/base-env';
-import { realApiProxies } from '../../../../../../endpoints/realApiProxies';
+import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
+import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
+import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 
 const root = '../../../../../..';

@@ -2,9 +2,9 @@ import svgr from 'vite-plugin-svgr';
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
 import { preact } from '@preact/preset-vite';
-import { getEnvironment } from '../../../../../../envs/getEnvs';
-import { getBaseEnvDefines } from '../../../../../../config/defines/base-env';
-import { realApiProxies } from '../../../../../../endpoints/realApiProxies';
+import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
+import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
+import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
 import type { StorybookConfig } from '@storybook/preact-vite';
 
 const root = '../../../../../..';
