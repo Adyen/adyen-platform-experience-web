@@ -1,2 +1,2 @@
-export { default } from '../../../../../../../src/components/internal/Calendar/calendar/timerange/index';
-export * from '../../../../../../../src/components/internal/Calendar/calendar/timerange/index';
+export { default } from './factory';
+export * from './types';

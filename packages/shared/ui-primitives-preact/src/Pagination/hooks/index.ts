@@ -1,1 +1,2 @@
-export * from '../../../../../../src/components/internal/Pagination/hooks/index';
+export { default as useCursorPaginatedRecords } from './useCursorPaginatedRecords';
+export { default as useOffsetPaginatedRecords } from './useOffsetPaginatedRecords';

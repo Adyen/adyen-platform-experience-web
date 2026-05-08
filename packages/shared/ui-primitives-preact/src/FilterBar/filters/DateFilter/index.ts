@@ -1,1 +1,2 @@
-export * from '../../../../../../../src/components/internal/FilterBar/filters/DateFilter/index';
+export { default as DateFilterCore } from './DateFilterCore';
+export { default as DateFilter } from './DateFilter';

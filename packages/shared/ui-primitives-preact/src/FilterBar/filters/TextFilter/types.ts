@@ -1,1 +1,5 @@
-export * from '../../../../../../../src/components/internal/FilterBar/filters/TextFilter/types';
+import { BaseFilterProps } from '../BaseFilter/types';
+
+export interface TextFilterProps extends BaseFilterProps {
+    onChange: (value?: string) => void;
+}
