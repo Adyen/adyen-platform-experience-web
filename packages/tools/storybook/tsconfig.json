@@ -1,0 +1,11 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+    },
+    // `files` cascades to .storybook-*/tsconfig.json automatically.
+    // `include` does NOT cascade — each .storybook-*/tsconfig.json must
+    // declare its own `include` covering: its own dir, ../src/, ../shared/,
+    // and any future package directories.
+    "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"]
+}
