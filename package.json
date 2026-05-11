@@ -25,7 +25,8 @@
     "dist/**"
   ],
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "**/global.{js,ts}"
   ],
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/packages/sdk/src/index.js",
