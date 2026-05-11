@@ -1,1 +1,13 @@
-export * from '../../../../../src/components/internal/Button/constants';
+export const DEFAULT_BUTTON_CLASSNAME = 'adyen-pe-button';
+export const BUTTON_ANCHOR_CLASSNAME = 'adyen-pe-button__anchor';
+export const BUTTON_ACTION_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}-actions`;
+export const ICON_BUTTON_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon`;
+export const ICON_BUTTON_CONTENT_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--icon-content`;
+export const BUTTON_ACTION_CONTAINER_CLASSNAME = `${BUTTON_ACTION_CLASSNAME}__container-wrapper`;
+export const BUTTON_LABEL_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}__label`;
+export const BUTTON_ICON_RIGHT_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}__icon-right`;
+export const BUTTON_ICON_LEFT_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}__icon-left`;
+export const BUTTON_CONDENSED_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--condensed`;
+export const BUTTON_FULL_WIDTH_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--full-width`;
+export const BUTTON_LOADING_CLASSNAME = `${DEFAULT_BUTTON_CLASSNAME}--loading`;
+export const BUTTON_LABEL_CENTERED_CLASSNAME = `${BUTTON_LABEL_CLASSNAME}--centered`;

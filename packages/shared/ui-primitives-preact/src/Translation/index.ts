@@ -1,1 +1,2 @@
-export * from '../../../../../src/components/internal/Translation/index';
+export { default, Translation } from './Translation';
+export * from './types';

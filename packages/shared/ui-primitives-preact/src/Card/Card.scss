@@ -1,0 +1,102 @@
+@use '@integration-components/style';
+
+.adyen-pe-card {
+    $adyen-pe-card: &;
+    $adyen-pe-card-expandable: #{$adyen-pe-card}--expandable;
+    $adyen-pe-card-compact: #{$adyen-pe-card}--compact;
+
+    background-color: style.token(color-background-primary);
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-m);
+    overflow: hidden;
+    padding: style.token(spacer-070);
+
+    &--clickable,
+    &--expandable {
+        cursor: pointer;
+    }
+
+    &--filled {
+        background-color: style.token(color-background-secondary);
+    }
+
+    &--no-padding {
+        padding: 0;
+    }
+
+    &--compact {
+        padding: style.token(spacer-060) style.token(spacer-070);
+    }
+
+    &--no-outline {
+        border: 0;
+    }
+
+    &--with-footer {
+        padding-bottom: style.token(spacer-070);
+    }
+
+    &__header {
+        width: 100%;
+
+        #{$adyen-pe-card}:not(#{$adyen-pe-card-expandable}) & {
+            border-bottom: 1px solid style.token(color-outline-secondary);
+            display: block;
+            padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-020);
+        }
+    }
+
+    &__header-content {
+        flex: 1;
+
+        #{$adyen-pe-card-expandable} & {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            gap: style.token(spacer-070);
+            padding: 0 style.token(spacer-060);
+        }
+
+        #{$adyen-pe-card-compact} & {
+            padding: 0;
+        }
+    }
+
+    &__title {
+        font-size: style.token(font-size-medium);
+        font-weight: style.token(font-size-300);
+        line-height: style.token(line-height-300);
+    }
+
+    &__title-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__subtitle {
+        align-items: center;
+        color: style.token(color-label-secondary);
+        display: flex;
+        flex: none;
+        flex-grow: 0;
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+    }
+
+    &__body {
+        color: style.token(color-label-primary);
+        font-weight: style.token(text-body-strongest-font-weight);
+        line-height: style.token(text-caption-line-height);
+
+        #{$adyen-pe-card-expandable} & {
+            padding: style.token(spacer-040) style.token(spacer-070) style.token(spacer-020);
+        }
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        padding-top: style.token(spacer-070);
+    }
+}

@@ -1,1 +1,1 @@
-export * from '../../../../../../src/components/internal/Popover/utils/popoverUtil';
+export { popoverUtil } from '@integration-components/hooks-preact/element/popoverUtil';

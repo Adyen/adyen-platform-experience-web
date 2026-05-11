@@ -2,7 +2,7 @@ import { LABEL_CLASS, LABEL_CONTAINER_CLASS, LABEL_CONTAINER_CLASS_LOADING } fro
 import { SummaryItemLabelProps } from './types';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
 import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { fixedForwardRef } from '@integration-components/ui-primitives-preact/preact-utils';
+import { fixedForwardRef } from '@integration-components/hooks-preact/fixedForwardRef';
 import classNames from 'classnames';
 import { ForwardedRef } from 'preact/compat';
 

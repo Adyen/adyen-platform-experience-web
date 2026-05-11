@@ -1,2 +1,1 @@
-export { default } from '../../../../../../src/components/internal/Popover/utils/utils';
-export * from '../../../../../../src/components/internal/Popover/utils/utils';
+export { default } from '@integration-components/hooks-preact/element/getIntersectionObserver';

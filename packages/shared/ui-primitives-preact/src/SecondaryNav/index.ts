@@ -1,1 +1,1 @@
-export * from '../../../../../src/components/internal/SecondaryNav/index';
+export * from './SecondaryNav';

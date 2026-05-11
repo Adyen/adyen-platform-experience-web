@@ -1,1 +1,1 @@
-export * from '../../../../../src/components/internal/Checkbox/index';
+export * from './Checkbox';

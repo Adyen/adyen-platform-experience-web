@@ -1,2 +1,2 @@
-export { default } from '../../../../../src/components/internal/Header/index';
-export * from '../../../../../src/components/internal/Header/index';
+export { Header as default } from './Header';
+export * from './Header';
