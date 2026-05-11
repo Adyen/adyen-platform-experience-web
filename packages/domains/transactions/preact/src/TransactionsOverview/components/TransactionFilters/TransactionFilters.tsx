@@ -7,7 +7,7 @@ import {
 } from '../../constants';
 import { compareTransactionsFilters } from '../utils';
 import { FilterBar } from '@integration-components/ui-primitives-preact/FilterBar';
-import { selectionOptionsFor } from '../MultiSelectionFilter';
+import { selectionOptionsFor } from '@integration-components/ui-primitives-preact/MultiSelectionFilter';
 import { TransactionsFilters as Filters } from '../../types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';

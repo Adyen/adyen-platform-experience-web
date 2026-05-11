@@ -22,7 +22,7 @@ import { FilterBar, FilterBarMobileSwitch, useFilterBarState } from '@integratio
 import { useCursorPaginatedRecords } from '@integration-components/ui-primitives-preact/Pagination/hooks';
 import { Header } from '@integration-components/ui-primitives-preact/Header';
 import { DateFilter } from '@integration-components/ui-primitives-preact/FilterBar/filters/DateFilter';
-import { MultiSelectionFilter, useMultiSelectionFilter } from '@integration-components/transactions/preact';
+import MultiSelectionFilter, { useMultiSelectionFilter } from '@integration-components/ui-primitives-preact/MultiSelectionFilter';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { isFunction, listFrom } from '../../../../utils';

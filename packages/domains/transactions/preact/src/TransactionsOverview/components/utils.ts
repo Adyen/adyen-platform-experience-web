@@ -1,23 +1,9 @@
 import { getDateRangeTimestamps } from '@integration-components/ui-primitives-preact/Calendar/calendar/timerange/utils';
-import { IPaymentMethod } from '@integration-components/types';
-import { EMPTY_OBJECT } from '@integration-components/utils';
 import { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 
 const allFilters = Object.keys(INITIAL_FILTERS) as readonly (keyof TransactionsFilters)[];
 const allFiltersSet = new Set(allFilters);
-
-const PAYMENT_METHODS = Object.freeze({
-    klarna: 'Klarna',
-    paypal: 'PayPal',
-    klarna_paynow: 'Klarna Pay Now',
-});
-
-export const parsePaymentMethodType = (paymentMethod: NonNullable<IPaymentMethod>, format?: 'detail' | 'fourDigit') => {
-    const { lastFourDigits, description, type } = paymentMethod ?? EMPTY_OBJECT;
-    if (lastFourDigits) return format === 'detail' ? `•••• •••• •••• ${lastFourDigits}` : lastFourDigits;
-    return description || PAYMENT_METHODS[type as keyof typeof PAYMENT_METHODS] || type;
-};
 
 export const getTransactionsFilterQueryParams = <T extends TransactionsFilters>(filters: T, now: number) => {
     const { from, to } = getDateRangeTimestamps(filters.createdDate, now, filters.balanceAccount?.timeZone);

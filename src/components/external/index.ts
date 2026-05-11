@@ -4,8 +4,8 @@ export type { TransactionDetailsCustomization, TransactionDetailsFields } from '
 export * from './CapitalOffer';
 export { ReportsOverview } from '@integration-components/reports/publish';
 export * from './CapitalOverview';
-export * from './DisputesOverview';
-export * from './DisputeManagement';
+export { DisputesOverview, DisputeManagement } from '@integration-components/disputes/publish';
+export type { DisputeDetailsCustomization, DisputeDetailsFields, DisputeCallbackData } from '@integration-components/disputes/publish';
 export * from './PaymentLinksOverview';
 export * from './PaymentLinkCreation';
 export * from './PaymentLinkSettings';

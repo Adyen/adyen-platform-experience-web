@@ -76,8 +76,8 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/shared/ui-primitives-preact/tsconfig.json && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions",
-    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'tsc --noEmit --project packages/shared/ui-primitives-preact/tsconfig.json --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions --parallel=3' 'tsc --project tsconfig-build.json --watch'",
+    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/shared/ui-primitives-preact/tsconfig.json && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes",
+    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'tsc --noEmit --project packages/shared/ui-primitives-preact/tsconfig.json --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes --parallel=4' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {

@@ -237,6 +237,61 @@ importers:
         specifier: 4.0.10
         version: 4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
 
+  packages/domains/disputes:
+    dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../../shared/core
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:../../shared/hooks-preact
+      '@integration-components/sdk-internal':
+        specifier: workspace:*
+        version: link:../../shared/lib
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../../shared/style
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../../shared/testing
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../../shared/types
+      '@integration-components/ui-primitives-preact':
+        specifier: workspace:*
+        version: link:../../shared/ui-primitives-preact
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
+      classnames:
+        specifier: ^2.5.1
+        version: 2.5.1
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.56.0
+        version: 1.56.0
+      '@storybook/preact':
+        specifier: 10.2.12
+        version: 10.2.12(preact@10.28.2)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      '@storybook/vue3':
+        specifier: 10.2.12
+        version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      msw:
+        specifier: ^2.4.5
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
+      vitest:
+        specifier: 4.0.10
+        version: 4.0.10(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.1)(tsx@4.21.0)(yaml@2.7.0)
+      vue:
+        specifier: ^3.5.13
+        version: 3.5.31(typescript@5.8.3)
+
   packages/domains/payouts:
     dependencies:
       '@integration-components/core':
@@ -5757,10 +5812,6 @@ packages:
     resolution: {}
     engines: {node: '>=12.20'}
 
-  type-fest@4.37.0:
-    resolution: {}
-    engines: {node: '>=16'}
-
   type-fest@4.41.0:
     resolution: {}
     engines: {node: '>=16'}
@@ -5996,7 +6047,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.2.6:
+  vue-component-type-helpers@3.2.7:
     resolution: {}
 
   vue-docgen-api@4.79.2:
@@ -6290,7 +6341,7 @@ snapshots:
 
   '@babel/generator@7.27.0':
     dependencies:
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.2
       '@babel/types': 7.28.5
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.31
@@ -7014,7 +7065,7 @@ snapshots:
   '@babel/template@7.27.0':
     dependencies:
       '@babel/code-frame': 7.26.2
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.2
       '@babel/types': 7.28.5
 
   '@babel/template@7.28.6':
@@ -7027,7 +7078,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       '@babel/generator': 7.27.0
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.2
       '@babel/template': 7.27.0
       '@babel/types': 7.28.5
       debug: 4.4.3(supports-color@10.2.2)
@@ -8127,7 +8178,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.2.6
+      vue-component-type-helpers: 3.2.7
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -10852,7 +10903,7 @@ snapshots:
       path-to-regexp: 6.3.0
       picocolors: 1.1.1
       strict-event-emitter: 0.5.1
-      type-fest: 4.37.0
+      type-fest: 4.41.0
       yargs: 17.7.2
     optionalDependencies:
       typescript: 5.8.3
@@ -12081,8 +12132,6 @@ snapshots:
 
   type-fest@2.19.0: {}
 
-  type-fest@4.37.0: {}
-
   type-fest@4.41.0: {}
 
   typed-array-buffer@1.0.3:
@@ -12332,7 +12381,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.2.6: {}
+  vue-component-type-helpers@3.2.7: {}
 
   vue-docgen-api@4.79.2(vue@3.5.31(typescript@5.8.3)):
     dependencies:

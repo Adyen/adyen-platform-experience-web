@@ -3,7 +3,7 @@ import { getMockHandlers } from '@integration-components/testing/msw';
 import { analyticsMock } from './eventDispatcher';
 import { balanceAccountMock } from './balanceAccounts';
 import { capitalMock } from './capital';
-import { disputesMocks } from './disputes';
+import { disputesMocks } from '../../packages/domains/disputes/mocks/mock-server/disputes';
 import { onboardingMocks } from './onboarding';
 import { payByLinkMocks } from './payByLink';
 import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/payouts';

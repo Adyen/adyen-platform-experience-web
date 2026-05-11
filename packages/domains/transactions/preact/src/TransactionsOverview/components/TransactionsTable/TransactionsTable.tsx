@@ -15,7 +15,7 @@ import { getTransactionCategoryDescription, getTransactionCategory } from '@inte
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
-import PaymentMethodCell from './PaymentMethodCell';
+import PaymentMethodCell from '@integration-components/ui-primitives-preact/PaymentMethodCell/PaymentMethodCell';
 import { TransactionTableProps } from './types';
 import { useTableColumns } from '@integration-components/hooks-preact';
 import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';

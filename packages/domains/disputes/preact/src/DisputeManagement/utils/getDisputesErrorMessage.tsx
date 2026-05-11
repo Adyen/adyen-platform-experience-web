@@ -1,0 +1,41 @@
+import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
+import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-primitives-preact/utils/getCommonErrorCode';
+import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
+
+export const getDisputesErrorMessage = (
+    error: AdyenPlatformExperienceError | undefined,
+    errorMessage: TranslationKey,
+    onContactSupport?: () => void
+): ErrorMessage => {
+    if (!error) return UNDEFINED_ERROR;
+
+    switch (error.errorCode) {
+        case undefined:
+            return {
+                title: 'common.errors.somethingWentWrong',
+                message: [errorMessage, 'common.errors.retry'],
+                refreshComponent: true,
+            };
+        case '00_500': {
+            const secondaryErrorMessage = onContactSupport ? 'common.errors.errorCode' : 'common.errors.errorCodeSupport';
+            return {
+                title: 'common.errors.somethingWentWrong',
+                message: [errorMessage, secondaryErrorMessage],
+                translationValues: {
+                    [secondaryErrorMessage]: error.requestId ? (
+                        <CopyText isUnderlineVisible copyButtonAriaLabelKey="common.actions.copy.labels.errorCode" textToCopy={error.requestId} />
+                    ) : null,
+                },
+                onContactSupport,
+            };
+        }
+        case '30_112':
+            return {
+                title: 'common.errors.notFound',
+                message: ['disputes.management.common.errors.notFound'],
+                onContactSupport,
+            };
+        default:
+            return UNDEFINED_ERROR;
+    }
+};
