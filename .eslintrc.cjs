@@ -61,7 +61,7 @@ module.exports = {
                     'playwright.config.ts',
                     'config/vite.config.ts',
                     'config/inject-css.ts',
-                    'packages/*/vite.config.ts',
+                    'packages/**/vite.config.ts',
                     '**/*.test.{ts,tsx}',
                     'config/**/*.ts',
                     'envs/**/*.ts',
@@ -76,6 +76,8 @@ module.exports = {
                     'packages/domains/*/tests/**/*.{ts,tsx}',
                     'packages/domains/*/**/stories/**/*.{ts,tsx}',
                     'packages/domains/*/mocks/**/*.{ts,tsx}',
+                    // Storybook tooling packages — everything in packages/tools/ is dev-only.
+                    'packages/tools/**/*.{ts,tsx,vue}',
                     // Transitional re-export forwarders into workspace packages; the targets
                     // are private workspace:* packages that get bundled into the library, so
                     // they stay in devDependencies. IEX-2797 tracks deleting these forwarders.
@@ -167,6 +169,26 @@ module.exports = {
         'testing-library/no-manual-cleanup': 'warn',
     },
     overrides: [
+        {
+            files: ['*.vue'],
+            parser: 'vue-eslint-parser',
+            parserOptions: {
+                parser: '@typescript-eslint/parser',
+                ecmaVersion: 2020,
+                sourceType: 'module',
+            },
+            plugins: ['vue'],
+            extends: ['plugin:vue/vue3-recommended'],
+            rules: {
+                'vue/html-indent': ['warn', 4],
+                'vue/max-attributes-per-line': 'off',
+                'vue/multi-word-component-names': 'off',
+                'react/jsx-no-literals': 'off',
+                'react/display-name': 'off',
+                'react/prop-types': 'off',
+                'react/no-unknown-property': 'off',
+            },
+        },
         {
             // enable the rule specifically for TypeScript files
             files: ['*.ts', '*.tsx'],
