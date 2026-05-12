@@ -21,6 +21,7 @@ export class UIElement<Props extends Record<string, any>> {
     public static type: ExternalComponentType;
 
     public readonly _id = `${(this.constructor as typeof UIElement)?.type}-${uuid()}`;
+    public customClassNames: string | undefined;
     protected _component: Component;
     protected _props: Props;
     protected _app: App | null = null;
@@ -34,10 +35,19 @@ export class UIElement<Props extends Record<string, any>> {
         return (this._props as any)?.core;
     }
 
+    get type(): ExternalComponentType {
+        return (this.constructor as typeof UIElement)?.type;
+    }
+
+    get displayName(): ExternalComponentType {
+        return this.type;
+    }
+
     constructor(component: Component, props: Props, componentName?: string) {
         this._component = component;
         this._props = reactive({ ...(props as Record<string, unknown>) }) as Props;
         this._componentName = componentName;
+        this.core?.registerComponent(this);
     }
 
     public mount(target: Element | string): this {
@@ -51,13 +61,14 @@ export class UIElement<Props extends Record<string, any>> {
         const component = this._component;
         const props = this._props;
         const componentName = this._componentName;
+        const customClassNames = this.customClassNames;
 
         this._app = createApp({
             setup: () => () => {
                 // Strip `core` — it is consumed by UIElementProvider and should
                 // not leak into the inner component's $attrs / DOM attributes.
                 const { core, ...componentProps } = props;
-                return h(UIElementProvider, { core, componentName }, { default: () => h(component, componentProps) });
+                return h(UIElementProvider, { core, componentName, customClassNames }, { default: () => h(component, componentProps) });
             },
         });
 
@@ -89,6 +100,12 @@ export class UIElement<Props extends Record<string, any>> {
         this._app?.unmount();
         this._app = null;
         this._target = null;
+        return this;
+    }
+
+    public remove(): this {
+        this.unmount();
+        this.core?.remove(this);
         return this;
     }
 }
