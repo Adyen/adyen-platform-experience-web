@@ -69,4 +69,7 @@ export {
     SERVER_SIDE_INITIALIZATION_WARNING,
 } from './runtime';
 
-export type { CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
+export type { ResolvedEnvironment, CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
+
+export { Core } from './Core';
+export type { CdnFetcher, ManagedElement } from './Core';
