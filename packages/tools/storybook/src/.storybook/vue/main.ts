@@ -2,17 +2,14 @@ import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
-import { getEnvironment } from '../../../../../../envs/getEnvs';
+import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
 import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
-import { getBaseEnvDefines } from '../../../../../../config/defines/base-env';
+import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
 
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
 
 const config: StorybookConfig = {
-    // Framework-scoped under {domain}/vue/ — the preact/vue split is at the top level
-    // of each domain. Phase 1 ships a single placeholder smoke under
-    // packages/domains/reports/vue/stories/. Real domain Vue stories land in 04-03.
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
     staticDirs: ['../../../static'],
     framework: {

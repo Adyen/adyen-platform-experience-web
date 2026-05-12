@@ -76,8 +76,6 @@ module.exports = {
                     'packages/domains/*/tests/**/*.{ts,tsx}',
                     'packages/domains/*/**/stories/**/*.{ts,tsx}',
                     'packages/domains/*/mocks/**/*.{ts,tsx}',
-                    // Storybook tooling packages — everything in packages/tools/ is dev-only.
-                    'packages/tools/**/*.{ts,tsx,vue}',
                     // Transitional re-export forwarders into workspace packages; the targets
                     // are private workspace:* packages that get bundled into the library, so
                     // they stay in devDependencies. IEX-2797 tracks deleting these forwarders.
@@ -187,6 +185,8 @@ module.exports = {
                 'react/display-name': 'off',
                 'react/prop-types': 'off',
                 'react/no-unknown-property': 'off',
+                'react-hooks/rules-of-hooks': 'off',
+                'react-hooks/exhaustive-deps': 'off',
             },
         },
         {

@@ -1,5 +1,5 @@
 import { inject, isRef, type ComputedRef, type Ref } from 'vue';
-import type { UserEvents } from './types';
+import type { UserEvents } from '../../../EventDispatcher/eventDispatcher/user-events';
 import { EVENT_DISPATCHER_CONTEXT_KEY } from './constants';
 
 type InjectedAnalytics = Partial<UserEvents> | Ref<Partial<UserEvents>> | ComputedRef<Partial<UserEvents>>;

@@ -1,22 +1,10 @@
 <script setup lang="ts">
-import { provide, computed, onMounted, onUnmounted } from 'vue';
-import type { UserEvents, EventQueueItem } from './types';
+import { provide, computed, watchEffect } from 'vue';
+import { setupAnalytics } from '../../../setupAnalytics';
+import type { ExternalComponentType } from '@integration-components/types';
+import type { EventQueueItem } from '../../../EventDispatcher/eventDispatcher/user-events';
+import { usePushAnalyticEvent } from '../../useEventDispatcher/usePushAnalyticEvent';
 import { EVENT_DISPATCHER_CONTEXT_KEY } from './constants';
-
-const noop = () => {};
-
-const defaultUserEvents: UserEvents = {
-    addEvent: noop,
-    addJourneyEvent: noop,
-    addTaskEvent: noop,
-    addPageEvent: noop,
-    addFieldEvent: noop,
-    startEvent: noop,
-    subscribe: noop,
-    unsubscribe: noop,
-    updateBaseTrackingPayload: noop,
-    updateSharedEventProperties: noop,
-};
 
 interface Props {
     componentName?: string;
@@ -27,70 +15,31 @@ const props = withDefaults(defineProps<Props>(), {
     analyticsEnabled: false,
 });
 
-const subscribers = new Set<(event: EventQueueItem) => void>();
-let basePayload: Record<string, any> = {};
-let sharedProperties: Record<string, any> = {};
+const pushAnalyticEvent = usePushAnalyticEvent();
 
-function createEvent(name: string, properties?: Record<string, any>): EventQueueItem {
-    return {
-        name,
-        properties: { ...basePayload, ...sharedProperties, ...properties },
-    };
-}
+const pushEvent = (data: EventQueueItem) => {
+    const { name, properties } = data;
+    pushAnalyticEvent({
+        event: name,
+        properties: properties || {},
+    });
+};
 
-function notifySubscribers(event: EventQueueItem) {
-    if (props.analyticsEnabled) {
-        subscribers.forEach(callback => {
-            try {
-                callback(event);
-            } catch (e) {
-                console.error('Analytics subscriber failed:', e);
-            }
-        });
-    }
-}
+const analytics = computed(() =>
+    setupAnalytics({
+        analyticsEnabled: props.analyticsEnabled ?? false,
+        componentName: props.componentName as ExternalComponentType,
+    })
+);
 
-const userEvents = computed<UserEvents>(() => {
-    if (!props.analyticsEnabled) {
-        return defaultUserEvents;
-    }
-
-    return {
-        addEvent: (event: EventQueueItem) => notifySubscribers(createEvent(event.name, event.properties)),
-        addJourneyEvent: (event: EventQueueItem) => notifySubscribers(createEvent(`journey.${event.name}`, event.properties)),
-        addTaskEvent: (event: EventQueueItem) => notifySubscribers(createEvent(`task.${event.name}`, event.properties)),
-        addPageEvent: (event: EventQueueItem) => notifySubscribers(createEvent(`page.${event.name}`, event.properties)),
-        addFieldEvent: (event: EventQueueItem) => notifySubscribers(createEvent(`field.${event.name}`, event.properties)),
-        startEvent: (event: EventQueueItem) => notifySubscribers(createEvent(`start.${event.name}`, event.properties)),
-        subscribe: (callback: (event: EventQueueItem) => void) => {
-            subscribers.add(callback);
-        },
-        unsubscribe: (callback: (event: EventQueueItem) => void) => {
-            subscribers.delete(callback);
-        },
-        updateBaseTrackingPayload: (payload: Record<string, any>) => {
-            basePayload = { ...basePayload, ...payload };
-        },
-        updateSharedEventProperties: (properties: Record<string, any>) => {
-            sharedProperties = { ...sharedProperties, ...properties };
-        },
-    };
+watchEffect(onCleanup => {
+    const unsubscribe = analytics.value.subscribe(pushEvent);
+    onCleanup(unsubscribe);
 });
+
+const userEvents = computed(() => analytics.value.userEvents);
 
 provide(EVENT_DISPATCHER_CONTEXT_KEY, userEvents);
-
-onMounted(() => {
-    if (props.analyticsEnabled) {
-        userEvents.value.updateBaseTrackingPayload({
-            userAgent: navigator.userAgent,
-            componentName: props.componentName,
-        });
-    }
-});
-
-onUnmounted(() => {
-    subscribers.clear();
-});
 </script>
 
 <template>

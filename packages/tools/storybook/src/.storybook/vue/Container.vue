@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef, ref, computed, onMounted, type Component } from 'vue';
 import { getMySessionToken, type CoreInstance, type SupportedLocales, type CoreOptions } from '@integration-components/core/vue';
-import './styles.scss';
+import '../../shared/styles.scss';
 import { Core } from '@integration-components/core';
 
 const props = defineProps<{
