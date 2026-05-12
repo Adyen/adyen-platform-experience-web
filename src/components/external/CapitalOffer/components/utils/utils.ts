@@ -1,4 +1,4 @@
-import { DAY_MS } from '@integration-components/ui-primitives-preact/Calendar/calendar/constants';
+import { DAY_MS } from '@integration-components/ui-components-preact/Calendar/calendar/constants';
 import { parseDate } from '../../../../../utils';
 
 const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays = 0) => {

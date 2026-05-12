@@ -7,13 +7,13 @@ import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS, EMPTY_OBJECT } from '@integration-components/utils';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType, type PayoutDetailsCustomization } from '@integration-components/payouts/domain';
-import Accordion from '@integration-components/ui-primitives-preact/Accordion/Accordion';
-import Card from '@integration-components/ui-primitives-preact/Card/Card';
-import StructuredList from '@integration-components/ui-primitives-preact/StructuredList';
-import { ListValue, StructuredListProps } from '@integration-components/ui-primitives-preact/StructuredList/types';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import DataOverviewDetailsSkeleton from '@integration-components/ui-primitives-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import Accordion from '@integration-components/ui-components-preact/Accordion/Accordion';
+import Card from '@integration-components/ui-components-preact/Card/Card';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
+import { ListValue, StructuredListProps } from '@integration-components/ui-components-preact/StructuredList/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import DataOverviewDetailsSkeleton from '@integration-components/ui-components-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import './PayoutData.scss';
 import {
     PD_BASE_CLASS,
@@ -34,14 +34,14 @@ import {
     PD_TITLE_CONTAINER_CLASS,
     PD_UNPAID_AMOUNT,
 } from './constants';
-import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
-import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
-import Link from '@integration-components/ui-primitives-preact/Link/Link';
-import Icon from '@integration-components/ui-primitives-preact/DataGrid/components/Icon';
-import { isCustomDataObject } from '@integration-components/ui-primitives-preact/DataGrid/components/TableCells';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import { ButtonActionsLayoutBasic } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
-import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
+import Link from '@integration-components/ui-components-preact/Link/Link';
+import Icon from '@integration-components/ui-components-preact/DataGrid/components/Icon';
+import { isCustomDataObject } from '@integration-components/ui-components-preact/DataGrid/components/TableCells';
+import { ButtonVariant } from '@integration-components/types';
+import { ButtonActionsLayoutBasic } from '@integration-components/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 
 export const PayoutData = ({
     balanceAccountId,

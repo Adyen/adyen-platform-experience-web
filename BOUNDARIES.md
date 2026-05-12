@@ -19,7 +19,7 @@ Shared foundation libraries. `@integration-components/sdk-internal` is the curre
 | `@integration-components/style`                | planned | SCSS foundation, tokens, mixins                                              |
 | `@integration-components/testing`              | planned | MSW setup, fixtures, test utilities                                          |
 | `@integration-components/hooks-preact`         | current | Shared Preact hooks                                                          |
-| `@integration-components/ui-primitives-preact` | current | Shared Preact UI components                                                  |
+| `@integration-components/ui-components-preact` | current | Shared Preact UI components                                                  |
 
 ### `type:domain`, `scope:<name>`
 
@@ -63,7 +63,7 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 ### Transitional exceptions
 
-The shared Preact UI primitives now live in `@integration-components/ui-primitives-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-primitives-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`, `StoreSelector`.
+The shared Preact UI primitives now live in `@integration-components/ui-components-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-components-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`, `StoreSelector`.
 
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |

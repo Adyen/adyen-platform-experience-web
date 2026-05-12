@@ -1,6 +1,7 @@
 import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS, type TimeRangeOptions, type UseTimeRangeSelectionConfig } from '@integration-components/types';
+import { getTimeRangeSelectionDefaultPresetOptions as createDefaultTimeRangeSelectionOptions } from '@integration-components/utils/datetime/timeRangeSelection';
 import { FilterParam } from '../../../../src/components/types';
 
 type RangeTimestamps = { from: number; to: number; now?: number | Date | null; timezone?: unknown };
@@ -22,7 +23,7 @@ const getOffsetMonth = (date: Date, months: number) => {
 
 const createRange = (from: number, to: number): RangeTimestamps => ({ from, to }) as RangeTimestamps;
 
-const getTimeRangeSelectionDefaultPresetOptions = (): UseTimeRangeSelectionConfig<RangeTimestamps>['options'] => {
+const getDefaultTimeRangeSelectionOptions = (): UseTimeRangeSelectionConfig<RangeTimestamps>['options'] => {
     const now = new Date();
     const dayOfWeek = now.getDay() || 7;
     const thisWeekStart = getOffsetDate(now, 1 - dayOfWeek);
@@ -30,18 +31,13 @@ const getTimeRangeSelectionDefaultPresetOptions = (): UseTimeRangeSelectionConfi
     const lastMonthStart = getOffsetMonth(thisMonthStart, -1);
     const lastMonthEnd = new Date(thisMonthStart.getTime() - 1);
 
-    return Object.freeze({
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_7_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -6)), now.getTime()),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -29)), now.getTime()),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_90_DAYS]: createRange(getStartOfDay(getOffsetDate(now, -89)), now.getTime()),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_WEEK]: createRange(getStartOfDay(thisWeekStart), now.getTime()),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_WEEK]: createRange(
-            getStartOfDay(getOffsetDate(thisWeekStart, -7)),
-            getEndOfDay(getOffsetDate(thisWeekStart, -1))
-        ),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.THIS_MONTH]: createRange(getStartOfDay(thisMonthStart), now.getTime()),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_MONTH]: createRange(getStartOfDay(lastMonthStart), getEndOfDay(lastMonthEnd)),
-        [TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.YEAR_TO_DATE]: createRange(getStartOfDay(new Date(now.getFullYear(), 0, 1)), now.getTime()),
+    return createDefaultTimeRangeSelectionOptions<RangeTimestamps>({
+        lastNDays: days => createRange(getStartOfDay(getOffsetDate(now, 1 - days)), now.getTime()),
+        thisWeek: () => createRange(getStartOfDay(thisWeekStart), now.getTime()),
+        lastWeek: () => createRange(getStartOfDay(getOffsetDate(thisWeekStart, -7)), getEndOfDay(getOffsetDate(thisWeekStart, -1))),
+        thisMonth: () => createRange(getStartOfDay(thisMonthStart), now.getTime()),
+        lastMonth: () => createRange(getStartOfDay(lastMonthStart), getEndOfDay(lastMonthEnd)),
+        yearToDate: () => createRange(getStartOfDay(new Date(now.getFullYear(), 0, 1)), now.getTime()),
     });
 };
 
@@ -58,7 +54,7 @@ const getDefaultFilterParams = (
     timeRange?: TimeRangeOptions,
     timeRangeOptionsSubset?: Partial<UseTimeRangeSelectionConfig<RangeTimestamps>['options']>
 ) => {
-    const timeRangeOptions = getTimeRangeSelectionDefaultPresetOptions();
+    const timeRangeOptions = getDefaultTimeRangeSelectionOptions();
     const defaultTimeRange = timeRange
         ? (`common.filters.types.date.rangeSelect.options.${timeRange}` as const)
         : TIME_RANGE_SELECTION_PRESET_OPTION_KEYS.LAST_30_DAYS;

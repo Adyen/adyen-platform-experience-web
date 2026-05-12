@@ -8,6 +8,11 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
+        "./uiComponents": "./src/uiComponents/index.ts",
+        "./uiComponents/*": "./src/uiComponents/*.ts",
         "./*": "./src/*.ts"
+    },
+    "peerDependencies": {
+        "preact": "^10.28.2"
     }
 }

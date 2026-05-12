@@ -2,8 +2,8 @@ import { useMemo } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
 import { getDisputeStatus, isDisputeActionNeededUrgently } from '@integration-components/disputes/domain';
 import { IDispute, IDisputeListItem } from '@integration-components/types/api/models/disputes';
-import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
-import { TagVariant } from '@integration-components/ui-primitives-preact/Tag/types';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { PropsWithChildren } from 'preact/compat';
 
 const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeListItem | IDispute }>) => {

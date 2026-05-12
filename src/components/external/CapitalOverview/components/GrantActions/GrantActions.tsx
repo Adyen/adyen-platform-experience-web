@@ -6,8 +6,8 @@ import { useFetch } from '../../../../../hooks/useFetch';
 import { GrantActionsEmbedded } from '../GrantActionsEmbedded/GrantActionsEmbedded';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { GrantActionsHosted } from '../GrantActionsHosted/GrantActionsHosted';
-import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import './GrantActions.scss';
 import { useMissingActionsPolling } from './hooks/useMissingActionsPolling';
 

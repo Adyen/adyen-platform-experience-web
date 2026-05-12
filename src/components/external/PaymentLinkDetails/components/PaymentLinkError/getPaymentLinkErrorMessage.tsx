@@ -1,7 +1,7 @@
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../translations';
 import { ErrorMessage, UNDEFINED_ERROR } from '../../../../utils/getCommonErrorCode';
-import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
+import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 
 export const getPaymentLinkErrorMessage = (
     error: AdyenPlatformExperienceError,

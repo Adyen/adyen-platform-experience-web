@@ -17,17 +17,17 @@ import PaymentRefundActions from './PaymentRefundActions';
 import PaymentRefundAmount from './PaymentRefundAmount';
 import PaymentRefundNotice from './PaymentRefundNotice';
 import PaymentRefundReason from './PaymentRefundReason';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import Button from '@integration-components/ui-primitives-preact/Button/Button';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDetails } from '../../types';
-import { TypographyElement, TypographyModifier, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import { TypographyElement, TypographyModifier, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
+import { ButtonVariant } from '@integration-components/types';
 import { ILineItem, IRefundMode } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
-import { IconName } from '@integration-components/ui-primitives-preact/Icon/Icon';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
+import { IconName } from '@integration-components/ui-components-preact/Icon/Icon';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import cx from 'classnames';
 
 export interface PaymentRefundProps {

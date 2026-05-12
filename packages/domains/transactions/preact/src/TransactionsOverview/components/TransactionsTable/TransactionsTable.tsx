@@ -1,24 +1,24 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { DATE_FORMAT_TRANSACTIONS, DATE_FORMAT_TRANSACTIONS_MOBILE } from '@integration-components/utils/datetime/formats';
-import DataOverviewError from '@integration-components/ui-primitives-preact/DataOverviewError/DataOverviewError';
+import DataOverviewError from '@integration-components/ui-components-preact/DataOverviewError/DataOverviewError';
 import { useCoreContext } from '@integration-components/core/preact';
 import { getCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import { TranslationKey } from '@integration-components/core';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import DataGrid from '@integration-components/ui-primitives-preact/DataGrid';
-import Pagination from '@integration-components/ui-primitives-preact/Pagination';
-import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import DataGrid from '@integration-components/ui-components-preact/DataGrid';
+import Pagination from '@integration-components/ui-components-preact/Pagination';
+import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { getTransactionCategoryDescription, getTransactionCategory } from '@integration-components/transactions/domain';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
-import PaymentMethodCell from '@integration-components/ui-primitives-preact/PaymentMethodCell/PaymentMethodCell';
+import PaymentMethodCell from '@integration-components/ui-components-preact/PaymentMethodCell/PaymentMethodCell';
 import { TransactionTableProps } from './types';
 import { useTableColumns } from '@integration-components/hooks-preact';
-import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 
 import { TRANSACTION_FIELDS, type TransactionsTableCols } from './fields';
 

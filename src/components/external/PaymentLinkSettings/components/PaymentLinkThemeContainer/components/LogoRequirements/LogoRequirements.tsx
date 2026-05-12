@@ -1,7 +1,7 @@
 import { FC } from 'preact/compat';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { logoOptions, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';
 import { getHumanReadableFileName } from '../../../../../../../utils/file/naming';
 import { getHumanReadableFileSize } from '../../../../../../../utils';

@@ -1,4 +1,4 @@
-import { getDateRangeTimestamps } from '@integration-components/ui-primitives-preact/Calendar/calendar/timerange/utils';
+import { getDateRangeTimestamps } from '@integration-components/ui-components-preact/Calendar/calendar/timerange/utils';
 import { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 

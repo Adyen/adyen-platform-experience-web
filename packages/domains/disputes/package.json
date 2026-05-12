@@ -15,7 +15,7 @@
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
-        "@integration-components/ui-primitives-preact": "workspace:*",
+        "@integration-components/ui-components-preact": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "classnames": "^2.5.1"
     },

@@ -2,11 +2,11 @@ import { PaymentLinkCreationFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { CurrencyInput } from '@integration-components/ui-primitives-preact/FormFields/CurrencyInput/CurrencyInput';
-import { VisibleField } from '@integration-components/ui-primitives-preact/FormWrappers/VisibleField';
-import FormField from '@integration-components/ui-primitives-preact/FormWrappers/FormField';
+import { CurrencyInput } from '@integration-components/ui-components-preact/FormFields/CurrencyInput/CurrencyInput';
+import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
+import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
 import { Controller } from '../../../../../../../hooks/form';
-import { FieldError } from '@integration-components/ui-primitives-preact/FormFields/FieldError/FieldError';
+import { FieldError } from '@integration-components/ui-components-preact/FormFields/FieldError/FieldError';
 
 const VALUE_FIELD_NAME = 'amount.value';
 const CURRENCY_FIELD_NAME = 'amount.currency';

@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => ({
             '@integration-components/core': resolve(rootDir, 'packages/shared/core/src'),
             '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
             '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
-            '@integration-components/ui-primitives-preact': resolve(rootDir, 'packages/shared/ui-primitives-preact/src'),
+            '@integration-components/ui-components-preact': resolve(rootDir, 'packages/shared/ui-components-preact/src'),
             '@integration-components/style': resolve(rootDir, 'packages/shared/style/src'),
             '@integration-components/sdk-internal': resolve(rootDir, 'src'),
             '@integration-components/disputes/publish': resolve(rootDir, 'packages/domains/disputes/publish/src'),

@@ -2,7 +2,7 @@ import { PaymentLinkCreationFormValues } from '../../../types';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo } from 'preact/hooks';
 import { useFetch } from '../../../../../../../hooks/useFetch';
-import { FormSelect } from '@integration-components/ui-primitives-preact/FormWrappers/FormSelect';
+import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 
 export const LanguageField = () => {

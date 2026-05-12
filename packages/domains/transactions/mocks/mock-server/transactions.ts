@@ -27,7 +27,7 @@ import {
 import Localization from '@integration-components/core/Localization';
 import { TRANSACTIONS_ENDPOINTS } from '../endpoints';
 import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
-import { parsePaymentMethodType } from '@integration-components/ui-primitives-preact/PaymentMethodCell/parsePaymentMethodType';
+import { parsePaymentMethodType } from '@integration-components/ui-components-preact/PaymentMethodCell/parsePaymentMethodType';
 import { compareDates, computeHash, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { clamp, getMappedValue } from '@integration-components/utils';
 import { setupBasicResponse } from '../../../../../mocks/mock-server/setup';

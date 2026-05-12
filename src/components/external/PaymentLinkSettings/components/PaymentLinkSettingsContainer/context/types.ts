@@ -2,7 +2,7 @@ import type { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { StoreSelectorItemParams } from '../../../../../internal/StoreSelector/types';
 import { IPaymentLinkTermsAndConditions } from '../../../../../../types';
-import { SecondaryNavItem } from '@integration-components/ui-primitives-preact/SecondaryNav';
+import { SecondaryNavItem } from '@integration-components/ui-components-preact/SecondaryNav';
 import { TranslationKey } from '../../../../../../translations';
 import AdyenPlatformExperienceError from '../../../../../../core/Errors/AdyenPlatformExperienceError';
 

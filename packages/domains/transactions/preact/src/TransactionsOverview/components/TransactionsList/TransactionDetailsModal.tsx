@@ -2,11 +2,11 @@ import { useEffect } from 'preact/hooks';
 import { classes } from '../../constants';
 import { FC, PropsWithChildren } from 'preact/compat';
 import { TransactionDetailsProps } from '../../../TransactionDetails';
-import { popoverUtil } from '@integration-components/ui-primitives-preact/Popover/utils/popoverUtil';
+import { popoverUtil } from '@integration-components/ui-components-preact/Popover/utils/popoverUtil';
 import { useCoreContext } from '@integration-components/core/preact';
 import useModalDetails from '@integration-components/hooks-preact/useModalDetails';
 import TransactionData from '../../../TransactionDetails/components/TransactionData';
-import Modal from '@integration-components/ui-primitives-preact/Modal';
+import Modal from '@integration-components/ui-components-preact/Modal';
 
 export interface DataOverviewDisplayProps {
     onContactSupport?: () => void;

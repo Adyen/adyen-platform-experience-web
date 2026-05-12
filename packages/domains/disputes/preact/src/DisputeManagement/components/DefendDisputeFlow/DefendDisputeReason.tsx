@@ -5,13 +5,13 @@ import { useConfigContext, useCoreContext } from '@integration-components/core/p
 import { useFetch, containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { IDisputeDefenseDocument } from '@integration-components/types/api/models/disputes';
 import { EMPTY_OBJECT } from '@integration-components/utils';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
-import { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
+import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseReasonContent } from '../../utils';
 

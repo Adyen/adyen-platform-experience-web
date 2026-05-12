@@ -1,5 +1,5 @@
 import { useBalanceAccounts } from '@integration-components/hooks-preact';
-import DataOverviewContainer from '@integration-components/ui-primitives-preact/DataOverviewContainer/DataOverviewContainer';
+import DataOverviewContainer from '@integration-components/ui-components-preact/DataOverviewContainer/DataOverviewContainer';
 import type { ExternalUIComponentProps } from '@integration-components/types';
 import type { TransactionsOverviewComponentProps } from '../../types';
 import { TransactionsOverview } from '../TransactionsOverview/TransactionsOverview';

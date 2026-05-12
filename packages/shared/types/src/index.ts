@@ -4,4 +4,4 @@ export * from './customization';
 export * from './dataGrid';
 export * from './element';
 export * from './select';
-export * from './uiPrimitives';
+export * from './uiComponents';

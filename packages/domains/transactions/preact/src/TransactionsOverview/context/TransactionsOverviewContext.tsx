@@ -2,7 +2,7 @@ import { createContext } from 'preact';
 import { INITIAL_FILTERS } from '../constants';
 import { TransactionsFilters, TransactionsOverviewContextValue, TransactionsOverviewProviderProps, TransactionsView } from '../types';
 import { useCallback, useContext, useMemo, useState } from 'preact/hooks';
-import { useFilterBarState } from '@integration-components/ui-primitives-preact/FilterBar';
+import { useFilterBarState } from '@integration-components/ui-components-preact/FilterBar';
 import useTransactionsList from '../hooks/useTransactionsList';
 import useTransactionsTotals, { GetQueryParams } from '../hooks/useTransactionsTotals';
 import useTransactionsViewSwitcher from '../hooks/useTransactionsViewSwitcher';

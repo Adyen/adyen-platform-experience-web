@@ -1,6 +1,6 @@
 import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
-import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-primitives-preact/utils/getCommonErrorCode';
-import CopyText from '@integration-components/ui-primitives-preact/CopyText/CopyText';
+import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
+import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 
 export const getDisputesErrorMessage = (
     error: AdyenPlatformExperienceError | undefined,

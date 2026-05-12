@@ -1,19 +1,19 @@
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import { useCoreContext, useConfigContext } from '@integration-components/core/preact';
-import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import { ButtonActionsList } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import { ButtonActionsList } from '@integration-components/types';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
 import { EMPTY_OBJECT, isFunction, uniqueId } from '@integration-components/utils';
 import { TranslationKey } from '@integration-components/core';
 import { DisputeManagementProps } from '../../types';
-import Button from '@integration-components/ui-primitives-preact/Button';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
-import SuccessIcon from '@integration-components/ui-primitives-preact/SuccessIcon/SuccessIcon';
+import Button from '@integration-components/ui-components-preact/Button';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import SuccessIcon from '@integration-components/ui-components-preact/SuccessIcon/SuccessIcon';
 import './AcceptDisputeFlow.scss';
 
 export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementProps, 'onDisputeAccept'>) => {

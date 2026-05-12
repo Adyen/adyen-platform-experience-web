@@ -1,9 +1,11 @@
-export const CONTROL_ELEMENT_PROPERTY: unique symbol = Symbol('__control.Elem.');
+import { CONTROL_ELEMENT_PROPERTY } from './constants';
 
 export const popoverUtil = (<T extends Element, U extends (...args: any[]) => any>() => {
     let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];
 
     const closePopoversOutsideOfClick = (eventPath: EventTarget[]) => {
+        // Check if click is on a control element (button that opens the popover)
+        // If so, let the button's onClick handle the toggle instead of closing here
         const clickedOnControlElement = eventPath.some(
             path =>
                 path instanceof Element &&
