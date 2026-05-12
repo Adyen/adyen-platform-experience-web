@@ -1,6 +1,6 @@
-import { TranslationKey } from '../../../../../translations';
+import { TranslationKey } from '@integration-components/core';
 import { TimelineStatus } from '@integration-components/ui-components-preact/Timeline/types';
-import { IPaymentLinkActivity } from '../../../../../types';
+import { IPaymentLinkActivity } from '@integration-components/types';
 
 export const getTitleKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {
     switch (activity.type) {

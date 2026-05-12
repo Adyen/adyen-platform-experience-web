@@ -1,11 +1,12 @@
 import { useCoreContext } from '@integration-components/core/preact';
 import usePayByLinkSettingsContext from '../../context/context';
-import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
-import { boolOrFalse, noop } from '../../../../../../../utils';
-import { ButtonActionObject, ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonVariant } from '@integration-components/types';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { boolOrFalse, noop } from '@integration-components/utils';
+import { ButtonActionObject, ButtonActionsLayout, ButtonActionsLayoutBasic } from '@integration-components/types';
 import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useMemo } from 'preact/hooks';
 import './SettingsActionButton.scss';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import cx from 'classnames';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';

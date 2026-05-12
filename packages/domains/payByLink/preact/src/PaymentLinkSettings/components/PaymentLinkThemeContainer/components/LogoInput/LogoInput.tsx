@@ -2,7 +2,7 @@ import { LogoTypes } from '../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useUniqueId } from '@integration-components/hooks-preact';
 import { useCallback, useMemo } from 'preact/hooks';
-import { TranslationKey } from '../../../../../../../translations';
+import { TranslationKey } from '@integration-components/core';
 import type { BaseFileInputProps } from '@integration-components/ui-components-preact/FormFields/FileInput/types';
 type MapErrorCallback = NonNullable<BaseFileInputProps['mapError']>;
 import { validationErrors } from '@integration-components/ui-components-preact/FormFields/FileInput/constants';

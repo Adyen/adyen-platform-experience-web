@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
-import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { Divider } from '@integration-components/ui-components-preact/Divider/Divider';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { invisibleFields } from './constants';
@@ -13,8 +13,8 @@ import { PaymentLinkCreationFormValues } from '../../types';
 import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
 import { useMemo } from 'preact/hooks';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
-import { IPaymentLinkType } from '../../../../../../types';
-import type { TranslationKey } from '../../../../../../translations';
+import { IPaymentLinkType } from '@integration-components/types';
+import type { TranslationKey } from '@integration-components/core';
 import './FormSummary.scss';
 
 interface FormSummaryProps {

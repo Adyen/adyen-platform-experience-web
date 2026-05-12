@@ -1,9 +1,9 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useMemo } from 'preact/hooks';
-import { useFetch } from '../../../../../../../hooks/useFetch';
+import { useFetch } from '@integration-components/hooks-preact';
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 
 export const LanguageField = () => {
     const { i18n, getCdnDataset } = useCoreContext();

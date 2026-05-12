@@ -1,8 +1,8 @@
 import InputText from '@integration-components/ui-components-preact/FormFields/InputText';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import useUniqueId from '../../../../../../../hooks/useUniqueId';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useUniqueId } from '@integration-components/hooks-preact';
+import { useCoreContext } from '@integration-components/core/preact';
 import { logoOptions, logoOptionsList } from './constants';
 import './ThemeForm.scss';
 import { useCallback, useEffect, useState } from 'preact/hooks';

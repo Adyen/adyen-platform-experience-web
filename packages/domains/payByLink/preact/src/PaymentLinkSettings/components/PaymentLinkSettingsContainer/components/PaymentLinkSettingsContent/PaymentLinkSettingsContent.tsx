@@ -1,10 +1,10 @@
 import TermsAndConditionsContainer from '../../../TermsAndConditions/TermsAndConditionsContainer';
 import PaymentLinkThemeContainer from '../../../PaymentLinkThemeContainer/PaymentLinkThemeContainer';
 import { MenuItem } from '../../context/constants';
-import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import usePaymentLinkSettingsContext from '../../context/context';
 import PaymentLinkSettingsContentLoading from '../PaymentLinkSettingsContentLoading/PaymentLinkSettingsContentLoading';
 import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';

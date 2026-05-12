@@ -3,7 +3,7 @@ import { AmountField } from './Fields/AmountField';
 import { LinkTypeField } from './Fields/LinkTypeField';
 import { FormTextInput } from '@integration-components/ui-components-preact/FormWrappers/FormTextInput';
 import { PaymentLinkCreationFormValues } from '../../types';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { FormCalendarInput } from '@integration-components/ui-components-preact/FormWrappers/FormCalendarInput';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../constants';
 import './PaymentDetailsForm.scss';

@@ -3,8 +3,8 @@ import { useMemo, useCallback } from 'preact/hooks';
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { PaymentLinkCreationFormValues } from '../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
-import { IPaymentLinkCountry } from '../../../../../../../../types';
-import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
+import { IPaymentLinkCountry } from '@integration-components/types';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
 
 interface BillingCountryFieldProps {

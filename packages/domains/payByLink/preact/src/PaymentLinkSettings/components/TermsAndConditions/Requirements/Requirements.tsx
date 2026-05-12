@@ -1,11 +1,11 @@
 import { useCallback, useEffect } from 'preact/hooks';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { useTermsRequirementsConfig } from './useTermsRequirementsConfig';
 import './Requirements.scss';
 import Button from '@integration-components/ui-components-preact/Button';
-import { ButtonVariant } from '@integration-components/types';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import Modal from '@integration-components/ui-components-preact/Modal';
 
 export const Requirements = ({

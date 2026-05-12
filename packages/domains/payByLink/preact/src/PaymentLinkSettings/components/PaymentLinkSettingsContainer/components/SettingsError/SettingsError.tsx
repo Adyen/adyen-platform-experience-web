@@ -1,6 +1,6 @@
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
-import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '../../../../../../../translations';
+import { useCoreContext } from '@integration-components/core/preact';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { TranslationKey } from '@integration-components/core';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import getSettingsErrorMessage from '../../utils/getSettingsErrorMessage';
 

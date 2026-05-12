@@ -1,8 +1,8 @@
 import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useMemo } from 'preact/hooks';
-import { ButtonVariant } from '@integration-components/types';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import { getPaymentLinkErrorMessage } from './getPaymentLinkErrorMessage';
 

@@ -1,5 +1,5 @@
 import { FC } from 'preact/compat';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { logoOptions, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';

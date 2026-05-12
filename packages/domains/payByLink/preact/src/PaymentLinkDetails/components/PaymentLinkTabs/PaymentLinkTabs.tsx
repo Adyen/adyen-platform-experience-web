@@ -3,17 +3,17 @@ import { useCallback, useMemo } from 'preact/hooks';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { ListValue, StructuredListItem, StructuredListItemType } from '@integration-components/ui-components-preact/StructuredList/types';
 import Tabs from '@integration-components/ui-components-preact/Tabs/Tabs';
-import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '../../../../../constants';
-import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
-import { IPaymentLinkDetails, IPaymentLinkShopperAddress } from '../../../../../types';
+import { DATE_FORMAT_PAYMENT_LINK_DETAILS_TABS } from '@integration-components/utils';
+import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
+import { IPaymentLinkDetails, IPaymentLinkShopperAddress } from '@integration-components/types';
 import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { PaymentLinkActivity } from '../PaymentLinkActivity/PaymentLinkActivity';
 import { TabProps } from '@integration-components/ui-components-preact/Tabs/types';
 import './PaymentLinkTabs.scss';
-import { TranslationKey } from '../../../../../translations';
+import { TranslationKey } from '@integration-components/core';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
-import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../../constants';
+import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '@integration-components/payByLink/domain';
 import Link from '@integration-components/ui-components-preact/Link/Link';
 
 const CLASSNAMES = {

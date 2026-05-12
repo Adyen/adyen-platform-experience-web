@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { BillingStreetField } from './BillingStreetField';

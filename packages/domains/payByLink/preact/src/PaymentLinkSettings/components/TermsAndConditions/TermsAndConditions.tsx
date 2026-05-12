@@ -10,12 +10,12 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import Icon from '@integration-components/ui-components-preact/Icon';
-import { IPaymentLinkTermsAndConditions } from '../../../../../types';
+import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import usePaymentLinkSettingsContext from '../PaymentLinkSettingsContainer/context/context';
 import { isTermsAndConditionsData } from '../PaymentLinkThemeContainer/types';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import { isValidURL } from '../PaymentLinkSettingsContainer/utils/validateTermsAndConditionsURL';
-import { ButtonVariant } from '@integration-components/types';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import Button from '@integration-components/ui-components-preact/Button';
 import { Requirements } from './Requirements/Requirements';
 import cx from 'classnames';

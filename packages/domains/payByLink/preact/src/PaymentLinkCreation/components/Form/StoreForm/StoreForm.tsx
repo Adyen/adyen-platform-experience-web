@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import StoreField from './Fields/StoreField';

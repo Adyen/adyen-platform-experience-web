@@ -1,10 +1,10 @@
 import { useCallback } from 'preact/hooks';
-import Select from '@integration-components/ui-components-preact/FormFields/Select';
+import Select from '../FormFields/Select';
 import { StoreSelectorButtonContent } from './StoreSelectorButton/StoreSelectorButton';
 import { StoreSelectorItem } from './StoreSelectorItem/StoreSelectorItem';
 import { StoreSelectorItemParams, StoreSelectorProps } from './types';
-import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
-import { containerQueries, useResponsiveContainer } from '../../../hooks/useResponsiveContainer';
+import { SelectChangeEvent } from '../FormFields/Select/types';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact/useResponsiveContainer';
 import './StoreSelector.scss';
 
 export const StoreSelector = ({ stores = [], selectedStoreId, setSelectedStoreId }: StoreSelectorProps) => {

@@ -1,10 +1,10 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { useWatch } from '../../../../../../../hooks/form';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
+import { useWatch } from '@integration-components/hooks-preact/form';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import { uuid } from '../../../../../../../utils';
+import { uuid } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import cx from 'classnames';
 import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';

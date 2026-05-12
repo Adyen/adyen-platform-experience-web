@@ -1,10 +1,10 @@
 import { FC } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../core/Context/useCoreContext';
-import useTimezoneAwareDateFormatting from '../../../../hooks/useTimezoneAwareDateFormatting';
-import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
-import { useTableColumns } from '../../../../hooks/useTableColumns';
-import { TranslationKey } from '../../../../translations';
+import { useCoreContext } from '@integration-components/core/preact';
+import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { useTableColumns } from '@integration-components/hooks-preact';
+import { TranslationKey } from '@integration-components/core';
 import DataGrid from '@integration-components/ui-components-preact/DataGrid';
 import Pagination from '@integration-components/ui-components-preact/Pagination';
 import { PaymentLinkTableProps } from './types';
@@ -19,15 +19,15 @@ import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import { IPaymentLinkStatus } from '../../../../types';
+import { IPaymentLinkStatus } from '@integration-components/types';
 import {
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW,
     DATE_FORMAT_PAYMENT_LINKS_OVERVIEW_EXPIRATION_DATE,
     DATE_FORMAT_RESPONSE_DEADLINE,
-} from '../../../../constants';
+} from '@integration-components/utils';
 import { DAY_MS } from '@integration-components/ui-components-preact/Calendar/calendar/constants';
 import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
-import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
+import { isActionNeededUrgently } from '@integration-components/payByLink/domain';
 import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
 import { AdyenPlatformExperienceError } from '@integration-components/core';

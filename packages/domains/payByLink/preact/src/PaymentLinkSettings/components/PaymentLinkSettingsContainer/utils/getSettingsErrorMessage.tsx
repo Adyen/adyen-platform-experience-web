@@ -1,8 +1,8 @@
-import AdyenPlatformExperienceError from '../../../../../../core/Errors/AdyenPlatformExperienceError';
-import { TranslationKey } from '../../../../../../translations';
-import { ErrorMessage, UNDEFINED_ERROR } from '../../../../../utils/getCommonErrorCode';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { TranslationKey } from '@integration-components/core';
+import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
-import { AssetOptions } from '../../../../../../core/Assets/Assets';
+import { AssetOptions } from '@integration-components/core';
 
 export const ACCOUNT_MISCONFIGURATION = 'ACCOUNT_MISCONFIGURATION';
 export const WRONG_STORE_IDS = 'WRONG_STORE_IDS';

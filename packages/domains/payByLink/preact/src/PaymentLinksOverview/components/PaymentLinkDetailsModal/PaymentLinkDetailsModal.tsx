@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
 import Modal from '@integration-components/ui-components-preact/Modal';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useModalDetails from '../../../../../hooks/useModalDetails';
+import { useCoreContext } from '@integration-components/core/preact';
+import useModalDetails from '@integration-components/hooks-preact/useModalDetails';
 import { PaymentLinkDetails } from '../../../PaymentLinkDetails/components/PaymentLinkDetails/PaymentLinkDetails';
 
 export interface PaymentLinkDetailsModalProps {

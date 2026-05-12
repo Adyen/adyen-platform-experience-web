@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { Controller } from '@integration-components/hooks-preact/form';
 import { PaymentLinkCreationFormValues } from '../../../types';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { useFetch } from '../../../../../../../hooks/useFetch';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
+import { useFetch } from '@integration-components/hooks-preact';
 import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
 import InputBase from '@integration-components/ui-components-preact/FormFields/InputBase';
 import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../constants';
 import { filterDisallowedCharacters } from '@integration-components/ui-components-preact/FormFields/utils';
 import { JSX } from 'preact/jsx-runtime';

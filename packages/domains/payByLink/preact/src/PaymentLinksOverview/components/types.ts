@@ -1,9 +1,9 @@
 import { IPaymentLinkItem } from '@integration-components/types';
 import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinksTable';
-import { StringWithAutocompleteOptions } from '../../../../utils/types';
+import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';
-import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { IStore } from '../../../../types/api/models/stores';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { IStore } from '@integration-components/types';
 
 export type PaymentLinkTableCols = (typeof PAYMENT_LINKS_TABLE_FIELDS)[number];
 export type PaymentLinkTableFields = StringWithAutocompleteOptions<PaymentLinkTableCols>;

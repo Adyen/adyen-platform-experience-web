@@ -3,7 +3,7 @@ import { useCoreContext } from '@integration-components/core/preact';
 
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { useCallback } from 'preact/hooks';
 
 interface StoreFieldProps {

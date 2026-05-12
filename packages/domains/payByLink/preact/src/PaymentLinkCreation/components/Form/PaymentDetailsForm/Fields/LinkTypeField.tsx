@@ -2,8 +2,8 @@ import { PaymentLinkCreationFormValues } from '../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo } from 'preact/hooks';
 import { FunctionalComponent } from 'preact';
-import { IPaymentLinkConfiguration, IPaymentLinkType } from '../../../../../../../types/api/models/payByLink';
-import { TranslationKey } from '../../../../../../../translations';
+import { IPaymentLinkConfiguration, IPaymentLinkType } from '@integration-components/types';
+import { TranslationKey } from '@integration-components/core';
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 
 export type LinkTypeFieldProps = {

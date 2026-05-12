@@ -1,9 +1,9 @@
 import { useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { TimelineItem } from '@integration-components/ui-components-preact/Timeline/components/TimelineItem';
 import Timeline from '@integration-components/ui-components-preact/Timeline/Timeline';
 import { TimelineDateFormat } from '@integration-components/ui-components-preact/Timeline/types';
-import { IPaymentLinkActivity } from '../../../../../types';
+import { IPaymentLinkActivity } from '@integration-components/types';
 import { getTitleKey, getDescriptionKey, getStatus } from './utils';
 
 type PaymentLinkActivityProps = {

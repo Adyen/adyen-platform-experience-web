@@ -1,16 +1,16 @@
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { Stepper } from '@integration-components/ui-components-preact/Stepper/Stepper';
 import { useCallback, useMemo, useRef, useState } from 'preact/hooks';
 import { PaymentLinkCreationFormValues, LinkCreationFormStep } from '../types';
-import { WizardFormProvider } from '../../../../../hooks/form/wizard/WizardFormContext';
-import { ButtonVariant } from '@integration-components/types';
+import { WizardFormProvider } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import Button from '@integration-components/ui-components-preact/Button';
 import '../../PaymentLinkCreation.scss';
 import './PaymentLinkCreationForm.scss';
-import useMutation from '../../../../../hooks/useMutation/useMutation';
-import { SuccessResponse } from '../../../../../types/api/endpoints';
+import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
+import { SuccessResponse } from '@integration-components/types/api/endpoints';
 import Icon from '@integration-components/ui-components-preact/Icon';
 import { usePaymentLinkFormData } from './usePaymentLinkFormData';
 import { PaymentLinkCreationComponentProps } from '../../types';
@@ -24,7 +24,7 @@ import { AlertTypeOption } from '@integration-components/ui-components-preact/Al
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { useInvalidFieldsConfig } from '../../hooks/useInvalidFieldsConfig';
-import { AdyenErrorResponse } from '../../../../../core/Http/types';
+import { AdyenErrorResponse } from '@integration-components/core';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 

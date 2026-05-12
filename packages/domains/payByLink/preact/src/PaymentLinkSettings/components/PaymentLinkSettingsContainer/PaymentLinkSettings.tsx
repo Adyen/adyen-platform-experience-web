@@ -9,7 +9,7 @@ import {
 import { type ExternalUIComponentProps } from '@integration-components/types';
 import { PaymentLinkSettingsComponentProps } from '../../types';
 import './PaymentLinkSettingsContainer.scss';
-import { StoreSelector } from '../../../../internal/StoreSelector';
+import { StoreSelector } from '@integration-components/ui-components-preact/StoreSelector';
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { usePaymentLinkSettingsContext } from './context/context';
 import PaymentLinkSettingsContent from './components/PaymentLinkSettingsContent/PaymentLinkSettingsContent';

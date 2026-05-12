@@ -1,10 +1,10 @@
 import type { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
-import { StoreSelectorItemParams } from '../../../../../internal/StoreSelector/types';
-import { IPaymentLinkTermsAndConditions } from '../../../../../../types';
+import { StoreSelectorItemParams } from '@integration-components/ui-components-preact/StoreSelector/types';
+import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { SecondaryNavItem } from '@integration-components/ui-components-preact/SecondaryNav';
-import { TranslationKey } from '../../../../../../translations';
-import AdyenPlatformExperienceError from '../../../../../../core/Errors/AdyenPlatformExperienceError';
+import { TranslationKey } from '@integration-components/core';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 
 export type PaymentLinkSettingsPayload = FormData | IPaymentLinkTermsAndConditions | undefined;
 export type ThemeFormData = {

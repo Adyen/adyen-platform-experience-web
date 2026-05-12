@@ -4,7 +4,7 @@ import { useCallback, useContext, useRef, useState, useEffect, useMemo } from 'p
 import { noop } from '@integration-components/utils';
 import { IPaymentLinkSettingsContext, MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from './types';
 import { DEFAULT_MENU_ITEM, MenuItem } from './constants';
-import { useStores } from '../../../../../../hooks/useStores';
+import { useStores } from '@integration-components/hooks-preact';
 import { SecondaryNavItem } from '@integration-components/ui-components-preact/SecondaryNav';
 import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';

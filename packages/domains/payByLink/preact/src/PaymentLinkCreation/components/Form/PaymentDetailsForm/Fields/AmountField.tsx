@@ -1,11 +1,11 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { CurrencyInput } from '@integration-components/ui-components-preact/FormFields/CurrencyInput/CurrencyInput';
 import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
 import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
-import { Controller } from '../../../../../../../hooks/form';
+import { Controller } from '@integration-components/hooks-preact/form';
 import { FieldError } from '@integration-components/ui-components-preact/FormFields/FieldError/FieldError';
 
 const VALUE_FIELD_NAME = 'amount.value';

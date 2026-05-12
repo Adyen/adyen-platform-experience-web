@@ -4,14 +4,14 @@ import { FunctionalComponent, JSX } from 'preact';
 import { IPaymentLinkValidity, IPaymentLinkConfiguration } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
 import { PaymentLinkCreationFormValues } from '../../../types';
-import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
 import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
-import { Controller } from '../../../../../../../hooks/form';
+import { Controller } from '@integration-components/hooks-preact/form';
 import Select from '@integration-components/ui-components-preact/FormFields/Select';
 import { LINK_VALIDITY_DURATION_UNITS } from '../../../../constants';
 import InputBase from '@integration-components/ui-components-preact/FormFields/InputBase';
-import { transformToMS } from '../../../../../../../utils';
+import { transformToMS } from '@integration-components/utils';
 import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
 import { FieldError } from '@integration-components/ui-components-preact/FormFields/FieldError/FieldError';
 
