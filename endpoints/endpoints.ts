@@ -31,18 +31,6 @@ export const endpoints = () =>
             download: `${baseUrl}/disputes/:id/documents/download`,
             list: `${baseUrl}/disputes`,
         },
-        payByLink: {
-            configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
-            countries: `${baseUrl}/paybylink/countries`,
-            currencies: `${baseUrl}/paybylink/currencies`,
-            details: `${baseUrl}/paybylink/paymentLinks/:id`,
-            expire: `${baseUrl}/paybylink/paymentLinks/:id/expire`,
-            filters: `${baseUrl}/paybylink/filters`,
-            installments: `${baseUrl}/paybylink/installments`,
-            list: `${baseUrl}/paybylink/paymentLinks`,
-            settings: `${baseUrl}/paybylink/settings/:storeId`,
-            themes: `${baseUrl}/paybylink/themes/:id`,
-        },
         datasets: {
             countries: `${datasetBaseUrl}/countries/:locale.json?import`,
         },
