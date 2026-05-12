@@ -4,4 +4,4 @@ export * from './types';
 
 export { default as EventDispatcherProvider } from './eventDispatcher/EventDispatcherProvider.vue';
 export { useEventDispatcherContext } from './eventDispatcher/useEventDispatcherContext';
-export type { UserEvents, EventQueueItem, EventDispatcherProviderProps } from './eventDispatcher/types';
+export type { EventDispatcherProviderProps } from './eventDispatcher/types';
