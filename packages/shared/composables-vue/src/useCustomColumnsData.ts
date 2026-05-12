@@ -53,13 +53,7 @@ export function useCustomColumnsData<T>({ records, hasCustomColumn, onDataRetrie
         }
     }
 
-    watch(
-        [() => records(), () => hasCustomColumn?.(), () => onDataRetrieve?.()],
-        () => {
-            void recompute();
-        },
-        { immediate: true }
-    );
+    watch([() => records(), () => hasCustomColumn?.(), () => onDataRetrieve?.()], () => void recompute(), { immediate: true });
 
     return { customRecords, loadingCustomRecords } as const;
 }

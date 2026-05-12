@@ -1,18 +1,14 @@
-import { inject, isRef, type ComputedRef, type Ref } from 'vue';
+import { inject, type ComputedRef } from 'vue';
 import type { UserEvents } from '../../../EventDispatcher/eventDispatcher/user-events';
 import { EVENT_DISPATCHER_CONTEXT_KEY } from './constants';
 
-type InjectedAnalytics = Partial<UserEvents> | Ref<Partial<UserEvents>> | ComputedRef<Partial<UserEvents>>;
+type InjectedAnalytics = ComputedRef<Partial<UserEvents>>;
 
 export function useEventDispatcherContext(): Partial<UserEvents> {
     const injected = inject<InjectedAnalytics>(EVENT_DISPATCHER_CONTEXT_KEY);
 
     if (!injected) {
         throw new Error('useEventDispatcherContext must be used within an EventDispatcherProvider');
-    }
-
-    if (!isRef(injected)) {
-        return injected;
     }
 
     return new Proxy({} as Partial<UserEvents>, {
