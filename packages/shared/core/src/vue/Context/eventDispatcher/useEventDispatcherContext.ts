@@ -1,4 +1,4 @@
-import { inject, type ComputedRef } from 'vue';
+import { inject, unref, type ComputedRef } from 'vue';
 import type { UserEvents } from '../../../EventDispatcher/eventDispatcher/user-events';
 import { EVENT_DISPATCHER_CONTEXT_KEY } from './constants';
 
@@ -13,11 +13,11 @@ export function useEventDispatcherContext(): Partial<UserEvents> {
 
     return new Proxy({} as Partial<UserEvents>, {
         get(_target, prop: string) {
-            const current = (injected.value ?? {}) as Record<string, unknown>;
-            return current[prop];
+            const current = unref(injected) as Record<string, unknown>;
+            return current?.[prop];
         },
         has(_target, prop: string) {
-            return prop in (injected.value ?? {});
+            return prop in (unref(injected) ?? {});
         },
     });
 }
