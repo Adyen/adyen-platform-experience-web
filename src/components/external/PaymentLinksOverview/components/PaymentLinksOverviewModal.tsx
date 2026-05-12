@@ -1,7 +1,7 @@
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { popoverUtil } from '@integration-components/ui-primitives-preact/Popover/utils/popoverUtil';
-import Modal from '@integration-components/ui-primitives-preact/Modal';
+import { popoverUtil } from '@integration-components/ui-components-preact/Popover/utils/popoverUtil';
+import Modal from '@integration-components/ui-components-preact/Modal';
 import { PaymentLinksOverviewModalType } from './types';
 import PaymentLinkCreationContainer from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer';
 import PaymentLinkSettingsContainer from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer/PaymentLinkSettingsContainer';

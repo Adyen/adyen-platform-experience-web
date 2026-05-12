@@ -1,4 +1,4 @@
-import type { UsePaginatedRecords } from '@integration-components/ui-primitives-preact/Pagination/hooks/types';
+import type { UsePaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks/types';
 import { TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTERS } from './constants';
 
 export type SelectionOptionsList<T extends string = string> = readonly T[] | T[];

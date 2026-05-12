@@ -6,20 +6,20 @@ import {
     TRANSACTION_CATEGORIES,
 } from '../../constants';
 import { compareTransactionsFilters } from '../utils';
-import { FilterBar } from '@integration-components/ui-primitives-preact/FilterBar';
+import { FilterBar } from '@integration-components/ui-components-preact/FilterBar';
 import { selectionOptionsFor } from '../MultiSelectionFilter';
 import { TransactionsFilters as Filters } from '../../types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
-import BalanceAccountSelector from '@integration-components/ui-primitives-preact/FormFields/Select/BalanceAccountSelector';
+import BalanceAccountSelector from '@integration-components/ui-components-preact/FormFields/Select/BalanceAccountSelector';
 import { useBalanceAccountSelection } from '@integration-components/hooks-preact';
 import TransactionMultiSelectionFilter from './TransactionMultiSelectionFilter';
 import TransactionPspReferenceFilter from './TransactionPspReferenceFilter';
 import { useCoreContext } from '@integration-components/core/preact';
 import useCurrencySelection from '../../hooks/useCurrencySelection';
 import TransactionDateFilter from './TransactionDateFilter';
-import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
 
 const eventCategory = TRANSACTION_ANALYTICS_CATEGORY;
 

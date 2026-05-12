@@ -7,14 +7,14 @@ import { containerQueries, useResponsiveContainer } from '../../../../../hooks/u
 import { IDisputeDetail } from '../../../../../types/api/models/disputes';
 import { EMPTY_OBJECT, isFunction } from '../../../../../utils';
 import './DisputeData.scss';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import StatusBox from '@integration-components/ui-primitives-preact/StatusBox/StatusBox';
-import useStatusBoxData from '@integration-components/ui-primitives-preact/StatusBox/useStatusBox';
-import { Tag } from '@integration-components/ui-primitives-preact/Tag/Tag';
-import { Translation } from '@integration-components/ui-primitives-preact/Translation';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import { ButtonVariant } from '@integration-components/types';
+import StatusBox from '@integration-components/ui-components-preact/StatusBox/StatusBox';
+import useStatusBoxData from '@integration-components/ui-components-preact/StatusBox/useStatusBox';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { Translation } from '@integration-components/ui-components-preact/Translation';
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
@@ -38,13 +38,13 @@ import {
     DISPUTE_DATA_PROPERTIES_SKELETON_CONTAINER,
     DISPUTE_DATA_PROPERTIES_SKELETON_ELEMENT,
 } from './constants';
-import Button from '@integration-components/ui-primitives-preact/Button';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Button from '@integration-components/ui-components-preact/Button';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '../../../../../constants';
 import { getDisputeType } from '../../../../utils/translation/getters';
-import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
 import { getDisputesErrorMessage } from '../../../../utils/disputes/getDisputesErrorMessage';
 import { CustomButtonObject } from '../../../../types';

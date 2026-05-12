@@ -1,17 +1,17 @@
 import cx from 'classnames';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
-import FileInput from '@integration-components/ui-primitives-preact/FormFields/FileInput/FileInput';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
+import FileInput from '@integration-components/ui-components-preact/FormFields/FileInput/FileInput';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { SelectItem } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
+import { SelectItem } from '@integration-components/ui-components-preact/FormFields/Select/types';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { getDefenseDocumentContent } from '../../utils';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import Button from '@integration-components/ui-primitives-preact/Button/Button';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';
 import { MapErrorCallback } from './types';
 

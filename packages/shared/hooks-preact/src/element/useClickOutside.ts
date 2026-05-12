@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'preact/hooks';
-import { CONTROL_ELEMENT_PROPERTY, popoverUtil } from './popoverUtil';
+import { CONTROL_ELEMENT_PROPERTY } from './constants';
+import { popoverUtil } from './popoverUtil';
 import type { Reflexable } from '@integration-components/utils/primitives/reactive/reflex';
 import type { Nullable } from '@integration-components/utils/types';
 import useReflex from '../useReflex';

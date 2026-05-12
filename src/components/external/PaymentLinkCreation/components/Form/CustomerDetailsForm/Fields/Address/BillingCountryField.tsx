@@ -1,11 +1,11 @@
 import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
 import { useMemo, useCallback } from 'preact/hooks';
-import { FormSelect } from '@integration-components/ui-primitives-preact/FormWrappers/FormSelect';
+import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { PaymentLinkCreationFormValues } from '../../../../types';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
 import { IPaymentLinkCountry } from '../../../../../../../../types';
 import { useWizardFormContext } from '../../../../../../../../hooks/form/wizard/WizardFormContext';
-import { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
+import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
 
 interface BillingCountryFieldProps {
     countriesData?: { data?: IPaymentLinkCountry[] };

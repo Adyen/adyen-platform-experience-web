@@ -5,15 +5,15 @@ import { IPaymentLinkValidity, IPaymentLinkConfiguration } from '../../../../../
 import { TranslationKey } from '../../../../../../../translations';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
-import { VisibleField } from '@integration-components/ui-primitives-preact/FormWrappers/VisibleField';
-import FormField from '@integration-components/ui-primitives-preact/FormWrappers/FormField';
+import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
+import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
 import { Controller } from '../../../../../../../hooks/form';
-import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
 import { LINK_VALIDITY_DURATION_UNITS } from '../../../../constants';
-import InputBase from '@integration-components/ui-primitives-preact/FormFields/InputBase';
+import InputBase from '@integration-components/ui-components-preact/FormFields/InputBase';
 import { transformToMS } from '../../../../../../../utils';
-import { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
-import { FieldError } from '@integration-components/ui-primitives-preact/FormFields/FieldError/FieldError';
+import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
+import { FieldError } from '@integration-components/ui-components-preact/FormFields/FieldError/FieldError';
 
 export type ValidityFieldProps = {
     configuration?: IPaymentLinkConfiguration;

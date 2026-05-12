@@ -1,9 +1,10 @@
-export const CONTROL_ELEMENT_PROPERTY: unique symbol = Symbol('__control.Elem.');
+import { CONTROL_ELEMENT_PROPERTY } from './constants';
 
 export const popoverUtil = (<T extends Element, U extends (...args: any[]) => any>() => {
     let popoverRefs: Array<{ element: T; callback?: U | undefined }> = [];
 
     const closePopoversOutsideOfClick = (eventPath: EventTarget[]) => {
+        // Clicking on the control element should not close its associated popover.
         const clickedOnControlElement = eventPath.some(
             path =>
                 path instanceof Element &&

@@ -13,16 +13,16 @@ import {
     useTimezoneAwareDateFormatting,
 } from '@integration-components/hooks-preact';
 import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
-import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import DownloadButton from '@integration-components/ui-primitives-preact/Button/DownloadButton/DownloadButton';
-import DataGrid from '@integration-components/ui-primitives-preact/DataGrid';
-import DataOverviewError from '@integration-components/ui-primitives-preact/DataOverviewError/DataOverviewError';
-import Pagination from '@integration-components/ui-primitives-preact/Pagination';
-import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-primitives-preact/Pagination/types';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import DownloadButton from '@integration-components/ui-components-preact/Button/DownloadButton/DownloadButton';
+import DataGrid from '@integration-components/ui-components-preact/DataGrid';
+import DataOverviewError from '@integration-components/ui-components-preact/DataOverviewError/DataOverviewError';
+import Pagination from '@integration-components/ui-components-preact/Pagination';
+import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import './ReportsTable.scss';
 
 export const FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;

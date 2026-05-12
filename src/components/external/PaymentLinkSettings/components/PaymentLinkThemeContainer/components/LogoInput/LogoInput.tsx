@@ -4,14 +4,14 @@ import useUniqueId from '../../../../../../../hooks/useUniqueId';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TranslationKey } from '../../../../../../../translations';
 import { MapErrorCallback } from '../../../../../DisputeManagement/components/DefendDisputeFlow/types';
-import { validationErrors } from '@integration-components/ui-primitives-preact/FormFields/FileInput/constants';
-import defaultMapError from '@integration-components/ui-primitives-preact/FormFields/FileInput/helpers/defaultMapError';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import FileInput from '@integration-components/ui-primitives-preact/FormFields/FileInput/FileInput';
+import { validationErrors } from '@integration-components/ui-components-preact/FormFields/FileInput/constants';
+import defaultMapError from '@integration-components/ui-components-preact/FormFields/FileInput/helpers/defaultMapError';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import FileInput from '@integration-components/ui-components-preact/FormFields/FileInput/FileInput';
 import { LogoLabel, logoOptions, THEME_FORM_ALLOWED_FILE_TYPES, THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE } from '../ThemeForm/constants';
 import LogoRequirements from '../LogoRequirements/LogoRequirements';
-import { ValidationError } from '@integration-components/ui-primitives-preact/FormFields/FileInput/types';
+import { ValidationError } from '@integration-components/ui-components-preact/FormFields/FileInput/types';
 
 const getImageDimensionLimitation = (logoType: LogoTypes) => {
     switch (logoType) {

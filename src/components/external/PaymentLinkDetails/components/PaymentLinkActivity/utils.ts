@@ -1,5 +1,5 @@
 import { TranslationKey } from '../../../../../translations';
-import { TimelineStatus } from '@integration-components/ui-primitives-preact/Timeline/types';
+import { TimelineStatus } from '@integration-components/ui-components-preact/Timeline/types';
 import { IPaymentLinkActivity } from '../../../../../types';
 
 export const getTitleKey = (activity: IPaymentLinkActivity): TranslationKey | undefined => {

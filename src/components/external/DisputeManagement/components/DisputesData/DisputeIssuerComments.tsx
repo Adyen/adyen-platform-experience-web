@@ -1,12 +1,12 @@
 import cx from 'classnames';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import Button from '@integration-components/ui-primitives-preact/Button';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { AlertTypeOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import Button from '@integration-components/ui-components-preact/Button';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import { ButtonVariant } from '@integration-components/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import {
     DISPUTE_DATA_ISSUER_COMMENT,
     DISPUTE_DATA_ISSUER_COMMENTS,

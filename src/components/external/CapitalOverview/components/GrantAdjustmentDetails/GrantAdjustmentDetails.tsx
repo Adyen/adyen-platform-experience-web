@@ -3,10 +3,10 @@ import { FunctionalComponent, h } from 'preact';
 import type { TranslationKey } from '../../../../../translations';
 import type { GrantAdjustmentDetailsProps } from './types';
 import './GrantAdjustmentDetails.scss';
-import { Header } from '@integration-components/ui-primitives-preact/Header';
-import Button from '@integration-components/ui-primitives-preact/Button/Button';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
+import { Header } from '@integration-components/ui-components-preact/Header';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 
 export interface GrantAdjustmentDetailsComponentProps

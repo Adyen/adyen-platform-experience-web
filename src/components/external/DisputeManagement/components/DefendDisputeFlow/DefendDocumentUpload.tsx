@@ -1,8 +1,8 @@
-import FileInput from '@integration-components/ui-primitives-preact/FormFields/FileInput/FileInput';
+import FileInput from '@integration-components/ui-components-preact/FormFields/FileInput/FileInput';
 import { getDefenseDocumentContent } from '../../utils';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { useMemo } from 'preact/hooks';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { ALLOWED_FILE_TYPES, DOCUMENT_MAX_SIZE } from './constants';

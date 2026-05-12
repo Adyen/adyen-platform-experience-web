@@ -18,41 +18,37 @@ import {
 import { ExternalUIComponentProps, FilterParam, PaymentLinksOverviewComponentProps } from '../../../types';
 import { IPaymentLinkFilters, IPaymentLinkStatus, IPaymentLinkStatusGroup, IPaymentLinkType, IPaymentLinkItem } from '../../../../types';
 import useDefaultOverviewFilterParams from '../../../../hooks/useDefaultOverviewFilterParams';
-import { FilterBar, FilterBarMobileSwitch, useFilterBarState } from '@integration-components/ui-primitives-preact/FilterBar';
-import { useCursorPaginatedRecords } from '@integration-components/ui-primitives-preact/Pagination/hooks';
-import { Header } from '@integration-components/ui-primitives-preact/Header';
-import { DateFilter } from '@integration-components/ui-primitives-preact/FilterBar/filters/DateFilter';
+import { FilterBar, FilterBarMobileSwitch, useFilterBarState } from '@integration-components/ui-components-preact/FilterBar';
+import { useCursorPaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks';
+import { Header } from '@integration-components/ui-components-preact/Header';
+import { DateFilter } from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter';
 import { MultiSelectionFilter, useMultiSelectionFilter } from '@integration-components/transactions/preact';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { isFunction, listFrom } from '../../../../utils';
 import { useConfigContext } from '../../../../core/ConfigContext';
 import useCoreContext from '../../../../core/Context/useCoreContext';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-primitives-preact/Pagination/constants';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-components-preact/Pagination/constants';
 import useModalDetails from '../../../../hooks/useModalDetails';
 import { PaymentLinksTable } from './PaymentLinksTable';
-import TextFilter from '@integration-components/ui-primitives-preact/FilterBar/filters/TextFilter';
-import Tabs from '@integration-components/ui-primitives-preact/Tabs/Tabs';
-import { TabComponentProps } from '@integration-components/ui-primitives-preact/Tabs/types';
+import TextFilter from '@integration-components/ui-components-preact/FilterBar/filters/TextFilter';
+import Tabs from '@integration-components/ui-components-preact/Tabs/Tabs';
+import { TabComponentProps } from '@integration-components/ui-components-preact/Tabs/types';
 import './PaymentLinksOverview.scss';
 import cx from 'classnames';
 import { containerQueries, useResponsiveContainer } from '../../../../hooks/useResponsiveContainer';
-import Select from '@integration-components/ui-primitives-preact/FormFields/Select';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
 import { AriaAttributes } from 'preact/compat';
-import { PopoverContainerSize } from '@integration-components/ui-primitives-preact/Popover/types';
-import * as RangePreset from '@integration-components/ui-primitives-preact/Calendar/calendar/timerange/presets';
+import { ButtonVariant, PopoverContainerSize, TIME_RANGE_SELECTION_PRESET_OPTION_KEYS } from '@integration-components/types';
+import * as RangePreset from '@integration-components/ui-components-preact/Calendar/calendar/timerange/presets';
 import { PaymentLinkDetailsModal } from './PaymentLinkDetailsModal/PaymentLinkDetailsModal';
 import { PaymentLinksOverviewModalType, StoreData } from './types';
-import Button from '@integration-components/ui-primitives-preact/Button';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
+import Button from '@integration-components/ui-components-preact/Button';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import { PaymentLinksOverviewModal } from './PaymentLinksOverviewModal';
-import Alert from '@integration-components/ui-primitives-preact/Alert/Alert';
-import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-primitives-preact/Alert/types';
-import {
-    getTimeRangeSelectionDefaultPresetOptions,
-    TIME_RANGE_SELECTION_PRESET_OPTION_KEYS,
-} from '@integration-components/ui-primitives-preact/DatePicker/components/TimeRangeSelector';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
+import { getTimeRangeSelectionDefaultPresetOptions } from '@integration-components/ui-components-preact/DatePicker/components/TimeRangeSelector';
 
 const PAYMENT_LINK_TYPES_FILTER_PARAM = 'linkTypes';
 const PAYMENT_LINK_STATUSES_FILTER_PARAM = 'statuses';

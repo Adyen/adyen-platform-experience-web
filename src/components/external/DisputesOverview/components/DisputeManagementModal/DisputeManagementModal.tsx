@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { FC, PropsWithChildren } from 'preact/compat';
-import Modal from '@integration-components/ui-primitives-preact/Modal';
+import Modal from '@integration-components/ui-components-preact/Modal';
 import { DisputeDetailsCustomization } from '../../../DisputeManagement';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { popoverUtil } from '@integration-components/ui-primitives-preact/Popover/utils/popoverUtil';
+import { popoverUtil } from '@integration-components/ui-components-preact/Popover/utils/popoverUtil';
 import useModalDetails from '../../../../../hooks/useModalDetails';
 import { IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
 import { DisputeDetailsContainer } from '../../../DisputeManagement/components/DisputeDetailsContainer/DisputeDetailsContainer';

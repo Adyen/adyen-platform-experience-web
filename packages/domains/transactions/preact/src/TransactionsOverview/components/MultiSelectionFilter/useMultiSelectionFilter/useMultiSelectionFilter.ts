@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import { listFrom } from '@integration-components/utils';
 import { selectionOptionsFor } from './utils';
 import type { SelectionOptionsList, UseMultiSelectionFilterConfig, UseMultiSelectionFilterConfigWithoutValues } from './types';
-import type { SelectChangeEvent } from '@integration-components/ui-primitives-preact/FormFields/Select/types';
+import type { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';
 
 export const useMultiSelectionFilter = <FilterParam extends string = string, FilterValue extends string = string>({
     filterParam,

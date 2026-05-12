@@ -8,6 +8,7 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
+        "./element/constants": "./src/element/constants.ts",
         "./element/getIntersectionObserver": "./src/element/getIntersectionObserver.ts",
         "./element/useClickOutside": "./src/element/useClickOutside.ts",
         "./element/useDetachedRender": "./src/element/useDetachedRender.tsx",

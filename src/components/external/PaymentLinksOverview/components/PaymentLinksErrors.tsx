@@ -1,4 +1,4 @@
-import { ErrorMessageDisplay } from '@integration-components/ui-primitives-preact/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getPaymentLinksErrorMessage } from '../utils/getPaymentLinksErrorMessage';
 import { TranslationKey } from '../../../../translations';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';

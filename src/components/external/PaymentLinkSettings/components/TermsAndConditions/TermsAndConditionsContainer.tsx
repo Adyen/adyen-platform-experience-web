@@ -1,6 +1,6 @@
 import './TermsAndConditions.scss';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
 import usePaymentLinkSettingsContext from '../PaymentLinkSettingsContainer/context/context';

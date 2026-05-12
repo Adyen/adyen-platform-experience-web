@@ -1,11 +1,11 @@
 import useUniqueId from '../../../../../../../hooks/useUniqueId';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useCallback } from 'preact/hooks';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { LogoLabel } from '../ThemeForm/constants';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
-import Button from '@integration-components/ui-primitives-preact/Button';
+import { ButtonVariant } from '@integration-components/types';
+import Button from '@integration-components/ui-components-preact/Button';
 import { LogoTypes } from '../../types';
 
 const LogoPreview = ({

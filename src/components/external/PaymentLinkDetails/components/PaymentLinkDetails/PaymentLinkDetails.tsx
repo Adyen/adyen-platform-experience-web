@@ -1,26 +1,25 @@
 import cx from 'classnames';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import ButtonActions from '@integration-components/ui-primitives-preact/Button/ButtonActions/ButtonActions';
-import { ButtonVariant } from '@integration-components/ui-primitives-preact/Button/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import Header from '@integration-components/ui-primitives-preact/Header';
+import Header from '@integration-components/ui-components-preact/Header';
 import { PaymentLinkDetailsProps as PaymentLinkDetailsElementProps } from '../../types';
 import { ExternalUIComponentProps } from 'src/components/types';
-import { useModalContext } from '@integration-components/ui-primitives-preact/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import { PaymentLinkSummary } from '../PaymentLinkSummary/PaymentLinkSummary';
 import { PaymentLinkTabs } from '../PaymentLinkTabs/PaymentLinkTabs';
-import { ButtonActionsList } from '@integration-components/ui-primitives-preact/Button/ButtonActions/types';
+import { ButtonActionsList, ButtonVariant } from '@integration-components/types';
 import { PaymentLinkExpiration } from '../PaymentLinkExpiration/PaymentLinkExpiration';
 import './PaymentLinkDetails.scss';
 import { PaymentLinkSkeleton } from '../PaymentLinkSkeleton/PaymentLinkSkeleton';
 import { PaymentLinkError } from '../PaymentLinkError/PaymentLinkError';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
-import { TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 
 const CLASSNAMES = {
     root: 'adyen-pe-payment-link-details',

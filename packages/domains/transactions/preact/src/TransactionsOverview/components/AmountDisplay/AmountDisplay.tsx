@@ -1,9 +1,9 @@
 import cx from 'classnames';
-import Icon from '@integration-components/ui-primitives-preact/Icon';
-import Typography from '@integration-components/ui-primitives-preact/Typography/Typography';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { useCoreContext } from '@integration-components/core/preact';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-primitives-preact/Typography/types';
-import { Tooltip } from '@integration-components/ui-primitives-preact/Tooltip/Tooltip';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
 import { useMemo } from 'preact/hooks';
 import { classes } from './constants';
 import './AmountDisplay.scss';
