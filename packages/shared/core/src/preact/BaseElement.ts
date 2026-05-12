@@ -13,6 +13,10 @@ class BaseElement<P> {
     public props: P & BaseElementProps;
     public state: BaseElementState = {};
 
+    public get core(): any {
+        return this.props.core;
+    }
+
     protected constructor(props: P & BaseElementProps) {
         this.props = this.formatProps({ ...this?.defaultProps, ...props });
         this.props.core.registerComponent(this);
