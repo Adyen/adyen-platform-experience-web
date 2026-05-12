@@ -57,6 +57,9 @@ export default defineConfig(({ mode }) => ({
             '@integration-components/transactions/publish': resolve(rootDir, 'packages/domains/transactions/publish/src'),
             '@integration-components/transactions/preact': resolve(rootDir, 'packages/domains/transactions/preact/src'),
             '@integration-components/transactions/domain': resolve(rootDir, 'packages/domains/transactions/domain/src'),
+            '@integration-components/payByLink/publish': resolve(rootDir, 'packages/domains/payByLink/publish/src'),
+            '@integration-components/payByLink/preact': resolve(rootDir, 'packages/domains/payByLink/preact/src'),
+            '@integration-components/payByLink/domain': resolve(rootDir, 'packages/domains/payByLink/domain/src'),
         },
     },
     build: {

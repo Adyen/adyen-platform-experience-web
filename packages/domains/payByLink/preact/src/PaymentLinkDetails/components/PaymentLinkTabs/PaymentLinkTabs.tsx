@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import { ListValue, StructuredListItem, StructuredListItemType } from '@integration-components/ui-components-preact/StructuredList/types';

@@ -9,12 +9,12 @@ import { PaymentLinkCreationFormValues } from '../../types';
 // import { EmailDependentCheckboxField } from './Fields/EmailDependentCheckboxField';
 import { DeliveryAddressSection } from './Fields/Address/DeliveryAddressSection';
 import { BillingAddressSection } from './Fields/Address/BillingAddressSection';
-import useCoreContext from '../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import './CustomerDetailsForm.scss';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../constants';
-import { useWizardFormContext } from '../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { Dispatch } from 'preact/compat';
-import { IPaymentLinkCountry } from '../../../../../../types';
+import { IPaymentLinkCountry } from '@integration-components/types';
 import { useAddressChecker } from './useAddressChecker';
 import { useSameAddressCheckbox } from './useSameAddressCheckbox';
 

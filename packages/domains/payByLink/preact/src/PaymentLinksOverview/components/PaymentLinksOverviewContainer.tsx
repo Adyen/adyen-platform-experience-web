@@ -1,6 +1,7 @@
 import { PaymentLinksOverview } from './PaymentLinksOverview';
-import type { ExternalUIComponentProps, PaymentLinksOverviewComponentProps } from '../../../types';
-import usePaymentLinkFilters from '../../../../hooks/usePaymentLinkFilters';
+import type { ExternalUIComponentProps } from '@integration-components/types';
+import type { PaymentLinksOverviewComponentProps } from '../types';
+import usePaymentLinkFilters from '@integration-components/hooks-preact/usePaymentLinkFilters';
 import './PaymentLinksOverview.scss';
 
 function PaymentLinksOverviewContainer({ ...props }: ExternalUIComponentProps<PaymentLinksOverviewComponentProps>) {

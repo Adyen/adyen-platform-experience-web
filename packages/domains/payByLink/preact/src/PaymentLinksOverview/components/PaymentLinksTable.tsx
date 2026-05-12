@@ -30,8 +30,8 @@ import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/To
 import { isActionNeededUrgently } from '../../../utils/payByLink/actionLevel';
 import classNames from 'classnames';
 import { PaymentLinksErrors } from './PaymentLinksErrors';
-import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '../../../constants';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { BACKEND_REDACTED_DATA_MARKER, FRONTEND_REDACTED_DATA_MARKER } from '@integration-components/payByLink/domain';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from '../utils/getPaymentLinksErrorMessage';
 
 const getTagVariantForStatus = (status: IPaymentLinkStatus) => {

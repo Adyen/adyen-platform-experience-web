@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import usePayByLinkSettingsContext from '../../context/context';
 import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
 import { boolOrFalse, noop } from '../../../../../../../utils';

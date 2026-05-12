@@ -1,5 +1,5 @@
 import { useMemo } from 'preact/hooks';
-import { useWizardFormContext } from '../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { PaymentLinkCreationFormValues } from '../../types';
 
 const BILLING_ADDRESS_FIELDS = [

@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkCreation } from '../../src';
+import { PaymentLinkCreation } from '../src';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { PaymentLinkCreationMeta } from '../components/paymentLinkCreation';
+import { PaymentLinkCreationMeta } from './paymentLinkCreation.meta';
 import { PayByLinkOverviewMockedResponses, PaymentLinkCreationMockedResponses } from '../../mocks/mock-server/payByLink';
 import { action } from 'storybook/actions';
 import { PAYMENT_LINKS_FIELDS_CONFIG } from './utils/constants/paymentLinks';

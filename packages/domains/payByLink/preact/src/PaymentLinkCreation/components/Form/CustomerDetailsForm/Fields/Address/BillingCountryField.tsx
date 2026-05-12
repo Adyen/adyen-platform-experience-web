@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo, useCallback } from 'preact/hooks';
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { PaymentLinkCreationFormValues } from '../../../../types';

@@ -1,5 +1,5 @@
-import { IShopperInformation } from '../../../src';
-import { BACKEND_REDACTED_DATA_MARKER } from '../../../src/components/constants';
+import { IShopperInformation } from '@integration-components/types';
+import { BACKEND_REDACTED_DATA_MARKER } from '@integration-components/payByLink/domain';
 
 export const redactShopperInformation = (shopperInformation: IShopperInformation) => ({
     ...shopperInformation,

@@ -1,8 +1,8 @@
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getPaymentLinksErrorMessage } from '../utils/getPaymentLinksErrorMessage';
-import { TranslationKey } from '../../../../translations';
-import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
-import { AssetOptions } from '../../../../core/Assets/Assets';
+import { TranslationKey } from '@integration-components/core';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { AssetOptions } from '@integration-components/core';
 
 export const PaymentLinksErrors = ({
     error,

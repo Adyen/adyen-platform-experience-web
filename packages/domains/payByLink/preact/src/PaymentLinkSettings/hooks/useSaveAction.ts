@@ -1,8 +1,8 @@
-import { useConfigContext } from '../../../../core/ConfigContext';
-import useMutation from '../../../../hooks/useMutation/useMutation';
+import { useConfigContext } from '@integration-components/core/preact';
+import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
 import { StateUpdater, useCallback, useEffect, useRef } from 'preact/hooks';
 import { MenuItem } from '../components/PaymentLinkSettingsContainer/context/constants';
-import { isFunction, isUndefined } from '../../../../utils';
+import { isFunction, isUndefined } from '@integration-components/utils';
 import {
     PaymentLinkSettingsData,
     PaymentLinkSettingsItem,

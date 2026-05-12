@@ -1,4 +1,4 @@
-import { IPaymentLinkTheme } from '../../../../../../types';
+import { IPaymentLinkTheme } from '@integration-components/types';
 
 export const cloneFormData = (formData: FormData) => {
     const formDataClone = new FormData();

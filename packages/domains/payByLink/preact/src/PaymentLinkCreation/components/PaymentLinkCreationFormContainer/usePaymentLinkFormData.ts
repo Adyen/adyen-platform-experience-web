@@ -1,14 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { useFetch } from '../../../../../hooks/useFetch';
-import { useConfigContext } from '../../../../../core/ConfigContext';
-import { EMPTY_OBJECT } from '../../../../../utils';
-import { IPaymentLinkStore, IPaymentLinkConfiguration } from '../../../../../types';
+import { useFetch } from '@integration-components/hooks-preact';
+import { useConfigContext } from '@integration-components/core/preact';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { IPaymentLinkStore, IPaymentLinkConfiguration } from '@integration-components/types';
 import { getFormSteps } from '../../utils';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { TranslationKey } from '../../../../../translations';
-import { useWizardForm } from '../../../../../hooks/form/wizard/useWizardForm';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TranslationKey } from '@integration-components/core';
+import { useWizardForm } from '@integration-components/hooks-preact/form/wizard/useWizardForm';
 import { PaymentLinkCreationFormValues } from '../types';
-import { DeepPartial, PaymentLinkFieldsVisibilityConfig } from '../../../../types';
+import type { DeepPartial } from '../../types';
+import { PaymentLinkFieldsVisibilityConfig } from '../../types';
 import { StoreIds } from '../../../PaymentLinksOverview/types';
 
 type UsePaymentLinkFormDataProps = {

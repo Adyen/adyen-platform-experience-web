@@ -1,11 +1,12 @@
-import { type ExternalUIComponentProps, PaymentLinkSettingsComponentProps } from '../../../../types';
+import { type ExternalUIComponentProps } from '@integration-components/types';
+import { PaymentLinkSettingsComponentProps } from '../../types';
 import './PaymentLinkSettingsContainer.scss';
 import { PaymentLinkSettingsProvider } from './context/context';
 import PaymentLinkSettings from './PaymentLinkSettings';
 import { PaymentLinkSettingsItem } from './context/types';
 import { useMemo } from 'preact/hooks';
 import { MENU_ITEMS } from './context/constants';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 const PaymentLinkSettingsContainer = ({
     settingsItems,

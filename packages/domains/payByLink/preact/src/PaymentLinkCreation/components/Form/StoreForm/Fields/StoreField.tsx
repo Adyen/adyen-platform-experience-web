@@ -1,5 +1,5 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { SelectChangeEvent } from '@integration-components/ui-components-preact/FormFields/Select/types';

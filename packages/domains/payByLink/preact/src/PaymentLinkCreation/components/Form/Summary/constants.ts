@@ -1,5 +1,5 @@
 import { PaymentLinkCreationFormValues } from '../../types';
-import { FieldValues } from '../../../../../../hooks/form/types';
+import { FieldValues } from '@integration-components/hooks-preact/form/types';
 
 export const invisibleFields: FieldValues<PaymentLinkCreationFormValues>[] = [
     'amount.currency',

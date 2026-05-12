@@ -1,7 +1,7 @@
 import { memo, PropsWithChildren } from 'preact/compat';
 import { createContext } from 'preact';
 import { useCallback, useContext, useRef, useState, useEffect, useMemo } from 'preact/hooks';
-import { noop } from '../../../../../../utils';
+import { noop } from '@integration-components/utils';
 import { IPaymentLinkSettingsContext, MenuItemType, PaymentLinkSettingsData, PaymentLinkSettingsItem, PaymentLinkSettingsPayload } from './types';
 import { DEFAULT_MENU_ITEM, MenuItem } from './constants';
 import { useStores } from '../../../../../../hooks/useStores';
@@ -9,7 +9,7 @@ import { SecondaryNavItem } from '@integration-components/ui-components-preact/S
 import { useStoreTheme } from '../../../hooks/useStoreTheme';
 import { useStoreTermsAndConditions } from '../../../hooks/useStoreTermsAndConditions';
 import { useSaveAction } from '../../../hooks/useSaveAction';
-import { containerQueries, useResponsiveContainer } from '../../../../../../hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { useSettingsPermission } from '../../../hooks/useSettingsPermission';
 
 export const PaymentLinkSettingsContext = createContext<IPaymentLinkSettingsContext>({

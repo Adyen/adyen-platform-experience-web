@@ -1,7 +1,7 @@
-import { uniqueId } from '../../../../../utils';
+import { uniqueId } from '@integration-components/utils';
 import './TermsAndConditions.scss';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { h } from 'preact';
 import { Checkbox } from '@integration-components/ui-components-preact/Checkbox';
 import InputText from '@integration-components/ui-components-preact/FormFields/InputText';

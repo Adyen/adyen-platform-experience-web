@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { getComponentRoot, goToStory } from '../../../utils/utils';
+import { getComponentRoot, goToStory } from '@integration-components/testing/playwright/utils';
 
 const STORY_ID = 'mocked-pay-by-link-payment-link-settings--settings-error';
 

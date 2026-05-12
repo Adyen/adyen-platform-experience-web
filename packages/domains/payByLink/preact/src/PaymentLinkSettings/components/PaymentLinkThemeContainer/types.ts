@@ -1,6 +1,6 @@
-import { IPaymentLinkTermsAndConditions } from '../../../../../types';
+import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import { PaymentLinkSettingsData, PaymentLinkSettingsPayload, ThemeFormData } from '../PaymentLinkSettingsContainer/context/types';
-import { hasOwnProperty } from '../../../../../utils';
+import { hasOwnProperty } from '@integration-components/utils';
 
 export type LogoTypes = 'logo' | 'fullWidthLogo';
 

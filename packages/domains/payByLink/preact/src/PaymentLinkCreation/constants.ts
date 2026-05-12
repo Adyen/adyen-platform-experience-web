@@ -1,4 +1,4 @@
-import { IPaymentLinkValidity } from '../../../types/api/models/payByLink';
+import { IPaymentLinkValidity } from '@integration-components/types';
 
 export const PAYMENT_LINK_CREATION_FIELD_LENGTHS = {
     emailAddress: {

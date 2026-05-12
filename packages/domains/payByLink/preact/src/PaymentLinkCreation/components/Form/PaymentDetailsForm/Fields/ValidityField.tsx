@@ -1,8 +1,8 @@
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo, useCallback, useState, useEffect } from 'preact/hooks';
 import { FunctionalComponent, JSX } from 'preact';
-import { IPaymentLinkValidity, IPaymentLinkConfiguration } from '../../../../../../../types/api/models/payByLink';
-import { TranslationKey } from '../../../../../../../translations';
+import { IPaymentLinkValidity, IPaymentLinkConfiguration } from '@integration-components/types';
+import { TranslationKey } from '@integration-components/core';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';

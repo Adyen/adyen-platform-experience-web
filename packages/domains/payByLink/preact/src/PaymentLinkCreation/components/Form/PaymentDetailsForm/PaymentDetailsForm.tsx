@@ -7,7 +7,7 @@ import useCoreContext from '../../../../../../core/Context/useCoreContext';
 import { FormCalendarInput } from '@integration-components/ui-components-preact/FormWrappers/FormCalendarInput';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../constants';
 import './PaymentDetailsForm.scss';
-import { IPaymentLinkConfiguration } from '../../../../../../types/api/models/payByLink';
+import { IPaymentLinkConfiguration } from '@integration-components/types';
 
 interface PaymentDetailsFormProps {
     configuration?: IPaymentLinkConfiguration;

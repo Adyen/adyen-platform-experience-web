@@ -1,5 +1,5 @@
-import useUniqueId from '../../../../../../../hooks/useUniqueId';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useUniqueId } from '@integration-components/hooks-preact';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback } from 'preact/hooks';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';

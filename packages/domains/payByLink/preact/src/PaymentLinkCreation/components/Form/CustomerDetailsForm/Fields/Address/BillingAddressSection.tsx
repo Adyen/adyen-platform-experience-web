@@ -7,7 +7,7 @@ import { BillingCountryField } from './BillingCountryField';
 import { BillingCityField } from './BillingCityField';
 import { BillingPostalCodeField } from './BillingPostalCodeField';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
-import { IPaymentLinkCountry } from '../../../../../../../../types';
+import { IPaymentLinkCountry } from '@integration-components/types';
 
 interface BillingAddressSectionProps {
     isSameAddress: boolean;

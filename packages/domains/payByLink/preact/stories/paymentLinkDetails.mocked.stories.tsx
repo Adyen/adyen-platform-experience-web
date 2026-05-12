@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkDetails } from '../../src';
-import { PaymentLinkDetailsMeta } from '../components/paymentLinkDetails';
+import { PaymentLinkDetails } from '../src';
+import { PaymentLinkDetailsMeta } from './paymentLinkDetails.meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkDetailsMockedResponses } from '../../mocks/mock-server/payByLink';
 

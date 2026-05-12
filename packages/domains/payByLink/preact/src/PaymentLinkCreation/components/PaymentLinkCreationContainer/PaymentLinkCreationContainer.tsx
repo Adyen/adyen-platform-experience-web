@@ -1,4 +1,5 @@
-import { ExternalUIComponentProps, PaymentLinkCreationComponentProps } from '../../../../types';
+import { ExternalUIComponentProps } from '@integration-components/types';
+import { PaymentLinkCreationComponentProps } from '../../types';
 import { PaymentLinkCreationFormContainer } from '../PaymentLinkCreationFormContainer/PaymentLinkCreationFormContainer';
 import '../../PaymentLinkCreation.scss';
 import { useState } from 'preact/hooks';

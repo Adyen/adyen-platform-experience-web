@@ -1,4 +1,5 @@
-import { UIElementProps } from '../../types';
+import { UIElementProps } from '@integration-components/types';
+import { PaymentLinkCreationFieldsConfig } from '../PaymentLinkCreation/types';
 
 export type StoreIds = string[] | string;
 
@@ -24,6 +25,7 @@ export interface PaymentLinksOverviewProps extends UIElementProps {
     paymentLinkCreation?: PaymentLinkOverviewSubComponentProps<{
         onPaymentLinkCreated?: (paymentLink: any) => void;
         onCreationDismiss?: () => void;
+        fieldsConfig?: PaymentLinkCreationFieldsConfig;
     }>;
     paymentLinkSettings?: PaymentLinkOverviewSubComponentProps<{
         storeIds?: string[] | string;

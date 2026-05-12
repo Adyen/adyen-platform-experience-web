@@ -1,6 +1,6 @@
 import { LogoTypes } from '../../types';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
-import useUniqueId from '../../../../../../../hooks/useUniqueId';
+import { useCoreContext } from '@integration-components/core/preact';
+import { useUniqueId } from '@integration-components/hooks-preact';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TranslationKey } from '../../../../../../../translations';
 import type { BaseFileInputProps } from '@integration-components/ui-components-preact/FormFields/FileInput/types';

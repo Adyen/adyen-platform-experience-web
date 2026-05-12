@@ -1,5 +1,6 @@
-import { _UIComponentProps, ExternalComponentType, PaymentLinksOverviewComponentProps } from '../../types';
-import UIElement from '../UIElement/UIElement';
+import { _UIComponentProps, ExternalComponentType } from '@integration-components/types';
+import { UIElement } from '@integration-components/core/preact';
+import { PaymentLinksOverviewComponentProps } from './types';
 import PaymentLinksOverviewContainer from './components/PaymentLinksOverviewContainer';
 
 export class PaymentLinksOverviewElement extends UIElement<PaymentLinksOverviewComponentProps> {

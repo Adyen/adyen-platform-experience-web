@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goToStory } from '../../../utils/utils';
+import { goToStory } from '@integration-components/testing/playwright/utils';
 import { fileURLToPath } from 'url';
 import path from 'path';
 

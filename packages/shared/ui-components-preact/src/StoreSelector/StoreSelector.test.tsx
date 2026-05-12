@@ -4,14 +4,12 @@
 import { render, screen } from '@testing-library/preact';
 import { beforeEach, describe, test, expect, vi } from 'vitest';
 import { StoreSelector } from './StoreSelector';
-import { STORES } from '../../../../mocks/mock-data';
 
-const mockStores = STORES.map(({ storeCode, description }: { storeCode: string; description: string }) => ({
-    id: storeCode,
-    name: storeCode,
-    storeCode,
-    description,
-}));
+const mockStores = [
+    { id: 'NY001', name: 'NY001', storeCode: 'NY001', description: 'Main Store - New York' },
+    { id: 'LN001', name: 'LN001', storeCode: 'LN001', description: 'Main Store - London' },
+    { id: 'AMS001', name: 'AMS001', storeCode: 'AMS001', description: 'Main Store - Amsterdam' },
+];
 
 describe('StoreSelector', () => {
     const mockSetSelectedStoreId = vi.fn();

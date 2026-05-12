@@ -7,7 +7,7 @@ import { ShippingCountryField } from './ShippingCountryField';
 import { ShippingCityField } from './ShippingCityField';
 import { ShippingPostalCodeField } from './ShippingPostalCodeField';
 import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
-import { IPaymentLinkCountry } from '../../../../../../../../types';
+import { IPaymentLinkCountry } from '@integration-components/types';
 
 interface DeliveryAddressSectionProps {
     isSameAddress: boolean;

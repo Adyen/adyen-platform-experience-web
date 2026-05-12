@@ -15,8 +15,9 @@
         "@integration-components/style": "workspace:*",
         "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
-        "@integration-components/ui-primitives-preact": "workspace:*",
-        "@integration-components/utils": "workspace:*"
+        "@integration-components/ui-components-preact": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "classnames": "^2.5.1"
     },
     "peerDependencies": {
         "preact": "catalog:"
@@ -26,6 +27,7 @@
         "@storybook/preact": "10.2.12",
         "dotenv": "^17.2.3",
         "msw": "^2.4.5",
+        "storybook": "10.2.12",
         "vitest": "4.0.10"
     }
 }

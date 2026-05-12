@@ -1,21 +1,22 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkSettings } from '../../src';
 import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import { PaymentLinkDetails } from '../src';
 import { ElementProps } from '@integration-components/testing/storybook-helpers';
 
-export const PaymentLinkSettingsMeta: Meta<ElementProps<typeof PaymentLinkSettings>> = {
+export const PaymentLinkDetailsMeta: Meta<ElementProps<typeof PaymentLinkDetails>> = {
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        onDismiss: enabledDisabledCallbackRadioControls('onDismiss'),
         hideTitle: { type: 'boolean' },
-        storeIds: { type: 'string' },
+        id: { type: 'string' },
     },
     args: {
-        component: PaymentLinkSettings,
+        component: PaymentLinkDetails,
     },
     parameters: {
         controls: {
             sort: 'alpha',
         },
     },
-    decorators: [Story => <div className="compact-component-wrapper">{Story() as JSX.Element}</div>],
+    decorators: [Story => <div className="compact-component-wrapper">{Story()}</div>],
 };

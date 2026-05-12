@@ -8,7 +8,7 @@ import { containerQueries, useResponsiveContainer } from '../../../../../../hook
 import { Divider } from '@integration-components/ui-components-preact/Divider/Divider';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { invisibleFields } from './constants';
-import { useWizardFormContext } from '../../../../../../hooks/form/wizard/WizardFormContext';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { PaymentLinkCreationFormValues } from '../../types';
 import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
 import { useMemo } from 'preact/hooks';

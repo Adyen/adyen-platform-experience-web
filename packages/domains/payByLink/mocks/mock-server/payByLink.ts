@@ -12,8 +12,8 @@ import {
     TransactionsOverviewComponentManageRefunds,
     TransactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
-import { endpoints } from '../../endpoints/endpoints';
-import { IPaymentLinkStatusGroup } from '../../src';
+import { PAY_BY_LINK_ENDPOINTS, CROSS_CUTTING_ENDPOINTS } from '../endpoints';
+import { IPaymentLinkStatusGroup } from '@integration-components/types';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
@@ -27,8 +27,8 @@ import {
     getPaymentLinkItemsByStatusGroup,
     expirePaymentLink,
 } from '../mock-data';
-import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
-import { ErrorTypes } from '../../src/core/Http/utils';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { ErrorTypes } from '@integration-components/core';
 
 const DELAY_TIME = 300;
 
@@ -71,8 +71,7 @@ export const PAY_BY_LINK_ERRORS = {
     ),
 };
 
-const mockEndpoints = endpoints();
-const mockPayByLinkEndpoints = mockEndpoints.payByLink;
+const mockPayByLinkEndpoints = PAY_BY_LINK_ENDPOINTS;
 const networkError = false;
 const defaultPaginationLimit = 10;
 
@@ -102,14 +101,14 @@ export const PayByLinkOverviewMockedResponses = {
         ],
     },
     storeNetworkError: {
-        handlers: [http.get(endpoints().stores, async () => HttpResponse.error())],
+        handlers: [http.get(CROSS_CUTTING_ENDPOINTS.stores, async () => HttpResponse.error())],
     },
     filtersNetworkError: {
         handlers: [http.get(mockPayByLinkEndpoints.filters, async () => HttpResponse.error())],
     },
     storesMisconfiguration: {
         handlers: [
-            http.get(mockEndpoints.stores, async () => {
+            http.get(CROSS_CUTTING_ENDPOINTS.stores, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
             }),
@@ -153,7 +152,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     countryDatasetError: {
         handlers: [
-            http.get(mockEndpoints.datasets.countries, async () => {
+            http.get(CROSS_CUTTING_ENDPOINTS.datasetsCountries, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -196,7 +195,7 @@ export const PaymentLinkDetailsMockedResponses = {
 export const PaymentLinkThemesMockedResponses = {
     themeError: {
         handlers: [
-            http.get(mockEndpoints.payByLink.themes, async () => {
+            http.get(mockPayByLinkEndpoints.themes, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -205,7 +204,7 @@ export const PaymentLinkThemesMockedResponses = {
 
     saveThemesError: {
         handlers: [
-            http.post(mockEndpoints.payByLink.themes, async () => {
+            http.post(mockPayByLinkEndpoints.themes, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -216,7 +215,7 @@ export const PaymentLinkThemesMockedResponses = {
 export const PaymentLinkSettingsMockedResponses = {
     termsAndConditionsError: {
         handlers: [
-            http.get(mockEndpoints.payByLink.settings, async () => {
+            http.get(mockPayByLinkEndpoints.settings, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -225,7 +224,7 @@ export const PaymentLinkSettingsMockedResponses = {
 
     saveSettingsError: {
         handlers: [
-            http.post(mockEndpoints.payByLink.settings, async () => {
+            http.post(mockPayByLinkEndpoints.settings, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -234,7 +233,7 @@ export const PaymentLinkSettingsMockedResponses = {
 
     permissionError: {
         handlers: [
-            http.post(mockEndpoints.setup, async () => {
+            http.post(CROSS_CUTTING_ENDPOINTS.setup, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({
                     endpoints: {
@@ -255,7 +254,7 @@ export const PaymentLinkSettingsMockedResponses = {
 
 export const payByLinkMocks = [
     // GET /stores
-    http.get(mockEndpoints.stores, async ({ request }) => {
+    http.get(CROSS_CUTTING_ENDPOINTS.stores, async ({ request }) => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
@@ -426,7 +425,7 @@ export const payByLinkMocks = [
 
         try {
             expirePaymentLink(params.id as string);
-        } catch (error) {
+        } catch {
             return HttpResponse.json({ error: 'Payment link not found' }, { status: 404 });
         }
 

@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'preact/hooks';
-import { EMPTY_OBJECT } from '../../../../utils';
-import { useFetch } from '../../../../hooks/useFetch';
-import { useConfigContext } from '../../../../core/ConfigContext';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { useFetch } from '@integration-components/hooks-preact';
+import { useConfigContext } from '@integration-components/core/preact';
 import { Dispatch } from 'preact/compat';
 import { StateUpdater } from 'preact/hooks';
 import { PaymentLinkSettingsPayload } from '../components/PaymentLinkSettingsContainer/context/types';
-import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 
 export const useStoreTermsAndConditions = (
     selectedStore: string | undefined,

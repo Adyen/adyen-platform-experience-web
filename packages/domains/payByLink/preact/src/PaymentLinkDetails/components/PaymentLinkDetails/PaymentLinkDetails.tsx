@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import useCoreContext from '../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useConfigContext } from '../../../../../core/ConfigContext';

@@ -1,5 +1,5 @@
 import { LogoTypes } from '../../types';
-import { TranslationKey } from '../../../../../../../translations';
+import { TranslationKey } from '@integration-components/core';
 
 export const THEME_FORM_UPLOAD_DOCUMENT_MAX_SIZE = 51200; // 50KB
 

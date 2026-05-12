@@ -1,4 +1,4 @@
-import { UIElementProps } from '../../types';
+import { UIElementProps } from '@integration-components/types';
 
 export interface PaymentLinkSettingsProps extends UIElementProps {
     storeIds?: string[] | string;

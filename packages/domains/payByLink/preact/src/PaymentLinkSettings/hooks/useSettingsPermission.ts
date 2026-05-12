@@ -1,4 +1,4 @@
-import { useConfigContext } from '../../../../core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 
 export const useSettingsPermission = () => {
     const { savePayByLinkSettings, getPayByLinkSettings, getPayByLinkTheme, updatePayByLinkTheme } = useConfigContext().endpoints;

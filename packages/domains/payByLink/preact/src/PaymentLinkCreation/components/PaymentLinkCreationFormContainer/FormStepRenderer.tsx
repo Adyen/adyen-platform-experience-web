@@ -4,7 +4,7 @@ import { PaymentDetailsForm } from '../Form/PaymentDetailsForm/PaymentDetailsFor
 import { FormSummary } from '../Form/Summary/FormSummary';
 import { StoreForm } from '../Form/StoreForm/StoreForm';
 import { Dispatch, SetStateAction } from 'preact/compat';
-import { IPaymentLinkSettings, IPaymentLinkStore, IPaymentLinkConfiguration, IPaymentLinkCountry } from '../../../../../types/api/models/payByLink';
+import { IPaymentLinkSettings, IPaymentLinkStore, IPaymentLinkConfiguration, IPaymentLinkCountry } from '@integration-components/types';
 import { StateUpdater } from 'preact/hooks';
 import { StoreIds } from '../../../PaymentLinksOverview/types';
 

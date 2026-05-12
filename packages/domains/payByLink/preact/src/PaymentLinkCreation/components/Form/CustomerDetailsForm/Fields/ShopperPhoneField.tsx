@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
-import { Controller } from '../../../../../../../hooks/form';
+import { Controller } from '@integration-components/hooks-preact/form';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';

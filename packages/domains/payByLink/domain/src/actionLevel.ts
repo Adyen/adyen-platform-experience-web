@@ -1,4 +1,4 @@
-import { parseDate } from '../../../utils';
+import { parseDate } from '@integration-components/utils';
 
 export const ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS = 10;
 

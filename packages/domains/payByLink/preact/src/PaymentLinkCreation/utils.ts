@@ -1,8 +1,8 @@
-import Localization, { TranslationKey } from '../../../core/Localization';
-import { FieldValues } from '../../../hooks/form/types';
-import { IPaymentLinkConfiguration, IPaymentLinkConfigurationElement } from '../../../types/api/models/payByLink';
+import { Localization, TranslationKey } from '@integration-components/core';
+import { FieldValues } from '@integration-components/hooks-preact/form/types';
+import { IPaymentLinkConfiguration, IPaymentLinkConfigurationElement } from '@integration-components/types';
 import { PaymentLinkCreationFormValues } from './components/types';
-import { PaymentLinkFieldsVisibilityConfig } from '../../types';
+import { PaymentLinkFieldsVisibilityConfig } from './types';
 
 interface FormFieldConfig {
     fieldName: FieldValues<PaymentLinkCreationFormValues>;

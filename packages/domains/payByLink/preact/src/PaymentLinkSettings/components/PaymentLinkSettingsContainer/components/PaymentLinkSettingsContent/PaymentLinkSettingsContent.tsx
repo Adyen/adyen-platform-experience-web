@@ -9,7 +9,7 @@ import usePaymentLinkSettingsContext from '../../context/context';
 import PaymentLinkSettingsContentLoading from '../PaymentLinkSettingsContentLoading/PaymentLinkSettingsContentLoading';
 import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';
 import SettingsError from '../SettingsError/SettingsError';
-import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useMemo } from 'preact/hooks';
 import { PERMISSION_ERROR } from '../../utils/getSettingsErrorMessage';
 

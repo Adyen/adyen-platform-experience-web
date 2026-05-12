@@ -1,5 +1,5 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { CurrencyInput } from '@integration-components/ui-components-preact/FormFields/CurrencyInput/CurrencyInput';

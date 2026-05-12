@@ -1,4 +1,4 @@
-import { IPaymentLinkItem } from '../../../../types';
+import { IPaymentLinkItem } from '@integration-components/types';
 import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinksTable';
 import { StringWithAutocompleteOptions } from '../../../../utils/types';
 import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';

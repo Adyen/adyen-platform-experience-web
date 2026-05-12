@@ -1,4 +1,4 @@
-import { UIElementProps } from '../../types';
+import { UIElementProps } from '@integration-components/types';
 
 export interface PaymentLinkDetailsProps extends UIElementProps {
     id: string;

@@ -6,7 +6,8 @@ import {
     CONTENT_CONTAINER_CLASS_NAME,
     CONTENT_CONTAINER_MOBILE_CLASS_NAME,
 } from './constants';
-import { type ExternalUIComponentProps, PaymentLinkSettingsComponentProps } from '../../../../types';
+import { type ExternalUIComponentProps } from '@integration-components/types';
+import { PaymentLinkSettingsComponentProps } from '../../types';
 import './PaymentLinkSettingsContainer.scss';
 import { StoreSelector } from '../../../../internal/StoreSelector';
 import { Header } from '@integration-components/ui-components-preact/Header';
@@ -15,11 +16,11 @@ import PaymentLinkSettingsContent from './components/PaymentLinkSettingsContent/
 import SettingsActionButtons from './components/SettingsActionButtons/SettingsActionButtons';
 import { MenuItemType } from './context/types';
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import cx from 'classnames';
 import LoadingSkeleton from './components/LoadingSkeleton/LoadingSkeleton';
 import { useMemo } from 'preact/hooks';
-import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 import SettingsError from './components/SettingsError/SettingsError';
 import { ACCOUNT_MISCONFIGURATION, WRONG_STORE_IDS } from './utils/getSettingsErrorMessage';
 

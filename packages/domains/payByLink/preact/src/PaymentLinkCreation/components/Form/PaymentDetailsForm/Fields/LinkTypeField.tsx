@@ -1,5 +1,5 @@
 import { PaymentLinkCreationFormValues } from '../../../types';
-import useCoreContext from '../../../../../../../core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { useMemo } from 'preact/hooks';
 import { FunctionalComponent } from 'preact';
 import { IPaymentLinkConfiguration, IPaymentLinkType } from '../../../../../../../types/api/models/payByLink';

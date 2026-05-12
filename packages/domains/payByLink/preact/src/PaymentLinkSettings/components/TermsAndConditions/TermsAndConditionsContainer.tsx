@@ -5,7 +5,7 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { TermsAndConditions } from './TermsAndConditions';
 import usePaymentLinkSettingsContext from '../PaymentLinkSettingsContainer/context/context';
 import { useState, useEffect } from 'preact/hooks';
-import { IPaymentLinkTermsAndConditions } from '../../../../../types';
+import { IPaymentLinkTermsAndConditions } from '@integration-components/types';
 import cx from 'classnames';
 import { isTermsAndConditionsData } from '../PaymentLinkThemeContainer/types';
 import SettingsError from '../PaymentLinkSettingsContainer/components/SettingsError/SettingsError';

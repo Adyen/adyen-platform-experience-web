@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkCreation } from '../../src';
+import { PaymentLinkCreation } from '../src';
 import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { ElementProps } from '@integration-components/testing/storybook-helpers';
 

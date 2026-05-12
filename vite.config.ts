@@ -103,6 +103,11 @@ export default defineConfig(({ mode }) => {
             port: app.port,
             proxy: realApiProxies(api, mode),
         },
+        resolve: {
+            alias: {
+                '@integration-components/sdk-internal': resolve(__dirname, 'src'),
+            },
+        },
         test: {
             root: resolve(__dirname, '.'),
             include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)', 'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],

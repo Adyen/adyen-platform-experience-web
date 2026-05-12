@@ -1,5 +1,5 @@
-import { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails, IShopperInformation } from '../../../src';
-import getDate from '../utils/getDate';
+import { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails, IShopperInformation } from '@integration-components/types';
+import { getDate } from '@integration-components/testing/fixtures';
 import { redactShopperInformation } from './utils';
 
 export interface IPaymentLinksListResponse {
