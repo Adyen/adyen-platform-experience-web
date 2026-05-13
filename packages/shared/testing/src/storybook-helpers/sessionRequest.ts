@@ -1,9 +1,21 @@
-const getMySessionToken = async session => {
-    // Here the merchant will call its own backend and their backend will call our backend
-    // at the end this method should return a data formed as { id: string, token:string }
+interface SessionOptions {
+    accountHolderId?: string;
+    roles?: string[];
+}
+
+interface SessionResponse {
+    id: string;
+    token: string;
+}
+
+/**
+ * Requests a session token from the local dev backend (via the proxy set up in .storybook/main.ts).
+ * Mirrors the Preact Container helper; used by the Vue storybook Container to bootstrap Core.
+ */
+export const getMySessionToken = async (session?: SessionOptions): Promise<SessionResponse> => {
     const url = process.env.VITE_APP_URL;
     const allowOrigin = url?.endsWith('/') ? url.slice(0, -1) : url;
-    const normalizedUrl = url?.endsWith('/') ? url : `${url ?? ''}/`;
+    const normalizedUrl = url?.endsWith('/') ? url : `${url}/`;
     const sessionUrl = new URL(`${normalizedUrl}api/authe/api/v1/sessions`);
 
     const response = await fetch(sessionUrl, {

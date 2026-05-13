@@ -1,17 +1,15 @@
-import vue from '@vitejs/plugin-vue';
+import type { StorybookConfig } from '@storybook/vue3-vite';
 import { mergeConfig } from 'vite';
 import { resolve } from 'node:path';
+import vue from '@vitejs/plugin-vue';
 import { getEnvironment } from '../../../../../../envs/getEnvs.ts';
-import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
 import { realApiProxies } from '../../../../../../endpoints/realApiProxies.js';
-import type { StorybookConfig } from '@storybook/vue3-vite';
+import { getBaseEnvDefines } from '../../../../../../config/defines/base-env.ts';
 
 const root = '../../../../../..';
 const rootDir = resolve(import.meta.dirname, root);
 
 const config: StorybookConfig = {
-    // Framework-scoped under {domain}/vue
-    // The framework split is at the top level of each domain.
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
     staticDirs: ['../../../static'],
     framework: {
@@ -24,7 +22,19 @@ const config: StorybookConfig = {
 
         return mergeConfig(config, {
             define: getBaseEnvDefines(mode),
-            plugins: [vue()],
+            // Force @vitejs/plugin-vue into the `pre` phase so SFCs are
+            // compiled to JS before Storybook's vue-component-meta docgen
+            // plugin runs. The docgen plugin appends metadata to whatever it
+            // receives; if it runs on the raw SFC first, plugin-vue then re-
+            // parses a corrupted source and fails with "Element is missing
+            // end tag".
+            plugins: [
+                ...(() => {
+                    const result = vue();
+                    const list = Array.isArray(result) ? result : [result];
+                    return list.map(p => ({ ...(p as any), enforce: 'pre' as const }));
+                })(),
+            ],
             css: {
                 preprocessorOptions: {
                     scss: {
