@@ -26,7 +26,6 @@
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@integration-components/tools-storybook": "workspace:*",
         "@playwright/test": "^1.56.0",
         "@storybook/preact": "10.2.12",
         "@storybook/vue3": "10.2.12",

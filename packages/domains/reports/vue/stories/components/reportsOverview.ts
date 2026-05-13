@@ -1,21 +1,11 @@
 import type { Meta } from '@storybook/vue3';
 import ReportsOverview from '../../src/ReportsOverview/ReportsOverviewWrapper.vue';
 
-import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
-import { Container } from '@integration-components/tools-storybook';
-import type { ReportsOverviewExternalProps } from '../../src/ReportsOverview/types';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export type ReportsOverviewStoryArgs = Omit<ReportsOverviewExternalProps, 'core'> & {
-    locale?: string;
-    session?: { roles: string[]; accountHolderId?: string };
-    mockedApi?: boolean;
-};
-
-export const ReportsOverviewComponent = ReportsOverview;
-
-export const ReportsOverviewMeta: Meta<ReportsOverviewStoryArgs> = {
+export const ReportsOverviewMeta: Meta<ElementProps<typeof ReportsOverview>> = {
     title: 'Components/Reports/Reports Overview',
-    component: Container,
+    component: ReportsOverview,
     argTypes: {
         onFiltersChanged: enabledDisabledCallbackRadioControls('onFiltersChanged', ['Passed', 'Not Passed']),
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
@@ -28,6 +18,7 @@ export const ReportsOverviewMeta: Meta<ReportsOverviewStoryArgs> = {
         },
     },
     args: {
+        component: ReportsOverview,
         allowLimitSelection: true,
         locale: 'en-US',
     },
@@ -36,12 +27,4 @@ export const ReportsOverviewMeta: Meta<ReportsOverviewStoryArgs> = {
             sort: 'alpha',
         },
     },
-    render: (args: any) => ({
-        components: { Container },
-        setup() {
-            const { locale, session, mockedApi, ...componentProps } = args;
-            return { ReportsOverview, locale, session, mockedApi, componentProps };
-        },
-        template: `<Container :component="ReportsOverview" :component-props="componentProps" :locale="locale" :session="session" :mocked-api="mockedApi" />`,
-    }),
 };
