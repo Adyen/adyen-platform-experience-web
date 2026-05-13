@@ -26,7 +26,7 @@ import {
     getPaymentLinkDetails,
     getPaymentLinkItemsByStatusGroup,
     expirePaymentLink,
-} from '../mock-data';
+} from '../mock-data/payByLink';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { ErrorTypes } from '@integration-components/core';
 

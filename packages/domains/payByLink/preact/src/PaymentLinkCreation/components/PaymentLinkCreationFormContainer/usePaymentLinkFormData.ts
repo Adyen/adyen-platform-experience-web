@@ -8,7 +8,7 @@ import { useCoreContext } from '@integration-components/core/preact';
 import { TranslationKey } from '@integration-components/core';
 import { useWizardForm } from '@integration-components/hooks-preact/form/wizard/useWizardForm';
 import { PaymentLinkCreationFormValues } from '../types';
-import type { DeepPartial } from '../../types';
+import type { DeepPartial } from '@integration-components/types';
 import { PaymentLinkFieldsVisibilityConfig } from '../../types';
 import { StoreIds } from '../../../PaymentLinksOverview/types';
 

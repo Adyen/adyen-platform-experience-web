@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import termsRequirementsConfig from '../../../../config/termsRequirementsConfig.json';
-import enUSTranslations from '@integration-components/sdk-internal/assets/translations/en-US.json';
+import enUSTranslations from '../../../../../../../../../src/assets/translations/en-US.json';
 
 describe('termsRequirementsConfig', () => {
     const translationKeys = Object.keys(enUSTranslations);

@@ -1,7 +1,4 @@
-import { UIElementProps } from '@integration-components/types';
-
-export type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
-import { IPaymentLinkCreateRequest } from '@integration-components/types';
+import { UIElementProps, DeepPartial, IPaymentLinkCreateRequest } from '@integration-components/types';
 import { FieldValues } from '@integration-components/hooks-preact/form/types';
 
 export type LinkCreationFormStep = 'store' | 'payment' | 'customer' | 'summary';

@@ -122,11 +122,7 @@ export type {
     DisputeStatusGroup,
 } from '@integration-components/disputes/publish';
 
-export type DeepPartial<T> = T extends object
-    ? {
-          [K in keyof T]?: DeepPartial<T[K]>;
-      }
-    : T;
+export type { DeepPartial } from '@integration-components/types';
 
 export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
