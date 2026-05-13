@@ -1,5 +1,5 @@
 import { Schema } from '../utils';
-import { components } from '../resources/DisputesResource';
+import { components } from '../resources/DisputesResourceV1';
 
 export type IDispute = Schema<components, 'Dispute'>;
 export type IDisputeDetail = Schema<components, 'DisputeDetailResponse'>;
