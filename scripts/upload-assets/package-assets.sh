@@ -60,6 +60,8 @@ cp -r "$CONFIG_DIR" "$STAGING_DIR/config"
 echo "Copying disputes domain config to staging area..."
 mkdir -p "$STAGING_DIR/config/disputes"
 cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/disputes/"
+# Also copy to root config dir for backwards compatibility with older SDK versions
+cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
 
 echo "Creating archive: $ARCHIVE_NAME"
 
