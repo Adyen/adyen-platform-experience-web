@@ -11,7 +11,7 @@
         "./element/constants": "./src/element/constants.ts",
         "./element/getIntersectionObserver": "./src/element/getIntersectionObserver.ts",
         "./element/useClickOutside": "./src/element/useClickOutside.ts",
-        "./element/useDetachedRender": "./src/element/useDetachedRender.tsx",
+        "./element/useDetachedRender": "./src/element/useDetachedRender.ts",
         "./element/useFocusCursor": "./src/element/useFocusCursor.ts",
         "./element/useFocusTrap": "./src/element/useFocusTrap.ts",
         "./element/usePopoverPositioner": "./src/element/usePopoverPositioner.ts",
