@@ -5,7 +5,7 @@ import componentAvailabilityErrors from '../session/utils/sessionAwareComponentA
 import { createConfigController } from '../setupConfig';
 import type { ConfigProviderProps } from '../ConfigContext.types';
 import { asyncNoop, EMPTY_OBJECT, isUndefined, noop } from '@integration-components/utils';
-import Localization from '../Localization';
+import { ErrorMessageDisplay } from './components/ErrorMessageDisplay/ErrorMessageDisplay';
 
 const ConfigContext = createContext<AuthSession['context'] & Pick<AuthSession, 'http' | 'refresh'>>({
     endpoints: EMPTY_OBJECT,
@@ -22,7 +22,6 @@ export const ConfigProvider = ({ children, session, type }: ConfigProviderProps)
     const [, setStateVersion] = useState(0);
     const controller = useMemo(() => createConfigController(session, type), [session, type]);
     const { contextValue, hasPermission } = controller.getSnapshot();
-    const i18n = useMemo(() => new Localization().i18n, []);
 
     useEffect(() => {
         return controller.connect(() => setStateVersion(count => count + 1));
@@ -34,14 +33,12 @@ export const ConfigProvider = ({ children, session, type }: ConfigProviderProps)
                 (hasPermission ? (
                     toChildArray(children)
                 ) : (
-                    <div role="alert">
-                        <strong>{i18n.get('common.errors.somethingWentWrong')}</strong>
-                        <p>
-                            {i18n.get(componentAvailabilityErrors(type))}
-                            <br />
-                            {i18n.get('common.errors.contactSupport')}
-                        </p>
-                    </div>
+                    <ErrorMessageDisplay
+                        withImage
+                        centered
+                        title={'common.errors.somethingWentWrong'}
+                        message={[componentAvailabilityErrors(type), 'common.errors.contactSupport']}
+                    />
                 ))}
         </ConfigContext.Provider>
     );
