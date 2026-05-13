@@ -1,0 +1,65 @@
+{
+    "name": "@integration-components/tools-storybook",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "packages/tools/storybook/src",
+    "tags": ["type:tool", "scope:storybook"],
+    "targets": {
+        "typecheck": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "node scripts/typecheck.js",
+                "cwd": "packages/tools/storybook"
+            }
+        },
+        "lint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/{.storybook,shared}/**/*.{ts,tsx,vue}' 'scripts/**/*.js' --quiet",
+                "cwd": "packages/tools/storybook"
+            }
+        },
+        "stylelint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "stylelint 'src/{.storybook,shared}/**/*.scss' --fix",
+                "cwd": "packages/tools/storybook"
+            }
+        },
+        "storybook:preact": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:preact"
+            }
+        },
+        "storybook:vue": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:vue"
+            }
+        },
+        "storybook:build:preact": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:build:preact"
+            },
+            "outputs": ["{projectRoot}/storybook-static"],
+            "cache": true
+        },
+        "storybook:build:vue": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:build:vue"
+            },
+            "outputs": ["{projectRoot}/storybook-static"],
+            "cache": true
+        },
+        "storybook:static": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:static"
+            },
+            "outputs": ["{projectRoot}/storybook-static"]
+        }
+    }
+}

@@ -4,5 +4,6 @@
         "noEmit": true,
         "types": ["node"]
     },
-    "include": ["src/**/*.ts"]
+    "files": ["../../../src/declarations/shims-vue.d.ts"],
+    "include": ["src/**/*.ts", "src/**/*.vue"]
 }

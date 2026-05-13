@@ -1,5 +1,5 @@
 import { ExternalComponentType } from '@integration-components/types';
-import { components as SetupResource } from '@integration-components/types/api/resources/SetupResource';
+import { components } from '@integration-components/types/api/resources/SetupResourceV1';
 import { AuthSession } from './session/AuthSession';
 import type { HttpOptions } from './Http/types';
 import { EndpointData, EndpointName, EndpointsOperations, SetupEndpoint } from '@integration-components/types/api/endpoints';
@@ -70,7 +70,7 @@ export interface SessionObject {
 
 export type SessionRequest = (signal: AbortSignal) => Promised<SessionObject>;
 
-export interface SetupResponse extends Omit<SetupResource['schemas']['SetupResponse'], 'endpoints' | 'endpointTypesExposure'> {
+export interface SetupResponse extends Omit<components['schemas']['SetupResponse'], 'endpoints' | 'endpointTypesExposure'> {
     endpoints: SetupEndpoint;
 }
 

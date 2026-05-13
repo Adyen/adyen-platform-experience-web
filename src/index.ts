@@ -1,5 +1,6 @@
 import { Core, CoreOptions, TranslationSourceRecord } from './core';
 import './style/index.scss';
+import './global';
 
 export * from './core';
 export * from './components';

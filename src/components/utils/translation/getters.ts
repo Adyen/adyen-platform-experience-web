@@ -5,16 +5,6 @@ import { DISPUTE_REASON_CATEGORIES, DISPUTE_STATUSES, DISPUTE_TYPES } from '../d
 
 export { getReportType } from '@integration-components/reports/domain';
 export { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
-export {
-    getTransactionAmountAdjustmentType,
-    getTransactionAmountAdjustmentTypeInformation,
-    getTransactionCategory,
-    getTransactionCategoryDescription,
-    getTransactionStatus,
-    getTransactionTimelineTxStatus,
-    getTransactionTimelineTxType,
-    getTransactionRefundReason,
-} from '@integration-components/transactions/domain';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
 
