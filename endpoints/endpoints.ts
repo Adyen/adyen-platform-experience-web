@@ -1,4 +1,4 @@
-import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL as baseUrl } from '@integration-components/testing/msw';
+import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL as baseUrl, SETUP_ENDPOINT } from '@integration-components/testing/msw';
 
 const datasetBaseUrl = '/datasets';
 
@@ -9,7 +9,7 @@ export const endpoints = () =>
         payouts: `${baseUrl}/payouts`,
         payout: `${baseUrl}/payouts/breakdown`,
         sessions: '/api/authe/api/v1/sessions',
-        setup: `${baseUrl}/setup`,
+        setup: SETUP_ENDPOINT,
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
         stores: `${baseUrl}/stores`,

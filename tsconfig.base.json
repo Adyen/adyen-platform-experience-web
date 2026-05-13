@@ -25,6 +25,7 @@
             "@integration-components/utils": ["packages/shared/utils/src/index.ts"],
             "@integration-components/utils/*": ["packages/shared/utils/src/*"],
             "@integration-components/core": ["packages/shared/core/src/index.ts"],
+            "@integration-components/core/vue": ["packages/shared/core/src/vue/index.ts"],
             "@integration-components/core/*": ["packages/shared/core/src/*"],
             "@integration-components/core/preact": ["packages/shared/core/src/preact/index.ts"],
             "@integration-components/sdk-internal": ["packages/shared/lib/src/index.ts"],
@@ -33,6 +34,8 @@
             "@integration-components/hooks-preact/*": ["packages/shared/hooks-preact/src/*"],
             "@integration-components/ui-components-preact": ["packages/shared/ui-components-preact/src/index.ts"],
             "@integration-components/ui-components-preact/*": ["packages/shared/ui-components-preact/src/*"],
+            "@integration-components/composables-vue": ["packages/shared/composables-vue/src/index.ts"],
+            "@integration-components/composables-vue/*": ["packages/shared/composables-vue/src/*"],
             "@integration-components/testing": ["packages/shared/testing/src/index.ts"],
             "@integration-components/testing/*": ["packages/shared/testing/src/*"],
             "@integration-components/reports/publish": ["packages/domains/reports/publish/src/index.ts"],
@@ -50,6 +53,7 @@
             "@integration-components/payByLink/publish": ["packages/domains/payByLink/publish/src/index.ts"],
             "@integration-components/payByLink/preact": ["packages/domains/payByLink/preact/src/index.ts"],
             "@integration-components/payByLink/domain": ["packages/domains/payByLink/domain/src/index.ts"]
-        }
+        },
+        "types": ["node"]
     }
 }

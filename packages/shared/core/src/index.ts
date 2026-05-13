@@ -9,6 +9,7 @@ export type { HttpOptions, ErrorLevel, HttpMethod, AdyenErrorResponse } from './
 export { ErrorTypes, getErrorType, getApiVersion, getRequestObject, handleFetchError, isAdyenErrorResponse, parseSearchParams } from './Http/utils';
 export { API_VERSION } from './Http/constants';
 
+export { default as CURRENCY_DECIMALS } from './Localization/constants/currency-decimals';
 export { default as Localization } from './Localization';
 export type {
     TranslationSourceRecord,
@@ -69,4 +70,7 @@ export {
     SERVER_SIDE_INITIALIZATION_WARNING,
 } from './runtime';
 
-export type { CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
+export type { ResolvedEnvironment, CoreOptions, DevEnvironment, onErrorHandler, AnalyticsConfig } from './types';
+
+export { Core } from './Core';
+export type { CdnFetcher, ManagedElement } from './Core';

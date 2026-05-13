@@ -61,7 +61,7 @@ export const enum InteractionKeyCode {
 }
 
 export interface BaseElementProps extends _BaseElementProps {
-    core: Core<any, any>;
+    core: Core<any>;
 }
 
 export interface IUIElement {

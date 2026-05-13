@@ -1,4 +1,4 @@
-import { components } from '../resources/PayByLinkResource';
+import { components } from '../resources/PayByLinkResourceV1';
 import { Schema } from '../utils';
 
 export type IPaymentLinkActivity = Schema<components, 'PaymentLinkActivity'>;

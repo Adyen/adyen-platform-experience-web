@@ -3,12 +3,13 @@
     "include": [],
     "files": [
         "src/index.ts",
+        "src/declarations/global.d.ts",
         "src/declarations/scss.d.ts",
         "src/declarations/vite-env.d.ts",
         "src/declarations/svgr.d.ts"
     ],
     "compilerOptions": {
-        "rootDir": "src",
+        "rootDir": ".",
         "noEmit": false,
         "emitDeclarationOnly": true
     }
