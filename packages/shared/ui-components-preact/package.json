@@ -248,7 +248,11 @@
         "./BaseButton": "./src/BaseButton/index.ts",
         "./BaseButton/types": "./src/BaseButton/types.ts",
         "./BaseButton/constants": "./src/BaseButton/constants.ts",
-        "./BaseButton/BaseButton": "./src/BaseButton/BaseButton.tsx"
+        "./BaseButton/BaseButton": "./src/BaseButton/BaseButton.tsx",
+        "./PaymentMethodCell": "./src/PaymentMethodCell/index.ts",
+        "./PaymentMethodCell/constants": "./src/PaymentMethodCell/constants.ts",
+        "./PaymentMethodCell/PaymentMethodCell": "./src/PaymentMethodCell/PaymentMethodCell.tsx",
+        "./PaymentMethodCell/parsePaymentMethodType": "./src/PaymentMethodCell/parsePaymentMethodType.ts"
     },
     "dependencies": {
         "@integration-components/core": "workspace:*",
