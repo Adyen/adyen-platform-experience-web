@@ -3,8 +3,6 @@ import { endpoints } from '../../endpoints/endpoints';
 import { delay } from '@integration-components/testing/msw';
 import { setupBasicResponse } from '@integration-components/testing/fixtures';
 
-export { setupBasicResponse };
-
 const networkError = false;
 const path = endpoints().setup;
 

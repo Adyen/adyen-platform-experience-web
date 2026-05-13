@@ -7,7 +7,7 @@ import { getTransactionRefundReason } from '@integration-components/transactions
 import { isCustomDataObject } from '../../../../../../../../src/components/internal/DataGrid/components/TableCells';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../constants';
-import normalizeCustomFields from '../../../../../../../../src/components/utils/customData/normalizeCustomFields';
+import { normalizeCustomFields } from '@integration-components/utils';
 import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
 import StructuredList from '../../../../../../../../src/components/internal/StructuredList';

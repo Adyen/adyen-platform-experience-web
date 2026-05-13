@@ -2,7 +2,7 @@ import { boolOrFalse } from '../../../../../../../../src/utils';
 import { CustomColumn } from '../../../../../../../../src/components/types';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
 import DataOverviewDetailsSkeleton from '../../../../../../../../src/components/internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
-import normalizeCustomFields from '../../../../../../../../src/components/utils/customData/normalizeCustomFields';
+import { normalizeCustomFields } from '@integration-components/utils';
 import TransactionDataContent from './TransactionDataContent';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';
