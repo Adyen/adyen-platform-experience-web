@@ -1,5 +1,5 @@
 import { Schema } from '../utils';
-import { components } from '../resources/PayoutsResource';
+import { components } from '../resources/PayoutsResourceV1';
 
 export type IPayout = Schema<components, 'PayoutDTO'>;
 

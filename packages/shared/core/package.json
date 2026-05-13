@@ -14,6 +14,7 @@
         "./Localization/Localization": "./src/Localization/Localization.ts",
         "./Localization/amount/amount-util": "./src/Localization/amount/amount-util.ts",
         "./Localization/constants/localization": "./src/Localization/constants/localization.ts",
+        "./vue": "./src/vue/index.ts",
         "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
@@ -26,6 +27,16 @@
         "vitest": "*"
     },
     "peerDependencies": {
-        "preact": "^10.28.2"
+        "preact": "^10.28.2",
+        "vue": "^3.5.13",
+        "vue-i18n": "^11"
+    },
+    "peerDependenciesMeta": {
+        "vue": {
+            "optional": true
+        },
+        "vue-i18n": {
+            "optional": true
+        }
     }
 }

@@ -8,7 +8,7 @@ import {
     ITransactionRefundStatus,
     ITransactionTotal,
 } from '@integration-components/types';
-import { BALANCE_ACCOUNTS_SINGLE, BALANCES } from '@integration-components/testing/fixtures';
+import { BALANCE_ACCOUNTS_SINGLE, BALANCES, setupBasicResponse } from '@integration-components/testing/fixtures';
 import {
     BASE_TRANSACTION,
     COMPLETE_TRANSACTION_DETAILS,
@@ -30,7 +30,6 @@ import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
 import { parsePaymentMethodType } from '@integration-components/ui-components-preact/PaymentMethodCell/parsePaymentMethodType';
 import { compareDates, computeHash, delay, getPaginationLinks } from '@integration-components/testing/msw';
 import { clamp, getMappedValue } from '@integration-components/utils';
-import { setupBasicResponse } from '../../../../../mocks/mock-server/setup';
 
 type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
 

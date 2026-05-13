@@ -1,0 +1,41 @@
+{
+    "name": "@integration-components/tools-storybook",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "storybook:preact": "node scripts/dev.js src/.storybook/preact",
+        "storybook:vue": "node scripts/dev.js src/.storybook/vue",
+        "storybook:build:preact": "cross-env USE_TEST_CDN=true storybook build --config-dir src/.storybook/preact",
+        "storybook:build:vue": "cross-env USE_TEST_CDN=true storybook build --config-dir src/.storybook/vue",
+        "storybook:static": "cross-env USE_CDN=false TEST_ENV=1 storybook build --config-dir src/.storybook/preact && vite preview --outDir storybook-static"
+    },
+    "dependencies": {
+        "@integration-components/core": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "vue": "^3.5.13",
+        "vue-i18n": "^11"
+    },
+    "devDependencies": {
+        "@preact/preset-vite": "^2.10.2",
+        "@storybook/preact": "10.2.12",
+        "@storybook/preact-vite": "10.2.12",
+        "@storybook/vue3": "10.2.12",
+        "@storybook/vue3-vite": "10.2.12",
+        "@vitejs/plugin-vue": "^6.0.5",
+        "concurrently": "^7.0.0",
+        "cross-env": "^7.0.3",
+        "dotenv": "^17.2.3",
+        "msw": "^2.4.5",
+        "msw-storybook-addon": "^2.0.2",
+        "storybook": "10.2.12",
+        "vite-plugin-svgr": "^4.5.0"
+    },
+    "msw": {
+        "workerDirectory": [
+            "static"
+        ]
+    }
+}
