@@ -28,10 +28,10 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 | Package                                 | Status  | Tags                                 |
 | --------------------------------------- | ------- | ------------------------------------ |
 | `@integration-components/reports`       | current | `type:domain`, `scope:reports`       |
-| `@integration-components/payouts`       | planned | `type:domain`, `scope:payouts`       |
+| `@integration-components/payouts`       | current | `type:domain`, `scope:payouts`       |
+| `@integration-components/transactions`  | current | `type:domain`, `scope:transactions`  |
 | `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
 | `@integration-components/disputes`      | planned | `type:domain`, `scope:disputes`      |
-| `@integration-components/transactions`  | planned | `type:domain`, `scope:transactions`  |
 | `@integration-components/capital`       | planned | `type:domain`, `scope:capital`       |
 
 ### `type:publish`
@@ -65,13 +65,14 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
 
-Payouts inherits the same `src/components/internal/*` exception and additionally has one Preact-coupled utility deep-import:
+Payouts inherits the same `src/components/internal/*` exception and additionally has one Preact-coupled utility deep-import. Transactions inherits both exceptions and additionally has one Preact-only helper deep-import:
 
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx` | Cannot move to `@integration-components/utils` because it returns JSX and depends on the `CopyText` UI primitive (still in root `src/components/internal/CopyText/`). Will migrate alongside `CopyText` when the shared Preact UI primitives package is bootstrapped. |
+| `src/utils/preact/fixedForwardRef`                | `packages/domains/transactions/preact/src/TransactionsOverview/components/TransactionsExport/TransactionsExport.tsx`, `packages/domains/transactions/preact/src/TransactionsOverview/components/SummaryItem/SummaryItemLabel.tsx` | Preact-specific HoC with no shared home today (`@integration-components/utils` is framework-agnostic and `@integration-components/ui-primitives-preact` has not been bootstrapped). Will migrate alongside the shared Preact UI primitives package. |
 
-Do not introduce new exceptions of this kind in subsequent domains. Either reuse this entry (if the same import is already covered) or promote the dependency to a shared package before extracting.
+Do not introduce new exceptions of this kind in subsequent domains. Either reuse these entries (if the same import is already covered) or promote the dependency to a shared package before extracting.
 
 ### MSW endpoint ownership
 

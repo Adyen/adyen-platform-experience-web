@@ -6,8 +6,15 @@ import {
     TimeRangeOptions,
     UseTimeRangeSelectionConfig,
 } from '../../../../src/components/internal/DatePicker/components/TimeRangeSelector';
-import { DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS } from '../../../../src/components/external/TransactionsOverview/components/MultiSelectionFilter';
 import { FilterParam } from '../../../../src/components/types';
+
+// Default multi-selection filter parameters for the transactions overview.
+// Inlined here to keep `type:shared` packages from depending on `type:domain` packages.
+const DEFAULT_TRANSACTIONS_OVERVIEW_MULTI_SELECTION_FILTER_PARAMS = Object.freeze({
+    [FilterParam.CURRENCIES]: '',
+    [FilterParam.CATEGORIES]: '',
+    [FilterParam.STATUSES]: '',
+});
 
 const getDefaultFilterParams = (
     type: 'transactions' | 'payouts' | 'reports' | 'disputes' | 'paymentLinks',

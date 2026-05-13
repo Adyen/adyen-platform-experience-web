@@ -2,41 +2,11 @@ import { createDynamicTranslationFactory, createKeyFactoryFromConfig } from '@in
 import type { KeyFactoryFunction, TranslationFallbackFunction } from '@integration-components/core';
 import { IDisputeReasonCategory, IDisputeStatus, IDisputeType } from '../../../types/api/models/disputes';
 import { DISPUTE_REASON_CATEGORIES, DISPUTE_STATUSES, DISPUTE_TYPES } from '../disputes/constants';
-import { REFUND_REASONS_KEYS } from '../../external/TransactionDetails/constants';
-import { RefundReason } from '../../external/TransactionDetails/types';
 
 export { getReportType } from '@integration-components/reports/domain';
 export { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 
 const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
-
-const txAmountAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.summary.adjustments.types.' });
-export const getTransactionAmountAdjustmentType = createDynamicTranslationFactory(txAmountAdjustmentTypeKeyFactory, originalValueFallback);
-
-const txAmountAdjustmentInformationKeyFactory = createKeyFactoryFromConfig({
-    prefix: 'transactions.details.summary.adjustments.types.',
-    suffix: '.information',
-});
-export const getTransactionAmountAdjustmentTypeInformation = createDynamicTranslationFactory(txAmountAdjustmentInformationKeyFactory);
-
-const txCategoryKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.' });
-export const getTransactionCategory = createDynamicTranslationFactory(txCategoryKeyFactory, originalValueFallback);
-
-const txCategoryDescriptionKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.types.', suffix: '.description' });
-export const getTransactionCategoryDescription = createDynamicTranslationFactory(txCategoryDescriptionKeyFactory);
-
-const txStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.common.statuses.' });
-export const getTransactionStatus = createDynamicTranslationFactory(txStatusKeyFactory, originalValueFallback);
-
-const txTimelineStatusKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.statuses.' });
-export const getTransactionTimelineTxStatus = createDynamicTranslationFactory(txTimelineStatusKeyFactory, originalValueFallback);
-
-const txTimelineTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'transactions.details.timeline.types.' });
-export const getTransactionTimelineTxType = createDynamicTranslationFactory(txTimelineTypeKeyFactory, originalValueFallback);
-
-const txRefundReasonKey = createKeyFactoryFromConfig({ prefix: 'transactions.details.common.refundReasons.' });
-const txRefundReasonKeyFactory: KeyFactoryFunction = reason => reason && (REFUND_REASONS_KEYS[reason as RefundReason] ?? txRefundReasonKey(reason));
-export const getTransactionRefundReason = createDynamicTranslationFactory(txRefundReasonKeyFactory, originalValueFallback);
 
 const disputeReasonKey = createKeyFactoryFromConfig({ prefix: 'disputes.common.reasonCategories.' });
 const disputeReasonKeyFactory: KeyFactoryFunction = reason =>

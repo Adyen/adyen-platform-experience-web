@@ -5,6 +5,7 @@ export * from './collection/main';
 export * from './common';
 export * from './customData/hasCustomField';
 export * from './customData/mergeRecords';
+export * from './customData/normalizeCustomFields';
 export * from './datetime/formats';
 export * from './datetime/main';
 export * from './datetime/restamper';

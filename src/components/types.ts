@@ -98,8 +98,12 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 
 export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields } from '@integration-components/reports/publish';
 
-export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
-export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
+export type {
+    TransactionsOverviewComponentProps,
+    TransactionsOverviewProps,
+    TransactionsTableFields,
+    TransactionsFilters,
+} from '@integration-components/transactions/publish';
 
 export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
 export type { StoreIds } from './external/PaymentLinksOverview/types';

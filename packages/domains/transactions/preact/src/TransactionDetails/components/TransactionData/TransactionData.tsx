@@ -1,0 +1,91 @@
+import { boolOrFalse } from '../../../../../../../../src/utils';
+import { CustomColumn } from '../../../../../../../../src/components/types';
+import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
+import DataOverviewDetailsSkeleton from '../../../../../../../../src/components/internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import { normalizeCustomFields } from '@integration-components/utils';
+import TransactionDataContent from './TransactionDataContent';
+import { TransactionDetails, TransactionDetailsProps } from '../../types';
+import useTransaction from '../../hooks/useTransaction';
+import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
+import { useEffect, useMemo, useState } from 'preact/hooks';
+import { Header } from '../../../../../../../../src/components/internal/Header';
+import { ErrorMessageDisplay } from '../../../../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getErrorMessage } from '../../../../../../../../src/components/utils/getErrorMessage';
+import AdyenPlatformExperienceError from '../../../../../../../../src/core/Errors/AdyenPlatformExperienceError';
+
+export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSupport }: TransactionDetailsProps) => {
+    const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(id);
+    const { withinModal } = useModalContext();
+
+    const [extraFields, setExtraFields] = useState<Record<string, any>>();
+    const [forcedHideTitle, setForcedHideTitle] = useState(false);
+    const [initialTransaction, setInitialTransaction] = useState<TransactionDetails>();
+
+    const shouldHideTitle = useMemo(() => forcedHideTitle || boolOrFalse(hideTitle), [forcedHideTitle, hideTitle]);
+
+    const errorProps = useMemo(
+        () => getErrorMessage(error as AdyenPlatformExperienceError, 'transactions.details.errors.unavailable', onContactSupport),
+        [error, onContactSupport]
+    );
+
+    useEffect(() => {
+        if (transaction && transaction.id === id) {
+            setInitialTransaction(prev => prev ?? transaction);
+        } else if (!transaction) {
+            setInitialTransaction(undefined);
+        }
+    }, [transaction, id]);
+
+    useEffect(() => {
+        // ensure title is always hidden within transaction details modal
+        setForcedHideTitle(withinModal);
+    }, [withinModal]);
+
+    useEffect(() => {
+        if (transaction && transaction.id === id) {
+            (async () => {
+                const customizedDetails = await dataCustomization?.details?.onDataRetrieve?.(transaction);
+                setExtraFields(
+                    normalizeCustomFields(
+                        dataCustomization?.details?.fields,
+                        TX_DETAILS_FIELDS_REMAPS,
+                        customizedDetails as TransactionDetails
+                    )?.reduce((extraFields, field) => {
+                        return !TX_DETAILS_RESERVED_FIELDS_SET.has(field.key as any) && field?.visibility !== 'hidden'
+                            ? {
+                                  ...extraFields,
+                                  ...(customizedDetails?.[field.key] && { [field.key]: customizedDetails[field.key] }),
+                              }
+                            : extraFields;
+                    }, {} as CustomColumn<any>)
+                );
+            })();
+        } else setExtraFields(undefined);
+    }, [transaction, id, dataCustomization]);
+
+    return (
+        <div className="adyen-pe-overview-details">
+            <Header hideTitle={shouldHideTitle} titleKey="transactions.details.title" forwardedToRoot={!withinModal} />
+
+            {initialTransaction ? (
+                <TransactionDataContent
+                    extraFields={extraFields}
+                    dataCustomization={dataCustomization}
+                    fetchingTransaction={fetchingTransaction}
+                    refreshTransaction={refreshTransaction}
+                    transaction={transaction ?? initialTransaction}
+                    transactionNavigator={transactionNavigator}
+                />
+            ) : fetchingTransaction ? (
+                <DataOverviewDetailsSkeleton skeletonRowNumber={5} />
+            ) : (
+                error &&
+                errorProps && (
+                    <div className="adyen-pe-overview-details--error-container">
+                        <ErrorMessageDisplay outlined={false} absolutePosition={false} withBackground={false} withImage {...errorProps} />
+                    </div>
+                )
+            )}
+        </div>
+    );
+};

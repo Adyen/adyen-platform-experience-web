@@ -25,7 +25,7 @@ import { StringWithAutocompleteOptions } from '../../../../../utils/types';
 import { useTableColumns } from '../../../../../hooks/useTableColumns';
 import { containerQueries, useResponsiveContainer } from '../../../../../hooks/useResponsiveContainer';
 import { IDisputeListItem, IDisputeStatusGroup } from '../../../../../types/api/models/disputes';
-import PaymentMethodCell from '../../../TransactionsOverview/components/TransactionsTable/PaymentMethodCell';
+import { PaymentMethodCell } from '@integration-components/transactions/preact';
 import type { IBalanceAccountBase } from '../../../../../types';
 import DisputeStatusTag from './DisputeStatusTag';
 import { Tag } from '../../../../internal/Tag/Tag';

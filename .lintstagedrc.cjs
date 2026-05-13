@@ -4,9 +4,9 @@ module.exports = {
     // Don't include TS schemas
     '!(src/types/api/resources/**/*)/**/*.(ts|tsx|js|scss|css|md|json|html|vue)': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
     // Fix stylelint issues only (no checking/reporting)
-    '{src,packages}/**/*.scss': filenames => [`pnpm exec stylelint --fix --quiet ${filenames.join(' ')}`],
+    '{src,packages/domains}/**/*.scss': filenames => [`pnpm exec stylelint --fix --quiet ${filenames.join(' ')}`],
     // Check ESLint for errors (will fail commit if errors found)
-    '{src,packages,stories,mocks,tests}/**/*.{js,ts,tsx,vue}': filenames => [
+    '{src,packages/domains}/**/*.{js,ts,tsx,vue}': filenames => [
         `bash -c 'ESLINT_USE_FLAT_CONFIG=false pnpm exec eslint ${filenames.join(' ')}'`,
     ],
 };
