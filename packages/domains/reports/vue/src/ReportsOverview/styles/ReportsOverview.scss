@@ -3,22 +3,16 @@
 .adyen-pe-reports-overview {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: style.token(spacer-070);
 
     &-header {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: style.token(spacer-020);
 
         &__description {
             margin-bottom: 8px;
             color: style.token(color-label-secondary);
         }
-    }
-
-    &__toolbar {
-        display: flex;
-        align-items: center;
-        gap: 8px;
     }
 }

@@ -8,8 +8,8 @@ import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, DISABLED_BUTTONS_TIMEOUT, REPORTS_TABLE_FIELDS } from '../constants';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
 import '../styles/ReportsTable.scss';
 
 export type ReportsTableFields = (typeof REPORTS_TABLE_FIELDS)[number];
@@ -48,7 +48,7 @@ function freeze() {
     frozen.value = true;
     freezeTimeoutId = setTimeout(() => {
         frozen.value = false;
-    }, DISABLED_BUTTONS_TIMEOUT);
+    }, REPORTS_DOWNLOAD_DISABLED_TIMEOUT);
 }
 
 onUnmounted(() => {
@@ -78,11 +78,6 @@ function onDownloadErrorAlert(error?: AdyenPlatformExperienceError) {
             description: i18n.get('reports.overview.errors.retryDownload'),
         };
     }
-}
-
-function getReportType(type: string): string {
-    const key = `reports.common.types.${type}`;
-    return i18n.has(key) ? i18n.get(key) : type;
 }
 
 // ── Download handler ──
@@ -159,7 +154,7 @@ const gridData = computed<BentoDatagridDataItem[]>(() => {
         const row: BentoDatagridDataItem = {
             id: `${report.createdAt}-${idx}`,
             createdAt: report.createdAt ?? '',
-            reportType: getReportType(report.type ?? ''),
+            reportType: getReportType(i18n, report.type) ?? report.type,
             _raw: report,
         };
         for (const key of keys) {
@@ -220,7 +215,7 @@ watch(
 </script>
 
 <template>
-    <div :class="TABLE_CLASS">
+    <div :class="REPORTS_TABLE_CLASS_NAMES.base">
         <!-- Download error alert -->
         <div v-if="alert" class="adyen-pe-reports-table-alert" role="alert">
             <div>

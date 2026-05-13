@@ -4,7 +4,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import ReportsFilters from './ReportsFilters.vue';
 import ReportsTable from './ReportsTable.vue';
 import { useReportsList } from '../composables/useReportsList';
-import { BASE_CLASS } from '../constants';
+import { REPORTS_OVERVIEW_CLASS_NAMES } from '../../../../domain/src';
 import type { IBalanceAccountBase } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
 import { quickSelectDateRanges } from './utils/quickSelectDateRanges';
@@ -56,10 +56,13 @@ const reportsListResult = useReportsList(() => ({
 const isLoading = computed(
     () => reportsListResult.fetching.value || props.isLoadingBalanceAccount || !props.balanceAccounts || !activeBalanceAccount.value
 );
+
+// Computed to avoid inline `as Type | Union` casts in the template (vue/no-deprecated-filter)
+const listError = computed(() => reportsListResult.error.value as Error | undefined);
 </script>
 
 <template>
-    <div :class="BASE_CLASS">
+    <div :class="REPORTS_OVERVIEW_CLASS_NAMES.base">
         <div v-if="!props.hideTitle" class="adyen-pe-reports-overview-header">
             <BentoTypography variant="title">{{ i18n.get('reports.overview.title') }}</BentoTypography>
             <BentoTypography variant="body" class="adyen-pe-reports-overview-header__description">{{
@@ -67,16 +70,14 @@ const isLoading = computed(
             }}</BentoTypography>
         </div>
 
-        <div role="toolbar" class="adyen-pe-reports-overview__toolbar">
-            <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
-        </div>
+        <ReportsFilters :balance-accounts="props.balanceAccounts" :on-change="onFiltersChange" />
 
         <ReportsTable
             :balance-account-id="activeBalanceAccount?.id"
             :loading="isLoading"
             :data="reportsListResult.records.value"
             :show-pagination="true"
-            :error="reportsListResult.error.value as Error | undefined"
+            :error="listError"
             :on-contact-support="props.onContactSupport"
             :custom-columns="props.dataCustomization?.list?.fields"
             :on-data-retrieve="props.dataCustomization?.list?.onDataRetrieve"

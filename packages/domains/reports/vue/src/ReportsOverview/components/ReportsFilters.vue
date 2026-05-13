@@ -4,7 +4,7 @@ import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
-import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
+import { EARLIEST_PAYOUT_SINCE_DATE } from '../../../../domain/src';
 import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from './utils/quickSelectDateRanges';
 
 const props = defineProps<{

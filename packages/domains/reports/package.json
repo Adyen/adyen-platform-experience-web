@@ -6,6 +6,7 @@
     "exports": {
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {

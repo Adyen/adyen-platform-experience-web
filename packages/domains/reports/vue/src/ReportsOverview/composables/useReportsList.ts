@@ -2,7 +2,7 @@ import { ref, computed, watch } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IReport } from '@integration-components/types';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../domain/src';
 import type { ReportsListResponse } from '../types';
 
 interface UseReportsListProps {

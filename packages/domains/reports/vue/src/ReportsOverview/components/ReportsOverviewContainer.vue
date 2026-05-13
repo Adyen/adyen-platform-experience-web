@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import ReportsOverview from './ReportsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
-import { CONTAINER_CLASS } from '../constants';
+import { REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES } from '../../../../domain/src';
 
 const props = withDefaults(
     defineProps<{
@@ -25,7 +25,7 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
 </script>
 
 <template>
-    <div :class="CONTAINER_CLASS">
+    <div :class="REPORTS_OVERVIEW_CONTAINER_CLASS_NAMES.base">
         <!-- Error state -->
         <div v-if="hasError" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('reports.overview.errors.unavailable') }}</p>

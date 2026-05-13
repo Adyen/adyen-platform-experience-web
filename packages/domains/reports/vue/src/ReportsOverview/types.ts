@@ -1,3 +1,4 @@
+import type { ReportsOverviewProps } from '../../../domain/src';
 import type { CoreInstance } from '@integration-components/core/vue';
 import type { CustomColumn, IBalanceAccountBase, IReport, OnDataRetrievedCallback } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -8,18 +9,8 @@ export interface DataCustomizationList<Fields extends string> {
 }
 
 // ── Component prop types ──
-
-export interface ReportsOverviewExternalProps {
+export interface ReportsOverviewExternalProps extends ReportsOverviewProps {
     core: CoreInstance;
-    balanceAccountId?: string;
-    allowLimitSelection?: boolean;
-    preferredLimit?: number;
-    hideTitle?: boolean;
-    onContactSupport?: () => void;
-    onFiltersChanged?: (filters: Record<string, string | undefined>) => any;
-    dataCustomization?: {
-        list?: DataCustomizationList<string>;
-    };
 }
 
 export type { IBalanceAccountBase };
