@@ -97,6 +97,7 @@
     "@integration-components/payouts": "workspace:*",
     "@integration-components/reports": "workspace:*",
     "@integration-components/transactions": "workspace:*",
+    "@integration-components/disputes": "workspace:*",
     "@integration-components/ui-components-preact": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",

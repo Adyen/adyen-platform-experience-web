@@ -47,6 +47,9 @@ importers:
       '@integration-components/core':
         specifier: workspace:*
         version: link:packages/shared/core
+      '@integration-components/disputes':
+        specifier: workspace:*
+        version: link:packages/domains/disputes
       '@integration-components/hooks-preact':
         specifier: workspace:*
         version: link:packages/shared/hooks-preact
