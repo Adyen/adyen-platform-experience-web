@@ -1,5 +1,5 @@
-import { ILineItem } from '../../../../../../../../src/types';
-import { EMPTY_ARRAY } from '../../../../../../../../src/utils';
+import { ILineItem } from '@integration-components/types';
+import { EMPTY_ARRAY } from '@integration-components/utils';
 import { RefundLineItem, RefundLineItemUpdates } from '../../types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { updateRefundItems } from './helpers';

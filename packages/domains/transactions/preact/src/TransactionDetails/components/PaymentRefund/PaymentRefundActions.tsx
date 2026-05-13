@@ -1,14 +1,12 @@
 import cx from 'classnames';
 import { useEffect, useMemo } from 'preact/hooks';
-import { useConfigContext } from '../../../../../../../../src/core/ConfigContext';
 import { RefundReason, RefundResult } from '../../types';
 import { ButtonVariant } from '../../../../../../../../src/components/internal/Button/types';
 import { ButtonActionsLayoutBasic } from '../../../../../../../../src/components/internal/Button/ButtonActions/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
-import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
-import useMutation from '../../../../../../../../src/hooks/useMutation/useMutation';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
+import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
 
 export interface PaymentRefundActionsProps {
     beginRefund: () => void;

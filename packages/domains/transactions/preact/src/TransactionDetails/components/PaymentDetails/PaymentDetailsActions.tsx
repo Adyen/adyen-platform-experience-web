@@ -11,8 +11,7 @@ import {
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
-import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import Icon from '../../../../../../../../src/components/internal/Icon';
 
 export interface PaymentDetailsActionsProps {

@@ -4,11 +4,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
 import { useRefundMetadata } from './useRefundMetadata';
-import { useConfigContext } from '../../../../../../../../src/core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 import { RefundMode, RefundedState, TransactionDetails } from '../../types';
-import { IRefundStatus } from '../../../../../../../../src/types';
+import { IRefundStatus } from '@integration-components/types';
 
-vi.mock('../../../../../../../../src/core/ConfigContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useRefundMetadata', () => {
     const mockUseConfigContext = vi.mocked(useConfigContext);

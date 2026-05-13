@@ -4,7 +4,7 @@ import { RefundedState } from '../../types';
 import { useMemo } from 'preact/hooks';
 import { REFUND_STATUSES, TX_REFUND_STATUSES_CONTAINER } from '../../constants';
 import { AlertProps, AlertTypeOption, AlertVariantOption } from '../../../../../../../../src/components/internal/Alert/types';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Alert from '../../../../../../../../src/components/internal/Alert/Alert';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';

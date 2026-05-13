@@ -3,10 +3,10 @@ import { RefundReason } from '../../types';
 import { useCallback, useMemo } from 'preact/hooks';
 import { getTransactionRefundReason } from '@integration-components/transactions/domain';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import Select from '../../../../../../../../src/components/internal/FormFields/Select';
-import useUniqueId from '../../../../../../../../src/hooks/useUniqueId';
+import { useUniqueId } from '@integration-components/hooks-preact';
 
 export interface PaymentRefundReasonProps {
     disabled: boolean;

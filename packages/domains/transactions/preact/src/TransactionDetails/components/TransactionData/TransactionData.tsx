@@ -1,5 +1,5 @@
-import { boolOrFalse } from '../../../../../../../../src/utils';
-import { CustomColumn } from '../../../../../../../../src/components/types';
+import { boolOrFalse } from '@integration-components/utils';
+import { CustomColumn } from '@integration-components/types';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
 import DataOverviewDetailsSkeleton from '../../../../../../../../src/components/internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { normalizeCustomFields } from '@integration-components/utils';
@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Header } from '../../../../../../../../src/components/internal/Header';
 import { ErrorMessageDisplay } from '../../../../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getErrorMessage } from '../../../../../../../../src/components/utils/getErrorMessage';
-import AdyenPlatformExperienceError from '../../../../../../../../src/core/Errors/AdyenPlatformExperienceError';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
 
 export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSupport }: TransactionDetailsProps) => {
     const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(id);

@@ -8,8 +8,8 @@ import { useLandedPageEvent } from '@integration-components/hooks-preact/useEven
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
 import { sharedTransactionDetailsEventProperties } from '../../constants';
-import { EMPTY_ARRAY } from '../../../../../../../../src/utils';
-import { ILineItem } from '../../../../../../../../src/types';
+import { EMPTY_ARRAY } from '@integration-components/utils';
+import { ILineItem } from '@integration-components/types';
 import './TransactionData.scss';
 
 type UseTransactionResult = ReturnType<typeof useTransaction>;

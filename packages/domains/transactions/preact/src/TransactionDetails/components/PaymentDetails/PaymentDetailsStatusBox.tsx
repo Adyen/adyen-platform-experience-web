@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import StatusBox from '../../../../../../../../src/components/internal/StatusBox/StatusBox';
 import useStatusBoxData from '../../../../../../../../src/components/internal/StatusBox/useStatusBox';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import { getAmountStyleForTransaction, getRefundTypeForTransaction } from '../../utils';
 import { TX_DATA_AMOUNT, TX_DATA_CONTAINER, TX_DATA_TAGS, TX_STATUS_BOX } from '../../constants';

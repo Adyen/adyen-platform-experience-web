@@ -1,4 +1,4 @@
-import type { ITransaction } from '../../../../../../../../../src/types';
+import type { ITransaction } from '@integration-components/types';
 
 export interface TransactionNavigation {
     // `undefined` only for the first navigation

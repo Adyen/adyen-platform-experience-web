@@ -11,14 +11,14 @@ import cx from 'classnames';
 import { memo } from 'preact/compat';
 import { Tag } from '../../../../../../../../src/components/internal/Tag/Tag';
 import { TagVariant } from '../../../../../../../../src/components/internal/Tag/types';
-import { ARIA_ERROR_SUFFIX } from '../../../../../../../../src/core/Errors/constants';
-import { getDecimalAmount, getDivider } from '../../../../../../../../src/core/Localization/amount/amount-util';
+import { ARIA_ERROR_SUFFIX } from '@integration-components/core/Errors/constants';
+import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import InputBase from '../../../../../../../../src/components/internal/FormFields/InputBase';
-import useUniqueId from '../../../../../../../../src/hooks/useUniqueId';
+import { useUniqueId } from '@integration-components/hooks-preact';
 import Icon from '../../../../../../../../src/components/internal/Icon';
 
 interface PaymentRefundAmountProps {

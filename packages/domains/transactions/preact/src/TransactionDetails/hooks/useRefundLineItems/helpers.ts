@@ -1,4 +1,4 @@
-import { clamp, EMPTY_ARRAY, isUndefined } from '../../../../../../../../src/utils';
+import { clamp, EMPTY_ARRAY, isUndefined } from '@integration-components/utils';
 import { RefundLineItem, RefundLineItemUpdates } from '../../types';
 
 const _updateRefundItemQuantity = (

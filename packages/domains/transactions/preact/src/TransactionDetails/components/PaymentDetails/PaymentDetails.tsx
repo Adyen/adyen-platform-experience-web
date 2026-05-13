@@ -6,7 +6,7 @@ import PaymentDetailsStatusBox from './PaymentDetailsStatusBox';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
 import PaymentDetailsSummary from './PaymentDetailsSummary';
 import PaymentDetailsTimeline from './PaymentDetailsTimeline';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { ActiveView, DetailsTab, RefundedState, TransactionDetails, TransactionDetailsProps } from '../../types';
 import { REFUND_STATUSES, TX_DATA_CLASS, TX_DATA_CONTAINER, TX_DETAILS_TABS } from '../../constants';
 import { TabProps } from '../../../../../../../../src/components/internal/Tabs/types';

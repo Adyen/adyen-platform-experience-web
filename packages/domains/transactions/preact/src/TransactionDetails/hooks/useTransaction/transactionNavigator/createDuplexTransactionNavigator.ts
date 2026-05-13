@@ -1,6 +1,6 @@
-import { EMPTY_ARRAY, enumerable, getter, isEmptyString, isFunction, isNullish, struct } from '../../../../../../../../../src/utils';
+import { EMPTY_ARRAY, enumerable, getter, isEmptyString, isFunction, isNullish, struct } from '@integration-components/utils';
 import type { TransactionNavigation, TransactionNavigationCallback, TransactionNavigator } from './types';
-import type { ITransaction } from '../../../../../../../../../src/types';
+import type { ITransaction } from '@integration-components/types';
 
 export const createDuplexTransactionNavigator = () => {
     let [currentTransactionId, previousTransactionId, fromTransactionId, toTransactionId] = EMPTY_ARRAY as readonly ITransaction['id'][];

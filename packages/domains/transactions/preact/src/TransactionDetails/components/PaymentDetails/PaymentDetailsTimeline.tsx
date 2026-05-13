@@ -1,6 +1,6 @@
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
-import { uniqueId } from '../../../../../../../../src/utils';
+import { uniqueId } from '@integration-components/utils';
 import { TransactionDetails } from '../../types';
 import { TX_TIMELINE_LABEL, TX_TIMELINE_VALUE } from '../../constants';
 import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '@integration-components/transactions/domain';
@@ -8,7 +8,7 @@ import { StructuredListItem, StructuredListProps } from '../../../../../../../..
 import { TimelineDateFormat, TimelineTimestamp } from '../../../../../../../../src/components/internal/Timeline/types';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { TimelineItem } from '../../../../../../../../src/components/internal/Timeline/components/TimelineItem';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
 import Timeline from '../../../../../../../../src/components/internal/Timeline/Timeline';

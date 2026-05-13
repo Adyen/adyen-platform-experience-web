@@ -3,7 +3,7 @@ import { memo } from 'preact/compat';
 import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
 import { TX_DATA_CONTAINER, TX_DATA_HEAD_CONTAINER } from '../../constants';
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 
 const PaymentRefundNotice = memo(() => {

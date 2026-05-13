@@ -1,6 +1,6 @@
 import { memo } from 'preact/compat';
 import { useCallback, useMemo } from 'preact/hooks';
-import { TranslationKey } from '../../../../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import { StructuredListProps } from '../../../../../../../../src/components/internal/StructuredList/types';
 import { getTransactionRefundReason } from '@integration-components/transactions/domain';
@@ -8,8 +8,7 @@ import { isCustomDataObject } from '../../../../../../../../src/components/inter
 import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
 import { TX_DATA_LABEL, TX_DATA_LIST, TX_DETAILS_FIELDS_REMAPS, sharedTransactionDetailsEventProperties } from '../../constants';
 import { normalizeCustomFields } from '@integration-components/utils';
-import useEventDispatcherContext from '../../../../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
-import useCoreContext from '../../../../../../../../src/core/Context/useCoreContext';
+import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
 import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
 import Icon from '../../../../../../../../src/components/internal/DataGrid/components/Icon';
