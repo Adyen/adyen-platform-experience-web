@@ -6,4 +6,3 @@ export * from './ConfigContext';
 
 export { UIElement } from './UIElement';
 export { default as UIElementProvider } from './UIElementProvider.vue';
-export { getMySessionToken } from './utils/sessionRequest';

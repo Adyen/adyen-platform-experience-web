@@ -1,0 +1,18 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-reports-overview {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &-header {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+
+        &__description {
+            margin-bottom: 8px;
+            color: style.token(color-label-secondary);
+        }
+    }
+}
