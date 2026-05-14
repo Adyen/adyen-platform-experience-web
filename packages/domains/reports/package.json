@@ -6,9 +6,13 @@
     "exports": {
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
+        "@adyen/bento-vue3": "^1.93.0",
+        "@adyen/ui-assets-icons-16": "^7.7.2",
+        "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
@@ -18,14 +22,14 @@
         "@integration-components/utils": "workspace:*"
     },
     "peerDependencies": {
-        "preact": "catalog:"
+        "preact": "catalog:",
+        "vue": "catalog:"
     },
     "devDependencies": {
         "@playwright/test": "^1.56.0",
         "@storybook/preact": "10.2.12",
         "@storybook/vue3": "10.2.12",
         "dotenv": "^17.2.3",
-        "msw": "^2.4.5",
-        "vue": "^3.5.13"
+        "msw": "^2.4.5"
     }
 }

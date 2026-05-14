@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { shallowRef, ref, computed, onMounted, type Component } from 'vue';
-import { getMySessionToken, type CoreInstance, type SupportedLocales, type CoreOptions } from '@integration-components/core/vue';
+import { type CoreInstance, type SupportedLocales, type CoreOptions } from '@integration-components/core/vue';
 import '../../shared/styles.scss';
 import { Core } from '@integration-components/core';
+import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 
 const props = defineProps<{
     component: Component;
