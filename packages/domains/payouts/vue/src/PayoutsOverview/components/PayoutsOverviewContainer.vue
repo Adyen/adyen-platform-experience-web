@@ -4,6 +4,7 @@ import PayoutsOverview from './PayoutsOverview.vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
 import { CONTAINER_CLASS } from '../constants';
+import { BentoButton } from '@adyen/bento-vue3';
 import type { PayoutsOverviewExternalProps } from '../types';
 
 const props = withDefaults(
@@ -32,9 +33,9 @@ const hasError = computed(() => !!error.value || isBalanceAccountIdWrong.value);
         <!-- Error state -->
         <div v-if="hasError" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('payouts.overview.errors.unavailable') }}</p>
-            <button v-if="props.onContactSupport" @click="props.onContactSupport">
+            <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
                 {{ i18n.get('common.actions.contactSupport.labels.default') }}
-            </button>
+            </BentoButton>
         </div>
 
         <!-- Main content -->

@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import {
-    createDynamicTranslationFactory,
-    createKeyFactoryFromConfig,
-    type TranslationFactoryFunction,
-    type TranslationFallbackFunction,
-} from '@integration-components/core';
 import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, BentoDataGrid } from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import {
     PD_BASE_CLASS,
     PD_BUTTON_ACTIONS,
@@ -46,17 +41,6 @@ const props = defineProps<{
 
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
-
-// ── Translation factories (local copies of the Preact getters since they live
-// in the Preact-coupled `src/components/utils/translation/getters.ts`) ──
-const originalValueFallback: TranslationFallbackFunction = (_, value) => value;
-const payoutAdjustmentTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.adjustments.types.' });
-const getPayoutAdjustmentType: TranslationFactoryFunction = createDynamicTranslationFactory(payoutAdjustmentTypeKeyFactory, originalValueFallback);
-const payoutFundsCapturedTypeKeyFactory = createKeyFactoryFromConfig({ prefix: 'payouts.details.breakdown.fundsCaptured.types.' });
-const getPayoutFundsCapturedType: TranslationFactoryFunction = createDynamicTranslationFactory(
-    payoutFundsCapturedTypeKeyFactory,
-    originalValueFallback
-);
 
 const payoutInner = computed(() => props.payout?.payout);
 

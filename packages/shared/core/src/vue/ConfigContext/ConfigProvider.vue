@@ -56,8 +56,6 @@ onBeforeUnmount(() => {
 <template>
     <slot v-if="ready" />
     <slot v-else name="loading">
-        <div style="display: flex; justify-content: center; align-items: center">
-            <BentoLoadingIndicator />
-        </div>
+        <BentoLoadingIndicator />
     </slot>
 </template>
