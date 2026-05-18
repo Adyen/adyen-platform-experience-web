@@ -2,6 +2,7 @@ import type { Preview } from '@storybook/vue3';
 import { setup } from '@storybook/vue3';
 import { createI18n } from 'vue-i18n';
 import { sharedPreviewConfig } from '../../shared/previewDefaults';
+import Container from './Container.vue';
 
 // Bento (`@adyen/bento-vue3`) components call `useI18n()` internally, which
 // throws "Need to install with `app.use` function" unless a vue-i18n instance
@@ -20,6 +21,14 @@ setup(app => {
 
 const preview: Preview = {
     ...sharedPreviewConfig,
+    render: (args, context) => ({
+        components: { Container },
+        setup() {
+            const { component, session, mockedApi, compact, locale, ...componentProps } = args;
+            return { component, locale: locale ?? context.globals.locale ?? 'en-US', session, mockedApi, compact, componentProps };
+        },
+        template: `<Container :component="component" :component-props="componentProps" :locale="locale" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
+    }),
 };
 
 export default preview;
