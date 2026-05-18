@@ -1,3 +1,11 @@
+/**
+ * Date range presets and helpers used by Bento `BentoFilterBar` quick-select
+ * date pickers across overview-style components (reports, payouts, …).
+ *
+ * Pure date arithmetic — no framework or Bento types are imported here so the
+ * helpers can be reused from any package.
+ */
+
 type QuickSelectDateRange = {
     startDate: Date;
     endDate: Date;

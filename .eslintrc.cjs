@@ -57,6 +57,8 @@ module.exports = {
             {
                 devDependencies: [
                     'stories/**/*',
+                    'packages/domains/*/vue/stories/**/*',
+                    'packages/domains/*/preact/stories/**/*',
                     'playwright/test',
                     'playwright.config.ts',
                     'config/vite.config.ts',
@@ -167,6 +169,13 @@ module.exports = {
         'testing-library/no-manual-cleanup': 'warn',
     },
     overrides: [
+        {
+            files: ['**/vue/**/*.ts', '**/vue/**/*.tsx'],
+            rules: {
+                'react-hooks/rules-of-hooks': 'off',
+                'react-hooks/exhaustive-deps': 'off',
+            },
+        },
         {
             files: ['*.vue'],
             parser: 'vue-eslint-parser',

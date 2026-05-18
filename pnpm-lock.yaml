@@ -254,6 +254,15 @@ importers:
 
   packages/domains/payouts:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: ^1.94.0
+        version: 1.94.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: ^7.7.2
+        version: 7.9.0(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -266,9 +275,6 @@ importers:
       '@integration-components/style':
         specifier: workspace:*
         version: link:../../shared/style
-      '@integration-components/testing':
-        specifier: workspace:*
-        version: link:../../shared/testing
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
@@ -287,7 +293,13 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
+      vue-i18n:
+        specifier: ^11
+        version: 11.3.2(vue@3.5.31(typescript@5.8.3))
     devDependencies:
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../../shared/testing
       '@playwright/test':
         specifier: ^1.56.0
         version: 1.56.0
@@ -463,6 +475,9 @@ importers:
 
   packages/shared/core:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: ^1.94.0
+        version: 1.94.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
@@ -651,7 +666,17 @@ packages:
   '@adyen/bento-design-tokens@1.93.0':
     resolution: {}
 
+  '@adyen/bento-design-tokens@1.94.0':
+    resolution: {}
+
   '@adyen/bento-vue3@1.93.0':
+    resolution: {}
+    peerDependencies:
+      vue: ^3.2.47
+      vue-i18n: ^9 || ^10 || ^11
+      zod: ^3.25 || ^4
+
+  '@adyen/bento-vue3@1.94.0':
     resolution: {}
     peerDependencies:
       vue: ^3.2.47
@@ -6691,9 +6716,42 @@ snapshots:
 
   '@adyen/bento-design-tokens@1.93.0': {}
 
+  '@adyen/bento-design-tokens@1.94.0': {}
+
   '@adyen/bento-vue3@1.93.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
     dependencies:
       '@adyen/bento-design-tokens': 1.93.0
+      '@floating-ui/core': 1.6.8
+      '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
+      '@types/mdast': 3.0.15
+      '@types/sortablejs': 1.15.9
+      '@types/unist': 2.0.11
+      '@vueuse/core': 11.3.0(vue@3.5.31(typescript@5.8.3))
+      date-fns: 4.1.0
+      focus-lock: 0.11.0
+      libphonenumber-js: 1.12.23
+      mime: 4.0.6
+      remark-gfm-old: remark-gfm@3.0.1
+      remark-parse: 10.0.2
+      sortablejs: 1.15.6
+      unified: 11.0.5
+      uuid: 11.0.5
+      vue: 3.5.31(typescript@5.8.3)
+      vue-demi: 0.14.10(vue@3.5.31(typescript@5.8.3))
+      vue-i18n: 11.3.2(vue@3.5.31(typescript@5.8.3))
+      zod: 4.2.1
+    optionalDependencies:
+      vue-router: 5.0.4(@vue/compiler-sfc@3.5.31)(vue@3.5.31(typescript@5.8.3))
+    transitivePeerDependencies:
+      - '@pinia/colada'
+      - '@vue/compiler-sfc'
+      - '@vue/composition-api'
+      - pinia
+      - supports-color
+
+  '@adyen/bento-vue3@1.94.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+    dependencies:
+      '@adyen/bento-design-tokens': 1.94.0
       '@floating-ui/core': 1.6.8
       '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
       '@types/mdast': 3.0.15

@@ -1,0 +1,22 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payouts-table {
+    position: relative;
+
+    &__net-payout {
+        &--strong {
+            font-size: style.token(text-title-font-size);
+            font-weight: style.token(text-body-strongest-font-weight);
+        }
+    }
+
+    // Mobile fallback for the responsive column collapse the Preact equivalent
+    // implements via `useResponsiveContainer`. Hide secondary amount columns
+    // below a small breakpoint so only the net payout amount shows on mobile.
+    @media (max-width: 599px) {
+        :where([data-field='fundsCapturedAmount']),
+        :where([data-field='adjustmentAmount']) {
+            display: none;
+        }
+    }
+}
