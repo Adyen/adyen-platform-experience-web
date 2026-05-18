@@ -16,7 +16,7 @@
         "@integration-components/utils": "workspace:*"
     },
     "devDependencies": {
-        "vite": "*"
+        "vite": "catalog:"
     },
     "peerDependencies": {
         "vue": "catalog:"
