@@ -3,8 +3,8 @@ import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { getDisputeStatus } from '../../../../utils/translation/getters';
 import { IDispute, IDisputeListItem } from '../../../../../types/api/models/disputes';
 import { isDisputeActionNeededUrgently } from '../../../../utils/disputes/actionNeeded';
-import { Tag } from '../../../../internal/Tag/Tag';
-import { TagVariant } from '../../../../internal/Tag/types';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { PropsWithChildren } from 'preact/compat';
 
 const DisputeStatusTag = ({ dispute }: PropsWithChildren<{ dispute: IDisputeListItem | IDispute }>) => {

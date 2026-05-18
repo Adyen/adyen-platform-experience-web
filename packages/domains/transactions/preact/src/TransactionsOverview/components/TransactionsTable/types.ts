@@ -1,5 +1,5 @@
 import { AdyenPlatformExperienceError } from '@integration-components/core';
-import type { PaginationProps, WithPaginationLimitSelection } from '../../../../../../../../src/components/internal/Pagination/types';
+import type { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';
 import type { IAmount, IBalanceAccountBase, ITransaction } from '@integration-components/types';
 import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { TransactionsTableCols } from './fields';

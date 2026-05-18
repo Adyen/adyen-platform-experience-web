@@ -1,7 +1,7 @@
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import AdyenPlatformExperienceError from '../../../../../../../core/Errors/AdyenPlatformExperienceError';
 import { TranslationKey } from '../../../../../../../translations';
-import { ErrorMessageDisplay } from '../../../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import getSettingsErrorMessage from '../../utils/getSettingsErrorMessage';
 
 const SettingsError = ({

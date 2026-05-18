@@ -9,12 +9,12 @@ import { useConfigContext } from '@integration-components/core/preact';
 import type { PayoutsOverviewComponentProps } from '@integration-components/payouts/domain';
 import { BASE_CLASS, BASE_CLASS_DETAILS, EARLIEST_PAYOUT_SINCE_DATE } from './constants';
 import { PAYOUT_TABLE_FIELDS, PayoutsTable } from '../PayoutsTable/PayoutsTable';
-import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '../../../../../../../../src/components/internal/FilterBar';
-import BalanceAccountSelector from '../../../../../../../../src/components/internal/FormFields/Select/BalanceAccountSelector';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../../../../../src/components/internal/Pagination/constants';
-import { useCursorPaginatedRecords } from '../../../../../../../../src/components/internal/Pagination/hooks';
-import DateFilter from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/DateFilter';
-import { Header } from '../../../../../../../../src/components/internal/Header';
+import FilterBar, { FilterBarMobileSwitch, useFilterBarState } from '@integration-components/ui-components-preact/FilterBar';
+import BalanceAccountSelector from '@integration-components/ui-components-preact/FormFields/Select/BalanceAccountSelector';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-components-preact/Pagination/constants';
+import { useCursorPaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks';
+import DateFilter from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter/DateFilter';
+import { Header } from '@integration-components/ui-components-preact/Header';
 import { DataDetailsModal } from '../../../internal/DataOverviewDisplay/DataDetailsModal';
 import './PayoutsOverview.scss';
 

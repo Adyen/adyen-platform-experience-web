@@ -3,12 +3,12 @@ import { Controller } from '../../../../../../../hooks/form';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { useFetch } from '../../../../../../../hooks/useFetch';
-import { VisibleField } from '../../../../../../internal/FormWrappers/VisibleField';
-import InputBase from '../../../../../../internal/FormFields/InputBase';
-import FormField from '../../../../../../internal/FormWrappers/FormField';
+import { VisibleField } from '@integration-components/ui-components-preact/FormWrappers/VisibleField';
+import InputBase from '@integration-components/ui-components-preact/FormFields/InputBase';
+import FormField from '@integration-components/ui-components-preact/FormWrappers/FormField';
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../constants';
-import { filterDisallowedCharacters } from '../../../../../../internal/FormFields/utils';
+import { filterDisallowedCharacters } from '@integration-components/ui-components-preact/FormFields/utils';
 import { JSX } from 'preact/jsx-runtime';
 
 export const ShopperPhoneField = () => {

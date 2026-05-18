@@ -1,7 +1,7 @@
 import { memo } from 'preact/compat';
-import Select from '../../../../../../../../src/components/internal/FormFields/Select';
+import Select from '@integration-components/ui-components-preact/FormFields/Select';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
-import type { SelectProps } from '../../../../../../../../src/components/internal/FormFields/Select/types';
+import type { SelectProps } from '@integration-components/ui-components-preact/FormFields/Select/types';
 import useMultiSelectionFilter from './useMultiSelectionFilter';
 
 const MultiSelectionFilter = memo(

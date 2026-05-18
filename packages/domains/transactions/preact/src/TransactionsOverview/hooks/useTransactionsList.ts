@@ -1,12 +1,12 @@
 import { isFunction } from '@integration-components/utils';
 import { ITransaction } from '@integration-components/types';
 import { TransactionsFilters } from '../types';
-import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../../../../../../../src/components/internal/Pagination/constants';
+import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-components-preact/Pagination/constants';
 import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/fields';
 import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import { CustomDataRetrieved } from '@integration-components/types';
 import type { TransactionsOverviewComponentProps } from '../types';
-import { useCursorPaginatedRecords } from '../../../../../../../src/components/internal/Pagination/hooks';
+import { useCursorPaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks';
 import { useCustomColumnsData } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef } from 'preact/hooks';

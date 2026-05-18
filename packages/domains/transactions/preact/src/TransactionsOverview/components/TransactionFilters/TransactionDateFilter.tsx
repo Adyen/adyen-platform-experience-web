@@ -15,10 +15,10 @@ import {
 import { TransactionsDateRange } from '../../types';
 import { EMPTY_OBJECT, unreachable } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { getDateRangeTimestamps } from '../../../../../../../../src/components/internal/Calendar/calendar/timerange/utils';
-import { DateFilterProps, DateRangeFilterParam } from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/types';
-import createRangeTimestampsFactory, { RangeTimestamps } from '../../../../../../../../src/components/internal/Calendar/calendar/timerange';
-import DateFilterCore from '../../../../../../../../src/components/internal/FilterBar/filters/DateFilter/DateFilterCore';
+import { getDateRangeTimestamps } from '@integration-components/ui-components-preact/Calendar/calendar/timerange/utils';
+import { DateFilterProps, DateRangeFilterParam } from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter/types';
+import createRangeTimestampsFactory, { RangeTimestamps } from '@integration-components/ui-components-preact/Calendar/calendar/timerange';
+import DateFilterCore from '@integration-components/ui-components-preact/FilterBar/filters/DateFilter/DateFilterCore';
 import useFilterAnalyticsEvent from '@integration-components/hooks-preact/useEventDispatcher/useFilterAnalyticsEvent';
 import { useCoreContext } from '@integration-components/core/preact';
 

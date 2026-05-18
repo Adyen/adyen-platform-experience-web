@@ -1,10 +1,10 @@
 import { useCoreContext } from '@integration-components/core/preact';
 import { IBankAccount, IPaymentMethod } from '@integration-components/types';
-import { Image } from '../../../../../../../../src/components/internal/Image/Image';
-import { Tag } from '../../../../../../../../src/components/internal/Tag/Tag';
-import { TagVariant } from '../../../../../../../../src/components/internal/Tag/types';
-import { TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
+import { Image } from '@integration-components/ui-components-preact/Image/Image';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { parsePaymentMethodType } from '../utils';
 import { PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';

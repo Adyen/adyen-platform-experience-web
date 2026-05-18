@@ -2,13 +2,12 @@ import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import usePayByLinkSettingsContext from '../../context/context';
 import { containerQueries, useResponsiveContainer } from '../../../../../../../hooks/useResponsiveContainer';
 import { boolOrFalse, noop } from '../../../../../../../utils';
-import { ButtonActionObject, ButtonActionsLayout, ButtonActionsLayoutBasic } from '../../../../../../internal/Button/ButtonActions/types';
-import ButtonActions from '../../../../../../internal/Button/ButtonActions/ButtonActions';
+import { ButtonActionObject, ButtonActionsLayout, ButtonActionsLayoutBasic, ButtonVariant } from '@integration-components/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useMemo } from 'preact/hooks';
 import './SettingsActionButton.scss';
-import { ButtonVariant } from '../../../../../../internal/Button/types';
 import cx from 'classnames';
-import Icon from '../../../../../../internal/Icon';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';
 import { MenuItem } from '../../context/constants';
 

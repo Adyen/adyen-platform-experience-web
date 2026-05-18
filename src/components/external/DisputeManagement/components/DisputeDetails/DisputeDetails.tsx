@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import { PropsWithChildren } from 'preact/compat';
 import type { ExternalUIComponentProps } from '../../../../types';
-import { useModalContext } from '../../../../internal/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import { useDisputeFlow } from '../../context/dispute/context';
-import { Header } from '../../../../internal/Header';
+import { Header } from '@integration-components/ui-components-preact/Header';
 import { DisputeManagementProps } from '../../types';
 import { AcceptDisputeFlow } from '../AcceptDisputeFlow/AcceptDisputeFlow';
 import { DefendDisputeFlow } from '../DefendDisputeFlow/DefendDisputeFlow';

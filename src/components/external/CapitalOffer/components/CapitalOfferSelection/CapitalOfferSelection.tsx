@@ -1,9 +1,9 @@
-import InfoBox from '../../../../internal/InfoBox';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import StructuredList from '../../../../internal/StructuredList';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import InfoBox from '@integration-components/ui-components-preact/InfoBox';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -15,7 +15,7 @@ import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/cons
 import { getExpectedRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
+import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { debounce } from '../../../../utils/utils';
 

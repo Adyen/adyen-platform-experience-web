@@ -12,10 +12,10 @@ import { h } from 'preact';
 import { useRef, useState } from 'preact/hooks';
 import { uniqueId } from '@integration-components/utils';
 import { useInputNormalizer } from '../../hooks/useInputNormalizer';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import TextArea from '../../../../../../../../src/components/internal/FormFields/TextArea';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import TextArea from '@integration-components/ui-components-preact/FormFields/TextArea';
 
 const PaymentRefundReference = () => {
     const { i18n } = useCoreContext();

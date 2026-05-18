@@ -1,6 +1,6 @@
 import useCoreContext from '../../../../../../../core/Context/useCoreContext';
 import { useMemo } from 'preact/hooks';
-import { FormSelect } from '../../../../../../internal/FormWrappers/FormSelect';
+import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 import { PaymentLinkCreationFormValues } from '../../../types';
 import { useWizardFormContext } from '../../../../../../../hooks/form/wizard/WizardFormContext';
 import { IPaymentLinkCountry } from '../../../../../../../types';

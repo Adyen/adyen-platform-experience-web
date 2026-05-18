@@ -1,4 +1,4 @@
-import { SecondaryNav } from '../../../../internal/SecondaryNav';
+import { SecondaryNav } from '@integration-components/ui-components-preact/SecondaryNav';
 import {
     CONTAINER_CLASS_NAME,
     SIDEBAR_CONTAINER_CLASS_NAME,
@@ -9,7 +9,7 @@ import {
 import { type ExternalUIComponentProps, PaymentLinkSettingsComponentProps } from '../../../../types';
 import './PaymentLinkSettingsContainer.scss';
 import { StoreSelector } from '../../../../internal/StoreSelector';
-import { Header } from '../../../../internal/Header';
+import { Header } from '@integration-components/ui-components-preact/Header';
 import { usePaymentLinkSettingsContext } from './context/context';
 import PaymentLinkSettingsContent from './components/PaymentLinkSettingsContent/PaymentLinkSettingsContent';
 import SettingsActionButtons from './components/SettingsActionButtons/SettingsActionButtons';

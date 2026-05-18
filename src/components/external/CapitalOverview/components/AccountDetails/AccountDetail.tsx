@@ -1,8 +1,8 @@
 import { FunctionalComponent, h } from 'preact';
-import CopyText from '../../../../internal/CopyText/CopyText';
+import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { TranslationKey } from '../../../../../translations';
 import cx from 'classnames';
 

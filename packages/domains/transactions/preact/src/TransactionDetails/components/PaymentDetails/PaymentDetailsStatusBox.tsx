@@ -1,13 +1,13 @@
 import cx from 'classnames';
-import StatusBox from '../../../../../../../../src/components/internal/StatusBox/StatusBox';
-import useStatusBoxData from '../../../../../../../../src/components/internal/StatusBox/useStatusBox';
+import StatusBox from '@integration-components/ui-components-preact/StatusBox/StatusBox';
+import useStatusBoxData from '@integration-components/ui-components-preact/StatusBox/useStatusBox';
 import { useCoreContext } from '@integration-components/core/preact';
 import { getTransactionCategory } from '@integration-components/transactions/domain';
 import { getAmountStyleForTransaction, getRefundTypeForTransaction } from '../../utils';
 import { TX_DATA_AMOUNT, TX_DATA_CONTAINER, TX_DATA_TAGS, TX_STATUS_BOX } from '../../constants';
 import { RefundedState, RefundType, TransactionDetails } from '../../types';
-import { TagVariant } from '../../../../../../../../src/components/internal/Tag/types';
-import { Tag } from '../../../../../../../../src/components/internal/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 import { useMemo } from 'preact/hooks';
 import { memo } from 'preact/compat';
 

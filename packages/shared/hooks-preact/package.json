@@ -8,11 +8,22 @@
     "exports": {
         ".": "./src/index.ts",
         "./package.json": "./package.json",
+        "./element/constants": "./src/element/constants.ts",
+        "./element/getIntersectionObserver": "./src/element/getIntersectionObserver.ts",
+        "./element/useClickOutside": "./src/element/useClickOutside.ts",
+        "./element/useDetachedRender": "./src/element/useDetachedRender.ts",
+        "./element/useFocusCursor": "./src/element/useFocusCursor.ts",
+        "./element/useFocusTrap": "./src/element/useFocusTrap.ts",
+        "./element/usePopoverPositioner": "./src/element/usePopoverPositioner.ts",
+        "./element/useUniqueIdentifier": "./src/element/useUniqueIdentifier.ts",
+        "./element/popoverUtil": "./src/element/popoverUtil.ts",
         "./form": "./src/form/index.ts",
+        "./form/types": "./src/form/types.ts",
         "./form/wizard/WizardFormContext": "./src/form/wizard/WizardFormContext.tsx",
         "./useCommitAction": "./src/useCommitAction/index.ts",
         "./useModalDetails": "./src/useModalDetails/index.ts",
         "./useReactiveState": "./src/useReactiveState/index.ts",
+        "./useReactiveState/types": "./src/useReactiveState/types.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {

@@ -32,6 +32,8 @@
             "@integration-components/sdk-internal/*": ["packages/shared/lib/src/*"],
             "@integration-components/hooks-preact": ["packages/shared/hooks-preact/src/index.ts"],
             "@integration-components/hooks-preact/*": ["packages/shared/hooks-preact/src/*"],
+            "@integration-components/ui-components-preact": ["packages/shared/ui-components-preact/src/index.ts"],
+            "@integration-components/ui-components-preact/*": ["packages/shared/ui-components-preact/src/*"],
             "@integration-components/composables-vue": ["packages/shared/composables-vue/src/index.ts"],
             "@integration-components/composables-vue/*": ["packages/shared/composables-vue/src/*"],
             "@integration-components/testing": ["packages/shared/testing/src/index.ts"],

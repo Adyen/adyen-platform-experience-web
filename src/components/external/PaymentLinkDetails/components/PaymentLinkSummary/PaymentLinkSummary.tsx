@@ -1,10 +1,10 @@
 import { useMemo } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Card from '../../../../internal/Card/Card';
-import { Tag } from '../../../../internal/Tag/Tag';
-import { TagVariant } from '../../../../internal/Tag/types';
-import { TypographyVariant, TypographyElement } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
+import Card from '@integration-components/ui-components-preact/Card/Card';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
+import { TypographyVariant, TypographyElement } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { DATE_FORMAT_PAYMENT_LINK_DETAILS_SUMMARY } from '../../../../../constants';
 import { IPaymentLinkStatus, IPaymentLinkDetails } from '../../../../../types';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';

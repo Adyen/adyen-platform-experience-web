@@ -1,7 +1,7 @@
 import { IPaymentLinkItem } from '../../../../types';
 import { PAYMENT_LINKS_TABLE_FIELDS } from './PaymentLinksTable';
 import { StringWithAutocompleteOptions } from '../../../../utils/types';
-import { PaginationProps, WithPaginationLimitSelection } from '../../../internal/Pagination/types';
+import { PaginationProps, WithPaginationLimitSelection } from '@integration-components/ui-components-preact/Pagination/types';
 import AdyenPlatformExperienceError from '../../../../core/Errors/AdyenPlatformExperienceError';
 import { IStore } from '../../../../types/api/models/stores';
 

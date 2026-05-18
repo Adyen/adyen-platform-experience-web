@@ -2,17 +2,13 @@ import cx from 'classnames';
 import { memo } from 'preact/compat';
 import { useMemo } from 'preact/hooks';
 import { ActiveView, TransactionDetails } from '../../types';
-import { ButtonVariant } from '../../../../../../../../src/components/internal/Button/types';
-import {
-    ButtonActionObject,
-    ButtonActionsLayoutBasic,
-    ButtonActionsList,
-} from '../../../../../../../../src/components/internal/Button/ButtonActions/types';
+import { ButtonVariant } from '@integration-components/types';
+import { ButtonActionObject, ButtonActionsLayoutBasic, ButtonActionsList } from '@integration-components/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
 import { TransactionDataContentProps } from '../TransactionData/TransactionDataContent';
-import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
-import Icon from '../../../../../../../../src/components/internal/Icon';
+import Icon from '@integration-components/ui-components-preact/Icon';
 
 export interface PaymentDetailsActionsProps {
     extraFields: Record<string, any> | undefined;

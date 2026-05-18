@@ -1,11 +1,11 @@
 import cx from 'classnames';
 import useCoreContext from '../../../../../../core/Context/useCoreContext';
-import Typography from '../../../../../internal/Typography/Typography';
-import { TypographyVariant } from '../../../../../internal/Typography/types';
-import Icon from '../../../../../internal/Icon/Icon';
-import SuccessIcon from '../../../../../internal/SuccessIcon/SuccessIcon';
-import Button from '../../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../../internal/Button/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Icon from '@integration-components/ui-components-preact/Icon/Icon';
+import SuccessIcon from '@integration-components/ui-components-preact/SuccessIcon/SuccessIcon';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
 import './FormSuccess.scss';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 

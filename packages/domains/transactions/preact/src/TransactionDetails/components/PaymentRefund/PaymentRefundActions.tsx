@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import { useEffect, useMemo } from 'preact/hooks';
 import { RefundReason, RefundResult } from '../../types';
-import { ButtonVariant } from '../../../../../../../../src/components/internal/Button/types';
-import { ButtonActionsLayoutBasic } from '../../../../../../../../src/components/internal/Button/ButtonActions/types';
+import { ButtonVariant } from '@integration-components/types';
+import { ButtonActionsLayoutBasic } from '@integration-components/types';
 import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../constants';
-import ButtonActions from '../../../../../../../../src/components/internal/Button/ButtonActions/ButtonActions';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import { useConfigContext, useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
 

@@ -4,7 +4,7 @@ import { useMemo } from 'preact/hooks';
 import { FunctionalComponent } from 'preact';
 import { IPaymentLinkConfiguration, IPaymentLinkType } from '../../../../../../../types/api/models/payByLink';
 import { TranslationKey } from '../../../../../../../translations';
-import { FormSelect } from '../../../../../../internal/FormWrappers/FormSelect';
+import { FormSelect } from '@integration-components/ui-components-preact/FormWrappers/FormSelect';
 
 export type LinkTypeFieldProps = {
     configuration?: IPaymentLinkConfiguration;

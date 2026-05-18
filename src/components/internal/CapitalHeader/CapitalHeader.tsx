@@ -1,8 +1,8 @@
 import { FunctionalComponent } from 'preact';
 import { useMemo } from 'preact/hooks';
 import { useConfigContext } from '../../../core/ConfigContext';
-import { Header, HeaderProps } from '../Header';
-import { TypographyVariant } from '../Typography/types';
+import { Header, HeaderProps } from '@integration-components/ui-components-preact/Header';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import './CapitalHeader.scss';
 import { getCapitalHeaderSubtitleByLegalEntity } from './helpers';
 

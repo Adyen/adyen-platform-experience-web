@@ -1,6 +1,6 @@
 import { IGrant, IGrantStatus } from '../../../../../types';
 import { TranslationKey } from '../../../../../translations';
-import { TagVariant } from '../../../../internal/Tag/types';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { GrantConfig } from './types';
 
 const getHasDetails = (status: IGrantStatus) => status === 'Active';

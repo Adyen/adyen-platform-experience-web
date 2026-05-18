@@ -4,14 +4,14 @@ import { isNullish } from '@integration-components/utils';
 import { useCallback, useMemo } from 'preact/hooks';
 import { TransactionDetails } from '../../types';
 import { TranslationKey } from '@integration-components/core';
-import { Tooltip } from '../../../../../../../../src/components/internal/Tooltip/Tooltip';
+import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
 import { TX_DATA_LABEL, TX_DATA_LIST } from '../../constants';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { getTransactionAmountAdjustmentType, getTransactionAmountAdjustmentTypeInformation } from '@integration-components/transactions/domain';
-import { StructuredListProps } from '../../../../../../../../src/components/internal/StructuredList/types';
+import { StructuredListProps } from '@integration-components/ui-components-preact/StructuredList/types';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
-import StructuredList from '../../../../../../../../src/components/internal/StructuredList';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import cx from 'classnames';
 
 const paymentAmountKeys = {

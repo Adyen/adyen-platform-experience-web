@@ -9,7 +9,11 @@
         ".": "./src/index.ts",
         "./package.json": "./package.json",
         "./EventDispatcher": "./src/EventDispatcher/index.ts",
+        "./Errors/constants": "./src/Errors/constants.ts",
         "./Localization": "./src/Localization/index.ts",
+        "./Localization/Localization": "./src/Localization/Localization.ts",
+        "./Localization/amount/amount-util": "./src/Localization/amount/amount-util.ts",
+        "./Localization/constants/localization": "./src/Localization/constants/localization.ts",
         "./vue": "./src/vue/index.ts",
         "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"

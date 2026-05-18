@@ -1,10 +1,9 @@
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import { useModalContext } from '../../../../internal/Modal/Modal';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import ButtonActions from '../../../../internal/Button/ButtonActions/ButtonActions';
-import { ButtonActionsList } from '../../../../internal/Button/ButtonActions/types';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import { ButtonActionsList, ButtonVariant } from '@integration-components/types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useDisputeFlow } from '../../context/dispute/context';
@@ -12,9 +11,9 @@ import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { EMPTY_OBJECT, isFunction, uniqueId } from '../../../../../utils';
 import { TranslationKey } from '../../../../../translations';
 import { DisputeManagementProps } from '../../types';
-import Button from '../../../../internal/Button';
-import Icon from '../../../../internal/Icon';
-import SuccessIcon from '../../../../internal/SuccessIcon/SuccessIcon';
+import Button from '@integration-components/ui-components-preact/Button';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import SuccessIcon from '@integration-components/ui-components-preact/SuccessIcon/SuccessIcon';
 import './AcceptDisputeFlow.scss';
 
 export const AcceptDisputeFlow = ({ onDisputeAccept }: Pick<DisputeManagementProps, 'onDisputeAccept'>) => {

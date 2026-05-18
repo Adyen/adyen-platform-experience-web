@@ -74,6 +74,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:packages/shared/types
+      '@integration-components/ui-components-preact':
+        specifier: workspace:*
+        version: link:packages/shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:packages/shared/utils
@@ -266,6 +269,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
+      '@integration-components/ui-components-preact':
+        specifier: workspace:*
+        version: link:../../shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
@@ -327,6 +333,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
+      '@integration-components/ui-components-preact':
+        specifier: workspace:*
+        version: link:../../shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
@@ -373,6 +382,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../../shared/types
+      '@integration-components/ui-components-preact':
+        specifier: workspace:*
+        version: link:../../shared/ui-components-preact
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../../shared/utils
@@ -525,9 +537,41 @@ importers:
         specifier: 10.2.12
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  packages/shared/types: {}
+  packages/shared/types:
+    dependencies:
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
 
-  packages/shared/utils: {}
+  packages/shared/ui-components-preact:
+    dependencies:
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../core
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:../hooks-preact
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../style
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../types
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../utils
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
+
+  packages/shared/utils:
+    dependencies:
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../types
+      preact:
+        specifier: ^10.28.2
+        version: 10.28.2
 
   packages/tools/storybook:
     dependencies:

@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import { memo } from 'preact/compat';
-import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import { TX_DATA_CONTAINER, TX_DATA_HEAD_CONTAINER } from '../../constants';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { useCoreContext } from '@integration-components/core/preact';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 
 const PaymentRefundNotice = memo(() => {
     const { i18n } = useCoreContext();

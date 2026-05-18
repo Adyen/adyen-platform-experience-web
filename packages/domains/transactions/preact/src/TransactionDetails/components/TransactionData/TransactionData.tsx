@@ -1,15 +1,15 @@
 import { boolOrFalse } from '@integration-components/utils';
 import { CustomColumn } from '@integration-components/types';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
-import DataOverviewDetailsSkeleton from '../../../../../../../../src/components/internal/DataOverviewDetails/DataOverviewDetailsSkeleton';
+import DataOverviewDetailsSkeleton from '@integration-components/ui-components-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
 import { normalizeCustomFields } from '@integration-components/utils';
 import TransactionDataContent from './TransactionDataContent';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';
-import { useModalContext } from '../../../../../../../../src/components/internal/Modal/Modal';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
 import { useEffect, useMemo, useState } from 'preact/hooks';
-import { Header } from '../../../../../../../../src/components/internal/Header';
-import { ErrorMessageDisplay } from '../../../../../../../../src/components/internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { Header } from '@integration-components/ui-components-preact/Header';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getErrorMessage } from '../../../../../../../../src/components/utils/getErrorMessage';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 

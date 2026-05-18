@@ -1,7 +1,7 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import { useModalContext } from '../../../../internal/Modal/Modal';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import Typography from '../../../../internal/Typography/Typography';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DefendDisputeFileUpload } from './DefendDisputeFileUpload';
 import { DefendDisputeReason } from './DefendDisputeReason';

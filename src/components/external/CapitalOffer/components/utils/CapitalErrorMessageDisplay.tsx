@@ -1,9 +1,9 @@
 import { getCapitalErrorMessage } from '../../../../utils/capital/getCapitalErrorMessage';
 import AdyenPlatformExperienceError from '../../../../../core/Errors/AdyenPlatformExperienceError';
-import { ErrorMessageDisplay } from '../../../../internal/ErrorMessageDisplay/ErrorMessageDisplay';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { useCallback, useMemo } from 'preact/hooks';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
 import { ErrorTypes } from '../../../../../core/Http/utils';

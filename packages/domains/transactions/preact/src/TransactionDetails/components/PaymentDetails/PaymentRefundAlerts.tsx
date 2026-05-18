@@ -3,11 +3,11 @@ import { ComponentChild } from 'preact';
 import { RefundedState } from '../../types';
 import { useMemo } from 'preact/hooks';
 import { REFUND_STATUSES, TX_REFUND_STATUSES_CONTAINER } from '../../constants';
-import { AlertProps, AlertTypeOption, AlertVariantOption } from '../../../../../../../../src/components/internal/Alert/types';
+import { AlertProps, AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
 import { useCoreContext } from '@integration-components/core/preact';
-import Alert from '../../../../../../../../src/components/internal/Alert/Alert';
-import { TypographyElement, TypographyVariant } from '../../../../../../../../src/components/internal/Typography/types';
-import Typography from '../../../../../../../../src/components/internal/Typography/Typography';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 
 const baseAlertProps = {
     type: AlertTypeOption.HIGHLIGHT,

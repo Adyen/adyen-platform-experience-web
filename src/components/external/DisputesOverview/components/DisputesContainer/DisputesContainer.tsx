@@ -1,5 +1,5 @@
 import useBalanceAccounts from '../../../../../hooks/useBalanceAccounts';
-import DataOverviewContainer from '../../../../internal/DataOverviewContainer/DataOverviewContainer';
+import DataOverviewContainer from '@integration-components/ui-components-preact/DataOverviewContainer/DataOverviewContainer';
 import { DisputeOverviewComponentProps, ExternalUIComponentProps } from '../../../../types';
 import { DisputesOverview } from '../DisputesOverview/DisputesOverview';
 

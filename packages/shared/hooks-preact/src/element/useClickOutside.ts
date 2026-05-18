@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef } from 'preact/hooks';
-import { popoverUtil } from '../../../../../src/components/internal/Popover/utils/popoverUtil';
+import { CONTROL_ELEMENT_PROPERTY } from './constants';
+import { popoverUtil } from './popoverUtil';
 import type { Reflexable } from '@integration-components/utils/primitives/reactive/reflex';
 import type { Nullable } from '@integration-components/utils/types';
 import useReflex from '../useReflex';
 
-export const CONTROL_ELEMENT_PROPERTY: unique symbol = Symbol('__control.Elem.');
+export { CONTROL_ELEMENT_PROPERTY };
 
 export const enum ClickOutsideVariant {
     POPOVER = 'POPOVER',
