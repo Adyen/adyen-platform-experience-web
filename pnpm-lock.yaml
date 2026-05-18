@@ -6526,7 +6526,6 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {}
     engines: {node: '>=18'}
-    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {}
