@@ -6,9 +6,11 @@ import { render, screen, fireEvent } from '@testing-library/preact';
 import { describe, test, expect, vi } from 'vitest';
 import CapitalSlider from './CapitalSlider';
 import { IDynamicOffersConfig } from '../../../types';
+import { REPAYMENT_TERMS } from '../../../../mocks/mock-data';
 
 describe('CapitalSlider', () => {
     const dynamicOffersConfig: IDynamicOffersConfig = {
+        estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
         minAmount: { value: 50000, currency: 'EUR' },
         maxAmount: { value: 2500000, currency: 'EUR' },
         step: 10000,

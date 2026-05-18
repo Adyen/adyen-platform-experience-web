@@ -43,7 +43,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOfferQuery = useFetch({
         fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
-            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
+            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
         }, [dynamicConfigurationEndpointCall]),
     });
 

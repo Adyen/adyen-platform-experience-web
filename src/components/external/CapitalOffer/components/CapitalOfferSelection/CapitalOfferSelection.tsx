@@ -18,6 +18,7 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { debounce } from '../../../../utils/utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 
 type CapitalOfferSelectionProps = {
     dynamicOffersConfig: IDynamicOffersConfig | undefined;
@@ -102,6 +103,8 @@ export const CapitalOfferSelection = ({
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
 
+    const selectedRepaymentTermDays = useMemo(() => dynamicOffersConfig?.estimatedRepaymentTermsInDays[1], [dynamicOffersConfig]);
+
     const initialValue = useMemo(() => {
         if (dynamicOffersConfig)
             return calculateSliderAdjustedMidValue(
@@ -130,6 +133,11 @@ export const CapitalOfferSelection = ({
         },
     });
 
+    const matchedOffer = useMemo<IGrantOfferResponseDTO | undefined>(() => {
+        if (!getDynamicGrantOfferMutation.data?.offers || selectedRepaymentTermDays === undefined) return undefined;
+        return getDynamicGrantOfferMutation.data.offers.find(offer => offer.expectedRepaymentPeriodDays === selectedRepaymentTermDays);
+    }, [getDynamicGrantOfferMutation.data, selectedRepaymentTermDays]);
+
     const reviewOfferMutation = useMutation({
         queryFn: createGrantOffer,
         options: {
@@ -139,17 +147,23 @@ export const CapitalOfferSelection = ({
 
     const onReview = useCallback(() => {
         try {
-            void reviewOfferMutation.mutate({
-                body: {
-                    amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
-                    currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
-                },
-                contentType: 'application/json',
-            });
+            if (selectedRepaymentTermDays) {
+                void reviewOfferMutation.mutate(
+                    {
+                        body: {
+                            amount: matchedOffer?.grantAmount.value || requestedValue!,
+                            currency: matchedOffer?.grantAmount.currency || currency!,
+                            selectedEstimatedRepaymentTermDaysInDays: selectedRepaymentTermDays,
+                        },
+                        contentType: 'application/json',
+                    },
+                    { query: EMPTY_OBJECT }
+                );
+            }
         } finally {
             userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
         }
-    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation, userEvents]);
+    }, [currency, matchedOffer, requestedValue, reviewOfferMutation, selectedRepaymentTermDays, userEvents]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -201,7 +215,11 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError ? (
+            {reviewOfferMutation.error ||
+            getDynamicGrantOfferMutation.error ||
+            emptyGrantOffer ||
+            dynamicOffersConfigError ||
+            !selectedRepaymentTermDays ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
                     onBack={onOfferDismiss}
@@ -219,10 +237,10 @@ export const CapitalOfferSelection = ({
                         />
                     )}
                     <InfoBox className="adyen-pe-capital-offer-selection__details">
-                        {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
+                        {!matchedOffer || getDynamicGrantOfferMutation.isLoading || isLoading ? (
                             <LoadingSkeleton />
-                        ) : getDynamicGrantOfferMutation.data ? (
-                            <InformationDisplay data={getDynamicGrantOfferMutation.data} />
+                        ) : matchedOffer ? (
+                            <InformationDisplay data={matchedOffer} />
                         ) : null}
                     </InfoBox>
                     <div className="adyen-pe-capital-offer-selection__buttons">
