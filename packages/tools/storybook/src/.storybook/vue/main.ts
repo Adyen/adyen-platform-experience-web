@@ -38,8 +38,8 @@ const config: StorybookConfig = {
             resolve: {
                 dedupe: ['vue', 'vue-i18n'],
                 alias: {
-                    vue: resolve(rootDir, 'packages/tools/storybook-vue/node_modules/vue'),
-                    'vue-i18n': resolve(rootDir, 'packages/tools/storybook-vue/node_modules/vue-i18n'),
+                    vue: resolve(rootDir, 'packages/tools/storybook/node_modules/vue'),
+                    'vue-i18n': resolve(rootDir, 'packages/tools/storybook/node_modules/vue-i18n'),
                 },
             },
             css: {
