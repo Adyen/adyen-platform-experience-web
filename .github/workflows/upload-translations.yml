@@ -28,6 +28,7 @@ jobs:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Run setup steps for translation tasks
+        id: setup-smartling
         uses: ./.github/actions/setup-smartling
         with:
           npm_token: ${{ secrets.NPM_READ_ONLY_TOKEN }}
@@ -37,8 +38,8 @@ jobs:
 
       - name: Create translations job (with authorization)
         if: ${{ inputs.authorize_job }}
-        run: npx -y @adyen/smartling-bot@0.x.x upload-files -ar ${{ github.ref_name }}
+        run: npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} upload-files -ar ${{ github.ref_name }}
 
       - name: Create translations job (without authorization)
         if: ${{ ! inputs.authorize_job }}
-        run: npx -y @adyen/smartling-bot@0.x.x upload-files -r ${{ github.ref_name }}
+        run: npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} upload-files -r ${{ github.ref_name }}
