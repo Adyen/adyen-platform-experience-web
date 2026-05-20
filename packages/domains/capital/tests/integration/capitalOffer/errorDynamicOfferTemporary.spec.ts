@@ -9,8 +9,8 @@ test.describe('Error - Dynamic offer - Temporary', () => {
     });
 
     test('should render offer selection screen', async ({ page }) => {
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('How much money do you need?')).toBeVisible();
+        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
     });
 });

@@ -77,11 +77,12 @@ export interface components {
              */
             value: number;
         };
-        CreateGrantOfferRequestDTO: {
+        CreateGrantOfferRequestV2DTO: {
             /** Format: int64 */
             amount: number;
             currency: string;
-            selectedEstimatedRepaymentTermDaysInDays: number;
+            /** Format: int32 */
+            selectedEstimatedRepaymentTermDays: number;
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];
@@ -119,7 +120,7 @@ export type $defs = Record<string, never>;
 export interface operations {
     createGrantOffer: {
         parameters: {
-            query: {
+            query?: {
                 accountHolderId?: string;
             };
             header?: never;
@@ -128,7 +129,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['CreateGrantOfferRequestDTO'];
+                'application/json': components['schemas']['CreateGrantOfferRequestV2DTO'];
             };
         };
         responses: {
@@ -169,7 +170,7 @@ export interface operations {
     };
     getDynamicGrantOffersConfiguration: {
         parameters: {
-            query: {
+            query?: {
                 accountHolderId?: string;
             };
             header?: never;

@@ -69,8 +69,8 @@ const DYNAMIC_OFFER_HANDLER = async ({ request }: { request: StrictRequest<Defau
 };
 
 const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<DefaultBodyType> }) => {
-    const { amount, currency, selectedEstimatedRepaymentTermDaysInDays } = (await request.json()) as ICreateGrantOfferRequest;
-    const offer = calculateSelectedOffer(amount, currency, selectedEstimatedRepaymentTermDaysInDays);
+    const { amount, currency, selectedEstimatedRepaymentTermDays } = (await request.json()) as ICreateGrantOfferRequest;
+    const offer = calculateSelectedOffer(amount, currency, selectedEstimatedRepaymentTermDays);
     await delay(400);
     return HttpResponse.json({ ...offer, id: uuid() });
 };

@@ -20,7 +20,7 @@ describe('CapitalSlider', () => {
         render(<CapitalSlider dynamicOffersConfig={dynamicOffersConfig} />);
 
         const slider: HTMLInputElement = screen.getByRole('slider', {
-            name: 'How much money do you need?',
+            name: 'Select the amount for the loan',
         });
 
         expect(slider).toBeInTheDocument();

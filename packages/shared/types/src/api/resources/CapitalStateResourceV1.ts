@@ -42,9 +42,10 @@ export interface components {
         CapitalStateDTO: {
             activeOrRequestedGrants: components['schemas']['GrantResponseDTO'][];
             capitalState: components['schemas']['CapitalState'];
-            dynamicOffer?: components['schemas']['DynamicOffersResponseDTO'];
+            dynamicOffer?: components['schemas']['DynamicOffersResponseV2DTO'];
         };
-        DynamicOffersResponseDTO: {
+        DynamicOffersResponseV2DTO: {
+            estimatedRepaymentTermsInDays: number[];
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
             /** Format: int32 */
@@ -122,8 +123,8 @@ export interface components {
             region: 'NL';
         };
         RenewalDTO: {
-            available: boolean;
-            minimumRenewalAmount: components['schemas']['Amount'];
+            eligible: boolean;
+            minimumRenewalAmount?: components['schemas']['Amount'];
             /** Format: int32 */
             targetRepaymentPercentage: number;
         };
@@ -155,8 +156,8 @@ export type $defs = Record<string, never>;
 export interface operations {
     getCapitalState: {
         parameters: {
-            query: {
-                accountHolderId: string;
+            query?: {
+                accountHolderId?: string;
             };
             header?: never;
             path?: never;
