@@ -3,6 +3,9 @@ import { EndpointName } from '@integration-components/types/api/endpoints';
 import { HttpOptions } from '../Http/types';
 
 export const SETUP_ENDPOINTS_API_VERSIONS: Partial<Record<EndpointName, HttpOptions['apiVersion']>> = {
+    createGrantOffer: 2,
+    getDynamicGrantOffer: 2,
+    getDynamicGrantOffersConfiguration: 2,
     getTransaction: 2,
     getTransactions: 2,
     getTransactionTotals: 2,
