@@ -29,6 +29,7 @@
         "@testing-library/preact": "^3.2.3",
         "dotenv": "^17.2.3",
         "msw": "^2.4.5",
+        "msw-storybook-addon": "^2.0.2",
         "storybook": "10.2.12",
         "vitest": "4.0.10"
     }

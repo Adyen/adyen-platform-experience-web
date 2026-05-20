@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { legaEntityDecorator } from '../../../../../../stories/mocked/utils/setupRequestConfig';
+import { legaEntityDecorator } from '../utils/setupRequestConfig';
 import { EMPTY_SETUP_LEGAL_ENTITY_OBJECT } from '@integration-components/testing/storybook-helpers';
 import { ElementProps, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { CapitalOffer } from '../../src';
