@@ -11,6 +11,8 @@
         "./Tooltip/useTooltipListeners": "./src/Tooltip/useTooltipListeners.ts",
         "./Tooltip/types": "./src/Tooltip/types.ts",
         "./Tooltip/Tooltip": "./src/Tooltip/Tooltip.tsx",
+        "./StoreSelector": "./src/StoreSelector/index.ts",
+        "./StoreSelector/types": "./src/StoreSelector/types.ts",
         "./Header": "./src/Header/index.ts",
         "./Header/Header": "./src/Header/Header.tsx",
         "./DataOverviewDetails/constants": "./src/DataOverviewDetails/constants.ts",
