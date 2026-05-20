@@ -15,9 +15,19 @@ inputs:
     description: 'SMARTLING_USER_SECRET'
     required: true
 
+outputs:
+  smartling_bot_version:
+    description: 'Version of @adyen/smartling-bot to use with npx'
+    value: ${{ steps.set-smartling-bot-version.outputs.smartling_bot_version }}
+
 runs:
   using: composite
   steps:
+    - name: Set smartling-bot version
+      id: set-smartling-bot-version
+      shell: sh
+      run: echo "smartling_bot_version=0.13.2" >> $GITHUB_OUTPUT
+
     - name: Create the configuration file
       shell: sh
       env:
