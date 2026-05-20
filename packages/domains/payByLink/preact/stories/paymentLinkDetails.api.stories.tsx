@@ -1,8 +1,7 @@
 import { Meta } from '@storybook/preact';
-import { PaymentLinkDetails } from '../../src';
-import { PaymentLinkDetailsMeta } from '../../packages/domains/payByLink/preact/stories/paymentLinkDetails.meta';
-import { ElementProps, ElementStory, SessionControls } from '@integration-components/testing/storybook-helpers';
-import { EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
+import { PaymentLinkDetails } from '@integration-components/payByLink/publish';
+import { ElementProps, ElementStory, SessionControls, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
+import { PaymentLinkDetailsMeta } from './paymentLinkDetails.meta';
 
 const meta: Meta<ElementProps<typeof PaymentLinkDetails>> = { ...PaymentLinkDetailsMeta, title: 'API-connected/Pay by Link/Payment Link Details' };
 
