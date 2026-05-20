@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import localInvalidFieldsConfig from '../../config/invalidFieldsConfig.json';
+import localInvalidFieldsConfig from '../../../../domain/src/config/invalidFieldsConfig.json';
 import { TranslationKey } from '@integration-components/core';
 
 export type InvalidFieldsConfig = {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import localTermsRequirementsConfig from '../../../../config/termsRequirementsConfig.json';
+import localTermsRequirementsConfig from '../../../../../../domain/src/config/termsRequirementsConfig.json';
 import { TranslationKey } from '@integration-components/core';
 
 export interface TermsRequirementItem {
