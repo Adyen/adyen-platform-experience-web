@@ -19,6 +19,7 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@adyen/bento-vue3": "^1.94.0",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "classnames": "*"

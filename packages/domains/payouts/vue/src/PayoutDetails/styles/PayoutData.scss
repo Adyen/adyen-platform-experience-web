@@ -1,0 +1,97 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-payout-data {
+    --adyen-pe-data-details-padding: #{style.token(spacer-070)};
+
+    &__data-grid {
+        margin-inline: 0 !important;
+    }
+
+    &__title-container {
+        display: flex;
+        gap: style.token(spacer-050);
+    }
+
+    &__title {
+        display: grid;
+        gap: style.token(spacer-020);
+
+        &--ba-id {
+            color: style.token(color-label-secondary);
+        }
+
+        &--with-extra-details {
+            padding-bottom: style.token(spacer-070);
+        }
+    }
+
+    &__card-header {
+        display: flex;
+        flex: 1;
+        flex-direction: row;
+        justify-content: space-between;
+
+        &--summary {
+            margin-left: style.token(spacer-100);
+            padding: style.token(spacer-020) 0;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-030);
+        margin: 0 calc(var(--adyen-pe-data-details-padding) * -1);
+        padding: style.token(spacer-070);
+
+        &--card-title {
+            color: style.token(color-label-secondary);
+            padding: style.token(spacer-000);
+        }
+
+        &--section {
+            &-amount {
+                display: flex;
+                justify-content: space-between;
+                // padding: style.token(spacer-070) 0;
+            }
+        }
+
+        &--card {
+            margin-bottom: style.token(spacer-060);
+
+            &:not(:first-child) {
+                margin-top: style.token(spacer-060);
+            }
+        }
+    }
+
+    &__extra-details {
+        margin-bottom: style.token(spacer-090);
+    }
+
+    &__extra-details-label {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-body-font-size);
+        font-weight: style.token(text-body-font-weight);
+        line-height: style.token(text-body-line-height);
+        padding-bottom: style.token(spacer-030);
+        padding-top: style.token(spacer-030);
+    }
+
+    &__extra-details-icon {
+        img {
+            width: style.token(spacer-070);
+        }
+    }
+
+    &__button-actions {
+        display: flex;
+        justify-content: end;
+        margin-top: style.token(spacer-080);
+    }
+
+    .adyen-pe-data-grid {
+        padding: style.token(spacer-040) !important;
+    }
+}

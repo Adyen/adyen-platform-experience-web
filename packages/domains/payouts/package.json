@@ -6,24 +6,29 @@
     "exports": {
         "./publish": "./publish/src/index.ts",
         "./preact": "./preact/src/index.ts",
+        "./vue": "./vue/src/index.ts",
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
+        "@adyen/bento-vue3": "^1.94.0",
+        "@adyen/ui-assets-icons-16": "^7.7.2",
+        "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/style": "workspace:*",
-        "@integration-components/testing": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/ui-components-preact": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "^2.5.1"
+        "classnames": "^2.5.1",
+        "vue-i18n": "^11"
     },
     "peerDependencies": {
         "preact": "catalog:",
         "vue": "catalog:"
     },
     "devDependencies": {
+        "@integration-components/testing": "workspace:*",
         "@playwright/test": "^1.56.0",
         "@storybook/preact": "10.2.12",
         "@storybook/vue3": "10.2.12",
