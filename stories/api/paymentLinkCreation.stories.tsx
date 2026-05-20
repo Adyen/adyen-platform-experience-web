@@ -1,7 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { PaymentLinkCreation } from '../../src';
 import { ElementProps, ElementStory, SessionControls } from '@integration-components/testing/storybook-helpers';
-import { PaymentLinkCreationMeta } from '../components/paymentLinkCreation';
+import { PaymentLinkCreationMeta } from '../../packages/domains/payByLink/preact/stories/paymentLinkCreation.meta';
 import { EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkCreationComponentProps } from '../../src/components/types';
 
