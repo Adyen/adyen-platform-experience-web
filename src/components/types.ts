@@ -116,8 +116,12 @@ export type {
     PayoutDetailsProps,
 } from '@integration-components/payouts/publish';
 
-export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
-export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
+export type {
+    DisputeOverviewComponentProps,
+    DisputesOverviewProps,
+    DisputesTableFields,
+    DisputeStatusGroup,
+} from '@integration-components/disputes/publish';
 
 export type DeepPartial<T> = T extends object
     ? {

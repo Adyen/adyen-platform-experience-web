@@ -56,7 +56,7 @@
     "format": "prettier --write 'src/**/*.{ts,tsx,js,css,scss,html,vue}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx,vue}' 'packages/domains/**/*.{js,ts,tsx,vue}' --quiet && stylelint 'src/**/*.scss' 'packages/domains/**/*.scss' --fix && pnpm run lint:playwright-selectors",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx,vue}' 'packages/domains/**/*.{js,ts,tsx,vue}' 'packages/shared/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' 'packages/domains/**/*.scss' 'packages/shared/**/*.scss' --fix && pnpm run lint:playwright-selectors",
     "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}' 'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
@@ -76,8 +76,8 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions",
-    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions --parallel=3' 'tsc --project tsconfig-build.json --watch'",
+    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes",
+    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes --parallel=4' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
@@ -97,6 +97,7 @@
     "@integration-components/payouts": "workspace:*",
     "@integration-components/reports": "workspace:*",
     "@integration-components/transactions": "workspace:*",
+    "@integration-components/disputes": "workspace:*",
     "@integration-components/ui-components-preact": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",

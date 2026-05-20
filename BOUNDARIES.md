@@ -31,7 +31,7 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 | `@integration-components/payouts`       | current | `type:domain`, `scope:payouts`       |
 | `@integration-components/transactions`  | current | `type:domain`, `scope:transactions`  |
 | `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
-| `@integration-components/disputes`      | planned | `type:domain`, `scope:disputes`      |
+| `@integration-components/disputes`      | current | `type:domain`, `scope:disputes`      |
 | `@integration-components/capital`       | planned | `type:domain`, `scope:capital`       |
 
 ### `type:publish`
@@ -68,6 +68,7 @@ The shared Preact UI primitives now live in `@integration-components/ui-componen
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx`, `packages/domains/transactions/preact/src/TransactionDetails/components/TransactionData/TransactionData.tsx` | Returns JSX and is tightly coupled to other root utilities; extraction is tracked separately and will land once a Preact-friendly home for these helpers is decided. |
+| `../../../../domain/src/config/*.json`            | `packages/domains/disputes/preact/src/DisputeManagement/context/dispute/context.tsx`, `packages/domains/disputes/preact/src/DisputeManagement/utils/index.test.ts` | JSON config files in `domain/src/config/` are imported via relative path because TypeScript path aliases cannot resolve `.json` imports through barrel re-exports. |
 
 Do not introduce new exceptions of this kind in subsequent domains. Either reuse these entries (if the same import is already covered) or promote the dependency to a shared package before extracting.
 
