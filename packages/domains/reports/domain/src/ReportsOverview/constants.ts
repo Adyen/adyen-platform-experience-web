@@ -1,6 +1,5 @@
 // Framework-agnostic constants shared by every ReportsOverview render layer
-// (preact today, vue once feature/add-reports-vue-component lands). Each
-// layer's local `constants.ts` re-exports from here.
+// Each layer's local `constants.ts` re-exports from here.
 //
 // Pagination defaults (DEFAULT_PAGE_LIMIT / LIMIT_OPTIONS) are intentionally
 // not hoisted: preact pulls them from the shared internal Pagination
@@ -26,3 +25,8 @@ export const REPORTS_TABLE_CLASS_NAMES = {
 export const EARLIEST_PAYOUT_SINCE_DATE = new Date('2024-04-16T00:00:00.000Z').toString();
 
 export const REPORTS_DOWNLOAD_DISABLED_TIMEOUT = 1000;
+
+export const DEFAULT_PAGE_LIMIT = 10;
+export const LIMIT_OPTIONS = [5, 10, 20, 50];
+
+export const REPORTS_TABLE_FIELDS = ['createdAt', 'dateAndReportType', 'reportType', 'reportFile'] as const;
