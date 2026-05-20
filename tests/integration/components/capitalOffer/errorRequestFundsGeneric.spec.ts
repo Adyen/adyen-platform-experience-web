@@ -6,8 +6,8 @@ const STORY_ID = 'mocked-capital-capital-offer--error-request-funds-generic';
 test.describe('Error - Request funds - Generic', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await page.getByRole('button', { name: 'Review offer' }).click();
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
+        await page.getByRole('button', { name: 'Submit request (€13,875.00)' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
@@ -21,8 +21,8 @@ test.describe('Error - Request funds - Generic', () => {
 
     test('should go back to offer selection screen when "Back" button is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'Go back' }).click();
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('How much money do you need?')).toBeVisible();
+        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
     });
 });
