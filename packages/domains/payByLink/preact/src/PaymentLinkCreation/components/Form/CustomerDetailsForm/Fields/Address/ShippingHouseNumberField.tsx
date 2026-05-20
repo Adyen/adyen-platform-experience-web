@@ -1,0 +1,48 @@
+import { PaymentLinkCreationFormValues } from '../../../../types';
+import { useCoreContext } from '@integration-components/core/preact';
+import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
+import { useCallback } from 'preact/hooks';
+import { TargetedEvent } from 'preact';
+import { FormTextInput } from '@integration-components/ui-components-preact/FormWrappers/FormTextInput';
+import { PAYMENT_LINK_CREATION_FIELD_LENGTHS } from '../../../../../constants';
+import type { AddressFieldRequiredChecker } from '../../useAddressChecker';
+
+interface ShippingHouseNumberFieldProps {
+    isSameAddress: boolean;
+    isAddressFieldRequired: AddressFieldRequiredChecker;
+    isSameAddressCopyEnabled?: boolean;
+}
+
+export const ShippingHouseNumberField = ({
+    isSameAddress,
+    isAddressFieldRequired,
+    isSameAddressCopyEnabled = false,
+}: ShippingHouseNumberFieldProps) => {
+    const { i18n } = useCoreContext();
+    const { setValue, fieldsConfig } = useWizardFormContext<PaymentLinkCreationFormValues>();
+
+    const onInput = useCallback(
+        (e: TargetedEvent<HTMLInputElement, Event>) => {
+            // Only copy when the same-address checkbox is enabled.
+            // Prevents unintended copying when no address is prefilled and target fields are readOnly
+            if (isSameAddressCopyEnabled && isSameAddress) {
+                setValue('billingAddress.houseNumberOrName', e.currentTarget.value);
+            }
+        },
+        [isSameAddress, setValue, isSameAddressCopyEnabled]
+    );
+
+    const isRequired = fieldsConfig['deliveryAddress.houseNumberOrName']?.required || isAddressFieldRequired('deliveryAddress.houseNumberOrName');
+
+    return (
+        <FormTextInput<PaymentLinkCreationFormValues>
+            maxLength={PAYMENT_LINK_CREATION_FIELD_LENGTHS.deliveryAddress.houseNumberOrName.max}
+            fieldName="deliveryAddress.houseNumberOrName"
+            label={i18n.get('payByLink.creation.fields.deliveryAddress.houseNumberOrName.label')}
+            onInput={onInput}
+            className="adyen-pe-payment-link-creation-form__shipping-address-field--small"
+            hideOptionalLabel
+            isRequired={isRequired}
+        />
+    );
+};

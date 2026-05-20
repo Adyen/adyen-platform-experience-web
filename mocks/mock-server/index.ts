@@ -5,7 +5,7 @@ import { balanceAccountMock } from './balanceAccounts';
 import { capitalMock } from './capital';
 import { disputesMocks } from '../../packages/domains/disputes/mocks/mock-server/disputes';
 import { onboardingMocks } from './onboarding';
-import { payByLinkMocks } from './payByLink';
+import { payByLinkMocks } from '../../packages/domains/payByLink/mocks/mock-server/payByLink';
 import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/payouts';
 import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';

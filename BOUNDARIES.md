@@ -30,7 +30,7 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 | `@integration-components/reports`       | current | `type:domain`, `scope:reports`       |
 | `@integration-components/payouts`       | current | `type:domain`, `scope:payouts`       |
 | `@integration-components/transactions`  | current | `type:domain`, `scope:transactions`  |
-| `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
+| `@integration-components/payByLink`     | current | `type:domain`, `scope:payByLink`     |
 | `@integration-components/disputes`      | current | `type:domain`, `scope:disputes`      |
 | `@integration-components/capital`       | planned | `type:domain`, `scope:capital`       |
 
@@ -63,12 +63,13 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 ### Transitional exceptions
 
-The shared Preact UI primitives now live in `@integration-components/ui-components-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-components-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`, `StoreSelector`.
+The shared Preact UI primitives now live in `@integration-components/ui-components-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-components-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`. (`StoreSelector` was promoted to `ui-components-preact` during the payByLink extraction.)
 
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx`, `packages/domains/transactions/preact/src/TransactionDetails/components/TransactionData/TransactionData.tsx` | Returns JSX and is tightly coupled to other root utilities; extraction is tracked separately and will land once a Preact-friendly home for these helpers is decided. |
 | `../../../../domain/src/config/*.json`            | `packages/domains/disputes/preact/src/DisputeManagement/context/dispute/context.tsx`, `packages/domains/disputes/preact/src/DisputeManagement/utils/index.test.ts` | JSON config files in `domain/src/config/` are imported via relative path because TypeScript path aliases cannot resolve `.json` imports through barrel re-exports. |
+| `../../config/*.json`                             | `packages/domains/payByLink/preact/src/PaymentLinkCreation/hooks/useInvalidFieldsConfig.ts`, `packages/domains/payByLink/preact/src/PaymentLinkSettings/components/TermsAndConditions/Requirements/useTermsRequirementsConfig.ts` | Same JSON-import resolution constraint as disputes above; config files stored under `preact/src/config/`. |
 
 Do not introduce new exceptions of this kind in subsequent domains. Either reuse these entries (if the same import is already covered) or promote the dependency to a shared package before extracting.
 

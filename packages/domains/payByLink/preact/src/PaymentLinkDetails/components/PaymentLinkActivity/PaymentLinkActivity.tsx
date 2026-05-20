@@ -1,0 +1,43 @@
+import { useMemo } from 'preact/hooks';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TimelineItem } from '@integration-components/ui-components-preact/Timeline/components/TimelineItem';
+import Timeline from '@integration-components/ui-components-preact/Timeline/Timeline';
+import { TimelineDateFormat } from '@integration-components/ui-components-preact/Timeline/types';
+import { IPaymentLinkActivity } from '@integration-components/types';
+import { getTitleKey, getDescriptionKey, getStatus } from './utils';
+
+type PaymentLinkActivityProps = {
+    activities: IPaymentLinkActivity[];
+};
+
+export const PaymentLinkActivity = ({ activities }: PaymentLinkActivityProps) => {
+    const { i18n } = useCoreContext();
+
+    const timelineItems = useMemo(
+        () =>
+            activities.map(activity => ({
+                titleKey: getTitleKey(activity),
+                descriptionKey: getDescriptionKey(activity),
+                date: activity.date,
+                status: getStatus(activity),
+            })),
+        [activities]
+    );
+
+    return (
+        <Timeline>
+            {timelineItems.map(({ titleKey, date, status, descriptionKey }: any) => (
+                <TimelineItem
+                    key={date}
+                    title={i18n.get(titleKey)}
+                    timestamp={{
+                        date: new Date(date),
+                        format: TimelineDateFormat.FULL_DATE_EXACT_TIME,
+                    }}
+                    status={status}
+                    description={i18n.get(descriptionKey)}
+                />
+            ))}
+        </Timeline>
+    );
+};
