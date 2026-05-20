@@ -5,8 +5,8 @@ const dateStartUTCTimestampOffset = (date: Date | number | string, numberOfDays 
     return new Date(new Date(date).setUTCHours(0, 0, 0, 0) + Math.floor(numberOfDays) * DAY_MS);
 };
 
-export const getExpectedRepaymentDate = (expectedRepaymentPeriodDays: number) => {
-    return parseDate(dateStartUTCTimestampOffset(new Date(), expectedRepaymentPeriodDays));
+export const getMaximumRepaymentDate = (days: number) => {
+    return parseDate(dateStartUTCTimestampOffset(new Date(), days));
 };
 
 export const calculateMaximumRepaymentPeriodInMonths = (days?: number) => (days ? Math.ceil(days / 30) : null);
