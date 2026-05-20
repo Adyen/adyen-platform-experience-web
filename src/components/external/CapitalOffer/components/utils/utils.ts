@@ -14,3 +14,11 @@ export const calculateMaximumRepaymentPeriodInMonths = (days?: number) => (days 
 export const getPercentage = (rate: number) => {
     return rate / 100;
 };
+
+const DAYS_PER_MONTH = 30;
+
+export const getTermMonthsAndRemainingDays = (days: number): { months: number; remainingDays: number } => {
+    const months = Math.floor(days / DAYS_PER_MONTH);
+    const remainingDays = days % DAYS_PER_MONTH;
+    return { months, remainingDays };
+};

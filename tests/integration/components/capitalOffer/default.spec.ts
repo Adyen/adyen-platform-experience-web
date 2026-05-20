@@ -89,7 +89,7 @@ test.describe('Default', () => {
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
         await expect(page.getByText('11%')).toBeVisible();
         await expect(page.getByText('Maximum repayment period')).toBeVisible();
-        await expect(page.getByText('18 months')).toBeVisible();
+        await expect(page.getByText('9 months')).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
         await expect(page.getByText('180 days')).toBeVisible();
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
