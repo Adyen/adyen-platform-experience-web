@@ -153,7 +153,7 @@ export const CapitalOfferSelection = ({
                         body: {
                             amount: matchedOffer?.grantAmount.value || requestedValue!,
                             currency: matchedOffer?.grantAmount.currency || currency!,
-                            selectedEstimatedRepaymentTermDaysInDays: selectedRepaymentTermDays,
+                            selectedEstimatedRepaymentTermDays: selectedRepaymentTermDays,
                         },
                         contentType: 'application/json',
                     },

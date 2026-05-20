@@ -132,8 +132,8 @@ export interface components {
             region: 'NL';
         };
         RenewalDTO: {
-            available: boolean;
-            minimumRenewalAmount: components['schemas']['Amount'];
+            eligible: boolean;
+            minimumRenewalAmount?: components['schemas']['Amount'];
             /** Format: int32 */
             targetRepaymentPercentage: number;
         };
