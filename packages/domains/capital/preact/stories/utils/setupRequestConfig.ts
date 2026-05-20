@@ -1,7 +1,7 @@
 import { Decorator } from '@storybook/preact';
 import { http, HttpResponse } from 'msw';
 import { getWorker } from 'msw-storybook-addon';
-import { endpoints } from '../../../../../../endpoints/endpoints';
+import { CAPITAL_ENDPOINTS } from '../../../mocks/endpoints';
 import { setupBasicResponse } from '@integration-components/testing/fixtures';
 import { delay } from '@integration-components/testing/msw';
 
@@ -12,7 +12,7 @@ export const legaEntityDecorator: Decorator = (Story, context) => {
     const worker = getWorker();
     const legalEntity = context.args.legalEntity ?? {};
     worker.use(
-        http.post(endpoints().setup, async () => {
+        http.post(CAPITAL_ENDPOINTS.setup, async () => {
             await delay(200);
             return HttpResponse.json({
                 ...setupBasicResponse,
