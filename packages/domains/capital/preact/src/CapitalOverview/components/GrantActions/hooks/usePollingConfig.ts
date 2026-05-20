@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
-import localPollingConfig from '../../../../config/pollingConfig.json';
+import localPollingConfig from '../../../../../../domain/src/config/pollingConfig.json';
 
 // The following structure enables us to have polling with exponential backoff intervals. If the `backoffMultiplier` is 1, the polling will happen on fixed intervals.
 export interface MissingActionsPollingConfig {
