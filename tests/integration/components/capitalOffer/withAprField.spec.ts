@@ -9,7 +9,7 @@ test.describe('With APR field', () => {
     });
 
     test('should render Annual percentage rate field', async ({ page }) => {
-        await page.getByRole('button', { name: 'Review offer' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
         await expect(page.getByText('Annual percentage rate')).toBeVisible();
         await expect(page.getByText('20%')).toBeVisible();
     });
