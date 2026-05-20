@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import termsRequirementsConfig from '../../../../config/termsRequirementsConfig.json';
+import termsRequirementsConfig from '../../../../../../domain/src/config/termsRequirementsConfig.json';
 import enUSTranslations from '../../../../../../../../../src/assets/translations/en-US.json';
 
 describe('termsRequirementsConfig', () => {
