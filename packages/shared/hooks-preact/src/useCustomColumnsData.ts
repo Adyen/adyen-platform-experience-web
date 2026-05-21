@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
-import { OnDataRetrievedCallback } from '../../../../src/components/types';
+import { OnDataRetrievedCallback } from '@integration-components/types';
 import { isFunction } from '@integration-components/utils';
 
 export const useCustomColumnsData = <T>({

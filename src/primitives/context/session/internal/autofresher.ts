@@ -1,4 +1,4 @@
-import { boolOrFalse, falsify, getter, isFunction, noop, tryResolve } from '../../../../utils';
+import { boolOrFalse, falsify, getter, isFunction, noop, tryResolve } from '@integration-components/utils';
 import { createPromisor } from '../../../async/promisor';
 import { EVT_SESSION_EXPIRED } from '../constants';
 import type { SessionRefresher } from './types';

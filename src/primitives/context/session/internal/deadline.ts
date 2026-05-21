@@ -9,7 +9,7 @@ import {
     parseDate,
     struct,
     tryResolve,
-} from '../../../../utils';
+} from '@integration-components/utils';
 import clock from '../../../time/clock';
 import { createAbortable } from '../../../async/abortable';
 import { createPromisor } from '../../../async/promisor';

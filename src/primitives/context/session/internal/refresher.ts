@@ -1,6 +1,15 @@
 import { createPromisor } from '../../../async/promisor';
 import { createEventEmitter, Emitter } from '../../../reactive/eventEmitter';
-import { abortSignalForAny, ALREADY_RESOLVED_PROMISE, enumerable, getter, isAbortSignal, isFunction, struct, tryResolve } from '../../../../utils';
+import {
+    abortSignalForAny,
+    ALREADY_RESOLVED_PROMISE,
+    enumerable,
+    getter,
+    isAbortSignal,
+    isFunction,
+    struct,
+    tryResolve,
+} from '@integration-components/utils';
 import { INTERNAL_EVT_SESSION_READY, INTERNAL_EVT_SESSION_REFRESHING_END, INTERNAL_EVT_SESSION_REFRESHING_START } from './constants';
 import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED } from '../constants';
 import type { SessionRefresher, SessionRefresherContext, SessionRefresherEmitter } from './types';

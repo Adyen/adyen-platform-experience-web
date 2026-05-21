@@ -4,7 +4,7 @@ import { _canAutofresh, createSessionAutofresher } from './autofresher';
 import { ERR_SESSION_REFRESH_ABORTED } from '../constants';
 import { augmentSessionRefreshContext, SessionRefreshContext } from '../__testing__/fixtures';
 import { waitForTicks } from '../__testing__/utils';
-import { noop } from '../../../../utils';
+import { noop } from '@integration-components/utils';
 
 vi.mock('../constants', async importOriginal => {
     const mod = await importOriginal<typeof import('../constants')>();

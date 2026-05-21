@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '../../../utils';
-import { PromiseState } from '../../../utils/types';
+import { ALREADY_RESOLVED_PROMISE, getPromiseState } from '@integration-components/utils';
+import { PromiseState } from '@integration-components/utils/types';
 import { createPromisor } from './main';
 
 describe('createPromisor', () => {

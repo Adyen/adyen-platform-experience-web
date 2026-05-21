@@ -2,7 +2,7 @@ import { toChildArray } from 'preact';
 import { useEffect, useMemo } from 'preact/hooks';
 import { createCoreContextValue, waitForI18n } from '../setupCore';
 import type { CoreProviderProps } from '../CoreContext.types';
-import useBooleanState from '../../../../../src/hooks/useBooleanState';
+import useBooleanState from '@integration-components/hooks-preact/useBooleanState';
 import { CoreContext } from './CoreContext';
 
 const CoreProvider = (props: CoreProviderProps) => {

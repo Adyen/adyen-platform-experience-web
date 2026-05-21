@@ -5,7 +5,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { expect, test } from 'vitest';
-import { diff, extractExportsFromContent, getMissingPackageEntrypoints, type Snapshot } from '../../scripts/check-publish-contract/lib';
+import { diff, extractExportsFromContent, getMissingPackageEntrypoints, type Snapshot } from './lib';
 
 test('extractExportsFromContent ignores import aliases', () => {
     const content = ['import { Foo as F, Bar as B } from "./foo.js";', 'export { F as Foo, B as Bar };'].join('\n');

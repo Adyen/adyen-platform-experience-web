@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { getPromiseState } from '../../../../utils';
-import { PromiseState } from '../../../../utils/types';
+import { getPromiseState } from '@integration-components/utils';
+import { PromiseState } from '@integration-components/utils/types';
 import { INTERNAL_EVT_SESSION_READY } from './constants';
 import { ERR_SESSION_FACTORY_UNAVAILABLE, ERR_SESSION_INVALID, ERR_SESSION_REFRESH_ABORTED } from '../constants';
 import { augmentSessionRefreshContext, SessionRefreshContext } from '../__testing__/fixtures';

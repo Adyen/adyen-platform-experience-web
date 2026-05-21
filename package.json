@@ -30,17 +30,17 @@
   ],
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/packages/sdk/src/index.js",
-  "types": "./dist/types/src/index.d.ts",
+  "types": "./dist/types/packages/sdk/src/index.d.ts",
   "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
-      "types": "./dist/types/src/index.d.ts",
+      "types": "./dist/types/packages/sdk/src/index.d.ts",
       "require": {
-        "types": "./dist/types/src/index.d.ts",
+        "types": "./dist/types/packages/sdk/src/index.d.ts",
         "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/types/src/index.d.ts",
+        "types": "./dist/types/packages/sdk/src/index.d.ts",
         "default": "./dist/es/packages/sdk/src/index.js"
       }
     },
@@ -83,15 +83,7 @@
   "dependencies": {
     "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
     "classnames": "^2.5.1",
-    "core-js": "^3.36.0"
-  },
-  "peerDependencies": {
-    "preact": "catalog:"
-  },
-  "devDependencies": {
-    "@adyen/bento-design-tokens": "^1.7.1",
-    "@changesets/cli": "2.29.8",
-    "@changesets/get-github-info": "^0.6.0",
+    "core-js": "^3.36.0",
     "@integration-components/core": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",
     "@integration-components/payouts": "workspace:*",
@@ -104,7 +96,15 @@
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",
-    "@integration-components/utils": "workspace:*",
+    "@integration-components/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "preact": "catalog:"
+  },
+  "devDependencies": {
+    "@adyen/bento-design-tokens": "^1.7.1",
+    "@changesets/cli": "2.29.8",
+    "@changesets/get-github-info": "^0.6.0",
     "@nx/eslint": "^22.5.3",
     "@nx/eslint-plugin": "^22.5.3",
     "@nx/vite": "^22.5.3",

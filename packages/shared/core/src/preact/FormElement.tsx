@@ -1,5 +1,6 @@
 import AdyenPlatformExperienceError from '../AdyenPlatformExperienceError';
-import type { _UIComponentProps, BaseElementProps, FormProps, IFormElement, UIElementProps } from '../../../../../src/components/types';
+import type { _UIComponentProps, BaseElementProps, UIElementProps } from '@integration-components/types';
+import type { FormProps, IFormElement } from './types';
 import UIElement from './UIElement';
 
 export class FormElement<P extends UIElementProps> extends UIElement<P & FormProps<P>> implements IFormElement<P> {

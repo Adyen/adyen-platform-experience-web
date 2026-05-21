@@ -17,7 +17,7 @@ import { createSessionAutofresher } from './internal/autofresher';
 import { createSessionDeadline } from './internal/deadline';
 import { createSessionRefresher } from './internal/refresher';
 import { createEventEmitter } from '../../reactive/eventEmitter';
-import { isFunction, noop } from '../../../utils';
+import { isFunction, noop } from '@integration-components/utils';
 import type { SessionEventType, SessionSpecification } from './types';
 
 // Declaration merging is used here to type runtime-defined class members

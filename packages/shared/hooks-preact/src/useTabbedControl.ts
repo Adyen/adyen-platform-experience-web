@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { InteractionKeyCode } from '../../../../src/components/types';
+import { InteractionKeyCode } from '@integration-components/types';
 import useUniqueId from './useUniqueId';
 
 export type TabbedControlOptions<OptionId extends string> = readonly { id: OptionId; disabled?: boolean }[];

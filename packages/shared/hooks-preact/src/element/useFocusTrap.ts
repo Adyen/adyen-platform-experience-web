@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'preact/hooks';
-import { InteractionKeyCode } from '../../../../../src/components/types';
+import { InteractionKeyCode } from '@integration-components/types';
 import { isUndefined } from '@integration-components/utils';
 import withTabbableRoot, {
     focusIsWithin,

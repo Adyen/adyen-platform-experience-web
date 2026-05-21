@@ -42,25 +42,6 @@ importers:
       '@adyen/kyc-components':
         specifier: '>=4.0.0-compact.9 <4.0.0'
         version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
-      classnames:
-        specifier: ^2.5.1
-        version: 2.5.1
-      core-js:
-        specifier: ^3.36.0
-        version: 3.41.0
-      preact:
-        specifier: ^10.29.1
-        version: 10.29.1
-    devDependencies:
-      '@adyen/bento-design-tokens':
-        specifier: ^1.7.1
-        version: 1.43.0
-      '@changesets/cli':
-        specifier: 2.29.8
-        version: 2.29.8(@types/node@24.10.13)
-      '@changesets/get-github-info':
-        specifier: ^0.6.0
-        version: 0.6.0
       '@integration-components/capital':
         specifier: workspace:*
         version: link:packages/domains/capital
@@ -100,6 +81,25 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:packages/shared/utils
+      classnames:
+        specifier: ^2.5.1
+        version: 2.5.1
+      core-js:
+        specifier: ^3.36.0
+        version: 3.41.0
+      preact:
+        specifier: ^10.29.1
+        version: 10.29.1
+    devDependencies:
+      '@adyen/bento-design-tokens':
+        specifier: ^1.7.1
+        version: 1.43.0
+      '@changesets/cli':
+        specifier: 2.29.8
+        version: 2.29.8(@types/node@24.10.13)
+      '@changesets/get-github-info':
+        specifier: ^0.6.0
+        version: 0.6.0
       '@nx/eslint':
         specifier: ^22.5.3
         version: 22.6.3(@babel/traverse@7.29.0)(@zkochan/js-yaml@0.0.7)(eslint@9.39.2)(nx@22.6.3)

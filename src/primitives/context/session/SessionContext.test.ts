@@ -5,7 +5,7 @@ import { setupTimers } from '../../time/__testing__/fixtures';
 import { EVT_SESSION_READY, EVT_SESSION_REFRESHED, EVT_SESSION_REFRESHING_END, EVT_SESSION_REFRESHING_START } from './constants';
 import { augmentSpecificationContext, SpecificationContext } from './__testing__/fixtures';
 import { waitForTicks } from './__testing__/utils';
-import { noop } from '../../../utils';
+import { noop } from '@integration-components/utils';
 import type { SessionEventType } from './types';
 
 describe('SessionContext', () => {
