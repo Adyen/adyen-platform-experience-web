@@ -105,7 +105,12 @@ export default defineConfig(({ mode }) => {
         },
         test: {
             root: resolve(__dirname, '.'),
-            include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)', 'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+            include: [
+                'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/shared/core/src/session/SessionContext/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/shared/utils/src/primitives/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+            ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'v8',
@@ -114,7 +119,8 @@ export default defineConfig(({ mode }) => {
                     'components/internal/**/*.{ts,tsx}',
                     'components/utils/*.{ts,tsx}',
                     'hooks/**/*.{ts,tsx}',
-                    'primitives/**/*.{ts,tsx}',
+                    'packages/shared/core/src/session/SessionContext/**/*.{ts,tsx}',
+                    'packages/shared/utils/src/primitives/**/*.{ts,tsx}',
                     'utils/**/*.{ts,tsx}',
                     'core/**/*.{ts,tsx}',
                 ],

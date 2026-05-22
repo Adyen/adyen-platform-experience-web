@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, Mock, MockInstance, TestContext, vi } from 'vitest';
-import { createAbortable } from '../../../../primitives/async/abortable';
+import { createAbortable } from '@integration-components/utils';
 import { SetupEndpoint } from '@integration-components/types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
