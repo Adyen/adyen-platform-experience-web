@@ -61,6 +61,9 @@ importers:
       '@changesets/get-github-info':
         specifier: ^0.6.0
         version: 0.6.0
+      '@integration-components/capital':
+        specifier: workspace:*
+        version: link:packages/domains/capital
       '@integration-components/core':
         specifier: workspace:*
         version: link:packages/shared/core
@@ -268,6 +271,67 @@ importers:
       webpack:
         specifier: ^5.106.2
         version: 5.106.2
+
+  packages/domains/capital:
+    dependencies:
+      '@adyen/kyc-components':
+        specifier: '>=4.0.0-compact.9 <4.0.0'
+        version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/core':
+        specifier: workspace:*
+        version: link:../../shared/core
+      '@integration-components/hooks-preact':
+        specifier: workspace:*
+        version: link:../../shared/hooks-preact
+      '@integration-components/sdk-internal':
+        specifier: workspace:*
+        version: link:../../shared/lib
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../../shared/style
+      '@integration-components/testing':
+        specifier: workspace:*
+        version: link:../../shared/testing
+      '@integration-components/types':
+        specifier: workspace:*
+        version: link:../../shared/types
+      '@integration-components/ui-components-preact':
+        specifier: workspace:*
+        version: link:../../shared/ui-components-preact
+      '@integration-components/utils':
+        specifier: workspace:*
+        version: link:../../shared/utils
+      classnames:
+        specifier: ^2.5.1
+        version: 2.5.1
+      preact:
+        specifier: ^10.29.1
+        version: 10.29.1
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.56.0
+        version: 1.56.0
+      '@storybook/preact':
+        specifier: 10.2.12
+        version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      '@testing-library/preact':
+        specifier: ^3.2.3
+        version: 3.2.3(preact@10.29.1)
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.3
+      msw:
+        specifier: ^2.4.5
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
+      msw-storybook-addon:
+        specifier: ^2.0.2
+        version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))
+      storybook:
+        specifier: 10.2.12
+        version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      vitest:
+        specifier: 4.0.10
+        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/domains/disputes:
     dependencies:
