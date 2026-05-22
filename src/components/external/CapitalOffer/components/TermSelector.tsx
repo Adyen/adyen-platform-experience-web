@@ -67,6 +67,9 @@ export const TermSelector = ({
                             key={term}
                             noOutline
                             noPadding
+                            role="radio"
+                            ariaChecked={isSelected}
+                            ariaDisabled={isDisabled}
                             onClick={!isDisabled ? () => selectTerm(term) : undefined}
                             classNameModifiers={[
                                 'adyen-pe-capital-offer-selection__term',

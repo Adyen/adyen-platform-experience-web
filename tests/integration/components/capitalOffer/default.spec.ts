@@ -79,22 +79,33 @@ test.describe('Default', () => {
         await slider.focus();
         await page.keyboard.press('Home');
 
-        await expect(page.getByRole('button', { name: /3 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /12 months/ })).toHaveCount(0);
+        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toHaveCount(0);
         await expect(page.getByText('12 months')).toBeVisible();
 
         await slider.focus();
         await page.keyboard.press('End');
 
-        await expect(page.getByRole('button', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /12 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /3 months/ })).toHaveCount(0);
+        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveCount(0);
         await expect(page.getByText('3 months')).toBeVisible();
     });
 
-    test('should update offer details when term selector value is changed', async ({ page }) => {
-        await page.getByRole('button', { name: '3 months 8% daily rate' }).click();
+    test('should update offer details when term selector value is changed', async ({ page, analyticsEvents }) => {
+        await page.getByRole('radio', { name: '3 months 8% daily rate' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            [
+                'Selected repayment term',
+                {
+                    ...sharedCapitalOfferSelectionAnalyticsEventProperties,
+                    label: 'Term selected',
+                    value: 90,
+                },
+            ],
+        ]);
 
         await expect(page.getByText('€1,000.00')).toBeVisible();
         await expect(page.getByText('€13,500.00')).toBeVisible();

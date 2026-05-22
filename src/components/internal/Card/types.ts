@@ -2,7 +2,6 @@ import { ComponentChild } from 'preact';
 
 export interface CardProps {
     onClick?: () => void;
-    onClickHandler?: () => void;
     title?: string;
     subTitle?: string;
     footer?: string;
@@ -16,4 +15,7 @@ export interface CardProps {
     testId?: string;
     expandable?: boolean;
     compact?: boolean;
+    role?: string;
+    ariaChecked?: boolean;
+    ariaDisabled?: boolean;
 }
