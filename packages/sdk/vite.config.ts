@@ -60,9 +60,6 @@ export default defineConfig(({ mode }) => ({
             '@integration-components/payByLink/publish': resolve(rootDir, 'packages/domains/payByLink/publish/src'),
             '@integration-components/payByLink/preact': resolve(rootDir, 'packages/domains/payByLink/preact/src'),
             '@integration-components/payByLink/domain': resolve(rootDir, 'packages/domains/payByLink/domain/src'),
-            '@integration-components/capital/publish': resolve(rootDir, 'packages/domains/capital/publish/src'),
-            '@integration-components/capital/preact': resolve(rootDir, 'packages/domains/capital/preact/src'),
-            '@integration-components/capital/domain': resolve(rootDir, 'packages/domains/capital/domain/src'),
         },
     },
     build: {

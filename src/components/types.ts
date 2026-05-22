@@ -124,9 +124,9 @@ export type {
 
 export type { DeepPartial } from '@integration-components/types';
 
-export type { CapitalOverviewComponentProps, CapitalOverviewProps, CapitalComponentState } from '@integration-components/capital/publish';
+export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
-export type { CapitalOfferComponentProps, CapitalOfferProps } from '@integration-components/capital/publish';
+export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/CapitalOffer/types';
 
 export type {
     PaymentLinkCreationComponentProps,

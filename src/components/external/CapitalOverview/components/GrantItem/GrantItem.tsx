@@ -1,0 +1,206 @@
+import { FunctionalComponent } from 'preact';
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import cx from 'classnames';
+import useCoreContext from '../../../../../core/Context/useCoreContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
+import ProgressBar from '@integration-components/ui-components-preact/ProgressBar';
+import { DATE_FORMAT_CAPITAL_OVERVIEW } from '../../../../../constants';
+import { GRANT_ITEM_CLASS_NAMES } from './constants';
+import { getGrantConfig } from './utils';
+import { GrantItemProps } from './types';
+import './GrantItem.scss';
+import { GrantDetails } from '../GrantDetails/GrantDetails';
+import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
+import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import Button from '@integration-components/ui-components-preact/Button';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import { ButtonVariant } from '@integration-components/types';
+import ExpandableCard from '@integration-components/ui-components-preact/ExpandableCard/ExpandableCard';
+import { GrantActions } from '../GrantActions/GrantActions';
+import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
+import { uniqueId } from '../../../../../utils';
+import { Translation } from '@integration-components/ui-components-preact/Translation';
+
+export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {
+    const { i18n } = useCoreContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting();
+    const userEvents = useEventDispatcherContext();
+
+    const [areActionsLocallyCompleted, setActionsLocallyCompleted] = useState(false);
+    const grantConfig = useMemo(() => getGrantConfig(grant, areActionsLocallyCompleted), [grant, areActionsLocallyCompleted]);
+
+    const showUnscheduledRepaymentAccounts = useCallback(() => {
+        try {
+            return showDetails?.('unscheduledRepayment');
+        } finally {
+            userEvents.addEvent?.('Clicked button', {
+                ...sharedCapitalOverviewAnalyticsEventProperties,
+                subCategory: 'Grant active',
+                label: 'Send repayment',
+            });
+        }
+    }, [showDetails, userEvents]);
+
+    const elementIds = useMemo(
+        () =>
+            ({
+                grantAmount: uniqueId('elem'),
+                grantAmountLabel: uniqueId('elem'),
+                grantStatus: uniqueId('elem'),
+                termEnds: uniqueId('elem'),
+            }) as const,
+        []
+    );
+
+    const grantOverview = useMemo(
+        () => (
+            <div className={GRANT_ITEM_CLASS_NAMES.cardContent}>
+                <div className={GRANT_ITEM_CLASS_NAMES.statusContainer}>
+                    <Typography
+                        id={elementIds.grantAmountLabel}
+                        variant={TypographyVariant.CAPTION}
+                        className={cx({ [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isLabelColorSecondary })}
+                        testId={'grant-amount-label'}
+                    >
+                        {i18n.get(grantConfig.amountLabelKey)}
+                    </Typography>
+                    <div id={elementIds.grantStatus}>
+                        {grant.status === 'Active' ? (
+                            <>
+                                <Typography
+                                    id={elementIds.termEnds}
+                                    variant={TypographyVariant.CAPTION}
+                                    el={TypographyElement.SPAN}
+                                    aria-hidden={true}
+                                >
+                                    <Translation
+                                        translationKey="capital.overview.grants.item.termEnds"
+                                        fills={{
+                                            date: (
+                                                <time
+                                                    aria-labelledby={elementIds.termEnds}
+                                                    dateTime={grantConfig.repaymentPeriodEndDate.toISOString()}
+                                                >
+                                                    <Typography variant={TypographyVariant.CAPTION} stronger el={TypographyElement.SPAN}>
+                                                        {dateFormat(grantConfig.repaymentPeriodEndDate, DATE_FORMAT_CAPITAL_OVERVIEW)}
+                                                    </Typography>
+                                                </time>
+                                            ),
+                                        }}
+                                    />
+                                </Typography>
+                            </>
+                        ) : grantConfig.statusKey ? (
+                            grantConfig.statusTooltipKey ? (
+                                <Tooltip content={i18n.get(grantConfig.statusTooltipKey)}>
+                                    <div>
+                                        <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                                    </div>
+                                </Tooltip>
+                            ) : (
+                                <Tag label={i18n.get(grantConfig.statusKey)} variant={grantConfig.statusTagVariant} />
+                            )
+                        ) : null}
+                    </div>
+                </div>
+                <Typography
+                    id={elementIds.grantAmount}
+                    variant={TypographyVariant.TITLE}
+                    medium
+                    className={cx({
+                        [GRANT_ITEM_CLASS_NAMES.textSecondary]: grantConfig.isAmountColorSecondary,
+                    })}
+                >
+                    {i18n.amount(grantConfig.amount.value, grantConfig.amount.currency)}
+                </Typography>
+                {grantConfig.isProgressBarVisible && (
+                    <ProgressBar
+                        className={GRANT_ITEM_CLASS_NAMES.progressBar}
+                        value={grant.repaidTotalAmount.value}
+                        max={grant.totalAmount.value}
+                        labels={{
+                            ariaLabel: i18n.get('capital.overview.grants.item.progressBar.a11y.label'),
+                            current: i18n.get('capital.overview.grants.item.amounts.repaid'),
+                            max: i18n.get('capital.overview.grants.item.amounts.remaining'),
+                        }}
+                        tooltips={{
+                            remaining: `${i18n.amount(grant.remainingTotalAmount.value, grant.remainingTotalAmount.currency)} ${i18n
+                                .get('capital.overview.grants.item.amounts.remaining')
+                                ?.toLowerCase()}`,
+                            progress: `${i18n.amount(grant.repaidTotalAmount.value, grant.repaidTotalAmount.currency)} ${i18n
+                                .get('capital.overview.grants.item.amounts.repaid')
+                                ?.toLowerCase()}`,
+                        }}
+                    />
+                )}
+                {grantConfig.isGrantIdVisible ? (
+                    <div className={GRANT_ITEM_CLASS_NAMES.grantID}>
+                        <CopyText
+                            textToCopy={grant.id}
+                            visibleText={i18n.get('capital.common.fields.grantID')}
+                            copyButtonAriaLabelKey="capital.overview.grants.item.actions.copyGrantID"
+                            isUnderlineVisible
+                            type={'Text' as const}
+                            data-testid="grant-id-copy-text"
+                        />
+                    </div>
+                ) : null}
+                {grantConfig.hasUnscheduledRepaymentDetails && (
+                    <div className={GRANT_ITEM_CLASS_NAMES.actionsBar}>
+                        <Button
+                            onClick={showUnscheduledRepaymentAccounts}
+                            className={GRANT_ITEM_CLASS_NAMES.mainActionBtn}
+                            variant={ButtonVariant.SECONDARY}
+                            fullWidth
+                        >
+                            {i18n.get('capital.overview.grants.item.actions.sendRepayment')}
+                        </Button>
+                    </div>
+                )}
+            </div>
+        ),
+        [elementIds, grantConfig, i18n, grant, dateFormat, showUnscheduledRepaymentAccounts]
+    );
+
+    const handleActionsComplete = useCallback(() => {
+        setActionsLocallyCompleted(true);
+    }, []);
+
+    return (
+        <div className={GRANT_ITEM_CLASS_NAMES.base}>
+            <ExpandableCard
+                aria-describedby={`${elementIds.grantAmountLabel} ${elementIds.grantAmount} ${elementIds.grantStatus}`}
+                aria-label={i18n.get('capital.overview.grants.item.details.a11y.label')}
+                filled={grantConfig.isBackgroundFilled}
+                renderContent={grantOverview}
+                inFlow
+            >
+                {grantConfig.hasDetails && <GrantDetails grant={grant} />}
+            </ExpandableCard>
+            {grantConfig.hasAlerts && (
+                <>
+                    {grant.missingActions && grant.missingActions.length ? (
+                        <GrantActions
+                            grantId={grant.id}
+                            missingActions={grant.missingActions}
+                            className={GRANT_ITEM_CLASS_NAMES.alert}
+                            offerExpiresAt={grant.offerExpiresAt}
+                            onComplete={handleActionsComplete}
+                        />
+                    ) : (
+                        <Alert
+                            className={GRANT_ITEM_CLASS_NAMES.alert}
+                            type={AlertTypeOption.HIGHLIGHT}
+                            title={i18n.get('capital.overview.grants.item.alerts.processingRequest')}
+                        />
+                    )}
+                </>
+            )}
+        </div>
+    );
+};

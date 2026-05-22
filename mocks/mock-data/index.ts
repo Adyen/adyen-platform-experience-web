@@ -1,5 +1,5 @@
 export * from './balanceAccounts';
-export * from '../../packages/domains/capital/mocks/mock-data/capital';
+export * from './capital';
 export * from '../../packages/domains/disputes/mocks/mock-data/disputes';
 export * from '../../packages/domains/payByLink/mocks/mock-data/payByLink';
 export * from '../../packages/domains/payouts/mocks/mock-data/payouts';
