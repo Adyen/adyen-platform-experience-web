@@ -13,16 +13,6 @@ export const endpoints = () =>
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
         stores: `${baseUrl}/stores`,
-        capital: {
-            anaCredit: `${baseUrl}/capital/grants/missingActions/anaCredit`,
-            createOffer: `${baseUrl}/capital/grantOffers/create`,
-            onboardingConfiguration: `${baseUrl}/capital/onboardingConfiguration`,
-            dynamicOfferConfig: `${baseUrl}/capital/grantOffers/dynamic/configuration`,
-            dynamicOffer: `${baseUrl}/capital/grantOffers/dynamic`,
-            grants: `${baseUrl}/capital/grants`,
-            requestFunds: `${baseUrl}/capital/grants/:id`,
-            signToS: `${baseUrl}/capital/grants/missingActions/signToS`,
-        },
         disputes: {
             accept: `${baseUrl}/disputes/:id/accept`,
             defend: `${baseUrl}/disputes/:id/defend`,

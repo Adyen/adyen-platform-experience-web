@@ -1,11 +1,9 @@
-import { PaymentLinkCreation } from '../src';
-import { ElementProps, ElementStory, SessionControls, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
+import { PaymentLinkCreation } from '@integration-components/payByLink/publish';
+import { ElementProps, ElementStory, SessionControls, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkCreationMeta } from './paymentLinkCreation.meta';
-const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = {
-    ...PaymentLinkCreationMeta,
-    title: 'API-connected/Pay by Link/Payment Link Creation',
-};
+
+const meta: Meta<ElementProps<typeof PaymentLinkCreation>> = { ...PaymentLinkCreationMeta, title: 'API-connected/Pay by Link/Payment Link Creation' };
 
 export const Default: ElementStory<typeof PaymentLinkCreation, SessionControls> = {
     name: 'Default',

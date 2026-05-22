@@ -1,0 +1,80 @@
+@use '@integration-components/style' as style;
+@use '@integration-components/style/breakpoints' as *;
+
+.adyen-pe-capital-offer-summary {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-070);
+
+    &__grant-summary {
+        align-items: center;
+        background-color: style.token(color-background-selected);
+        border-radius: style.token(border-radius-m);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: style.token(spacer-070) style.token(spacer-090);
+
+        @include adyen-pe-screen-sm-and-down {
+            flex-direction: column;
+            gap: style.token(spacer-060);
+        }
+
+        &-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        &-label {
+            color: style.token(color-label-secondary);
+            text-align: center;
+            width: max-content;
+        }
+    }
+
+    &__terms {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__list-label {
+        color: style.token(color-label-secondary);
+    }
+
+    &__buttons {
+        display: flex;
+        gap: style.token(spacer-050);
+        justify-content: end;
+        flex-wrap: wrap;
+        flex-direction: row-reverse;
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-020);
+        margin-bottom: style.token(spacer-030);
+
+        dd {
+            text-align: right;
+        }
+
+        &--error {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-020);
+            justify-content: end;
+
+            .adyen-pe-icon {
+                color: style.token(color-label-warning);
+            }
+        }
+    }
+
+    &__error-alert-button {
+        margin-top: style.token(spacer-050);
+    }
+}
