@@ -84,7 +84,7 @@ const TEST: TransactionsVariables = {
     refund_details_response: {
         id: 'EVJN42CKX223223N5LV3B7V5VK2LT8EUR',
         amountBeforeDeductions: {
-            value: -900,
+            value: -1000,
             currency: 'EUR',
         },
         netAmount: {
@@ -106,14 +106,8 @@ const TEST: TransactionsVariables = {
             value: -1000,
             currency: 'EUR',
         },
-        additions: [
-            {
-                currency: 'EUR',
-                value: 100,
-                type: 'fee',
-            },
-        ],
-        deductions: [],
+        additions: [],
+        deductions: [{ currency: 'EUR', type: 'fee', value: 100 }],
         events: [
             {
                 type: 'Capture',
