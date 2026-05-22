@@ -31,7 +31,7 @@ test.describe('Default', () => {
         await expect(page.getByRole('slider')).toBeVisible();
         await expect(page.getByText('min', { exact: true })).toBeVisible();
         await expect(page.getByText('€1,000')).toBeVisible();
-        await expect(page.getByText('max')).toBeVisible();
+        await expect(page.getByText('max', { exact: true })).toBeVisible();
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('Select a repayment plan')).toBeVisible();
         await expect(page.getByText('3 months')).toBeVisible();
