@@ -1,11 +1,9 @@
 export { PayoutDetails, PayoutsOverview } from '@integration-components/payouts/publish';
 export { TransactionDetails, TransactionsOverview } from '@integration-components/transactions/publish';
 export type { TransactionDetailsCustomization, TransactionDetailsFields } from '@integration-components/transactions/publish';
-export { CapitalOffer } from '@integration-components/capital/publish';
-export type { CapitalOfferComponentProps, CapitalOfferProps } from '@integration-components/capital/publish';
+export * from './CapitalOffer';
 export { ReportsOverview } from '@integration-components/reports/publish';
-export { CapitalOverview } from '@integration-components/capital/publish';
-export type { CapitalOverviewComponentProps, CapitalOverviewProps, CapitalComponentState } from '@integration-components/capital/publish';
+export * from './CapitalOverview';
 export { DisputesOverview, DisputeManagement } from '@integration-components/disputes/publish';
 export type { DisputeDetailsCustomization, DisputeDetailsFields, DisputeCallbackData } from '@integration-components/disputes/publish';
 export { PaymentLinksOverview } from '@integration-components/payByLink/publish';

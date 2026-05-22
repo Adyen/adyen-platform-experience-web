@@ -52,10 +52,7 @@
             "@integration-components/disputes/domain": ["packages/domains/disputes/domain/src/index.ts"],
             "@integration-components/payByLink/publish": ["packages/domains/payByLink/publish/src/index.ts"],
             "@integration-components/payByLink/preact": ["packages/domains/payByLink/preact/src/index.ts"],
-            "@integration-components/payByLink/domain": ["packages/domains/payByLink/domain/src/index.ts"],
-            "@integration-components/capital/publish": ["packages/domains/capital/publish/src/index.ts"],
-            "@integration-components/capital/preact": ["packages/domains/capital/preact/src/index.ts"],
-            "@integration-components/capital/domain": ["packages/domains/capital/domain/src/index.ts"]
+            "@integration-components/payByLink/domain": ["packages/domains/payByLink/domain/src/index.ts"]
         },
         "types": ["node"]
     }

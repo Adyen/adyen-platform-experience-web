@@ -8,7 +8,6 @@ import {
     CARD_BASE_CLASS,
     CARD_BODY,
     CARD_BODY_WITH_TITLE,
-    CARD_CLICKABLE,
     CARD_COMPACT,
     CARD_EXPANDABLE_CLASS,
     CARD_FILLED,
@@ -33,7 +32,6 @@ const Card = ({
     children,
     expandable = false,
     footer,
-    onClick,
     renderHeader,
     renderFooter,
     filled,
@@ -58,35 +56,25 @@ const Card = ({
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
                     evt.preventDefault();
-                    if (expandable) toggleExpansion();
-                    else onClick?.();
+                    toggleExpansion();
                     return;
             }
         },
-        [expandable, onClick, toggleExpansion]
+        [toggleExpansion]
     );
 
     const cardContainerAttributes = useMemo(() => {
-        if (expandable) {
-            return {
-                role: 'button' as AriaRole,
-                tabIndex: 0,
-                onClick: toggleExpansion,
-                onKeyDown: onKeyDown,
-                'aria-controls': cardId,
-                'aria-expanded': showContent,
-            };
-        }
-        if (onClick) {
-            return {
-                role: 'button' as AriaRole,
-                tabIndex: 0,
-                onClick,
-                onKeyDown,
-            };
-        }
-        return {};
-    }, [expandable, onClick, showContent, cardId, onKeyDown, toggleExpansion]);
+        return expandable
+            ? {
+                  role: 'button' as AriaRole,
+                  tabIndex: 0,
+                  onClick: toggleExpansion,
+                  onKeyDown: onKeyDown,
+                  'aria-controls': cardId,
+                  'aria-expanded': showContent,
+              }
+            : {};
+    }, [expandable, showContent, cardId, onKeyDown, toggleExpansion]);
 
     return (
         <div
@@ -96,7 +84,6 @@ const Card = ({
                 [CARD_NO_OUTLINE]: noOutline,
                 [CARD_NO_PADDING]: noPadding,
                 [CARD_EXPANDABLE_CLASS]: expandable,
-                [CARD_CLICKABLE]: !!onClick,
                 [CARD_COMPACT]: compact,
             })}
             {...cardContainerAttributes}
