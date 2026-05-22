@@ -30,7 +30,7 @@ overrides:
   rollup@4.53.3: 4.59.0
   serialize-javascript@6.0.2: 7.0.3
   typescript: 5.8.3
-  uuid: 11.1.0
+  uuid: 11.1.1
   webpack: ^5.106.2
 
 pnpmfileChecksum: sha256-uqUjxjMT4bvZN8bIa9IwAM3O6WDWkrgK7Nz9UJ/u64Q=
@@ -6354,7 +6354,7 @@ packages:
   util-deprecate@1.0.2:
     resolution: {}
 
-  uuid@11.1.0:
+  uuid@11.1.1:
     resolution: {}
     hasBin: true
 
@@ -6761,7 +6761,7 @@ snapshots:
       remark-parse: 10.0.2
       sortablejs: 1.15.6
       unified: 11.0.5
-      uuid: 11.1.0
+      uuid: 11.1.1
       vue: 3.5.31(typescript@5.8.3)
       vue-demi: 0.14.10(vue@3.5.31(typescript@5.8.3))
       vue-i18n: 11.3.2(vue@3.5.31(typescript@5.8.3))
@@ -13360,7 +13360,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@11.1.0: {}
+  uuid@11.1.1: {}
 
   uvu@0.5.6:
     dependencies:
