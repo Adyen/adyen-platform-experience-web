@@ -280,11 +280,9 @@ export const CapitalOfferSummary = ({
             )}
             <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
-                {requestFundsMutation.error && !requestErrorAlert ? null : (
-                    <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
-                        {i18n.get('capital.common.actions.goBack')}
-                    </Button>
-                )}
+                <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
+                    {i18n.get('capital.common.actions.goBack')}
+                </Button>
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
