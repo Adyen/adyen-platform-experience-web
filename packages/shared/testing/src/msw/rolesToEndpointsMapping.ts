@@ -103,17 +103,17 @@ export const CapitalComponentManage = {
     createGrantOffer: {
         method: 'POST' as HttpMethod,
         url: 'capital/grantOffers/create',
-        versions: [1],
+        versions: [1, 2],
     },
     getDynamicGrantOffer: {
         method: 'GET' as HttpMethod,
         url: 'capital/grantOffers/dynamic',
-        versions: [1],
+        versions: [1, 2],
     },
     getDynamicGrantOffersConfiguration: {
         method: 'GET' as HttpMethod,
         url: 'capital/grantOffers/dynamic/configuration',
-        versions: [1],
+        versions: [1, 2],
     },
     getGrants: {
         method: 'GET' as HttpMethod,

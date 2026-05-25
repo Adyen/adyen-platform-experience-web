@@ -20,7 +20,7 @@ const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEven
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await goToOfferSelection(page, analyticsEvents);
-    await page.getByRole('button', { name: 'Review offer' }).click();
+    await page.getByRole('button', { name: 'Review request' }).click();
 
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
@@ -42,7 +42,7 @@ test.describe('Prequalified', () => {
 
     test('should go to offer selection screen with "Back" button when "See options" button is clicked', async ({ page, analyticsEvents }) => {
         await goToOfferSelection(page, analyticsEvents);
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
@@ -55,12 +55,12 @@ test.describe('Prequalified', () => {
         await expect(page.getByText('Need some extra money?')).toBeVisible();
     });
 
-    test('should go to grants screen and show a new grant when "Request funds" button in offer summary screen is clicked', async ({
+    test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
@@ -73,7 +73,7 @@ test.describe('Prequalified', () => {
 });
 
 test.describe('onFundsRequest argument', () => {
-    test('should not go to grants screen when argument is set and when "Request funds" button in offer summary screen is clicked', async ({
+    test('should not go to grants screen when argument is set and when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
@@ -81,7 +81,7 @@ test.describe('onFundsRequest argument', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedPrequalifiedAnalyticsEventProperties]]);
 
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
@@ -119,7 +119,7 @@ test.describe('onOfferOptionsRequest argument', () => {
         await page.getByRole('button', { name: 'See options' }).click();
         await expectAnalyticsEvents(analyticsEvents, [['Clicked button', { ...sharedPrequalifiedAnalyticsEventProperties, label: 'See options' }]]);
 
-        await expect(page.getByText('Business financing offer')).toBeHidden();
+        await expect(page.getByText('Business financing request')).toBeHidden();
     });
 });
 
@@ -127,7 +127,7 @@ test.describe('skipPreQualifiedIntro argument', () => {
     test('should render offer selection screen without "Back" button when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { skipPreQualifiedIntro: 'true' } });
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
 });
