@@ -1,4 +1,4 @@
-import { EMPTY_OBJECT } from '@integration-components/utils';
+import { EMPTY_OBJECT, hasOwnProperty } from '@integration-components/utils';
 import { AuthSession } from './session/AuthSession';
 import Localization from './Localization';
 import { Assets, AssetOptions } from './Assets/Assets';
@@ -20,6 +20,9 @@ export interface ManagedElement {
 }
 
 export type CdnFetcher = <Fallback>(props: { name: string; extension?: string; subFolder?: string; fallback?: Fallback }) => Promise<Fallback>;
+
+export const AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING =
+    '[AdyenPlatFormExperience] The "availableTranslations" option is deprecated and will be removed in a future major version. You can safely remove this option.';
 
 /**
  * Framework-agnostic source of truth for the Core runtime. Owns option resolution,
@@ -44,6 +47,7 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
     public getCdnDataset!: CdnFetcher;
     public components: ManagedElement[] = [];
 
+    private hasWarnedAboutAvailableTranslationsDeprecation = false;
     private hasWarnedAboutServerSideInitialization = false;
     private readyCustomTranslationsAnalytics = false;
 
@@ -89,6 +93,11 @@ export class Core<AvailableTranslations extends TranslationSourceRecord[] = [], 
 
         if (analyticsChanged) {
             this.applyAnalyticsOptions();
+        }
+
+        if (!this.hasWarnedAboutAvailableTranslationsDeprecation && hasOwnProperty(this.options, 'availableTranslations')) {
+            console.warn(AVAILABLE_TRANSLATIONS_DEPRECATION_WARNING);
+            this.hasWarnedAboutAvailableTranslationsDeprecation = true;
         }
 
         this.session.loadingContext = this.loadingContext;

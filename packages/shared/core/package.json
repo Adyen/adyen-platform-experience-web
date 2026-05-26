@@ -21,10 +21,10 @@
     "dependencies": {
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "*"
+        "classnames": "catalog:"
     },
     "devDependencies": {
-        "vitest": "*"
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "preact": "catalog:",
