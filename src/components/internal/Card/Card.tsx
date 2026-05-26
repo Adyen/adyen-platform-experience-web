@@ -94,6 +94,13 @@ const Card = ({
                 ...(ariaDisabled !== undefined && { 'aria-disabled': ariaDisabled }),
             };
         }
+        if (role !== undefined || ariaChecked !== undefined || ariaDisabled !== undefined) {
+            return {
+                ...(role !== undefined && { role: role as AriaRole }),
+                ...(ariaChecked !== undefined && { 'aria-checked': ariaChecked }),
+                ...(ariaDisabled !== undefined && { 'aria-disabled': ariaDisabled }),
+            };
+        }
         return {};
     }, [expandable, onClick, handleClick, onKeyDown, cardId, showContent, role, ariaChecked, ariaDisabled]);
 

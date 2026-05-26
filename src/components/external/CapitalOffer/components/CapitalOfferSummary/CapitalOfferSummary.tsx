@@ -1,7 +1,7 @@
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { calculateRepaymentPeriodInMonths, getMaximumRepaymentDate, getPercentage } from '../utils/utils';
+import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
 import Typography from '../../../../internal/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
 import StructuredList from '../../../../internal/StructuredList';
@@ -24,6 +24,7 @@ import { StructuredListItem } from '../../../../internal/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 
 const errorMessageWithAlert = ['30_013'];
 const grantSummaryAmountConfig = { minimumFractionDigits: 0 };
@@ -47,6 +48,7 @@ export const CapitalOfferSummary = ({
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
     const { dateFormat } = useTimezoneAwareDateFormatting();
+    const formatTermLabel = useFormatTermLabel();
     const maximumRepaymentPeriodDate = useMemo(() => {
         const days = grantOffer.maximumRepaymentPeriodDays;
         const date = days && getMaximumRepaymentDate(days);
@@ -86,11 +88,6 @@ export const CapitalOfferSummary = ({
             userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Back to slider view' });
         }
     }, [onBack, userEvents]);
-
-    const expectedRepaymentPeriod = useMemo(
-        () => calculateRepaymentPeriodInMonths(grantOffer.expectedRepaymentPeriodDays),
-        [grantOffer.expectedRepaymentPeriodDays]
-    );
 
     const requestErrorAlert = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
         const err = requestFundsMutation.error ? (requestFundsMutation.error as AdyenErrorResponse) : null;
@@ -154,10 +151,7 @@ export const CapitalOfferSummary = ({
                 },
                 {
                     key: 'capital.common.fields.expectedRepaymentPeriod',
-                    value:
-                        expectedRepaymentPeriod === 1
-                            ? i18n.get('capital.common.values.oneMonth')
-                            : i18n.get('capital.common.values.numberOfMonths', { values: { months: expectedRepaymentPeriod } }),
+                    value: formatTermLabel(grantOffer.expectedRepaymentPeriodDays),
                 },
                 ...(maximumRepaymentPeriodDate
                     ? [
@@ -169,7 +163,7 @@ export const CapitalOfferSummary = ({
                     : []),
                 { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
             ] as StructuredListItem[],
-        [expectedRepaymentPeriod, grantOffer, i18n, maximumRepaymentPeriodDate]
+        [formatTermLabel, grantOffer, i18n, maximumRepaymentPeriodDate]
     );
 
     return !requestErrorAlert && requestFundsMutation.error ? (
@@ -286,6 +280,9 @@ export const CapitalOfferSummary = ({
             )}
             <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
+                <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
+                    {i18n.get('capital.common.actions.goBack')}
+                </Button>
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
@@ -298,11 +295,6 @@ export const CapitalOfferSummary = ({
                               values: { amount: financingAmount },
                           })}
                 </Button>
-                {requestFundsMutation.error && !requestErrorAlert ? null : (
-                    <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
-                        {i18n.get('capital.common.actions.goBack')}
-                    </Button>
-                )}
             </div>
         </div>
     );

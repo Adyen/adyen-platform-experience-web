@@ -250,7 +250,7 @@ export const CapitalOfferSelection = ({
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
 
-    const hasConfiguredTerms = allTerms.length > 0;
+    const termsError = !!dynamicOffersConfig && !allTerms.length;
 
     const isLoadingIndicatorVisible = useMemo(
         () => !matchedOffer || getDynamicGrantOfferMutation.isLoading || isLoading,
@@ -261,7 +261,7 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || !hasConfiguredTerms ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || termsError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
                     onBack={onOfferDismiss}
