@@ -32,8 +32,8 @@
         "@integration-components/utils": "workspace:*"
     },
     "devDependencies": {
-        "@testing-library/preact": "*",
-        "vitest": "*"
+        "@testing-library/preact": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "preact": "^10.28.2"
