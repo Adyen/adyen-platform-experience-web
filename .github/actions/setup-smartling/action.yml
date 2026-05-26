@@ -31,6 +31,7 @@ runs:
     - name: Create the configuration file
       shell: sh
       env:
+        NPM_READ_ONLY_TOKEN: ${{ inputs.npm_token }}
         SMARTLING_PROJECT_ID: ${{ inputs.project_id }}
         SMARTLING_USER_IDENTIFIER: ${{ inputs.user_identifier }}
         SMARTLING_USER_SECRET: ${{ inputs.user_secret }}
@@ -40,4 +41,4 @@ runs:
         SMARTLING_USER_IDENTIFIER=$SMARTLING_USER_IDENTIFIER
         SMARTLING_USER_SECRET=$SMARTLING_USER_SECRET
         EOF
-        npm config set //registry.npmjs.org/:_authToken ${{ inputs.npm_token }}
+        npm config set //registry.npmjs.org/:_authToken "$NPM_READ_ONLY_TOKEN"
