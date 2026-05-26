@@ -1,0 +1,71 @@
+import { useCoreContext } from '@integration-components/core/preact';
+import usePayByLinkSettingsContext from '../../context/context';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { boolOrFalse, noop } from '@integration-components/utils';
+import { ButtonActionObject, ButtonActionsLayout, ButtonActionsLayoutBasic } from '@integration-components/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import { useMemo } from 'preact/hooks';
+import './SettingsActionButton.scss';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
+import cx from 'classnames';
+import Icon from '@integration-components/ui-components-preact/Icon';
+import { useSettingsPermission } from '../../../../hooks/useSettingsPermission';
+import { MenuItem } from '../../context/constants';
+
+const SettingsActionButtons = ({ navigateBack, closeContent }: { navigateBack?: () => void | undefined; closeContent?: () => void | undefined }) => {
+    const { i18n } = useCoreContext();
+    const { activeMenuItem, onSave, isSaving, isLoadingContent, isLoadingStores, isSaveSuccess } = usePayByLinkSettingsContext();
+    const { themeEnabled, termsAndConditionsEnabled } = useSettingsPermission();
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const isLoading = isLoadingContent || isLoadingStores;
+
+    const isSaveDisabled = useMemo(() => {
+        if (!activeMenuItem) return false;
+        const isActiveMenuItemEnabled = MenuItem.theme ? themeEnabled : termsAndConditionsEnabled;
+        return !isActiveMenuItemEnabled || boolOrFalse(isSaving || isLoading || (navigateBack && isSaveSuccess));
+    }, [activeMenuItem, termsAndConditionsEnabled, themeEnabled, isSaving, isLoading, navigateBack, isSaveSuccess]);
+
+    const saveButton = useMemo(() => {
+        return {
+            disabled: isSaveDisabled,
+            event: onSave,
+            iconLeft:
+                navigateBack && isSaveSuccess ? (
+                    <Icon className={'adyen-pe-payment-link-settings-save-success__cta-icon'} name={'checkmark'} />
+                ) : undefined,
+            title: i18n.get('payByLink.settings.common.action.save'),
+            variant: ButtonVariant.PRIMARY,
+            state: boolOrFalse(isSaving && !(navigateBack && isSaveSuccess)) ? 'loading' : 'default',
+            classNames: isSmContainer ? ['adyen-pe-payment-link-settings__cta--mobile'] : [],
+        } as ButtonActionObject;
+    }, [i18n, onSave, isSaving, isSmContainer, navigateBack, isSaveSuccess, isSaveDisabled]);
+
+    const goBackButton = useMemo(() => {
+        return {
+            disabled: boolOrFalse(isLoading),
+            event: navigateBack ?? closeContent ?? noop,
+            title: i18n.get('payByLink.common.actions.goBack'),
+            variant: ButtonVariant.SECONDARY,
+            classNames: isSmContainer ? ['adyen-pe-payment-link-settings__cta--mobile'] : [],
+        } as ButtonActionObject;
+    }, [navigateBack, i18n, isSmContainer, closeContent, isLoading]);
+
+    const buttonActions = useMemo(() => {
+        if (!navigateBack && !closeContent) return [saveButton];
+        return [saveButton, goBackButton];
+    }, [saveButton, goBackButton, navigateBack, closeContent]);
+
+    const layout = useMemo(() => (isSmContainer ? ButtonActionsLayout.VERTICAL_STACK : ButtonActionsLayoutBasic.BUTTONS_END), [isSmContainer]);
+
+    return (
+        <div
+            className={cx('adyen-pe-payment-link-settings__cta-container', {
+                ['adyen-pe-payment-link-settings__cta-container--mobile']: isSmContainer,
+            })}
+        >
+            <ButtonActions actions={buttonActions} layout={layout} />
+        </div>
+    );
+};
+
+export default SettingsActionButtons;
