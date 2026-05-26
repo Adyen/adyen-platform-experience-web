@@ -93,6 +93,16 @@
     &__buttons {
         display: flex;
         gap: style.token(spacer-050);
-        justify-content: end;
+        margin-left: auto;
+
+        @include adyen-pe-screen-sm-and-down {
+            align-items: stretch;
+            flex-direction: column-reverse;
+            width: 100%;
+        }
+
+        .adyen-pe-button__label {
+            width: auto;
+        }
     }
 }

@@ -31,7 +31,7 @@ test.describe('Default', () => {
         await expect(page.getByRole('slider')).toBeVisible();
         await expect(page.getByText('min', { exact: true })).toBeVisible();
         await expect(page.getByText('€1,000')).toBeVisible();
-        await expect(page.getByText('max')).toBeVisible();
+        await expect(page.getByText('max', { exact: true })).toBeVisible();
         await expect(page.getByText('€25,000')).toBeVisible();
         await expect(page.getByText('Select a repayment plan')).toBeVisible();
         await expect(page.getByText('3 months')).toBeVisible();
@@ -79,22 +79,33 @@ test.describe('Default', () => {
         await slider.focus();
         await page.keyboard.press('Home');
 
-        await expect(page.getByRole('button', { name: /3 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /12 months/ })).toHaveCount(0);
+        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toHaveCount(0);
         await expect(page.getByText('12 months')).toBeVisible();
 
         await slider.focus();
         await page.keyboard.press('End');
 
-        await expect(page.getByRole('button', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /12 months/ })).toBeVisible();
-        await expect(page.getByRole('button', { name: /3 months/ })).toHaveCount(0);
+        await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveCount(0);
         await expect(page.getByText('3 months')).toBeVisible();
     });
 
-    test('should update offer details when term selector value is changed', async ({ page }) => {
-        await page.getByRole('button', { name: '3 months 8% daily rate' }).click();
+    test('should update offer details when term selector value is changed', async ({ page, analyticsEvents }) => {
+        await page.getByRole('radio', { name: '3 months 8% daily rate' }).click();
+
+        await expectAnalyticsEvents(analyticsEvents, [
+            [
+                'Selected repayment term',
+                {
+                    ...sharedCapitalOfferSelectionAnalyticsEventProperties,
+                    label: 'Term selected',
+                    value: 90,
+                },
+            ],
+        ]);
 
         await expect(page.getByText('€1,000.00')).toBeVisible();
         await expect(page.getByText('€13,500.00')).toBeVisible();
@@ -111,11 +122,11 @@ test.describe('Default', () => {
         await goToOfferSummary(page, analyticsEvents);
         await expect(page.getByText('Business financing summary')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('€12,500')).toBeVisible();
+        await expect(page.getByText('€12,500', { exact: true })).toBeVisible();
         await expect(page.getByText('Financing', { exact: true })).toBeVisible();
-        await expect(page.getByText('€1,375.00')).toBeVisible();
+        await expect(page.getByText('€1,375')).toBeVisible();
         await expect(page.getByText('Fees')).toBeVisible();
-        await expect(page.getByText('€13,875.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('€13,875', { exact: true })).toBeVisible();
         await expect(page.getByText('Total repayment amount')).toBeVisible();
         await expect(page.getByText('Financing terms')).toBeVisible();
         await expect(page.getByText('Daily repayment rate')).toBeVisible();
@@ -123,13 +134,13 @@ test.describe('Default', () => {
         await expect(page.getByText('30-day repayment minimum')).toBeVisible();
         await expect(page.getByText('€2,312.50', { exact: true })).toBeVisible();
         await expect(page.getByText('Expected repayment period')).toBeVisible();
-        await expect(page.getByText('180 days')).toBeVisible();
+        await expect(page.getByText('6 months')).toBeVisible();
         await expect(page.getByText('Maximum repayment date')).toBeVisible();
         await expect(page.getByText('Sep 28, 2025')).toBeVisible();
         await expect(page.getByText('Account', { exact: true })).toBeVisible();
         await expect(page.getByText('Primary account')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Submit request (€13,875.00)' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Submit request (€12,500)' })).toBeVisible();
     });
 
     test('should show a tooltip when "30-day repayment minimum" label is hovered', async ({ page, analyticsEvents }) => {
@@ -153,7 +164,7 @@ test.describe('Default', () => {
 
     test('should disable request submit button after funds request call succeeds', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
-        const requestFundsButton = page.getByRole('button', { name: 'Submit request (€13,875.00)' });
+        const requestFundsButton = page.getByRole('button', { name: 'Submit request (€12,500)' });
         await requestFundsButton.click();
 
         await expectAnalyticsEvents(analyticsEvents, [

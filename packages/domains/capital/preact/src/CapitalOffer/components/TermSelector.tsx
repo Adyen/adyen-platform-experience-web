@@ -5,7 +5,8 @@ import Card from '@integration-components/ui-components-preact/Card/Card';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { IGrantOfferResponseDTO } from '@integration-components/types';
 import { sharedCapitalOfferAnalyticsEventProperties } from './CapitalOffer/constants';
-import { getPercentage, getTermMonthsAndRemainingDays } from './utils/utils';
+import { getPercentage } from './utils/utils';
+import { useFormatTermLabel } from './hooks/useFormatTermLabel';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
@@ -31,24 +32,7 @@ export const TermSelector = ({
 }: TermSelectorProps) => {
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
-
-    const formatTermLabel = useCallback(
-        (days: number): string => {
-            const { months, remainingDays } = getTermMonthsAndRemainingDays(days);
-            const monthsPart =
-                months === 1 ? i18n.get('capital.common.values.oneMonth') : i18n.get('capital.common.values.numberOfMonths', { values: { months } });
-
-            const remainingDaysPart =
-                remainingDays === 0
-                    ? undefined
-                    : remainingDays === 1
-                      ? i18n.get('capital.common.values.oneDay')
-                      : i18n.get('capital.common.values.numberOfDays', { values: { days: remainingDays } });
-
-            return [monthsPart, remainingDaysPart].filter(Boolean).join(', ');
-        },
-        [i18n]
-    );
+    const formatTermLabel = useFormatTermLabel();
 
     const selectTerm = useCallback(
         (term: number) => {
@@ -82,6 +66,9 @@ export const TermSelector = ({
                             key={term}
                             noOutline
                             noPadding
+                            role="radio"
+                            ariaChecked={isSelected}
+                            ariaDisabled={isDisabled}
                             onClick={!isDisabled ? () => selectTerm(term) : undefined}
                             classNameModifiers={[
                                 'adyen-pe-capital-offer-selection__term',

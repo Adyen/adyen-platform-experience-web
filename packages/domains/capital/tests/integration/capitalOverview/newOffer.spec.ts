@@ -58,7 +58,7 @@ test.describe('New offer', () => {
         analyticsEvents,
     }) => {
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€13,875.00)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
@@ -80,7 +80,7 @@ test.describe('onFundsRequest argument', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
 
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Submit request (€13,875.00)' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],

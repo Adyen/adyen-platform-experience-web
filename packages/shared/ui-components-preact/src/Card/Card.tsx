@@ -42,6 +42,9 @@ const Card = ({
     classNameModifiers,
     testId,
     compact,
+    role,
+    ariaChecked,
+    ariaDisabled,
 }: PropsWithChildren<CardProps>) => {
     const [showContent, setShowContent] = useState(false);
     const cardId = useMemo(() => uuid(), []);
@@ -52,18 +55,22 @@ const Card = ({
         }
     }, [expandable]);
 
+    const handleClick = useCallback(() => {
+        toggleExpansion();
+        onClick?.();
+    }, [onClick, toggleExpansion]);
+
     const onKeyDown = useCallback(
         (evt: KeyboardEvent) => {
             switch (evt.code) {
                 case InteractionKeyCode.ENTER:
                 case InteractionKeyCode.SPACE:
                     evt.preventDefault();
-                    if (expandable) toggleExpansion();
-                    else onClick?.();
+                    handleClick();
                     return;
             }
         },
-        [expandable, onClick, toggleExpansion]
+        [handleClick]
     );
 
     const cardContainerAttributes = useMemo(() => {
@@ -71,7 +78,7 @@ const Card = ({
             return {
                 role: 'button' as AriaRole,
                 tabIndex: 0,
-                onClick: toggleExpansion,
+                onClick: handleClick,
                 onKeyDown: onKeyDown,
                 'aria-controls': cardId,
                 'aria-expanded': showContent,
@@ -79,14 +86,23 @@ const Card = ({
         }
         if (onClick) {
             return {
-                role: 'button' as AriaRole,
+                role: (role ?? 'button') as AriaRole,
                 tabIndex: 0,
-                onClick,
+                onClick: handleClick,
                 onKeyDown,
+                ...(ariaChecked !== undefined && { 'aria-checked': ariaChecked }),
+                ...(ariaDisabled !== undefined && { 'aria-disabled': ariaDisabled }),
+            };
+        }
+        if (role !== undefined || ariaChecked !== undefined || ariaDisabled !== undefined) {
+            return {
+                ...(role !== undefined && { role: role as AriaRole }),
+                ...(ariaChecked !== undefined && { 'aria-checked': ariaChecked }),
+                ...(ariaDisabled !== undefined && { 'aria-disabled': ariaDisabled }),
             };
         }
         return {};
-    }, [expandable, onClick, showContent, cardId, onKeyDown, toggleExpansion]);
+    }, [expandable, onClick, handleClick, onKeyDown, cardId, showContent, role, ariaChecked, ariaDisabled]);
 
     return (
         <div
