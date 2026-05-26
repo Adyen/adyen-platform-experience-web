@@ -8,9 +8,8 @@ import { render, renderHook, screen } from '@testing-library/preact';
 import { ComponentHeadingType, useComponentHeadingElement, UseComponentHeadingElementProps } from './useComponentHeadingElement';
 
 vi.mock('@integration-components/core/preact/useCoreContext', () => ({
-    default: () => ({
-        componentRef: () => document.querySelector('[data-testid="root"]'),
-    }),
+    // eslint-disable-next-line testing-library/no-node-access
+    default: () => ({ componentRef: () => document.querySelector('[data-testid="root"]') }),
 }));
 
 const ComponentRoot = ({ children }: PropsWithChildren) => <section data-testid="root">{children}</section>;

@@ -25,7 +25,7 @@ export const Container = <T extends new (args: any) => any>({ component, compone
                 environment: 'test',
                 locale: context.globals.locale,
                 onSessionCreate: async () => {
-                    return await getMySessionToken(context.args.session);
+                    return await getMySessionToken(context.args.session as Parameters<typeof getMySessionToken>[0]);
                 },
                 ...(context.args.coreOptions ?? {}),
             });
