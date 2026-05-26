@@ -6,9 +6,33 @@ settings:
 
 catalogs:
   default:
+    '@playwright/test':
+      specifier: ^1.56.0
+      version: 1.56.0
+    '@storybook/preact':
+      specifier: 10.2.12
+      version: 10.2.12
+    '@testing-library/preact':
+      specifier: ^3.2.3
+      version: 3.2.3
+    '@vitest/coverage-v8':
+      specifier: 4.0.10
+      version: 4.0.10
+    classnames:
+      specifier: ^2.5.1
+      version: 2.5.1
+    dotenv:
+      specifier: ^17.2.3
+      version: 17.2.3
+    storybook:
+      specifier: 10.2.12
+      version: 10.2.12
     vite:
       specifier: ^7.3.2
       version: 7.3.2
+    vitest:
+      specifier: 4.0.10
+      version: 4.0.10
     vue:
       specifier: ^3.5.13
       version: 3.5.31
@@ -43,7 +67,7 @@ importers:
         specifier: '>=4.0.0-compact.9 <4.0.0'
         version: 4.0.0-compact.9(react@19.2.0)(typescript@5.8.3)(vue@3.5.31(typescript@5.8.3))
       classnames:
-        specifier: ^2.5.1
+        specifier: 'catalog:'
         version: 2.5.1
       core-js:
         specifier: ^3.36.0
@@ -110,19 +134,19 @@ importers:
         specifier: ^22.5.3
         version: 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: 'catalog:'
         version: 1.56.0
       '@preact/preset-vite':
         specifier: ^2.10.2
         version: 2.10.2(@babel/core@7.26.10)(preact@10.29.1)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@testing-library/jest-dom':
         specifier: ^5.16.5
         version: 5.17.0
       '@testing-library/preact':
-        specifier: ^3.2.3
+        specifier: 'catalog:'
         version: 3.2.3(preact@10.29.1)
       '@testing-library/user-event':
         specifier: ^14.6.1
@@ -140,7 +164,7 @@ importers:
         specifier: ^8.51.0
         version: 8.51.0(eslint@9.39.2)(typescript@5.8.3)
       '@vitest/coverage-v8':
-        specifier: 4.0.10
+        specifier: 'catalog:'
         version: 4.0.10(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       autoprefixer:
         specifier: ^10.4.20
@@ -155,7 +179,7 @@ importers:
         specifier: ^6.11.0
         version: 6.11.0(webpack@5.106.2)
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       eslint:
         specifier: ^9.39.2
@@ -224,7 +248,7 @@ importers:
         specifier: ^12.3.0
         version: 12.6.0(sass@1.79.3)(webpack@5.106.2)
       storybook:
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       style-loader:
         specifier: ^3.3.1
@@ -260,7 +284,7 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       vitest:
-        specifier: 4.0.10
+        specifier: 'catalog:'
         version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
       vue-eslint-parser:
         specifier: ^10.4.0
@@ -594,7 +618,7 @@ importers:
         specifier: workspace:*
         version: link:../utils
       classnames:
-        specifier: '*'
+        specifier: 'catalog:'
         version: 2.5.1
       preact:
         specifier: ^10.29.1
@@ -607,7 +631,7 @@ importers:
         version: 11.3.2(vue@3.5.31(typescript@5.8.3))
     devDependencies:
       vitest:
-        specifier: '*'
+        specifier: 'catalog:'
         version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/shared/hooks-preact:
@@ -626,10 +650,10 @@ importers:
         version: 10.29.1
     devDependencies:
       '@testing-library/preact':
-        specifier: '*'
+        specifier: 'catalog:'
         version: 3.2.3(preact@10.29.1)
       vitest:
-        specifier: '*'
+        specifier: 'catalog:'
         version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
 
   packages/shared/lib: {}
@@ -651,17 +675,17 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@playwright/test':
-        specifier: '*'
+        specifier: 'catalog:'
         version: 1.56.0
       dotenv:
-        specifier: '*'
+        specifier: 'catalog:'
         version: 17.2.3
     devDependencies:
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       storybook:
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   packages/shared/types:
@@ -11575,8 +11599,8 @@ snapshots:
 
   magicast@0.5.1:
     dependencies:
-      '@babel/parser': 7.28.5
-      '@babel/types': 7.28.5
+      '@babel/parser': 7.29.2
+      '@babel/types': 7.29.0
       source-map-js: 1.2.1
 
   make-dir@4.0.0:
