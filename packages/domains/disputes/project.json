@@ -1,0 +1,24 @@
+{
+    "name": "@integration-components/disputes",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/disputes",
+    "tags": ["scope:disputes", "type:domain"],
+    "targets": {
+        "types:check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/disputes/tsconfig.json"
+            },
+            "outputs": [],
+            "cache": true
+        },
+        "types:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "tsc --noEmit --project packages/domains/disputes/tsconfig.json --watch"
+            },
+            "cache": false
+        }
+    }
+}
