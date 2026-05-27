@@ -4,6 +4,11 @@
         "noEmit": true,
         "types": ["node"]
     },
-    "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"],
+    "files": [
+        "../../../src/declarations/scss.d.ts",
+        "../../../src/declarations/vite-env.d.ts",
+        "../../../src/declarations/svgr.d.ts",
+        "../../../src/declarations/shims-vue.d.ts"
+    ],
     "include": ["src/**/*.ts"]
 }

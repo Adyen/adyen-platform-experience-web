@@ -24,6 +24,9 @@ catalogs:
     dotenv:
       specifier: ^17.2.3
       version: 17.2.3
+    msw:
+      specifier: ^2.7.3
+      version: 2.7.3
     storybook:
       specifier: 10.2.12
       version: 10.2.12
@@ -85,6 +88,9 @@ importers:
       '@changesets/get-github-info':
         specifier: ^0.6.0
         version: 0.6.0
+      '@eslint/js':
+        specifier: ^9.39.2
+        version: 9.39.2
       '@integration-components/core':
         specifier: workspace:*
         version: link:packages/shared/core
@@ -208,6 +214,9 @@ importers:
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.106.2)
+      globals:
+        specifier: ^17.6.0
+        version: 17.6.0
       husky:
         specifier: ^7.0.4
         version: 7.0.4
@@ -221,7 +230,7 @@ importers:
         specifier: ^2.4.5
         version: 2.9.2(webpack@5.106.2)
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       msw-storybook-addon:
         specifier: ^2.0.2
@@ -342,7 +351,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 4.0.10
@@ -391,7 +400,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       storybook:
         specifier: 10.2.12
@@ -449,7 +458,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 4.0.10
@@ -510,7 +519,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
 
   packages/domains/transactions:
@@ -562,7 +571,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
         specifier: 4.0.10
@@ -680,6 +689,9 @@ importers:
       dotenv:
         specifier: 'catalog:'
         version: 17.2.3
+      msw:
+        specifier: 'catalog:'
+        version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
     devDependencies:
       '@storybook/preact':
         specifier: 'catalog:'
@@ -711,6 +723,9 @@ importers:
       '@integration-components/utils':
         specifier: workspace:*
         version: link:../utils
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       preact:
         specifier: ^10.29.1
         version: 10.29.1
@@ -720,6 +735,9 @@ importers:
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
+      classnames:
+        specifier: 'catalog:'
+        version: 2.5.1
       preact:
         specifier: ^10.29.1
         version: 10.29.1
@@ -773,7 +791,7 @@ importers:
         specifier: ^17.2.3
         version: 17.2.3
       msw:
-        specifier: ^2.4.5
+        specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       msw-storybook-addon:
         specifier: ^2.0.2
@@ -2182,21 +2200,25 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@22.6.3':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@22.6.3':
     resolution: {}
@@ -2338,66 +2360,79 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -2818,41 +2853,49 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -4304,6 +4347,10 @@ packages:
     engines: {node: '>=18'}
 
   globals@15.15.0:
+    resolution: {}
+    engines: {node: '>=18'}
+
+  globals@17.6.0:
     resolution: {}
     engines: {node: '>=18'}
 
@@ -6659,6 +6706,7 @@ packages:
   whatwg-encoding@3.1.1:
     resolution: {}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@4.0.0:
     resolution: {}
@@ -10956,6 +11004,8 @@ snapshots:
   globals@14.0.0: {}
 
   globals@15.15.0: {}
+
+  globals@17.6.0: {}
 
   globalthis@1.0.4:
     dependencies:

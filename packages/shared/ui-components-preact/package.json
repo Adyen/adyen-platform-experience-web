@@ -263,9 +263,10 @@
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
-        "@integration-components/utils": "workspace:*"
+        "@integration-components/utils": "workspace:*",
+        "classnames": "catalog:"
     },
     "peerDependencies": {
-        "preact": "^10.28.2"
+        "preact": "catalog:"
     }
 }

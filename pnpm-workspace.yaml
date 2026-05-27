@@ -12,6 +12,7 @@ catalog:
   "@vitest/coverage-v8": 4.0.10
   classnames: ^2.5.1
   dotenv: ^17.2.3
+  msw: ^2.7.3
   preact: ^10.29.1
   storybook: 10.2.12
   vite: ^7.3.2
