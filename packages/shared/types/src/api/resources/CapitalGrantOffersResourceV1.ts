@@ -77,17 +77,6 @@ export interface components {
              */
             value: number;
         };
-        CreateGrantOfferRequestDTO: {
-            /** Format: int64 */
-            amount: number;
-            currency: string;
-        };
-        DynamicOffersResponseDTO: {
-            maxAmount: components['schemas']['Amount'];
-            minAmount: components['schemas']['Amount'];
-            /** Format: int32 */
-            step: number;
-        };
         GrantOfferResponseDTO: {
             /** Format: int32 */
             aprBasisPoints?: number;
@@ -102,6 +91,17 @@ export interface components {
             repaymentRate: number;
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
+        };
+        CreateGrantOfferRequestDTO: {
+            /** Format: int64 */
+            amount: number;
+            currency: string;
+        };
+        DynamicOffersResponseDTO: {
+            maxAmount: components['schemas']['Amount'];
+            minAmount: components['schemas']['Amount'];
+            /** Format: int32 */
+            step: number;
         };
     };
     responses: never;

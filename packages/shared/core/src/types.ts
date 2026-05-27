@@ -67,3 +67,10 @@ export type onErrorHandler = (error: Error) => any;
 export type AnalyticsConfig = {
     enabled?: boolean;
 };
+
+export interface ResolvedEnvironment {
+    apiUrl: string;
+    cdnTranslationsUrl: string;
+    cdnAssetsUrl: string;
+    cdnConfigUrl: string;
+}

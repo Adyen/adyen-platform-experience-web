@@ -61,7 +61,7 @@ export const enum InteractionKeyCode {
 }
 
 export interface BaseElementProps extends _BaseElementProps {
-    core: Core<any, any>;
+    core: Core<any>;
 }
 
 export interface IUIElement {
@@ -98,11 +98,14 @@ export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => 
 
 export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields } from '@integration-components/reports/publish';
 
-export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
-export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
+export type {
+    TransactionsOverviewComponentProps,
+    TransactionsOverviewProps,
+    TransactionsTableFields,
+    TransactionsFilters,
+} from '@integration-components/transactions/publish';
 
-export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
-export type { StoreIds } from './external/PaymentLinksOverview/types';
+export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps, StoreIds } from '@integration-components/payByLink/publish';
 
 export type {
     PayoutsOverviewComponentProps,
@@ -112,24 +115,26 @@ export type {
     PayoutDetailsProps,
 } from '@integration-components/payouts/publish';
 
-export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
-export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
+export type {
+    DisputeOverviewComponentProps,
+    DisputesOverviewProps,
+    DisputesTableFields,
+    DisputeStatusGroup,
+} from '@integration-components/disputes/publish';
 
-export type DeepPartial<T> = T extends object
-    ? {
-          [K in keyof T]?: DeepPartial<T[K]>;
-      }
-    : T;
+export type { DeepPartial } from '@integration-components/types';
 
 export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
 export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/CapitalOffer/types';
 
-export type { PaymentLinkCreationComponentProps, PaymentLinkCreationProps } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
-
-export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from './external/PaymentLinkSettings/types';
-
-export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
+export type {
+    PaymentLinkCreationComponentProps,
+    PaymentLinkCreationProps,
+    PaymentLinkFieldsVisibilityConfig,
+    PaymentLinkCreationFieldsConfig,
+} from '@integration-components/payByLink/publish';
+export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from '@integration-components/payByLink/publish';
+export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from '@integration-components/payByLink/publish';
 
 export type { ExternalComponentType } from '@integration-components/types';

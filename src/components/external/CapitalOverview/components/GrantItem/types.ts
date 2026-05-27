@@ -1,7 +1,7 @@
 import { IGrant } from '../../../../../types';
 import { GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { ListWithoutFirst } from '../../../../../utils/types';
-import { TagVariant } from '../../../../internal/Tag/types';
+import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { TranslationKey } from '../../../../../translations';
 
 export interface GrantItemProps {

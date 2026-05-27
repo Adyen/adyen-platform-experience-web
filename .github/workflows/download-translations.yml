@@ -24,6 +24,7 @@ jobs:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Run setup steps for translation tasks
+        id: setup-smartling
         uses: ./.github/actions/setup-smartling
         with:
           npm_token: ${{ secrets.NPM_READ_ONLY_TOKEN }}
@@ -42,7 +43,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           # Download files from Smartling
-          npx -y @adyen/smartling-bot@0.x.x download-files -p ./scripts/process-translations/post-download.sh
+          npx -y @adyen/smartling-bot@${{ steps.setup-smartling.outputs.smartling_bot_version }} download-files -p ./scripts/process-translations/post-download.sh
         env:
           BASE_REF: ${{ github.ref_name }}
           BRANCH_NAME: "bot/translations"

@@ -1,6 +1,5 @@
 import { IPayout, ITransaction } from '../../../src';
 import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
-import { IDisputeListItem } from '../../../src/types/api/models/disputes';
 
 const products = ['Coffee', 'Muffin', 'Pie', 'Tea', 'Latte', 'Brownie', 'Iced latte', 'Bubble tea', 'Apple pie', 'Iced tea'];
 const getProductById = (id: string) => {
@@ -78,28 +77,6 @@ export const getCustomTransactionDataById = (id: string) => {
             },
         },
     };
-};
-
-export const getCustomDisputesData = async (data: IDisputeListItem[]) => {
-    return data.map(dispute => {
-        return {
-            ...dispute,
-            _summary: {
-                type: 'link',
-                value: 'Summary',
-                config: {
-                    href: CUSTOM_URL_EXAMPLE,
-                },
-            },
-            _sendEmail: {
-                type: 'button',
-                value: 'Send email',
-                config: {
-                    action: () => console.log('Action'),
-                },
-            },
-        } as const;
-    });
 };
 
 export const getCustomPayoutsData = async (data: IPayout[]) => {
