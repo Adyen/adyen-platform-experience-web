@@ -19,7 +19,7 @@ test.describe('Error - Actions Embedded', () => {
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
         await expect(
-            page.getByText('We need a bit more input from you to process your funds. Please complete these actions by February 15, 2025.')
+            page.getByText("You're almost ready. To process your funds, we just need your input. Please complete these actions by February 15, 2025.")
         ).toBeVisible();
         await expect(informationSubmitButton).toBeVisible();
         await expect(informationSubmitButton).toContainClass('adyen-pe-button--tertiary');
