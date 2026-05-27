@@ -4,5 +4,8 @@
     "projectType": "library",
     "sourceRoot": "packages/shared/ui-components-preact/src",
     "tags": ["type:shared"],
-    "targets": {}
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
 }

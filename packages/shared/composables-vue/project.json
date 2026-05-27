@@ -4,5 +4,8 @@
     "projectType": "library",
     "sourceRoot": "packages/shared/composables-vue/src",
     "tags": ["type:shared"],
-    "targets": {}
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
 }

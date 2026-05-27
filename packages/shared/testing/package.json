@@ -20,7 +20,8 @@
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "@playwright/test": "catalog:",
-        "dotenv": "catalog:"
+        "dotenv": "catalog:",
+        "msw": "catalog:"
     },
     "peerDependencies": {
         "@storybook/preact": "catalog:",
