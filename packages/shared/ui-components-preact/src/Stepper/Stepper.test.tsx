@@ -6,9 +6,7 @@ import { describe, expect, vi, beforeEach, test } from 'vitest';
 import { Stepper } from './Stepper';
 import { useCoreContext } from '@integration-components/core/preact';
 
-vi.mock('../../../core/Context/useCoreContext', () => ({
-    default: vi.fn(),
-}));
+vi.mock('@integration-components/core/preact');
 
 const DEFAULT_STEPS = ['Step 1', 'Step 2', 'Step 3'];
 

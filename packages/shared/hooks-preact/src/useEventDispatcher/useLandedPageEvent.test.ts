@@ -4,9 +4,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook } from '@testing-library/preact';
 import { useLandedPageEvent } from './useLandedPageEvent';
-import useEventDispatcherContext from '../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
+import { useEventDispatcherContext } from '@integration-components/core/preact';
 
-vi.mock('../../core/Context/eventDispatcher/useEventDispatcherContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useLandedPageEvent', () => {
     const mockAddEvent = vi.fn();

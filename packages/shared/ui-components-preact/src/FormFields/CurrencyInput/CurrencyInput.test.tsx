@@ -10,11 +10,10 @@ import { useFetch } from '@integration-components/hooks-preact/useFetch';
 import * as currencyUtils from '@integration-components/core/Localization/amount/amount-util';
 import Localization from '@integration-components/core/Localization/Localization';
 
-vi.mock('../../../../core/Context/useCoreContext');
-vi.mock('../../../../core/ConfigContext');
-vi.mock('../../../../hooks/useFetch');
-vi.mock('../../../../utils/currency/main', async () => {
-    const actual = await vi.importActual('../../../../utils/currency/main');
+vi.mock('@integration-components/core/preact');
+vi.mock('@integration-components/hooks-preact/useFetch');
+vi.mock('@integration-components/core/Localization/amount/amount-util', async () => {
+    const actual = await vi.importActual('@integration-components/core/Localization/amount/amount-util');
     return {
         ...actual,
         formatAmount: vi.fn(),
