@@ -6,6 +6,15 @@ settings:
 
 catalogs:
   default:
+    '@adyen/bento-vue3':
+      specifier: 1.96.1
+      version: 1.96.1
+    '@adyen/ui-assets-icons-16':
+      specifier: 7.9.3
+      version: 7.9.3
+    '@adyen/ui-assets-icons-40':
+      specifier: 4.9.2
+      version: 4.9.2
     '@playwright/test':
       specifier: ^1.56.0
       version: 1.56.0
@@ -412,11 +421,14 @@ importers:
   packages/domains/payouts:
     dependencies:
       '@adyen/bento-vue3':
-        specifier: ^1.94.0
-        version: 1.94.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
-        specifier: ^7.7.2
-        version: 7.9.0(vue@3.5.31(typescript@5.8.3))
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue
@@ -479,11 +491,11 @@ importers:
   packages/domains/reports:
     dependencies:
       '@adyen/bento-vue3':
-        specifier: ^1.93.0
-        version: 1.93.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
-        specifier: ^7.7.2
-        version: 7.9.0(vue@3.5.31(typescript@5.8.3))
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue
@@ -536,6 +548,18 @@ importers:
 
   packages/domains/transactions:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -566,6 +590,12 @@ importers:
       preact:
         specifier: ^10.29.1
         version: 10.29.1
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.31(typescript@5.8.3)
+      vue-i18n:
+        specifier: ^11
+        version: 11.3.2(vue@3.5.31(typescript@5.8.3))
     devDependencies:
       '@playwright/test':
         specifier: ^1.56.0
@@ -586,11 +616,8 @@ importers:
         specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
-        specifier: 4.0.10
+        specifier: 'catalog:'
         version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
-      vue:
-        specifier: ^3.5.13
-        version: 3.5.31(typescript@5.8.3)
 
   packages/sdk:
     dependencies:
@@ -613,9 +640,15 @@ importers:
 
   packages/shared/composables-vue:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@integration-components/core':
         specifier: workspace:*
         version: link:../core
+      '@integration-components/style':
+        specifier: workspace:*
+        version: link:../style
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
@@ -829,20 +862,10 @@ packages:
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {}
 
-  '@adyen/bento-design-tokens@1.93.0':
+  '@adyen/bento-design-tokens@1.96.1':
     resolution: {}
 
-  '@adyen/bento-design-tokens@1.94.0':
-    resolution: {}
-
-  '@adyen/bento-vue3@1.93.0':
-    resolution: {}
-    peerDependencies:
-      vue: ^3.2.47
-      vue-i18n: ^9 || ^10 || ^11
-      zod: ^3.25 || ^4
-
-  '@adyen/bento-vue3@1.94.0':
+  '@adyen/bento-vue3@1.96.1':
     resolution: {}
     peerDependencies:
       vue: ^3.2.47
@@ -858,6 +881,22 @@ packages:
     engines: {node: '>=18'}
 
   '@adyen/ui-assets-icons-16@7.9.0':
+    resolution: {}
+    peerDependencies:
+      vue: ~2.7 || ~3
+    peerDependenciesMeta:
+      vue:
+        optional: true
+
+  '@adyen/ui-assets-icons-16@7.9.3':
+    resolution: {}
+    peerDependencies:
+      vue: ~2.7 || ~3
+    peerDependenciesMeta:
+      vue:
+        optional: true
+
+  '@adyen/ui-assets-icons-40@4.9.2':
     resolution: {}
     peerDependencies:
       vue: ~2.7 || ~3
@@ -2225,21 +2264,25 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@22.6.3':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@22.6.3':
     resolution: {}
@@ -2381,66 +2424,79 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -2861,41 +2917,49 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -3192,10 +3256,6 @@ packages:
   ansi-regex@5.0.1:
     resolution: {}
     engines: {node: '>=8'}
-
-  ansi-regex@6.1.0:
-    resolution: {}
-    engines: {node: '>=12'}
 
   ansi-regex@6.2.2:
     resolution: {}
@@ -6858,44 +6918,11 @@ snapshots:
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
-  '@adyen/bento-design-tokens@1.93.0': {}
+  '@adyen/bento-design-tokens@1.96.1': {}
 
-  '@adyen/bento-design-tokens@1.94.0': {}
-
-  '@adyen/bento-vue3@1.93.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
+  '@adyen/bento-vue3@1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
     dependencies:
-      '@adyen/bento-design-tokens': 1.93.0
-      '@floating-ui/core': 1.6.8
-      '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
-      '@types/mdast': 3.0.15
-      '@types/sortablejs': 1.15.9
-      '@types/unist': 2.0.11
-      '@vueuse/core': 11.3.0(vue@3.5.31(typescript@5.8.3))
-      date-fns: 4.1.0
-      focus-lock: 0.11.0
-      libphonenumber-js: 1.12.23
-      mime: 4.0.6
-      remark-gfm-old: remark-gfm@3.0.1
-      remark-parse: 10.0.2
-      sortablejs: 1.15.6
-      unified: 11.0.5
-      uuid: 11.1.1
-      vue: 3.5.31(typescript@5.8.3)
-      vue-demi: 0.14.10(vue@3.5.31(typescript@5.8.3))
-      vue-i18n: 11.3.2(vue@3.5.31(typescript@5.8.3))
-      zod: 4.2.1
-    optionalDependencies:
-      vue-router: 5.0.4(@vue/compiler-sfc@3.5.31)(vue@3.5.31(typescript@5.8.3))
-    transitivePeerDependencies:
-      - '@pinia/colada'
-      - '@vue/compiler-sfc'
-      - '@vue/composition-api'
-      - pinia
-      - supports-color
-
-  '@adyen/bento-vue3@1.94.0(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)':
-    dependencies:
-      '@adyen/bento-design-tokens': 1.94.0
+      '@adyen/bento-design-tokens': 1.96.1
       '@floating-ui/core': 1.6.8
       '@floating-ui/vue': 1.0.7(vue@3.5.31(typescript@5.8.3))
       '@types/mdast': 3.0.15
@@ -6948,6 +6975,14 @@ snapshots:
   '@adyen/openbankingsdk@0.2.3': {}
 
   '@adyen/ui-assets-icons-16@7.9.0(vue@3.5.31(typescript@5.8.3))':
+    optionalDependencies:
+      vue: 3.5.31(typescript@5.8.3)
+
+  '@adyen/ui-assets-icons-16@7.9.3(vue@3.5.31(typescript@5.8.3))':
+    optionalDependencies:
+      vue: 3.5.31(typescript@5.8.3)
+
+  '@adyen/ui-assets-icons-40@4.9.2(vue@3.5.31(typescript@5.8.3))':
     optionalDependencies:
       vue: 3.5.31(typescript@5.8.3)
 
@@ -7009,7 +7044,7 @@ snapshots:
   '@babel/generator@7.27.0':
     dependencies:
       '@babel/parser': 7.29.2
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.31
       jsesc: 3.1.0
@@ -7078,14 +7113,14 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.28.5':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
   '@babel/helper-module-imports@7.25.9':
     dependencies:
       '@babel/traverse': 7.27.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -7116,7 +7151,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/helper-plugin-utils@7.26.5': {}
 
@@ -7143,7 +7178,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.27.1':
     dependencies:
       '@babel/traverse': 7.29.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
     transitivePeerDependencies:
       - supports-color
 
@@ -7166,7 +7201,7 @@ snapshots:
   '@babel/helpers@7.27.0':
     dependencies:
       '@babel/template': 7.27.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/parser@7.28.5':
     dependencies:
@@ -7709,7 +7744,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
       '@babel/helper-plugin-utils': 7.28.6
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
       esutils: 2.0.3
 
   '@babel/preset-typescript@7.28.5(@babel/core@7.26.10)':
@@ -7731,9 +7766,9 @@ snapshots:
 
   '@babel/template@7.27.0':
     dependencies:
-      '@babel/code-frame': 7.26.2
+      '@babel/code-frame': 7.29.0
       '@babel/parser': 7.29.2
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
 
   '@babel/template@7.28.6':
     dependencies:
@@ -7743,11 +7778,11 @@ snapshots:
 
   '@babel/traverse@7.27.0':
     dependencies:
-      '@babel/code-frame': 7.26.2
+      '@babel/code-frame': 7.29.0
       '@babel/generator': 7.27.0
       '@babel/parser': 7.29.2
       '@babel/template': 7.27.0
-      '@babel/types': 7.28.5
+      '@babel/types': 7.29.0
       debug: 4.4.3(supports-color@10.2.2)
       globals: 11.12.0
     transitivePeerDependencies:
@@ -9654,8 +9689,6 @@ snapshots:
 
   ansi-regex@5.0.1: {}
 
-  ansi-regex@6.1.0: {}
-
   ansi-regex@6.2.2: {}
 
   ansi-styles@4.3.0:
@@ -11401,7 +11434,7 @@ snapshots:
 
   jest-message-util@29.7.0:
     dependencies:
-      '@babel/code-frame': 7.26.2
+      '@babel/code-frame': 7.29.0
       '@jest/types': 29.6.3
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2
@@ -12287,7 +12320,7 @@ snapshots:
 
   parse-json@5.2.0:
     dependencies:
-      '@babel/code-frame': 7.26.2
+      '@babel/code-frame': 7.29.0
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
@@ -13055,7 +13088,7 @@ snapshots:
 
   strip-ansi@7.1.0:
     dependencies:
-      ansi-regex: 6.1.0
+      ansi-regex: 6.2.2
 
   strip-ansi@7.2.0:
     dependencies:

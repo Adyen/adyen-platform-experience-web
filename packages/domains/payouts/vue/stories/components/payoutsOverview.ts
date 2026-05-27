@@ -14,16 +14,11 @@ export const PayoutsOverviewMeta: Meta<ElementProps<typeof PayoutsOverview>> = {
         hideTitle: { control: 'boolean' },
         showDetails: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
-        locale: {
-            control: 'select',
-            options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'],
-        },
     },
     args: {
         component: PayoutsOverview,
         allowLimitSelection: true,
         showDetails: true,
-        locale: 'en-US',
     },
     parameters: {
         controls: {

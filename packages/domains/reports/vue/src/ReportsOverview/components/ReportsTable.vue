@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted, watch } from 'vue';
-import { BentoButton } from '@adyen/bento-vue3';
-import { DataGrid } from './DataGrid';
+import { BentoButton, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, useTableColumns } from '@integration-components/composables-vue';
+import { useCustomColumnsData, useTableColumns, CustomDataCell } from '@integration-components/composables-vue';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
@@ -203,6 +202,15 @@ function handleItemsPage(size: number) {
     props.updateLimit?.(size);
 }
 
+function formatDate(dateStr: string): string {
+    return i18n.date(dateStr, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+    });
+}
+
 // Clear alert whenever a new fetch begins. This must be a watcher; a top-level
 // `if (props.loading) ...` would only run once during component setup.
 watch(
@@ -233,17 +241,31 @@ watch(
             </BentoButton>
         </div>
 
-        <DataGrid
+        <BentoDataGrid
             v-else
+            outline
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
             :row-actions="getRowActions"
-            :custom-field-keys="customFieldKeys"
+            :has-resizable-columns="false"
+            :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
-        />
+        >
+            <template #item-createdAt="{ item }">
+                <time v-if="item.createdAt" :datetime="item.createdAt">
+                    <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
+                </time>
+            </template>
+            <template #item-reportType="{ item }">
+                {{ item.reportType }}
+            </template>
+            <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
+                <CustomDataCell :value="item[key]" />
+            </template>
+        </BentoDataGrid>
     </div>
 </template>

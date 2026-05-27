@@ -72,6 +72,11 @@ export const formatAmountWithoutCurrency = (locale: string, options: Intl.Number
         .trim();
 };
 
+export const formatAmountWithCurrencyCode = (amount: number, locale: string, currencyCode: string): string => {
+    const localisedAmount = getLocalisedAmount(amount, locale, currencyCode, true, { currencyDisplay: 'symbol', signDisplay: 'never' });
+    return `${amount < 0 ? `- ${localisedAmount}` : localisedAmount} ${currencyCode}`;
+};
+
 /**
  * @internal
  */

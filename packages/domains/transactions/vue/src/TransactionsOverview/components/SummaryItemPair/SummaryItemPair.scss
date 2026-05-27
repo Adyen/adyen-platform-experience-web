@@ -1,0 +1,21 @@
+@use '@integration-components/style';
+
+.adyen-pe-transactions-overview__summary-item {
+    display: flex;
+    gap: style.token(spacer-120);
+    justify-content: space-between;
+
+    align-items: center;
+    width: 100%;
+
+    &__label-wrap {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-060);
+    }
+
+    &__pair {
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+}

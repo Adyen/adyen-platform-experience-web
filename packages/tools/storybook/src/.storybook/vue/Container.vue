@@ -9,6 +9,7 @@ const props = defineProps<{
     component: Component;
     componentProps?: Record<string, any>;
     locale?: SupportedLocales;
+    fontFamily?: string;
     session?: { roles: string[]; accountHolderId?: string };
     compact?: boolean;
 }>();
@@ -21,8 +22,10 @@ const componentPropsWithoutCoreOptions = computed(() => {
     return rest;
 });
 
-onMounted(async () => {
+async function initializeCore() {
     try {
+        core.value = null;
+        error.value = null;
         const { coreOptions } = props.componentProps ?? {};
         const instance = new Core<[], Record<never, never>>({
             environment: 'test',
@@ -36,11 +39,13 @@ onMounted(async () => {
         // eslint-disable-next-line no-console
         console.error('Core initialization failed:', e);
     }
-});
+}
+
+onMounted(initializeCore);
 </script>
 
 <template>
-    <div :class="compact ? 'compact-component-wrapper' : 'component-wrapper'">
+    <div :class="compact ? 'compact-component-wrapper' : 'component-wrapper'" :style="{ fontFamily }">
         <div v-if="error" style="color: red; padding: 16px">Error: {{ error }}</div>
         <div v-else-if="!core" style="padding: 16px; text-align: center">Initializing...</div>
         <component v-else :is="component" :core="core" v-bind="componentPropsWithoutCoreOptions" />

@@ -2,6 +2,8 @@ import { getDateRangeTimestamps } from '@integration-components/ui-components-pr
 import { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 
+export { parsePaymentMethodType } from '@integration-components/transactions/domain';
+
 const allFilters = Object.keys(INITIAL_FILTERS) as readonly (keyof TransactionsFilters)[];
 const allFiltersSet = new Set(allFilters);
 
