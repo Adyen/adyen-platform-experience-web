@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    '/v1/capital/grantOffers/create': {
+    '/v2/capital/grantOffers/create': {
         parameters: {
             query?: never;
             header?: never;
@@ -24,7 +24,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/v1/capital/grantOffers/dynamic': {
+    '/v2/capital/grantOffers/dynamic': {
         parameters: {
             query?: never;
             header?: never;
@@ -44,7 +44,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    '/v1/capital/grantOffers/dynamic/configuration': {
+    '/v2/capital/grantOffers/dynamic/configuration': {
         parameters: {
             query?: never;
             header?: never;
@@ -77,12 +77,15 @@ export interface components {
              */
             value: number;
         };
-        CreateGrantOfferRequestDTO: {
+        CreateGrantOfferRequestV2DTO: {
             /** Format: int64 */
             amount: number;
             currency: string;
+            /** Format: int32 */
+            selectedEstimatedRepaymentTermDays: number;
         };
-        DynamicOffersResponseDTO: {
+        DynamicOffersResponseV2DTO: {
+            estimatedRepaymentTermsInDays: number[];
             maxAmount: components['schemas']['Amount'];
             minAmount: components['schemas']['Amount'];
             /** Format: int32 */
@@ -103,6 +106,9 @@ export interface components {
             thresholdAmount: components['schemas']['Amount'];
             totalAmount: components['schemas']['Amount'];
         };
+        GrantOffersResponseDTO: {
+            offers: components['schemas']['GrantOfferResponseDTO'][];
+        };
     };
     responses: never;
     parameters: never;
@@ -114,14 +120,16 @@ export type $defs = Record<string, never>;
 export interface operations {
     createGrantOffer: {
         parameters: {
-            query?: never;
+            query?: {
+                accountHolderId?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
-                'application/json': components['schemas']['CreateGrantOfferRequestDTO'];
+                'application/json': components['schemas']['CreateGrantOfferRequestV2DTO'];
             };
         };
         responses: {
@@ -139,6 +147,7 @@ export interface operations {
     getDynamicGrantOffer: {
         parameters: {
             query: {
+                accountHolderId?: string;
                 amount: number;
                 currency: string;
             };
@@ -154,14 +163,16 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['GrantOfferResponseDTO'];
+                    'application/json': components['schemas']['GrantOffersResponseDTO'];
                 };
             };
         };
     };
     getDynamicGrantOffersConfiguration: {
         parameters: {
-            query?: never;
+            query?: {
+                accountHolderId?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -174,7 +185,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['DynamicOffersResponseDTO'];
+                    'application/json': components['schemas']['DynamicOffersResponseV2DTO'];
                 };
             };
         };

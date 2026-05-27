@@ -6,8 +6,8 @@ const STORY_ID = 'mocked-capital-capital-offer--error-request-funds-generic-with
 test.describe('Error - Request funds - Generic with code', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await page.getByRole('button', { name: 'Review offer' }).click();
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
     });
 
     test('should render an error message', async ({ page }) => {
@@ -22,24 +22,24 @@ test.describe('Error - Request funds - Generic with code', () => {
 
     test('should go back to offer selection screen when "Back" button is clicked', async ({ page }) => {
         await page.getByRole('button', { name: 'Go back' }).click();
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
-        await expect(page.getByText('How much money do you need?')).toBeVisible();
+        await expect(page.getByText('Select the amount for the loan')).toBeVisible();
     });
 });
 
 test.describe('"onContactSupport" prop', () => {
     test('should render ""Reach out to support"" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
-        await page.getByRole('button', { name: 'Review offer' }).click();
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });
 
     test('should not render ""Reach out to support"" button when unset', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
-        await page.getByRole('button', { name: 'Review offer' }).click();
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeHidden();
     });
 });

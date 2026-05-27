@@ -4,7 +4,7 @@ import { operations as transactionsV1Ops } from './resources/TransactionsResourc
 import { operations as transactionsV2Ops } from './resources/TransactionsResourceV2';
 import { operations as reportsOps } from './resources/ReportsResourceV1';
 import { operations as disputesOps } from './resources/DisputesResourceV1';
-import { operations as capitalGrantOfferOps } from './resources/CapitalGrantOffersResourceV1';
+import { operations as capitalGrantOfferOps } from './resources/CapitalGrantOffersResourceV2';
 import { operations as capitalGrantsOps } from './resources/CapitalGrantsResourceV1';
 import { operations as capitalMissingActionsOps } from './resources/CapitalMissingActionsResourceV1';
 import { operations as analyticsOps } from './resources/PlatformComponentsUxdsResourceV1';
