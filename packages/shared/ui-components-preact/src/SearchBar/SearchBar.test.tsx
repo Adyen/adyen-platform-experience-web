@@ -7,9 +7,7 @@ import { SearchBar } from './SearchBar';
 import { useCoreContext } from '@integration-components/core/preact';
 import { TranslationKey } from '@integration-components/core';
 
-vi.mock('../../../core/Context/useCoreContext', () => ({
-    default: vi.fn(),
-}));
+vi.mock('@integration-components/core/preact');
 
 const mockedUseCoreContext = vi.mocked(useCoreContext);
 
