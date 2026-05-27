@@ -18,8 +18,8 @@ Shared foundation libraries. `@integration-components/sdk-internal` is the curre
 | `@integration-components/core`                 | planned | Runtime: config, HTTP, i18n, session                                         |
 | `@integration-components/style`                | planned | SCSS foundation, tokens, mixins                                              |
 | `@integration-components/testing`              | planned | MSW setup, fixtures, test utilities                                          |
-| `@integration-components/hooks-preact`         | planned | Shared Preact hooks                                                          |
-| `@integration-components/ui-primitives-preact` | planned | Shared Preact UI components                                                  |
+| `@integration-components/hooks-preact`         | current | Shared Preact hooks                                                          |
+| `@integration-components/ui-components-preact` | current | Shared Preact UI components                                                  |
 
 ### `type:domain`, `scope:<name>`
 
@@ -28,10 +28,10 @@ Business domain packages. The target shape is `domain/src`, `preact/src`, `vue/s
 | Package                                 | Status  | Tags                                 |
 | --------------------------------------- | ------- | ------------------------------------ |
 | `@integration-components/reports`       | current | `type:domain`, `scope:reports`       |
-| `@integration-components/payouts`       | planned | `type:domain`, `scope:payouts`       |
-| `@integration-components/payment-links` | planned | `type:domain`, `scope:payment-links` |
-| `@integration-components/disputes`      | planned | `type:domain`, `scope:disputes`      |
-| `@integration-components/transactions`  | planned | `type:domain`, `scope:transactions`  |
+| `@integration-components/payouts`       | current | `type:domain`, `scope:payouts`       |
+| `@integration-components/transactions`  | current | `type:domain`, `scope:transactions`  |
+| `@integration-components/payByLink`     | current | `type:domain`, `scope:payByLink`     |
+| `@integration-components/disputes`      | current | `type:domain`, `scope:disputes`      |
 | `@integration-components/capital`       | planned | `type:domain`, `scope:capital`       |
 
 ### `type:publish`
@@ -63,15 +63,15 @@ Enforced via ESLint path restrictions within each domain package once the target
 
 ### Transitional exceptions
 
-Reports is the first extracted domain and may temporarily deep-import root `src/components/internal/*` Preact UI primitives until the shared Preact UI primitives package is available. Do not copy this exception to new domains; migrate those imports behind shared package entrypoints before treating reports as the final template.
-
-Payouts inherits the same `src/components/internal/*` exception and additionally has one Preact-coupled utility deep-import:
+The shared Preact UI primitives now live in `@integration-components/ui-components-preact`. Every consumer (root `src/`, shared packages, domains) imports them via that package's subpath entrypoints (e.g. `@integration-components/ui-components-preact/Button/Button`). The only components that remain under root `src/components/internal/` are the domain-specific ones not yet extracted: `CapitalHeader`, `CapitalSlider`. (`StoreSelector` was promoted to `ui-components-preact` during the payByLink extraction.)
 
 | Import                                            | Consumer                                                                            | Reason                                                                                                                        |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx` | Cannot move to `@integration-components/utils` because it returns JSX and depends on the `CopyText` UI primitive (still in root `src/components/internal/CopyText/`). Will migrate alongside `CopyText` when the shared Preact UI primitives package is bootstrapped. |
+| `src/components/utils/getErrorMessage`            | `packages/domains/payouts/preact/src/internal/DataOverviewDetails/DataOverviewDetails.tsx`, `packages/domains/transactions/preact/src/TransactionDetails/components/TransactionData/TransactionData.tsx` | Returns JSX and is tightly coupled to other root utilities; extraction is tracked separately and will land once a Preact-friendly home for these helpers is decided. |
+| `../../../../domain/src/config/*.json`            | `packages/domains/disputes/preact/src/DisputeManagement/context/dispute/context.tsx`, `packages/domains/disputes/preact/src/DisputeManagement/utils/index.test.ts` | JSON config files in `domain/src/config/` are imported via relative path because TypeScript path aliases cannot resolve `.json` imports through barrel re-exports. |
+| `../../../../domain/src/config/*.json`            | `packages/domains/payByLink/preact/src/PaymentLinkCreation/hooks/useInvalidFieldsConfig.ts`, `packages/domains/payByLink/preact/src/PaymentLinkSettings/components/TermsAndConditions/Requirements/useTermsRequirementsConfig.ts` | Same JSON-import resolution constraint as disputes above; config files stored under `domain/src/config/`. |
 
-Do not introduce new exceptions of this kind in subsequent domains. Either reuse this entry (if the same import is already covered) or promote the dependency to a shared package before extracting.
+Do not introduce new exceptions of this kind in subsequent domains. Either reuse these entries (if the same import is already covered) or promote the dependency to a shared package before extracting.
 
 ### MSW endpoint ownership
 

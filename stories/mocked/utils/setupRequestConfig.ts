@@ -2,7 +2,7 @@ import { Decorator } from '@storybook/preact';
 import { http, HttpResponse } from 'msw';
 import { getWorker } from 'msw-storybook-addon';
 import { endpoints } from '../../../endpoints/endpoints';
-import { setupBasicResponse } from '../../../mocks/mock-server/setup';
+import { setupBasicResponse } from '@integration-components/testing/fixtures';
 import { delay } from '@integration-components/testing/msw';
 
 // Resolve the worker lazily inside the decorator. Calling `getWorker()` at

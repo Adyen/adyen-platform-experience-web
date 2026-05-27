@@ -9,19 +9,34 @@
         ".": "./src/index.ts",
         "./package.json": "./package.json",
         "./EventDispatcher": "./src/EventDispatcher/index.ts",
+        "./Errors/constants": "./src/Errors/constants.ts",
         "./Localization": "./src/Localization/index.ts",
+        "./Localization/Localization": "./src/Localization/Localization.ts",
+        "./Localization/amount/amount-util": "./src/Localization/amount/amount-util.ts",
+        "./Localization/constants/localization": "./src/Localization/constants/localization.ts",
+        "./vue": "./src/vue/index.ts",
         "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "*"
+        "classnames": "catalog:"
     },
     "devDependencies": {
-        "vitest": "*"
+        "vitest": "catalog:"
     },
     "peerDependencies": {
-        "preact": "^10.28.2"
+        "preact": "catalog:",
+        "vue": "catalog:",
+        "vue-i18n": "^11"
+    },
+    "peerDependenciesMeta": {
+        "vue": {
+            "optional": true
+        },
+        "vue-i18n": {
+            "optional": true
+        }
     }
 }

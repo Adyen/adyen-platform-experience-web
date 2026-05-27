@@ -1,4 +1,4 @@
-import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL as baseUrl } from '@integration-components/testing/msw';
+import { BALANCE_ACCOUNTS_ENDPOINT, MSW_BASE_URL as baseUrl, SETUP_ENDPOINT } from '@integration-components/testing/msw';
 
 const datasetBaseUrl = '/datasets';
 
@@ -8,13 +8,8 @@ export const endpoints = () =>
         balances: `${baseUrl}/balanceAccounts/:id/balances`,
         payouts: `${baseUrl}/payouts`,
         payout: `${baseUrl}/payouts/breakdown`,
-        transactions: `${baseUrl}/transactions`,
-        transaction: `${baseUrl}/transactions/:id`,
-        initiateRefund: `${baseUrl}/transactions/:id/refund`,
-        transactionsTotals: `${baseUrl}/transactions/totals`,
-        downloadTransactions: `${baseUrl}/transactions/download`,
         sessions: '/api/authe/api/v1/sessions',
-        setup: `${baseUrl}/setup`,
+        setup: SETUP_ENDPOINT,
         sendEngageEvent: `${baseUrl}/uxdsclient/engage`,
         sendTrackEvent: `${baseUrl}/uxdsclient/track`,
         stores: `${baseUrl}/stores`,
@@ -35,18 +30,6 @@ export const endpoints = () =>
             documents: `${baseUrl}/disputes/:id/documents`,
             download: `${baseUrl}/disputes/:id/documents/download`,
             list: `${baseUrl}/disputes`,
-        },
-        payByLink: {
-            configuration: `${baseUrl}/paybylink/paymentLinks/:storeId/configuration`,
-            countries: `${baseUrl}/paybylink/countries`,
-            currencies: `${baseUrl}/paybylink/currencies`,
-            details: `${baseUrl}/paybylink/paymentLinks/:id`,
-            expire: `${baseUrl}/paybylink/paymentLinks/:id/expire`,
-            filters: `${baseUrl}/paybylink/filters`,
-            installments: `${baseUrl}/paybylink/installments`,
-            list: `${baseUrl}/paybylink/paymentLinks`,
-            settings: `${baseUrl}/paybylink/settings/:storeId`,
-            themes: `${baseUrl}/paybylink/themes/:id`,
         },
         datasets: {
             countries: `${datasetBaseUrl}/countries/:locale.json?import`,

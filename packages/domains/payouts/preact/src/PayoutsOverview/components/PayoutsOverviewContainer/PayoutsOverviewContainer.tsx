@@ -1,7 +1,7 @@
 import { useBalanceAccounts } from '@integration-components/hooks-preact';
 import type { ExternalUIComponentProps } from '@integration-components/types';
 import type { PayoutsOverviewComponentProps } from '@integration-components/payouts/domain';
-import DataOverviewContainer from '../../../../../../../../src/components/internal/DataOverviewContainer/DataOverviewContainer';
+import DataOverviewContainer from '@integration-components/ui-components-preact/DataOverviewContainer/DataOverviewContainer';
 import { PayoutsOverview } from '../PayoutsOverview/PayoutsOverview';
 import { BASE_CLASS } from './constants';
 

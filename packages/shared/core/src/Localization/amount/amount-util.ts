@@ -29,6 +29,11 @@ export const getDecimalAmount = (amount: number | string, currencyCode: string):
     return parseInt(String(amount), 10) / divider;
 };
 
+export const getCurrencyExponent = (currencyCode: string): number => Math.log10(getDivider(currencyCode));
+
+export const formatAmount = (amount: number, currencyCode: string): string =>
+    getDecimalAmount(amount, currencyCode).toFixed(getCurrencyExponent(currencyCode));
+
 /**
  * @internal
  */

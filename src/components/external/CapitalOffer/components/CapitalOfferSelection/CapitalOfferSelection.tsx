@@ -1,8 +1,8 @@
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import StructuredList from '../../../../internal/StructuredList';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
@@ -14,10 +14,10 @@ import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/cons
 import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
+import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { debounce } from '../../../../utils/utils';
 import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT } from '@integration-components/utils';
-import Card from '../../../../internal/Card/Card';
+import Card from '@integration-components/ui-components-preact/Card/Card';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
