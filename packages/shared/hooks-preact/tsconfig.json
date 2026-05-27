@@ -2,7 +2,7 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
         "noEmit": true,
-        "types": ["node"]
+        "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
     },
     "files": ["../../../src/declarations/scss.d.ts", "../../../src/declarations/vite-env.d.ts", "../../../src/declarations/svgr.d.ts"],
     "include": ["src/**/*.ts", "src/**/*.tsx"]
