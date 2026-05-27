@@ -5,20 +5,7 @@
     "sourceRoot": "packages/domains/payouts",
     "tags": ["scope:payouts", "type:domain"],
     "targets": {
-        "types:check": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "tsc --noEmit --project packages/domains/payouts/tsconfig.json"
-            },
-            "outputs": [],
-            "cache": true
-        },
-        "types:watch": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "tsc --noEmit --project packages/domains/payouts/tsconfig.json --watch"
-            },
-            "cache": false
-        }
+        "types:check": {},
+        "types:watch": {}
     }
 }

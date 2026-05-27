@@ -37,4 +37,15 @@ module.exports = {
         'scss/no-global-function-names': null,
         'nesting-selector-no-missing-scoping-root': null,
     },
+    overrides: [
+        {
+            // Relax BEM naming for storybook classes, mixins, and variables
+            files: ['packages/tools/storybook/**/*.scss'],
+            rules: {
+                'selector-class-pattern': null,
+                'scss/at-mixin-pattern': null,
+                'scss/dollar-variable-pattern': null,
+            },
+        },
+    ],
 };
