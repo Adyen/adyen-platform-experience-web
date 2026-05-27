@@ -103,8 +103,8 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
 
     // TODO: Remove active grant check after integrating capital state endpoint
     const newOfferAvailable = useMemo(() => {
-        const hasOffer = !!(dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount);
-        const hasActiveGrant = grantList && grantList.some(grant => grant.status === 'Active');
+        const hasOffer = !!(dynamicOffer?.minAmount && dynamicOffer?.maxAmount);
+        const hasActiveGrant = grantList?.some(grant => grant.status === 'Active') ?? false;
         return hasOffer && !hasActiveGrant;
     }, [dynamicOffer, grantList]);
 
