@@ -7,7 +7,13 @@ import {
     IUSCapitalFundsCollection,
 } from '../../src';
 
+export const REPAYMENT_TERM_QUARTER = 90;
+export const REPAYMENT_TERM_HALF = 180;
+export const REPAYMENT_TERM_FULL = 360;
+export const REPAYMENT_TERMS = [REPAYMENT_TERM_QUARTER, REPAYMENT_TERM_HALF, REPAYMENT_TERM_FULL];
+
 export const DYNAMIC_CAPITAL_OFFER = {
+    estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
     minAmount: {
         value: 100000,
         currency: 'EUR',
@@ -20,6 +26,7 @@ export const DYNAMIC_CAPITAL_OFFER = {
 } satisfies IDynamicOffersConfig;
 
 export const CAD_CAPITAL_OFFER = {
+    estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
     minAmount: {
         value: 100000,
         currency: 'CAD',
@@ -178,31 +185,6 @@ export const WRITTEN_OFF_GRANT: IGrant = {
 };
 
 export const GRANTS: IGrant[] = [ACTIVE_GRANT, REPAID_GRANT, REVOKED_GRANT, WRITTEN_OFF_GRANT, FAILED_GRANT];
-
-export const GRANT_OFFER = {
-    id: '66e12a9a64a6',
-    grantAmount: {
-        value: 2000000,
-        currency: 'EUR',
-    },
-    feesAmount: {
-        value: 22000,
-        currency: 'EUR',
-    },
-    totalAmount: {
-        value: 2022000,
-        currency: 'EUR',
-    },
-    thresholdAmount: {
-        value: 169000,
-        currency: 'EUR',
-    },
-    repaymentRate: 1100,
-    expectedRepaymentPeriodDays: 180,
-    maximumRepaymentPeriodDays: 540,
-};
-
-export const OFFER_REVIEW = GRANT_OFFER;
 
 export const SIGNED_OFFER = {
     id: '66e12a9a64a6',
