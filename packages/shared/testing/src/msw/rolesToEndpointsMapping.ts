@@ -50,7 +50,7 @@ export const TransactionsOverviewComponentView = {
 export const TransactionsOverviewComponentManageRefunds = {
     ...TransactionsOverviewComponentView,
     initiateRefund: {
-        method: 'POST',
+        method: 'POST' as HttpMethod,
         url: 'transactions/{transactionId}/refund',
         versions: [1],
     },

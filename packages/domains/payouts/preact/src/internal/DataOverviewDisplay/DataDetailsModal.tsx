@@ -4,8 +4,8 @@ import { useCoreContext } from '@integration-components/core/preact';
 import type { DataCustomizationObject } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
 import useModalDetails from '@integration-components/hooks-preact/useModalDetails';
-import Modal from '../../../../../../../src/components/internal/Modal';
-import { popoverUtil } from '../../../../../../../src/components/internal/Popover/utils/popoverUtil';
+import Modal from '@integration-components/ui-components-preact/Modal';
+import { popoverUtil } from '@integration-components/ui-components-preact/Popover/utils/popoverUtil';
 import ModalContent from '../Modal/ModalContent/ModalContent';
 
 export interface DataOverviewDisplayProps {

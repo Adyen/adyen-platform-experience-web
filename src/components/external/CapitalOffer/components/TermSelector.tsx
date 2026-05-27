@@ -1,7 +1,7 @@
 import { useCallback } from 'preact/hooks';
-import Typography from '../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../internal/Typography/types';
-import Card from '../../../internal/Card/Card';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Card from '@integration-components/ui-components-preact/Card/Card';
 import useCoreContext from '../../../../core/Context/useCoreContext';
 import useEventDispatcherContext from '../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { IGrantOfferResponseDTO } from '../../../../types';

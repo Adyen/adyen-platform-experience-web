@@ -1,6 +1,16 @@
 [build]
   edge_functions = "netlify/edge-functions"
 
+  # Define default build behavior (inherited by production and branch-deploy)
+  command = "pnpm run build && pnpm run storybook:build"
+  publish = "packages/tools/storybook/storybook-static"
+
 [[edge_functions]]
   path = "/api/*"
   function = "proxy-requests"
+
+# Dedicated Vue storybook branch deployment context
+[context."netlify/vue"]
+  # Inherits 'publish' from the global [build] block automatically.
+  # Explicitly overrides ONLY the specific command needed for Vue.
+  command = "pnpm run build && pnpm run storybook:build:vue"

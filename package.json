@@ -25,7 +25,8 @@
     "dist/**"
   ],
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "**/global.{js,ts}"
   ],
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/packages/sdk/src/index.js",
@@ -55,7 +56,7 @@
     "format": "prettier --write 'src/**/*.{ts,tsx,js,css,scss,html,vue}'",
     "check-publish-contract": "pnpm run build && tsx scripts/check-publish-contract/check.ts",
     "check-publish-contract:update": "pnpm run build && tsx scripts/check-publish-contract/check.ts --update",
-    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint '{src,packages,stories,mocks,tests}/**/*.{js,ts,tsx,vue}' --quiet && stylelint '{src,packages}/**/*.scss' --fix && pnpm run lint:playwright-selectors",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/**/*.{js,ts,tsx,vue}' 'packages/domains/**/*.{js,ts,tsx,vue}' 'packages/shared/**/*.{js,ts,tsx}' --quiet && stylelint 'src/**/*.scss' 'packages/domains/**/*.scss' 'packages/shared/**/*.scss' --fix && pnpm run lint:playwright-selectors",
     "lint:playwright-selectors": "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'tests/**/*.{spec,test}.{ts,tsx}' 'tests/models/**/*.{ts,tsx}' 'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx}'",
     "prepare": "node prepare.cjs",
     "schemas:generate": "bash scripts/generate-ts-schemas/generate-schemas.sh",
@@ -75,13 +76,13 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts",
-    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts --parallel=2' 'tsc --project tsconfig-build.json --watch'",
+    "types:check": "tsc --preserveWatchOutput && tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json && nx run-many --target=types:check --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes,@integration-components/payByLink",
+    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'tsc --noEmit --project packages/shared/ui-components-preact/tsconfig.json --watch' 'nx run-many --target=types:watch --projects=@integration-components/reports,@integration-components/payouts,@integration-components/transactions,@integration-components/disputes --parallel=4' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
     "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
-    "classnames": "^2.5.1",
+    "classnames": "catalog:",
     "core-js": "^3.36.0"
   },
   "peerDependencies": {
@@ -95,6 +96,10 @@
     "@integration-components/hooks-preact": "workspace:*",
     "@integration-components/payouts": "workspace:*",
     "@integration-components/reports": "workspace:*",
+    "@integration-components/transactions": "workspace:*",
+    "@integration-components/disputes": "workspace:*",
+    "@integration-components/payByLink": "workspace:*",
+    "@integration-components/ui-components-preact": "workspace:*",
     "@integration-components/style": "workspace:*",
     "@integration-components/testing": "workspace:*",
     "@integration-components/types": "workspace:*",
@@ -103,22 +108,22 @@
     "@nx/eslint-plugin": "^22.5.3",
     "@nx/vite": "^22.5.3",
     "@nx/vitest": "^22.5.3",
-    "@playwright/test": "^1.56.0",
+    "@playwright/test": "catalog:",
     "@preact/preset-vite": "^2.10.2",
-    "@storybook/preact": "10.2.12",
+    "@storybook/preact": "catalog:",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/preact": "^3.2.3",
+    "@testing-library/preact": "catalog:",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.10.13",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@typescript-eslint/eslint-plugin": "^8.51.0",
     "@typescript-eslint/parser": "^8.51.0",
-    "@vitest/coverage-v8": "4.0.10",
+    "@vitest/coverage-v8": "catalog:",
     "autoprefixer": "^10.4.20",
     "concurrently": "^7.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.11.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "catalog:",
     "eslint": "^9.39.2",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import-x": "^4.16.1",
@@ -126,6 +131,7 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-testing-library": "^7.1.1",
+    "eslint-plugin-vue": "^9.33.0",
     "file-loader": "^6.2.0",
     "husky": "^7.0.4",
     "jsdom": "^26.1.0",
@@ -140,41 +146,20 @@
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.77.6",
     "sass-loader": "^12.3.0",
-    "storybook": "10.2.12",
+    "storybook": "catalog:",
     "style-loader": "^3.3.1",
     "stylelint": "^17.5.0",
-    "stylelint-config-recommended": "^17.0.0",
+    "stylelint-config-recommended": "^18.0.0",
     "stylelint-config-sass-guidelines": "^13.0.0",
     "stylelint-scss": "^7.0.0",
     "ts-loader": "^9.2.6",
     "tslib": "^2.8.1",
     "tsx": "^4.21.0",
     "typescript": "5.8.3",
-    "vite": "^7.2.4",
+    "vite": "catalog:",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "4.0.10"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild@0.25.2": "0.27.1",
-      "js-yaml@3.14.1": "3.14.2",
-      "js-yaml@4.1.0": "4.1.1",
-      "minimatch@<9.0.7": ">=10.2.3",
-      "rollup@4.53.3": "4.59.0",
-      "serialize-javascript@6.0.2": "7.0.3",
-      "picomatch": ">=4.0.4",
-      "preact": "catalog:",
-      "typescript": "5.8.3",
-      "@types/node": "24.10.13"
-    },
-    "ignoredBuiltDependencies": [
-      "core-js"
-    ],
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "msw",
-      "nx",
-      "unrs-resolver"
-    ]
+    "vitest": "catalog:",
+    "vue-eslint-parser": "^10.4.0",
+    "webpack": "catalog:"
   }
 }
