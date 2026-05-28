@@ -48,3 +48,11 @@ onlyBuiltDependencies:
   - "msw"
   - "nx"
   - "unrs-resolver"
+
+allowBuilds:
+  core-js: false
+  esbuild: false
+  msw: false
+  nx: false
+  unrs-resolver: false
+  vue-demi: false
