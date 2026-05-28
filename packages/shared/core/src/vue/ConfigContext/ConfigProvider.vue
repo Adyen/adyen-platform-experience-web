@@ -4,6 +4,7 @@ import { CONFIG_CONTEXT_KEY } from './constants';
 import { isWatchlistUnsubscribeToken, EMPTY_OBJECT } from '@integration-components/utils';
 import type { AuthSession } from '../../session/AuthSession';
 import type { ConfigContextValue, ConfigProviderProps } from './types';
+import './Spinner.scss';
 
 const props = defineProps<ConfigProviderProps>();
 
@@ -55,6 +56,9 @@ onBeforeUnmount(() => {
 <template>
     <slot v-if="ready" />
     <slot v-else name="loading">
-        <div>Loading...</div>
+        <div class="adyen-pe-spinner__wrapper">
+            <!-- TODO: Replace with actual loading indicator -->
+            <div class="adyen-pe-spinner" />
+        </div>
     </slot>
 </template>

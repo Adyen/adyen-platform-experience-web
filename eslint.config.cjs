@@ -45,11 +45,7 @@ module.exports = [
                 sourceType: 'module',
                 ecmaFeatures: { jsx: true },
             },
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-                ...globals.es2020,
-            },
+            globals: Object.fromEntries(Object.entries({ ...globals.browser, ...globals.node, ...globals.es2020 }).map(([k, v]) => [k.trim(), v])),
         },
         plugins: {
             react,
@@ -164,7 +160,6 @@ module.exports = [
             'jsx-a11y/no-static-element-interactions': 'error',
             'jsx-a11y/no-noninteractive-tabindex': 'error',
             'jsx-a11y/mouse-events-have-key-events': 'error',
-
         },
     },
 
