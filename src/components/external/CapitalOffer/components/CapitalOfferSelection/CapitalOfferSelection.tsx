@@ -22,6 +22,8 @@ import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwar
 import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 
+const DEFAULT_TERM = 180;
+
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
     subCategory: 'Business financing offer',
@@ -134,13 +136,6 @@ export const CapitalOfferSelection = ({
 
     const allTerms = useMemo(() => dynamicOffersConfig?.estimatedRepaymentTermsInDays ?? [], [dynamicOffersConfig]);
 
-    useEffect(() => {
-        if (allTerms.length > 0 && selectedTerm === undefined) {
-            const selectedIndex = Math.min(1, allTerms.length - 1);
-            onSelectedTermChange(allTerms[selectedIndex]!);
-        }
-    }, [allTerms, onSelectedTermChange, selectedTerm]);
-
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
     const { createGrantOffer, getDynamicGrantOffer } = useConfigContext().endpoints;
@@ -163,6 +158,13 @@ export const CapitalOfferSelection = ({
     }, [getDynamicGrantOfferMutation.data]);
 
     const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
+
+    useEffect(() => {
+        if (allTerms.length > 0 && selectedTerm === undefined) {
+            const selectedTerm = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
+            if (selectedTerm) onSelectedTermChange(selectedTerm);
+        }
+    }, [allTerms, availableTerms, onSelectedTermChange, selectedTerm]);
 
     useEffect(() => {
         if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
