@@ -9,6 +9,7 @@ export * from './customData/mergeRecords';
 export * from './customData/normalizeCustomFields';
 export * from './datetime/formats';
 export * from './datetime/main';
+export * from './datetime/quickSelectDateRanges';
 export * from './datetime/restamper';
 
 export * from './file/download';

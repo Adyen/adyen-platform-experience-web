@@ -9,3 +9,4 @@ export { default as useTableColumns } from './useTableColumns';
 
 export * from './useCustomDataCells';
 export { default as useCustomDataCells } from './useCustomDataCells';
+export { default as useTimezoneAwareDateFormatting } from './useTimezoneAwareDateFormatting';
