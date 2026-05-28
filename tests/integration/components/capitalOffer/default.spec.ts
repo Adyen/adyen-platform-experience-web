@@ -55,7 +55,8 @@ test.describe('Default', () => {
 
     test('should update offer details when slider value is changed', async ({ page, analyticsEvents }) => {
         const slider = page.getByRole('slider');
-        await slider.dragTo(slider, { targetPosition: { x: 0, y: 0 } });
+        await slider.focus();
+        await page.keyboard.press('Home');
 
         await expectAnalyticsEvents(analyticsEvents, [
             [
@@ -116,6 +117,19 @@ test.describe('Default', () => {
     test('should go to offer summary screen when "Review request" button is clicked', async ({ page, analyticsEvents }) => {
         await goToOfferSummary(page, analyticsEvents);
         await expect(page.getByText('Business financing summary')).toBeVisible();
+    });
+
+    test('should show the last selected amount and term when navigating back to offer selection screen', async ({ page }) => {
+        const slider = page.getByRole('slider');
+        await slider.focus();
+        await page.keyboard.press('Home');
+        await page.getByRole('radio', { name: '3 months 8% daily rate' }).click();
+        await page.getByRole('button', { name: 'Review request' }).click();
+        await page.getByRole('button', { name: 'Go back' }).click();
+
+        await expect(page.getByRole('status')).toHaveText('€1,000');
+        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveAttribute('aria-checked', 'true');
     });
 
     test('should render offer summary screen', async ({ page, analyticsEvents }) => {

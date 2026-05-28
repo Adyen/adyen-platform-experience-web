@@ -101,10 +101,12 @@ type CapitalOfferSelectionProps = {
     dynamicOffersConfigError?: Error;
     emptyGrantOffer: boolean;
     selectedAmount: number | undefined;
+    selectedTerm: number | undefined;
     onContactSupport?: () => void;
     onOfferDismiss?: () => void;
     onOfferSelect: (data: IGrantOfferResponseDTO) => void;
     onSelectedAmountChange: (val: number) => void;
+    onSelectedTermChange: (term: number) => void;
 };
 
 export const CapitalOfferSelection = ({
@@ -112,10 +114,12 @@ export const CapitalOfferSelection = ({
     dynamicOffersConfigError,
     emptyGrantOffer,
     selectedAmount,
+    selectedTerm,
     onContactSupport,
     onOfferDismiss,
     onOfferSelect,
     onSelectedAmountChange,
+    onSelectedTermChange,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
@@ -129,14 +133,13 @@ export const CapitalOfferSelection = ({
     const hasInitializedRef = useRef(false);
 
     const allTerms = useMemo(() => dynamicOffersConfig?.estimatedRepaymentTermsInDays ?? [], [dynamicOffersConfig]);
-    const [selectedTerm, setSelectedTerm] = useState<number | undefined>(undefined);
 
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
             const selectedIndex = Math.min(1, allTerms.length - 1);
-            setSelectedTerm(allTerms[selectedIndex]);
+            onSelectedTermChange(allTerms[selectedIndex]!);
         }
-    }, [allTerms, selectedTerm]);
+    }, [allTerms, onSelectedTermChange, selectedTerm]);
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
@@ -164,9 +167,9 @@ export const CapitalOfferSelection = ({
     useEffect(() => {
         if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
             const nearest = availableTerms.reduce((prev, curr) => (Math.abs(curr - selectedTerm) < Math.abs(prev - selectedTerm) ? curr : prev));
-            setSelectedTerm(nearest);
+            onSelectedTermChange(nearest);
         }
-    }, [availableTerms, selectedTerm]);
+    }, [availableTerms, onSelectedTermChange, selectedTerm]);
 
     const matchedOffer = useMemo<IGrantOfferResponseDTO | undefined>(() => {
         if (!getDynamicGrantOfferMutation.data?.offers || selectedTerm === undefined) return undefined;
@@ -285,7 +288,7 @@ export const CapitalOfferSelection = ({
                             selectedTerm={selectedTerm}
                             termOfferMap={termOfferMap}
                             isLoadingIndicatorVisible={isLoadingIndicatorVisible}
-                            onTermSelect={setSelectedTerm}
+                            onTermSelect={onSelectedTermChange}
                         />
                     )}
                     <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>

@@ -32,6 +32,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
 }) => {
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
     const [selectedAmount, setSelectedAmount] = useState<number | undefined>(undefined);
+    const [selectedTerm, setSelectedTerm] = useState<number | undefined>(undefined);
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
     const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
@@ -82,6 +83,8 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
                 <CapitalOfferSelection
                     selectedAmount={selectedAmount}
                     onSelectedAmountChange={setSelectedAmount}
+                    selectedTerm={selectedTerm}
+                    onSelectedTermChange={setSelectedTerm}
                     dynamicOffersConfig={config}
                     dynamicOffersConfigError={dynamicOffersConfigError}
                     onOfferDismiss={onOfferDismiss}
