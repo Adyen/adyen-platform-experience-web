@@ -7,7 +7,7 @@ import { useReportsList } from '../composables/useReportsList';
 import { REPORTS_OVERVIEW_CLASS_NAMES } from '../../../../domain/src';
 import type { IBalanceAccountBase } from '../types';
 import { BentoTypography } from '@adyen/bento-vue3';
-import { quickSelectDateRanges } from './utils/quickSelectDateRanges';
+import { quickSelectDateRanges } from '@integration-components/utils';
 import '../styles/index.scss';
 
 const props = defineProps<{

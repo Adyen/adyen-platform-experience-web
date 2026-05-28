@@ -4,13 +4,17 @@ import { BentoFilterBar, BentoFilterItemType } from '@adyen/bento-vue3';
 import type { BentoFilterBarModel, BentoFilterValues, BentoDateRangePickerValue } from '@adyen/bento-vue3';
 import { useCoreContext } from '@integration-components/core/vue';
 import type { IBalanceAccountBase } from '@integration-components/types';
-import { EARLIEST_PAYOUT_SINCE_DATE } from '../../../../domain/src';
 import { endOfDay, now, quickSelectDateRanges, startOfDay, toUTCISOStringKeepingLocalDateTime } from '@integration-components/utils';
+import { EARLIEST_PAYOUT_SINCE_DATE } from '../constants';
 
 const props = defineProps<{
     balanceAccounts?: IBalanceAccountBase[];
     onChange?: (params: { balanceAccountId: string | undefined; createdSince: string; createdUntil: string }) => void;
 }>();
+
+const _hasBalanceAccountsFilter = (balanceAccounts: IBalanceAccountBase[] | undefined): balanceAccounts is IBalanceAccountBase[] => {
+    return !!balanceAccounts && balanceAccounts.length > 1;
+};
 
 const { i18n } = useCoreContext();
 
@@ -89,11 +93,11 @@ const defaultDateRange = cloneDateRange(quickSelectDateRanges.last30Days);
 const selectedBalanceAccountId = ref<string | undefined>(undefined);
 const selectedDateRange = ref<BentoDateRangePickerValue>(cloneDateRange(defaultDateRange));
 
-// Auto-select first balance account when available
+// Auto-select first balance account when available, reset stale selection
 watch(
     () => props.balanceAccounts,
     accounts => {
-        if (accounts?.length && !selectedBalanceAccountId.value) {
+        if (accounts?.length && !accounts.some(account => account.id === selectedBalanceAccountId.value)) {
             selectedBalanceAccountId.value = accounts[0]?.id;
         }
     },
@@ -104,7 +108,7 @@ watch(
 const filterConfig = computed<BentoFilterBarModel>(() => {
     const filters: BentoFilterBarModel = [];
 
-    if (props.balanceAccounts && props.balanceAccounts.length > 1) {
+    if (_hasBalanceAccountsFilter(props.balanceAccounts)) {
         filters.push({
             field: 'balanceAccountId',
             label: i18n.get('common.filters.types.account.label'),
@@ -140,7 +144,7 @@ const filterValues = computed<BentoFilterValues>(() => {
 
     values.push({ field: 'dateRange', value: selectedDateRange.value });
 
-    if (props.balanceAccounts && props.balanceAccounts.length > 1) {
+    if (_hasBalanceAccountsFilter(props.balanceAccounts)) {
         values.push({ field: 'balanceAccountId', value: selectedBalanceAccountId.value });
     }
 
