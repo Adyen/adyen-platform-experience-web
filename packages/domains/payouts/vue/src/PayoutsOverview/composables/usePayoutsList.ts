@@ -3,7 +3,6 @@ import { useConfigContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
 import type { IPayout } from '@integration-components/types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '../constants';
-import type { PayoutsListResponse } from '../types';
 
 interface UsePayoutsListProps {
     fetchEnabled: boolean;
@@ -56,7 +55,7 @@ export function usePayoutsList(props: () => UsePayoutsListProps) {
             };
             if (requestCursor) query.cursor = requestCursor;
 
-            const json: PayoutsListResponse = await fn({ signal }, { query });
+            const json = await fn({ signal }, { query });
             if (!signal.aborted) {
                 records.value = json?.data;
                 hasNext.value = !!json?._links?.next?.cursor;

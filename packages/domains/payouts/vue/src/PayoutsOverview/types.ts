@@ -26,16 +26,3 @@ export interface PayoutsOverviewExternalProps {
 }
 
 export type { IBalanceAccountBase };
-
-/**
- * Shape of the /v1/payouts list response as consumed by usePayoutsList.
- * Mirrors the OpenAPI alias but kept local to avoid pulling generated types
- * across the Vue domain boundary.
- */
-export interface PayoutsListResponse {
-    data?: IPayout[];
-    _links?: {
-        next?: { cursor: string };
-        prev?: { cursor: string };
-    };
-}
