@@ -1,11 +1,18 @@
 @use '@integration-components/style';
+//stylelint-disable no-invalid-position-at-import-rule
+@use '@integration-components/style/breakpoints' as *;
 
 .adyen-pe-structured-list {
     $adyen-pe-structured-list: &;
 
     display: flex;
     flex-direction: column;
+    gap: style.token(spacer-040);
     margin: 0;
+
+    @include adyen-pe-screen-sm-and-up {
+        gap: 0;
+    }
 
     &--expanded {
         gap: style.token(spacer-050);
@@ -22,9 +29,15 @@
     }
 
     &__item {
+        display: flex;
+        flex-direction: column;
         font-size: style.token(text-body-font-size);
         font-weight: style.token(text-body-font-weight);
         line-height: style.token(text-body-line-height);
+
+        @include adyen-pe-screen-sm-and-up {
+            flex-direction: row;
+        }
     }
 
     &__item--has-highlight:hover {
@@ -44,8 +57,10 @@
         overflow-wrap: anywhere;
 
         #{$adyen-pe-structured-list}--align-end & {
-            justify-content: flex-end;
-            text-align: end;
+            @include adyen-pe-screen-sm-and-up {
+                justify-content: flex-end;
+                text-align: end;
+            }
         }
     }
 }

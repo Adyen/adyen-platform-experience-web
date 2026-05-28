@@ -4,5 +4,8 @@
     "projectType": "library",
     "sourceRoot": "packages/shared/testing/src",
     "tags": ["type:shared"],
-    "targets": {}
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
 }

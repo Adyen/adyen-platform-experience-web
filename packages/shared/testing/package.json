@@ -19,12 +19,13 @@
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "@playwright/test": "*",
-        "dotenv": "*"
+        "@playwright/test": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:"
     },
     "peerDependencies": {
-        "@storybook/preact": "*",
-        "storybook": "*"
+        "@storybook/preact": "catalog:",
+        "storybook": "catalog:"
     },
     "peerDependenciesMeta": {
         "@storybook/preact": {
@@ -35,7 +36,7 @@
         }
     },
     "devDependencies": {
-        "@storybook/preact": "10.2.12",
-        "storybook": "10.2.12"
+        "@storybook/preact": "catalog:",
+        "storybook": "catalog:"
     }
 }

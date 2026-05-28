@@ -4,10 +4,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/preact';
 import useBalanceAccounts from './useBalanceAccounts';
-import { useConfigContext } from '../../../../src/core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 
-vi.mock('../core/ConfigContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useBalanceAccounts', () => {
     const mockUseConfigContext = vi.mocked(useConfigContext);

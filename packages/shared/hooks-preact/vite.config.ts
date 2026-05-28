@@ -4,8 +4,11 @@ import { defineConfig } from 'vite';
 
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 
-export default defineConfig({
+export default defineConfig(_config => ({
     root: projectRoot,
+    test: {
+        setupFiles: [resolve(projectRoot, '../../../config/setupTests.ts')],
+    },
     build: {
         lib: {
             entry: resolve(projectRoot, 'src/index.ts'),
@@ -24,4 +27,4 @@ export default defineConfig({
         outDir: resolve(projectRoot, 'dist'),
         emptyOutDir: true,
     },
-});
+}));

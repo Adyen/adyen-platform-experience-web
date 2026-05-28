@@ -2,6 +2,7 @@ import { http, HttpResponse, PathParams } from 'msw';
 import {
     CapitalComponentManage,
     compareDates,
+    CROSS_DOMAIN_ENDPOINTS,
     delay,
     DisputesComponentManage,
     getPaginationLinks,
@@ -12,7 +13,7 @@ import {
     TransactionsOverviewComponentManageRefunds,
     TransactionsOverviewComponentView,
 } from '@integration-components/testing/msw';
-import { PAY_BY_LINK_ENDPOINTS, CROSS_CUTTING_ENDPOINTS } from '../endpoints';
+import { PAY_BY_LINK_ENDPOINTS } from '../endpoints';
 import { IPaymentLinkStatusGroup } from '@integration-components/types';
 import {
     PAY_BY_LINK_FILTERS,
@@ -101,14 +102,14 @@ export const PayByLinkOverviewMockedResponses = {
         ],
     },
     storeNetworkError: {
-        handlers: [http.get(CROSS_CUTTING_ENDPOINTS.stores, async () => HttpResponse.error())],
+        handlers: [http.get(CROSS_DOMAIN_ENDPOINTS.stores, async () => HttpResponse.error())],
     },
     filtersNetworkError: {
         handlers: [http.get(mockPayByLinkEndpoints.filters, async () => HttpResponse.error())],
     },
     storesMisconfiguration: {
         handlers: [
-            http.get(CROSS_CUTTING_ENDPOINTS.stores, async () => {
+            http.get(CROSS_DOMAIN_ENDPOINTS.stores, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({ data: [], _links: {} }, { status: 200 });
             }),
@@ -152,7 +153,7 @@ export const PaymentLinkCreationMockedResponses = {
     },
     countryDatasetError: {
         handlers: [
-            http.get(CROSS_CUTTING_ENDPOINTS.datasetsCountries, async () => {
+            http.get(CROSS_DOMAIN_ENDPOINTS.datasetsCountries, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.error();
             }),
@@ -233,7 +234,7 @@ export const PaymentLinkSettingsMockedResponses = {
 
     permissionError: {
         handlers: [
-            http.post(CROSS_CUTTING_ENDPOINTS.setup, async () => {
+            http.post(CROSS_DOMAIN_ENDPOINTS.setup, async () => {
                 await delay(DELAY_TIME);
                 return HttpResponse.json({
                     endpoints: {
@@ -254,7 +255,7 @@ export const PaymentLinkSettingsMockedResponses = {
 
 export const payByLinkMocks = [
     // GET /stores
-    http.get(CROSS_CUTTING_ENDPOINTS.stores, async ({ request }) => {
+    http.get(CROSS_DOMAIN_ENDPOINTS.stores, async ({ request }) => {
         await delay(DELAY_TIME);
         if (networkError) {
             return HttpResponse.json({ error: 'Network error' }, { status: 500 });
