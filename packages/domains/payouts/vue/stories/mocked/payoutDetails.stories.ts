@@ -2,12 +2,8 @@ import type { Meta } from '@storybook/vue3';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PayoutDetailsMeta } from '../components/payoutDetails';
 import { PayoutDetails } from '../../src';
-
-const getStartOfTodayISOString = () => {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    return date.toISOString();
-};
+import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
+import { PAYOUTS_WITH_DETAILS } from '../../../mocks/mock-data/payouts';
 
 const meta: Meta<ElementProps<typeof PayoutDetails>> = {
     ...PayoutDetailsMeta,
@@ -16,10 +12,12 @@ const meta: Meta<ElementProps<typeof PayoutDetails>> = {
 
 export default meta;
 
+const defaultPayoutDetails = PAYOUTS_WITH_DETAILS[0]!;
+
 const sharedArgs = {
-    date: getStartOfTodayISOString(),
-    id: 'BA32272223222B5CTDQPM6W2H',
-    balanceAccountId: 'BA32272223222B5CTDQPM6W2H',
+    date: defaultPayoutDetails.payout!.createdAt,
+    id: defaultPayoutDetails.balanceAccountId,
+    balanceAccountId: defaultPayoutDetails.balanceAccountId,
     mockedApi: true,
 };
 
@@ -27,6 +25,25 @@ export const Default: ElementStory<typeof PayoutDetails> = {
     name: 'Default',
     args: {
         ...sharedArgs,
+    },
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.default },
+    },
+};
+
+export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
+    name: 'Error - Details',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.errorDetails },
+    },
+};
+
+export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
+    name: 'Sum of same-day payouts',
+    args: sharedArgs,
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.sumOfSameDayPayouts },
     },
 };
 
@@ -80,5 +97,8 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
                 },
             },
         },
+    },
+    parameters: {
+        msw: { ...PAYOUT_DETAILS_HANDLERS.default },
     },
 };

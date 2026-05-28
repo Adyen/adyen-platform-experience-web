@@ -3,8 +3,8 @@
 .adyen-pe-payout-data {
     --adyen-pe-data-details-padding: #{style.token(spacer-070)};
 
-    &__data-grid {
-        margin-inline: 0 !important;
+    & &__data-grid[class] {
+        margin-inline: 0;
     }
 
     &__title-container {
@@ -89,9 +89,5 @@
         display: flex;
         justify-content: end;
         margin-top: style.token(spacer-080);
-    }
-
-    .adyen-pe-data-grid {
-        padding: style.token(spacer-040) !important;
     }
 }

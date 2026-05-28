@@ -9,6 +9,11 @@ const props = defineProps<PayoutDetailsExternalProps>();
 
 <template>
     <UIElementProvider :core="props.core" component-name="PayoutDetails">
-        <PayoutDetailsContainer :id="props.id" :date="props.date" :data-customization="props.dataCustomization" />
+        <PayoutDetailsContainer
+            :id="props.id"
+            :date="props.date"
+            :data-customization="props.dataCustomization"
+            :on-contact-support="props.onContactSupport"
+        />
     </UIElementProvider>
 </template>
