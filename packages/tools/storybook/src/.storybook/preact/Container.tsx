@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'preact/compat';
 import { StoryContext } from '@storybook/preact';
 import { AdyenPlatformExperience } from '@integration-components/sdk-internal';
-import type BaseElement from '../../../../../../src/components/external/BaseElement';
 import { getMySessionToken } from '@integration-components/testing/storybook-helpers';
 import '../../shared/styles.scss';
+import { BaseElement } from '@integration-components/core/preact';
 
 interface IContainer<T extends new (...args: any) => any> {
     component: T;
