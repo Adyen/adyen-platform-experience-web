@@ -15,6 +15,7 @@ catalog:
   msw: ^2.7.3
   preact: ^10.29.1
   storybook: 10.2.12
+  typescript: 5.8.3
   vite: ^7.3.2
   vitest: 4.0.10
   vue: ^3.5.13
@@ -36,7 +37,7 @@ overrides:
   "preact": "catalog:"
   "rollup@4.53.3": "4.59.0"
   "serialize-javascript@6.0.2": "7.0.3"
-  "typescript": "5.8.3"
+  "typescript": "catalog:"
   "uuid": "11.1.1"
   "webpack": "catalog:"
 
