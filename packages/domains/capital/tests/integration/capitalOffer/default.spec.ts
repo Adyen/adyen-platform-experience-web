@@ -81,16 +81,16 @@ test.describe('Default', () => {
 
         await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
         await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /12 months/ })).toHaveCount(0);
-        await expect(page.getByText('12 months')).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /12 months/ })).toHaveAttribute('aria-disabled', 'true');
 
         await slider.focus();
         await page.keyboard.press('End');
 
+        await expect(page.getByRole('radio', { name: /3 months/ })).toBeVisible();
+        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveAttribute('aria-disabled', 'true');
         await expect(page.getByRole('radio', { name: /6 months/ })).toBeVisible();
         await expect(page.getByRole('radio', { name: /12 months/ })).toBeVisible();
-        await expect(page.getByRole('radio', { name: /3 months/ })).toHaveCount(0);
-        await expect(page.getByText('3 months')).toBeVisible();
     });
 
     test('should update offer details when term selector value is changed', async ({ page, analyticsEvents }) => {
