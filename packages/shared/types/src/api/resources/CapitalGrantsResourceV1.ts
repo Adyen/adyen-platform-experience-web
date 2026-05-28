@@ -92,6 +92,7 @@ export interface components {
             remainingFeesAmount: components['schemas']['Amount'];
             remainingGrantAmount: components['schemas']['Amount'];
             remainingTotalAmount: components['schemas']['Amount'];
+            renewal?: components['schemas']['RenewalDTO'];
             repaidFeesAmount: components['schemas']['Amount'];
             repaidGrantAmount: components['schemas']['Amount'];
             repaidTotalAmount: components['schemas']['Amount'];
@@ -129,6 +130,12 @@ export interface components {
              * @enum {string}
              */
             region: 'NL';
+        };
+        RenewalDTO: {
+            eligible: boolean;
+            minimumRenewalAmount?: components['schemas']['Amount'];
+            /** Format: int32 */
+            targetRepaymentPercentage: number;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */

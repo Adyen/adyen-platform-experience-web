@@ -43,7 +43,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
     const dynamicOfferQuery = useFetch({
         fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
         queryFn: useCallback(async () => {
-            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT);
+            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
         }, [dynamicConfigurationEndpointCall]),
     });
 
@@ -101,7 +101,12 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         isRegionSupported,
     ]);
 
-    const newOfferAvailable = useMemo(() => !!(dynamicOffer && dynamicOffer.minAmount && dynamicOffer.maxAmount), [dynamicOffer]);
+    // TODO: Remove active grant check after integrating capital state endpoint
+    const newOfferAvailable = useMemo(() => {
+        const hasOffer = !!(dynamicOffer?.minAmount && dynamicOffer?.maxAmount);
+        const hasActiveGrant = grantList?.some(grant => grant.status === 'Active') ?? false;
+        return hasOffer && !hasActiveGrant;
+    }, [dynamicOffer, grantList]);
 
     return (
         <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>

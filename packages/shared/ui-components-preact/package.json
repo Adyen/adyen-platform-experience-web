@@ -11,6 +11,8 @@
         "./Tooltip/useTooltipListeners": "./src/Tooltip/useTooltipListeners.ts",
         "./Tooltip/types": "./src/Tooltip/types.ts",
         "./Tooltip/Tooltip": "./src/Tooltip/Tooltip.tsx",
+        "./StoreSelector": "./src/StoreSelector/index.ts",
+        "./StoreSelector/types": "./src/StoreSelector/types.ts",
         "./Header": "./src/Header/index.ts",
         "./Header/Header": "./src/Header/Header.tsx",
         "./DataOverviewDetails/constants": "./src/DataOverviewDetails/constants.ts",
@@ -249,19 +251,22 @@
         "./BaseButton/types": "./src/BaseButton/types.ts",
         "./BaseButton/constants": "./src/BaseButton/constants.ts",
         "./BaseButton/BaseButton": "./src/BaseButton/BaseButton.tsx",
+        "./MultiSelectionFilter": "./src/MultiSelectionFilter/index.ts",
         "./PaymentMethodCell": "./src/PaymentMethodCell/index.ts",
         "./PaymentMethodCell/constants": "./src/PaymentMethodCell/constants.ts",
         "./PaymentMethodCell/PaymentMethodCell": "./src/PaymentMethodCell/PaymentMethodCell.tsx",
-        "./PaymentMethodCell/parsePaymentMethodType": "./src/PaymentMethodCell/parsePaymentMethodType.ts"
+        "./PaymentMethodCell/parsePaymentMethodType": "./src/PaymentMethodCell/parsePaymentMethodType.ts",
+        "./utils/getCommonErrorCode": "./src/utils/getCommonErrorCode.ts"
     },
     "dependencies": {
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
-        "@integration-components/utils": "workspace:*"
+        "@integration-components/utils": "workspace:*",
+        "classnames": "catalog:"
     },
     "peerDependencies": {
-        "preact": "^10.28.2"
+        "preact": "catalog:"
     }
 }

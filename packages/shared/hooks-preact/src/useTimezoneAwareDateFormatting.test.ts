@@ -4,10 +4,10 @@
 import { renderHook } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import useTimezoneAwareDateFormatting from './useTimezoneAwareDateFormatting';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import Localization from '@integration-components/core/Localization';
 
-vi.mock('../core/Context/useCoreContext');
+vi.mock('@integration-components/core/preact');
 
 describe('useTimezoneAwareDateFormatting', () => {
     const mockUseCoreContext = vi.mocked(useCoreContext);

@@ -1,0 +1,69 @@
+import cx from 'classnames';
+import { useCoreContext } from '@integration-components/core/preact';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Icon from '@integration-components/ui-components-preact/Icon/Icon';
+import SuccessIcon from '@integration-components/ui-components-preact/SuccessIcon/SuccessIcon';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
+import './FormSuccess.scss';
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+
+type FormSuccessProps = {
+    onGoToDetails: () => void;
+    paymentLinkUrl: string;
+};
+export const FormSuccess = ({ onGoToDetails, paymentLinkUrl }: FormSuccessProps) => {
+    const { i18n } = useCoreContext();
+
+    const [copied, setCopied] = useState(false);
+    const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        return () => {
+            if (copiedTimeoutRef.current) {
+                clearTimeout(copiedTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    const onCopy = useCallback(async () => {
+        if (!paymentLinkUrl) return;
+        try {
+            await navigator.clipboard.writeText(paymentLinkUrl);
+
+            setCopied(true);
+            if (copiedTimeoutRef.current) {
+                clearTimeout(copiedTimeoutRef.current);
+            }
+            copiedTimeoutRef.current = setTimeout(() => {
+                setCopied(false);
+                copiedTimeoutRef.current = null;
+            }, 3000);
+        } catch {
+            // no-op
+        }
+    }, [paymentLinkUrl]);
+
+    return (
+        <section className={cx('adyen-pe-payment-link-creation-form-success')}>
+            <div className="adyen-pe-payment-link-creation-form-success__content">
+                <SuccessIcon className="adyen-pe-payment-link-creation-form-success__icon" />
+                <Typography variant={TypographyVariant.TITLE} className="adyen-pe-payment-link-creation-form-success__title">
+                    {i18n.get('payByLink.creation.success.title')}
+                </Typography>
+                <Typography variant={TypographyVariant.BODY} className="adyen-pe-payment-link-creation-form-success__description">
+                    {i18n.get('payByLink.creation.success.description')}
+                </Typography>
+            </div>
+            <div className="adyen-pe-payment-link-creation-form-success__actions">
+                <Button variant={ButtonVariant.SECONDARY} onClick={onGoToDetails}>
+                    {i18n.get('payByLink.creation.success.showDetails')}
+                </Button>
+                <Button variant={ButtonVariant.PRIMARY} onClick={onCopy} iconLeft={<Icon name={copied ? 'checkmark' : 'copy'} />}>
+                    {copied ? i18n.get('payByLink.creation.success.copiedToClipboard') : i18n.get('payByLink.creation.success.copyLink')}
+                </Button>
+            </div>
+        </section>
+    );
+};

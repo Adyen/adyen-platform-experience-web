@@ -8,7 +8,7 @@ import { TimelineItem } from './TimelineItem';
 import { TimelineContext, TimelineContextValue } from '../context';
 import { useCoreContext } from '@integration-components/core/preact';
 
-vi.mock('../../../../core/Context/useCoreContext');
+vi.mock('@integration-components/core/preact');
 
 const mockI18n = {
     get: vi.fn((key: string, params?: any) => {

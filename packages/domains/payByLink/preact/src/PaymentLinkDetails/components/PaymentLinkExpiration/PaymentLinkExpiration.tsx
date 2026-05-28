@@ -1,0 +1,81 @@
+import { useCallback, useMemo } from 'preact/hooks';
+import { useCoreContext } from '@integration-components/core/preact';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { IPaymentLinkDetails } from '@integration-components/types';
+import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
+import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
+import { useConfigContext } from '@integration-components/core/preact';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
+import { ButtonActionsList } from '@integration-components/types';
+import './PaymentLinkExpiration.scss';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+
+const CLASSNAMES = {
+    root: 'adyen-pe-payment-link-expiration',
+    title: 'adyen-pe-payment-link-expiration__title',
+};
+
+type PaymentLinkExpirationProps = {
+    paymentLink: IPaymentLinkDetails;
+    onCancel: () => void;
+    onExpirationSuccess: () => void;
+};
+
+export const PaymentLinkExpiration = ({ paymentLink, onCancel, onExpirationSuccess }: PaymentLinkExpirationProps) => {
+    const { i18n } = useCoreContext();
+    const { withinModal } = useModalContext();
+    const titleEl = withinModal ? TypographyElement.H2 : TypographyElement.DIV;
+
+    const { expirePayByLinkPaymentLink } = useConfigContext().endpoints;
+    const expirePaymentLinkMutation = useMutation({
+        queryFn: expirePayByLinkPaymentLink,
+        options: {
+            onSuccess: onExpirationSuccess,
+        },
+    });
+
+    const handleConfirmExpire = useCallback(
+        () => expirePaymentLinkMutation.mutate(EMPTY_OBJECT, { path: { paymentLinkId: paymentLink.linkInformation.paymentLinkId } }),
+        [expirePaymentLinkMutation, paymentLink.linkInformation.paymentLinkId]
+    );
+
+    const actionButtons: ButtonActionsList = useMemo(
+        () => [
+            {
+                title: i18n.get('payByLink.details.expiration.actions.confirmExpiration'),
+                event: handleConfirmExpire,
+                variant: ButtonVariant.PRIMARY,
+                disabled: expirePaymentLinkMutation.isLoading,
+                state: expirePaymentLinkMutation.isLoading ? 'loading' : 'default',
+            },
+            {
+                title: i18n.get('payByLink.details.expiration.actions.goBack'),
+                event: onCancel,
+                variant: ButtonVariant.SECONDARY,
+                disabled: expirePaymentLinkMutation.isLoading,
+            },
+        ],
+        [expirePaymentLinkMutation.isLoading, handleConfirmExpire, i18n, onCancel]
+    );
+
+    return (
+        <div className={CLASSNAMES.root}>
+            <Typography el={titleEl} variant={TypographyVariant.SUBTITLE} stronger>
+                {i18n.get('payByLink.details.expiration.title')}
+            </Typography>
+            <Typography variant={TypographyVariant.BODY}>{i18n.get('payByLink.details.expiration.description')}</Typography>
+            {expirePaymentLinkMutation.error && (
+                <Alert
+                    type={AlertTypeOption.CRITICAL}
+                    title={i18n.get('payByLink.details.expiration.errorTitle')}
+                    description={i18n.get('payByLink.details.expiration.errorDescription')}
+                />
+            )}
+            <ButtonActions actions={actionButtons} />
+        </div>
+    );
+};

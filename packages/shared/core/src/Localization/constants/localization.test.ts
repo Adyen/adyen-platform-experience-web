@@ -16,7 +16,7 @@ type I18nConfig = {
 };
 
 describe('supported locales', async () => {
-    const translationsDir = path.resolve(__dirname, '../../../assets/translations');
+    const translationsDir = path.resolve(__dirname, '../../../../../../src/assets/translations');
     const translationFiles = await fs.readdir(translationsDir);
 
     // prettier-ignore
@@ -30,7 +30,7 @@ describe('supported locales', async () => {
 
     describe('.i18nrc config', async () => {
         const englishLocale = 'en-US';
-        const i18nConfigPath = path.resolve(__dirname, '../../../../.i18nrc');
+        const i18nConfigPath = path.resolve(__dirname, '../../../../../../.i18nrc');
         const i18n: I18nConfig = JSON.parse(await fs.readFile(i18nConfigPath, 'utf8'));
         const relativeTranslationsDir = path.relative(path.dirname(i18nConfigPath), translationsDir);
 

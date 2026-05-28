@@ -46,7 +46,13 @@
             "@integration-components/payouts/domain": ["packages/domains/payouts/domain/src/index.ts"],
             "@integration-components/transactions/publish": ["packages/domains/transactions/publish/src/index.ts"],
             "@integration-components/transactions/preact": ["packages/domains/transactions/preact/src/index.ts"],
-            "@integration-components/transactions/domain": ["packages/domains/transactions/domain/src/index.ts"]
+            "@integration-components/transactions/domain": ["packages/domains/transactions/domain/src/index.ts"],
+            "@integration-components/disputes/publish": ["packages/domains/disputes/publish/src/index.ts"],
+            "@integration-components/disputes/preact": ["packages/domains/disputes/preact/src/index.ts"],
+            "@integration-components/disputes/domain": ["packages/domains/disputes/domain/src/index.ts"],
+            "@integration-components/payByLink/publish": ["packages/domains/payByLink/publish/src/index.ts"],
+            "@integration-components/payByLink/preact": ["packages/domains/payByLink/preact/src/index.ts"],
+            "@integration-components/payByLink/domain": ["packages/domains/payByLink/domain/src/index.ts"]
         },
         "types": ["node"]
     }

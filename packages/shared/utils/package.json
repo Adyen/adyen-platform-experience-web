@@ -26,9 +26,10 @@
         "./*": "./src/*.ts"
     },
     "peerDependencies": {
-        "preact": "^10.28.2"
+        "preact": "catalog:"
     },
     "dependencies": {
-        "@integration-components/types": "workspace:*"
+        "@integration-components/types": "workspace:*",
+        "classnames": "catalog:"
     }
 }

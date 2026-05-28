@@ -33,7 +33,7 @@
         "@storybook/preact": "10.2.12",
         "@storybook/vue3": "10.2.12",
         "dotenv": "^17.2.3",
-        "msw": "^2.4.5",
+        "msw": "catalog:",
         "vitest": "4.0.10"
     }
 }

@@ -1,4 +1,4 @@
-import MultiSelectionFilter from '../MultiSelectionFilter';
+import MultiSelectionFilter from '@integration-components/ui-components-preact/MultiSelectionFilter';
 import { useMultiSelectionFilterProps, UseMultiSelectionFilterPropsConfig } from '@integration-components/hooks-preact';
 
 export interface TransactionMultiSelectionFilterProps<T extends string> extends UseMultiSelectionFilterPropsConfig<T> {
