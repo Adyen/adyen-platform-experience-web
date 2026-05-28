@@ -16,4 +16,7 @@ export interface CardProps {
     testId?: string;
     expandable?: boolean;
     compact?: boolean;
+    role?: string;
+    ariaChecked?: boolean;
+    ariaDisabled?: boolean;
 }

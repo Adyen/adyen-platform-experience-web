@@ -5,27 +5,6 @@
     "sourceRoot": "packages/tools/storybook/src",
     "tags": ["type:tool", "scope:storybook"],
     "targets": {
-        "typecheck": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "node scripts/typecheck.js",
-                "cwd": "packages/tools/storybook"
-            }
-        },
-        "lint": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "ESLINT_USE_FLAT_CONFIG=false eslint 'src/{.storybook,shared}/**/*.{ts,tsx,vue}' 'scripts/**/*.js' --quiet",
-                "cwd": "packages/tools/storybook"
-            }
-        },
-        "stylelint": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "stylelint 'src/{.storybook,shared}/**/*.scss' --fix",
-                "cwd": "packages/tools/storybook"
-            }
-        },
         "storybook:preact": {
             "executor": "nx:run-script",
             "options": {
@@ -60,6 +39,23 @@
                 "script": "storybook:static"
             },
             "outputs": ["{projectRoot}/storybook-static"]
+        },
+        "types:check": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "node scripts/typecheck.js",
+                "cwd": "{projectRoot}"
+            },
+            "outputs": [],
+            "cache": true
+        },
+        "types:watch": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "node scripts/typecheck.js --watch",
+                "cwd": "{projectRoot}"
+            },
+            "cache": false
         }
     }
 }

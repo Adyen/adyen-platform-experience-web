@@ -16,6 +16,7 @@ import CapitalSlider from '../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { TermSelector } from '../TermSelector';
+import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 
 type CapitalOfferSelectionProps = {
     dynamicOffersConfig: IDynamicOffersConfig | undefined;
@@ -49,6 +50,8 @@ const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponse
         return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
     }, [data.maximumRepaymentPeriodDays, dateFormat]);
 
+    const formatTermLabel = useFormatTermLabel();
+
     return (
         <div className="adyen-pe-capital-offer-selection__information">
             <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
@@ -81,7 +84,7 @@ const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponse
                         ? [
                               {
                                   key: 'capital.common.fields.expectedRepaymentPeriod' as const,
-                                  value: i18n.get('capital.common.values.numberOfDays', { values: { days: data.expectedRepaymentPeriodDays } }),
+                                  value: formatTermLabel(data.expectedRepaymentPeriodDays),
                               },
                           ]
                         : []),
@@ -243,7 +246,7 @@ export const CapitalOfferSelection = ({
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
 
-    const hasConfiguredTerms = allTerms.length > 0;
+    const termsError = !!dynamicOffersConfig && !allTerms.length;
 
     const isLoadingIndicatorVisible = useMemo(
         () => !matchedOffer || getDynamicGrantOfferMutation.isLoading || isLoading,
@@ -254,7 +257,7 @@ export const CapitalOfferSelection = ({
 
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || !hasConfiguredTerms ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || termsError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
                     onBack={onOfferDismiss}

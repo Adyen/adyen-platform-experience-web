@@ -8,8 +8,8 @@ import { useCoreContext } from '@integration-components/core/preact';
 import useTimezoneAwareDateFormatting from '@integration-components/hooks-preact/useTimezoneAwareDateFormatting';
 import Localization from '@integration-components/core/Localization/Localization';
 
-vi.mock('../../../../core/Context/useCoreContext');
-vi.mock('../../../../hooks/useTimezoneAwareDateFormatting');
+vi.mock('@integration-components/core/preact');
+vi.mock('@integration-components/hooks-preact/useTimezoneAwareDateFormatting');
 vi.mock('./components/CalendarInputPopover', () => ({
     CalendarInputPopover: ({ onHighlight, isOpen }: { onHighlight: (from?: number) => void; isOpen: boolean }) =>
         isOpen ? (

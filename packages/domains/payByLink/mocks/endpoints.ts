@@ -12,10 +12,3 @@ export const PAY_BY_LINK_ENDPOINTS = {
     settings: `${MSW_BASE_URL}/paybylink/settings/:storeId`,
     themes: `${MSW_BASE_URL}/paybylink/themes/:id`,
 } as const;
-
-// Cross-cutting endpoints shared with other domains
-export const CROSS_CUTTING_ENDPOINTS = {
-    stores: `${MSW_BASE_URL}/stores`,
-    setup: `${MSW_BASE_URL}/setup`,
-    datasetsCountries: `/datasets/countries/:locale.json`,
-} as const;

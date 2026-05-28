@@ -105,7 +105,11 @@ export default defineConfig(({ mode }) => {
         },
         test: {
             root: resolve(__dirname, '.'),
-            include: ['src/**/*.{test,spec}.?(c|m)[jt]s?(x)', 'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
+            include: [
+                'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+            ],
             setupFiles: [resolve(__dirname, './config/setupTests.ts')],
             coverage: {
                 provider: 'v8',

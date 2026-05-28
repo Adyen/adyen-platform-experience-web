@@ -8,7 +8,7 @@ import { ErrorMessageDisplay, IMAGE_BREAKPOINT_MEDIUM_PX } from './ErrorMessageD
 import { useCoreContext } from '@integration-components/core/preact';
 import { TranslationKey } from '@integration-components/core';
 
-vi.mock('../../../core/Context/useCoreContext');
+vi.mock('@integration-components/core/preact');
 
 const TEST_LABELS = {
     MESSAGE: 'Please try again later',

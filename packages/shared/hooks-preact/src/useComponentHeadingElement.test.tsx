@@ -1,45 +1,23 @@
 /**
  * @vitest-environment jsdom
  */
-import { createContext, createRef, HTMLAttributes } from 'preact';
+import { HTMLAttributes } from 'preact';
 import { PropsWithChildren } from 'preact/compat';
-import { MutableRef, useRef } from 'preact/hooks';
 import { describe, expect, test, vi } from 'vitest';
 import { render, renderHook, screen } from '@testing-library/preact';
 import { ComponentHeadingType, useComponentHeadingElement, UseComponentHeadingElementProps } from './useComponentHeadingElement';
-import { CoreProviderProps } from '../../../../src/core/Context/types';
-import { CoreContext } from '../../../../src/core/Context/CoreContext';
-import CoreProvider from '../../../../src/core/Context/CoreProvider';
 
-const coreProviderProps = {} as CoreProviderProps;
+vi.mock('@integration-components/core/preact/useCoreContext', () => ({
+    // eslint-disable-next-line testing-library/no-node-access
+    default: () => ({ componentRef: () => document.querySelector('[data-testid="root"]') }),
+}));
 
-const ComponentRoot = ({ children }: PropsWithChildren) => <CoreProvider {...coreProviderProps}>{children}</CoreProvider>;
+const ComponentRoot = ({ children }: PropsWithChildren) => <section data-testid="root">{children}</section>;
 
 const Heading = ({ id, headingType, forwardedToRoot, ...props }: HTMLAttributes<any> & UseComponentHeadingElementProps) => {
     const { id: uniqueId, ref: headingRef } = useComponentHeadingElement<HTMLDivElement>({ headingType, forwardedToRoot });
     return <div {...props} id={id ?? uniqueId} ref={headingRef} />;
 };
-
-vi.mock(import('../core/Context/preact/CoreContext'), () => {
-    const ref = createRef() as MutableRef<HTMLDivElement | null>;
-    const mockedCoreContext = createContext({ componentRef: () => ref.current } as any);
-    return { CoreContext: mockedCoreContext };
-});
-
-vi.mock(import('../core/Context/CoreProvider'), () => {
-    const MockedCoreProvider = ({ children }: PropsWithChildren) => {
-        const ref = useRef<HTMLDivElement | null>(null);
-        return (
-            <CoreContext.Provider value={{ componentRef: () => ref.current } as any}>
-                <section data-testid="root" ref={ref}>
-                    {children}
-                </section>
-            </CoreContext.Provider>
-        );
-    };
-
-    return { default: MockedCoreProvider };
-});
 
 describe('useComponentHeadingElement', () => {
     test('should return a unique heading element id for every initial render', () => {
