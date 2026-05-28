@@ -71,7 +71,7 @@ import cx from 'classnames';
 - **Component exports**: `src/components/external/index.ts`
 - **Shared types**: `src/types/api/` — API model interfaces
 - **Global styles**: `src/style/index.scss` — design tokens and CSS variables
-- **Translations**: `src/assets/translations/en-US.json` (default locale)
+- **Translations**: `packages/shared/assets/src/translations/en-US.json` (default locale)
 
 ## Pre-PR Checks
 

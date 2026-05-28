@@ -9,10 +9,9 @@ import rootPkgJson from '../../package.json';
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
 const srcDir = resolve(rootDir, 'src');
-
-const assetsDir = resolve(srcDir, 'assets');
+const assetsDir = resolve(rootDir, 'packages/shared/assets/src');
 const enUsFile = resolve(assetsDir, 'translations/en-US.json');
-const translationsDir = resolve(srcDir, 'translations');
+const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
@@ -37,33 +36,35 @@ const shouldExcludeAsset = (id: string) => {
 export default defineConfig(({ mode }) => ({
     root: projectRoot,
     resolve: {
-        alias: {
-            '@integration-components/hooks-preact': resolve(rootDir, 'packages/shared/hooks-preact/src'),
-            '@integration-components/core': resolve(rootDir, 'packages/shared/core/src'),
-            '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
-            '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
-            '@integration-components/ui-components-preact': resolve(rootDir, 'packages/shared/ui-components-preact/src'),
-            '@integration-components/style': resolve(rootDir, 'packages/shared/style/src'),
-            '@integration-components/sdk-internal': resolve(rootDir, 'src'),
-            '@integration-components/disputes/publish': resolve(rootDir, 'packages/domains/disputes/publish/src'),
-            '@integration-components/disputes/preact': resolve(rootDir, 'packages/domains/disputes/preact/src'),
-            '@integration-components/disputes/domain': resolve(rootDir, 'packages/domains/disputes/domain/src'),
-            '@integration-components/payouts/publish': resolve(rootDir, 'packages/domains/payouts/publish/src'),
-            '@integration-components/payouts/preact': resolve(rootDir, 'packages/domains/payouts/preact/src'),
-            '@integration-components/payouts/domain': resolve(rootDir, 'packages/domains/payouts/domain/src'),
-            '@integration-components/reports/publish': resolve(rootDir, 'packages/domains/reports/publish/src'),
-            '@integration-components/reports/preact': resolve(rootDir, 'packages/domains/reports/preact/src'),
-            '@integration-components/reports/domain': resolve(rootDir, 'packages/domains/reports/domain/src'),
-            '@integration-components/transactions/publish': resolve(rootDir, 'packages/domains/transactions/publish/src'),
-            '@integration-components/transactions/preact': resolve(rootDir, 'packages/domains/transactions/preact/src'),
-            '@integration-components/transactions/domain': resolve(rootDir, 'packages/domains/transactions/domain/src'),
-            '@integration-components/payByLink/publish': resolve(rootDir, 'packages/domains/payByLink/publish/src'),
-            '@integration-components/payByLink/preact': resolve(rootDir, 'packages/domains/payByLink/preact/src'),
-            '@integration-components/payByLink/domain': resolve(rootDir, 'packages/domains/payByLink/domain/src'),
-            '@integration-components/capital/publish': resolve(rootDir, 'packages/domains/capital/publish/src'),
-            '@integration-components/capital/preact': resolve(rootDir, 'packages/domains/capital/preact/src'),
-            '@integration-components/capital/domain': resolve(rootDir, 'packages/domains/capital/domain/src'),
-        },
+        alias: [
+            { find: /^@integration-components\/style\/(.+)$/, replacement: `${resolve(rootDir, 'packages/shared/style')}/$1` },
+            { find: /^@integration-components\/style$/, replacement: resolve(rootDir, 'packages/shared/style/index.scss') },
+            { find: '@integration-components/hooks-preact', replacement: resolve(rootDir, 'packages/shared/hooks-preact/src') },
+            { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
+            { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },
+            { find: '@integration-components/types', replacement: resolve(rootDir, 'packages/shared/types/src') },
+            { find: '@integration-components/utils', replacement: resolve(rootDir, 'packages/shared/utils/src') },
+            { find: '@integration-components/ui-components-preact', replacement: resolve(rootDir, 'packages/shared/ui-components-preact/src') },
+            { find: '@integration-components/sdk-internal', replacement: resolve(rootDir, 'src') },
+            { find: '@integration-components/disputes/publish', replacement: resolve(rootDir, 'packages/domains/disputes/publish/src') },
+            { find: '@integration-components/disputes/preact', replacement: resolve(rootDir, 'packages/domains/disputes/preact/src') },
+            { find: '@integration-components/disputes/domain', replacement: resolve(rootDir, 'packages/domains/disputes/domain/src') },
+            { find: '@integration-components/payouts/publish', replacement: resolve(rootDir, 'packages/domains/payouts/publish/src') },
+            { find: '@integration-components/payouts/preact', replacement: resolve(rootDir, 'packages/domains/payouts/preact/src') },
+            { find: '@integration-components/payouts/domain', replacement: resolve(rootDir, 'packages/domains/payouts/domain/src') },
+            { find: '@integration-components/reports/publish', replacement: resolve(rootDir, 'packages/domains/reports/publish/src') },
+            { find: '@integration-components/reports/preact', replacement: resolve(rootDir, 'packages/domains/reports/preact/src') },
+            { find: '@integration-components/reports/domain', replacement: resolve(rootDir, 'packages/domains/reports/domain/src') },
+            { find: '@integration-components/transactions/publish', replacement: resolve(rootDir, 'packages/domains/transactions/publish/src') },
+            { find: '@integration-components/transactions/preact', replacement: resolve(rootDir, 'packages/domains/transactions/preact/src') },
+            { find: '@integration-components/transactions/domain', replacement: resolve(rootDir, 'packages/domains/transactions/domain/src') },
+            { find: '@integration-components/payByLink/publish', replacement: resolve(rootDir, 'packages/domains/payByLink/publish/src') },
+            { find: '@integration-components/payByLink/preact', replacement: resolve(rootDir, 'packages/domains/payByLink/preact/src') },
+            { find: '@integration-components/payByLink/domain', replacement: resolve(rootDir, 'packages/domains/payByLink/domain/src') },
+            { find: '@integration-components/capital/publish', replacement: resolve(rootDir, 'packages/domains/capital/publish/src') },
+            { find: '@integration-components/capital/preact', replacement: resolve(rootDir, 'packages/domains/capital/preact/src') },
+            { find: '@integration-components/capital/domain', replacement: resolve(rootDir, 'packages/domains/capital/domain/src') },
+        ],
     },
     build: {
         minify: true,

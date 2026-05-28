@@ -14,7 +14,7 @@ cd "$PROJECT_ROOT"
 
 ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
-ASSETS_DIR="./src/assets"
+ASSETS_DIR="./packages/shared/assets/src"
 CONFIG_DIR="./src/config"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"

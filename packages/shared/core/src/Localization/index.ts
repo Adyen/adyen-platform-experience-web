@@ -1,2 +1,2 @@
 export { default } from './Localization';
-export * from '../../../../../src/translations';
+export * from '@integration-components/core/translations';

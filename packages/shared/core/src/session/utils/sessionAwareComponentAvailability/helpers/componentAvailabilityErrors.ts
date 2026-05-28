@@ -1,5 +1,5 @@
 import { ExternalComponentType } from '@integration-components/types';
-import { TranslationKey } from '../../../../../../../../src/translations';
+import { TranslationKey } from '@integration-components/core/translations';
 
 const componentAvailabilityErrors = (type: ExternalComponentType): TranslationKey => {
     switch (type) {

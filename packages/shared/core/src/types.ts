@@ -1,5 +1,5 @@
 import type { SessionRequest } from './ConfigContext.types';
-import type { CustomTranslations as Translations, TranslationSourceRecord } from '../../../../src/translations';
+import type { CustomTranslations as Translations, TranslationSourceRecord } from '@integration-components/core/translations';
 import type { KeyOfRecord, WithReplacedUnderscoreOrDash } from '@integration-components/utils/types';
 import { FALLBACK_LOCALE } from './Localization/constants/localization';
 import { SupportedLocales } from './Localization/types';

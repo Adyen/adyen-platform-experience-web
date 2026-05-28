@@ -76,7 +76,7 @@ i18n.fullDate(date)                      // Date with time
 
 ### Translation Workflow
 
-- Translation files live under `src/assets/translations/*.json`
+- Translation files live under `packages/shared/assets/src/translations/*.json`
 - Keep translation JSON sorted: `pnpm run translations:sort`
 
 ### Bug fixes

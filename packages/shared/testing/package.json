@@ -15,6 +15,7 @@
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@integration-components/assets": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
         "@integration-components/types": "workspace:*",

@@ -1,6 +1,6 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
-import { es_ES, TranslationKey } from '../../../../../src/translations';
+import { es_ES, TranslationKey } from '@integration-components/core/translations';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;

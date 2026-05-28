@@ -14,11 +14,14 @@
         "./Localization/Localization": "./src/Localization/Localization.ts",
         "./Localization/amount/amount-util": "./src/Localization/amount/amount-util.ts",
         "./Localization/constants/localization": "./src/Localization/constants/localization.ts",
+        "./translations": "./src/translations/index.ts",
+        "./translations/local": "./src/translations/local.ts",
         "./vue": "./src/vue/index.ts",
         "./preact": "./src/preact/index.ts",
         "./*": "./src/*.ts"
     },
     "dependencies": {
+        "@integration-components/assets": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*",
         "classnames": "catalog:"

@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
 
     const { api, app } = getEnvironment(mode);
 
-    const assetsDir = resolve(__dirname, 'src/assets');
+    const assetsDir = resolve(__dirname, 'packages/shared/assets/src');
     const enUsFile = resolve(assetsDir, 'translations/en-US.json');
-    const translationsDir = resolve(__dirname, 'src/translations');
+    const translationsDir = resolve(__dirname, 'packages/shared/core/src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
@@ -92,6 +92,11 @@ export default defineConfig(({ mode }) => {
         define: getBuildEnvDefines(mode),
         json: {
             stringify: true,
+        },
+        resolve: {
+            alias: {
+                '@integration-components/assets': resolve(__dirname, 'packages/shared/assets/src'),
+            },
         },
         preview: {
             host: app.host,

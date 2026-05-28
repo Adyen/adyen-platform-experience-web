@@ -1,7 +1,10 @@
 {
-    "jsExports": ["AdyenPlatformExperience", "Core"],
-    "esFileCount": 545,
-    "cssHash": "8c76360ec45c9917c199d72cce6c00a5ae6d14851f4e75d8f1cde7513600574c",
+    "jsExports": [
+        "AdyenPlatformExperience",
+        "Core"
+    ],
+    "esFileCount": 580,
+    "cssHash": "27c7dc56cb6a924249f7c35ae25312147acc9b8dd12b320618f08858d5b43e10",
     "typeFiles": [
         "packages/domains/disputes/domain/src/actionNeeded.d.ts",
         "packages/domains/disputes/domain/src/constants.d.ts",
@@ -345,6 +348,8 @@
         "packages/shared/core/src/setupConfig.d.ts",
         "packages/shared/core/src/setupCore.d.ts",
         "packages/shared/core/src/translation/factory.d.ts",
+        "packages/shared/core/src/translations/index.d.ts",
+        "packages/shared/core/src/translations/local.d.ts",
         "packages/shared/core/src/types.d.ts",
         "packages/shared/core/src/utils.d.ts",
         "packages/shared/hooks-preact/src/element/constants.d.ts",
@@ -693,6 +698,7 @@
         "packages/shared/utils/src/customData/normalizeCustomFields.d.ts",
         "packages/shared/utils/src/datetime/formats.d.ts",
         "packages/shared/utils/src/datetime/main.d.ts",
+        "packages/shared/utils/src/datetime/quickSelectDateRanges.d.ts",
         "packages/shared/utils/src/datetime/restamper/constants.d.ts",
         "packages/shared/utils/src/datetime/restamper/index.d.ts",
         "packages/shared/utils/src/datetime/restamper/restamper.d.ts",
@@ -783,11 +789,9 @@
         "src/core/index.d.ts",
         "src/core/types.d.ts",
         "src/global.d.ts",
-        "src/index.d.ts",
-        "src/translations/index.d.ts",
-        "src/translations/local.d.ts"
+        "src/index.d.ts"
     ],
-    "typeTreeHash": "cf5ea5baa588438681e66d87e38e9dbe9ac00b86636aa68e5399809619fa74ee",
+    "typeTreeHash": "ac3b90e9516cbf9310ebee3ce851d0d6ba480b07a947c2c19d406dc97fd3eb09",
     "missingPackageEntrypoints": [],
     "packageJson": {
         "main": "./dist/cjs/index.js",
