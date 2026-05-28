@@ -10,6 +10,6 @@
         "declarationDir": "./dist/types",
         "types": ["node", "vitest/globals", "@testing-library/jest-dom"]
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "tests/**/*.ts"],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "declarations/**/*.d.ts", "tests/**/*.ts"],
     "exclude": ["node_modules", "dist", "config/inject-css.ts", "packages"]
 }
