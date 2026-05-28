@@ -26,7 +26,7 @@ import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct 
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
 import { translations_dev_assets } from '@integration-components/core/translations/local';
-import localSwapConfig from '../../../../../src/config/translations/swapConfig.json';
+import localSwapConfig from '../config/translations/swapConfig.json';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;
