@@ -18,19 +18,19 @@
         "@integration-components/types": "workspace:*",
         "@integration-components/ui-components-preact": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "^2.5.1"
+        "classnames": "catalog:"
     },
     "peerDependencies": {
         "preact": "catalog:"
     },
     "devDependencies": {
-        "@playwright/test": "^1.56.0",
-        "@storybook/preact": "10.2.12",
-        "@testing-library/preact": "^3.2.3",
-        "dotenv": "^17.2.3",
-        "msw": "^2.4.5",
+        "@playwright/test": "catalog:",
+        "@storybook/preact": "catalog:",
+        "@testing-library/preact": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:",
         "msw-storybook-addon": "^2.0.2",
-        "storybook": "10.2.12",
-        "vitest": "4.0.10"
+        "storybook": "catalog:",
+        "vitest": "catalog:"
     }
 }
