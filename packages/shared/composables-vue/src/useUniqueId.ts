@@ -5,8 +5,7 @@ import { uniqueId } from '@integration-components/utils';
  * Returns a stable unique numeric string (no prefix) for use in DOM IDs.
  */
 export function useUniqueId(): string {
-    const id = uniqueId();
-    return id.slice(id.lastIndexOf('-') + 1);
+    return uniqueId().replace(/^(?:.*\D)?(?=\d+$)/, '');
 }
 
 export default useUniqueId;
