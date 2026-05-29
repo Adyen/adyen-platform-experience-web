@@ -696,7 +696,6 @@
         "packages/shared/ui-components-preact/src/Pagination/utils.d.ts",
         "packages/shared/ui-components-preact/src/PaymentMethodCell/PaymentMethodCell.d.ts",
         "packages/shared/ui-components-preact/src/PaymentMethodCell/constants.d.ts",
-        "packages/shared/ui-components-preact/src/PaymentMethodCell/parsePaymentMethodType.d.ts",
         "packages/shared/ui-components-preact/src/Popover/Popover.d.ts",
         "packages/shared/ui-components-preact/src/Popover/PopoverDismissButton/PopoverDismissButton.d.ts",
         "packages/shared/ui-components-preact/src/Popover/PopoverTitle/PopoverTitle.d.ts",
