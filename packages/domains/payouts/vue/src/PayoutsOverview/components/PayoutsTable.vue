@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData } from '@integration-components/composables-vue';
+import { useCustomColumnsData, CustomDataCell } from '@integration-components/composables-vue';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
@@ -94,7 +94,7 @@ const columns = computed<BentoColumn[]>(() => {
             const labelKey = `payouts.overview.list.fields.${key}`;
             cols.push({
                 field: key,
-                label: i18n.has(labelKey) ? i18n.get(labelKey) : key,
+                label: i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as any),
                 autoWidth: true,
             });
         }
@@ -209,6 +209,9 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 <BentoTypography v-if="item.payoutAmount" variant="body" :class="NET_PAYOUT_CLASS">
                     {{ formatAmount(item.payoutAmount) }}
                 </BentoTypography>
+            </template>
+            <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
+                <CustomDataCell :value="item[key]" />
             </template>
         </BentoDataGrid>
     </div>

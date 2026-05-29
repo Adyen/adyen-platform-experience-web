@@ -10,8 +10,8 @@
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
-        "@adyen/bento-vue3": "^1.93.0",
-        "@adyen/ui-assets-icons-16": "^7.7.2",
+        "@adyen/bento-vue3": "catalog:",
+        "@adyen/ui-assets-icons-16": "catalog:",
         "@integration-components/composables-vue": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
