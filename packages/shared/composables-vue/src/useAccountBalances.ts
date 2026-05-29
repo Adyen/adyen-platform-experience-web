@@ -53,7 +53,12 @@ export function useAccountBalances(balanceAccountId: () => string | undefined) {
             if (isFunction(fn) && id) {
                 void fetchBalances(id);
             } else {
+                if (abortController) {
+                    abortController.abort();
+                    abortController = null;
+                }
                 balances.value = [];
+                isFetching.value = false;
             }
         },
         { immediate: true }

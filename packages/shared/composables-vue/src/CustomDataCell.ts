@@ -28,7 +28,7 @@ export const CustomDataCell = defineComponent({
             if (data.type === 'text') {
                 return h('span', { class: data.config?.className }, String(data.value ?? ''));
             }
-            if (data.type === 'button') {
+            if (data.type === 'button' && data.config) {
                 return h(
                     BentoButton,
                     {
@@ -36,13 +36,13 @@ export const CustomDataCell = defineComponent({
                         class: data.config.className,
                         onClick: (e: Event) => {
                             e.stopPropagation();
-                            data.config.action();
+                            data.config.action?.();
                         },
                     },
                     () => String(data.value)
                 );
             }
-            if (data.type === 'link') {
+            if (data.type === 'link' && data.config) {
                 return h(BentoLink, { to: data.config.href, external: true, class: data.config.className }, () => String(data.value));
             }
             return h('span', {}, String(data.value ?? ''));

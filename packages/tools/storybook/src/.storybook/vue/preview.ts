@@ -40,7 +40,7 @@ const preview: Preview = {
             setup() {
                 const { component, session, mockedApi, compact, ...componentProps } = args;
                 return {
-                    containerKey: computed(() => `${storyGlobals.locale}-${storyGlobals.fontFamily}`),
+                    containerKey: computed(() => `${storyGlobals.locale}-${storyGlobals.fontFamily}-${JSON.stringify(session)}`),
                     component: toRaw(component),
                     locale: computed(() => storyGlobals.locale),
                     fontFamily: computed(() => storyGlobals.fontFamily),

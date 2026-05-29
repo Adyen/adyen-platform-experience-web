@@ -52,7 +52,14 @@ export function useDownload(
     const fetchKey = computed(() => (canFetch.value ? JSON.stringify({ params: queryParam(), enabled: enabled() }) : null));
 
     watch(fetchKey, newKey => {
-        if (!newKey) return;
+        if (!newKey) {
+            if (abortController) {
+                abortController.abort();
+                abortController = null;
+            }
+            isFetching.value = false;
+            return;
+        }
         void runDownload();
     });
 
