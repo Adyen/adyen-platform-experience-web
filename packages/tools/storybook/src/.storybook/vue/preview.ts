@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/vue3';
 import { setup } from '@storybook/vue3';
 import { createI18n } from 'vue-i18n';
+import { computed, reactive, toRaw } from 'vue';
 import { sharedPreviewConfig } from '../../shared/previewDefaults';
 import Container from './Container.vue';
 
@@ -19,16 +20,39 @@ setup(app => {
     );
 });
 
+// Storybook's Vue3 renderer does not force-remount on globals changes — it only
+// reactively updates args. To make globals (locale, fontFamily) reactive we
+// store them in a module-level reactive object that is mutated each time the
+// render function is called, and expose them via computed refs in setup().
+const storyGlobals = reactive({
+    locale: 'en-US' as string,
+    fontFamily: undefined as string | undefined,
+});
+
 const preview: Preview = {
     ...sharedPreviewConfig,
-    render: (args, context) => ({
-        components: { Container },
-        setup() {
-            const { component, session, mockedApi, compact, locale, ...componentProps } = args;
-            return { component, locale: locale ?? context.globals.locale ?? 'en-US', session, mockedApi, compact, componentProps };
-        },
-        template: `<Container :component="component" :component-props="componentProps" :locale="locale" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
-    }),
+    render: (args, context) => {
+        storyGlobals.locale = context.globals.locale ?? 'en-US';
+        storyGlobals.fontFamily = context.globals.fontFamily;
+
+        return {
+            components: { Container },
+            setup() {
+                const { component, session, mockedApi, compact, ...componentProps } = args;
+                return {
+                    containerKey: computed(() => `${storyGlobals.locale}-${storyGlobals.fontFamily}`),
+                    component: toRaw(component),
+                    locale: computed(() => storyGlobals.locale),
+                    fontFamily: computed(() => storyGlobals.fontFamily),
+                    session,
+                    mockedApi,
+                    compact,
+                    componentProps,
+                };
+            },
+            template: `<Container :key="containerKey" :component="component" :component-props="componentProps" :locale="locale" :font-family="fontFamily" :session="session" :mocked-api="mockedApi" :compact="compact" />`,
+        };
+    },
 };
 
 export default preview;
