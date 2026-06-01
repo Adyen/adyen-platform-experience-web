@@ -12,7 +12,7 @@ import { useConfigContext } from '../../../../../core/ConfigContext';
 import { useFetch } from '../../../../../hooks/useFetch';
 import { EMPTY_OBJECT } from '../../../../../utils';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
 import './CapitalOffer.scss';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
@@ -31,7 +31,8 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
     onOfferSelect,
 }) => {
     const [emptyGrantOffer, setEmptyGrantOffer] = useState(false);
-    const [requestedAmount, setRequestedAmount] = useState<number>();
+    const [selectedAmount, setSelectedAmount] = useState<number | undefined>(undefined);
+    const [selectedTerm, setSelectedTerm] = useState<number | undefined>(undefined);
     const [selectedOffer, setSelectedOffer] = useState<IGrantOfferResponseDTO>();
 
     const { getDynamicGrantOffersConfiguration } = useConfigContext().endpoints;
@@ -48,7 +49,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             onSuccess: onSuccess,
         },
         queryFn: useCallback(async () => {
-            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT);
+            return getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
         }, [getDynamicGrantOffersConfiguration]),
     });
 
@@ -59,7 +60,6 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             if (onOfferSelect) {
                 onOfferSelect(data);
             } else {
-                setRequestedAmount(data?.grantAmount.value);
                 setSelectedOffer(data);
             }
         },
@@ -81,7 +81,10 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             />
             {capitalOfferState === 'OfferSelection' && (
                 <CapitalOfferSelection
-                    requestedAmount={requestedAmount}
+                    selectedAmount={selectedAmount}
+                    onSelectedAmountChange={setSelectedAmount}
+                    selectedTerm={selectedTerm}
+                    onSelectedTermChange={setSelectedTerm}
                     dynamicOffersConfig={config}
                     dynamicOffersConfigError={dynamicOffersConfigError}
                     onOfferDismiss={onOfferDismiss}

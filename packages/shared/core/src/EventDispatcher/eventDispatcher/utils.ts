@@ -1,0 +1,25 @@
+import { parseDate, uuid } from '@integration-components/utils';
+
+export function bytesToBase64(bytes: Uint8Array) {
+    const binString = Array.from(bytes, (byte: number) => String.fromCodePoint(byte)).join('');
+    return btoa(binString);
+}
+
+export const encodeAnalyticsEvent = (event: any) => {
+    try {
+        const formattedOptions = JSON.stringify(event);
+        const encodedData = bytesToBase64(new TextEncoder().encode(formattedOptions));
+        const data = new URLSearchParams();
+        data.set('data', encodedData);
+        return data;
+    } catch {
+        return null;
+    }
+};
+
+export const getEventInsertId = () => uuid();
+
+export const getEventTime = (time?: number | string | Date) => {
+    const timestamp = parseDate(time) ?? Date.now();
+    return Math.floor(timestamp / 1000); // time in seconds
+};

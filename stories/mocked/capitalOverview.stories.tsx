@@ -1,5 +1,4 @@
-import getMySessionToken from '../utils/sessionRequest';
-import { ElementProps, ElementStory, SetupControls } from '../utils/types';
+import { getMySessionToken, ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { Meta } from '@storybook/preact';
 import { AdyenPlatformExperience, CapitalOverview, ILegalEntity } from '../../src';
 import { CapitalOverviewWithSetupMeta } from '../components/capitalOverview';

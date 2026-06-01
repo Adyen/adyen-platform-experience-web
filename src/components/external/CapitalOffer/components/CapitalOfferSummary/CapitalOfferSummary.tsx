@@ -1,32 +1,33 @@
-import InfoBox from '../../../../internal/InfoBox';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { IGrant, IGrantOfferResponseDTO } from '../../../../../types';
 import { useCallback, useMemo } from 'preact/hooks';
-import { calculateMaximumRepaymentPeriodInMonths, getExpectedRepaymentDate, getPercentage } from '../utils/utils';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import StructuredList from '../../../../internal/StructuredList';
+import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import './CapitalOfferSummary.scss';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import { Tooltip } from '../../../../internal/Tooltip/Tooltip';
-import { EMPTY_OBJECT } from '../../../../../utils';
+import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
+import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT } from '../../../../../utils';
 import { AdyenErrorResponse } from '../../../../../core/Http/types';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import Alert from '../../../../internal/Alert/Alert';
-import Icon from '../../../../internal/Icon';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
 import cx from 'classnames';
 import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
-import { StructuredListItem } from '../../../../internal/StructuredList/types';
+import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
 import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
 import { CapitalOfferLegalNotice } from '../CapitalOfferLegalNotice/CapitalOfferLegalNotice';
-import { Translation } from '../../../../internal/Translation';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 
 const errorMessageWithAlert = ['30_013'];
+const grantSummaryAmountConfig = { minimumFractionDigits: 0 };
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
@@ -45,12 +46,14 @@ export const CapitalOfferSummary = ({
     onContactSupport?: () => void;
 }) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
-
-    const expectedRepaymentDate = useMemo(() => {
-        const date = getExpectedRepaymentDate(grantOffer.expectedRepaymentPeriodDays);
-        return date ? i18n.date(date, { month: 'long' }) : null;
-    }, [grantOffer, i18n]);
+    const userEvents = useEventDispatcherContext();
+    const { dateFormat } = useTimezoneAwareDateFormatting();
+    const formatTermLabel = useFormatTermLabel();
+    const maximumRepaymentPeriodDate = useMemo(() => {
+        const days = grantOffer.maximumRepaymentPeriodDays;
+        const date = days && getMaximumRepaymentDate(days);
+        return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
+    }, [grantOffer.maximumRepaymentPeriodDays, dateFormat]);
 
     const { requestFunds } = useConfigContext().endpoints;
 
@@ -86,11 +89,6 @@ export const CapitalOfferSummary = ({
         }
     }, [onBack, userEvents]);
 
-    const maximumRepaymentPeriod = useMemo(
-        () => calculateMaximumRepaymentPeriodInMonths(grantOffer.maximumRepaymentPeriodDays),
-        [grantOffer.maximumRepaymentPeriodDays]
-    );
-
     const requestErrorAlert = useMemo<{ title: string; message: string; errorCode?: string } | null>(() => {
         const err = requestFundsMutation.error ? (requestFundsMutation.error as AdyenErrorResponse) : null;
 
@@ -113,149 +111,159 @@ export const CapitalOfferSummary = ({
         return null;
     }, [i18n, requestFundsMutation.error]);
 
-    const structuredListItems = useMemo(() => {
-        const summaryItems: StructuredListItem[] = [
-            {
-                key: 'capital.common.fields.fees',
-                value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency),
-            },
-            {
-                key: 'capital.common.fields.totalRepaymentAmount',
-                value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency),
-            },
-            {
-                key: 'capital.common.fields.repaymentThreshold',
-                value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-            },
-            {
-                key: 'capital.common.fields.dailyRepaymentRate',
-                value: i18n.get('capital.common.values.percentage', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
-            },
-            {
-                key: 'capital.common.fields.expectedRepaymentPeriod',
-                value: i18n.get('capital.common.values.numberOfDays', { values: { days: grantOffer.expectedRepaymentPeriodDays } }),
-            },
-            { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
-        ];
+    const financingAmount = i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, grantSummaryAmountConfig);
 
-        if (maximumRepaymentPeriod) {
-            summaryItems.splice(4, 0, {
-                key: 'capital.common.fields.maximumRepaymentPeriod',
-                value:
-                    maximumRepaymentPeriod === 1
-                        ? i18n.get('capital.common.values.oneMonth')
-                        : i18n.get('capital.common.values.numberOfMonths', { values: { months: maximumRepaymentPeriod } }),
-            });
-        }
+    const grantSummaryItems = [
+        {
+            label: i18n.get('capital.common.fields.financing'),
+            value: financingAmount,
+        },
+        {
+            value: i18n.amount(grantOffer.feesAmount.value, grantOffer.feesAmount.currency, grantSummaryAmountConfig),
+            label: i18n.get('capital.common.fields.fees'),
+        },
+        {
+            value: i18n.amount(grantOffer.totalAmount.value, grantOffer.totalAmount.currency, grantSummaryAmountConfig),
+            label: i18n.get('capital.common.fields.totalRepaymentAmount'),
+        },
+    ];
 
-        if (grantOffer.aprBasisPoints) {
-            summaryItems.splice(1, 0, {
-                key: 'capital.common.fields.annualPercentageRate',
-                value: i18n.get('capital.common.values.percentage', { values: { percentage: getPercentage(grantOffer.aprBasisPoints) } }),
-            });
-        }
-
-        return summaryItems;
-    }, [grantOffer, i18n, maximumRepaymentPeriod]);
+    const structuredListItems = useMemo(
+        () =>
+            [
+                {
+                    key: 'capital.common.fields.dailyRepaymentRate',
+                    value: i18n.get('capital.common.values.percentage', { values: { percentage: getPercentage(grantOffer.repaymentRate) } }),
+                },
+                ...(grantOffer.aprBasisPoints
+                    ? [
+                          {
+                              key: 'capital.common.fields.annualPercentageRate' as const,
+                              value: i18n.get('capital.common.values.percentage', {
+                                  values: { percentage: getPercentage(grantOffer.aprBasisPoints) },
+                              }),
+                          },
+                      ]
+                    : []),
+                {
+                    key: 'capital.common.fields.repaymentThreshold',
+                    value: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
+                },
+                {
+                    key: 'capital.common.fields.expectedRepaymentPeriod',
+                    value: formatTermLabel(grantOffer.expectedRepaymentPeriodDays),
+                },
+                ...(maximumRepaymentPeriodDate
+                    ? [
+                          {
+                              key: 'capital.common.fields.maximumRepaymentDate' as const,
+                              value: maximumRepaymentPeriodDate,
+                          },
+                      ]
+                    : []),
+                { key: 'capital.common.fields.account', value: i18n.get('capital.common.values.primaryAccount') },
+            ] as StructuredListItem[],
+        [formatTermLabel, grantOffer, i18n, maximumRepaymentPeriodDate]
+    );
 
     return !requestErrorAlert && requestFundsMutation.error ? (
         <CapitalErrorMessageDisplay error={requestFundsMutation.error} onBack={onBackWithTracking} onContactSupport={onContactSupport} />
     ) : (
         <div className="adyen-pe-capital-offer-summary">
-            <InfoBox className="adyen-pe-capital-offer-summary__grant-summary">
-                <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.BODY}>
-                    <Translation
-                        translationKey="capital.offer.common.fundingRequestInfo"
-                        fills={{
-                            amount: (
-                                <strong>{`${i18n.amount(grantOffer.grantAmount.value, grantOffer.grantAmount.currency, { minimumFractionDigits: 0 })}`}</strong>
-                            ),
-                        }}
-                    />
+            <div className="adyen-pe-capital-offer-summary__grant-summary">
+                {grantSummaryItems.map(({ value, label }) => (
+                    <div key={label} className="adyen-pe-capital-offer-summary__grant-summary-item">
+                        <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} stronger>
+                            {value}
+                        </Typography>
+                        <Typography
+                            className="adyen-pe-capital-offer-summary__grant-summary-label"
+                            el={TypographyElement.SPAN}
+                            variant={TypographyVariant.CAPTION}
+                        >
+                            {label}
+                        </Typography>
+                    </div>
+                ))}
+            </div>
+            <div className="adyen-pe-capital-offer-summary__terms">
+                <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                    {i18n.get('capital.common.termsTitle')}
                 </Typography>
-                <Typography el={TypographyElement.PARAGRAPH} variant={TypographyVariant.CAPTION}>
-                    {i18n.get('capital.offer.common.repaymentInfo', {
-                        values: {
-                            amount: i18n.amount(grantOffer.thresholdAmount.value, grantOffer.thresholdAmount.currency),
-                            days: CAPITAL_REPAYMENT_FREQUENCY,
-                            date: expectedRepaymentDate ?? '',
-                        },
-                    })}
-                </Typography>
-            </InfoBox>
-            <StructuredList
-                classNames="adyen-pe-capital-offer-summary__details"
-                renderLabel={(val, key) => {
-                    if (key === 'capital.common.fields.repaymentThreshold') {
+                <StructuredList
+                    classNames="adyen-pe-capital-offer-summary__details"
+                    renderLabel={(val, key) => {
+                        if (key === 'capital.common.fields.repaymentThreshold') {
+                            return (
+                                <Tooltip
+                                    isUnderlineVisible
+                                    content={i18n.get('capital.common.fields.repaymentThreshold.description', {
+                                        values: { days: CAPITAL_REPAYMENT_FREQUENCY },
+                                    })}
+                                >
+                                    <span>
+                                        <Typography
+                                            className={'adyen-pe-capital-offer-summary__list-label'}
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.CAPTION}
+                                        >
+                                            {val}
+                                        </Typography>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
+
+                        if (key === 'capital.common.fields.annualPercentageRate') {
+                            return (
+                                <Tooltip isUnderlineVisible content={i18n.get('capital.common.fields.annualPercentageRate.description')}>
+                                    <span>
+                                        <Typography
+                                            className={'adyen-pe-capital-offer-summary__list-label'}
+                                            el={TypographyElement.SPAN}
+                                            variant={TypographyVariant.CAPTION}
+                                        >
+                                            {val}
+                                        </Typography>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
+
                         return (
-                            <Tooltip
-                                isUnderlineVisible
-                                content={i18n.get('capital.common.fields.repaymentThreshold.description', {
-                                    values: { days: CAPITAL_REPAYMENT_FREQUENCY },
-                                })}
+                            <Typography
+                                className={'adyen-pe-capital-offer-summary__list-label'}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.CAPTION}
                             >
-                                <span>
-                                    <Typography
-                                        className={'adyen-pe-capital-offer-summary__list-label'}
-                                        el={TypographyElement.SPAN}
-                                        variant={TypographyVariant.CAPTION}
-                                    >
-                                        {val}
-                                    </Typography>
-                                </span>
-                            </Tooltip>
+                                {val}
+                            </Typography>
                         );
-                    }
+                    }}
+                    renderValue={(val, key) => {
+                        const showWarningIcon =
+                            key === 'capital.common.fields.account' &&
+                            requestFundsMutation.error &&
+                            requestErrorAlert &&
+                            requestErrorAlert.errorCode === '30_013';
 
-                    if (key === 'capital.common.fields.annualPercentageRate') {
                         return (
-                            <Tooltip isUnderlineVisible content={i18n.get('capital.common.fields.annualPercentageRate.description')}>
-                                <span>
-                                    <Typography
-                                        className={'adyen-pe-capital-offer-summary__list-label'}
-                                        el={TypographyElement.SPAN}
-                                        variant={TypographyVariant.CAPTION}
-                                    >
-                                        {val}
-                                    </Typography>
-                                </span>
-                            </Tooltip>
+                            <Typography
+                                className={cx({
+                                    ['adyen-pe-capital-offer-summary__details--error']: showWarningIcon,
+                                })}
+                                el={TypographyElement.SPAN}
+                                variant={TypographyVariant.CAPTION}
+                                stronger
+                            >
+                                {showWarningIcon ? <Icon name={'warning-filled'} data-testid={'primary-account-warning-icon'} /> : null}
+                                {val}
+                            </Typography>
                         );
-                    }
-
-                    return (
-                        <Typography
-                            className={'adyen-pe-capital-offer-summary__list-label'}
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.CAPTION}
-                        >
-                            {val}
-                        </Typography>
-                    );
-                }}
-                renderValue={(val, key) => {
-                    const showWarningIcon =
-                        key === 'capital.common.fields.account' &&
-                        requestFundsMutation.error &&
-                        requestErrorAlert &&
-                        requestErrorAlert.errorCode === '30_013';
-
-                    return (
-                        <Typography
-                            className={cx({
-                                ['adyen-pe-capital-offer-summary__details--error']: showWarningIcon,
-                            })}
-                            el={TypographyElement.SPAN}
-                            variant={TypographyVariant.CAPTION}
-                            stronger
-                        >
-                            {showWarningIcon ? <Icon name={'warning-filled'} data-testid={'primary-account-warning-icon'} /> : null}
-                            {val}
-                        </Typography>
-                    );
-                }}
-                items={structuredListItems}
-            />
+                    }}
+                    items={structuredListItems}
+                />
+            </div>
             {requestErrorAlert && (
                 <Alert
                     className={'adyen-pe-capital-offer-summary__error-alert'}
@@ -272,23 +280,20 @@ export const CapitalOfferSummary = ({
             )}
             <CapitalOfferLegalNotice />
             <div className="adyen-pe-capital-offer-summary__buttons">
-                {requestFundsMutation.error && !requestErrorAlert ? null : (
-                    <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
-                        {i18n.get('capital.common.actions.goBack')}
-                    </Button>
-                )}
+                <Button variant={ButtonVariant.SECONDARY} onClick={onBackWithTracking}>
+                    {i18n.get('capital.common.actions.goBack')}
+                </Button>
                 <Button
                     variant={ButtonVariant.PRIMARY}
                     state={requestFundsMutation.isLoading ? 'loading' : undefined}
                     onClick={onRequestFundsHandler}
                     disabled={requestFundsMutation.isLoading || !!requestFundsMutation.error || !!requestFundsMutation.data}
-                    aria-label={i18n.get('capital.offer.summary.actions.requestFunds')}
                 >
-                    {i18n.get(
-                        requestFundsMutation.isLoading
-                            ? 'capital.offer.summary.actions.requestFunds.states.loading'
-                            : 'capital.offer.summary.actions.requestFunds'
-                    )}
+                    {requestFundsMutation.isLoading
+                        ? i18n.get('capital.offer.summary.actions.requestFunds.states.loading')
+                        : i18n.get('capital.offer.summary.actions.requestFunds', {
+                              values: { amount: financingAmount },
+                          })}
                 </Button>
             </div>
         </div>

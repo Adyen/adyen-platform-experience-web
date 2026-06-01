@@ -1,0 +1,9 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "noEmit": true,
+        "types": ["node"]
+    },
+    "files": ["../../../src/declarations/shims-vue.d.ts", "../../../src/declarations/svgr.d.ts", "../../../src/declarations/vite-env.d.ts"],
+    "include": ["src/**/*.ts", "src/**/*.vue"]
+}

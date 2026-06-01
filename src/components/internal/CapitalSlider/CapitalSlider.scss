@@ -1,4 +1,4 @@
-@use '../../../style';
+@use '@integration-components/style';
 
 .adyen-pe-capital-slider {
     display: flex;
@@ -9,22 +9,22 @@
         color: style.token(color-label-highlight);
     }
 
-    &__labels {
+    &__range-labels {
         display: flex;
         justify-content: space-between;
         margin-bottom: style.token(spacer-030);
+    }
 
-        label {
-            display: flex;
-            flex-direction: column;
+    &__range-label {
+        display: flex;
+        flex-direction: column;
 
-            :first-child {
-                color: style.token(color-label-secondary);
-            }
+        :first-child {
+            color: style.token(color-label-secondary);
+        }
 
-            &:last-child {
-                align-items: flex-end;
-            }
+        &:last-child {
+            align-items: flex-end;
         }
     }
 }

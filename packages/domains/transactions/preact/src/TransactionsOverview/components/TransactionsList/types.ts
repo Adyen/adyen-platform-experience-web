@@ -1,0 +1,17 @@
+import { IBalanceAccountBase } from '@integration-components/types';
+import { ExternalUIComponentProps } from '@integration-components/types';
+import { TransactionsOverviewComponentProps } from '../../types';
+import useTransactionsList from '../../hooks/useTransactionsList';
+import useCurrenciesLookup from '../../hooks/useCurrenciesLookup';
+
+type PropsFromTransactionComponent = Pick<
+    ExternalUIComponentProps<TransactionsOverviewComponentProps>,
+    'dataCustomization' | 'onContactSupport' | 'onRecordSelection' | 'showDetails'
+>;
+
+export interface TransactionsListProps extends PropsFromTransactionComponent {
+    balanceAccount?: IBalanceAccountBase;
+    loadingBalanceAccounts: boolean;
+    currenciesLookupResult: ReturnType<typeof useCurrenciesLookup>;
+    transactionsListResult: ReturnType<typeof useTransactionsList>;
+}

@@ -1,0 +1,55 @@
+import { isFunction, isNumber } from '../../../value/is';
+import { struct, structFrom } from '../../../struct/main';
+import { truthify } from '../../../value/bool';
+import { indexedProxyGetTrap, mapIteratorFactory } from './helpers';
+import type { Indexed, IndexedMapIteratorCallback } from './types';
+
+const __INDEXED_PROTO__ = Object.freeze(
+    struct<
+        Readonly<{
+            [Symbol.iterator]: (this: Indexed) => Generator<any>;
+            map: Indexed['map'];
+        }>
+    >({
+        [Symbol.iterator]: {
+            value(this: Indexed) {
+                return mapIteratorFactory.call(this);
+            },
+        },
+        map: {
+            value(this: Indexed, callback?: IndexedMapIteratorCallback, thisArg?: any) {
+                return [...mapIteratorFactory.call(this, callback, thisArg)];
+            },
+        },
+    })
+);
+
+export const createIndexed = <T extends object = object, V = any>(
+    iterablePropertyDescriptorsOrSize: PropertyDescriptorMap | (() => number) | number,
+    iteratorValueGetter: (index: number) => V
+): Indexed<V> & T => {
+    if (isFunction(iterablePropertyDescriptorsOrSize)) {
+        return createIndexed<T, V>(
+            {
+                length: { get: iterablePropertyDescriptorsOrSize },
+            },
+            iteratorValueGetter
+        );
+    }
+
+    if (isNumber(iterablePropertyDescriptorsOrSize)) {
+        return createIndexed<T, V>(
+            {
+                length: { value: iterablePropertyDescriptorsOrSize },
+            },
+            iteratorValueGetter
+        );
+    }
+
+    return new Proxy(structFrom(__INDEXED_PROTO__, iterablePropertyDescriptorsOrSize), {
+        get: indexedProxyGetTrap(iteratorValueGetter),
+        set: truthify,
+    }) as Indexed<V> & T;
+};
+
+export default createIndexed;

@@ -1,65 +1,80 @@
-import InfoBox from '../../../../internal/InfoBox';
-import Typography from '../../../../internal/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '../../../../internal/Typography/types';
-import StructuredList from '../../../../internal/StructuredList';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import StructuredList from '@integration-components/ui-components-preact/StructuredList';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
 import { IDynamicOffersConfig, IGrantOfferResponseDTO } from '../../../../../types';
 import './CapitalOfferSelection.scss';
 import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
-import { getExpectedRepaymentDate, getPercentage } from '../utils/utils';
+import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { calculateSliderAdjustedMidValue } from '../../../../internal/Slider/Slider';
-import { CAPITAL_REPAYMENT_FREQUENCY } from '../../../../constants';
+import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { debounce } from '../../../../utils/utils';
+import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT } from '@integration-components/utils';
+import Card from '@integration-components/ui-components-preact/Card/Card';
+import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
+import { TermSelector } from '../TermSelector';
+import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { Fragment } from 'preact';
+import { getRelativeToDefault, getValuePercentage } from './utils';
 
-type CapitalOfferSelectionProps = {
-    dynamicOffersConfig: IDynamicOffersConfig | undefined;
-    dynamicOffersConfigError?: Error;
-    emptyGrantOffer: boolean;
-    onContactSupport?: () => void;
-    onOfferDismiss?: () => void;
-    onOfferSelect: (data: IGrantOfferResponseDTO) => void;
-    requestedAmount: number | undefined;
-};
+const DEFAULT_TERM = 180;
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOfferAnalyticsEventProperties,
     subCategory: 'Business financing offer',
 } as const;
 
-const LoadingSkeleton = () => (
-    <div className="adyen-pe-capital-offer-selection__loading-container">
-        {[...Array(4)].map((_, index) => (
-            <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-        ))}
-    </div>
-);
+const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const listItems = [...Array(hasSingleTerm ? 5 : 4)];
+    return (
+        <>
+            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+            <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+            {isSmContainer ? (
+                listItems.map((_, index) => (
+                    <Fragment key={index}>
+                        <div className="adyen-pe-capital-offer-selection__loading-container">
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        </div>
+                        <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+                    </Fragment>
+                ))
+            ) : (
+                <div className="adyen-pe-capital-offer-selection__loading-container">
+                    {listItems.map((_, index) => (
+                        <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                    ))}
+                </div>
+            )}
+        </>
+    );
+};
 
-const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
+const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponseDTO; hasSingleTerm: boolean }) => {
     const { i18n } = useCoreContext();
-    const expectedRepaymentDate = useMemo(() => {
-        const date = data.expectedRepaymentPeriodDays && getExpectedRepaymentDate(data.expectedRepaymentPeriodDays);
-        if (date) return i18n.date(date, { month: 'long' });
-        return null;
-    }, [data, i18n]);
+    const { dateFormat } = useTimezoneAwareDateFormatting();
+    const maximumRepaymentPeriodDate = useMemo(() => {
+        const days = data.maximumRepaymentPeriodDays;
+        const date = days && getMaximumRepaymentDate(days);
+        return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
+    }, [data.maximumRepaymentPeriodDays, dateFormat]);
+
+    const formatTermLabel = useFormatTermLabel();
+
     return (
         <div className="adyen-pe-capital-offer-selection__information">
-            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.BODY} wide={true}>
-                {expectedRepaymentDate &&
-                    i18n.get('capital.offer.common.repaymentInfo', {
-                        values: {
-                            amount: i18n.amount(data.thresholdAmount.value, data.thresholdAmount.currency),
-                            days: CAPITAL_REPAYMENT_FREQUENCY,
-                            date: expectedRepaymentDate,
-                        },
-                    })}
+            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
+                {i18n.get('capital.common.termsTitle')}
             </Typography>
             <StructuredList
                 renderValue={val => (
@@ -75,44 +90,77 @@ const InformationDisplay = ({ data }: { data: IGrantOfferResponseDTO }) => {
                 items={[
                     { key: 'capital.common.fields.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
                     {
-                        key: 'capital.common.fields.dailyRepaymentRate',
-                        value: `${i18n.get('capital.common.values.percentage', {
-                            values: { percentage: getPercentage(data.repaymentRate) },
-                        })}`,
+                        key: 'capital.common.fields.totalRepaymentAmount',
+                        value: i18n.amount(data.totalAmount.value, data.totalAmount.currency),
                     },
                     {
-                        key: 'capital.common.fields.expectedRepaymentPeriod',
-                        value: i18n.get('capital.common.values.numberOfDays', { values: { days: data.expectedRepaymentPeriodDays } }),
+                        key: 'capital.common.fields.dailyRepaymentRate',
+                        value: i18n.get('capital.common.values.percentage', {
+                            values: { percentage: getPercentage(data.repaymentRate) },
+                        }),
                     },
+                    ...(hasSingleTerm
+                        ? [
+                              {
+                                  key: 'capital.common.fields.expectedRepaymentPeriod' as const,
+                                  value: formatTermLabel(data.expectedRepaymentPeriodDays),
+                              },
+                          ]
+                        : []),
+                    ...(data.maximumRepaymentPeriodDays
+                        ? [
+                              {
+                                  key: 'capital.common.fields.maximumRepaymentDate' as const,
+                                  value: maximumRepaymentPeriodDate,
+                              },
+                          ]
+                        : []),
                 ]}
             />
         </div>
     );
 };
 
+type CapitalOfferSelectionProps = {
+    dynamicOffersConfig: IDynamicOffersConfig | undefined;
+    dynamicOffersConfigError?: Error;
+    emptyGrantOffer: boolean;
+    selectedAmount: number | undefined;
+    selectedTerm: number | undefined;
+    onContactSupport?: () => void;
+    onOfferDismiss?: () => void;
+    onOfferSelect: (data: IGrantOfferResponseDTO) => void;
+    onSelectedAmountChange: (val: number) => void;
+    onSelectedTermChange: (term: number) => void;
+};
+
 export const CapitalOfferSelection = ({
     dynamicOffersConfig,
     dynamicOffersConfigError,
     emptyGrantOffer,
+    selectedAmount,
+    selectedTerm,
     onContactSupport,
     onOfferDismiss,
     onOfferSelect,
-    requestedAmount,
+    onSelectedAmountChange,
+    onSelectedTermChange,
 }: CapitalOfferSelectionProps) => {
     const { i18n } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
-    const initialValue = useMemo(() => {
-        if (dynamicOffersConfig)
-            return calculateSliderAdjustedMidValue(
-                dynamicOffersConfig.minAmount.value,
-                dynamicOffersConfig.maxAmount.value,
-                dynamicOffersConfig.step
-            );
-        return undefined;
-    }, [dynamicOffersConfig]);
+    const defaultAmount = useMemo(
+        () =>
+            dynamicOffersConfig &&
+            calculateSliderAdjustedMidValue(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.step),
+        [dynamicOffersConfig]
+    );
+    const hasInitializedRef = useRef(false);
 
-    const [requestedValue, setRequestedValue] = useState<number | undefined>(undefined);
+    const allTerms = useMemo(
+        () => dynamicOffersConfig?.estimatedRepaymentTermsInDays.toSorted((a, b) => a - b) ?? [],
+        [dynamicOffersConfig?.estimatedRepaymentTermsInDays]
+    );
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
@@ -130,6 +178,56 @@ export const CapitalOfferSelection = ({
         },
     });
 
+    const termOfferMap = useMemo<Record<number, IGrantOfferResponseDTO>>(() => {
+        const offers = getDynamicGrantOfferMutation.data?.offers ?? [];
+        return Object.fromEntries(offers.map(offer => [offer.expectedRepaymentPeriodDays, offer]));
+    }, [getDynamicGrantOfferMutation.data]);
+
+    const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
+
+    const handleTermChange = useCallback(
+        (term: number) => {
+            const relativeToDefault = getRelativeToDefault(term, DEFAULT_TERM);
+            const availableRates = availableTerms.map(t => termOfferMap[t]?.repaymentRate);
+            const selectedRate = termOfferMap[term]?.repaymentRate;
+
+            onSelectedTermChange(term);
+            userEvents.addEvent?.('Selected repayment term', {
+                ...sharedAnalyticsEventProperties,
+                allTerms,
+                availableTerms,
+                selectedTerm: term,
+                relativeToDefault,
+                availableRates,
+                selectedRate,
+            });
+        },
+        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
+    );
+
+    const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
+
+    useEffect(() => {
+        if (allTerms.length > 0 && selectedTerm === undefined) {
+            const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
+            if (term) {
+                handleTermChange(term);
+            }
+        }
+    }, [allTerms, availableTerms, handleTermChange, selectedTerm]);
+
+    useEffect(() => {
+        if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
+            const nearest = availableTerms.reduce((prev, curr) => (Math.abs(curr - selectedTerm) < Math.abs(prev - selectedTerm) ? curr : prev));
+            handleTermChange(nearest);
+        }
+    }, [availableTerms, handleTermChange, selectedTerm]);
+
+    const matchedOffer = useMemo<IGrantOfferResponseDTO | undefined>(() => {
+        if (!getDynamicGrantOfferMutation.data?.offers || selectedTerm === undefined) return undefined;
+        return getDynamicGrantOfferMutation.data.offers.find(offer => offer.expectedRepaymentPeriodDays === selectedTerm);
+    }, [getDynamicGrantOfferMutation.data, selectedTerm]);
+
     const reviewOfferMutation = useMutation({
         queryFn: createGrantOffer,
         options: {
@@ -139,17 +237,23 @@ export const CapitalOfferSelection = ({
 
     const onReview = useCallback(() => {
         try {
-            void reviewOfferMutation.mutate({
-                body: {
-                    amount: getDynamicGrantOfferMutation.data?.grantAmount.value || requestedValue!,
-                    currency: getDynamicGrantOfferMutation.data?.grantAmount.currency || currency!,
-                },
-                contentType: 'application/json',
-            });
+            if (matchedOffer && selectedTerm) {
+                void reviewOfferMutation.mutate(
+                    {
+                        body: {
+                            amount: matchedOffer.grantAmount.value,
+                            currency: matchedOffer.grantAmount.currency,
+                            selectedEstimatedRepaymentTermDays: selectedTerm,
+                        },
+                        contentType: 'application/json',
+                    },
+                    { query: EMPTY_OBJECT }
+                );
+            }
         } finally {
             userEvents.addEvent?.('Clicked button', { ...sharedAnalyticsEventProperties, label: 'Review offer' });
         }
-    }, [currency, getDynamicGrantOfferMutation.data, requestedValue, reviewOfferMutation, userEvents]);
+    }, [matchedOffer, reviewOfferMutation, selectedTerm, userEvents]);
 
     const getOffer = useCallback(
         (amount: number) => getDynamicGrantOfferMutation.mutate({}, { query: { amount, currency: currency! } }),
@@ -164,9 +268,28 @@ export const CapitalOfferSelection = ({
         (val: number) => {
             debouncedGetOfferCall.cancel();
             setIsLoading(true);
-            setRequestedValue(val);
+            onSelectedAmountChange(val);
         },
-        [debouncedGetOfferCall]
+        [debouncedGetOfferCall, onSelectedAmountChange]
+    );
+
+    const triggerAmountChangeEvent = useCallback(
+        (val: number) => {
+            const relativeToDefault = getRelativeToDefault(val, defaultAmount);
+            const valuePercentage = getValuePercentage(val, dynamicOffersConfig?.minAmount.value, dynamicOffersConfig?.maxAmount.value);
+
+            userEvents.addEvent?.('Changed capital offer slider', {
+                ...sharedAnalyticsEventProperties,
+                label: 'Slider changed',
+                currency: currency!,
+                value: val,
+                valuePercentage,
+                min: dynamicOffersConfig?.minAmount.value,
+                max: dynamicOffersConfig?.maxAmount.value,
+                relativeToDefault,
+            });
+        },
+        [dynamicOffersConfig, defaultAmount, userEvents, currency]
     );
 
     const handleSliderRelease = useCallback(
@@ -174,34 +297,49 @@ export const CapitalOfferSelection = ({
             try {
                 return debouncedGetOfferCall(val);
             } finally {
-                userEvents.addEvent?.('Changed capital offer slider', {
-                    ...sharedAnalyticsEventProperties,
-                    label: 'Slider changed',
-                    currency: currency!,
-                    value: val,
-                });
+                triggerAmountChangeEvent(val);
             }
         },
-        [debouncedGetOfferCall, userEvents, currency]
+        [debouncedGetOfferCall, triggerAmountChangeEvent]
     );
 
     useEffect(() => {
-        if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !requestedValue) {
-            setRequestedValue(prev =>
-                !prev ? (requestedAmount ? Number(requestedAmount) : initialValue || dynamicOffersConfig.minAmount.value) : prev
-            );
-            void getOffer(requestedValue || initialValue || dynamicOffersConfig.minAmount.value);
+        if (dynamicOffersConfig && !getDynamicGrantOfferMutation.data && !hasInitializedRef.current) {
+            hasInitializedRef.current = true;
+            const initialValue = selectedAmount ?? defaultAmount ?? dynamicOffersConfig.minAmount.value;
+            if (!selectedAmount) {
+                onSelectedAmountChange(initialValue);
+            }
+            void getOffer(initialValue);
+            triggerAmountChangeEvent(initialValue);
         }
-    }, [dynamicOffersConfig, getDynamicGrantOfferMutation.data, getOffer, initialValue, requestedAmount, requestedValue]);
+    }, [
+        dynamicOffersConfig,
+        getDynamicGrantOfferMutation.data,
+        getOffer,
+        defaultAmount,
+        selectedAmount,
+        onSelectedAmountChange,
+        triggerAmountChangeEvent,
+    ]);
 
     const loadingButtonState = useMemo(
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
         [getDynamicGrantOfferMutation.isLoading, isLoading, reviewOfferMutation.isLoading]
     );
 
+    const termsError = !!dynamicOffersConfig && !allTerms.length;
+
+    const isLoadingIndicatorVisible = useMemo(
+        () => !matchedOffer || getDynamicGrantOfferMutation.isLoading || isLoading,
+        [getDynamicGrantOfferMutation.isLoading, isLoading, matchedOffer]
+    );
+
+    const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
+
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || termsError ? (
                 <CapitalErrorMessageDisplay
                     error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
                     onBack={onOfferDismiss}
@@ -212,19 +350,29 @@ export const CapitalOfferSelection = ({
                 <>
                     {dynamicOffersConfig && (
                         <CapitalSlider
-                            value={requestedValue}
+                            value={selectedAmount}
                             dynamicOffersConfig={dynamicOffersConfig}
                             onValueChange={onChangeHandler}
                             onRelease={handleSliderRelease}
                         />
                     )}
-                    <InfoBox className="adyen-pe-capital-offer-selection__details">
-                        {!getDynamicGrantOfferMutation.data || getDynamicGrantOfferMutation.isLoading || isLoading ? (
-                            <LoadingSkeleton />
-                        ) : getDynamicGrantOfferMutation.data ? (
-                            <InformationDisplay data={getDynamicGrantOfferMutation.data} />
+                    {allTerms.length > 1 && (
+                        <TermSelector
+                            allTerms={allTerms}
+                            availableTerms={availableTerms}
+                            selectedTerm={selectedTerm}
+                            termOfferMap={termOfferMap}
+                            isLoadingIndicatorVisible={isLoadingIndicatorVisible}
+                            onTermSelect={handleUserTermSelect}
+                        />
+                    )}
+                    <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>
+                        {isLoadingIndicatorVisible ? (
+                            <LoadingSkeleton hasSingleTerm={hasSingleTerm} />
+                        ) : matchedOffer ? (
+                            <InformationDisplay data={matchedOffer} hasSingleTerm={hasSingleTerm} />
                         ) : null}
-                    </InfoBox>
+                    </Card>
                     <div className="adyen-pe-capital-offer-selection__buttons">
                         {onOfferDismiss && (
                             <Button variant={ButtonVariant.SECONDARY} onClick={onOfferDismiss}>
@@ -235,7 +383,7 @@ export const CapitalOfferSelection = ({
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
-                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
+                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount || !matchedOffer}
                             aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >
                             {i18n.get(

@@ -16,6 +16,8 @@ ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
 ASSETS_DIR="./src/assets"
 CONFIG_DIR="./src/config"
+DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
+PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
 UMD_FILE="./dist/umd/index.js"
 CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
@@ -55,6 +57,18 @@ else
 fi
 
 cp -r "$CONFIG_DIR" "$STAGING_DIR/config"
+
+echo "Copying disputes domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/disputes"
+cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/disputes/"
+# Also copy to root config dir for backwards compatibility with older SDK versions
+cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
+
+echo "Copying payByLink domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/payByLink"
+cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/payByLink/"
+# Also copy to root config dir for backwards compatibility with older SDK versions
+cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
 
 echo "Creating archive: $ARCHIVE_NAME"
 

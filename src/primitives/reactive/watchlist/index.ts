@@ -1,3 +1,2 @@
-export { default, createWatchlist, isWatchlistUnsubscribeToken } from './main';
-export * from './constants';
-export * from './types';
+export * from '../../../../packages/shared/utils/src/primitives/reactive/watchlist/index';
+export { default } from '../../../../packages/shared/utils/src/primitives/reactive/watchlist/index';

@@ -1,4 +1,4 @@
-@use '../../../../../style';
+@use '@integration-components/style';
 
 // [TODO]: Consider moving this Sass mixin to a shared location (for reusability)
 @mixin adyen-displace-floating-dismiss-icon($base-height: 40px, $icon-touch-size: 40px, $icon-size: 16px) {

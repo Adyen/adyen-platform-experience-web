@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/analytics/events';
+import { test, expect } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
@@ -17,7 +17,7 @@ test.describe('Grant: Single action - Hosted', () => {
         await expect(page.getByText('Grant ID')).toBeVisible();
         await expect(page.getByTestId('grant-id-copy-text')).toBeVisible();
         await expect(
-            page.getByText('We need a bit more input from you to process your funds. Please complete this action by February 15, 2025.')
+            page.getByText("You're almost ready. To process your funds, we just need your input. Please complete this action by February 15, 2025.")
         ).toBeVisible();
         await expect(page.getByRole('button', { name: 'Sign terms & conditions' })).toBeVisible();
         await expect(page.getByRole('progressbar')).toBeHidden();

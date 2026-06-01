@@ -1,7 +1,1 @@
-import type { WatchList } from '../../reactive/watchlist';
-
-export interface ClockWatchListEntries {
-    now: number;
-}
-
-export type Clock = Pick<WatchList<ClockWatchListEntries>, 'cancelSubscriptions' | 'subscribe'>;
+export * from '../../../../packages/shared/utils/src/primitives/time/clock/types';

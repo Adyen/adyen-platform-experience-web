@@ -1,16 +1,16 @@
 import { setupWorker } from 'msw/browser';
-import { getMockHandlers } from './utils/utils';
-import { analyticsMock } from './analytics';
+import { getMockHandlers } from '@integration-components/testing/msw';
+import { analyticsMock } from './eventDispatcher';
 import { balanceAccountMock } from './balanceAccounts';
 import { capitalMock } from './capital';
-import { disputesMocks } from './disputes';
+import { disputesMocks } from '../../packages/domains/disputes/mocks/mock-server/disputes';
 import { onboardingMocks } from './onboarding';
-import { payByLinkMocks } from './payByLink';
-import { payoutsMocks } from './payouts';
-import { reportsMock } from './reports';
+import { payByLinkMocks } from '../../packages/domains/payByLink/mocks/mock-server/payByLink';
+import { payoutsMocks } from '../../packages/domains/payouts/mocks/mock-server/payouts';
+import { reportsMock } from '../../packages/domains/reports/mocks/mock-server/reports';
 import { sessionsMock } from './sessions';
 import { setupMock } from './setup';
-import { transactionsMocks } from './transactions';
+import { transactionsMocks } from '../../packages/domains/transactions/mocks/mock-server/transactions';
 
 export const mocks = [
     analyticsMock,

@@ -1,11 +1,11 @@
 import { FunctionalComponent } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
-import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import Button from '../../../../internal/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import Button from '@integration-components/ui-components-preact/Button';
+import { ButtonVariant } from '@integration-components/types';
 import { IMissingAction, IMissingActionType } from '../../../../../types';
 import { useConfigContext } from '../../../../../core/ConfigContext';
 import useMutation from '../../../../../hooks/useMutation/useMutation';
@@ -29,7 +29,7 @@ type GrantActionsHostedProps = {
 
 export const GrantActionsHosted: FunctionalComponent<GrantActionsHostedProps> = ({ className, expirationDate, missingActions }) => {
     const { i18n, updateCore } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { anaCreditActionDetails, signToSActionDetails } = useConfigContext().endpoints;
 
     const [loadingAction, setLoadingAction] = useState<IMissingActionType | null>(null);

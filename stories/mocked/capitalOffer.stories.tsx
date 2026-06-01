@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory, SetupControls } from '../utils/types';
+import { ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { capitalOfferWithSetupMeta } from '../components/capitalOffer';
 import { CapitalOffer, CapitalOverview, ILegalEntity } from '../../src';
 import { CapitalOfferMockedResponses } from '../../mocks/mock-server/capital';

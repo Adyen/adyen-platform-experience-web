@@ -1,18 +1,18 @@
 import { Fragment, FunctionalComponent } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
-import Alert from '../../../../internal/Alert/Alert';
-import { AlertTypeOption } from '../../../../internal/Alert/types';
-import Button from '../../../../internal/Button';
+import Alert from '@integration-components/ui-components-preact/Alert/Alert';
+import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
+import Button from '@integration-components/ui-components-preact/Button';
 import { useConfigContext } from '../../../../../core/ConfigContext';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import { ButtonVariant } from '@integration-components/types';
 import { IMissingAction, IMissingActionType } from '../../../../../types';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
-import Modal from '../../../../internal/Modal';
+import Modal from '@integration-components/ui-components-preact/Modal';
 import { EMPTY_OBJECT } from '../../../../../utils';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import { useActionsAlertTitles } from '../../hooks';
-import Icon from '../../../../internal/Icon';
+import Icon from '@integration-components/ui-components-preact/Icon';
 import './GrantActionsEmbedded.scss';
 
 const CLASSNAMES = {
@@ -43,7 +43,7 @@ export const GrantActionsEmbedded: FunctionalComponent<GrantActionsEmbeddedProps
     onComplete,
 }) => {
     const { i18n, environment } = useCoreContext();
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
     const { getOnboardingConfiguration } = useConfigContext().endpoints;
     const completedActionsRef = useRef<Set<IMissingActionType>>(new Set());
     const timeoutIdsRef = useRef<Map<IMissingActionType, ReturnType<typeof setTimeout>>>(new Map());

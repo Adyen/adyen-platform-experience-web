@@ -1,10 +1,10 @@
 import './CapitalSlider.scss';
-import Slider from '../Slider';
+import Slider from '@integration-components/ui-components-preact/Slider';
 import { JSX } from 'preact';
 import { useMemo } from 'preact/hooks';
 import uniqueId from '../../../utils/random/uniqueId';
-import Typography from '../Typography/Typography';
-import { TypographyVariant } from '../Typography/types';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import useCoreContext from '../../../core/Context/useCoreContext';
 import { IDynamicOffersConfig } from '../../../types';
 import cx from 'classnames';
@@ -95,14 +95,14 @@ const CapitalSlider = ({
                     aria-valuetext={dynamicOfferAmount}
                 />
             </div>
-            <div className="adyen-pe-capital-slider__labels" aria-hidden="true">
-                <div>
+            <div className="adyen-pe-capital-slider__range-labels" aria-hidden="true">
+                <div className="adyen-pe-capital-slider__range-label">
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.offer.selection.slider.markers.min')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.minAmount.value, dynamicOffersConfig.minAmount.currency, { maximumFractionDigits: 0 })}
                     </Typography>
                 </div>
-                <div>
+                <div className="adyen-pe-capital-slider__range-label">
                     <Typography variant={TypographyVariant.CAPTION}>{i18n.get('capital.offer.selection.slider.markers.max')}</Typography>
                     <Typography variant={TypographyVariant.BODY}>
                         {i18n.amount(dynamicOffersConfig.maxAmount.value, dynamicOffersConfig.maxAmount.currency, { maximumFractionDigits: 0 })}

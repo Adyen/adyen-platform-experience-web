@@ -3,7 +3,11 @@ const noFrameworkCoupledPlaywrightSelectors = require('./eslint-rules/no-framewo
 
 const PLAYWRIGHT_SELECTOR_GUARD_PLUGIN = 'playwright-selector-guard';
 const NO_FRAMEWORK_COUPLED_SELECTORS_RULE = 'no-framework-coupled-playwright-selectors';
-const GUARDED_FILE_GLOBS = ['tests/**/*.{spec,test}.{ts,tsx,js,jsx}', 'tests/models/**/*.{ts,tsx,js,jsx}'];
+const GUARDED_FILE_GLOBS = [
+    'tests/**/*.{spec,test}.{ts,tsx,js,jsx}',
+    'tests/models/**/*.{ts,tsx,js,jsx}',
+    'packages/domains/*/tests/**/*.{spec,test}.{ts,tsx,js,jsx}',
+];
 const selectorGuardPlugin = {
     rules: {
         [NO_FRAMEWORK_COUPLED_SELECTORS_RULE]: noFrameworkCoupledPlaywrightSelectors,

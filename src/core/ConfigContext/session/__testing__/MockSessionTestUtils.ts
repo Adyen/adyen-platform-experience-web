@@ -23,7 +23,7 @@ vi.mock('../AuthSessionSpecification', async () => {
 });
 
 export interface MockSessionContext {
-    core: Core<any, any>;
+    core: Core<any>;
     expireSession(): void;
     refreshSession(...args: Parameters<AuthSession['refresh']>): Promise<void>;
     session: AuthSession;

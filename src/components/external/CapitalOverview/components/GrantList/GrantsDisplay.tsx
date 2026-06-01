@@ -1,5 +1,5 @@
 import { IGrant } from '../../../../../types';
-import { BaseList } from '../../../../internal/BaseList/BaseList';
+import { BaseList } from '@integration-components/ui-components-preact/BaseList/BaseList';
 import { GrantItem } from '../GrantItem/GrantItem';
 import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
@@ -8,14 +8,14 @@ import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
-import { useLandedPageEvent } from '../../../../../hooks/useAnalytics/useLandedPageEvent';
-import SegmentedControl from '../../../../internal/SegmentedControl/SegmentedControl';
-import useAnalyticsContext from '../../../../../core/Context/analytics/useAnalyticsContext';
+import { useLandedPageEvent } from '../../../../../hooks/useEventDispatcher/useLandedPageEvent';
+import SegmentedControl from '@integration-components/ui-components-preact/SegmentedControl/SegmentedControl';
+import useEventDispatcherContext from '../../../../../core/Context/eventDispatcher/useEventDispatcherContext';
 import useCoreContext from '../../../../../core/Context/useCoreContext';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../../internal/CapitalHeader';
-import Button from '../../../../internal/Button/Button';
-import { ButtonVariant } from '../../../../internal/Button/types';
+import Button from '@integration-components/ui-components-preact/Button/Button';
+import { ButtonVariant } from '@integration-components/types';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
@@ -39,7 +39,7 @@ export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hid
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
 
-    const userEvents = useAnalyticsContext();
+    const userEvents = useEventDispatcherContext();
 
     const [activeGrants, inactiveGrants] = useMemo(() => {
         const active: IGrant[] = [];

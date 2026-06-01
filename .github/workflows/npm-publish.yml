@@ -28,6 +28,8 @@ jobs:
 
       - name: Run the preliminary setup steps
         uses: ./.github/actions/setup-env
+        with:
+          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Determine the release version
         run: |

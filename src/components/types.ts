@@ -1,7 +1,47 @@
 import UIElement from './external/UIElement/UIElement';
-import { Core, onErrorHandler } from '../core';
-import { AnchorHTMLAttributes } from 'preact/compat';
-import { StringWithAutocompleteOptions } from '../utils/types';
+import { Core } from '../core';
+import type {
+    BaseElementProps as _BaseElementProps,
+    BaseElementState,
+    CustomColumn,
+    CustomButtonObject,
+    CustomDataObject,
+    CustomDataRetrieved,
+    CustomDetailsField,
+    CustomIconObject,
+    CustomLinkObject,
+    CustomTextObject,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+    DetailsCustomFieldConfig,
+    DetailsDataCustomizationObject,
+    ExternalUIComponentProps,
+    OnDataRetrievedCallback,
+    UIElementProps,
+    UIElementStatus,
+    _UIComponentProps as __UIComponentProps,
+} from '@integration-components/types';
+
+export { FilterParam } from '@integration-components/types';
+
+export type {
+    CustomButtonObject,
+    CustomColumn,
+    CustomDataObject,
+    CustomDataRetrieved,
+    CustomDetailsField,
+    CustomIconObject,
+    CustomLinkObject,
+    CustomTextObject,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+    DetailsCustomFieldConfig,
+    DetailsDataCustomizationObject,
+    ExternalUIComponentProps,
+    OnDataRetrievedCallback,
+    UIElementProps,
+    UIElementStatus,
+};
 
 export const enum InteractionKeyCode {
     ARROW_DOWN = 'ArrowDown',
@@ -20,8 +60,8 @@ export const enum InteractionKeyCode {
     DELETE = 'Delete',
 }
 
-export interface BaseElementProps {
-    core: Core<any, any>;
+export interface BaseElementProps extends _BaseElementProps {
+    core: Core<any>;
 }
 
 export interface IUIElement {
@@ -38,16 +78,7 @@ export interface IFormElement<P> {
     setState(newState: object): void;
 }
 
-export type UIElementStatus = 'ready' | 'loading' | 'error' | 'success';
-
 export type SetTriggerValidation = (callback: (schema?: Record<string, any>) => void) => void;
-
-export interface UIElementProps {
-    hideTitle?: boolean;
-    onContactSupport?: () => void;
-    onError?: onErrorHandler;
-    ref?: any;
-}
 
 export interface FormProps<P> {
     onChange?: (state: any, element: UIElement<P> | null) => void;
@@ -59,149 +90,51 @@ export interface FormProps<P> {
     triggerValidation?: SetTriggerValidation;
 }
 
-export type BaseElementState = {
-    errors?: {
-        [key: string]: any;
-    };
-    valid?: {
-        [key: string]: boolean;
-    };
-    fieldProblems?: {
-        [key: string]: any;
-    };
-    isValid?: boolean;
-};
+export type { BaseElementState };
 
-export type _UIComponentProps<T> = BaseElementProps & Omit<UIElementProps, 'ref'> & T & {};
-
-export type ExternalUIComponentProps<T> = UIElementProps & T & {};
+export type _UIComponentProps<T> = __UIComponentProps<T>;
 
 export type DataGridIcon = { url: string; alt?: string } | ((value: unknown) => { url: string; alt?: string });
 
-export type DataGridCustomColumnConfig<k> = {
-    key: k;
-    flex?: number;
-    align?: 'right' | 'left' | 'center';
-    visibility?: 'visible' | 'hidden';
-};
+export type { ReportsOverviewComponentProps, ReportsOverviewProps, ReportsTableFields } from '@integration-components/reports/publish';
 
-export type CustomColumn<T extends string> = {
-    [k in T]: DataGridCustomColumnConfig<k>;
-}[T];
+export type {
+    TransactionsOverviewComponentProps,
+    TransactionsOverviewProps,
+    TransactionsTableFields,
+    TransactionsFilters,
+} from '@integration-components/transactions/publish';
 
-export type CustomDataObject = CustomIconObject | CustomTextObject | CustomLinkObject | CustomButtonObject;
+export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps, StoreIds } from '@integration-components/payByLink/publish';
 
-interface BaseCustomObject {
-    value: any;
-}
+export type {
+    PayoutsOverviewComponentProps,
+    PayoutsOverviewProps,
+    PayoutsTableFields,
+    PayoutDetailsComponentProps,
+    PayoutDetailsProps,
+} from '@integration-components/payouts/publish';
 
-type BaseDetails = {
-    className?: string;
-};
+export type {
+    DisputeOverviewComponentProps,
+    DisputesOverviewProps,
+    DisputesTableFields,
+    DisputeStatusGroup,
+} from '@integration-components/disputes/publish';
 
-export interface CustomIconObject extends BaseCustomObject {
-    type: 'icon';
-    config: BaseDetails & { src: string; alt?: string };
-}
-
-export interface CustomTextObject extends BaseCustomObject {
-    type: 'text';
-    config?: BaseDetails;
-}
-
-export interface CustomLinkObject extends BaseCustomObject {
-    type: 'link';
-    config: BaseDetails & { href: string; target?: AnchorHTMLAttributes<any>['target'] };
-}
-
-export interface CustomButtonObject extends BaseCustomObject {
-    type: 'button';
-    config: BaseDetails & { action: () => void };
-}
-
-export type CustomDataRetrieved = { [k: string]: CustomDataObject | Record<any, any> | string | number | boolean };
-
-export type OnDataRetrievedCallback<DataRetrieved, CallbackResponse = CustomDataRetrieved[]> = (data: DataRetrieved) => Promise<CallbackResponse>;
-
-export type DataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
-    fields: CustomColumn<StringWithAutocompleteOptions<Columns>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
-};
-
-export type DetailsCustomFieldConfig<k> = {
-    key: k;
-    visibility?: 'visible' | 'hidden';
-};
-
-export type CustomDetailsField<T extends string> = {
-    [k in T]: DetailsCustomFieldConfig<k>;
-}[T];
-
-export type DetailsDataCustomizationObject<Columns extends string, DataRetrieved, CallbackResponse> = {
-    fields: CustomDetailsField<StringWithAutocompleteOptions<Columns>>[];
-    onDataRetrieve?: OnDataRetrievedCallback<DataRetrieved, CallbackResponse>;
-};
-
-export type { ReportsOverviewComponentProps, ReportsOverviewProps } from './external/ReportsOverview/types';
-export type { ReportsTableFields } from './external/ReportsOverview/types';
-
-export type { TransactionsOverviewComponentProps } from './external/TransactionsOverview/types';
-export type { TransactionsOverviewProps, TransactionsTableFields, TransactionsFilters } from './external/TransactionsOverview/types';
-
-export type { PaymentLinksOverviewComponentProps, PaymentLinksOverviewProps } from './external/PaymentLinksOverview/types';
-export type { StoreIds } from './external/PaymentLinksOverview/types';
-
-export type { PayoutsOverviewComponentProps, PayoutsOverviewProps } from './external/PayoutsOverview/types';
-export type { PayoutsTableFields } from './external/PayoutsOverview/types';
-
-export type { DisputeOverviewComponentProps, DisputesOverviewProps } from './external/DisputesOverview/types';
-export type { DisputesTableFields, DisputeStatusGroup } from './external/DisputesOverview/types';
-
-export type DeepPartial<T> = T extends object
-    ? {
-          [K in keyof T]?: DeepPartial<T[K]>;
-      }
-    : T;
+export type { DeepPartial } from '@integration-components/types';
 
 export type { CapitalOverviewComponentProps, CapitalOverviewProps } from './external/CapitalOverview/types';
 
 export type { CapitalOfferComponentProps, CapitalOfferProps } from './external/CapitalOffer/types';
 
-export type { PaymentLinkCreationComponentProps, PaymentLinkCreationProps } from './external/PaymentLinkCreation/types';
-export type { PaymentLinkFieldsVisibilityConfig, PaymentLinkCreationFieldsConfig } from './external/PaymentLinkCreation/types';
+export type {
+    PaymentLinkCreationComponentProps,
+    PaymentLinkCreationProps,
+    PaymentLinkFieldsVisibilityConfig,
+    PaymentLinkCreationFieldsConfig,
+} from '@integration-components/payByLink/publish';
+export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from '@integration-components/payByLink/publish';
+export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from '@integration-components/payByLink/publish';
 
-export type { PaymentLinkSettingsComponentProps, PaymentLinkSettingsProps } from './external/PaymentLinkSettings/types';
-
-export type { PaymentLinkDetailsComponentProps, PaymentLinkDetailsProps } from './external/PaymentLinkDetails/types';
-
-export type { PayoutDetailsComponentProps, PayoutDetailsProps } from './external/PayoutDetails/types';
-
-export const enum FilterParam {
-    BALANCE_ACCOUNT = 'balanceAccount',
-    CATEGORIES = 'categories',
-    CURRENCIES = 'currencies',
-    CREATED_SINCE = 'createdSince',
-    CREATED_UNTIL = 'createdUntil',
-    STATUSES = 'statuses',
-    MIN_AMOUNT = 'minAmount',
-    MAX_AMOUNT = 'maxAmount',
-    LINK_TYPES = 'linkTypes',
-    MERCHANT_REFERENCE = 'merchantReference',
-    PAYMENT_LINK_ID = 'paymentLinkId',
-    STORE_IDS = 'storeIds',
-}
-
-export type ExternalComponentType =
-    | 'capitalOverview'
-    | 'capitalOffer'
-    | 'disputes'
-    | 'disputesManagement'
-    | 'paymentLinkCreation'
-    | 'paymentLinkDetails'
-    | 'paymentLinksOverview'
-    | 'paymentLinkSettings'
-    | 'payouts'
-    | 'payoutDetails'
-    | 'reports'
-    | 'transactions'
-    | 'transactionDetails';
+export type { ExternalComponentType } from '@integration-components/types';

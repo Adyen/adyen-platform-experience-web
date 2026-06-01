@@ -20,6 +20,18 @@ import { createEventEmitter } from '../../reactive/eventEmitter';
 import { isFunction, noop } from '../../../utils';
 import type { SessionEventType, SessionSpecification } from './types';
 
+// Declaration merging is used here to type runtime-defined class members
+// (`http`, `on`, and `refresh` are assigned in the constructor) without
+// emitting class field initializers. This pattern is also compatible with
+// Playwright's babel transformer, which cannot parse `declare` class fields.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface SessionContext<T, HttpParams extends any[] = any[]> {
+    http: SessionContext<T, HttpParams>['_sessionHttp'];
+    on: ReturnType<typeof createEventEmitter<SessionEventType>>['on'];
+    refresh: ReturnType<typeof createSessionRefresher<T>>['refresh'];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class SessionContext<T, HttpParams extends any[] = any[]> {
     private _session: T | undefined;
 
@@ -28,10 +40,6 @@ export class SessionContext<T, HttpParams extends any[] = any[]> {
     private readonly _refresher;
 
     private readonly _eventEmitter = createEventEmitter<SessionEventType>();
-
-    public declare readonly http: typeof this._sessionHttp;
-    public declare readonly on: (typeof this._eventEmitter)['on'];
-    public declare readonly refresh: (typeof this._refresher)['refresh'];
 
     constructor(private readonly _specification: SessionSpecification<T, HttpParams>) {
         this._deadline = createSessionDeadline(this._eventEmitter, this._specification as SessionSpecification<T>);

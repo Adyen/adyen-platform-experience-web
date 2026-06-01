@@ -1,26 +1,36 @@
 import type { Page } from '@playwright/test';
-import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/analytics/events';
+import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import {
-    sharedCapitalOfferAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedGrantsOverviewAnalyticsEventProperties,
 } from './constants/analytics';
+import {
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
+} from '../capitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--new-offer';
 
 const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'See new offer' }).click();
-    await expectAnalyticsEvents(analyticsEvents, [
-        ['Clicked button', { ...sharedGrantsOverviewAnalyticsEventProperties, label: 'See new offer' }],
-        ['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }],
-    ]);
+    await expectAnalyticsEvents(
+        analyticsEvents,
+        [
+            ['Clicked button', { ...sharedGrantsOverviewAnalyticsEventProperties, label: 'See new offer' }],
+            ['Landed on page', landedOnPageAnalyticsEventProperties],
+            ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+            ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+        ],
+        { strictOrder: false }
+    );
 };
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await goToOfferSelection(page, analyticsEvents);
-    await page.getByRole('button', { name: 'Review offer' }).click();
+    await page.getByRole('button', { name: 'Review request' }).click();
 
     await expectAnalyticsEvents(analyticsEvents, [
         ['Clicked button', { ...sharedCapitalOfferSelectionAnalyticsEventProperties, label: 'Review offer' }],
@@ -40,7 +50,7 @@ test.describe('New offer', () => {
 
     test('should go to offer selection screen with "Back" button when "See new offer" button is clicked', async ({ page, analyticsEvents }) => {
         await goToOfferSelection(page, analyticsEvents);
-        await expect(page.getByText('Business financing offer')).toBeVisible();
+        await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 
@@ -53,12 +63,12 @@ test.describe('New offer', () => {
         await expect(page.getByText('Business financing', { exact: true })).toBeVisible();
     });
 
-    test('should go to grants screen and show a new grant when "Request funds" button in offer summary screen is clicked', async ({
+    test('should go to grants screen and show a new grant when request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],
@@ -72,7 +82,7 @@ test.describe('New offer', () => {
 });
 
 test.describe('onFundsRequest argument', () => {
-    test('should not go to grants screen when argument is set and "Request funds" button in offer summary screen is clicked', async ({
+    test('should not go to grants screen when argument is set and request submit button in offer summary screen is clicked', async ({
         page,
         analyticsEvents,
     }) => {
@@ -80,7 +90,7 @@ test.describe('onFundsRequest argument', () => {
         await expectAnalyticsEvents(analyticsEvents, [['Landed on page', sharedGrantsOverviewAnalyticsEventProperties]]);
 
         await goToOfferSummary(page, analyticsEvents);
-        await page.getByRole('button', { name: 'Request funds' }).click();
+        await page.getByRole('button', { name: 'Submit request (€12,500)' }).click();
 
         await expectAnalyticsEvents(analyticsEvents, [
             ['Clicked button', { ...sharedCapitalOfferSummaryAnalyticsEventProperties, label: 'Request funds' }],

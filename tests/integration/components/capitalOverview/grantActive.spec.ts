@@ -1,4 +1,4 @@
-import { test, expect } from '../../../fixtures/analytics/events';
+import { test, expect } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
 import { sharedGrantsOverviewAnalyticsEventProperties } from './constants/analytics';
 
@@ -52,7 +52,7 @@ test.describe('Grant: Active', () => {
             expect(page.getByText('180 days (135 days left)')).toBeVisible(),
             expect(page.getByText('Total repayment amount')).toBeVisible(),
             expect(page.getByText('€20,220.00')).toBeVisible(),
-            expect(page.getByText('Repayment threshold')).toBeVisible(),
+            expect(page.getByText('30-day repayment minimum')).toBeVisible(),
             expect(page.getByText('€800.00')).toBeVisible(),
             expect(page.getByText('Grant ID')).toBeVisible(),
             expect(page.getByText('afedbe0e05e9')).toBeVisible(),
@@ -70,9 +70,9 @@ test.describe('Grant: Active', () => {
         await expect(page.getByText('Your requested funds were: €20,000.00')).toBeHidden();
     });
 
-    test('should show a tooltip when "Repayment threshold" label is hovered', async ({ page }) => {
+    test('should show a tooltip when "30-day repayment minimum" label is hovered', async ({ page }) => {
         await page.getByTestId('expand-button').click();
-        await page.getByText('Repayment threshold').hover();
+        await page.getByText('30-day repayment minimum').hover();
         const tooltip = page.getByText('Minimum repayment every 30 days to repay the financing on time');
         await tooltip.waitFor();
         await expect(tooltip).toBeVisible();

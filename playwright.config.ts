@@ -12,7 +12,7 @@ const webServerCommand = process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm run 
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-    testDir: './tests',
+    testDir: '.',
     timeout: 30 * 1000,
     globalTimeout: 10 * 60 * 1000, // 10 minutes
     expect: {
@@ -46,7 +46,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
-            testDir: 'tests/integration',
+            testMatch: ['tests/integration/**/*.spec.ts', 'packages/domains/*/tests/integration/**/*.spec.ts'],
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -68,7 +68,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'contract',
-            testDir: 'tests/contract',
+            testMatch: ['tests/contract/**/*.spec.ts', 'packages/domains/*/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },

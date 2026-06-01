@@ -1,2 +1,2 @@
-export { default, createPromisor } from './main';
-export * from './types';
+export * from '../../../../packages/shared/utils/src/primitives/async/promisor/index';
+export { default } from '../../../../packages/shared/utils/src/primitives/async/promisor/index';

@@ -1,65 +1,37 @@
-import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
-import { IGrantOfferResponseDTO } from '../../../src';
+import { IGrantOfferResponseDTO, IGrantOffersResponseDTO } from '../../../src';
 import uuid from '../../../src/utils/random/uuid';
+import { REPAYMENT_TERMS, REPAYMENT_TERM_FULL, REPAYMENT_TERM_HALF, REPAYMENT_TERM_QUARTER } from '../../mock-data';
 
-export const compareDates = (dateString1: string, dateString2: string, operator: 'ge' | 'le') => {
-    const date1 = new Date(dateString1);
-    const date2 = new Date(dateString2);
+const CURRENCIES_WITH_APR = ['CAD'];
+const SHORT_REPAYMENT_TERM_LIMIT = 0.67;
+const LONG_REPAYMENT_TERM_LIMIT = 0.33;
 
-    switch (operator) {
-        case 'ge':
-            return date1 >= date2;
-        case 'le':
-            return date1 <= date2;
+const getRepaymentRate = (term: number) => {
+    switch (term) {
+        case REPAYMENT_TERM_QUARTER:
+            return 800;
+        case REPAYMENT_TERM_HALF:
+            return 1100;
+        case REPAYMENT_TERM_FULL:
+        default:
+            return 1500;
     }
 };
 
-/**
- * Hash function based on {@link https://theartincode.stanis.me/008-djb2/ djb2} algorithm
- */
-export function computeHash(...strings: string[]) {
-    const hash = strings.reduce((hash, string) => {
-        let i = string.length;
-        while (i) hash = (hash * 33) ^ string.charCodeAt(--i);
-        return hash;
-    }, 5381);
-    return (hash >>> 0).toString(16).padStart(8, '0');
-}
-
-export async function delay(duration?: DelayMode | number): Promise<void> {
-    // Ensure there is no response delay in tests.
-    return Number(process.env.TEST_ENV) === 1 ? mswDelay(0) : mswDelay(duration);
-}
-
-export function getMockHandlers(mocks: HttpHandler[][]): HttpHandler[] {
-    const handlers = [] as HttpHandler[];
-    mocks.forEach(mocks => handlers.push(...mocks));
-    return handlers;
-}
-
-export const getPaginationLinks = (cursor: number, limit: number, totalLength: number) => {
-    const potentialNextCursor = cursor + limit;
-    const nextCursor = potentialNextCursor < totalLength ? potentialNextCursor : undefined;
-
-    const potentialPrevCursor = cursor - limit;
-    const prevCursor = potentialPrevCursor >= 0 ? potentialPrevCursor : undefined;
-
-    return {
-        ...(nextCursor === undefined ? {} : { next: { cursor: nextCursor.toString() } }),
-        ...(prevCursor === undefined ? {} : { prev: { cursor: prevCursor.toString() } }),
-    };
+const getDecimalFromBasisPoints = (bps: number) => {
+    return bps / 10000;
 };
-const CURRENCIES_WITH_APR = ['CAD'];
 
-export const calculateGrant = (amount: number | string, currency: string) => {
-    const feesAmount = Math.round(Number(amount) * 0.11 * 100) / 100;
+const calculateOfferForTerm = (amount: number, currency: string, repaymentTermDays: number): IGrantOfferResponseDTO => {
+    const repaymentRate = getRepaymentRate(repaymentTermDays);
+    const feesAmount = Number(amount) * getDecimalFromBasisPoints(repaymentRate);
     const totalAmount = Number(amount) + feesAmount;
 
     const repaymentFrequencyDays = 30;
-    const numberOfRepayments = Math.floor(180 / repaymentFrequencyDays);
+    const numberOfRepayments = Math.floor(repaymentTermDays / repaymentFrequencyDays);
     const minimumRepayment = Number(totalAmount / numberOfRepayments);
 
-    const response = {
+    const offer = {
         grantAmount: {
             value: Number(amount),
             currency: currency,
@@ -76,12 +48,33 @@ export const calculateGrant = (amount: number | string, currency: string) => {
             value: minimumRepayment,
             currency: currency,
         },
-        repaymentRate: 1100,
-        expectedRepaymentPeriodDays: 180,
-        maximumRepaymentPeriodDays: 540,
+        repaymentRate,
+        expectedRepaymentPeriodDays: repaymentTermDays,
+        maximumRepaymentPeriodDays: repaymentTermDays + REPAYMENT_TERM_QUARTER,
         id: uuid(),
     } satisfies IGrantOfferResponseDTO;
 
-    if (CURRENCIES_WITH_APR.includes(currency)) return { ...response, aprBasisPoints: 2000 };
-    return response;
+    if (CURRENCIES_WITH_APR.includes(currency)) return { ...offer, aprBasisPoints: 2000 };
+    return offer;
+};
+
+export const calculateOffers = (amount: number, currency: string, maxAmount?: number): IGrantOffersResponseDTO => {
+    const terms = REPAYMENT_TERMS.filter(term => {
+        return (
+            !maxAmount ||
+            !(
+                (term === REPAYMENT_TERM_QUARTER && amount > maxAmount * SHORT_REPAYMENT_TERM_LIMIT) ||
+                (term === REPAYMENT_TERM_FULL && amount < maxAmount * LONG_REPAYMENT_TERM_LIMIT)
+            )
+        );
+    });
+
+    return {
+        offers: terms.map(term => calculateOfferForTerm(amount, currency, term)),
+    };
+};
+
+export const calculateSelectedOffer = (amount: number, currency: string, repaymentTerm: number): IGrantOfferResponseDTO | undefined => {
+    const { offers } = calculateOffers(amount, currency);
+    return offers.find(offer => offer.expectedRepaymentPeriodDays === repaymentTerm) ?? offers[0];
 };
