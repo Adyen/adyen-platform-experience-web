@@ -183,7 +183,7 @@ export const CapitalOfferSelection = ({
     const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
 
     const handleTermChange = useCallback(
-        (term: number, label?: string) => {
+        (term: number) => {
             const relativeToDefault = getRelativeToDefault(term, DEFAULT_TERM);
             const availableRates = availableTerms.map(t => termOfferMap[t]?.repaymentRate);
             const selectedRate = termOfferMap[term]?.repaymentRate;
@@ -191,20 +191,18 @@ export const CapitalOfferSelection = ({
             onSelectedTermChange(term);
             userEvents.addEvent?.('Selected repayment term', {
                 ...sharedAnalyticsEventProperties,
-                ...(label !== undefined ? { label } : {}),
                 allTerms,
                 availableTerms,
-                selectedTerm,
+                selectedTerm: term,
                 relativeToDefault,
                 availableRates,
                 selectedRate,
-                value: term,
             });
         },
-        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, selectedTerm, userEvents]
+        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
     );
 
-    const handleUserTermSelect = useCallback((term: number) => handleTermChange(term, 'Term selected'), [handleTermChange]);
+    const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
 
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
