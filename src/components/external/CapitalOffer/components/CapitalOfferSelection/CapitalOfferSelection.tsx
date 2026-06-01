@@ -21,6 +21,8 @@ import Card from '@integration-components/ui-components-preact/Card/Card';
 import useTimezoneAwareDateFormatting from '../../../../../hooks/useTimezoneAwareDateFormatting';
 import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { Fragment } from 'preact';
 
 const DEFAULT_TERM = 180;
 
@@ -29,13 +31,33 @@ const sharedAnalyticsEventProperties = {
     subCategory: 'Business financing offer',
 } as const;
 
-const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => (
-    <div className="adyen-pe-capital-offer-selection__loading-container">
-        {[...Array(hasSingleTerm ? 6 : 5)].map((_, index) => (
-            <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-        ))}
-    </div>
-);
+const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const listItems = [...Array(hasSingleTerm ? 5 : 4)];
+    return (
+        <>
+            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+            <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+            {isSmContainer ? (
+                listItems.map((_, index) => (
+                    <Fragment key={index}>
+                        <div className="adyen-pe-capital-offer-selection__loading-container">
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        </div>
+                        <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+                    </Fragment>
+                ))
+            ) : (
+                <div className="adyen-pe-capital-offer-selection__loading-container">
+                    {listItems.map((_, index) => (
+                        <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                    ))}
+                </div>
+            )}
+        </>
+    );
+};
 
 const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponseDTO; hasSingleTerm: boolean }) => {
     const { i18n } = useCoreContext();
