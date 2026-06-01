@@ -17,6 +17,8 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { Fragment } from 'preact';
 
 const DEFAULT_TERM = 180;
 
@@ -25,13 +27,33 @@ const sharedAnalyticsEventProperties = {
     subCategory: 'Business financing offer',
 } as const;
 
-const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => (
-    <div className="adyen-pe-capital-offer-selection__loading-container">
-        {[...Array(hasSingleTerm ? 6 : 5)].map((_, index) => (
-            <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
-        ))}
-    </div>
-);
+const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
+    const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
+    const listItems = [...Array(hasSingleTerm ? 5 : 4)];
+    return (
+        <>
+            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+            <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+            {isSmContainer ? (
+                listItems.map((_, index) => (
+                    <Fragment key={index}>
+                        <div className="adyen-pe-capital-offer-selection__loading-container">
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                            <div className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                        </div>
+                        <div className="adyen-pe-capital-offer-selection__loading-spacer"></div>
+                    </Fragment>
+                ))
+            ) : (
+                <div className="adyen-pe-capital-offer-selection__loading-container">
+                    {listItems.map((_, index) => (
+                        <div key={index} className="adyen-pe-capital-offer-selection__loading-skeleton"></div>
+                    ))}
+                </div>
+            )}
+        </>
+    );
+};
 
 const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponseDTO; hasSingleTerm: boolean }) => {
     const { i18n } = useCoreContext();
@@ -157,8 +179,8 @@ export const CapitalOfferSelection = ({
 
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
-            const selectedTerm = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
-            if (selectedTerm) onSelectedTermChange(selectedTerm);
+            const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
+            if (term) onSelectedTermChange(term);
         }
     }, [allTerms, availableTerms, onSelectedTermChange, selectedTerm]);
 
@@ -187,8 +209,8 @@ export const CapitalOfferSelection = ({
                 void reviewOfferMutation.mutate(
                     {
                         body: {
-                            amount: matchedOffer?.grantAmount.value,
-                            currency: matchedOffer?.grantAmount.currency,
+                            amount: matchedOffer.grantAmount.value,
+                            currency: matchedOffer.grantAmount.currency,
                             selectedEstimatedRepaymentTermDays: selectedTerm,
                         },
                         contentType: 'application/json',
@@ -306,7 +328,7 @@ export const CapitalOfferSelection = ({
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
-                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
+                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount || !matchedOffer}
                             aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >
                             {i18n.get(
