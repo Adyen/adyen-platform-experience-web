@@ -317,8 +317,6 @@ export const CapitalOfferSelection = ({
         defaultAmount,
         selectedAmount,
         onSelectedAmountChange,
-        userEvents,
-        currency,
         triggerAmountChangeEvent,
     ]);
 

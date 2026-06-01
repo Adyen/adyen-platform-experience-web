@@ -43,4 +43,8 @@ describe('getValuePercentage', () => {
     test('returns undefined when both bounds are undefined', () => {
         expect(getValuePercentage(500, undefined, undefined)).toBeUndefined();
     });
+
+    test('returns undefined when min equals max', () => {
+        expect(getValuePercentage(500, 1000, 1000)).toBeUndefined();
+    });
 });
