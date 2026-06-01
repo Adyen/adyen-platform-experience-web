@@ -156,7 +156,7 @@ export const CapitalOfferSelection = ({
     );
     const hasInitializedRef = useRef(false);
 
-    const allTerms = useMemo(() => dynamicOffersConfig?.estimatedRepaymentTermsInDays ?? [], [dynamicOffersConfig]);
+    const allTerms = useMemo(() => [...(dynamicOffersConfig?.estimatedRepaymentTermsInDays ?? [])].sort((a, b) => a - b), [dynamicOffersConfig]);
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
