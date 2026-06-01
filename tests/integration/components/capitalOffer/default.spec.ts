@@ -2,41 +2,20 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '../../../utils/utils';
 import {
-    sharedCapitalOfferAnalyticsEventProperties,
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
 } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--default';
 
 const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
     expectAnalyticsEvents(analyticsEvents, [
-        ['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }],
-        [
-            'Changed capital offer slider',
-            {
-                ...sharedCapitalOfferSelectionAnalyticsEventProperties,
-                label: 'Slider changed',
-                currency: 'EUR',
-                value: 1250000,
-                valuePercentage: 48,
-                min: 100000,
-                max: 2500000,
-                relativeToDefault: 'Equal',
-            },
-        ],
-        [
-            'Selected repayment term',
-            {
-                ...sharedCapitalOfferSelectionAnalyticsEventProperties,
-                allTerms: [90, 180, 360],
-                availableRates: [800, 1100, 1500],
-                availableTerms: [90, 180, 360],
-                relativeToDefault: 'Equal',
-                selectedRate: 1100,
-                selectedTerm: 180,
-            },
-        ],
+        ['Landed on page', landedOnPageAnalyticsEventProperties],
+        ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+        ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
     ]);
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
