@@ -183,8 +183,8 @@ export const CapitalOfferSelection = ({
 
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
-            const selectedTerm = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
-            if (selectedTerm) onSelectedTermChange(selectedTerm);
+            const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
+            if (term) onSelectedTermChange(term);
         }
     }, [allTerms, availableTerms, onSelectedTermChange, selectedTerm]);
 
@@ -213,8 +213,8 @@ export const CapitalOfferSelection = ({
                 void reviewOfferMutation.mutate(
                     {
                         body: {
-                            amount: matchedOffer?.grantAmount.value,
-                            currency: matchedOffer?.grantAmount.currency,
+                            amount: matchedOffer.grantAmount.value,
+                            currency: matchedOffer.grantAmount.currency,
                             selectedEstimatedRepaymentTermDays: selectedTerm,
                         },
                         contentType: 'application/json',
@@ -332,7 +332,7 @@ export const CapitalOfferSelection = ({
                             variant={ButtonVariant.PRIMARY}
                             state={loadingButtonState ? 'loading' : undefined}
                             onClick={onReview}
-                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount}
+                            disabled={reviewOfferMutation.isLoading || !dynamicOffersConfig?.minAmount || !matchedOffer}
                             aria-label={i18n.get('capital.offer.selection.actions.reviewOffer')}
                         >
                             {i18n.get(
