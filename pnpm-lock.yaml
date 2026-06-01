@@ -43,7 +43,7 @@ catalogs:
 overrides:
   '@babel/plugin-transform-modules-systemjs': 7.29.4
   '@types/node': 24.10.13
-  axios: 1.15.2
+  axios: 1.16.0
   esbuild@0.25.2: 0.27.1
   fast-uri: 3.1.2
   follow-redirects: 1.16.0
@@ -3404,7 +3404,7 @@ packages:
     resolution: {}
     engines: {node: '>=4'}
 
-  axios@1.15.2:
+  axios@1.16.0:
     resolution: {}
 
   axobject-query@4.1.0:
@@ -9878,7 +9878,7 @@ snapshots:
 
   axe-core@4.10.3: {}
 
-  axios@1.15.2:
+  axios@1.16.0:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
@@ -12186,7 +12186,7 @@ snapshots:
       '@yarnpkg/lockfile': 1.1.0
       '@yarnpkg/parsers': 3.0.2
       '@zkochan/js-yaml': 0.0.7
-      axios: 1.15.2
+      axios: 1.16.0
       cli-cursor: 3.1.0
       cli-spinners: 2.6.1
       cliui: 8.0.1
