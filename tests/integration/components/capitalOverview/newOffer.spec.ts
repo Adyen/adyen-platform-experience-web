@@ -2,20 +2,30 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '../../../fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '../../../utils/utils';
 import {
-    sharedCapitalOfferAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedGrantsOverviewAnalyticsEventProperties,
 } from './constants/analytics';
+import {
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
+} from '../capitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--new-offer';
 
 const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'See new offer' }).click();
-    await expectAnalyticsEvents(analyticsEvents, [
-        ['Clicked button', { ...sharedGrantsOverviewAnalyticsEventProperties, label: 'See new offer' }],
-        ['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }],
-    ]);
+    await expectAnalyticsEvents(
+        analyticsEvents,
+        [
+            ['Clicked button', { ...sharedGrantsOverviewAnalyticsEventProperties, label: 'See new offer' }],
+            ['Landed on page', landedOnPageAnalyticsEventProperties],
+            ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+            ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+        ],
+        { strictOrder: false }
+    );
 };
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
