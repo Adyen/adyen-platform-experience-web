@@ -129,7 +129,8 @@ function formatPayoutDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_PAYOUT_DETAILS);
 }
 
-const formatAmount = (amount: { value: number; currency: string }) => formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency);
+const formatAmount = (amount: { value: number; currency: string } | null | undefined) =>
+    amount ? formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency) : '';
 
 const fundsCapturedColumns = computed<BentoColumn[]>(() => [
     {
