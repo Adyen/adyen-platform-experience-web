@@ -1,5 +1,12 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.12.0
+
+### Minor Changes
+
+- 55730a0: When initializing the library, the availableTranslations field is now deprecated: setting this field will trigger a deprecation warning.
+- 55730a0: In the Capital Offer component, users can now select from multiple repayment term options when applying for business financing. Each option shows its associated daily repayment rate to make it easier for users to compare options and choose the term that best fits their needs.
+
 ## 1.11.0
 
 ### Minor Changes
