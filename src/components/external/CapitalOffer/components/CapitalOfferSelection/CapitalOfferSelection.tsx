@@ -181,12 +181,26 @@ export const CapitalOfferSelection = ({
 
     const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
 
+    const handleTermChange = useCallback(
+        (term: number) => {
+            onSelectedTermChange(term);
+            userEvents.addEvent?.('Selected repayment term', {
+                ...sharedAnalyticsEventProperties,
+                label: 'Term selected',
+                value: term,
+            });
+        },
+        [onSelectedTermChange, userEvents]
+    );
+
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
             const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
-            if (term) onSelectedTermChange(term);
+            if (term) {
+                handleTermChange(term);
+            }
         }
-    }, [allTerms, availableTerms, onSelectedTermChange, selectedTerm]);
+    }, [allTerms, availableTerms, handleTermChange, selectedTerm]);
 
     useEffect(() => {
         if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
@@ -245,20 +259,27 @@ export const CapitalOfferSelection = ({
         [debouncedGetOfferCall, onSelectedAmountChange]
     );
 
+    const triggerAmountChangeEvent = useCallback(
+        (val: number) => {
+            userEvents.addEvent?.('Changed capital offer slider', {
+                ...sharedAnalyticsEventProperties,
+                label: 'Slider changed',
+                currency: currency!,
+                value: val,
+            });
+        },
+        [userEvents, currency]
+    );
+
     const handleSliderRelease = useCallback(
         (val: number) => {
             try {
                 return debouncedGetOfferCall(val);
             } finally {
-                userEvents.addEvent?.('Changed capital offer slider', {
-                    ...sharedAnalyticsEventProperties,
-                    label: 'Slider changed',
-                    currency: currency!,
-                    value: val,
-                });
+                triggerAmountChangeEvent(val);
             }
         },
-        [debouncedGetOfferCall, userEvents, currency]
+        [debouncedGetOfferCall, triggerAmountChangeEvent]
     );
 
     useEffect(() => {
@@ -269,8 +290,19 @@ export const CapitalOfferSelection = ({
                 onSelectedAmountChange(initialValue);
             }
             void getOffer(initialValue);
+            triggerAmountChangeEvent(initialValue);
         }
-    }, [dynamicOffersConfig, getDynamicGrantOfferMutation.data, getOffer, defaultAmount, selectedAmount, onSelectedAmountChange]);
+    }, [
+        dynamicOffersConfig,
+        getDynamicGrantOfferMutation.data,
+        getOffer,
+        defaultAmount,
+        selectedAmount,
+        onSelectedAmountChange,
+        userEvents,
+        currency,
+        triggerAmountChangeEvent,
+    ]);
 
     const loadingButtonState = useMemo(
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
@@ -312,7 +344,7 @@ export const CapitalOfferSelection = ({
                             selectedTerm={selectedTerm}
                             termOfferMap={termOfferMap}
                             isLoadingIndicatorVisible={isLoadingIndicatorVisible}
-                            onTermSelect={onSelectedTermChange}
+                            onTermSelect={handleTermChange}
                         />
                     )}
                     <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>
