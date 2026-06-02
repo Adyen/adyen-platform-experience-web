@@ -33,7 +33,9 @@ jobs:
 
       - name: Determine the release version
         run: |
-          echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          echo "PACKAGE_VERSION=${PACKAGE_VERSION}" >> $GITHUB_ENV
+          echo "PACKAGE_TARBALL=${RUNNER_TEMP}/artifact/adyen-adyen-platform-experience-web-${PACKAGE_VERSION}.tgz" >> $GITHUB_ENV
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -47,12 +49,12 @@ jobs:
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
         run: |
-          npm publish ${{ runner.temp }}/artifact/adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --dry-run
+          npm publish "$PACKAGE_TARBALL" --dry-run
 
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
         run: |
-          npm publish ${{ runner.temp }}/artifact/adyen-adyen-platform-experience-web-${{ env.PACKAGE_VERSION }}.tgz --tag=latest
+          npm publish "$PACKAGE_TARBALL" --tag=latest
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
