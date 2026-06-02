@@ -17,18 +17,18 @@
         "@integration-components/types": "workspace:*",
         "@integration-components/ui-components-preact": "workspace:*",
         "@integration-components/utils": "workspace:*",
-        "classnames": "^2.5.1"
+        "classnames": "catalog:"
     },
     "peerDependencies": {
         "preact": "catalog:",
         "vue": "catalog:"
     },
     "devDependencies": {
-        "@playwright/test": "^1.56.0",
-        "@storybook/preact": "10.2.12",
-        "@storybook/vue3": "10.2.12",
-        "dotenv": "^17.2.3",
+        "@playwright/test": "catalog:",
+        "@storybook/preact": "catalog:",
+        "@storybook/vue3": "catalog:",
+        "dotenv": "catalog:",
         "msw": "catalog:",
-        "vitest": "4.0.10"
+        "vitest": "catalog:"
     }
 }
