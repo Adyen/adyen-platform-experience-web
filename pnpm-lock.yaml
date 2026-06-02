@@ -15,6 +15,9 @@ catalogs:
     '@storybook/preact':
       specifier: 10.2.12
       version: 10.2.12
+    '@storybook/vue3':
+      specifier: 10.2.12
+      version: 10.2.12
     '@testing-library/preact':
       specifier: ^3.2.3
       version: 3.2.3
@@ -37,8 +40,8 @@ catalogs:
       specifier: ^7.3.2
       version: 7.3.2
     vitest:
-      specifier: 4.0.10
-      version: 4.0.10
+      specifier: 4.1.0
+      version: 4.1.0
     vue:
       specifier: ^3.5.13
       version: 3.5.31
@@ -138,10 +141,10 @@ importers:
         version: 22.6.3(@babel/traverse@7.29.0)(@typescript-eslint/parser@8.51.0(eslint@9.39.2)(typescript@5.8.3))(eslint@9.39.2)(nx@22.6.3)(typescript@5.8.3)
       '@nx/vite':
         specifier: ^22.5.3
-        version: 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))
       '@nx/vitest':
         specifier: ^22.5.3
-        version: 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.56.0
@@ -174,7 +177,7 @@ importers:
         version: 8.51.0(eslint@9.39.2)(typescript@5.8.3)
       '@vitest/coverage-v8':
         specifier: 'catalog:'
-        version: 4.0.10(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+        version: 4.0.10(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.12)
@@ -297,7 +300,7 @@ importers:
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       vitest:
         specifier: 'catalog:'
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       vue-eslint-parser:
         specifier: ^10.4.0
         version: 10.4.0(eslint@9.39.2)
@@ -332,7 +335,7 @@ importers:
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
-        specifier: ^2.5.1
+        specifier: 'catalog:'
         version: 2.5.1
       preact:
         specifier: ^10.29.1
@@ -342,23 +345,23 @@ importers:
         version: 3.5.31(typescript@5.8.3)
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: 'catalog:'
         version: 1.56.0
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/vue3':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       msw:
         specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
-        specifier: 4.0.10
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        specifier: 'catalog:'
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/payByLink:
     dependencies:
@@ -387,30 +390,30 @@ importers:
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
-        specifier: ^2.5.1
+        specifier: 'catalog:'
         version: 2.5.1
       preact:
         specifier: ^10.29.1
         version: 10.29.1
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: 'catalog:'
         version: 1.56.0
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       msw:
         specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       storybook:
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       vitest:
-        specifier: 4.0.10
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        specifier: 'catalog:'
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/payouts:
     dependencies:
@@ -445,7 +448,7 @@ importers:
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
-        specifier: ^2.5.1
+        specifier: 'catalog:'
         version: 2.5.1
       preact:
         specifier: ^10.29.1
@@ -461,23 +464,23 @@ importers:
         specifier: workspace:*
         version: link:../../shared/testing
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: 'catalog:'
         version: 1.56.0
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/vue3':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       msw:
         specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
-        specifier: 4.0.10
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        specifier: 'catalog:'
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/domains/reports:
     dependencies:
@@ -564,35 +567,35 @@ importers:
         specifier: workspace:*
         version: link:../../shared/utils
       classnames:
-        specifier: ^2.5.1
+        specifier: 'catalog:'
         version: 2.5.1
       preact:
         specifier: ^10.29.1
         version: 10.29.1
     devDependencies:
       '@playwright/test':
-        specifier: ^1.56.0
+        specifier: 'catalog:'
         version: 1.56.0
       '@storybook/preact':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(preact@10.29.1)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
       '@storybook/vue3':
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vue@3.5.31(typescript@5.8.3))
       '@testing-library/preact':
-        specifier: ^3.2.3
+        specifier: 'catalog:'
         version: 3.2.3(preact@10.29.1)
       dotenv:
-        specifier: ^17.2.3
+        specifier: 'catalog:'
         version: 17.2.3
       msw:
         specifier: 'catalog:'
         version: 2.7.3(@types/node@24.10.13)(typescript@5.8.3)
       vitest:
-        specifier: 4.0.10
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        specifier: 'catalog:'
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
       vue:
-        specifier: ^3.5.13
+        specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
 
   packages/sdk:
@@ -662,7 +665,7 @@ importers:
     devDependencies:
       vitest:
         specifier: 'catalog:'
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/shared/hooks-preact:
     dependencies:
@@ -684,7 +687,7 @@ importers:
         version: 3.2.3(preact@10.29.1)
       vitest:
         specifier: 'catalog:'
-        version: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+        version: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
   packages/shared/lib: {}
 
@@ -2506,7 +2509,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
 
-  '@standard-schema/spec@1.0.0':
+  '@standard-schema/spec@1.1.0':
     resolution: {}
 
   '@storybook/builder-vite@10.2.12':
@@ -2968,14 +2971,14 @@ packages:
   '@vitest/expect@3.2.4':
     resolution: {}
 
-  '@vitest/expect@4.0.10':
+  '@vitest/expect@4.1.0':
     resolution: {}
 
-  '@vitest/mocker@4.0.10':
+  '@vitest/mocker@4.1.0':
     resolution: {}
     peerDependencies:
       msw: ^2.4.9
-      vite: ^6.0.0 || ^7.0.0-0
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0-0
     peerDependenciesMeta:
       msw:
         optional: true
@@ -2988,22 +2991,28 @@ packages:
   '@vitest/pretty-format@4.0.10':
     resolution: {}
 
-  '@vitest/runner@4.0.10':
+  '@vitest/pretty-format@4.1.0':
     resolution: {}
 
-  '@vitest/snapshot@4.0.10':
+  '@vitest/runner@4.1.0':
+    resolution: {}
+
+  '@vitest/snapshot@4.1.0':
     resolution: {}
 
   '@vitest/spy@3.2.4':
     resolution: {}
 
-  '@vitest/spy@4.0.10':
+  '@vitest/spy@4.1.0':
     resolution: {}
 
   '@vitest/utils@3.2.4':
     resolution: {}
 
   '@vitest/utils@4.0.10':
+    resolution: {}
+
+  '@vitest/utils@4.1.0':
     resolution: {}
 
   '@volar/language-core@2.4.15':
@@ -3492,7 +3501,7 @@ packages:
     resolution: {}
     engines: {node: '>=18'}
 
-  chai@6.2.1:
+  chai@6.2.2:
     resolution: {}
     engines: {node: '>=18'}
 
@@ -3951,9 +3960,6 @@ packages:
     resolution: {}
     engines: {node: '>= 0.4'}
 
-  es-module-lexer@1.7.0:
-    resolution: {}
-
   es-module-lexer@2.1.0:
     resolution: {}
 
@@ -4148,7 +4154,7 @@ packages:
     resolution: {}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  expect-type@1.2.2:
+  expect-type@1.3.0:
     resolution: {}
     engines: {node: '>=12.0.0'}
 
@@ -5359,6 +5365,9 @@ packages:
     resolution: {}
     engines: {node: '>= 0.4'}
 
+  obug@2.1.1:
+    resolution: {}
+
   once@1.4.0:
     resolution: {}
 
@@ -6061,6 +6070,9 @@ packages:
   std-env@3.10.0:
     resolution: {}
 
+  std-env@4.1.0:
+    resolution: {}
+
   stop-iteration-iterator@1.0.0:
     resolution: {}
     engines: {node: '>= 0.4'}
@@ -6259,8 +6271,9 @@ packages:
   tinybench@2.9.0:
     resolution: {}
 
-  tinyexec@0.3.2:
+  tinyexec@1.1.2:
     resolution: {}
+    engines: {node: '>=18'}
 
   tinyglobby@0.2.15:
     resolution: {}
@@ -6568,24 +6581,25 @@ packages:
       yaml:
         optional: true
 
-  vitest@4.0.10:
+  vitest@4.1.0:
     resolution: {}
     engines: {node: ^20.0.0 || ^22.0.0 || >=24.0.0}
     hasBin: true
     peerDependencies:
       '@edge-runtime/vm': '*'
-      '@types/debug': ^4.1.12
+      '@opentelemetry/api': ^1.9.0
       '@types/node': 24.10.13
-      '@vitest/browser-playwright': 4.0.10
-      '@vitest/browser-preview': 4.0.10
-      '@vitest/browser-webdriverio': 4.0.10
-      '@vitest/ui': 4.0.10
+      '@vitest/browser-playwright': 4.1.0
+      '@vitest/browser-preview': 4.1.0
+      '@vitest/browser-webdriverio': 4.1.0
+      '@vitest/ui': 4.1.0
       happy-dom: '*'
       jsdom: '*'
+      vite: ^6.0.0 || ^7.0.0 || ^8.0.0-0
     peerDependenciesMeta:
       '@edge-runtime/vm':
         optional: true
-      '@types/debug':
+      '@opentelemetry/api':
         optional: true
       '@types/node':
         optional: true
@@ -8541,11 +8555,11 @@ snapshots:
   '@nx/nx-win32-x64-msvc@22.6.3':
     optional: true
 
-  '@nx/vite@22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
+  '@nx/vite@22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))':
     dependencies:
       '@nx/devkit': 22.6.3(nx@22.6.3)
       '@nx/js': 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)
-      '@nx/vitest': 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+      '@nx/vitest': 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))
       '@phenomnomnominal/tsquery': 6.1.4(typescript@5.8.3)
       ajv: 8.18.0
       enquirer: 2.3.6
@@ -8554,7 +8568,7 @@ snapshots:
       tsconfig-paths: 4.2.0
       tslib: 2.8.1
       vite: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
-      vitest: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -8565,7 +8579,7 @@ snapshots:
       - typescript
       - verdaccio
 
-  '@nx/vitest@22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
+  '@nx/vitest@22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))':
     dependencies:
       '@nx/devkit': 22.6.3(nx@22.6.3)
       '@nx/js': 22.6.3(@babel/traverse@7.29.0)(nx@22.6.3)
@@ -8574,7 +8588,7 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       vite: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
-      vitest: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -8782,7 +8796,7 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@standard-schema/spec@1.0.0': {}
+  '@standard-schema/spec@1.1.0': {}
 
   '@storybook/builder-vite@10.2.12(esbuild@0.27.1)(rollup@4.59.0)(storybook@10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))(webpack@5.106.2(esbuild@0.27.1))':
     dependencies:
@@ -9270,7 +9284,7 @@ snapshots:
       vite: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
       vue: 3.5.31(typescript@5.8.3)
 
-  '@vitest/coverage-v8@4.0.10(vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
+  '@vitest/coverage-v8@4.0.10(vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.0.10
@@ -9283,7 +9297,7 @@ snapshots:
       magicast: 0.5.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+      vitest: 4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
     transitivePeerDependencies:
       - supports-color
 
@@ -9295,18 +9309,18 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 2.0.0
 
-  '@vitest/expect@4.0.10':
+  '@vitest/expect@4.1.0':
     dependencies:
-      '@standard-schema/spec': 1.0.0
+      '@standard-schema/spec': 1.1.0
       '@types/chai': 5.2.3
-      '@vitest/spy': 4.0.10
-      '@vitest/utils': 4.0.10
-      chai: 6.2.1
+      '@vitest/spy': 4.1.0
+      '@vitest/utils': 4.1.0
+      chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
+  '@vitest/mocker@4.1.0(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))':
     dependencies:
-      '@vitest/spy': 4.0.10
+      '@vitest/spy': 4.1.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
@@ -9321,14 +9335,19 @@ snapshots:
     dependencies:
       tinyrainbow: 3.0.3
 
-  '@vitest/runner@4.0.10':
+  '@vitest/pretty-format@4.1.0':
     dependencies:
-      '@vitest/utils': 4.0.10
+      tinyrainbow: 3.0.3
+
+  '@vitest/runner@4.1.0':
+    dependencies:
+      '@vitest/utils': 4.1.0
       pathe: 2.0.3
 
-  '@vitest/snapshot@4.0.10':
+  '@vitest/snapshot@4.1.0':
     dependencies:
-      '@vitest/pretty-format': 4.0.10
+      '@vitest/pretty-format': 4.1.0
+      '@vitest/utils': 4.1.0
       magic-string: 0.30.21
       pathe: 2.0.3
 
@@ -9336,7 +9355,7 @@ snapshots:
     dependencies:
       tinyspy: 4.0.4
 
-  '@vitest/spy@4.0.10': {}
+  '@vitest/spy@4.1.0': {}
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -9347,6 +9366,12 @@ snapshots:
   '@vitest/utils@4.0.10':
     dependencies:
       '@vitest/pretty-format': 4.0.10
+      tinyrainbow: 3.0.3
+
+  '@vitest/utils@4.1.0':
+    dependencies:
+      '@vitest/pretty-format': 4.1.0
+      convert-source-map: 2.0.0
       tinyrainbow: 3.0.3
 
   '@volar/language-core@2.4.15':
@@ -9960,7 +9985,7 @@ snapshots:
       loupe: 3.2.1
       pathval: 2.0.1
 
-  chai@6.2.1: {}
+  chai@6.2.2: {}
 
   chalk@3.0.0:
     dependencies:
@@ -10477,8 +10502,6 @@ snapshots:
       iterator.prototype: 1.1.5
       safe-array-concat: 1.1.3
 
-  es-module-lexer@1.7.0: {}
-
   es-module-lexer@2.1.0: {}
 
   es-object-atoms@1.1.1:
@@ -10792,7 +10815,7 @@ snapshots:
       signal-exit: 3.0.7
       strip-final-newline: 3.0.0
 
-  expect-type@1.2.2: {}
+  expect-type@1.3.0: {}
 
   expect@29.7.0:
     dependencies:
@@ -12179,6 +12202,8 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
+  obug@2.1.1: {}
+
   once@1.4.0:
     dependencies:
       wrappy: 1.0.2
@@ -12944,6 +12969,8 @@ snapshots:
 
   std-env@3.10.0: {}
 
+  std-env@4.1.0: {}
+
   stop-iteration-iterator@1.0.0:
     dependencies:
       internal-slot: 1.1.0
@@ -13218,7 +13245,7 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinyexec@0.3.2: {}
+  tinyexec@1.1.2: {}
 
   tinyglobby@0.2.15:
     dependencies:
@@ -13561,45 +13588,33 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
-  vitest@4.0.10(@types/debug@4.1.13)(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3):
+  vitest@4.1.0(@types/node@24.10.13)(jsdom@26.1.0)(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)):
     dependencies:
-      '@vitest/expect': 4.0.10
-      '@vitest/mocker': 4.0.10(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
-      '@vitest/pretty-format': 4.0.10
-      '@vitest/runner': 4.0.10
-      '@vitest/snapshot': 4.0.10
-      '@vitest/spy': 4.0.10
-      '@vitest/utils': 4.0.10
-      debug: 4.4.3(supports-color@10.2.2)
-      es-module-lexer: 1.7.0
-      expect-type: 1.2.2
+      '@vitest/expect': 4.1.0
+      '@vitest/mocker': 4.1.0(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
+      '@vitest/pretty-format': 4.1.0
+      '@vitest/runner': 4.1.0
+      '@vitest/snapshot': 4.1.0
+      '@vitest/spy': 4.1.0
+      '@vitest/utils': 4.1.0
+      es-module-lexer: 2.1.0
+      expect-type: 1.3.0
       magic-string: 0.30.21
+      obug: 2.1.1
       pathe: 2.0.3
       picomatch: 4.0.4
-      std-env: 3.10.0
+      std-env: 4.1.0
       tinybench: 2.9.0
-      tinyexec: 0.3.2
+      tinyexec: 1.1.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
       vite: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/debug': 4.1.13
       '@types/node': 24.10.13
       jsdom: 26.1.0
     transitivePeerDependencies:
-      - jiti
-      - less
-      - lightningcss
       - msw
-      - sass
-      - sass-embedded
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-      - tsx
-      - yaml
 
   void-elements@3.1.0: {}
 
