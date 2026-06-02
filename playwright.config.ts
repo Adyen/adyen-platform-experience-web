@@ -6,7 +6,20 @@ const { app } = getEnvironment('development');
 
 const baseUrl = `http://${app.host}:${app.port}`;
 const ciWorkers = Math.max(1, Number.parseInt(process.env.PLAYWRIGHT_WORKERS ?? '', 10) || 2);
-const webServerCommand = process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? 'pnpm run storybook:static';
+const framework = process.env.STORYBOOK_FRAMEWORK ?? 'preact';
+
+let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
+
+switch (framework) {
+    case 'preact':
+        frameworkTestFiles = ['tests/integration/**/*.spec.ts', 'packages/domains/*/tests/integration/**/*.spec.ts'];
+        break;
+    case 'vue':
+        frameworkTestFiles = ['packages/domains/*/vue/tests/integration/**/*.spec.ts'];
+        break;
+    default:
+        throw new Error(`Unsupported STORYBOOK_FRAMEWORK "${framework}". Must be "preact" or "vue".`);
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -46,7 +59,7 @@ const config: PlaywrightTestConfig = {
     projects: [
         {
             name: 'local-chrome',
-            testMatch: ['tests/integration/**/*.spec.ts', 'packages/domains/*/tests/integration/**/*.spec.ts'],
+            testMatch: frameworkTestFiles,
             use: {
                 // Use the pre-installed browser already on the machine
                 channel: 'chrome',
@@ -76,7 +89,7 @@ const config: PlaywrightTestConfig = {
     ],
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: webServerCommand,
+        command: process.env.PLAYWRIGHT_WEB_SERVER_COMMAND ?? `pnpm run storybook:static:${framework}`,
         reuseExistingServer: !process.env.CI,
         url: process.env.CI ? undefined : baseUrl,
         port: process.env.CI ? app.port : undefined,

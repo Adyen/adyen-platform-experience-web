@@ -33,10 +33,17 @@
             "outputs": ["{projectRoot}/storybook-static"],
             "cache": true
         },
-        "storybook:static": {
+        "storybook:static:preact": {
             "executor": "nx:run-script",
             "options": {
-                "script": "storybook:static"
+                "script": "storybook:static:preact"
+            },
+            "outputs": ["{projectRoot}/storybook-static"]
+        },
+        "storybook:static:vue": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "storybook:static:vue"
             },
             "outputs": ["{projectRoot}/storybook-static"]
         },
