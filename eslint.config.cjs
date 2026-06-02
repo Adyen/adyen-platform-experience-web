@@ -13,8 +13,9 @@ const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
 
 module.exports = [
+    // Global ignores
     {
-        ignores: ['**/dist/**', '**/storybook-static/**'],
+        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/static/**'],
     },
 
     // eslint:recommended base rules
@@ -189,6 +190,7 @@ module.exports = [
             'vue/html-indent': ['warn', 4],
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
+            'vue/require-default-prop': 'off',
             'react/jsx-no-literals': 'off',
             'react/display-name': 'off',
             'react/prop-types': 'off',
