@@ -2,12 +2,21 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory, setTime } from '@integration-components/testing/playwright/utils';
 import {
-    sharedCapitalOfferAnalyticsEventProperties,
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
 } from './constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-offer--default';
+
+const expectPageLoadAnalyticsEvents = (analyticsEvents: PageAnalyticsEvent[]) =>
+    expectAnalyticsEvents(analyticsEvents, [
+        ['Landed on page', landedOnPageAnalyticsEventProperties],
+        ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+        ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+    ]);
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'Review request' }).click();
@@ -20,7 +29,7 @@ test.describe('Default', () => {
     test.beforeEach(async ({ page, analyticsEvents }) => {
         await setTime(page);
         await goToStory(page, { id: STORY_ID });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
     });
 
     test('should render offer selection screen', async ({ page }) => {
@@ -66,6 +75,10 @@ test.describe('Default', () => {
                     label: 'Slider changed',
                     currency: 'EUR',
                     value: 100000,
+                    valuePercentage: 0,
+                    min: 100000,
+                    max: 2500000,
+                    relativeToDefault: 'Decreased',
                 },
             ],
         ]);
@@ -102,8 +115,12 @@ test.describe('Default', () => {
                 'Selected repayment term',
                 {
                     ...sharedCapitalOfferSelectionAnalyticsEventProperties,
-                    label: 'Term selected',
-                    value: 90,
+                    allTerms: [90, 180, 360],
+                    availableRates: [800, 1100, 1500],
+                    availableTerms: [90, 180, 360],
+                    relativeToDefault: 'Decreased',
+                    selectedRate: 800,
+                    selectedTerm: 90,
                 },
             ],
         ]);
@@ -192,7 +209,7 @@ test.describe('Default', () => {
 test.describe('onOfferDismiss argument', () => {
     test('should render back button when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferDismiss: 'Enabled' } });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
         await expect(page.getByRole('button', { name: 'Go back' })).toBeVisible();
     });
 });
@@ -200,7 +217,7 @@ test.describe('onOfferDismiss argument', () => {
 test.describe('onOfferSelect argument', () => {
     test('should not go to offer summary screen when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { onOfferSelect: 'Enabled' } });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
 
         await page.getByRole('button', { name: 'Review request' }).click();
 
@@ -215,7 +232,7 @@ test.describe('onOfferSelect argument', () => {
 test.describe('legalEntity from the US', () => {
     test('should render right legal text with email link', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { ['legalEntity.countryCode']: 'US' } });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await expectPageLoadAnalyticsEvents(analyticsEvents);
         await goToOfferSummary(page, analyticsEvents);
 
         // Verify creditor and address

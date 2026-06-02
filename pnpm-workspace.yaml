@@ -1,4 +1,5 @@
 packages:
+  - "."
   - "packages/**"
 
 # Single source of truth for shared dependency versions across the workspace.

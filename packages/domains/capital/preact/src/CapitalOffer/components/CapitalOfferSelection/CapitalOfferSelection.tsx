@@ -19,6 +19,7 @@ import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { Fragment } from 'preact';
+import { getRelativeToDefault, getValuePercentage } from './utils';
 
 const DEFAULT_TERM = 180;
 
@@ -152,7 +153,10 @@ export const CapitalOfferSelection = ({
     );
     const hasInitializedRef = useRef(false);
 
-    const allTerms = useMemo(() => dynamicOffersConfig?.estimatedRepaymentTermsInDays ?? [], [dynamicOffersConfig]);
+    const allTerms = useMemo(
+        () => dynamicOffersConfig?.estimatedRepaymentTermsInDays.toSorted((a, b) => a - b) ?? [],
+        [dynamicOffersConfig?.estimatedRepaymentTermsInDays]
+    );
 
     const currency = useMemo(() => dynamicOffersConfig?.minAmount.currency, [dynamicOffersConfig?.minAmount.currency]);
 
@@ -177,19 +181,43 @@ export const CapitalOfferSelection = ({
 
     const availableTerms = useMemo<number[]>(() => Object.keys(termOfferMap).map(Number), [termOfferMap]);
 
+    const handleTermChange = useCallback(
+        (term: number) => {
+            const relativeToDefault = getRelativeToDefault(term, DEFAULT_TERM);
+            const availableRates = availableTerms.map(t => termOfferMap[t]?.repaymentRate);
+            const selectedRate = termOfferMap[term]?.repaymentRate;
+
+            onSelectedTermChange(term);
+            userEvents.addEvent?.('Selected repayment term', {
+                ...sharedAnalyticsEventProperties,
+                allTerms,
+                availableTerms,
+                selectedTerm: term,
+                relativeToDefault,
+                availableRates,
+                selectedRate,
+            });
+        },
+        [allTerms, availableTerms, termOfferMap, onSelectedTermChange, userEvents]
+    );
+
+    const handleUserTermSelect = useCallback((term: number) => handleTermChange(term), [handleTermChange]);
+
     useEffect(() => {
         if (allTerms.length > 0 && selectedTerm === undefined) {
             const term = availableTerms.includes(DEFAULT_TERM) ? DEFAULT_TERM : availableTerms[0];
-            if (term) onSelectedTermChange(term);
+            if (term) {
+                handleTermChange(term);
+            }
         }
-    }, [allTerms, availableTerms, onSelectedTermChange, selectedTerm]);
+    }, [allTerms, availableTerms, handleTermChange, selectedTerm]);
 
     useEffect(() => {
         if (availableTerms.length > 0 && selectedTerm !== undefined && !availableTerms.includes(selectedTerm)) {
             const nearest = availableTerms.reduce((prev, curr) => (Math.abs(curr - selectedTerm) < Math.abs(prev - selectedTerm) ? curr : prev));
-            onSelectedTermChange(nearest);
+            handleTermChange(nearest);
         }
-    }, [availableTerms, onSelectedTermChange, selectedTerm]);
+    }, [availableTerms, handleTermChange, selectedTerm]);
 
     const matchedOffer = useMemo<IGrantOfferResponseDTO | undefined>(() => {
         if (!getDynamicGrantOfferMutation.data?.offers || selectedTerm === undefined) return undefined;
@@ -241,20 +269,34 @@ export const CapitalOfferSelection = ({
         [debouncedGetOfferCall, onSelectedAmountChange]
     );
 
+    const triggerAmountChangeEvent = useCallback(
+        (val: number) => {
+            const relativeToDefault = getRelativeToDefault(val, defaultAmount);
+            const valuePercentage = getValuePercentage(val, dynamicOffersConfig?.minAmount.value, dynamicOffersConfig?.maxAmount.value);
+
+            userEvents.addEvent?.('Changed capital offer slider', {
+                ...sharedAnalyticsEventProperties,
+                label: 'Slider changed',
+                currency: currency!,
+                value: val,
+                valuePercentage,
+                min: dynamicOffersConfig?.minAmount.value,
+                max: dynamicOffersConfig?.maxAmount.value,
+                relativeToDefault,
+            });
+        },
+        [dynamicOffersConfig, defaultAmount, userEvents, currency]
+    );
+
     const handleSliderRelease = useCallback(
         (val: number) => {
             try {
                 return debouncedGetOfferCall(val);
             } finally {
-                userEvents.addEvent?.('Changed capital offer slider', {
-                    ...sharedAnalyticsEventProperties,
-                    label: 'Slider changed',
-                    currency: currency!,
-                    value: val,
-                });
+                triggerAmountChangeEvent(val);
             }
         },
-        [debouncedGetOfferCall, userEvents, currency]
+        [debouncedGetOfferCall, triggerAmountChangeEvent]
     );
 
     useEffect(() => {
@@ -265,8 +307,17 @@ export const CapitalOfferSelection = ({
                 onSelectedAmountChange(initialValue);
             }
             void getOffer(initialValue);
+            triggerAmountChangeEvent(initialValue);
         }
-    }, [dynamicOffersConfig, getDynamicGrantOfferMutation.data, getOffer, defaultAmount, selectedAmount, onSelectedAmountChange]);
+    }, [
+        dynamicOffersConfig,
+        getDynamicGrantOfferMutation.data,
+        getOffer,
+        defaultAmount,
+        selectedAmount,
+        onSelectedAmountChange,
+        triggerAmountChangeEvent,
+    ]);
 
     const loadingButtonState = useMemo(
         () => reviewOfferMutation.isLoading || getDynamicGrantOfferMutation.isLoading || isLoading,
@@ -308,7 +359,7 @@ export const CapitalOfferSelection = ({
                             selectedTerm={selectedTerm}
                             termOfferMap={termOfferMap}
                             isLoadingIndicatorVisible={isLoadingIndicatorVisible}
-                            onTermSelect={onSelectedTermChange}
+                            onTermSelect={handleUserTermSelect}
                         />
                     )}
                     <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>

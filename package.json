@@ -1,6 +1,6 @@
 {
   "name": "@adyen/adyen-platform-experience-web",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "keywords": [
     "adyen",
     "adyen-pe",
@@ -76,8 +76,8 @@
     "test:integration:debug": "cross-env PWDEBUG=console TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --debug --project local-chrome",
     "test:integration:ui": "npm run test:integration -- --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
-    "types:check": "tsc --preserveWatchOutput && nx run-many --target=types:check --all",
-    "types:watch": "concurrently --kill-others-on-fail 'tsc --preserveWatchOutput --watch' 'nx run-many --target=types:watch --all' 'tsc --project tsconfig-build.json --watch'",
+    "types:check": "nx run-many --target=types:check --all",
+    "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch --all' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
