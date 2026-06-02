@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.12.1
+
+### Patch Changes
+
+- f931db5: Fixes :catalog unresolved dependencies introduced by pnpm workspaces migration
+
 ## 1.12.0
 
 ### Minor Changes
