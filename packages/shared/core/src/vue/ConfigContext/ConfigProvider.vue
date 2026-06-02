@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { provide, reactive, ref, onMounted, onBeforeUnmount } from 'vue';
 import { CONFIG_CONTEXT_KEY } from './constants';
-import { isWatchlistUnsubscribeToken, EMPTY_OBJECT } from '@integration-components/utils';
-import type { AuthSession } from '../../session/AuthSession';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { subscribeToSession } from '../../setupConfig';
 import type { ConfigContextValue, ConfigProviderProps } from './types';
 import './Spinner.scss';
 
 const props = defineProps<ConfigProviderProps>();
 
-const ready = ref(false);
+const initialized = ref(false);
 let unsubscribe: (() => void) | undefined;
 
 const configContextValue = reactive<ConfigContextValue>({
@@ -31,21 +31,24 @@ const configContextValue = reactive<ConfigContextValue>({
 
 provide(CONFIG_CONTEXT_KEY, configContextValue);
 
-function subscribeToSession(session: AuthSession) {
+function subscribe() {
     unsubscribe?.();
 
-    unsubscribe = session.subscribe(maybeContext => {
-        if (isWatchlistUnsubscribeToken(maybeContext)) {
-            subscribeToSession(session);
-            return;
-        }
+    unsubscribe = subscribeToSession(props.session, {
+        onContextChange: () => {
+            const ctx = props.session.context;
+            const ready = ctx.endpoints !== EMPTY_OBJECT && !ctx.refreshing && !ctx.hasError;
 
-        ready.value = maybeContext.endpoints !== EMPTY_OBJECT && !maybeContext.refreshing && !maybeContext.hasError;
+            if (ready && !initialized.value) {
+                initialized.value = true;
+            }
+        },
+        onUnsubscribe: subscribe,
     });
 }
 
 onMounted(() => {
-    subscribeToSession(props.session);
+    subscribe();
 });
 
 onBeforeUnmount(() => {
@@ -54,7 +57,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <slot v-if="ready" />
+    <slot v-if="initialized" />
     <slot v-else name="loading">
         <div class="adyen-pe-spinner__wrapper">
             <!-- TODO: Replace with actual loading indicator -->
