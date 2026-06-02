@@ -49,12 +49,12 @@ jobs:
       - name: Publish to the NPM registry (dry run)
         if: github.event.inputs.dry-run-publish == 'true'
         run: |
-          npm publish "$PACKAGE_TARBALL" --dry-run
+          npm publish "${{ env.PACKAGE_TARBALL }}" --dry-run
 
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
         run: |
-          npm publish "$PACKAGE_TARBALL" --tag=latest
+          npm publish "${{ env.PACKAGE_TARBALL }}" --tag=latest
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
