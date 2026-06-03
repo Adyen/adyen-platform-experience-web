@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'preact/hooks';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import useUniqueId from './useUniqueId';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 

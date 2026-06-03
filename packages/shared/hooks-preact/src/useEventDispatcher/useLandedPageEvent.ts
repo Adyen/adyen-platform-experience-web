@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { AdditionalEventProperties } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
-import useEventDispatcherContext from '../../../../../src/core/Context/eventDispatcher/useEventDispatcherContext';
+import { useEventDispatcherContext } from '@integration-components/core/preact';
 
 export const useLandedPageEvent = (eventProperties: AdditionalEventProperties) => {
     const userEvents = useEventDispatcherContext();

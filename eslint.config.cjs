@@ -101,7 +101,7 @@ module.exports = [
                         'packages/domains/*/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
                         'packages/domains/*/mocks/**/*.{ts,tsx}',
-                        'src/{hooks,components,constants,core}/**/*.{ts,tsx}',
+                        'src/**/*.{ts,tsx}',
                     ],
                     includeTypes: false,
                 },

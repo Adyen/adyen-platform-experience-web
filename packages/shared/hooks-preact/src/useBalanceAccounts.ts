@@ -1,7 +1,7 @@
 import { IBalanceAccountBase } from '@integration-components/types';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
-import { useConfigContext } from '../../../../src/core/ConfigContext';
+import { useConfigContext } from '@integration-components/core/preact';
 import { useFetch } from './useFetch';
 
 const cache = new WeakMap<(...args: any[]) => any, IBalanceAccountBase[]>();

@@ -1,6 +1,6 @@
 import { capitalize, uniqueId } from '@integration-components/utils';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import useFilterAnalyticsEvent from './useEventDispatcher/useFilterAnalyticsEvent';
 import type { FilterType } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import type { IBalanceAccountBase, SelectItem } from '@integration-components/types';

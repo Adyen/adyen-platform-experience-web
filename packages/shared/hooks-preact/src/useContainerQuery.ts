@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 export const useContainerQuery = <T extends readonly [string, number, { min?: number; max?: number }?]>(query: T) => {
     const { componentRef } = useCoreContext();

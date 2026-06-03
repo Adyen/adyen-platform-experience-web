@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
 import type { CellTextPosition } from '@integration-components/types';
 import { CustomColumn, DataGridCustomColumnConfig } from '@integration-components/types';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT, isUndefined } from '@integration-components/utils';
 import { containerQueries, useResponsiveContainer } from './useResponsiveContainer';
 import type { TranslationKey } from '@integration-components/core/Localization';
