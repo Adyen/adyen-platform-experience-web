@@ -1,4 +1,4 @@
-export * from './api';
+export * from './api/index';
 export * from './components';
 export * from './customization';
 export * from './dataGrid';
