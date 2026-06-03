@@ -22,6 +22,7 @@
         "./tests/**/*.ts",
         "./vue/publish/src/**/*.ts",
         "./vue/src/**/*.ts",
-        "./vue/src/**/*.vue"
+        "./vue/src/**/*.vue",
+        "./vue/tests/**/*.ts"
     ]
 }

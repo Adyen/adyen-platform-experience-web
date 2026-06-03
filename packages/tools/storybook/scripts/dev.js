@@ -1,8 +1,12 @@
-import { spawnSync } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
-import { createConnection } from 'net';
-import { basename, resolve } from 'path';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
+import { createConnection } from 'node:net';
+import { basename, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const storybookBin = resolve(__dirname, '../node_modules/.bin/storybook');
 
 const configDir = process.argv[2];
 
@@ -35,10 +39,9 @@ if ((await tryPort('127.0.0.1')) || (await tryPort('::1'))) {
     process.exit(1);
 }
 
-const result = spawnSync('npx', ['storybook', 'dev', '-p', port, '--config-dir', configDir, '--no-open', '--ci'], {
+const result = spawnSync(storybookBin, ['dev', '-p', port, '--config-dir', configDir, '--no-open', '--ci'], {
     cwd: projectDir,
     stdio: 'inherit',
-    shell: true,
 });
 
-process.exit(result.status);
+process.exit(result.status ?? 1);

@@ -10,6 +10,12 @@ on:
       - develop
       - group/*
 
+env:
+  CI: true
+  PLAYGROUND_HOST: localhost
+  PLAYGROUND_PORT: 4173
+  PLAYGROUND_URL: http://localhost:4173
+
 jobs:
   is-pr-approved:
     permissions:
@@ -38,11 +44,12 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        framework: [preact, vue]
     env:
-      CI: true
-      PLAYGROUND_HOST: localhost
-      PLAYGROUND_PORT: 4173
-      PLAYGROUND_URL: http://localhost:4173
+      TEST_ENV: 1
+      USE_CDN: false
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
@@ -53,12 +60,12 @@ jobs:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Build Storybook static files
-        run: USE_CDN=false TEST_ENV=1 pnpm run storybook:build:preact
+        run: pnpm run storybook:build:${{ matrix.framework }}
 
       - name: Upload Storybook static artifact
         uses: actions/upload-artifact@v4
         with:
-          name: storybook-static-${{ github.sha }}
+          name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: packages/tools/storybook/storybook-static/
           retention-days: 1
 
@@ -73,18 +80,15 @@ jobs:
     timeout-minutes: 15
     strategy:
       matrix:
+        framework: [preact, vue]
         shard:
           - index: 1
             total: 2
           - index: 2
             total: 2
     env:
-      CI: true
       PLAYWRIGHT_WORKERS: 1
-      PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config vite.config.ts
-      PLAYGROUND_HOST: localhost
-      PLAYGROUND_PORT: 4173
-      PLAYGROUND_URL: http://localhost:4173
+      PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config packages/tools/storybook/vite.config.ts
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v3
@@ -97,16 +101,16 @@ jobs:
       - name: Download Storybook static artifact
         uses: actions/download-artifact@v4
         with:
-          name: storybook-static-${{ github.sha }}
+          name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
-        run: pnpm run test:integration --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
+        run: pnpm run test:integration:${{ matrix.framework }} --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ github.sha }}-shard-${{ matrix.shard.index }}
+          name: playwright-report-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}
           path: playwright-report/
           retention-days: 3
