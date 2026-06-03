@@ -1,9 +1,9 @@
 import { afterAll, afterEach, beforeAll, Mock, MockInstance, TestContext, vi } from 'vitest';
-import { createAbortable } from '../../../../primitives/async/abortable';
-import { SetupEndpoint } from '../../../../types/api/endpoints';
+import { createAbortable } from '@integration-components/utils';
+import { SetupEndpoint } from '@integration-components/types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../../Http/constants';
-import { EMPTY_OBJECT } from '../../../../utils';
+import { EMPTY_OBJECT } from '@integration-components/utils';
 import { Core } from '../../../index';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';

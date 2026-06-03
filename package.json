@@ -1,6 +1,6 @@
 {
   "name": "@adyen/adyen-platform-experience-web",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "keywords": [
     "adyen",
     "adyen-pe",
@@ -30,17 +30,17 @@
   ],
   "main": "./dist/cjs/index.js",
   "module": "./dist/es/packages/sdk/src/index.js",
-  "types": "./dist/types/src/index.d.ts",
+  "types": "./dist/types/packages/sdk/src/index.d.ts",
   "style": "./dist/adyen-platform-experience-web.css",
   "exports": {
     ".": {
-      "types": "./dist/types/src/index.d.ts",
+      "types": "./dist/types/packages/sdk/src/index.d.ts",
       "require": {
-        "types": "./dist/types/src/index.d.ts",
+        "types": "./dist/types/packages/sdk/src/index.d.ts",
         "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/types/src/index.d.ts",
+        "types": "./dist/types/packages/sdk/src/index.d.ts",
         "default": "./dist/es/packages/sdk/src/index.js"
       }
     },
@@ -93,6 +93,7 @@
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
     "@eslint/js": "^9.39.2",
+    "@integration-components/capital": "workspace:*",
     "@integration-components/core": "workspace:*",
     "@integration-components/disputes": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",

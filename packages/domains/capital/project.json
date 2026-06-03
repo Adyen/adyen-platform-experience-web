@@ -1,0 +1,11 @@
+{
+    "name": "@integration-components/capital",
+    "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "library",
+    "sourceRoot": "packages/domains/capital",
+    "tags": ["scope:capital", "type:domain"],
+    "targets": {
+        "types:check": {},
+        "types:watch": {}
+    }
+}

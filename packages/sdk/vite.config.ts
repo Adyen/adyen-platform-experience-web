@@ -9,6 +9,7 @@ import rootPkgJson from '../../package.json';
 const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
 const srcDir = resolve(rootDir, 'src');
+const styleDir = resolve(rootDir, 'packages/shared/style');
 
 const assetsDir = resolve(srcDir, 'assets');
 const enUsFile = resolve(assetsDir, 'translations/en-US.json');
@@ -43,7 +44,10 @@ export default defineConfig(({ mode }) => ({
             '@integration-components/types': resolve(rootDir, 'packages/shared/types/src'),
             '@integration-components/utils': resolve(rootDir, 'packages/shared/utils/src'),
             '@integration-components/ui-components-preact': resolve(rootDir, 'packages/shared/ui-components-preact/src'),
-            '@integration-components/style': resolve(rootDir, 'packages/shared/style/src'),
+            '@integration-components/style/breakpoints': resolve(styleDir, 'breakpoints.scss'),
+            '@integration-components/style/mixins': resolve(styleDir, 'mixins.scss'),
+            '@integration-components/style/skeleton': resolve(styleDir, 'skeleton.scss'),
+            '@integration-components/style': resolve(styleDir, 'index.scss'),
             '@integration-components/sdk-internal': resolve(rootDir, 'src'),
             '@integration-components/disputes/publish': resolve(rootDir, 'packages/domains/disputes/publish/src'),
             '@integration-components/disputes/preact': resolve(rootDir, 'packages/domains/disputes/preact/src'),
@@ -60,6 +64,9 @@ export default defineConfig(({ mode }) => ({
             '@integration-components/payByLink/publish': resolve(rootDir, 'packages/domains/payByLink/publish/src'),
             '@integration-components/payByLink/preact': resolve(rootDir, 'packages/domains/payByLink/preact/src'),
             '@integration-components/payByLink/domain': resolve(rootDir, 'packages/domains/payByLink/domain/src'),
+            '@integration-components/capital/publish': resolve(rootDir, 'packages/domains/capital/publish/src'),
+            '@integration-components/capital/preact': resolve(rootDir, 'packages/domains/capital/preact/src'),
+            '@integration-components/capital/domain': resolve(rootDir, 'packages/domains/capital/domain/src'),
         },
     },
     build: {

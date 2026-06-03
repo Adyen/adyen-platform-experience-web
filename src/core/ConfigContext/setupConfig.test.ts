@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
-import type { ExternalComponentType } from '../../components/types';
-import { UNSUBSCRIBE_TOKEN } from '../../primitives/reactive/watchlist';
+import type { ExternalComponentType } from '@integration-components/types';
+import { UNSUBSCRIBE_TOKEN } from '@integration-components/utils';
 import type { AuthSession } from './session/AuthSession';
 import { createConfigController } from './setupConfig';
 

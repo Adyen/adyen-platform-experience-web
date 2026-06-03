@@ -8,7 +8,7 @@ import { EMPTY_OBJECT } from '@integration-components/utils';
 import { useBalanceAccounts, useFetch } from '@integration-components/hooks-preact';
 import type { PayoutDetailsCustomization } from '@integration-components/payouts/domain';
 import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
-import { getErrorMessage } from '../../../../../../../src/components/utils/getErrorMessage';
+import { getErrorMessage } from '@integration-components/ui-components-preact/utils/getErrorMessage';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { PayoutData } from '../../PayoutDetails/components/PayoutData';
