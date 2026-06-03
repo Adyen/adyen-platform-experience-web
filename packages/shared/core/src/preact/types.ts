@@ -1,5 +1,8 @@
-import type { UIElementStatus, BaseElementProps } from '@integration-components/types';
+import type { UIElementStatus, BaseElementProps as SharedBaseElementProps } from '@integration-components/types';
+import type { Core } from '../Core';
 import type { UIElement } from './UIElement';
+
+export type BaseElementProps = SharedBaseElementProps<Core<any>>;
 
 export interface IUIElement {
     accessibleName: string;

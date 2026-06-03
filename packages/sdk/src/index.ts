@@ -1,4 +1,5 @@
 // Export from domains
+export * from '../../domains/capital/publish/src';
 export * from '../../domains/reports/publish/src';
 export * from '../../domains/payouts/publish/src';
 export * from '../../domains/transactions/publish/src';

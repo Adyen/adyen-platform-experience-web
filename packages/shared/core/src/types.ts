@@ -9,7 +9,7 @@ type CreateLocalesUnionFromAvailableTranslations<T extends TranslationSourceReco
     : never;
 
 type CreateLocalesUnionFromCustomTranslations<T extends Translations> = Extract<
-    KeyOfRecord<T extends Translations ? T : Record<never, never>>,
+    WithReplacedUnderscoreOrDash<KeyOfRecord<T extends Translations ? T : Record<never, never>>, '_', '-'>,
     string
 >;
 
@@ -59,7 +59,7 @@ interface _CoreOptions<AvailableTranslations extends TranslationSourceRecord[] =
 export type CoreOptions<
     AvailableTranslations extends TranslationSourceRecord[] = [],
     CustomTranslations extends object = Record<never, never>,
-> = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Translations>;
+> = _CoreOptions<AvailableTranslations, CustomTranslations extends Translations ? CustomTranslations : Record<never, never>>;
 
 export type DevEnvironment = 'test' | 'live' | 'beta';
 

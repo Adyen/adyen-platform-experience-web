@@ -1,6 +1,7 @@
 import { ComponentChild, render } from 'preact';
-import type { BaseElementProps, BaseElementState, ExternalComponentType } from '@integration-components/types';
+import type { BaseElementState, ExternalComponentType } from '@integration-components/types';
 import { isString, uuid } from '@integration-components/utils';
+import type { BaseElementProps } from './types';
 
 class BaseElement<P> {
     public static type: ExternalComponentType;

@@ -24,7 +24,8 @@ type TestFixtures = {
 };
 
 export const sessionAwareTest = base.extend<TestFixtures>({
-    requestContext: async (_, use) => {
+    // eslint-disable-next-line no-empty-pattern
+    requestContext: async ({}, use) => {
         const apiContext = await request.newContext({
             timeout: 60000,
             ignoreHTTPSErrors: true,

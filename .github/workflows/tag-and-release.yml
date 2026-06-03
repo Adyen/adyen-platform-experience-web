@@ -56,31 +56,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get the release upload URL
-        id: get_release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const fs = require('fs');
-            const tag = `v${process.env.NEW_VERSION}`;
-            const { data: release } = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: tag
-            });
-            // Write the output to the file defined by GITHUB_OUTPUT (new method)
-            const outputFile = process.env.GITHUB_OUTPUT;
-            fs.appendFileSync(outputFile, `upload_url=${release.upload_url}\n`);
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - name: Rename scoped tag to semver tag
+        # changeset tag creates scoped tags (e.g. @adyen/adyen-platform-experience-web@1.0.0)
+        # but the rest of this workflow and external tooling expect v-prefixed semver tags (e.g. v1.0.0).
+        # This step renames the tag and updates the GitHub release to match.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
-          asset_name: adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz
-          asset_content_type: application/gzip
+        run: |
+          # Derives the scoped tag from the published packages output, e.g. @adyen/adyen-platform-experience-web@1.0.0
+          SCOPED_TAG=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r '.[] | select(.name == "@adyen/adyen-platform-experience-web") | "\(.name)@\(.version)"')
+
+          # Strips everything up to and including the last @ (the package name), then prepends v, e.g. v1.0.0
+          SEMVER_TAG="v${SCOPED_TAG##*@}"
+
+          # Recreate the tag under the semver name and remove the scoped one
+          git tag "$SEMVER_TAG" "$SCOPED_TAG"
+          git push origin "$SEMVER_TAG"
+          git tag -d "$SCOPED_TAG"
+          git push origin --delete "$SCOPED_TAG"
+
+          # Update the GitHub release to point to the new tag and publish it
+          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG" --draft=false
+
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "v${{ env.NEW_VERSION }}" \
+            ./adyen-adyen-platform-experience-web-${{ env.NEW_VERSION }}.tgz \
+            --repo "${{ github.repository }}"
 
       - name: Build umd file
         env:
@@ -93,7 +97,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TARGET_REPO: ${{ github.repository }}
           ASSET_PATH: './platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
-          ASSET_NAME: 'platform-components_cdn_${{ env.NEW_VERSION }}.tar.gz'
         run: |
           echo "Targeting repository: $TARGET_REPO"
           echo "Using tag: ${{ env.NEW_VERSION }}"
@@ -123,11 +126,11 @@ jobs:
     with:
       environment_choice: 'live'
 
-  generate-sri-hashes:
-    permissions:
-      contents: read
-    needs: [trigger-npm-publish, upload-assets]
-    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
-    secrets: inherit
-    with:
-      version: ${{ needs.create-github-release.outputs.release_version }}
+#  generate-sri-hashes:
+#    permissions:
+#      contents: read
+#    needs: [create-github-release, trigger-npm-publish, upload-assets]
+#    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
+#    secrets: inherit
+#    with:
+#      version: v${{ needs.create-github-release.outputs.release_version }}

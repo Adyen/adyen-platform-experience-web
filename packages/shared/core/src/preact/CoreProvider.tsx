@@ -1,13 +1,12 @@
 import { toChildArray } from 'preact';
-import { useEffect, useMemo } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { createCoreContextValue, waitForI18n } from '../setupCore';
 import type { CoreProviderProps } from '../CoreContext.types';
-import useBooleanState from '@integration-components/hooks-preact/useBooleanState';
 import { CoreContext } from './CoreContext';
 
 const CoreProvider = (props: CoreProviderProps) => {
     const { children } = props;
-    const [ready, setReady] = useBooleanState(false);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
         waitForI18n(props.i18n).then(() => setReady(true));

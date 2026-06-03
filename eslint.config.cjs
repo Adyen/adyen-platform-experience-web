@@ -94,6 +94,7 @@ module.exports = [
                         'envs/**/*.ts',
                         'mocks/**/*.ts',
                         'tests/**/*.{ts,js}',
+                        'src/index.ts',
                         'packages/**/vite.config.ts',
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
