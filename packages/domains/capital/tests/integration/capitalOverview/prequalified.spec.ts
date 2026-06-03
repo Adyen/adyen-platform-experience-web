@@ -2,20 +2,30 @@ import type { Page } from '@playwright/test';
 import { test, expect, type PageAnalyticsEvent } from '@integration-components/testing/fixtures/eventDispatcher/events';
 import { expectAnalyticsEvents, goToStory } from '@integration-components/testing/playwright/utils';
 import {
-    sharedCapitalOfferAnalyticsEventProperties,
     sharedCapitalOfferSelectionAnalyticsEventProperties,
     sharedCapitalOfferSummaryAnalyticsEventProperties,
     sharedPrequalifiedAnalyticsEventProperties,
 } from './constants/analytics';
+import {
+    landedOnPageAnalyticsEventProperties,
+    selectedRepaymentTermAnalyticsEventProperties,
+    sliderChangedAnalyticsEventProperties,
+} from '../capitalOffer/constants/analytics';
 
 const STORY_ID = 'mocked-capital-capital-overview--prequalified';
 
 const goToOfferSelection = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
     await page.getByRole('button', { name: 'See options' }).click();
-    await expectAnalyticsEvents(analyticsEvents, [
-        ['Clicked button', { ...sharedPrequalifiedAnalyticsEventProperties, label: 'See options' }],
-        ['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }],
-    ]);
+    await expectAnalyticsEvents(
+        analyticsEvents,
+        [
+            ['Clicked button', { ...sharedPrequalifiedAnalyticsEventProperties, label: 'See options' }],
+            ['Landed on page', landedOnPageAnalyticsEventProperties],
+            ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+            ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+        ],
+        { strictOrder: false }
+    );
 };
 
 const goToOfferSummary = async (page: Page, analyticsEvents: PageAnalyticsEvent[]) => {
@@ -126,7 +136,15 @@ test.describe('onOfferOptionsRequest argument', () => {
 test.describe('skipPreQualifiedIntro argument', () => {
     test('should render offer selection screen without "Back" button when argument is set', async ({ page, analyticsEvents }) => {
         await goToStory(page, { id: STORY_ID, args: { skipPreQualifiedIntro: 'true' } });
-        await expectAnalyticsEvents(analyticsEvents, [['Landed on page', { ...sharedCapitalOfferAnalyticsEventProperties, label: 'Capital offer' }]]);
+        await expectAnalyticsEvents(
+            analyticsEvents,
+            [
+                ['Landed on page', landedOnPageAnalyticsEventProperties],
+                ['Changed capital offer slider', sliderChangedAnalyticsEventProperties],
+                ['Selected repayment term', selectedRepaymentTermAnalyticsEventProperties],
+            ],
+            { strictOrder: false }
+        );
         await expect(page.getByText('Business financing request')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Go back' })).toBeHidden();
     });
