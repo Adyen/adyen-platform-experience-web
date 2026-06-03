@@ -51,7 +51,7 @@ Traces contain screenshots at each action, DOM snapshots, network requests, cons
 | Timeout errors                              | Slow network mock, heavy page load          | Check MSW handler delay, current page limit, and per-assertion timeout                    |
 | Test passes locally, fails in CI            | Environment differences, headless rendering | Run headless locally, check CI sharding                                                   |
 | Flaky test                                  | Race condition, timing dependency           | See [flaky-tests.md](flaky-tests.md)                                                      |
-| Wrong text content                          | Missing i18n key, wrong translation         | Check the expected literal text matches the value in `src/assets/translations/en-US.json` |
+| Wrong text content                          | Missing i18n key, wrong translation         | Check the expected literal text matches the value in `packages/shared/assets/src/translations/en-US.json` |
 | Storybook text matches instead of component | Ambiguous text selector                     | Use `getComponentRoot(page).getByText(...)`                                               |
 
 ## Log Element State

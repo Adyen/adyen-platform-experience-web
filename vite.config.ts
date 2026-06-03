@@ -16,9 +16,9 @@ export default defineConfig(({ mode }) => {
 
     const { api, app } = getEnvironment(mode);
 
-    const assetsDir = resolve(__dirname, 'src/assets');
+    const assetsDir = resolve(__dirname, 'packages/shared/assets/src');
     const enUsFile = resolve(assetsDir, 'translations/en-US.json');
-    const translationsDir = resolve(__dirname, 'src/translations');
+    const translationsDir = resolve(__dirname, 'packages/shared/core/src/translations');
     const translationsIndexFile = resolve(translationsDir, 'index.ts');
     const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
@@ -41,7 +41,6 @@ export default defineConfig(({ mode }) => {
     };
 
     return {
-
         build: {
             minify: true,
             lib: {
@@ -65,15 +64,15 @@ export default defineConfig(({ mode }) => {
                     },
                     isUmdBuild
                         ? {
-                            name: 'AdyenPlatformExperienceWeb',
-                            format: 'umd',
-                            sourcemap: true,
-                            indent: false,
-                            globals: {
-                                classnames: 'cx',
-                                'core-js': 'core',
-                            },
-                        }
+                              name: 'AdyenPlatformExperienceWeb',
+                              format: 'umd',
+                              sourcemap: true,
+                              indent: false,
+                              globals: {
+                                  classnames: 'cx',
+                                  'core-js': 'core',
+                              },
+                          }
                         : { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
@@ -107,6 +106,7 @@ export default defineConfig(({ mode }) => {
             root: resolve(__dirname, '.'),
             include: [
                 'src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
+                'config/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/domains/*/preact/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
                 'packages/shared/*/src/**/*.{test,spec}.?(c|m)[jt]s?(x)',
             ],
@@ -142,11 +142,11 @@ export default defineConfig(({ mode }) => {
             }),
             preact(),
             isAnalyseMode &&
-            visualizer({
-                title: 'Adyen Platform bundle visualizer',
-                gzipSize: true,
-                open: true,
-            }),
+                visualizer({
+                    title: 'Adyen Platform bundle visualizer',
+                    gzipSize: true,
+                    open: true,
+                }),
         ],
     };
 });

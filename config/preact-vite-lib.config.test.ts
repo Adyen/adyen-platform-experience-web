@@ -2,7 +2,7 @@
  * @vitest-environment node
  */
 import { expect, test } from 'vitest';
-import { getPreactViteLibConfig } from '../../config/preact-vite-lib.config';
+import { getPreactViteLibConfig } from './preact-vite-lib.config';
 
 const expectedBuildEnvDefineKeys = [
     'process.env.SESSION_ACCOUNT_HOLDER',

@@ -1,0 +1,15 @@
+{
+    "name": "@integration-components/assets",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        "./translations/*": "./src/translations/*",
+        "./datasets/*": "./src/datasets/*",
+        "./images/*": "./src/images/*",
+        "./*": "./src/*"
+    }
+}

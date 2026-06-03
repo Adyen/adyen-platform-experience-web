@@ -1,6 +1,6 @@
 import Localization from './Localization';
 import { describe, expect, test, vi } from 'vitest';
-import { es_ES, TranslationKey } from '../../../../../src/translations';
+import { es_ES, type TranslationKey } from '../translations';
 
 describe('Localization', () => {
     const translationKey = 'abc' as TranslationKey;

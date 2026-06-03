@@ -22,6 +22,8 @@
         "paths": {
             "@integration-components/types": ["packages/shared/types/src/index.ts"],
             "@integration-components/types/*": ["packages/shared/types/src/*"],
+            "@integration-components/assets": ["packages/shared/assets/src/index.ts"],
+            "@integration-components/assets/*": ["packages/shared/assets/src/*"],
             "@integration-components/utils": ["packages/shared/utils/src/index.ts"],
             "@integration-components/utils/*": ["packages/shared/utils/src/*"],
             "@integration-components/core": ["packages/shared/core/src/index.ts"],

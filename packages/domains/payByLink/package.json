@@ -9,6 +9,7 @@
         "./domain": "./domain/src/index.ts"
     },
     "dependencies": {
+        "@integration-components/assets": "workspace:*",
         "@integration-components/core": "workspace:*",
         "@integration-components/hooks-preact": "workspace:*",
         "@integration-components/sdk-internal": "workspace:*",
