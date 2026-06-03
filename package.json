@@ -81,12 +81,7 @@
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
-    "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
-    "classnames": "catalog:",
     "core-js": "^3.36.0"
-  },
-  "peerDependencies": {
-    "preact": "catalog:"
   },
   "devDependencies": {
     "@adyen/bento-design-tokens": "^1.7.1",
