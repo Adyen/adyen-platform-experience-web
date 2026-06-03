@@ -14,8 +14,8 @@ import type {
     Translations,
     TranslationSource,
     TranslationSourceRecord,
-} from '@integration-components/core/translations';
-import { en_US } from '@integration-components/core/translations';
+} from '../translations';
+import { en_US } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
@@ -25,7 +25,7 @@ import { createWatchlist } from '@integration-components/utils';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
-import { translations_dev_assets } from '@integration-components/core/translations/local';
+import { translations_dev_assets } from '../translations/local';
 import localSwapConfig from '../config/translations/swapConfig.json';
 
 export default class Localization {
