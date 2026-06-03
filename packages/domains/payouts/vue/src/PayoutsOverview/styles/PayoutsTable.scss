@@ -1,8 +1,8 @@
 @use '@integration-components/style' as style;
 
 .adyen-pe-payouts-table {
-    position: relative;
     container-type: inline-size;
+    position: relative;
 
     &__net-payout {
         &--strong {

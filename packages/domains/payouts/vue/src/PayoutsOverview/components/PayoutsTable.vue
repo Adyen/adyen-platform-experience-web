@@ -3,11 +3,14 @@ import { computed } from 'vue';
 import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
 import { useCustomColumnsData, CustomDataCell } from '@integration-components/composables-vue';
+import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 import { TABLE_CLASS, NET_PAYOUT_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { DATE_FORMAT_PAYOUTS } from '@integration-components/utils';
 import '../styles/PayoutsTable.scss';
+import { TranslationKey } from '@integration-components/core';
 
 const props = defineProps<{
     balanceAccountId: string | undefined;
@@ -35,13 +38,10 @@ const { i18n } = useCoreContext();
 const config = useConfigContext();
 
 // ── Date formatting ──
+const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+
 function formatPayoutDate(dateStr: string): string {
-    return i18n.date(dateStr, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
+    return dateFormat(dateStr, DATE_FORMAT_PAYOUTS);
 }
 
 // ── Custom columns ──
@@ -94,7 +94,7 @@ const columns = computed<BentoColumn[]>(() => {
             const labelKey = `payouts.overview.list.fields.${key}`;
             cols.push({
                 field: key,
-                label: i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as any),
+                label: i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey),
                 autoWidth: true,
             });
         }

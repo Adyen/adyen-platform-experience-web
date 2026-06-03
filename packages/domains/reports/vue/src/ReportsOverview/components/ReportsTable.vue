@@ -2,7 +2,9 @@
 import { ref, computed, onUnmounted, watch } from 'vue';
 import { BentoButton, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
+import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { useCustomColumnsData, useTableColumns, CustomDataCell } from '@integration-components/composables-vue';
+import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
@@ -123,7 +125,7 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     },
     resolveCustomColumnLabel: key => {
         const labelKey = `reports.overview.list.fields.${key}` as any;
-        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as any);
+        return i18n.has(labelKey) ? i18n.get(labelKey) : key;
     },
 });
 
@@ -202,13 +204,10 @@ function handleItemsPage(size: number) {
     props.updateLimit?.(size);
 }
 
+const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+
 function formatDate(dateStr: string): string {
-    return i18n.date(dateStr, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-    });
+    return dateFormat(dateStr, DATE_FORMAT_REPORTS);
 }
 
 // Clear alert whenever a new fetch begins. This must be a watcher; a top-level
