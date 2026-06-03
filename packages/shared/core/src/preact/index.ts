@@ -9,3 +9,4 @@ export { default as useEventDispatcherContext } from './useEventDispatcherContex
 export { default as BaseElement } from './BaseElement';
 export { default as UIElement } from './UIElement';
 export { default as FormElement } from './FormElement';
+export * from './types';

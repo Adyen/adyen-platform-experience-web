@@ -1,10 +1,8 @@
 import { Core, CoreOptions, TranslationSourceRecord } from './core';
-import './style/index.scss';
+import '@integration-components/style';
 import './global';
 
 export * from './core';
-export * from './components';
-export * from './types';
 
 export async function AdyenPlatformExperience<
     AvailableTranslations extends TranslationSourceRecord[] = [],

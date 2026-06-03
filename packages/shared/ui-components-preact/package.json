@@ -256,7 +256,8 @@
         "./PaymentMethodCell/constants": "./src/PaymentMethodCell/constants.ts",
         "./PaymentMethodCell/PaymentMethodCell": "./src/PaymentMethodCell/PaymentMethodCell.tsx",
         "./PaymentMethodCell/parsePaymentMethodType": "./src/PaymentMethodCell/parsePaymentMethodType.ts",
-        "./utils/getCommonErrorCode": "./src/utils/getCommonErrorCode.ts"
+        "./utils/getCommonErrorCode": "./src/utils/getCommonErrorCode.ts",
+        "./utils/getErrorMessage": "./src/utils/getErrorMessage.tsx"
     },
     "dependencies": {
         "@integration-components/core": "workspace:*",

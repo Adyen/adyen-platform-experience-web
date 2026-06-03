@@ -1,5 +1,5 @@
 import { EVT_SESSION_EXPIRED, EVT_SESSION_READY, EVT_SESSION_REFRESHED, EVT_SESSION_REFRESHING_END, EVT_SESSION_REFRESHING_START } from './constants';
-import type { GetPredicateType, Promised } from '../../../utils/types';
+import type { GetPredicateType, Promised } from '@integration-components/utils/types';
 
 export type SessionEventType =
     | typeof EVT_SESSION_EXPIRED

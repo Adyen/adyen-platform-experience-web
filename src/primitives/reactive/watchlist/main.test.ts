@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
 import { createWatchlist, isWatchlistUnsubscribeToken } from './main';
-import { noop } from '../../../utils';
+import { noop } from '@integration-components/utils';
 import { UNSUBSCRIBE_TOKEN } from './constants';
 import type { WatchList } from './types';
 

@@ -4,7 +4,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, renderHook, screen } from '@testing-library/preact';
 import { TabbedControlConfig, TabbedControlOptions, useTabbedControl } from './useTabbedControl';
-import { InteractionKeyCode } from '../../../../src/components/types';
+import { InteractionKeyCode } from '@integration-components/types';
 
 function TestComponent<OptionId extends string, Options extends TabbedControlOptions<OptionId>>({
     options,

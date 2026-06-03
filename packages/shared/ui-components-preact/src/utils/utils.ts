@@ -1,4 +1,4 @@
-import { UIElementStatus } from '../types';
+import { UIElementStatus } from '@integration-components/types';
 
 const ALLOWED_PROPERTIES = ['action', 'resultCode', 'sessionData', 'order'];
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { enumerable, isNullish } from '../../../utils';
+import { enumerable, isNullish } from '@integration-components/utils';
 import { createEffectStack } from './main';
 import type { EffectStack } from './types';
 

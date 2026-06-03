@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { noop } from '../../../utils';
+import { noop } from '@integration-components/utils';
 import { createWatchListCurrentStateRecord, createWatchListSubscriptionEventCallbacks } from './helpers';
 
 describe('createWatchListCurrentStateRecord', () => {

@@ -1,4 +1,4 @@
-import type { KeyOfRecord } from '../utils/types';
+import type { KeyOfRecord } from '@integration-components/utils/types';
 import EN_US from '../assets/translations/en-US.json' with { type: 'json' };
 const _en_US = { ...EN_US };
 

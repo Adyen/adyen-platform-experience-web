@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { getPromiseState } from '../../../utils';
-import { PromiseState } from '../../../utils/types';
+import { getPromiseState } from '@integration-components/utils';
+import { PromiseState } from '@integration-components/utils/types';
 import { createAbortable } from './main';
 
 describe('createAbortable', () => {

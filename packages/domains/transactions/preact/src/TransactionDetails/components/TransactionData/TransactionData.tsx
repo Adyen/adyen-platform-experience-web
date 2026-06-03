@@ -10,7 +10,7 @@ import { useModalContext } from '@integration-components/ui-components-preact/Mo
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '../../../../../../../../src/components/utils/getErrorMessage';
+import { getErrorMessage } from '@integration-components/ui-components-preact/utils/getErrorMessage';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 
 export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSupport }: TransactionDetailsProps) => {
