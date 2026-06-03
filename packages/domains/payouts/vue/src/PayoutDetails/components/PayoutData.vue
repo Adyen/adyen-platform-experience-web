@@ -5,6 +5,7 @@ import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, Be
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
+import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import {
@@ -128,9 +129,7 @@ function formatPayoutDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_PAYOUT_DETAILS);
 }
 
-function formatAmount(amount: { value: number; currency: string }): string {
-    return `${i18n.amount(amount.value, amount.currency, { hideCurrency: true })} ${amount.currency}`;
-}
+const formatAmount = (amount: { value: number; currency: string }) => formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency);
 
 const fundsCapturedColumns = computed<BentoColumn[]>(() => [
     {
@@ -205,12 +204,12 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
         <BentoCard>
             <div :class="titleClass">
                 <div :class="PD_TITLE_CONTAINER_CLASS">
-                    <BentoTypography variant="subtitle" stronger>
+                    <BentoTypography variant="title" stronger>
                         {{ i18n.get('payouts.details.tags.netPayout') }}
                     </BentoTypography>
                     <BentoTag v-if="payoutInner.isSumOfSameDayPayouts" variant="blue" :label="i18n.get('payouts.details.tags.sameDaySum')" />
                 </div>
-                <BentoTypography variant="title" large>
+                <BentoTypography v-if="payoutInner.payoutAmount" variant="title" large>
                     {{ formatAmount(payoutInner.payoutAmount) }}
                 </BentoTypography>
                 <time v-if="payoutInner.createdAt" :datetime="payoutInner.createdAt">
@@ -313,7 +312,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
                             </BentoTypography>
-                            <BentoTypography variant="body">
+                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body">
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
                             </BentoTypography>
                         </div>
@@ -369,7 +368,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
                             </BentoTypography>
-                            <BentoTypography variant="body" stronger>
+                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body" stronger>
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
                             </BentoTypography>
                         </div>
@@ -385,7 +384,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.netPayout') }}
                             </BentoTypography>
-                            <BentoTypography variant="body" strongest>
+                            <BentoTypography v-if="payoutInner.payoutAmount" variant="body" strongest>
                                 {{ formatAmount(payoutInner.payoutAmount) }}
                             </BentoTypography>
                         </div>

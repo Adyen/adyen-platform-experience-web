@@ -8,14 +8,9 @@ export const PayoutDetailsMeta: Meta<ElementProps<typeof PayoutDetails>> = {
     component: PayoutDetails,
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
-        locale: {
-            control: 'select',
-            options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'],
-        },
     },
     args: {
         component: PayoutDetails,
-        locale: 'en-US',
         compact: true,
     },
     parameters: {

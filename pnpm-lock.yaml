@@ -9,6 +9,12 @@ catalogs:
     '@adyen/bento-vue3':
       specifier: 1.96.1
       version: 1.96.1
+    '@adyen/ui-assets-icons-16':
+      specifier: 7.9.3
+      version: 7.9.3
+    '@adyen/ui-assets-icons-40':
+      specifier: 4.9.2
+      version: 4.9.2
     '@playwright/test':
       specifier: ^1.56.0
       version: 1.56.0
@@ -479,11 +485,14 @@ importers:
   packages/domains/payouts:
     dependencies:
       '@adyen/bento-vue3':
-        specifier: ^1.94.0
+        specifier: 'catalog:'
         version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
-        specifier: ^7.7.2
+        specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-40':
+        specifier: 'catalog:'
+        version: 4.9.2(vue@3.5.31(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
         version: link:../../shared/composables-vue
@@ -546,10 +555,10 @@ importers:
   packages/domains/reports:
     dependencies:
       '@adyen/bento-vue3':
-        specifier: ^1.93.0
+        specifier: 'catalog:'
         version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
       '@adyen/ui-assets-icons-16':
-        specifier: ^7.7.2
+        specifier: 'catalog:'
         version: 7.9.3(vue@3.5.31(typescript@5.8.3))
       '@integration-components/composables-vue':
         specifier: workspace:*
@@ -940,6 +949,14 @@ packages:
         optional: true
 
   '@adyen/ui-assets-icons-16@7.9.3':
+    resolution: {}
+    peerDependencies:
+      vue: ~2.7 || ~3
+    peerDependenciesMeta:
+      vue:
+        optional: true
+
+  '@adyen/ui-assets-icons-40@4.9.2':
     resolution: {}
     peerDependencies:
       vue: ~2.7 || ~3
@@ -7033,6 +7050,10 @@ snapshots:
       vue: 3.5.31(typescript@5.8.3)
 
   '@adyen/ui-assets-icons-16@7.9.3(vue@3.5.31(typescript@5.8.3))':
+    optionalDependencies:
+      vue: 3.5.31(typescript@5.8.3)
+
+  '@adyen/ui-assets-icons-40@4.9.2(vue@3.5.31(typescript@5.8.3))':
     optionalDependencies:
       vue: 3.5.31(typescript@5.8.3)
 
