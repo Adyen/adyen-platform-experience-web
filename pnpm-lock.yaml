@@ -97,6 +97,9 @@ importers:
       '@eslint/js':
         specifier: ^9.39.2
         version: 9.39.2
+      '@integration-components/assets':
+        specifier: workspace:*
+        version: link:packages/shared/assets
       '@integration-components/capital':
         specifier: workspace:*
         version: link:packages/domains/capital
@@ -429,6 +432,9 @@ importers:
 
   packages/domains/payByLink:
     dependencies:
+      '@integration-components/assets':
+        specifier: workspace:*
+        version: link:../../shared/assets
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -681,6 +687,8 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
 
+  packages/shared/assets: {}
+
   packages/shared/composables-vue:
     dependencies:
       '@adyen/bento-vue3':
@@ -708,6 +716,9 @@ importers:
 
   packages/shared/core:
     dependencies:
+      '@integration-components/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@integration-components/types':
         specifier: workspace:*
         version: link:../types
@@ -759,6 +770,9 @@ importers:
 
   packages/shared/testing:
     dependencies:
+      '@integration-components/assets':
+        specifier: workspace:*
+        version: link:../assets
       '@integration-components/core':
         specifier: workspace:*
         version: link:../core

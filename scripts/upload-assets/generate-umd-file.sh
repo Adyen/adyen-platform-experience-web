@@ -11,7 +11,7 @@ PROJECT_ROOT=$(dirname $(dirname "$SCRIPT_DIR"))
 echo "Changing working directory to project root..."
 
 cd "$PROJECT_ROOT"
-if [ -z "$VERSION" ]; then
+if [[ -z "$VERSION" ]]; then
   echo "Error: VERSION environment variable is not set. Aborting." >&2
   exit 1
 fi
@@ -26,7 +26,7 @@ echo "Running the build process from directory: $(pwd)"
 pnpm run "$BUILD_SCRIPT"
 echo "Build complete"
 
-if [ ! -f "$UMD_FILE" ]; then
+if [[ ! -f "$UMD_FILE" ]]; then
   echo "Error: UMD file not found at \"$PROJECT_ROOT/$UMD_FILE\". Aborting" >&2
   exit 1
 fi

@@ -14,8 +14,9 @@ cd "$PROJECT_ROOT"
 
 ARCHIVE_NAME="platform-components-v1_cdn.tar.gz"
 BUILD_SCRIPT="build:umd"
-ASSETS_DIR="./src/assets"
-CONFIG_DIR="./src/config"
+ASSETS_DIR="./packages/shared/assets/src"
+CONFIG_DIR="./packages/shared/core/src/config"
+TRANSLATIONS_SWAP_CONFIG_FILE="$CONFIG_DIR/translations/swapConfig.json"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
 CAPITAL_CONFIG_DIR="./packages/domains/capital/domain/src/config"
@@ -28,12 +29,16 @@ pnpm run "$BUILD_SCRIPT"
 echo "Build complete"
 
 echo "Verifying required paths exist..."
-if [ ! -d "$ASSETS_DIR" ]; then
+if [[ ! -d "$ASSETS_DIR" ]]; then
   echo "Error: Assets directory not found at '$PROJECT_ROOT/$ASSETS_DIR'. Aborting" >&2
   exit 1
 fi
-if [ ! -f "$UMD_FILE" ]; then
+if [[ ! -f "$UMD_FILE" ]]; then
   echo "Error: UMD file not found at '$PROJECT_ROOT/$UMD_FILE'. Aborting" >&2
+  exit 1
+fi
+if [[ ! -f "$TRANSLATIONS_SWAP_CONFIG_FILE" ]]; then
+  echo "Error: Translations swap config file not found at '$PROJECT_ROOT/$TRANSLATIONS_SWAP_CONFIG_FILE'. Aborting" >&2
   exit 1
 fi
 echo "All paths verified"
@@ -44,11 +49,11 @@ echo "Copying assets to staging area..."
 cp -r "$ASSETS_DIR" "$STAGING_DIR/assets"
 
 # Conditionally copy the UMD file based on the environment
-if [ "$DEPLOY_ENV" != "live" ]; then
+if [[ "$DEPLOY_ENV" != "live" ]]; then
   echo "Copying UMD file..."
   cp "$UMD_FILE" "$STAGING_DIR/index.js"
   echo "Copying CSS file..."
-  if [ ! -f "$CSS_FILE" ]; then
+  if [[ ! -f "$CSS_FILE" ]]; then
     echo "Error: CSS file not found at \"$PROJECT_ROOT/$CSS_FILE\". Aborting" >&2
     exit 1
   fi
@@ -57,25 +62,25 @@ else
   echo "Skipping UMD and CSS files copy for LIVE environment."
 fi
 
-cp -r "$CONFIG_DIR" "$STAGING_DIR/config"
+echo "Copying shared core config to staging area..."
+mkdir -p "$STAGING_DIR/config/core"
+cp -r "$CONFIG_DIR"/. "$STAGING_DIR/config/core/"
 
-echo "Copying disputes domain config to staging area..."
-mkdir -p "$STAGING_DIR/config/disputes"
-cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/disputes/"
-# Also copy to root config dir for backwards compatibility with older SDK versions
-cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
-
-echo "Copying payByLink domain config to staging area..."
-mkdir -p "$STAGING_DIR/config/payByLink"
-cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/payByLink/"
-# Also copy to root config dir for backwards compatibility with older SDK versions
-cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
+echo "Copying translations swap config to legacy CDN path..."
+mkdir -p "$STAGING_DIR/config/translations"
+cp "$TRANSLATIONS_SWAP_CONFIG_FILE" "$STAGING_DIR/config/translations/"
 
 echo "Copying capital domain config to staging area..."
 mkdir -p "$STAGING_DIR/config/capital"
 cp "$CAPITAL_CONFIG_DIR"/*.json "$STAGING_DIR/config/capital/"
-# Also copy to root config dir for backwards compatibility with older SDK versions
-cp "$CAPITAL_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
+
+echo "Copying disputes domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/disputes"
+cp "$DISPUTES_CONFIG_DIR"/*.json "$STAGING_DIR/config/disputes/"
+
+echo "Copying payByLink domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/payByLink"
+cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/payByLink/"
 
 echo "Creating archive: $ARCHIVE_NAME"
 

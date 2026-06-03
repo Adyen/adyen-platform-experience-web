@@ -30,8 +30,8 @@ const config: StorybookConfig = {
     ],
     staticDirs: [
         '../../../static',
-        { from: resolve(rootDir, 'src/assets/datasets'), to: '/datasets' },
-        { from: resolve(rootDir, 'src/assets'), to: '/src/assets' },
+        { from: resolve(rootDir, 'packages/shared/assets/src/datasets'), to: '/datasets' },
+        { from: resolve(rootDir, 'packages/shared/assets/src'), to: '/src/assets' },
     ],
     framework: {
         name: '@storybook/preact-vite',

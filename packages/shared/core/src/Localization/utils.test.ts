@@ -1,8 +1,8 @@
 import { formatCustomTranslations, formatLocale, getTranslation, interpolateElement, matchLocale, parseLocale, loadTranslations } from './utils';
 import { describe, expect, test } from 'vitest';
 import { SUPPORTED_LOCALES } from './constants/localization';
-import { translations_dev_assets } from '../../../../../src/translations/local';
-import { TranslationKey } from '../../../../../src/translations';
+import { translations_dev_assets } from '../translations/local';
+import type { TranslationKey } from '../translations';
 
 const defaultSupportedLocales = SUPPORTED_LOCALES;
 const translationKey = 'abc' as TranslationKey;
