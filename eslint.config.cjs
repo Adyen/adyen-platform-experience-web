@@ -99,6 +99,7 @@ module.exports = [
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
                         'packages/domains/*/tests/**/*.{ts,tsx}',
+                        'packages/domains/*/vue/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
                         'packages/domains/*/mocks/**/*.{ts,tsx}',
                         'src/**/*.{ts,tsx}',
