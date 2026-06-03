@@ -41,7 +41,6 @@ export default defineConfig(({ mode }) => {
     };
 
     return {
-
         build: {
             minify: true,
             lib: {
@@ -65,15 +64,15 @@ export default defineConfig(({ mode }) => {
                     },
                     isUmdBuild
                         ? {
-                            name: 'AdyenPlatformExperienceWeb',
-                            format: 'umd',
-                            sourcemap: true,
-                            indent: false,
-                            globals: {
-                                classnames: 'cx',
-                                'core-js': 'core',
-                            },
-                        }
+                              name: 'AdyenPlatformExperienceWeb',
+                              format: 'umd',
+                              sourcemap: true,
+                              indent: false,
+                              globals: {
+                                  classnames: 'cx',
+                                  'core-js': 'core',
+                              },
+                          }
                         : { format: 'cjs', sourcemap: true, indent: false },
                 ],
             },
@@ -92,11 +91,6 @@ export default defineConfig(({ mode }) => {
         define: getBuildEnvDefines(mode),
         json: {
             stringify: true,
-        },
-        resolve: {
-            alias: {
-                '@integration-components/assets': resolve(__dirname, 'packages/shared/assets/src'),
-            },
         },
         preview: {
             host: app.host,
@@ -148,11 +142,11 @@ export default defineConfig(({ mode }) => {
             }),
             preact(),
             isAnalyseMode &&
-            visualizer({
-                title: 'Adyen Platform bundle visualizer',
-                gzipSize: true,
-                open: true,
-            }),
+                visualizer({
+                    title: 'Adyen Platform bundle visualizer',
+                    gzipSize: true,
+                    open: true,
+                }),
         ],
     };
 });
