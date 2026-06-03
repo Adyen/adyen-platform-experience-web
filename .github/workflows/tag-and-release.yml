@@ -75,8 +75,8 @@ jobs:
           git tag -d "$SCOPED_TAG"
           git push origin --delete "$SCOPED_TAG"
 
-          # Update the GitHub release to point to the new tag
-          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG"
+          # Update the GitHub release to point to the new tag and publish it
+          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG" --draft=false
 
       - name: Upload Release Asset
         env:
@@ -126,11 +126,11 @@ jobs:
     with:
       environment_choice: 'live'
 
-  generate-sri-hashes:
-    permissions:
-      contents: read
-    needs: [trigger-npm-publish, upload-assets]
-    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
-    secrets: inherit
-    with:
-      version: v${{ needs.create-github-release.outputs.release_version }}
+#  generate-sri-hashes:
+#    permissions:
+#      contents: read
+#    needs: [create-github-release, trigger-npm-publish, upload-assets]
+#    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
+#    secrets: inherit
+#    with:
+#      version: v${{ needs.create-github-release.outputs.release_version }}
