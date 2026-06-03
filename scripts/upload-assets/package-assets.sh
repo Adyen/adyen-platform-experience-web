@@ -18,6 +18,7 @@ ASSETS_DIR="./src/assets"
 CONFIG_DIR="./src/config"
 DISPUTES_CONFIG_DIR="./packages/domains/disputes/domain/src/config"
 PAY_BY_LINK_CONFIG_DIR="./packages/domains/payByLink/domain/src/config"
+CAPITAL_CONFIG_DIR="./packages/domains/capital/domain/src/config"
 UMD_FILE="./dist/umd/index.js"
 CSS_FILE="./dist/adyen-platform-experience-web.css"
 STAGING_DIR=$(mktemp -d)
@@ -69,6 +70,12 @@ mkdir -p "$STAGING_DIR/config/payByLink"
 cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/payByLink/"
 # Also copy to root config dir for backwards compatibility with older SDK versions
 cp "$PAY_BY_LINK_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
+
+echo "Copying capital domain config to staging area..."
+mkdir -p "$STAGING_DIR/config/capital"
+cp "$CAPITAL_CONFIG_DIR"/*.json "$STAGING_DIR/config/capital/"
+# Also copy to root config dir for backwards compatibility with older SDK versions
+cp "$CAPITAL_CONFIG_DIR"/*.json "$STAGING_DIR/config/"
 
 echo "Creating archive: $ARCHIVE_NAME"
 

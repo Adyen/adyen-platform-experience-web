@@ -93,6 +93,7 @@
     "@changesets/cli": "2.29.8",
     "@changesets/get-github-info": "^0.6.0",
     "@eslint/js": "^9.39.2",
+    "@integration-components/capital": "workspace:*",
     "@integration-components/core": "workspace:*",
     "@integration-components/disputes": "workspace:*",
     "@integration-components/hooks-preact": "workspace:*",

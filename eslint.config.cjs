@@ -13,6 +13,10 @@ const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
 
 module.exports = [
+    {
+        ignores: ['**/dist/**', '**/storybook-static/**'],
+    },
+
     // eslint:recommended base rules
     js.configs.recommended,
 

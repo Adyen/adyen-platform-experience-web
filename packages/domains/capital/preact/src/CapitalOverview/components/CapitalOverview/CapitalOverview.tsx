@@ -1,0 +1,174 @@
+import { useCallback, useMemo, useState } from 'preact/hooks';
+import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
+import { ExternalUIComponentProps, IGrant } from '@integration-components/types';
+import { useConfigContext } from '@integration-components/core/preact';
+import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { useFetch } from '@integration-components/hooks-preact';
+import { EMPTY_OBJECT } from '@integration-components/utils';
+import { CapitalErrorMessageDisplay } from '../../../CapitalOffer/components/utils/CapitalErrorMessageDisplay';
+import { CapitalOverviewProps } from '../../types';
+import { CAPITAL_OVERVIEW_CLASS_NAMES } from '../../constants';
+import { FunctionalComponent } from 'preact';
+import { CapitalHeader } from '../../../internal/CapitalHeader';
+import './CapitalOverview.scss';
+import Unqualified from '../Unqualified';
+import { PreQualified } from '../PreQualified/PreQualified';
+import { GrantList } from '../GrantList/GrantList';
+import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
+import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
+
+type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
+
+export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<CapitalOverviewProps>> = ({
+    hideTitle,
+    onContactSupport,
+    onFundsRequest,
+    onOfferDismiss,
+    onOfferOptionsRequest,
+    skipPreQualifiedIntro,
+}) => {
+    const legalEntity = useConfigContext()?.extraConfig?.legalEntity;
+    const isRegionSupported = useMemo(() => isCapitalRegionSupported(legalEntity), [legalEntity]);
+
+    const { getGrants: grantsEndpointCall, getDynamicGrantOffersConfiguration: dynamicConfigurationEndpointCall } = useConfigContext().endpoints;
+
+    const grantsQuery = useFetch({
+        fetchOptions: { enabled: !!grantsEndpointCall && isRegionSupported },
+        queryFn: useCallback(async () => {
+            return grantsEndpointCall?.(EMPTY_OBJECT);
+        }, [grantsEndpointCall]),
+    });
+
+    const dynamicOfferQuery = useFetch({
+        fetchOptions: { enabled: !!dynamicConfigurationEndpointCall && isRegionSupported },
+        queryFn: useCallback(async () => {
+            return dynamicConfigurationEndpointCall?.(EMPTY_OBJECT, { query: EMPTY_OBJECT });
+        }, [dynamicConfigurationEndpointCall]),
+    });
+
+    const dynamicOffer = dynamicOfferQuery.data;
+
+    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
+    const grantList = useMemo(
+        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
+        [grantsQuery.data?.data, requestedGrant]
+    );
+
+    const handlePreQualifiedFundsRequest = useCallback(
+        (data: IGrant) => {
+            if (onFundsRequest) {
+                onFundsRequest(data);
+            } else {
+                setRequestedGrant(data);
+            }
+        },
+        [onFundsRequest]
+    );
+
+    const showError = useMemo(() => {
+        if (dynamicOfferQuery.error && grantsQuery.error) return true;
+        if (dynamicOfferQuery.error && !grantList?.length) return true;
+        return false;
+    }, [dynamicOfferQuery.error, grantList?.length, grantsQuery.error]);
+
+    const state = useMemo<CapitalOverviewState>(() => {
+        if (!isRegionSupported) {
+            return 'UnsupportedRegion';
+        } else if (showError) {
+            return 'Error';
+        } else if (
+            (!grantsEndpointCall && !dynamicConfigurationEndpointCall) ||
+            (!dynamicOffer && !grantList) ||
+            grantsQuery.isFetching ||
+            dynamicOfferQuery.isFetching
+        ) {
+            return 'Loading';
+        } else if (grantList?.length) {
+            return 'GrantList';
+        } else if (dynamicOffer?.maxAmount && dynamicOffer?.minAmount) {
+            return 'PreQualified';
+        }
+        return 'Unqualified';
+    }, [
+        dynamicConfigurationEndpointCall,
+        dynamicOffer,
+        dynamicOfferQuery.isFetching,
+        grantList,
+        grantsEndpointCall,
+        grantsQuery.isFetching,
+        showError,
+        isRegionSupported,
+    ]);
+
+    // TODO: Remove active grant check after integrating capital state endpoint
+    const newOfferAvailable = useMemo(() => {
+        const hasOffer = !!(dynamicOffer?.minAmount && dynamicOffer?.maxAmount);
+        const hasActiveGrant = grantList?.some(grant => grant.status === 'Active') ?? false;
+        return hasOffer && !hasActiveGrant;
+    }, [dynamicOffer, grantList]);
+
+    return (
+        <div className={CAPITAL_OVERVIEW_CLASS_NAMES.base}>
+            {(() => {
+                switch (state) {
+                    case 'Loading':
+                        return (
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeletonContainer}>
+                                <div className={CAPITAL_OVERVIEW_CLASS_NAMES.headerSkeleton}></div>
+                                <div className={CAPITAL_OVERVIEW_CLASS_NAMES.skeleton}></div>
+                            </div>
+                        );
+                    case 'Error':
+                        return (
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
+                                <ErrorMessageDisplay
+                                    absolutePosition={false}
+                                    outlined={false}
+                                    withImage
+                                    onContactSupport={onContactSupport}
+                                    {...getCapitalErrorMessage(dynamicOfferQuery.error as AdyenPlatformExperienceError, onContactSupport)}
+                                />
+                            </div>
+                        );
+                    case 'GrantList':
+                        return (
+                            grantList && (
+                                <GrantList
+                                    externalDynamicOffersConfig={dynamicOffer}
+                                    grantList={grantList}
+                                    hideTitle={hideTitle}
+                                    newOfferAvailable={newOfferAvailable}
+                                    onFundsRequest={onFundsRequest}
+                                    onGrantListUpdateRequest={setRequestedGrant}
+                                    onOfferDismiss={onOfferDismiss}
+                                />
+                            )
+                        );
+                    case 'PreQualified':
+                        return (
+                            <PreQualified
+                                onOfferDismiss={onOfferDismiss}
+                                onOfferOptionsRequest={onOfferOptionsRequest}
+                                skipPreQualifiedIntro={skipPreQualifiedIntro}
+                                hideTitle={hideTitle}
+                                dynamicOffer={dynamicOffer!}
+                                onFundsRequest={handlePreQualifiedFundsRequest}
+                            />
+                        );
+                    case 'Unqualified':
+                        return <Unqualified hideTitle={hideTitle} />;
+                    case 'UnsupportedRegion':
+                        return (
+                            <div className={CAPITAL_OVERVIEW_CLASS_NAMES.errorContainer}>
+                                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
+                                <CapitalErrorMessageDisplay unsupportedRegion />
+                            </div>
+                        );
+                    default:
+                        return null;
+                }
+            })()}
+        </div>
+    );
+};
