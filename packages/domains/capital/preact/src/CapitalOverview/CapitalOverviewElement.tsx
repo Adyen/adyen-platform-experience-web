@@ -31,7 +31,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
         }
 
         const [config, grants] = await Promise.all([
-            getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT).catch(noop as () => undefined),
+            getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT }).catch(noop as () => undefined),
             getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
         ]);
 

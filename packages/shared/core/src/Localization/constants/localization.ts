@@ -1,5 +1,4 @@
-import { en_US } from '@integration-components/core/translations';
-import type { Locale, Translations, TranslationSource } from '@integration-components/core/translations';
+import { en_US, type Locale, type Translations, type TranslationSource } from '../../translations';
 
 export const FALLBACK_LOCALE = 'en-US' as const;
 export const DEFAULT_TRANSLATIONS: Translations = en_US['en_US'];

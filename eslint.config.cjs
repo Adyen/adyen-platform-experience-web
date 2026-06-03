@@ -90,6 +90,7 @@ module.exports = [
                     devDependencies: [
                         'stories/**/*',
                         'playwright.config.ts',
+                        'vite.config.ts',
                         'config/**/*.ts',
                         'envs/**/*.ts',
                         'mocks/**/*.ts',

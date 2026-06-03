@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@integration-components/core": "workspace:*",
+        "@integration-components/style": "workspace:*",
         "@integration-components/types": "workspace:*",
         "@integration-components/utils": "workspace:*"
     },
@@ -19,6 +20,7 @@
         "vite": "catalog:"
     },
     "peerDependencies": {
+        "@adyen/bento-vue3": "catalog:",
         "vue": "catalog:"
     }
 }

@@ -10,6 +10,7 @@ const projectRoot = resolve(fileURLToPath(import.meta.url), '..');
 const rootDir = resolve(projectRoot, '../..');
 const srcDir = resolve(rootDir, 'src');
 const assetsDir = resolve(rootDir, 'packages/shared/assets/src');
+const styleDir = resolve(rootDir, 'packages/shared/style');
 const enUsFile = resolve(assetsDir, 'translations/en-US.json');
 const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
@@ -37,8 +38,8 @@ export default defineConfig(({ mode }) => ({
     root: projectRoot,
     resolve: {
         alias: [
-            { find: /^@integration-components\/style\/(.+)$/, replacement: `${resolve(rootDir, 'packages/shared/style')}/$1` },
-            { find: /^@integration-components\/style$/, replacement: resolve(rootDir, 'packages/shared/style/index.scss') },
+            { find: /^@integration-components\/style\/(.+)$/, replacement: `${styleDir}/$1` },
+            { find: /^@integration-components\/style$/, replacement: resolve(styleDir, 'index.scss') },
             { find: '@integration-components/hooks-preact', replacement: resolve(rootDir, 'packages/shared/hooks-preact/src') },
             { find: '@integration-components/assets', replacement: resolve(rootDir, 'packages/shared/assets/src') },
             { find: '@integration-components/core', replacement: resolve(rootDir, 'packages/shared/core/src') },

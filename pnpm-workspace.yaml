@@ -1,4 +1,5 @@
 packages:
+  - "."
   - "packages/**"
 
 # Single source of truth for shared dependency versions across the workspace.
@@ -6,8 +7,12 @@ packages:
 # forces every resolution in the tree (including transitive deps like
 # @adyen/kyc-components that declare a different exact version) to converge.
 catalog:
+  '@adyen/bento-vue3': 1.96.1
+  '@adyen/ui-assets-icons-16': 7.9.3
+  '@adyen/ui-assets-icons-40': 4.9.2
   "@playwright/test": ^1.56.0
   "@storybook/preact": 10.2.12
+  "@storybook/vue3": 10.2.12
   "@testing-library/preact": ^3.2.3
   "@vitest/coverage-v8": 4.0.10
   classnames: ^2.5.1
@@ -17,14 +22,14 @@ catalog:
   storybook: 10.2.12
   typescript: 5.8.3
   vite: ^7.3.2
-  vitest: 4.0.10
+  vitest: 4.1.0
   vue: ^3.5.13
   webpack: ^5.106.2
 
 overrides:
   "@babel/plugin-transform-modules-systemjs": "7.29.4"
   "@types/node": "24.10.13"
-  "axios": "1.15.2"
+  "axios": "1.16.0"
   "esbuild@0.25.2": "0.27.1"
   "fast-uri": "3.1.2"
   "follow-redirects": "1.16.0"

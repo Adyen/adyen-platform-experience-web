@@ -1,17 +1,10 @@
-import { useCallback } from 'preact/hooks';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Card from '@integration-components/ui-components-preact/Card/Card';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
+import { useCoreContext } from '@integration-components/core/preact';
 import { IGrantOfferResponseDTO } from '@integration-components/types';
-import { sharedCapitalOfferAnalyticsEventProperties } from './CapitalOffer/constants';
 import { getPercentage } from './utils/utils';
 import { useFormatTermLabel } from './hooks/useFormatTermLabel';
-
-const sharedAnalyticsEventProperties = {
-    ...sharedCapitalOfferAnalyticsEventProperties,
-    subCategory: 'Business financing offer',
-} as const;
 
 type TermSelectorProps = {
     allTerms: number[];
@@ -31,20 +24,7 @@ export const TermSelector = ({
     onTermSelect,
 }: TermSelectorProps) => {
     const { i18n } = useCoreContext();
-    const userEvents = useEventDispatcherContext();
     const formatTermLabel = useFormatTermLabel();
-
-    const selectTerm = useCallback(
-        (term: number) => {
-            onTermSelect(term);
-            userEvents.addEvent?.('Selected repayment term', {
-                ...sharedAnalyticsEventProperties,
-                label: 'Term selected',
-                value: term,
-            });
-        },
-        [onTermSelect, userEvents]
-    );
 
     return (
         <div className="adyen-pe-capital-offer-selection__terms-container">
@@ -69,7 +49,7 @@ export const TermSelector = ({
                             role="radio"
                             ariaChecked={isSelected}
                             ariaDisabled={isDisabled}
-                            onClick={!isDisabled ? () => selectTerm(term) : undefined}
+                            onClick={!isDisabled ? () => onTermSelect(term) : undefined}
                             classNameModifiers={[
                                 'adyen-pe-capital-offer-selection__term',
                                 ...(isSelected ? ['adyen-pe-capital-offer-selection__term--selected'] : []),
