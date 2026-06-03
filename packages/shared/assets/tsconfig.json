@@ -5,5 +5,5 @@
         "types": ["node"]
     },
     "files": ["../../../src/declarations/vite-env.d.ts"],
-    "include": ["src/**/*.ts", "src/**/*.json"]
+    "include": ["src/**/*.json"]
 }
