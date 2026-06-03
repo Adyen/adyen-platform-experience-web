@@ -7,10 +7,10 @@ module.exports = {
     // Check ESLint for errors (will fail commit if errors found)
     '{src,packages}/**/*.{js,ts,tsx,vue}': filenames => [`pnpm exec eslint --quiet ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
-    '{tests,packages/domains/**/tests}/**/*.{spec,test}.{ts,tsx}': filenames => [
+    'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}': filenames => [
         `pnpm exec eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs ${filenames.join(' ')}`,
     ],
-    'tests/models/**/*.{ts,tsx}': filenames => [
+    'packages/shared/testing/**/*.{ts,tsx}': filenames => [
         `pnpm exec eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs ${filenames.join(' ')}`,
     ],
 };

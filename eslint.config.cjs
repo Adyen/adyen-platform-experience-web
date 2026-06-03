@@ -95,7 +95,6 @@ module.exports = [
                         'config/**/*.ts',
                         'envs/**/*.ts',
                         'mocks/**/*.ts',
-                        'tests/**/*.{ts,js}',
                         'packages/**/vite.config.ts',
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
@@ -246,7 +245,7 @@ module.exports = [
 
     // Playwright fixtures: disable react-hooks rules
     {
-        files: ['packages/shared/testing/src/playwright/**/*.ts', 'tests/**/*.ts', 'packages/**/tests/**/*.ts'],
+        files: ['packages/shared/testing/src/playwright/**/*.ts', 'packages/**/tests/**/*.ts'],
         rules: {
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',

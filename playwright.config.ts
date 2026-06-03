@@ -12,7 +12,7 @@ let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
 
 switch (framework) {
     case 'preact':
-        frameworkTestFiles = ['tests/integration/**/*.spec.ts', 'packages/domains/*/tests/integration/**/*.spec.ts'];
+        frameworkTestFiles = ['packages/domains/*/tests/integration/**/*.spec.ts'];
         break;
     case 'vue':
         frameworkTestFiles = ['packages/domains/*/vue/tests/integration/**/*.spec.ts'];
@@ -69,19 +69,8 @@ const config: PlaywrightTestConfig = {
             },
         },
         {
-            name: 'local-chrome-e2e',
-            testDir: 'tests/e2e',
-            use: {
-                // Use the pre-installed browser already on the machine
-                channel: 'chrome',
-                launchOptions: {
-                    args: process.env.CI ? ['--headless=new'] : process.env.PWDEBUG ? ['--auto-open-devtools-for-tabs'] : [],
-                },
-            },
-        },
-        {
             name: 'contract',
-            testMatch: ['tests/contract/**/*.spec.ts', 'packages/domains/*/tests/contract/**/*.spec.ts'],
+            testMatch: ['packages/domains/*/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },
