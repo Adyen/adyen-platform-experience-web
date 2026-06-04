@@ -25,14 +25,8 @@ Unit tests live colocated with source in `src/` — see [source-overview.md](../
 pnpm run test:integration                              # All integration specs
 pnpm run test:integration -- --grep "capitalOverview"  # Filter by component
 
-# E2E tests
-pnpm run test:e2e
-
 # Contract tests
 pnpm run test:contract
-
-# Debug mode (opens browser devtools)
-pnpm run test:integration:debug
 ```
 
 ### Prerequisites for Integration Tests
