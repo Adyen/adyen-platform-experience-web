@@ -1,5 +1,7 @@
 'use strict';
 
+const { existsSync, readdirSync } = require('node:fs');
+const { join, relative } = require('node:path');
 const js = require('@eslint/js');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
@@ -11,6 +13,26 @@ const a11y = require('eslint-plugin-jsx-a11y');
 const testingLib = require('eslint-plugin-testing-library');
 const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
+
+const getWorkspacePackageDirs = (dir = join(__dirname, 'packages'), packageDirs = ['.']) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (!entry.isDirectory() || ['dist', 'node_modules', 'storybook-static'].includes(entry.name)) {
+            continue;
+        }
+
+        const entryPath = join(dir, entry.name);
+
+        if (existsSync(join(entryPath, 'package.json'))) {
+            packageDirs.push(relative(__dirname, entryPath));
+        }
+
+        getWorkspacePackageDirs(entryPath, packageDirs);
+    }
+
+    return packageDirs;
+};
+
+const workspacePackageDirs = getWorkspacePackageDirs();
 
 module.exports = [
     // Global ignores
@@ -245,25 +267,7 @@ module.exports = [
                 {
                     devDependencies: true,
                     peerDependencies: true,
-                    packageDir: [
-                        '.',
-                        'packages/domains/capital',
-                        'packages/domains/disputes',
-                        'packages/domains/payByLink',
-                        'packages/domains/payouts',
-                        'packages/domains/reports',
-                        'packages/domains/transactions',
-                        'packages/sdk',
-                        'packages/shared/assets',
-                        'packages/shared/composables-vue',
-                        'packages/shared/core',
-                        'packages/shared/hooks-preact',
-                        'packages/shared/lib',
-                        'packages/shared/testing',
-                        'packages/shared/types',
-                        'packages/shared/ui-components-preact',
-                        'packages/shared/utils',
-                    ],
+                    packageDir: workspacePackageDirs,
                 },
             ],
         },

@@ -48,13 +48,6 @@
             },
             "cache": false
         },
-        "test": {
-            "executor": "nx:run-commands",
-            "options": {
-                "command": "cross-env TEST_ENV=1 vitest --config vite.config.ts"
-            },
-            "cache": false
-        },
         "types:check": {
             "executor": "nx:run-commands",
             "options": {

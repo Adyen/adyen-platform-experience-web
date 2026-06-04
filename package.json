@@ -70,8 +70,8 @@
     "storybook:build:vue": "nx run @integration-components/tools-storybook:storybook:build:vue",
     "storybook:static": "pnpm run storybook:static:preact",
     "storybook:static:preact": "nx run @integration-components/tools-storybook:storybook:static:preact",
+    "storybook:static:vue": "nx run @integration-components/tools-storybook:storybook:static:vue",
     "test": "nx run @adyen/adyen-platform-experience-web:unit",
-    "test": "nx run @adyen/adyen-platform-experience-web:test",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:integration": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome",
@@ -80,7 +80,7 @@
     "test:integration:ui": "pnpm run test:integration --ui",
     "translations:sort": "bash scripts/process-translations/sort-translations-json.sh",
     "types:check": "nx run-many --target=types:check",
-    "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch --all' 'tsc --project tsconfig-build.json --watch'",
+    "types:watch": "concurrently --kill-others-on-fail 'nx run-many --target=types:watch' 'tsc --project tsconfig-build.json --watch'",
     "version": "./scripts/bump-version.sh"
   },
   "dependencies": {
