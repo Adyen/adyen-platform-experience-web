@@ -238,6 +238,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                                     :class="item.config.className"
                                     :to="item.config.href"
                                     :target="item.config.target || '_blank'"
+                                    rel="noopener noreferrer"
                                     external
                                 >
                                     {{ item.value }}
