@@ -34,12 +34,12 @@
             "options": {
                 "commands": [
                     "eslint '{src,packages}/**/*.{js,ts,tsx,vue}' --quiet",
-                    "stylelint 'packages/**/*.scss' --fix",
+                    "stylelint 'packages/**/*.scss'",
                     "eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs 'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}' 'packages/shared/testing/**/*.{ts,tsx}'"
                 ],
                 "parallel": false
             },
-            "cache": false
+            "cache": true
         },
         "lint:playwright-selectors": {
             "executor": "nx:run-commands",
