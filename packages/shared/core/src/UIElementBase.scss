@@ -5,6 +5,12 @@
 .adyen-pe-component {
     --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
+    --b-text-caption-font-family: initial;
+    --b-text-body-font-family: initial;
+    --b-text-subtitle-font-family: initial;
+    --b-text-title-font-family: initial;
+    --b-text-title-m-font-family: initial;
+    --b-text-title-l-font-family: initial;
     container-type: inline-size;
     width: 100%;
 }
