@@ -1,4 +1,5 @@
 const tsParser = require('@typescript-eslint/parser');
+const reactHooks = require('eslint-plugin-react-hooks');
 const noFrameworkCoupledPlaywrightSelectors = require('./eslint-rules/no-framework-coupled-playwright-selectors.cjs');
 
 const PLAYWRIGHT_SELECTOR_GUARD_PLUGIN = 'playwright-selector-guard';
@@ -27,6 +28,7 @@ module.exports = [
             },
         },
         plugins: {
+            'react-hooks': reactHooks,
             [PLAYWRIGHT_SELECTOR_GUARD_PLUGIN]: selectorGuardPlugin,
         },
         rules: {

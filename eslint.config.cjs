@@ -240,7 +240,32 @@ module.exports = [
     {
         files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing}/**/*.{ts,tsx}'],
         rules: {
-            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, packageDir: ['.'] }],
+            'import-x/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: true,
+                    peerDependencies: true,
+                    packageDir: [
+                        '.',
+                        'packages/domains/capital',
+                        'packages/domains/disputes',
+                        'packages/domains/payByLink',
+                        'packages/domains/payouts',
+                        'packages/domains/reports',
+                        'packages/domains/transactions',
+                        'packages/sdk',
+                        'packages/shared/assets',
+                        'packages/shared/composables-vue',
+                        'packages/shared/core',
+                        'packages/shared/hooks-preact',
+                        'packages/shared/lib',
+                        'packages/shared/testing',
+                        'packages/shared/types',
+                        'packages/shared/ui-components-preact',
+                        'packages/shared/utils',
+                    ],
+                },
+            ],
         },
     },
 
