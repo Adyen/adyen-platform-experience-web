@@ -9,7 +9,7 @@ import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
 import '../styles/ReportsTable.scss';
 
@@ -125,7 +125,7 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     },
     resolveCustomColumnLabel: key => {
         const labelKey = `reports.overview.list.fields.${key}` as any;
-        return i18n.has(labelKey) ? i18n.get(labelKey) : key;
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
 
