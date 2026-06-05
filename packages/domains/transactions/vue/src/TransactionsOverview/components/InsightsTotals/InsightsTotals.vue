@@ -21,7 +21,7 @@ const data = computed<CurrencyLookupRecord['totals'] | undefined>(() => {
     return props.currenciesLookupResult.currenciesDictionary.value[props.currency]?.totals;
 });
 
-const isLoading = computed(() => props.transactionsTotalsResult.isWaiting.value || !data.value);
+const isLoading = computed(() => props.transactionsTotalsResult.isWaiting.value);
 
 function formatAmount(value: number, currency: string): string {
     return `${i18n.amount(value, currency, { hideCurrency: true })} ${currency}`;

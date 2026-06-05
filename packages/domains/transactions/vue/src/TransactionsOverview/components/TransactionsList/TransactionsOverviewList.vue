@@ -30,8 +30,8 @@ const { currenciesDictionary, defaultCurrencySortedCurrencies, sortedCurrencies 
 const sortedBalances = computed(() => defaultCurrencySortedCurrencies.value.map(c => currenciesDictionary.value[c]!.balances));
 const sortedTotals = computed(() => defaultCurrencySortedCurrencies.value.map(c => currenciesDictionary.value[c]!.totals));
 
-const loadingTotals = computed(() => transactionsTotalsResult.isWaiting.value);
-const loadingBalances = computed(() => accountBalancesResult.isFetching.value);
+const loadingTotals = computed(() => transactionsTotalsResult.isWaiting.value || props.isLoadingBalanceAccount);
+const loadingBalances = computed(() => accountBalancesResult.isFetching.value || props.isLoadingBalanceAccount);
 const totalsError = computed(() => transactionsTotalsResult.error.value);
 const balancesError = computed(() => accountBalancesResult.error.value);
 

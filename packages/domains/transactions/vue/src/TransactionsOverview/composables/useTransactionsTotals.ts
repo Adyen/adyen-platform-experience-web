@@ -106,7 +106,7 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
         isFetching,
         canRefresh: computed(() => !isFetching.value && canFetch.value),
         isAvailable: computed(() => isFunction(getTransactionTotals.value)),
-        isWaiting: computed(() => isFetching.value || (isFunction(getTransactionTotals.value) && !canFetch.value && !totals.value.length)),
+        isWaiting: computed(() => isFetching.value),
         refresh,
     } as const;
 }

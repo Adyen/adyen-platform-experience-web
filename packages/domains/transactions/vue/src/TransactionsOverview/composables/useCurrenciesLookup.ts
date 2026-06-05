@@ -50,15 +50,11 @@ export function useCurrenciesLookup(props: () => UseCurrenciesLookupProps) {
 
     const defaultCurrencySortedCurrencies = computed(() => {
         const defaultCurrency = props().defaultCurrency;
-        return Object.freeze(
-            [...sortedCurrencies.value].sort((a, b) => {
-                if (defaultCurrency) {
-                    if (a === defaultCurrency) return -1;
-                    if (b === defaultCurrency) return 1;
-                }
-                return 0;
-            })
-        );
+        const currencies = sortedCurrencies.value;
+        if (defaultCurrency && currencies.includes(defaultCurrency)) {
+            return Object.freeze([defaultCurrency, ...currencies.filter(c => c !== defaultCurrency)]);
+        }
+        return currencies;
     });
 
     return {

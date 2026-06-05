@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, watch } from 'vue';
 import { BentoTypography, BentoInfoIcon } from '@adyen/bento-vue3';
 import './SummaryItemPair.scss';
 
@@ -17,16 +17,19 @@ const emit = defineEmits<{
     widthsSet: [widths: number[]];
 }>();
 
-const value1Ref = ref<HTMLElement | null>(null);
-const value2Ref = ref<HTMLElement | null>(null);
+const text1Ref = ref<HTMLElement | null>(null);
+const text2Ref = ref<HTMLElement | null>(null);
 
-onMounted(() =>
+const measureWidths = () =>
     nextTick(() => {
-        const w1 = value1Ref.value?.getBoundingClientRect().width ?? 0;
-        const w2 = value2Ref.value?.getBoundingClientRect().width ?? 0;
+        const w1 = text1Ref.value?.getBoundingClientRect().width ?? 0;
+        const w2 = text2Ref.value?.getBoundingClientRect().width ?? 0;
         emit('widthsSet', [w1, w2]);
-    })
-);
+    });
+
+onMounted(measureWidths);
+
+watch(() => [props.value1, props.value2], measureWidths);
 
 const getValueStyle = (index: number) => {
     const w = props.widths?.[index];
@@ -42,8 +45,10 @@ const getValueStyle = (index: number) => {
                     <BentoTypography variant="caption">{{ label1 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip1" :tooltipText="tooltip1" />
                 </div>
-                <div ref="value1Ref" :style="getValueStyle(0)">
-                    <BentoTypography variant="title">{{ value1 }}</BentoTypography>
+                <div :style="getValueStyle(0)">
+                    <span ref="text1Ref" style="display: inline-block">
+                        <BentoTypography variant="title">{{ value1 }}</BentoTypography>
+                    </span>
                 </div>
             </div>
         </div>
@@ -53,8 +58,10 @@ const getValueStyle = (index: number) => {
                     <BentoTypography variant="caption">{{ label2 }}</BentoTypography>
                     <BentoInfoIcon v-if="tooltip2" :tooltipText="tooltip2" />
                 </div>
-                <div ref="value2Ref" :style="getValueStyle(1)">
-                    <BentoTypography variant="title">{{ value2 }}</BentoTypography>
+                <div :style="getValueStyle(1)">
+                    <span ref="text2Ref" style="display: inline-block">
+                        <BentoTypography variant="title">{{ value2 }}</BentoTypography>
+                    </span>
                 </div>
             </div>
         </div>

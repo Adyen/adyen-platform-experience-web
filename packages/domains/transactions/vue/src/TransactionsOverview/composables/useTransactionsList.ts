@@ -31,8 +31,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
     const hasFetchedOnce = ref(false);
 
     let abortController: AbortController | null = null;
-    let isPaginating = false;
-    let pendingFetchAfterPaginate = false;
 
     const getTransactions = computed(() => config.endpoints.getTransactions);
     const canFetch = computed(() => isFunction(getTransactions.value) && props().fetchEnabled);
@@ -55,7 +53,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
         const fn = getTransactions.value;
         if (!isFunction(fn) || !canFetch.value) return;
 
-        pendingFetchAfterPaginate = false;
         if (abortController) abortController.abort();
         abortController = new AbortController();
         const { signal } = abortController;
@@ -108,20 +105,11 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
             if (!signal.aborted) {
                 fetching.value = false;
             }
-            isPaginating = false;
-            if (pendingFetchAfterPaginate && !abortController?.signal.aborted) {
-                pendingFetchAfterPaginate = false;
-                page.value = 0;
-                cursor.value = undefined;
-                prevCursor.value = undefined;
-                fetchTransactions();
-            }
         }
     }
 
     const goToNextPage = () => {
         if (hasNext.value && cursor.value) {
-            isPaginating = true;
             page.value++;
             fetchTransactions(cursor.value);
         }
@@ -129,7 +117,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
 
     const goToPreviousPage = () => {
         if (hasPrevious.value && prevCursor.value) {
-            isPaginating = true;
             page.value--;
             fetchTransactions(prevCursor.value);
         }
@@ -161,10 +148,6 @@ export function useTransactionsList(props: () => UseTransactionsListProps) {
         fetchKey,
         (newKey, oldKey) => {
             if (!newKey) return;
-            if (isPaginating) {
-                pendingFetchAfterPaginate = true;
-                return;
-            }
             if (oldKey !== null && oldKey !== undefined) {
                 page.value = 0;
                 cursor.value = undefined;
