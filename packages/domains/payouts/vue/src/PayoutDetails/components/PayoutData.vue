@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, BentoDataGrid, BentoList, BentoListItem } from '@adyen/bento-vue3';
+import {
+    BentoTypography,
+    BentoCard,
+    BentoTag,
+    BentoLink,
+    BentoButtonActions,
+    BentoDataGrid,
+    BentoStructuredList,
+    BentoStructuredListItem,
+} from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
@@ -226,34 +235,30 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                     </div>
                 </div>
                 <!-- Extra details (consumer-supplied) -->
-                <div v-if="extraDetails.length">
-                    <BentoList :class="PD_EXTRA_DETAILS_CLASS">
-                        <BentoListItem v-for="item in extraDetails" :key="item.key">
-                            <template #start>
-                                <div :class="PD_EXTRA_DETAILS_LABEL">{{ i18n.get(item.key as any) }}</div>
-                            </template>
-                            <template #end>
-                                <BentoLink
-                                    v-if="item.type === 'link' && item.config"
-                                    :class="item.config.className"
-                                    :to="item.config.href"
-                                    :target="item.config.target || '_blank'"
-                                    rel="noopener noreferrer"
-                                    external
-                                >
-                                    {{ item.value }}
-                                </BentoLink>
-                                <div v-else-if="item.type === 'icon' && item.config" :class="[PD_EXTRA_DETAILS_ICON, item.config.className]">
-                                    <img :src="item.config.src" :alt="item.config.alt || item.value" />
-                                    <BentoTypography variant="body">{{ item.value }}</BentoTypography>
-                                </div>
-                                <BentoTypography v-else variant="body" :class="item.config?.className">
-                                    {{ item.value }}
-                                </BentoTypography>
-                            </template>
-                        </BentoListItem>
-                    </BentoList>
-                </div>
+                <BentoStructuredList v-if="extraDetails.length" :class="PD_EXTRA_DETAILS_CLASS">
+                    <BentoStructuredListItem
+                        v-for="item in extraDetails"
+                        :key="item.key"
+                        :label="i18n.get(item.key as any)"
+                        :class="PD_EXTRA_DETAILS_LABEL"
+                    >
+                        <BentoLink
+                            v-if="item.type === 'link' && item.config"
+                            :class="item.config.className"
+                            :to="item.config.href"
+                            :target="item.config.target || '_blank'"
+                            rel="noopener noreferrer"
+                            external
+                        >
+                            {{ item.value }}
+                        </BentoLink>
+                        <div v-else-if="item.type === 'icon' && item.config" :class="[PD_EXTRA_DETAILS_ICON, item.config.className]">
+                            <img :src="item.config.src" :alt="item.config.alt || item.value" :class="item.config.className" />
+                            <BentoTypography variant="body">{{ item.value }}</BentoTypography>
+                        </div>
+                        <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
+                    </BentoStructuredListItem>
+                </BentoStructuredList>
             </template>
         </BentoCard>
 
