@@ -1,7 +1,5 @@
 import AuthSession from '../AuthSession';
-import { isWatchlistUnsubscribeToken } from '@integration-components/utils';
-import { createDeferred } from '@integration-components/utils';
-import { boolOrTrue } from '@integration-components/utils';
+import { boolOrTrue, createDeferred, isWatchlistUnsubscribeToken } from '@integration-components/utils';
 
 const sessionReady = async (session: AuthSession) => {
     const ready = createDeferred<void>();

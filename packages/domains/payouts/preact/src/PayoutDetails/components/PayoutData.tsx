@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import cx from 'classnames';
 import { useMemo } from 'preact/hooks';
 import { useCoreContext } from '@integration-components/core/preact';
@@ -39,8 +38,7 @@ import { TagVariant } from '@integration-components/ui-components-preact/Tag/typ
 import Link from '@integration-components/ui-components-preact/Link/Link';
 import Icon from '@integration-components/ui-components-preact/DataGrid/components/Icon';
 import { isCustomDataObject } from '@integration-components/ui-components-preact/DataGrid/components/TableCells';
-import { ButtonVariant } from '@integration-components/types';
-import { ButtonActionsLayoutBasic } from '@integration-components/types';
+import { ButtonActionsLayoutBasic, ButtonVariant } from '@integration-components/types';
 import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 
 export const PayoutData = ({
@@ -252,7 +250,7 @@ export const PayoutData = ({
                                         </div>
                                     </Accordion>
                                 ) : (
-                                    <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                    <div className={cx(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
                                         <Typography variant={TypographyVariant.BODY}>
                                             {i18n.get('payouts.details.breakdown.fields.fundsCaptured')}
                                         </Typography>
@@ -314,7 +312,7 @@ export const PayoutData = ({
                                     )}
                                 </Accordion>
                             ) : (
-                                <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
+                                <div className={cx(PD_SECTION_AMOUNT_CLASS, PD_SECTION_GROSS_AMOUNT_CLASS)}>
                                     <Typography variant={TypographyVariant.BODY}>
                                         {i18n.get('payouts.details.breakdown.fields.adjustments')}
                                     </Typography>
@@ -324,8 +322,8 @@ export const PayoutData = ({
                                 </div>
                             )}
                         </div>
-                        <div className={classnames(PD_SECTION_CLASS)}>
-                            <div className={classnames(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
+                        <div className={cx(PD_SECTION_CLASS)}>
+                            <div className={cx(PD_SECTION_AMOUNT_CLASS, PD_SECTION_NET_AMOUNT_CLASS)}>
                                 <Typography variant={TypographyVariant.BODY} stronger>
                                     {i18n.get('payouts.details.breakdown.fields.netPayout')}
                                 </Typography>

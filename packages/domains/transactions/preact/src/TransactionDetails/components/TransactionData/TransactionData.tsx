@@ -1,8 +1,7 @@
-import { boolOrFalse } from '@integration-components/utils';
+import { boolOrFalse, normalizeCustomFields } from '@integration-components/utils';
 import { CustomColumn } from '@integration-components/types';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
 import DataOverviewDetailsSkeleton from '@integration-components/ui-components-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
-import { normalizeCustomFields } from '@integration-components/utils';
 import TransactionDataContent from './TransactionDataContent';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';

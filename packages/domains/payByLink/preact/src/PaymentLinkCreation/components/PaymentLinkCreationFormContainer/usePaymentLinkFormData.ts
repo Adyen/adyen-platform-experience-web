@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useFetch } from '@integration-components/hooks-preact';
-import { useConfigContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { IPaymentLinkStore, IPaymentLinkConfiguration } from '@integration-components/types';
 import { getFormSteps } from '../../utils';
-import { useCoreContext } from '@integration-components/core/preact';
 import { TranslationKey } from '@integration-components/core';
 import { useWizardForm } from '@integration-components/hooks-preact/form/wizard/useWizardForm';
 import { PaymentLinkCreationFormValues } from '../types';

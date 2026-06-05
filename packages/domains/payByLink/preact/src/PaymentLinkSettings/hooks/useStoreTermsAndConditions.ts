@@ -1,9 +1,8 @@
-import { useEffect, useMemo } from 'preact/hooks';
+import { StateUpdater, useEffect, useMemo } from 'preact/hooks';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { useFetch } from '@integration-components/hooks-preact';
 import { useConfigContext } from '@integration-components/core/preact';
 import { Dispatch } from 'preact/compat';
-import { StateUpdater } from 'preact/hooks';
 import { PaymentLinkSettingsPayload } from '../components/PaymentLinkSettingsContainer/context/types';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 

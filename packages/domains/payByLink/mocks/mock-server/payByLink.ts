@@ -28,8 +28,7 @@ import {
     getPaymentLinkItemsByStatusGroup,
     expirePaymentLink,
 } from '../mock-data/payByLink';
-import { AdyenPlatformExperienceError } from '@integration-components/core';
-import { ErrorTypes } from '@integration-components/core';
+import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
 
 const DELAY_TIME = 300;
 

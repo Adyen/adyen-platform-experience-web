@@ -1,9 +1,9 @@
 import cx from 'classnames';
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
-import { useFetch, containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { useFetch, containerQueries, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
 import { IDisputeDetail } from '@integration-components/types/api/models/disputes';
-import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
+import { DATE_FORMAT_RESPONSE_DEADLINE, EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import './DisputeData.scss';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
@@ -16,7 +16,7 @@ import { Translation } from '@integration-components/ui-components-preact/Transl
 import DisputeStatusTag from '../../../DisputesOverview/components/DisputesTable/DisputeStatusTag';
 import { useDisputeFlow } from '../../context/dispute/context';
 import { DisputeDetailsCustomization, DisputeManagementProps } from '../../types';
-import { isDisputeActionNeeded } from '@integration-components/disputes/domain';
+import { getDisputeType, isDisputeActionNeeded } from '@integration-components/disputes/domain';
 import { DisputeIssuerComments } from './DisputeIssuerComments';
 import DisputeDataProperties from './DisputeDataProperties';
 import {
@@ -39,9 +39,6 @@ import {
 import Button from '@integration-components/ui-components-preact/Button';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { DATE_FORMAT_RESPONSE_DEADLINE } from '@integration-components/utils';
-import { getDisputeType } from '@integration-components/disputes/domain';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { getDisputesErrorMessage } from '../../utils/getDisputesErrorMessage';
