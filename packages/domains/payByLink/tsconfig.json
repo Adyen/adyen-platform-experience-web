@@ -14,6 +14,6 @@
         "./preact/src/**/*.tsx",
         "./preact/stories/**/*.ts",
         "./preact/stories/**/*.tsx",
-        "./tests/**/*.ts"
+        "./preact/tests/**/*.ts"
     ]
 }
