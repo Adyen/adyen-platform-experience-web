@@ -7,8 +7,8 @@ const STORY_ID = 'mocked-pay-by-link-payment-link-settings--default';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const fullSizeIcon = path.resolve(__dirname, '../../../fixtures/files/theme-logo.jpg');
-const fullWidthIcon = path.resolve(__dirname, '../../../fixtures/files/theme-logo-full-width.jpg');
+const fullSizeIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo.jpg');
+const fullWidthIcon = path.resolve(__dirname, '../../../../fixtures/files/theme-logo-full-width.jpg');
 
 test.describe('Default', () => {
     test.beforeEach(async ({ page }) => {
