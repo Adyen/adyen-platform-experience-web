@@ -4,8 +4,17 @@ import useTransactionsList from './hooks/useTransactionsList';
 import useTransactionsTotals from './hooks/useTransactionsTotals';
 import { useAccountBalances } from '@integration-components/hooks-preact';
 import useTransactionsViewSwitcher from './hooks/useTransactionsViewSwitcher';
-import { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
-import { CustomDataRetrieved, DataCustomizationObject, DataGridCustomColumnConfig, UIElementProps } from '@integration-components/types';
+import {
+    CustomDataRetrieved,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+    IAmount,
+    IBalanceAccountBase,
+    ITransaction,
+    ITransactionCategory,
+    ITransactionStatus,
+    UIElementProps,
+} from '@integration-components/types';
 import { RangeTimestamps } from '@integration-components/ui-components-preact/Calendar/calendar/timerange';
 import { TranslationKey } from '@integration-components/core';
 import { PropsWithChildren } from 'preact/compat';

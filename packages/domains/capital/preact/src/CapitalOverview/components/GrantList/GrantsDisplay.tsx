@@ -1,4 +1,4 @@
-import { IGrant } from '@integration-components/types';
+import { ButtonVariant, IGrant } from '@integration-components/types';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { BaseList } from '@integration-components/ui-components-preact/BaseList/BaseList';
@@ -14,7 +14,6 @@ import SegmentedControl from '@integration-components/ui-components-preact/Segme
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Button from '@integration-components/ui-components-preact/Button/Button';
-import { ButtonVariant } from '@integration-components/types';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,

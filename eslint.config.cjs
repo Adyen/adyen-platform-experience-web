@@ -73,6 +73,7 @@ module.exports = [
             'class-methods-use-this': 'off',
             'no-underscore-dangle': 'off',
             'import-x/prefer-default-export': 'off',
+            'import-x/no-duplicates': 'error',
             'no-debugger': 'warn',
             indent: 'off',
             'import-x/extensions': [

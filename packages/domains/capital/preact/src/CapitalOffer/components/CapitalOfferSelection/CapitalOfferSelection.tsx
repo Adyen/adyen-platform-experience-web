@@ -7,7 +7,7 @@ import { ButtonVariant, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@in
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
-import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
+import { containerQueries, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
 import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT, debounce } from '@integration-components/utils';
 import './CapitalOfferSelection.scss';
 import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
@@ -17,7 +17,6 @@ import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay'
 import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
-import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
 import { Fragment } from 'preact';
 import { getRelativeToDefault, getValuePercentage } from './utils';
 

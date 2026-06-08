@@ -3,8 +3,7 @@
  */
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/preact';
-import * as ConfigContext from '@integration-components/core/preact';
-import * as CoreContext from '@integration-components/core/preact';
+import * as CorePreact from '@integration-components/core/preact';
 import { useMissingActionsPolling } from './useMissingActionsPolling';
 import { IGrant, IMissingAction } from '@integration-components/types';
 import { PollingConfig } from './usePollingConfig';
@@ -12,8 +11,8 @@ import { PollingConfig } from './usePollingConfig';
 vi.mock('@integration-components/core/preact');
 
 describe('useMissingActionsPolling', () => {
-    const mockUseConfigContext = vi.mocked(ConfigContext.useConfigContext);
-    const mockUseCoreContext = vi.mocked(CoreContext.useCoreContext);
+    const mockUseConfigContext = vi.mocked(CorePreact.useConfigContext);
+    const mockUseCoreContext = vi.mocked(CorePreact.useCoreContext);
 
     const mockGrant: Partial<IGrant> = {
         id: 'GRANT123',
@@ -32,14 +31,14 @@ describe('useMissingActionsPolling', () => {
         const mockGetGrants = vi.fn();
         mockUseConfigContext.mockReturnValue({
             endpoints: { getGrants: mockGetGrants },
-        } as unknown as ReturnType<typeof ConfigContext.useConfigContext>);
+        } as unknown as ReturnType<typeof CorePreact.useConfigContext>);
         return mockGetGrants;
     };
 
     const mockCoreContext = (pollingConfig: PollingConfig = defaultPollingConfig) => {
         mockUseCoreContext.mockReturnValue({
             getCdnConfig: vi.fn().mockResolvedValue(pollingConfig),
-        } as unknown as ReturnType<typeof CoreContext.useCoreContext>);
+        } as unknown as ReturnType<typeof CorePreact.useCoreContext>);
     };
 
     beforeEach(() => {

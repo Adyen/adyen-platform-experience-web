@@ -1,12 +1,11 @@
 import { Fragment, FunctionalComponent } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
-import { IMissingAction, IMissingActionType } from '@integration-components/types';
+import { ButtonVariant, IMissingAction, IMissingActionType } from '@integration-components/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import Button from '@integration-components/ui-components-preact/Button';
-import { ButtonVariant } from '@integration-components/types';
 import { GRANT_ACTION_CONFIGS, sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
 import Modal from '@integration-components/ui-components-preact/Modal';
 import { useActionsAlertTitles } from '../../hooks';

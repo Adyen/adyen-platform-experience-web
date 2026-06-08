@@ -1,7 +1,6 @@
 import { Meta } from '@storybook/preact';
-import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { PaymentLinkDetails } from '../src';
-import { ElementProps } from '@integration-components/testing/storybook-helpers';
 
 export const PaymentLinkDetailsMeta: Meta<ElementProps<typeof PaymentLinkDetails>> = {
     argTypes: {
