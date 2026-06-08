@@ -17,6 +17,7 @@ import {
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
     GRANT_NL_ACCOUNT,
     ONBOARDING_CONFIGURATION,
+    CAPITAL_STATE_UNQUALIFIED,
 } from '../mock-data/capital';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateSelectedOffer, calculateOffers } from './utils/utils';
@@ -24,6 +25,7 @@ import { delay, getHandlerCallback, mocksFactory } from '@integration-components
 import { paths as capitalGrantOffersPaths } from '@integration-components/types/api/resources/CapitalGrantOffersResourceV2';
 import { paths as capitalGrantsPaths } from '@integration-components/types/api/resources/CapitalGrantsResourceV1';
 import { paths as capitalMissingActionsPaths } from '@integration-components/types/api/resources/CapitalMissingActionsResourceV1';
+import { paths as capitalStatePaths } from '@integration-components/types/api/resources/CapitalStateResourceV1';
 import { paths as onboardingSessionPaths } from '@integration-components/types/api/resources/OnboardingConfigurationResourceV1';
 import { uuid } from '@integration-components/utils';
 import { AdyenPlatformExperienceError, ErrorTypes } from '@integration-components/core';
@@ -34,6 +36,10 @@ const mockEndpoints = CAPITAL_ENDPOINTS;
 const networkError = false;
 
 const ASYNC_ACTION_DELAY_MS = Number(process.env.TEST_ENV) === 1 ? 0 : 2000;
+
+const CAPITAL_STATE_UNQUALIFIED_HANDLER = getHandlerCallback({
+    response: CAPITAL_STATE_UNQUALIFIED,
+});
 
 const EMPTY_GRANTS_LIST = getHandlerCallback({
     response: {
@@ -76,6 +82,7 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
 };
 
 export const capitalMock = [
+    http.get(mockEndpoints.capitalState, CAPITAL_STATE_UNQUALIFIED_HANDLER),
     http.get(mockEndpoints.dynamicOfferConfig, async () => {
         if (networkError) {
             return HttpResponse.error();
@@ -131,7 +138,9 @@ const commonHandlers = {
     ],
 };
 
-const capitalFactory = mocksFactory<capitalGrantOffersPaths & capitalGrantsPaths & capitalMissingActionsPaths & onboardingSessionPaths>();
+const capitalFactory = mocksFactory<
+    capitalGrantOffersPaths & capitalGrantsPaths & capitalMissingActionsPaths & capitalStatePaths & onboardingSessionPaths
+>();
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
