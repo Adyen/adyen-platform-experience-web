@@ -1,9 +1,11 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps, ElementStory, SetupControls } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory, getMySessionToken, SetupControls } from '@integration-components/testing/storybook-helpers';
 import { capitalOfferWithSetupMeta } from './components/capitalOffer';
 import { CapitalOffer, CapitalOverview } from '../src';
 import { ILegalEntity } from '@integration-components/types';
 import { CapitalOfferMockedResponses } from '../../mocks/mock-server/capital';
+import { useEffect } from 'preact/compat';
+import { AdyenPlatformExperience } from '../../../../../src';
 
 const meta: Meta<ElementProps<typeof CapitalOffer> & SetupControls> = { ...capitalOfferWithSetupMeta, title: 'Mocked/Capital/Capital Offer' };
 
@@ -30,6 +32,27 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
             regions: [{ type: 'capital', value: 'Middle East' }],
         },
     },
+    decorators: [
+        (story, context) => {
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onSessionCreate: getMySessionToken as any,
+                    });
+                    const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
+                    const { state } = await capitalOffer.getState();
+
+                    if (state !== 'isInUnsupportedRegion' || context.args.mountIfInUnsupportedRegion) {
+                        capitalOffer.mount('#capital-overview');
+                    }
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.mountIfInUnsupportedRegion]);
+
+            return <div className="component-wrapper" id="capital-overview"></div>;
+        },
+    ],
 };
 
 export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
@@ -48,16 +71,39 @@ export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILeg
     },
 };
 
-export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer> = {
+export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
     name: 'Error - Dynamic offer config - No config',
     args: {
         mockedApi: true,
+        skipDecorators: true,
+        mountIfUnqualified: true,
     },
     parameters: {
         msw: {
             handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoConfig,
         },
     },
+    decorators: [
+        (story, context) => {
+            useEffect(() => {
+                const getAdyenPlatformExperienceComponent = async () => {
+                    const core = await AdyenPlatformExperience({
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onSessionCreate: getMySessionToken as any,
+                    });
+                    const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
+                    const { state } = await capitalOffer.getState();
+
+                    if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
+                        capitalOffer.mount('#capital-overview');
+                    }
+                };
+                void getAdyenPlatformExperienceComponent();
+            }, [context.args.mountIfUnqualified]);
+
+            return <div className="component-wrapper" id="capital-overview"></div>;
+        },
+    ],
 };
 
 export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOffer> = {
