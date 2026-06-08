@@ -12,6 +12,7 @@
     ],
     "include": [
         "./domain/src/**/*.ts",
+        "./domain/tests/**/*.ts",
         "./mocks/**/*.ts",
         "./publish/src/**/*.ts",
         "./publish/src/**/*.tsx",
@@ -19,7 +20,7 @@
         "./preact/src/**/*.tsx",
         "./preact/stories/**/*.ts",
         "./preact/stories/**/*.tsx",
-        "./tests/**/*.ts",
+        "./preact/tests/**/*.ts",
         "./vue/publish/src/**/*.ts",
         "./vue/src/**/*.ts",
         "./vue/src/**/*.vue"
