@@ -1,11 +1,10 @@
 import { h } from 'preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import InputBase from '../InputBase';
-import { useCoreContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT, uniqueId } from '@integration-components/utils';
 import { CURRENCY_INPUT_BASE_CLASS } from './constants';
 import { useFetch } from '@integration-components/hooks-preact/useFetch';
-import { useConfigContext } from '@integration-components/core/preact';
 import { IPaymentLinkCurrency } from '@integration-components/types';
 import { formatAmount, getCurrencyExponent } from '@integration-components/core/Localization/amount/amount-util';
 

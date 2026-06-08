@@ -12,10 +12,8 @@ let frameworkTestFiles!: string | RegExp | (string | RegExp)[];
 
 switch (framework) {
     case 'preact':
-        frameworkTestFiles = ['packages/domains/*/tests/integration/**/*.spec.ts'];
-        break;
     case 'vue':
-        frameworkTestFiles = ['packages/domains/*/vue/tests/integration/**/*.spec.ts'];
+        frameworkTestFiles = [`packages/domains/*/${framework}/tests/integration/**/*.spec.ts`];
         break;
     default:
         throw new Error(`Unsupported STORYBOOK_FRAMEWORK "${framework}". Must be "preact" or "vue".`);
@@ -70,7 +68,7 @@ const config: PlaywrightTestConfig = {
         },
         {
             name: 'contract',
-            testMatch: ['packages/domains/*/tests/contract/**/*.spec.ts'],
+            testMatch: ['packages/domains/*/domain/tests/contract/**/*.spec.ts'],
             use: {
                 ignoreHTTPSErrors: true,
             },

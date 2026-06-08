@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'preact/hooks';
 import cx from 'classnames';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { DATE_FORMAT_CAPITAL_OVERVIEW } from '@integration-components/utils';
+import { DATE_FORMAT_CAPITAL_OVERVIEW, uniqueId } from '@integration-components/utils';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
@@ -22,7 +22,6 @@ import { ButtonVariant } from '@integration-components/types';
 import ExpandableCard from '@integration-components/ui-components-preact/ExpandableCard/ExpandableCard';
 import { GrantActions } from '../GrantActions/GrantActions';
 import { sharedCapitalOverviewAnalyticsEventProperties } from '../../constants';
-import { uniqueId } from '@integration-components/utils';
 import { Translation } from '@integration-components/ui-components-preact/Translation';
 
 export const GrantItem: FunctionalComponent<GrantItemProps> = ({ grant, showDetails }) => {

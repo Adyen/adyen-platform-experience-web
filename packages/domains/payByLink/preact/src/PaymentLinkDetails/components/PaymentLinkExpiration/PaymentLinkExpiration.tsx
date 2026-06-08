@@ -1,15 +1,13 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import { useCoreContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import { IPaymentLinkDetails } from '@integration-components/types';
+import { ButtonActionsList, IPaymentLinkDetails } from '@integration-components/types';
 import ButtonActions from '@integration-components/ui-components-preact/Button/ButtonActions/ButtonActions';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
-import { useConfigContext } from '@integration-components/core/preact';
 import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { useModalContext } from '@integration-components/ui-components-preact/Modal/Modal';
-import { ButtonActionsList } from '@integration-components/types';
 import './PaymentLinkExpiration.scss';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';

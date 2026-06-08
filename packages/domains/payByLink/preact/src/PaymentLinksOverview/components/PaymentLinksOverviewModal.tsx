@@ -5,8 +5,7 @@ import Modal from '@integration-components/ui-components-preact/Modal';
 import { PaymentLinksOverviewModalType } from './types';
 import PaymentLinkCreationContainer from '../../PaymentLinkCreation/components/PaymentLinkCreationContainer/PaymentLinkCreationContainer';
 import PaymentLinkSettingsContainer from '../../PaymentLinkSettings/components/PaymentLinkSettingsContainer/PaymentLinkSettingsContainer';
-import { PaymentLinksOverviewComponentProps } from '../types';
-import { StoreIds } from '../types';
+import { PaymentLinksOverviewComponentProps, StoreIds } from '../types';
 import { PaymentLinkCreationFormValues } from '../../PaymentLinkCreation/components/types';
 
 export interface PaymentLinksOverviewModalProps {

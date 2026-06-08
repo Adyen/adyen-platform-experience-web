@@ -4,8 +4,7 @@
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { CurrencyInput } from './CurrencyInput';
-import { useCoreContext } from '@integration-components/core/preact';
-import { useConfigContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import { useFetch } from '@integration-components/hooks-preact/useFetch';
 import * as currencyUtils from '@integration-components/core/Localization/amount/amount-util';
 import Localization from '@integration-components/core/Localization/Localization';

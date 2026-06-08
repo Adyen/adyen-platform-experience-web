@@ -1,10 +1,7 @@
 import SetupContext from './SetupContext';
 import AuthSessionSpecification from './AuthSessionSpecification';
 import { ERR_SESSION_REFRESH_ABORTED, EVT_SESSION_EXPIRED, EVT_SESSION_READY, SessionContext } from './SessionContext';
-import { createErrorContainer } from '@integration-components/utils';
-import { createPromisor } from '@integration-components/utils';
-import { createWatchlist } from '@integration-components/utils';
-import { boolOrFalse, boolOrTrue, isFunction } from '@integration-components/utils';
+import { boolOrFalse, boolOrTrue, createErrorContainer, createPromisor, createWatchlist, isFunction } from '@integration-components/utils';
 
 import type { onErrorHandler } from '../types';
 

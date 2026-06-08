@@ -1,10 +1,9 @@
-import { useCoreContext } from '@integration-components/core/preact';
+import { useConfigContext, useCoreContext } from '@integration-components/core/preact';
 import Alert from '@integration-components/ui-components-preact/Alert/Alert';
 import { AlertTypeOption } from '@integration-components/ui-components-preact/Alert/types';
 import StoreField from './Fields/StoreField';
 
 import { StateUpdater, useMemo } from 'preact/hooks';
-import { useConfigContext } from '@integration-components/core/preact';
 import { PaymentLinkCreationFormValues } from '../../types';
 import { useWizardFormContext } from '@integration-components/hooks-preact/form/wizard/WizardFormContext';
 import { IPaymentLinkSettings, IPaymentLinkStore } from '@integration-components/types';

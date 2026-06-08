@@ -23,8 +23,7 @@ import Typography from '@integration-components/ui-components-preact/Typography/
 import { ActiveView, RefundMode, RefundReason, RefundResult, TransactionDetails } from '../../types';
 import { TypographyElement, TypographyModifier, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { AlertTypeOption, AlertVariantOption } from '@integration-components/ui-components-preact/Alert/types';
-import { ButtonVariant } from '@integration-components/types';
-import { ILineItem, IRefundMode } from '@integration-components/types';
+import { ButtonVariant, ILineItem, IRefundMode } from '@integration-components/types';
 import { TranslationKey } from '@integration-components/core';
 import { IconName } from '@integration-components/ui-components-preact/Icon/Icon';
 import Icon from '@integration-components/ui-components-preact/Icon';

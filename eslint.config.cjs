@@ -73,6 +73,7 @@ module.exports = [
             'class-methods-use-this': 'off',
             'no-underscore-dangle': 'off',
             'import-x/prefer-default-export': 'off',
+            'import-x/no-duplicates': 'error',
             'no-debugger': 'warn',
             indent: 'off',
             'import-x/extensions': [
@@ -98,8 +99,7 @@ module.exports = [
                         'packages/**/vite.config.ts',
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
-                        'packages/domains/*/tests/**/*.{ts,tsx}',
-                        'packages/domains/*/vue/tests/**/*.{ts,tsx}',
+                        'packages/domains/*/{domain,preact,vue}/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
                         'packages/domains/*/mocks/**/*.{ts,tsx}',
                         'src/**/*.{ts,tsx}',
