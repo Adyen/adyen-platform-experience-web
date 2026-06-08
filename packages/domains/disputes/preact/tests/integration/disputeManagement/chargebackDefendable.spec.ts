@@ -33,7 +33,7 @@ test.describe('Chargeback - Defendable', () => {
         // Upload document
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
-        const fixture = path.resolve(__dirname, '../../../fixtures/files/test-file.pdf');
+        const fixture = path.resolve(__dirname, '../../../../fixtures/files/test-file.pdf');
         const fileInput = page.locator('input[type="file"]');
         await fileInput.setInputFiles(fixture);
 
