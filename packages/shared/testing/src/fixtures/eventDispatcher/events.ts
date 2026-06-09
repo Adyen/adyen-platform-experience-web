@@ -29,7 +29,7 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
         }
 
         // use analytics events in the test
-        await run(analyticsEvents);
+        await using(analyticsEvents);
     },
 });
 
