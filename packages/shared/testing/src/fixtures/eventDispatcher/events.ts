@@ -9,7 +9,7 @@ export type PageAnalyticsEvent = {
 const pageAnalyticsEventsMap = new WeakMap<Page, PageAnalyticsEvent[]>();
 
 export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
-    analyticsEvents: async ({ page }, run) => {
+    analyticsEvents: async ({ page }, using) => {
         let analyticsEvents = pageAnalyticsEventsMap.get(page);
 
         if (analyticsEvents === undefined) {
