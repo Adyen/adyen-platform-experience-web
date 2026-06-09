@@ -13,6 +13,7 @@ const props = defineProps<PayoutDetailsExternalProps>();
             :id="props.id"
             :date="props.date"
             :data-customization="props.dataCustomization"
+            :hide-title="props.hideTitle"
             :on-contact-support="props.onContactSupport"
         />
     </UIElementProvider>

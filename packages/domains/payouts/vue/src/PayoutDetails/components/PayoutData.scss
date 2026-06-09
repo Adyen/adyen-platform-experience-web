@@ -12,6 +12,10 @@
         gap: style.token(spacer-050);
     }
 
+    &__page-title {
+        margin-bottom: style.token(spacer-060);
+    }
+
     &__title {
         display: grid;
         gap: style.token(spacer-020);
