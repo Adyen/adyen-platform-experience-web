@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { BentoLoadingIndicator } from '@adyen/bento-vue3';
+import { BentoLoadingIndicator, BentoTypography } from '@adyen/bento-vue3';
+import { useCoreContext } from '@integration-components/core/vue';
 import PaymentDetails from '../PaymentDetails/PaymentDetails.vue';
 import PaymentRefund from '../PaymentRefund/PaymentRefund.vue';
 import { ActiveView } from '@integration-components/transactions/domain';
@@ -17,10 +18,13 @@ const props = defineProps<{
     extraFields: Record<string, any> | undefined;
     dataCustomization?: { details?: TransactionDetailsCustomization };
     fetchingTransaction: boolean;
+    hideTitle?: boolean;
     refreshTransaction: () => void;
     transaction: TransactionDetails;
     transactionNavigator: TransactionNavigatorState;
 }>();
+
+const { i18n } = useCoreContext();
 
 const activeView = ref<ActiveView>(ActiveView.DETAILS);
 const locked = ref(false);
@@ -38,6 +42,10 @@ watch(refundMeta.refundLocked, locked_ => {
 </script>
 
 <template>
+    <div v-if="!props.hideTitle" class="adyen-pe-transaction-data__title">
+        <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
+    </div>
+
     <div v-if="props.fetchingTransaction" class="adyen-pe-transaction-data__loading">
         <BentoLoadingIndicator />
     </div>

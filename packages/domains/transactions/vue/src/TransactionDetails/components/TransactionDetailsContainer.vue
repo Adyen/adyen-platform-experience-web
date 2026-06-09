@@ -78,6 +78,7 @@ onMounted(() => {
             :extra-fields="extraFields"
             :data-customization="props.dataCustomization"
             :fetching-transaction="fetchingTransaction"
+            :hide-title="props.hideTitle"
             :refresh-transaction="refreshTransaction"
             :transaction="transaction ?? initialTransaction"
             :transaction-navigator="transactionNavigator"
