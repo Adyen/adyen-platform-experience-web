@@ -5,7 +5,7 @@ const PLAYWRIGHT_SELECTOR_GUARD_PLUGIN = 'playwright-selector-guard';
 const NO_FRAMEWORK_COUPLED_SELECTORS_RULE = 'no-framework-coupled-playwright-selectors';
 const GUARDED_FILE_GLOBS = [
     'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}',
-    'packages/shared/testing/src/playwright/**/*.{ts,tsx}',
+    'packages/shared/testing/**/*.{ts,tsx}',
 ];
 const selectorGuardPlugin = {
     rules: {

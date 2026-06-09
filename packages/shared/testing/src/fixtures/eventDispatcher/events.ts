@@ -9,7 +9,7 @@ export type PageAnalyticsEvent = {
 const pageAnalyticsEventsMap = new WeakMap<Page, PageAnalyticsEvent[]>();
 
 export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
-    analyticsEvents: async ({ page }, use) => {
+    analyticsEvents: async ({ page }, run) => {
         let analyticsEvents = pageAnalyticsEventsMap.get(page);
 
         if (analyticsEvents === undefined) {
@@ -29,8 +29,7 @@ export const test = base.extend<{ analyticsEvents: PageAnalyticsEvent[] }>({
         }
 
         // use analytics events in the test
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        await use(analyticsEvents);
+        await run(analyticsEvents);
     },
 });
 

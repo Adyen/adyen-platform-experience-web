@@ -12,5 +12,5 @@ module.exports = {
     '{src,packages}/**/*.{js,ts,tsx,vue}': filenames => [`pnpm exec eslint ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
     'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}': lintPlaywrightSelectors,
-    'packages/shared/testing/src/playwright/**/*.{ts,tsx}': lintPlaywrightSelectors,
+    'packages/shared/testing/**/*.{ts,tsx}': lintPlaywrightSelectors,
 };
