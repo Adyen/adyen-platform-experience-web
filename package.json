@@ -71,7 +71,7 @@
     "storybook:static": "pnpm run storybook:static:preact",
     "storybook:static:preact": "nx run @integration-components/tools-storybook:storybook:static:preact",
     "storybook:static:vue": "nx run @integration-components/tools-storybook:storybook:static:vue",
-    "test": "nx run @adyen/adyen-platform-experience-web:unit",
+    "test": "cross-env TEST_ENV=1 nx run @adyen/adyen-platform-experience-web:unit",
     "test:contract": "cross-env NODE_OPTIONS='--no-experimental-strip-types' playwright test --project contract",
     "test:coverage": "vitest run --config vite.config.ts --coverage",
     "test:integration": "cross-env TEST_ENV=1 NODE_OPTIONS='--no-experimental-strip-types' playwright test --project local-chrome",

@@ -15,8 +15,12 @@ const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
 
 const getWorkspacePackageDirs = (dir = join(__dirname, 'packages'), packageDirs = ['.']) => {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-        if (!entry.isDirectory() || ['dist', 'node_modules', 'storybook-static'].includes(entry.name)) {
+    if (!existsSync(dir)) {
+        return packageDirs;
+    }
+
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        if (!entry.isDirectory() || entry.name.startsWith('.') || ['dist', 'node_modules', 'storybook-static'].includes(entry.name)) {
             continue;
         }
 

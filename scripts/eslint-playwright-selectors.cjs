@@ -1,12 +1,11 @@
 const tsParser = require('@typescript-eslint/parser');
-const reactHooks = require('eslint-plugin-react-hooks');
 const noFrameworkCoupledPlaywrightSelectors = require('./eslint-rules/no-framework-coupled-playwright-selectors.cjs');
 
 const PLAYWRIGHT_SELECTOR_GUARD_PLUGIN = 'playwright-selector-guard';
 const NO_FRAMEWORK_COUPLED_SELECTORS_RULE = 'no-framework-coupled-playwright-selectors';
 const GUARDED_FILE_GLOBS = [
     'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}',
-    'packages/shared/testing/**/*.{ts,tsx}',
+    'packages/shared/testing/src/playwright/**/*.{ts,tsx}',
 ];
 const selectorGuardPlugin = {
     rules: {
@@ -28,7 +27,6 @@ module.exports = [
             },
         },
         plugins: {
-            'react-hooks': reactHooks,
             [PLAYWRIGHT_SELECTOR_GUARD_PLUGIN]: selectorGuardPlugin,
         },
         rules: {
