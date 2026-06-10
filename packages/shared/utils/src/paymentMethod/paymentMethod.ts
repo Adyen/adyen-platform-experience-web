@@ -1,7 +1,7 @@
-import { IPaymentMethod } from '@integration-components/types';
-import { EMPTY_OBJECT } from '@integration-components/utils';
+import type { IPaymentMethod } from '@integration-components/types';
+import { EMPTY_OBJECT } from '../value/constants';
 
-const PAYMENT_METHODS = Object.freeze({
+const PAYMENT_METHODS: Record<string, string> = Object.freeze({
     klarna: 'Klarna',
     paypal: 'PayPal',
     klarna_paynow: 'Klarna Pay Now',
@@ -10,5 +10,5 @@ const PAYMENT_METHODS = Object.freeze({
 export const parsePaymentMethodType = (paymentMethod: NonNullable<IPaymentMethod>, format?: 'detail' | 'fourDigit') => {
     const { lastFourDigits, description, type } = paymentMethod ?? EMPTY_OBJECT;
     if (lastFourDigits) return format === 'detail' ? `•••• •••• •••• ${lastFourDigits}` : lastFourDigits;
-    return description || PAYMENT_METHODS[type as keyof typeof PAYMENT_METHODS] || type;
+    return description || PAYMENT_METHODS[type] || type;
 };

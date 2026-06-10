@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createDuplexTransactionNavigator } from './createDuplexTransactionNavigator';
+import { createDuplexTransactionNavigator } from '../../../../../../domain/src';
 
 describe('createDuplexTransactionNavigator', () => {
     let navigator: ReturnType<typeof createDuplexTransactionNavigator>;

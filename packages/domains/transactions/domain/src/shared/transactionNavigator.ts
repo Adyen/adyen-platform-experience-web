@@ -1,6 +1,22 @@
 import { EMPTY_ARRAY, enumerable, getter, isEmptyString, isFunction, isNullish, struct } from '@integration-components/utils';
-import type { TransactionNavigation, TransactionNavigationCallback, TransactionNavigator } from './types';
 import type { ITransaction } from '@integration-components/types';
+
+export interface TransactionNavigation {
+    get from(): ITransaction['id'] | undefined;
+    get to(): ITransaction['id'];
+}
+
+export type TransactionNavigationCallback = (navigation: TransactionNavigation) => unknown;
+
+export interface TransactionNavigator {
+    get canNavigateBackward(): boolean;
+    get canNavigateForward(): boolean;
+    get currentTransaction(): ITransaction['id'] | undefined;
+    readonly backward: () => void;
+    readonly forward: () => void;
+    readonly reset: (fromTransactionId?: ITransaction['id'], toTransactionId?: ITransaction['id']) => void;
+    set onNavigation(callback: TransactionNavigationCallback | null | undefined);
+}
 
 export const createDuplexTransactionNavigator = () => {
     let [currentTransactionId, previousTransactionId, fromTransactionId, toTransactionId] = EMPTY_ARRAY as readonly ITransaction['id'][];
@@ -51,10 +67,10 @@ export const createDuplexTransactionNavigator = () => {
     };
 
     const triggerNavigationCallback = () => {
-        if (isEmptyString(currentTransactionId)) return;
+        if (!currentTransactionId) return;
 
         const from = previousTransactionId;
-        const to = currentTransactionId!;
+        const to = currentTransactionId;
         previousTransactionId = undefined;
 
         onNavigation?.(

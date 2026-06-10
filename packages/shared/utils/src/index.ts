@@ -39,6 +39,7 @@ export * from './random/uuid';
 export * from './struct/main';
 export * from './struct/property';
 
+export * from './paymentMethod/paymentMethod';
 export * from './value/bool';
 export * from './value/compare';
 export * from './value/constants';

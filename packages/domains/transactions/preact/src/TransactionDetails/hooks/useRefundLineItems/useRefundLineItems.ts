@@ -2,7 +2,7 @@ import { ILineItem } from '@integration-components/types';
 import { EMPTY_ARRAY } from '@integration-components/utils';
 import { RefundLineItem, RefundLineItemUpdates } from '../../types';
 import { useCallback, useMemo, useState } from 'preact/hooks';
-import { updateRefundItems } from './helpers';
+import { updateRefundItems } from '../../../../../domain/src';
 
 export interface UseRefundLineItemsProps {
     lineItems: readonly ILineItem[];

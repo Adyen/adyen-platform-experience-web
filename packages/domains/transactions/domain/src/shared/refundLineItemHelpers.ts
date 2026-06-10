@@ -1,5 +1,5 @@
 import { clamp, EMPTY_ARRAY, isUndefined } from '@integration-components/utils';
-import { RefundLineItem, RefundLineItemUpdates } from '../../types';
+import type { RefundLineItem, RefundLineItemUpdates } from '../TransactionDetails/types';
 
 const _updateRefundItemQuantity = (
     refundableItems: Map<string, RefundLineItem>,
@@ -7,7 +7,9 @@ const _updateRefundItemQuantity = (
     refundItem: { id: string; quantity: number },
     refundQuantity = 0
 ) => {
-    const { ...refundableItem } = refundableItems.get(refundItem.id)!;
+    const itemFromMap = refundableItems.get(refundItem.id);
+    if (!itemFromMap) return;
+    const { ...refundableItem } = itemFromMap;
     const quantity = clamp(0, Math.trunc(refundQuantity), (refundableItem.quantity += refundItem.quantity));
 
     refundableItem.quantity -= quantity;

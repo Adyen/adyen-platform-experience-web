@@ -93,7 +93,9 @@ export const DEFAULT_EXPORT_COLUMNS: readonly (typeof EXPORT_COLUMNS)[number][] 
     'amountBeforeDeductions',
 ] as const;
 
-export const TRANSACTION_ANALYTICS_CATEGORY = 'Transaction component' as const;
-export const TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS = 'Transaction details' as const;
-export const TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS = 'Transactions insights' as const;
-export const TRANSACTION_ANALYTICS_SUBCATEGORY_LIST = 'Transactions list' as const;
+export {
+    TRANSACTION_ANALYTICS_CATEGORY,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
+    TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
+} from '../../../domain/src';

@@ -1,2 +1,2 @@
 export { default } from './PaymentMethodCell';
-export { parsePaymentMethodType } from './parsePaymentMethodType';
+export { parsePaymentMethodType } from '@integration-components/utils';
