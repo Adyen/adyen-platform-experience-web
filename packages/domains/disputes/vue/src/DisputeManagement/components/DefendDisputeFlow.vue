@@ -53,8 +53,17 @@ const showFeeAlert = ref(dispute.value?.dispute.type !== 'REQUEST_FOR_INFORMATIO
 const oneOrMoreSelectedDocument = ref<string | undefined>();
 const optionalSelectedDocuments = ref<(string | undefined)[]>([]);
 const callbackCalled = ref(false);
-const cachedDispute = dispute.value;
-const disputePspReference = cachedDispute?.dispute.pspReference;
+const cachedDispute = ref(dispute.value);
+
+watch(
+    dispute,
+    nextDispute => {
+        if (nextDispute) cachedDispute.value = nextDispute;
+    },
+    { immediate: true }
+);
+
+const disputePspReference = computed(() => cachedDispute.value?.dispute.pspReference);
 
 const defendDisputeTitle = computed(() =>
     dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
@@ -94,7 +103,8 @@ async function submitDefenseReason() {
         setFlowState('uploadDefenseFilesView');
         return;
     }
-    if (!isFunction(getApplicableDefenseDocuments) || !selectedDefenseReason.value || !disputePspReference) return;
+    const pspReference = disputePspReference.value;
+    if (!isFunction(getApplicableDefenseDocuments) || !selectedDefenseReason.value || !pspReference) return;
 
     isReasonSubmitting.value = true;
     reasonError.value = false;
@@ -103,7 +113,7 @@ async function submitDefenseReason() {
             {},
             {
                 query: { defenseReason: selectedDefenseReason.value },
-                path: { disputePspReference },
+                path: { disputePspReference: pspReference },
             }
         );
         setApplicableDocuments(response?.data ?? null);
@@ -207,14 +217,15 @@ function onFileChange(documentType: string | undefined, file: File | undefined) 
 }
 
 async function submitDefenseDocuments() {
-    if (!canSubmitDocuments.value || !isFunction(defendDispute) || !defendDisputePayload.value || !disputePspReference) return;
+    const pspReference = disputePspReference.value;
+    if (!canSubmitDocuments.value || !isFunction(defendDispute) || !defendDisputePayload.value || !pspReference) return;
 
     isSubmittingDefense.value = true;
     try {
         type DefendDisputeRequest = Parameters<EndpointHttpCallables<'defendDispute'>>[0];
         await defendDispute(
             { contentType: 'multipart/form-data', body: defendDisputePayload.value as unknown as DefendDisputeRequest['body'] },
-            { path: { disputePspReference } }
+            { path: { disputePspReference: pspReference } }
         );
         clearFiles();
         onDefendSubmit('success');
@@ -268,9 +279,10 @@ const uploadActionButtons = computed(() => [
 ]);
 
 watch(defendResponse, response => {
-    if (response !== 'success' || callbackCalled.value || !disputePspReference || !isFunction(props.onDisputeDefend)) return;
+    const pspReference = disputePspReference.value;
+    if (response !== 'success' || callbackCalled.value || !pspReference || !isFunction(props.onDisputeDefend)) return;
     callbackCalled.value = true;
-    props.onDisputeDefend({ id: disputePspReference });
+    props.onDisputeDefend({ id: pspReference });
 });
 </script>
 
