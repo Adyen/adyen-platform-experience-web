@@ -14,9 +14,18 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { acceptDispute } = useConfigContext().endpoints;
 const { dispute, clearStates, goBack } = useDisputeFlow();
-const cachedDispute = dispute.value;
-const disputePspReference = cachedDispute?.dispute.pspReference;
-const isRequestForInformation = cachedDispute?.dispute.type === 'REQUEST_FOR_INFORMATION';
+const cachedDispute = ref(dispute.value);
+
+watch(
+    dispute,
+    nextDispute => {
+        if (nextDispute) cachedDispute.value = nextDispute;
+    },
+    { immediate: true }
+);
+
+const disputePspReference = computed(() => cachedDispute.value?.dispute.pspReference);
+const isRequestForInformation = computed(() => cachedDispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION');
 
 const termsAgreed = ref(false);
 const disputeAccepted = ref(false);
@@ -24,27 +33,27 @@ const isLoading = ref(false);
 const callbackCalled = ref(false);
 
 const acceptedLabel = computed(() =>
-    isRequestForInformation
+    isRequestForInformation.value
         ? i18n.get('disputes.management.accept.requestForInformation.accepted')
         : i18n.get('disputes.management.accept.chargeback.accepted')
 );
 const acceptDisclaimer = computed(() =>
-    isRequestForInformation
+    isRequestForInformation.value
         ? i18n.get('disputes.management.accept.requestForInformation.disclaimer')
         : i18n.get('disputes.management.accept.chargeback.disclaimer')
 );
 const acceptTitle = computed(() =>
-    isRequestForInformation
+    isRequestForInformation.value
         ? i18n.get('disputes.management.accept.requestForInformation.title')
         : i18n.get('disputes.management.accept.chargeback.title')
 );
 const acceptButtonTitle = computed(() =>
-    isRequestForInformation
+    isRequestForInformation.value
         ? i18n.get('disputes.management.accept.requestForInformation.actions.accept')
         : i18n.get('disputes.management.accept.chargeback.actions.accept')
 );
 const interactionsDisabled = computed(() => isLoading.value || disputeAccepted.value);
-const canAcceptDispute = computed(() => termsAgreed.value && !interactionsDisabled.value && isFunction(acceptDispute) && !!disputePspReference);
+const canAcceptDispute = computed(() => termsAgreed.value && !interactionsDisabled.value && isFunction(acceptDispute) && !!disputePspReference.value);
 const actionButtons = computed(() => [
     {
         title: acceptButtonTitle.value,
@@ -63,12 +72,13 @@ const actionButtons = computed(() => [
 const acceptError = ref(false);
 
 async function acceptDisputeCallback() {
-    if (!canAcceptDispute.value || !isFunction(acceptDispute) || !disputePspReference) return;
+    const pspReference = disputePspReference.value;
+    if (!canAcceptDispute.value || !isFunction(acceptDispute) || !pspReference) return;
 
     isLoading.value = true;
     acceptError.value = false;
     try {
-        await acceptDispute({}, { path: { disputePspReference } });
+        await acceptDispute({}, { path: { disputePspReference: pspReference } });
         clearStates();
         disputeAccepted.value = true;
     } catch {
@@ -79,9 +89,10 @@ async function acceptDisputeCallback() {
 }
 
 watch(disputeAccepted, accepted => {
-    if (!accepted || callbackCalled.value || !disputePspReference || !isFunction(props.onDisputeAccept)) return;
+    const pspReference = disputePspReference.value;
+    if (!accepted || callbackCalled.value || !pspReference || !isFunction(props.onDisputeAccept)) return;
     callbackCalled.value = true;
-    props.onDisputeAccept({ id: disputePspReference });
+    props.onDisputeAccept({ id: pspReference });
 });
 </script>
 

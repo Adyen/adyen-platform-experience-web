@@ -5,6 +5,7 @@ import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-com
 import type { CoreInstance } from '@integration-components/core/vue';
 import { DisputeManagement } from '../../src';
 import { DisputeManagementMeta } from '../components/disputeManagement';
+import { AsyncAcceptDisputeFlow } from '../components/AsyncAcceptDisputeFlow';
 import { DISPUTE_DETAILS_HANDLERS } from '../../../mocks/mock-server/disputes';
 import { DISPUTES_ENDPOINTS } from '../../../mocks/endpoints';
 import { CHARGEBACK_ACCEPTABLE, RFI_UNRESPONDED } from '../../../mocks/mock-data/disputes';
@@ -69,6 +70,14 @@ export const DynamicDisputeId: ElementStory<typeof DisputeManagement> = {
                 }),
             ],
         },
+    },
+};
+
+export const AsyncAcceptFlow: ElementStory<typeof DisputeManagement> = {
+    name: 'Async accept flow',
+    args: {
+        component: AsyncAcceptDisputeFlow,
+        mockedApi: true,
     },
 };
 
