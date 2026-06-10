@@ -27,9 +27,8 @@ import {
 import Localization from '@integration-components/core/Localization';
 import { TRANSACTIONS_ENDPOINTS } from '../endpoints';
 import { delay as mswDelay, http, HttpResponse, PathParams } from 'msw';
-import { parsePaymentMethodType } from '@integration-components/utils';
 import { compareDates, computeHash, delay, getPaginationLinks } from '@integration-components/testing/msw';
-import { clamp, getMappedValue } from '@integration-components/utils';
+import { clamp, getMappedValue, parsePaymentMethodType } from '@integration-components/utils';
 
 type _ITransactionTotals = Omit<ITransactionTotal, 'currency'>;
 

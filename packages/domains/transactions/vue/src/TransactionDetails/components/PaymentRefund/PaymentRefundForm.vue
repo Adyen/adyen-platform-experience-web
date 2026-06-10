@@ -6,7 +6,7 @@ import PaymentRefundNotice from './PaymentRefundNotice.vue';
 import PaymentRefundReason from './PaymentRefundReason.vue';
 import PaymentRefundAmount from './PaymentRefundAmount.vue';
 import PaymentRefundActions from './PaymentRefundActions.vue';
-import { TX_DATA_CLASS, REFUND_REASONS, RefundMode } from '@integration-components/transactions/domain';
+import { REFUND_REASONS, RefundMode, TX_DATA_CLASS } from '@integration-components/transactions/domain';
 import { clamp } from '@integration-components/utils';
 import type { TransactionDetails, RefundReason, RefundResult } from '@integration-components/transactions/domain';
 import type { IRefundMode } from '@integration-components/types';
@@ -69,9 +69,7 @@ function onAmountChange(value: number) {
             @change="onAmountChange"
         />
         <BentoAlert v-if="maxAmountAlert" type="highlight" variant="tip">
-            <template #description>
-                {{ maxAmountAlert }}
-            </template>
+            <template #description>{{ maxAmountAlert }}</template>
         </BentoAlert>
         <PaymentRefundActions
             :begin-refund="props.beginRefund"

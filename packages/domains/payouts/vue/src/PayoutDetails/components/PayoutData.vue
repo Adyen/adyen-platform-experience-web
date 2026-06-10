@@ -31,6 +31,7 @@ import {
     PD_SECTION_CLASS,
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
+    PD_PAGE_TITLE_CLASS,
     PD_SUMMARY_CARD_HEADER_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
@@ -47,6 +48,7 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
+    hideTitle?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -208,6 +210,10 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 </script>
 
 <template>
+    <div v-if="!props.hideTitle" :class="PD_PAGE_TITLE_CLASS">
+        <BentoTypography variant="title">{{ i18n.get('payouts.details.title') }}</BentoTypography>
+    </div>
+
     <div v-if="payoutInner" :class="PD_BASE_CLASS">
         <!-- Title section -->
         <BentoCard>

@@ -43,9 +43,7 @@ watch(refundMeta.refundLocked, locked_ => {
 
 <template>
     <div v-if="!props.hideTitle" class="adyen-pe-transaction-data__title">
-        <BentoTypography variant="title">
-            {{ i18n.get('transactions.details.title') }}
-        </BentoTypography>
+        <BentoTypography variant="title">{{ i18n.get('transactions.details.title') }}</BentoTypography>
     </div>
 
     <div v-if="props.fetchingTransaction" class="adyen-pe-transaction-data__loading">

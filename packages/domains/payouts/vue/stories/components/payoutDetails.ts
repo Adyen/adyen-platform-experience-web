@@ -8,6 +8,7 @@ export const PayoutDetailsMeta: Meta<ElementProps<typeof PayoutDetails>> = {
     component: PayoutDetails,
     argTypes: {
         onContactSupport: enabledDisabledCallbackRadioControls('onContactSupport'),
+        hideTitle: { control: 'boolean' },
     },
     args: {
         component: PayoutDetails,

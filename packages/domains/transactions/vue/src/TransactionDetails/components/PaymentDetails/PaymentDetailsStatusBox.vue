@@ -4,9 +4,11 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoTag, BentoCard, BentoPaymentMethod } from '@adyen/bento-vue3';
 import './PaymentDetailsStatusBox.scss';
 import {
-    getTransactionCategory,
     getAmountStyleForTransaction,
     getRefundTypeForTransaction,
+    getTransactionCategory,
+    RefundedState,
+    RefundType,
     TX_DATA_CONTAINER,
     TX_STATUS_BOX,
     TX_DATA_AMOUNT,
@@ -14,8 +16,6 @@ import {
     TX_DATA_PAY_METHOD,
     TX_DATA_PAY_METHOD_LOGO_CONTAINER,
     TX_DATA_PAY_METHOD_DETAIL,
-    RefundedState,
-    RefundType,
 } from '@integration-components/transactions/domain';
 import type { TransactionDetails } from '@integration-components/transactions/domain';
 import { parsePaymentMethodType } from '@integration-components/utils';
@@ -88,9 +88,7 @@ const paymentMethodDetail = computed(() => {
                 </div>
 
                 <div :class="[TX_DATA_AMOUNT, ...amountClass]">
-                    <BentoTypography variant="title" large>
-                        {{ formattedAmount }}
-                    </BentoTypography>
+                    <BentoTypography variant="title" large>{{ formattedAmount }}</BentoTypography>
                 </div>
 
                 <div v-if="props.transaction.paymentMethod || props.transaction.bankAccount" :class="TX_DATA_PAY_METHOD">

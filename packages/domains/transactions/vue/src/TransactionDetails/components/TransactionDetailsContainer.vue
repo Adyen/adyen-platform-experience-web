@@ -89,9 +89,7 @@ onMounted(() => {
         </div>
 
         <div v-else-if="error" class="adyen-pe-overview-details--error-container">
-            <BentoTypography variant="body">
-                {{ i18n.get('transactions.details.errors.unavailable') }}
-            </BentoTypography>
+            <BentoTypography variant="body">{{ i18n.get('transactions.details.errors.unavailable') }}</BentoTypography>
             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">
                 {{ i18n.get('common.actions.contactSupport.labels.default') }}
             </BentoButton>

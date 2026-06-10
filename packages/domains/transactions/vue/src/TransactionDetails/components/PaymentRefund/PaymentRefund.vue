@@ -3,7 +3,7 @@ import { ref, watch, onMounted, onUnmounted } from 'vue';
 import { useEventDispatcherContext } from '@integration-components/core/vue';
 import PaymentRefundForm from './PaymentRefundForm.vue';
 import PaymentRefundResult from './PaymentRefundResult.vue';
-import { sharedTransactionDetailsEventProperties, ActiveView } from '@integration-components/transactions/domain';
+import { ActiveView, sharedTransactionDetailsEventProperties } from '@integration-components/transactions/domain';
 import type { TransactionDetails, RefundResult } from '@integration-components/transactions/domain';
 import type { ILineItem, IRefundMode } from '@integration-components/types';
 

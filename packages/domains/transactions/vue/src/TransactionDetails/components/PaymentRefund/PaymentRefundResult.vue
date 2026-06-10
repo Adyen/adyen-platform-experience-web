@@ -34,12 +34,8 @@ const iconClass = computed(() => [TX_REFUND_RESPONSE_ICON, isError.value ? TX_RE
     <div :class="TX_REFUND_RESPONSE">
         <CrossCircleFillIcon v-if="isError" :class="iconClass" />
         <CheckmarkCircleFillIcon v-else :class="iconClass" />
-        <BentoTypography variant="title" large>
-            {{ i18n.get(titleKey) }}
-        </BentoTypography>
-        <BentoTypography variant="body">
-            {{ i18n.get(descriptionKey) }}
-        </BentoTypography>
+        <BentoTypography variant="title" large>{{ i18n.get(titleKey) }}</BentoTypography>
+        <BentoTypography variant="body">{{ i18n.get(descriptionKey) }}</BentoTypography>
         <BentoButton
             variant="secondary"
             @click="

@@ -112,9 +112,7 @@ function onCopyText(text: string, trackingName?: string) {
         <BentoStructuredListItem v-for="item in standardItems" :key="item.id ?? item.key" :label="i18n.get(item.key)">
             <template v-if="item.copyable" #default>
                 <div style="display: flex; align-items: center; gap: 4px">
-                    <BentoTypography variant="body">
-                        {{ item.value }}
-                    </BentoTypography>
+                    <BentoTypography variant="body">{{ item.value }}</BentoTypography>
                     <BentoButton
                         variant="tertiary"
                         :aria-label="i18n.get(`transactions.details.actions.copy${item.trackingName?.replace(' ', '') ?? ''}` as TranslationKey)"
@@ -125,9 +123,7 @@ function onCopyText(text: string, trackingName?: string) {
                 </div>
             </template>
             <template v-else #default>
-                <BentoTypography variant="body">
-                    {{ item.value }}
-                </BentoTypography>
+                <BentoTypography variant="body">{{ item.value }}</BentoTypography>
             </template>
         </BentoStructuredListItem>
 
@@ -144,13 +140,9 @@ function onCopyText(text: string, trackingName?: string) {
             </BentoLink>
             <div v-else-if="item.type === 'icon' && item.config" :class="item.config.className">
                 <img :src="item.config.src" :alt="item.config.alt || item.value" />
-                <BentoTypography variant="body">
-                    {{ item.value }}
-                </BentoTypography>
+                <BentoTypography variant="body">{{ item.value }}</BentoTypography>
             </div>
-            <BentoTypography v-else variant="body" :class="item.config?.className">
-                {{ item.value }}
-            </BentoTypography>
+            <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
 </template>

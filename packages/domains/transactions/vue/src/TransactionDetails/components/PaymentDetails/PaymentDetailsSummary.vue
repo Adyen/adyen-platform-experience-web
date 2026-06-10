@@ -67,9 +67,7 @@ const summaryItems = computed<SummaryItem[]>(() => {
 <template>
     <BentoStructuredList :class="TX_DATA_LIST">
         <BentoStructuredListItem v-for="item in summaryItems" :key="item.key" :label="i18n.get(item.key)" :search-tooltip="item.tooltip ?? undefined">
-            <BentoTypography variant="body" :strongest="item.stronger">
-                {{ item.value }}
-            </BentoTypography>
+            <BentoTypography variant="body" :strongest="item.stronger">{{ item.value }}</BentoTypography>
         </BentoStructuredListItem>
     </BentoStructuredList>
 </template>

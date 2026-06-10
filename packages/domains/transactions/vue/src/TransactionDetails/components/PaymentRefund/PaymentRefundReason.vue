@@ -34,9 +34,7 @@ const refundReasons = computed(() =>
 <template>
     <div :class="TX_DATA_CONTAINER">
         <div :class="TX_DATA_INPUT_HEAD">
-            <BentoTypography variant="body" stronger>
-                {{ i18n.get('transactions.details.refund.inputs.reason.label') }}
-            </BentoTypography>
+            <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.reason.label') }}</BentoTypography>
         </div>
         <div :class="[TX_DATA_INPUT_CONTAINER, TX_DATA_INPUT_CONTAINER_SHORT]">
             <BentoDropdown

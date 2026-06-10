@@ -98,4 +98,4 @@ export {
     TRANSACTION_ANALYTICS_SUBCATEGORY_DETAILS,
     TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
-} from '@integration-components/transactions/domain';
+} from '../../../domain/src';

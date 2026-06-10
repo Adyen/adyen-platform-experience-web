@@ -85,9 +85,7 @@ function onInput(rawValue: string) {
 <template>
     <div :class="TX_DATA_CONTAINER">
         <div :class="TX_DATA_INPUT_HEAD">
-            <BentoTypography variant="body" stronger>
-                {{ i18n.get('transactions.details.refund.inputs.amount.label') }}
-            </BentoTypography>
+            <BentoTypography variant="body" stronger>{{ i18n.get('transactions.details.refund.inputs.amount.label') }}</BentoTypography>
         </div>
         <div :class="containerClass">
             <BentoInputField
@@ -97,13 +95,11 @@ function onInput(rawValue: string) {
                 :disabled="props.disabled"
                 :value="inputValue"
                 :min="0"
-                :error-message="errorMessage || undefined"
+                :errorMessage="errorMessage || undefined"
                 :lang="i18n.locale"
                 @input="onInput"
             >
-                <template v-if="props.currency" #staticValue>
-                    {{ props.currency }}
-                </template>
+                <template v-if="props.currency" #staticValue>{{ props.currency }}</template>
             </BentoInputField>
         </div>
     </div>

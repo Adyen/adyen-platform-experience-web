@@ -9,14 +9,14 @@ import PaymentDetailsTimeline from './PaymentDetailsTimeline.vue';
 import PaymentRefundAlerts from './PaymentRefundAlerts.vue';
 import PaymentDetailsActions from './PaymentDetailsActions.vue';
 import {
-    TX_DETAILS_TABS,
+    ActiveView,
+    DetailsTab,
+    REFUND_STATUSES,
+    RefundedState,
     TX_DATA_CLASS,
     TX_DATA_CONTAINER,
     TX_DATA_TABS,
-    ActiveView,
-    DetailsTab,
-    RefundedState,
-    REFUND_STATUSES,
+    TX_DETAILS_TABS,
 } from '@integration-components/transactions/domain';
 import type { TransactionDetails, TransactionDetailsCustomization } from '@integration-components/transactions/domain';
 import { useTransaction } from '../../composables/useTransaction.js';
@@ -87,10 +87,10 @@ const onTabChange = (newIndex: number) => {
 
         <div :class="TX_DATA_CONTAINER">
             <BentoTabs
-                v-if="navigationTabs.length > 1"
                 :class="TX_DATA_TABS"
+                v-if="navigationTabs.length > 1"
                 :aria-label="i18n.get('transactions.details.viewSelect.a11y.label')"
-                :active-tab-index="activeTabIndex"
+                :activeTabIndex="activeTabIndex"
                 @update:active-tab-index="onTabChange"
             >
                 <BentoTab v-for="tab in navigationTabs" :key="tab.id" :title="i18n.get(tab.label)" />

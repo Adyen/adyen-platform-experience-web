@@ -31,7 +31,7 @@ function getFixedType(status: string, formattedType: string): string {
             :key="`${event.createdAt}-${event.status}-${index}`"
             :title="getFixedType(event.status, getTransactionTimelineTxType(i18n, event.type) as string)"
             :timestamp="{ date: new Date(event.createdAt) }"
-            :data-list="[
+            :dataList="[
                 {
                     label: i18n.get('transactions.details.timeline.fields.amount'),
                     value: formatAmount(event.amount.value, event.amount.currency),
