@@ -334,6 +334,9 @@ export const DataCustomization: ElementStory<typeof DisputeManagement> = {
             details: {
                 fields: [
                     { key: 'id', visibility: 'hidden' },
+                    { key: 'createdAt', visibility: 'hidden' },
+                    { key: 'dueDate', visibility: 'hidden' },
+                    { key: 'balanceAccount', visibility: 'hidden' },
                     { key: '_store' },
                     { key: '_product' },
                     { key: '_summary' },

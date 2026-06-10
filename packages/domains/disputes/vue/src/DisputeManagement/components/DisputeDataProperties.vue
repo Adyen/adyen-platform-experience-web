@@ -11,6 +11,7 @@ import {
     getDefenseReasonContent,
     getDisputeReason,
     isDisputeActionNeeded,
+    type DisputeDetailsFields,
     type DisputeDetailsCustomization,
     type TranslationConfigItem,
 } from '@integration-components/disputes/domain';
@@ -37,6 +38,16 @@ type DetailItem =
     | { id: string; label: TranslationKey; kind: 'evidence'; value: string[] };
 
 const DISPUTE_STATUSES_WITH_ACCEPTED_DATE: IDisputeStatus[] = ['ACCEPTED', 'EXPIRED'];
+const RESERVED_FIELD_MAPPING = {
+    openedOn: 'createdAt',
+    respondBy: 'dueDate',
+    expiredOn: 'dueDate',
+    disputeId: 'id',
+    account: 'balanceAccount',
+    defenseReason: 'latestDefense',
+    defendedOn: 'latestDefense',
+    disputeEvidence: 'latestDefense',
+} satisfies Partial<Record<string, DisputeDetailsFields>>;
 
 const props = defineProps<{
     dispute: IDisputeDetail;
@@ -56,7 +67,8 @@ const hiddenFields = computed(
 );
 
 function isVisible(id: string) {
-    return !hiddenFields.value.has(id);
+    const mappedId = RESERVED_FIELD_MAPPING[id] ?? id;
+    return !hiddenFields.value.has(mappedId);
 }
 
 function isCustomDataObject(value: unknown): value is CustomDataValue {

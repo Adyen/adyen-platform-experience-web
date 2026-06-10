@@ -30,6 +30,11 @@ test.describe('Data Customization', () => {
             expect(actionButton).toBeVisible(),
         ]);
 
+        await expect(page.getByText('Dispute reference', { exact: true })).not.toBeVisible();
+        await expect(page.getByText('Opened on', { exact: true })).not.toBeVisible();
+        await expect(page.getByText('Respond by', { exact: true })).not.toBeVisible();
+        await expect(page.getByText('Account', { exact: true })).not.toBeVisible();
+
         const [newPage] = await Promise.all([page.context().waitForEvent('page'), summaryLink.click()]);
 
         await newPage.waitForLoadState();
