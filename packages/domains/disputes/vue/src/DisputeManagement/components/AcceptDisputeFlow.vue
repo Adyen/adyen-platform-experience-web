@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import { isFunction } from '@integration-components/utils';
@@ -60,14 +60,19 @@ const actionButtons = computed(() => [
     },
 ]);
 
+const acceptError = ref(false);
+
 async function acceptDisputeCallback() {
     if (!canAcceptDispute.value || !isFunction(acceptDispute) || !disputePspReference) return;
 
     isLoading.value = true;
+    acceptError.value = false;
     try {
         await acceptDispute({}, { path: { disputePspReference } });
         clearStates();
         disputeAccepted.value = true;
+    } catch {
+        acceptError.value = true;
     } finally {
         isLoading.value = false;
     }
@@ -103,6 +108,11 @@ watch(disputeAccepted, accepted => {
                     {{ i18n.get('disputes.management.accept.common.agree') }}
                 </BentoCheckbox>
             </div>
+            <BentoAlert v-if="acceptError" type="critical" role="alert">
+                <template #description>
+                    {{ i18n.get('disputes.management.common.errors.unavailable') }}
+                </template>
+            </BentoAlert>
             <div class="adyen-pe-accept-dispute__actions">
                 <BentoButtonActions :actions="actionButtons" />
             </div>

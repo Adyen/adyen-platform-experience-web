@@ -97,15 +97,24 @@
         gap: style.token(spacer-040);
     }
 
-    &__success,
-    &__error,
     &__response {
-        align-items: center;
         display: flex;
         flex-direction: column;
         gap: style.token(spacer-070);
-        justify-content: center;
-        text-align: center;
+        width: 100%;
+    }
+
+    &__success,
+    &__error {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &__success-actions,
+    &__error-actions {
+        align-self: center;
     }
 }
 
@@ -176,6 +185,10 @@
             background: style.token(color-background-secondary);
         }
     }
+}
+
+.adyen-pe-defend-dispute-document-requirements {
+    flex: 1;
 }
 
 .adyen-pe-defend-dispute-file-uploader {

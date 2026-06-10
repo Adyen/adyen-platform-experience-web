@@ -45,6 +45,7 @@ const {
 } = useDisputeFlow();
 
 const isReasonSubmitting = ref(false);
+const reasonError = ref(false);
 const isSubmittingDefense = ref(false);
 const showFeeAlert = ref(dispute.value?.dispute.type !== 'REQUEST_FOR_INFORMATION');
 const oneOrMoreSelectedDocument = ref<string | undefined>();
@@ -94,6 +95,7 @@ async function submitDefenseReason() {
     if (!isFunction(getApplicableDefenseDocuments) || !selectedDefenseReason.value || !disputePspReference) return;
 
     isReasonSubmitting.value = true;
+    reasonError.value = false;
     try {
         const response = await getApplicableDefenseDocuments(
             {},
@@ -104,6 +106,8 @@ async function submitDefenseReason() {
         );
         setApplicableDocuments(response?.data ?? null);
         if (response?.data?.length) setFlowState('uploadDefenseFilesView');
+    } catch {
+        reasonError.value = true;
     } finally {
         isReasonSubmitting.value = false;
     }
@@ -307,6 +311,11 @@ watch(defendResponse, response => {
                     {{ i18n.get('disputes.management.defend.chargeback.feeInfo') }}
                 </template>
             </BentoAlert>
+            <BentoAlert v-if="reasonError" type="critical" role="alert">
+                <template #description>
+                    {{ i18n.get('disputes.management.common.errors.unavailable') }}
+                </template>
+            </BentoAlert>
             <div class="adyen-pe-defend-dispute__actions">
                 <BentoButtonActions :actions="reasonActionButtons" />
             </div>
@@ -318,7 +327,7 @@ watch(defendResponse, response => {
             </BentoTypography>
             <BentoCard expandable closed>
                 <template #header>
-                    <BentoTypography variant="body" strongest>
+                    <BentoTypography class="adyen-pe-defend-dispute-document-requirements" variant="body" strongest>
                         {{ i18n.get('disputes.management.defend.common.documentRequirements') }}
                     </BentoTypography>
                 </template>
@@ -447,9 +456,11 @@ watch(defendResponse, response => {
                         {{ i18n.get('disputes.management.defend.chargeback.submitSuccessInfo') }}
                     </template>
                 </BentoAlert>
-                <BentoButton variant="secondary" @click="goBackToDetails">
-                    {{ i18n.get('disputes.management.common.actions.showDetails') }}
-                </BentoButton>
+                <div class="adyen-pe-defend-dispute__success-actions">
+                    <BentoButton variant="secondary" @click="goBackToDetails">
+                        {{ i18n.get('disputes.management.common.actions.showDetails') }}
+                    </BentoButton>
+                </div>
             </div>
             <div v-else class="adyen-pe-defend-dispute__error">
                 <BentoAlert type="critical">
@@ -458,9 +469,11 @@ watch(defendResponse, response => {
                         {{ i18n.get('disputes.management.defend.common.errors.defenseFailed') }}
                     </template>
                 </BentoAlert>
-                <BentoButton variant="secondary" @click="goBackToFileUploadView">
-                    {{ i18n.get('disputes.management.common.actions.goBack') }}
-                </BentoButton>
+                <div class="adyen-pe-defend-dispute__error-actions">
+                    <BentoButton variant="secondary" @click="goBackToFileUploadView">
+                        {{ i18n.get('disputes.management.common.actions.goBack') }}
+                    </BentoButton>
+                </div>
             </div>
         </div>
     </div>

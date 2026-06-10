@@ -2,18 +2,18 @@
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoTag, BentoTypography } from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
-import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
     getDisputeType,
     isDisputeActionNeeded,
     type DisputeDetailsCustomization,
 } from '@integration-components/disputes/domain';
-import { DATE_FORMAT_RESPONSE_DEADLINE, isFunction } from '@integration-components/utils';
+import { isFunction } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
+import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
@@ -62,8 +62,6 @@ const showContactSupport = computed(
 const isDefendable = computed(() => !!defensibility.value && defensibility.value === 'DEFENDABLE' && defendAuthorization.value);
 const isAcceptable = computed(() => !!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility.value) && acceptAuthorization.value);
 
-const { dateFormat } = useTimezoneAwareDateFormatting(dispute.value?.payment.balanceAccount?.timeZone);
-
 const issuerComments = computed(() => {
     const { chargeback, preArbitration } = dispute.value?.dispute.issuerExtraData ?? {};
     const comments: string[] = [];
@@ -90,40 +88,6 @@ const alertMode = computed<DisputeDataAlertMode | undefined>(() => {
     if (currentDispute.dispute.status === 'LOST' && !(isFraudNotification.value || isDefended.value)) return 'notDefended';
     return undefined;
 });
-
-const alertText = computed(() => {
-    const currentDispute = dispute.value?.dispute;
-    if (!currentDispute || !alertMode.value) return undefined;
-
-    switch (alertMode.value) {
-        case 'contactSupport': {
-            const translationKey =
-                currentDispute.type === 'REQUEST_FOR_INFORMATION'
-                    ? 'disputes.management.details.alerts.contactSupport.requestForInformation'
-                    : currentDispute.type === 'NOTIFICATION_OF_FRAUD'
-                      ? 'disputes.management.details.alerts.contactSupport.notificationOfFraud'
-                      : 'disputes.management.details.alerts.contactSupport.chargeback';
-            const message = i18n.get(translationKey);
-            if (currentDispute.type === 'NOTIFICATION_OF_FRAUD' || !currentDispute.dueDate) return message;
-            return `${message} ${i18n.get('disputes.management.details.alerts.responseDeadline', {
-                values: { date: dateFormat(currentDispute.dueDate, DATE_FORMAT_RESPONSE_DEADLINE) },
-            })}`;
-        }
-        case 'autoDefended':
-            return i18n.get('disputes.management.details.alerts.autoDefended');
-        case 'notDefended':
-            return i18n.get(
-                currentDispute.status === 'EXPIRED'
-                    ? 'disputes.management.details.alerts.notDefendedExpired'
-                    : 'disputes.management.details.alerts.notDefendedLost'
-            );
-        case 'notDefendable':
-            return i18n.get('disputes.management.details.alerts.notDefendable');
-    }
-    return undefined;
-});
-
-const alertType = computed(() => (alertMode.value === 'contactSupport' ? 'warning' : 'highlight'));
 
 const defendButtonLabel = computed(() =>
     dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
@@ -297,11 +261,7 @@ function formatPaymentMethod(currentDispute: IDisputeDetail) {
 
             <DisputeIssuerComments v-if="issuerComments.length > 0" :issuer-comments="issuerComments" />
 
-            <BentoAlert v-if="alertText" :type="alertType" role="alert" variant="tip">
-                <template #description>
-                    {{ alertText }}
-                </template>
-            </BentoAlert>
+            <DisputeDataAlert v-if="alertMode" :alert-mode="alertMode" :dispute="dispute" />
 
             <DisputeDataProperties
                 :dispute="dispute"
