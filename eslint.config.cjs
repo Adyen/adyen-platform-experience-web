@@ -1,5 +1,7 @@
 'use strict';
 
+const { existsSync, readdirSync } = require('node:fs');
+const { join, relative } = require('node:path');
 const js = require('@eslint/js');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
@@ -11,6 +13,30 @@ const a11y = require('eslint-plugin-jsx-a11y');
 const testingLib = require('eslint-plugin-testing-library');
 const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
+
+const getWorkspacePackageDirs = (dir = join(__dirname, 'packages'), packageDirs = ['.']) => {
+    if (!existsSync(dir)) {
+        return packageDirs;
+    }
+
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        if (!entry.isDirectory() || entry.name.startsWith('.') || ['dist', 'node_modules', 'storybook-static'].includes(entry.name)) {
+            continue;
+        }
+
+        const entryPath = join(dir, entry.name);
+
+        if (existsSync(join(entryPath, 'package.json'))) {
+            packageDirs.push(relative(__dirname, entryPath));
+        }
+
+        getWorkspacePackageDirs(entryPath, packageDirs);
+    }
+
+    return packageDirs;
+};
+
+const workspacePackageDirs = getWorkspacePackageDirs();
 
 module.exports = [
     // Global ignores
@@ -240,7 +266,14 @@ module.exports = [
     {
         files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing}/**/*.{ts,tsx}'],
         rules: {
-            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, packageDir: ['.'] }],
+            'import-x/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: true,
+                    peerDependencies: true,
+                    packageDir: workspacePackageDirs,
+                },
+            ],
         },
     },
 
