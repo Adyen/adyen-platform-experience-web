@@ -53,11 +53,7 @@ export function useDownload(
 
     watch(fetchKey, newKey => {
         if (!newKey) {
-            if (abortController) {
-                abortController.abort();
-                abortController = null;
-            }
-            isFetching.value = false;
+            // enabled became false — let any in-flight request complete naturally
             return;
         }
         void runDownload();
