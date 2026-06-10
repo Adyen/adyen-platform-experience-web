@@ -4,11 +4,9 @@ import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTypography, BentoTag, BentoCard, BentoPaymentMethod } from '@adyen/bento-vue3';
 import './PaymentDetailsStatusBox.scss';
 import {
+    getTransactionCategory,
     getAmountStyleForTransaction,
     getRefundTypeForTransaction,
-    getTransactionCategory,
-    RefundedState,
-    RefundType,
     TX_DATA_CONTAINER,
     TX_STATUS_BOX,
     TX_DATA_AMOUNT,
@@ -16,8 +14,10 @@ import {
     TX_DATA_PAY_METHOD,
     TX_DATA_PAY_METHOD_LOGO_CONTAINER,
     TX_DATA_PAY_METHOD_DETAIL,
-} from '@integration-components/transactions/domain';
-import type { TransactionDetails } from '@integration-components/transactions/domain';
+    RefundedState,
+    RefundType,
+} from '../../../../../domain/src';
+import type { TransactionDetails } from '../../../../../domain/src';
 import { parsePaymentMethodType } from '@integration-components/utils';
 
 const props = defineProps<{

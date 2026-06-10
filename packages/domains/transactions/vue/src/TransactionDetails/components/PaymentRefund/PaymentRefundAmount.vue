@@ -9,7 +9,7 @@ import {
     TX_DATA_INPUT_CONTAINER_TEXT,
     TX_DATA_INPUT_CONTAINER_WITH_ERROR,
     TX_DATA_INPUT_HEAD,
-} from '@integration-components/transactions/domain';
+} from '../../../../../domain/src';
 import { getDecimalAmount, getDivider } from '@integration-components/core/Localization/amount/amount-util';
 import { useUniqueId } from '@integration-components/composables-vue';
 

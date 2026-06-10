@@ -1,8 +1,8 @@
 import { computed } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { boolOrFalse, isFunction } from '@integration-components/utils';
-import { RefundMode, RefundedState, REFUND_STATUSES } from '@integration-components/transactions/domain';
-import type { TransactionDetails } from '@integration-components/transactions/domain';
+import { RefundMode, RefundedState, REFUND_STATUSES } from '../../../../domain/src';
+import type { TransactionDetails } from '../../../../domain/src';
 import type { IRefundMode } from '@integration-components/types';
 
 export function useRefundMetadata(transaction: () => TransactionDetails | undefined) {

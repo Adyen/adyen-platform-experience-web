@@ -6,9 +6,9 @@ import PaymentRefundNotice from './PaymentRefundNotice.vue';
 import PaymentRefundReason from './PaymentRefundReason.vue';
 import PaymentRefundAmount from './PaymentRefundAmount.vue';
 import PaymentRefundActions from './PaymentRefundActions.vue';
-import { REFUND_REASONS, RefundMode, TX_DATA_CLASS } from '@integration-components/transactions/domain';
+import { TX_DATA_CLASS, REFUND_REASONS, RefundMode } from '../../../../../domain/src';
 import { clamp } from '@integration-components/utils';
-import type { TransactionDetails, RefundReason, RefundResult } from '@integration-components/transactions/domain';
+import type { TransactionDetails, RefundReason, RefundResult } from '../../../../../domain/src';
 import type { IRefundMode } from '@integration-components/types';
 
 const props = defineProps<{

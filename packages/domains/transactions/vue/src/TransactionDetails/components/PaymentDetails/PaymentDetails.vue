@@ -9,16 +9,16 @@ import PaymentDetailsTimeline from './PaymentDetailsTimeline.vue';
 import PaymentRefundAlerts from './PaymentRefundAlerts.vue';
 import PaymentDetailsActions from './PaymentDetailsActions.vue';
 import {
-    ActiveView,
-    DetailsTab,
-    REFUND_STATUSES,
-    RefundedState,
+    TX_DETAILS_TABS,
     TX_DATA_CLASS,
     TX_DATA_CONTAINER,
     TX_DATA_TABS,
-    TX_DETAILS_TABS,
-} from '@integration-components/transactions/domain';
-import type { TransactionDetails, TransactionDetailsCustomization } from '@integration-components/transactions/domain';
+    ActiveView,
+    DetailsTab,
+    RefundedState,
+    REFUND_STATUSES,
+} from '../../../../../domain/src';
+import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import { useTransaction } from '../../composables/useTransaction.js';
 import './PaymentDetails.scss';
 

@@ -2,13 +2,8 @@
 import { computed } from 'vue';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
-import {
-    ActiveView,
-    sharedTransactionDetailsEventProperties,
-    TX_DATA_ACTION_BAR,
-    TX_DATA_CONTAINER,
-} from '@integration-components/transactions/domain';
-import type { TransactionDetails } from '@integration-components/transactions/domain';
+import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties, ActiveView } from '../../../../../domain/src';
+import type { TransactionDetails } from '../../../../../domain/src';
 import type { useTransaction } from '../../composables/useTransaction';
 
 type TransactionNavigatorState = ReturnType<typeof useTransaction>['transactionNavigator']['value'];

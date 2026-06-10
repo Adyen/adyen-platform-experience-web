@@ -1,5 +1,5 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { TransactionDetailsCustomization } from '@integration-components/transactions/domain';
+import type { TransactionDetailsCustomization } from '../../../domain/src';
 
 export interface TransactionDetailsExternalProps {
     core: CoreInstance;

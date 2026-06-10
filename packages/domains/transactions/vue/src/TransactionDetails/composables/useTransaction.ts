@@ -2,8 +2,8 @@ import { ref, computed, watch, onUnmounted } from 'vue';
 import { useConfigContext } from '@integration-components/core/vue';
 import { useBalanceAccounts } from '@integration-components/composables-vue';
 import { isFunction } from '@integration-components/utils';
-import { createDuplexTransactionNavigator } from '@integration-components/transactions/domain';
-import type { TransactionDetails, TransactionNavigator } from '@integration-components/transactions/domain';
+import { createDuplexTransactionNavigator } from '../../../../domain/src';
+import type { TransactionDetails, TransactionNavigator } from '../../../../domain/src';
 
 const getNavigatorState = (nav: TransactionNavigator) => ({
     canNavigateBackward: nav.canNavigateBackward,
