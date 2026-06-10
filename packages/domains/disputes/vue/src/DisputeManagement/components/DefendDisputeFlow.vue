@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { BentoAlert, BentoButton, BentoButtonActions, BentoCard, BentoTypography } from '@adyen/bento-vue3';
+import CheckmarkCircleFillIcon from '@adyen/ui-assets-icons-40/vue/checkmark-circle-filled';
+import CrossCircleFillIcon from '@adyen/ui-assets-icons-40/vue/cross-circle-filled';
 import PlusIcon from '@adyen/ui-assets-icons-16/vue/plus';
 import BinIcon from '@adyen/ui-assets-icons-16/vue/bin';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
@@ -298,8 +300,15 @@ watch(defendResponse, response => {
                 >
                     {{ description }}
                 </BentoTypography>
-                <ul v-if="selectedReasonContent?.secondaryDescriptionItems?.length">
-                    <li v-for="description in selectedReasonContent.secondaryDescriptionItems" :key="description">
+                <ul
+                    v-if="selectedReasonContent?.secondaryDescriptionItems?.length"
+                    class="adyen-pe-defend-dispute-reason__secondary-description-items-container"
+                >
+                    <li
+                        v-for="description in selectedReasonContent.secondaryDescriptionItems"
+                        :key="description"
+                        class="adyen-pe-defend-dispute-reason__secondary-description-item"
+                    >
                         <BentoTypography class="adyen-pe-defend-dispute-reason__description" variant="body">
                             {{ description }}
                         </BentoTypography>
@@ -325,7 +334,7 @@ watch(defendResponse, response => {
             <BentoTypography class="adyen-pe-defend-dispute-file-uploader__subtitle" variant="body">
                 {{ i18n.get('disputes.management.defend.common.documentUploadInfo') }}
             </BentoTypography>
-            <BentoCard expandable closed>
+            <BentoCard expandable closed background="secondary">
                 <template #header>
                     <BentoTypography class="adyen-pe-defend-dispute-document-requirements" variant="body" strongest>
                         {{ i18n.get('disputes.management.defend.common.documentRequirements') }}
@@ -354,45 +363,49 @@ watch(defendResponse, response => {
 
             <div class="adyen-pe-defend-dispute-file-uploader__container">
                 <div v-if="requiredDocuments.length || oneOrMoreDocuments.length" class="adyen-pe-defend-dispute-document-upload-box">
-                    <div v-for="documentType in requiredDocuments" :key="documentType" class="adyen-pe-defend-dispute-document-upload">
-                        <BentoTypography variant="body" strongest>
-                            {{ getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType }}
-                        </BentoTypography>
-                        <BentoTypography
-                            v-for="description in getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.primaryDescriptionItems ?? []"
-                            :key="description"
-                            variant="body"
-                        >
-                            {{ description }}
-                        </BentoTypography>
-                        <DisputeFileInput :disabled="isSubmittingDefense" required @change="file => onFileChange(documentType, file)" />
-                    </div>
+                    <div class="adyen-pe-defend-dispute-document-upload-box__required-documents">
+                        <div v-for="documentType in requiredDocuments" :key="documentType" class="adyen-pe-defend-dispute-document-upload">
+                            <BentoTypography variant="body" strongest>
+                                {{ getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.title ?? documentType }}
+                            </BentoTypography>
+                            <BentoTypography
+                                v-for="description in getDefenseDocumentContent(defenseDocumentConfig, i18n, documentType)?.primaryDescriptionItems ??
+                                []"
+                                :key="description"
+                                variant="body"
+                            >
+                                {{ description }}
+                            </BentoTypography>
+                            <DisputeFileInput :disabled="isSubmittingDefense" required @change="file => onFileChange(documentType, file)" />
+                        </div>
 
-                    <div v-if="oneOrMoreDocuments.length" class="adyen-pe-defend-dispute-document-upload">
-                        <BentoTypography variant="body" strongest>
-                            {{ i18n.get('disputes.management.defend.common.documentTypes.required') }}
-                        </BentoTypography>
-                        <SelectDropdown
-                            :items="oneOrMoreDocuments"
-                            :model-value="oneOrMoreSelectedDocument"
-                            :placeholder="i18n.get('disputes.management.defend.common.inputs.documentSelect.a11y.label')"
-                            :disabled="isSubmittingDefense"
-                            @update:model-value="updateOneOrMoreSelection"
-                        />
-                        <BentoTypography
-                            v-for="description in oneOrMoreSelectedDocument
-                                ? (getDefenseDocumentContent(defenseDocumentConfig, i18n, oneOrMoreSelectedDocument)?.primaryDescriptionItems ?? [])
-                                : []"
-                            :key="description"
-                            variant="body"
-                        >
-                            {{ description }}
-                        </BentoTypography>
-                        <DisputeFileInput
-                            :disabled="isSubmittingDefense || !oneOrMoreSelectedDocument"
-                            required
-                            @change="file => onFileChange(oneOrMoreSelectedDocument, file)"
-                        />
+                        <div v-if="oneOrMoreDocuments.length" class="adyen-pe-defend-dispute-document-upload">
+                            <BentoTypography variant="body" strongest>
+                                {{ i18n.get('disputes.management.defend.common.documentTypes.required') }}
+                            </BentoTypography>
+                            <SelectDropdown
+                                :items="oneOrMoreDocuments"
+                                :model-value="oneOrMoreSelectedDocument"
+                                :placeholder="i18n.get('disputes.management.defend.common.inputs.documentSelect.a11y.label')"
+                                :disabled="isSubmittingDefense"
+                                @update:model-value="updateOneOrMoreSelection"
+                            />
+                            <BentoTypography
+                                v-for="description in oneOrMoreSelectedDocument
+                                    ? (getDefenseDocumentContent(defenseDocumentConfig, i18n, oneOrMoreSelectedDocument)?.primaryDescriptionItems ??
+                                      [])
+                                    : []"
+                                :key="description"
+                                variant="body"
+                            >
+                                {{ description }}
+                            </BentoTypography>
+                            <DisputeFileInput
+                                :disabled="isSubmittingDefense || !oneOrMoreSelectedDocument"
+                                required
+                                @change="file => onFileChange(oneOrMoreSelectedDocument, file)"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -450,30 +463,28 @@ watch(defendResponse, response => {
 
         <div v-else class="adyen-pe-defend-dispute__response">
             <div v-if="defendResponse === 'success'" class="adyen-pe-defend-dispute__success">
-                <BentoAlert type="success">
+                <CheckmarkCircleFillIcon class="adyen-pe-defend-dispute__success-icon" />
+                <BentoTypography variant="title">
                     {{ i18n.get('disputes.management.defend.common.evidenceSubmitted') }}
-                    <template #description>
-                        {{ i18n.get('disputes.management.defend.chargeback.submitSuccessInfo') }}
-                    </template>
-                </BentoAlert>
-                <div class="adyen-pe-defend-dispute__success-actions">
-                    <BentoButton variant="secondary" @click="goBackToDetails">
-                        {{ i18n.get('disputes.management.common.actions.showDetails') }}
-                    </BentoButton>
-                </div>
+                </BentoTypography>
+                <BentoTypography class="adyen-pe-defend-dispute__success-description" variant="body">
+                    {{ i18n.get('disputes.management.defend.chargeback.submitSuccessInfo') }}
+                </BentoTypography>
+                <BentoButton variant="secondary" @click="goBackToDetails">
+                    {{ i18n.get('disputes.management.common.actions.showDetails') }}
+                </BentoButton>
             </div>
             <div v-else class="adyen-pe-defend-dispute__error">
-                <BentoAlert type="critical">
+                <CrossCircleFillIcon class="adyen-pe-defend-dispute__error-icon" />
+                <BentoTypography variant="title">
                     {{ i18n.get('disputes.management.defend.common.errors.somethingWentWrong') }}
-                    <template #description>
-                        {{ i18n.get('disputes.management.defend.common.errors.defenseFailed') }}
-                    </template>
-                </BentoAlert>
-                <div class="adyen-pe-defend-dispute__error-actions">
-                    <BentoButton variant="secondary" @click="goBackToFileUploadView">
-                        {{ i18n.get('disputes.management.common.actions.goBack') }}
-                    </BentoButton>
-                </div>
+                </BentoTypography>
+                <BentoTypography variant="body">
+                    {{ i18n.get('disputes.management.defend.common.errors.defenseFailed') }}
+                </BentoTypography>
+                <BentoButton variant="secondary" @click="goBackToFileUploadView">
+                    {{ i18n.get('disputes.management.common.actions.goBack') }}
+                </BentoButton>
             </div>
         </div>
     </div>

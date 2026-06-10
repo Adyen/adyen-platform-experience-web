@@ -19,7 +19,7 @@ onMounted(() => {
 
 <template>
     <div :class="{ 'adyen-pe-visually-hidden': flowState !== 'details' }">
-        <BentoTypography v-if="!props.hideTitle" el="h1" variant="title">
+        <BentoTypography v-if="!props.hideTitle" el="h1" variant="title" stronger>
             {{ i18n.get('disputes.management.common.title') }}
         </BentoTypography>
     </div>
