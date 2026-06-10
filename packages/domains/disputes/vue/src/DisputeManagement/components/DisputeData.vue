@@ -250,7 +250,7 @@ const paymentMethodDetail = computed(() => {
 
         <template v-else-if="dispute">
             <div class="adyen-pe-dispute-data__status-box">
-                <BentoCard background="secondary">
+                <BentoCard>
                     <template #content>
                         <div class="adyen-pe-dispute-data__summary">
                             <div class="adyen-pe-dispute-data__summary-tags">
