@@ -10,8 +10,8 @@ import {
     TX_REFUND_RESPONSE_ICON,
     TX_REFUND_RESPONSE_SUCCESS_ICON,
     TX_REFUND_RESPONSE_ERROR_ICON,
-} from '@integration-components/transactions/domain';
-import type { RefundResult } from '@integration-components/transactions/domain';
+} from '../../../../../domain/src';
+import type { RefundResult } from '../../../../../domain/src';
 
 const props = defineProps<{
     result: RefundResult;

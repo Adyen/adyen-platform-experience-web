@@ -2,13 +2,9 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoStructuredList, BentoStructuredListItem, BentoTypography } from '@adyen/bento-vue3';
-import {
-    getTransactionAmountAdjustmentType,
-    getTransactionAmountAdjustmentTypeInformation,
-    TX_DATA_LIST,
-} from '@integration-components/transactions/domain';
+import { getTransactionAmountAdjustmentType, getTransactionAmountAdjustmentTypeInformation, TX_DATA_LIST } from '../../../../../domain/src';
 import { isNullish } from '@integration-components/utils';
-import type { TransactionDetails } from '@integration-components/transactions/domain';
+import type { TransactionDetails } from '../../../../../domain/src';
 import type { IAmount } from '@integration-components/types';
 import type { TranslationKey } from '@integration-components/core';
 

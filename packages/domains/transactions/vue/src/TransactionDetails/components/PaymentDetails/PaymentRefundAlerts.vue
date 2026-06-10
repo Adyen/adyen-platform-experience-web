@@ -2,8 +2,7 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoAlert } from '@adyen/bento-vue3';
-import { TX_REFUND_STATUSES_CONTAINER } from '@integration-components/transactions/domain';
-import { RefundedState, REFUND_STATUSES } from '@integration-components/transactions/domain';
+import { TX_REFUND_STATUSES_CONTAINER, RefundedState, REFUND_STATUSES } from '../../../../../domain/src';
 
 const props = defineProps<{
     fullRefundFailed: boolean;

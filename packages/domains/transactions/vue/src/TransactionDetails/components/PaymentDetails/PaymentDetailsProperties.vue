@@ -7,9 +7,9 @@ import {
     TX_DATA_LIST,
     TX_DETAILS_FIELDS_REMAPS,
     sharedTransactionDetailsEventProperties,
-} from '@integration-components/transactions/domain';
+} from '../../../../../domain/src';
 import { normalizeCustomFields } from '@integration-components/utils';
-import type { TransactionDetails, TransactionDetailsCustomization } from '@integration-components/transactions/domain';
+import type { TransactionDetails, TransactionDetailsCustomization } from '../../../../../domain/src';
 import type { TranslationKey } from '@integration-components/core';
 import CopyIcon from '@adyen/ui-assets-icons-16/vue/copy';
 

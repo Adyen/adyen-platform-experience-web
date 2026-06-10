@@ -5,12 +5,8 @@ import { BentoTypography, BentoLoadingIndicator, BentoButton } from '@adyen/bent
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
 import { normalizeCustomFields } from '@integration-components/utils';
-import {
-    TX_DETAILS_FIELDS_REMAPS,
-    TX_DETAILS_RESERVED_FIELDS_SET,
-    sharedTransactionDetailsEventProperties,
-} from '@integration-components/transactions/domain';
-import type { TransactionDetailsCustomization, TransactionDetails } from '@integration-components/transactions/domain';
+import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET, sharedTransactionDetailsEventProperties } from '../../../../domain/src';
+import type { TransactionDetailsCustomization, TransactionDetails } from '../../../../domain/src';
 import './TransactionDetailsContainer.scss';
 
 const props = defineProps<{

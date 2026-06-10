@@ -2,9 +2,9 @@
 import { ref, computed, watch } from 'vue';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/vue';
 import { BentoButtonActions } from '@adyen/bento-vue3';
-import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '@integration-components/transactions/domain';
+import { TX_DATA_ACTION_BAR, TX_DATA_CONTAINER, sharedTransactionDetailsEventProperties } from '../../../../../domain/src';
 import { isFunction } from '@integration-components/utils';
-import type { RefundReason, RefundResult } from '@integration-components/transactions/domain';
+import type { RefundReason, RefundResult } from '../../../../../domain/src';
 
 const props = defineProps<{
     beginRefund: () => void;

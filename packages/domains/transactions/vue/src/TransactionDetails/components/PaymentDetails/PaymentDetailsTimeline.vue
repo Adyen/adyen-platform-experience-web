@@ -2,8 +2,8 @@
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { BentoTimeline, BentoTimelineItem } from '@adyen/bento-vue3';
-import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '@integration-components/transactions/domain';
-import type { TransactionDetails } from '@integration-components/transactions/domain';
+import { getTransactionTimelineTxStatus, getTransactionTimelineTxType } from '../../../../../domain/src';
+import type { TransactionDetails } from '../../../../../domain/src';
 
 const props = defineProps<{
     transaction: TransactionDetails;

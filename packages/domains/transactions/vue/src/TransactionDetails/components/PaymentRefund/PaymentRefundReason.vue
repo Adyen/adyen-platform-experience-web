@@ -9,8 +9,8 @@ import {
     TX_DATA_INPUT_CONTAINER,
     TX_DATA_INPUT_CONTAINER_SHORT,
     TX_DATA_INPUT_HEAD,
-} from '@integration-components/transactions/domain';
-import type { RefundReason } from '@integration-components/transactions/domain';
+} from '../../../../../domain/src';
+import type { RefundReason } from '../../../../../domain/src';
 
 const props = defineProps<{
     disabled: boolean;
