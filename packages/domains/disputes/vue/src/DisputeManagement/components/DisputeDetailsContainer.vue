@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { provideDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDetails from './DisputeDetails.vue';
@@ -9,7 +9,15 @@ import '../styles/DisputeManagement.scss';
 const props = defineProps<DisputeManagementProps>();
 const dispute = ref<IDisputeDetail | undefined>();
 
-provideDisputeFlow(dispute);
+const { clearStates, setFlowState } = provideDisputeFlow(dispute);
+
+watch(
+    () => props.id,
+    () => {
+        clearStates();
+        setFlowState('details');
+    }
+);
 </script>
 
 <template>

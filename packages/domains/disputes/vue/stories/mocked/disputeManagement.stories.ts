@@ -1,15 +1,74 @@
 import type { Meta } from '@storybook/vue3';
+import { defineComponent, ref, type PropType } from 'vue';
+import { http, HttpResponse } from 'msw';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import type { CoreInstance } from '@integration-components/core/vue';
 import { DisputeManagement } from '../../src';
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { DISPUTE_DETAILS_HANDLERS } from '../../../mocks/mock-server/disputes';
+import { DISPUTES_ENDPOINTS } from '../../../mocks/endpoints';
+import { CHARGEBACK_ACCEPTABLE, RFI_UNRESPONDED } from '../../../mocks/mock-data/disputes';
 
 const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };
+const INITIAL_DISPUTE_ID = 'a1b2c3d4-e5f6-4789-abcd-000000000001';
+const UPDATED_DISPUTE_ID = 'a1b2c3d4-e5f6-4789-abcd-000000000002';
+
+const DynamicDisputeManagement = defineComponent({
+    name: 'DynamicDisputeManagement',
+    components: { DisputeManagement },
+    inheritAttrs: false,
+    props: {
+        core: {
+            type: Object as PropType<CoreInstance>,
+            required: true,
+        },
+    },
+    setup() {
+        const id = ref(INITIAL_DISPUTE_ID);
+        const switchDispute = () => {
+            id.value = UPDATED_DISPUTE_ID;
+        };
+
+        return { id, switchDispute };
+    },
+    template: `
+        <button type="button" @click="switchDispute">Switch dispute</button>
+        <DisputeManagement :core="core" :id="id" />
+    `,
+});
+
+const getDynamicDisputeDetails = (id: string) => {
+    const dispute = id === UPDATED_DISPUTE_ID ? RFI_UNRESPONDED : CHARGEBACK_ACCEPTABLE;
+    return {
+        ...dispute,
+        dispute: {
+            ...dispute.dispute,
+            pspReference: id,
+        },
+    };
+};
 
 export const Default: ElementStory<typeof DisputeManagement> = {
     name: 'Default',
     args: {
         mockedApi: true,
+    },
+};
+
+export const DynamicDisputeId: ElementStory<typeof DisputeManagement> = {
+    name: 'Dynamic dispute ID',
+    args: {
+        component: DynamicDisputeManagement,
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: [
+                http.get(DISPUTES_ENDPOINTS.details, ({ params }) => {
+                    return HttpResponse.json(getDynamicDisputeDetails(String(params.id)));
+                }),
+            ],
+        },
     },
 };
 
