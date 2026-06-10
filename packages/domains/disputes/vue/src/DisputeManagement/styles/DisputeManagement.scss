@@ -1,0 +1,206 @@
+@use '@integration-components/style';
+
+.adyen-pe-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        padding-top: style.token(spacer-020);
+        width: 100%;
+    }
+}
+
+.adyen-pe-dispute-data {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-080);
+    width: 100%;
+
+    &__status-box {
+        display: flex;
+        width: 100%;
+    }
+
+    &__summary {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+        width: 100%;
+    }
+
+    &__summary-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-030);
+    }
+
+    &__payment-method {
+        color: style.token(color-label-secondary);
+    }
+
+    &__action-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-040);
+        justify-content: flex-end;
+    }
+
+    &__error-container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+    }
+
+    &__list {
+        width: 100%;
+    }
+
+    &__list--evidence {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-030);
+    }
+
+    &__list-evidence-error-message {
+        color: style.token(color-label-critical);
+    }
+
+    &__issuer-comments-alert {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__issuer-comments-group {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-060);
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.adyen-pe-accept-dispute,
+.adyen-pe-defend-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-040);
+    }
+
+    &__success,
+    &__error,
+    &__response {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+.adyen-pe-accept-dispute {
+    &__input {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-040);
+    }
+
+    &__label {
+        cursor: pointer;
+    }
+}
+
+.adyen-pe-defend-dispute-reason {
+    &__selector {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+    }
+}
+
+.adyen-pe-dispute-select {
+    position: relative;
+
+    &__button {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &__list {
+        background: style.token(color-background-primary);
+        border: style.token(border-width-s) solid style.token(color-outline-primary);
+        border-radius: style.token(border-radius-m);
+        box-shadow: style.token(shadow-medium);
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-010);
+        list-style: none;
+        margin: style.token(spacer-020) 0 0;
+        padding: style.token(spacer-020);
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+    }
+
+    &__option {
+        background: transparent;
+        border: 0;
+        border-radius: style.token(border-radius-s);
+        cursor: pointer;
+        padding: style.token(spacer-040);
+        text-align: start;
+        width: 100%;
+
+        &:disabled {
+            color: style.token(color-label-disabled);
+            cursor: not-allowed;
+        }
+
+        &:not(:disabled):hover,
+        &:not(:disabled):focus {
+            background: style.token(color-background-secondary);
+        }
+    }
+}
+
+.adyen-pe-defend-dispute-file-uploader {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+}
+
+.adyen-pe-defend-dispute-document-upload-box,
+.adyen-pe-defend-dispute-document-upload {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.adyen-pe-defend-dispute-document-upload-box {
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-l);
+    padding: style.token(spacer-080);
+}
+
+.adyen-pe-defend-dispute-file-input {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-030);
+}

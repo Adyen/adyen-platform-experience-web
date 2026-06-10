@@ -374,6 +374,15 @@ importers:
 
   packages/domains/disputes:
     dependencies:
+      '@adyen/bento-vue3':
+        specifier: 'catalog:'
+        version: 1.96.1(@vue/compiler-sfc@3.5.31)(vue-i18n@11.3.2(vue@3.5.31(typescript@5.8.3)))(vue@3.5.31(typescript@5.8.3))(zod@4.2.1)
+      '@adyen/ui-assets-icons-16':
+        specifier: 'catalog:'
+        version: 7.9.3(vue@3.5.31(typescript@5.8.3))
+      '@integration-components/composables-vue':
+        specifier: workspace:*
+        version: link:../../shared/composables-vue
       '@integration-components/core':
         specifier: workspace:*
         version: link:../../shared/core
@@ -907,6 +916,9 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
       vite-plugin-svgr:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.59.0)(typescript@5.8.3)(vite@7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3))
@@ -939,14 +951,6 @@ packages:
   '@adyen/openbankingsdk@0.2.3':
     resolution: {}
     engines: {node: '>=18'}
-
-  '@adyen/ui-assets-icons-16@7.9.0':
-    resolution: {}
-    peerDependencies:
-      vue: ~2.7 || ~3
-    peerDependenciesMeta:
-      vue:
-        optional: true
 
   '@adyen/ui-assets-icons-16@7.9.3':
     resolution: {}
@@ -2324,25 +2328,21 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@nx/nx-linux-arm64-musl@22.6.3':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@nx/nx-linux-x64-gnu@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@nx/nx-linux-x64-musl@22.6.3':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@nx/nx-win32-arm64-msvc@22.6.3':
     resolution: {}
@@ -2484,79 +2484,66 @@ packages:
     resolution: {}
     cpu: [arm]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution: {}
     cpu: [arm]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution: {}
     cpu: [loong64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution: {}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution: {}
@@ -2977,49 +2964,41 @@ packages:
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     resolution: {}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     resolution: {}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     resolution: {}
     cpu: [riscv64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     resolution: {}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     resolution: {}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
     resolution: {}
@@ -6723,7 +6702,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.2.9:
+  vue-component-type-helpers@3.3.1:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -7026,7 +7005,7 @@ snapshots:
     dependencies:
       '@adyen/adyen-document-viewer': 1.4.2
       '@adyen/openbankingsdk': 0.2.3
-      '@adyen/ui-assets-icons-16': 7.9.0(vue@3.5.31(typescript@5.8.3))
+      '@adyen/ui-assets-icons-16': 7.9.3(vue@3.5.31(typescript@5.8.3))
       '@preact/signals': 2.9.0(preact@10.29.1)
       '@tanstack/preact-query': 5.96.1(preact@10.29.1)
       classnames: 2.5.1
@@ -7044,10 +7023,6 @@ snapshots:
       - vue
 
   '@adyen/openbankingsdk@0.2.3': {}
-
-  '@adyen/ui-assets-icons-16@7.9.0(vue@3.5.31(typescript@5.8.3))':
-    optionalDependencies:
-      vue: 3.5.31(typescript@5.8.3)
 
   '@adyen/ui-assets-icons-16@7.9.3(vue@3.5.31(typescript@5.8.3))':
     optionalDependencies:
@@ -8960,7 +8935,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.2.9
+      vue-component-type-helpers: 3.3.1
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -13724,7 +13699,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.2.9: {}
+  vue-component-type-helpers@3.3.1: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:

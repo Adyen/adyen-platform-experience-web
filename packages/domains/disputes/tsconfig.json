@@ -4,7 +4,12 @@
         "noEmit": true,
         "types": ["node"]
     },
-    "files": ["../../../declarations/scss.d.ts", "../../../declarations/vite-env.d.ts", "../../../declarations/svgr.d.ts"],
+    "files": [
+        "../../../declarations/scss.d.ts",
+        "../../../declarations/vite-env.d.ts",
+        "../../../declarations/svgr.d.ts",
+        "../../../declarations/shims-vue.d.ts"
+    ],
     "include": [
         "./domain/src/**/*.ts",
         "./mocks/**/*.ts",
@@ -16,6 +21,8 @@
         "./preact/stories/**/*.tsx",
         "./preact/tests/**/*.ts",
         "./vue/publish/src/**/*.ts",
-        "./vue/src/**/*.ts"
+        "./vue/src/**/*.ts",
+        "./vue/src/**/*.vue",
+        "./vue/tests/**/*.ts"
     ]
 }

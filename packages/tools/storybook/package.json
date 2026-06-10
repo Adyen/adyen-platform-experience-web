@@ -36,6 +36,7 @@
         "msw-storybook-addon": "^2.0.2",
         "storybook": "10.2.12",
         "typescript": "catalog:",
+        "vite": "catalog:",
         "vite-plugin-svgr": "^4.5.0"
     },
     "msw": {

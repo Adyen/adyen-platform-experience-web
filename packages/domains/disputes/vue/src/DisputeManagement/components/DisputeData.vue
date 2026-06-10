@@ -1,0 +1,327 @@
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+import { BentoAlert, BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import {
+    DISPUTE_DETAILS_RESERVED_FIELDS_SET,
+    getDisputeType,
+    isDisputeActionNeeded,
+    type DisputeDetailsCustomization,
+} from '@integration-components/disputes/domain';
+import { DATE_FORMAT_RESPONSE_DEADLINE, isFunction } from '@integration-components/utils';
+import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
+import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
+import { useDisputeDetails } from '../composables/useDisputeDetails';
+import { useDisputeFlow } from '../composables/useDisputeFlow';
+import DisputeDataProperties from './DisputeDataProperties.vue';
+import DisputeIssuerComments from './DisputeIssuerComments.vue';
+import DisputeStatusTag from './DisputeStatusTag.vue';
+import type { DisputeManagementProps } from '../types';
+
+type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
+type DisputeError = Error & {
+    errorCode?: string;
+    requestId?: string;
+};
+
+const props = defineProps<{
+    disputeId: string;
+    dataCustomization?: { details?: DisputeDetailsCustomization };
+    onContactSupport?: () => void;
+    onDismiss?: DisputeManagementProps['onDismiss'];
+}>();
+
+const { i18n } = useCoreContext();
+const config = useConfigContext();
+const { dispute: storedDispute, setDispute, setFlowState, defenseReasonConfig } = useDisputeFlow();
+
+const { data, error, isFetching, refetch } = useDisputeDetails(() => ({
+    disputeId: props.disputeId,
+    fetchEnabled: !!props.disputeId && !storedDispute.value,
+}));
+
+watch(data, nextData => {
+    if (nextData) setDispute(nextData);
+});
+
+const dispute = computed(() => storedDispute.value || data.value);
+const defensibility = computed(() => dispute.value?.dispute.defensibility);
+const acceptAuthorization = computed(() => isFunction(config.endpoints.acceptDispute));
+const defendAuthorization = computed(() => isFunction(config.endpoints.getApplicableDefenseDocuments));
+const showLoadingPlaceholder = computed(() => (!dispute.value && !error.value) || isFetching.value);
+const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
+const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
+const isDefended = computed(() => !!dispute.value?.defense?.defendedOn);
+const actionNeeded = computed(() => !!dispute.value && isDisputeActionNeeded(dispute.value.dispute));
+const showContactSupport = computed(
+    () =>
+        (!!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE_EXTERNALLY'].includes(defensibility.value)) ||
+        dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD'
+);
+const isDefendable = computed(() => !!defensibility.value && defensibility.value === 'DEFENDABLE' && defendAuthorization.value);
+const isAcceptable = computed(() => !!defensibility.value && ['ACCEPTABLE', 'DEFENDABLE'].includes(defensibility.value) && acceptAuthorization.value);
+
+const { dateFormat } = useTimezoneAwareDateFormatting(dispute.value?.payment.balanceAccount?.timeZone);
+
+const issuerComments = computed(() => {
+    const { chargeback, preArbitration } = dispute.value?.dispute.issuerExtraData ?? {};
+    const comments: string[] = [];
+
+    [preArbitration, chargeback].forEach(commentGroup => {
+        if (!commentGroup) return;
+        ['LIABILITY_NOT_ACCEPTED_FULLY', 'PRE_ARB_REASON', 'NOTE'].forEach(commentKey => {
+            const raw = commentGroup[commentKey];
+            const trimmed = raw?.trim();
+            if (trimmed) comments.push(trimmed);
+        });
+    });
+
+    return comments;
+});
+
+const alertMode = computed<DisputeDataAlertMode | undefined>(() => {
+    const currentDispute = dispute.value;
+    if (!currentDispute) return undefined;
+    if (currentDispute.defense?.autodefended === true) return 'autoDefended';
+    if (actionNeeded.value && defensibility.value === 'NOT_ACTIONABLE') return 'notDefendable';
+    if ((actionNeeded.value && showContactSupport.value) || (showContactSupport.value && isFraudNotification.value)) return 'contactSupport';
+    if (currentDispute.dispute.status === 'EXPIRED') return 'notDefended';
+    if (currentDispute.dispute.status === 'LOST' && !(isFraudNotification.value || isDefended.value)) return 'notDefended';
+    return undefined;
+});
+
+const alertText = computed(() => {
+    const currentDispute = dispute.value?.dispute;
+    if (!currentDispute || !alertMode.value) return undefined;
+
+    switch (alertMode.value) {
+        case 'contactSupport': {
+            const translationKey =
+                currentDispute.type === 'REQUEST_FOR_INFORMATION'
+                    ? 'disputes.management.details.alerts.contactSupport.requestForInformation'
+                    : currentDispute.type === 'NOTIFICATION_OF_FRAUD'
+                      ? 'disputes.management.details.alerts.contactSupport.notificationOfFraud'
+                      : 'disputes.management.details.alerts.contactSupport.chargeback';
+            const message = i18n.get(translationKey);
+            if (currentDispute.type === 'NOTIFICATION_OF_FRAUD' || !currentDispute.dueDate) return message;
+            return `${message} ${i18n.get('disputes.management.details.alerts.responseDeadline', {
+                values: { date: dateFormat(currentDispute.dueDate, DATE_FORMAT_RESPONSE_DEADLINE) },
+            })}`;
+        }
+        case 'autoDefended':
+            return i18n.get('disputes.management.details.alerts.autoDefended');
+        case 'notDefended':
+            return i18n.get(
+                currentDispute.status === 'EXPIRED'
+                    ? 'disputes.management.details.alerts.notDefendedExpired'
+                    : 'disputes.management.details.alerts.notDefendedLost'
+            );
+        case 'notDefendable':
+            return i18n.get('disputes.management.details.alerts.notDefendable');
+    }
+    return undefined;
+});
+
+const alertType = computed(() => (alertMode.value === 'contactSupport' ? 'warning' : 'highlight'));
+
+const defendButtonLabel = computed(() =>
+    dispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION'
+        ? i18n.get('disputes.management.details.actions.submitInformation')
+        : i18n.get('disputes.management.details.actions.defendChargeback')
+);
+
+const extraFields = ref<Record<string, unknown> | undefined>();
+let extraFieldsRequestId = 0;
+
+function isButtonType(value: unknown): value is CustomButtonObject {
+    return !!value && typeof value === 'object' && 'type' in value && value.type === 'button';
+}
+
+watch(
+    () => [dispute.value, props.dataCustomization] as const,
+    async ([nextDispute]) => {
+        const requestId = ++extraFieldsRequestId;
+        const detailsCustomization = props.dataCustomization?.details;
+        if (!nextDispute || !detailsCustomization || !isFunction(detailsCustomization.onDataRetrieve)) {
+            extraFields.value = undefined;
+            return;
+        }
+
+        const retrieved = (await detailsCustomization.onDataRetrieve(nextDispute)) as CustomDataRetrieved | undefined;
+        if (requestId !== extraFieldsRequestId) return;
+        if (!retrieved) {
+            extraFields.value = undefined;
+            return;
+        }
+
+        extraFields.value = (detailsCustomization.fields ?? []).reduce<Record<string, unknown>>((acc, field) => {
+            const key = typeof field?.key === 'string' ? field.key : '';
+            if (!key) return acc;
+            if (DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as never)) return acc;
+            if (field?.visibility === 'hidden') return acc;
+            if (retrieved[key] !== undefined) acc[key] = retrieved[key];
+            return acc;
+        }, {});
+    },
+    { immediate: true }
+);
+
+const extraButtons = computed(() => Object.values(extraFields.value ?? {}).filter(isButtonType));
+
+function onAcceptClick() {
+    setFlowState('accept');
+}
+
+function onDefendClick() {
+    setFlowState('defendReasonSelectionView');
+}
+
+const actionButtons = computed(() => {
+    const buttons = [];
+    if (isDefendable.value) {
+        buttons.push({
+            title: defendButtonLabel.value,
+            event: onDefendClick,
+        });
+    }
+    if (isAcceptable.value) {
+        buttons.push({
+            title: i18n.get('disputes.management.details.actions.accept'),
+            event: onAcceptClick,
+            variant: 'secondary',
+        });
+    }
+    if (showContactSupport.value && props.onContactSupport) {
+        buttons.push({
+            title: i18n.get('disputes.management.details.actions.contactSupport'),
+            event: props.onContactSupport,
+            variant: 'secondary',
+        });
+    }
+    return buttons;
+});
+
+function retryFetch() {
+    void refetch();
+}
+
+const errorState = computed(() => {
+    const currentError = error.value as DisputeError | undefined;
+    if (!currentError) return undefined;
+
+    if (currentError.errorCode === '30_112') {
+        return {
+            title: i18n.get('common.errors.notFound'),
+            messages: [i18n.get('disputes.management.common.errors.notFound')],
+            showRefresh: false,
+            showContactSupport: isFunction(props.onContactSupport),
+        };
+    }
+
+    if (currentError.errorCode === '00_500') {
+        const requestId = currentError.requestId;
+        const secondaryMessage = props.onContactSupport
+            ? i18n.get('common.errors.errorCode', { values: { requestId } })
+            : i18n.get('common.errors.errorCodeSupport', { values: { requestId } });
+        return {
+            title: i18n.get('common.errors.somethingWentWrong'),
+            messages: [i18n.get('disputes.management.common.errors.unavailable'), secondaryMessage],
+            showRefresh: false,
+            showContactSupport: isFunction(props.onContactSupport),
+        };
+    }
+
+    return {
+        title: i18n.get('common.errors.somethingWentWrong'),
+        messages: [i18n.get('disputes.management.common.errors.unavailable'), i18n.get('common.errors.retry')],
+        showRefresh: true,
+        showContactSupport: false,
+    };
+});
+
+function formatPaymentMethod(currentDispute: IDisputeDetail) {
+    const { paymentMethod } = currentDispute.payment;
+    const description = paymentMethod.description || paymentMethod.type;
+    return paymentMethod.lastFourDigits ? `${description} •••• ${paymentMethod.lastFourDigits}` : description;
+}
+</script>
+
+<template>
+    <div class="adyen-pe-dispute-data">
+        <div v-if="showLoadingPlaceholder" aria-busy="true">
+            <BentoLoadingIndicator />
+        </div>
+
+        <div v-else-if="errorState" class="adyen-pe-dispute-data__error-container">
+            <BentoAlert type="critical">
+                {{ errorState.title }}
+                <template #description>
+                    <BentoTypography v-for="message in errorState.messages" :key="message" variant="body">
+                        {{ message }}
+                    </BentoTypography>
+                </template>
+                <template #actions>
+                    <BentoButton v-if="errorState.showRefresh" variant="secondary" @click="retryFetch">
+                        {{ i18n.get('common.actions.refresh.labels.default') }}
+                    </BentoButton>
+                    <BentoButton v-if="errorState.showContactSupport" variant="secondary" @click="props.onContactSupport">
+                        {{ i18n.get('common.actions.contactSupport.labels.reachOut') }}
+                    </BentoButton>
+                    <BentoButton v-if="props.onDismiss" variant="secondary" @click="props.onDismiss">
+                        {{ i18n.get('disputes.management.common.actions.goBack') }}
+                    </BentoButton>
+                </template>
+            </BentoAlert>
+        </div>
+
+        <template v-else-if="dispute">
+            <div class="adyen-pe-dispute-data__status-box">
+                <BentoCard>
+                    <template #content>
+                        <div class="adyen-pe-dispute-data__summary">
+                            <div class="adyen-pe-dispute-data__summary-tags">
+                                <BentoTag v-if="disputeType" :label="disputeType" data-testid="dispute-type-tag" />
+                                <DisputeStatusTag v-if="!isFraudNotification" :dispute="dispute.dispute" />
+                            </div>
+                            <BentoTypography variant="title">
+                                {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency) }}
+                            </BentoTypography>
+                            <BentoTypography class="adyen-pe-dispute-data__payment-method" variant="body">
+                                {{ formatPaymentMethod(dispute) }}
+                            </BentoTypography>
+                        </div>
+                    </template>
+                </BentoCard>
+            </div>
+
+            <DisputeIssuerComments v-if="issuerComments.length > 0" :issuer-comments="issuerComments" />
+
+            <BentoAlert v-if="alertText" :type="alertType" role="alert" variant="tip">
+                <template #description>
+                    {{ alertText }}
+                </template>
+            </BentoAlert>
+
+            <DisputeDataProperties
+                :dispute="dispute"
+                :data-customization="props.dataCustomization"
+                :defense-reason-config="defenseReasonConfig"
+                :extra-fields="extraFields"
+            />
+
+            <div v-if="actionButtons.length || extraButtons.length" class="adyen-pe-dispute-data__action-bar">
+                <BentoButtonActions v-if="actionButtons.length" :actions="actionButtons" />
+                <BentoButton
+                    v-for="button in extraButtons"
+                    :key="String(button.value)"
+                    variant="secondary"
+                    :class="button.config?.className"
+                    @click="button.config?.action"
+                >
+                    {{ button.value }}
+                </BentoButton>
+            </div>
+        </template>
+    </div>
+</template>
