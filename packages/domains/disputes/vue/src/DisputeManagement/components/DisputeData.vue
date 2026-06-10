@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoAlert, BentoButton, BentoButtonActions, BentoCard, BentoLoadingIndicator, BentoTag, BentoTypography } from '@adyen/bento-vue3';
+import {
+    BentoAlert,
+    BentoButton,
+    BentoButtonActions,
+    BentoCard,
+    BentoLoadingIndicator,
+    BentoPaymentMethod,
+    BentoTag,
+    BentoTypography,
+} from '@adyen/bento-vue3';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
 import {
     DISPUTE_DETAILS_RESERVED_FIELDS_SET,
@@ -8,9 +17,8 @@ import {
     isDisputeActionNeeded,
     type DisputeDetailsCustomization,
 } from '@integration-components/disputes/domain';
-import { isFunction } from '@integration-components/utils';
+import { isFunction, parsePaymentMethodType } from '@integration-components/utils';
 import type { CustomButtonObject, CustomDataRetrieved } from '@integration-components/types';
-import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { useDisputeDetails } from '../composables/useDisputeDetails';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
 import DisputeDataAlert from './DisputeDataAlert.vue';
@@ -204,11 +212,12 @@ const errorState = computed(() => {
     };
 });
 
-function formatPaymentMethod(currentDispute: IDisputeDetail) {
-    const { paymentMethod } = currentDispute.payment;
-    const description = paymentMethod.description || paymentMethod.type;
-    return paymentMethod.lastFourDigits ? `${description} •••• ${paymentMethod.lastFourDigits}` : description;
-}
+const paymentMethodType = computed(() => dispute.value?.payment.paymentMethod?.type ?? null);
+const paymentMethodDetail = computed(() => {
+    const pm = dispute.value?.payment.paymentMethod;
+    if (pm) return parsePaymentMethodType(pm, 'detail');
+    return null;
+});
 </script>
 
 <template>
@@ -241,19 +250,25 @@ function formatPaymentMethod(currentDispute: IDisputeDetail) {
 
         <template v-else-if="dispute">
             <div class="adyen-pe-dispute-data__status-box">
-                <BentoCard>
+                <BentoCard background="secondary">
                     <template #content>
                         <div class="adyen-pe-dispute-data__summary">
                             <div class="adyen-pe-dispute-data__summary-tags">
                                 <BentoTag v-if="disputeType" :label="disputeType" data-testid="dispute-type-tag" />
                                 <DisputeStatusTag v-if="!isFraudNotification" :dispute="dispute.dispute" />
                             </div>
-                            <BentoTypography variant="title">
-                                {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency) }}
+                            <BentoTypography variant="title" large>
+                                {{ i18n.amount(dispute.dispute.amount.value, dispute.dispute.amount.currency, { hideCurrency: true }) }}
+                                {{ dispute.dispute.amount.currency }}
                             </BentoTypography>
-                            <BentoTypography class="adyen-pe-dispute-data__payment-method" variant="body">
-                                {{ formatPaymentMethod(dispute) }}
-                            </BentoTypography>
+                            <div v-if="paymentMethodType" class="adyen-pe-dispute-data__payment-method">
+                                <div class="adyen-pe-dispute-data__payment-method-logo-container">
+                                    <BentoPaymentMethod :type="paymentMethodType" />
+                                </div>
+                                <BentoTypography v-if="paymentMethodDetail" variant="title" class="adyen-pe-dispute-data__payment-method-detail">
+                                    {{ paymentMethodDetail }}
+                                </BentoTypography>
+                            </div>
                         </div>
                     </template>
                 </BentoCard>
