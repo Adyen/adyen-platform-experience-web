@@ -20,7 +20,7 @@ import { TranslationKey } from '@integration-components/core';
 import { PropsWithChildren } from 'preact/compat';
 import { StringWithAutocompleteOptions } from '@integration-components/utils/types';
 
-import { TransactionsTableCols } from './components/TransactionsTable/fields';
+import { TransactionsTableCols } from '../../../domain/src';
 import { TransactionDetailsCustomization } from '../TransactionDetails';
 
 type _DateRangeKey<T extends TranslationKey> = T;

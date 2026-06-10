@@ -1,8 +1,7 @@
 import { useBalanceAccounts, useFetch } from '@integration-components/hooks-preact';
-import createDuplexTransactionNavigator from './transactionNavigator/createDuplexTransactionNavigator';
+import { createDuplexTransactionNavigator, TransactionNavigator } from '../../../../../domain/src';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useConfigContext } from '@integration-components/core/preact';
-import { TransactionNavigator } from './transactionNavigator/types';
 import { EMPTY_OBJECT, isFunction } from '@integration-components/utils';
 import { TransactionDetails } from '../../types';
 

@@ -8,6 +8,6 @@ export type {
     RefundResult,
     RefundLineItem,
     RefundLineItemUpdates,
-} from '@integration-components/transactions/domain';
+} from '../../../domain/src';
 
-export { ActiveView, DetailsTab, RefundedState, RefundMode, RefundType } from '@integration-components/transactions/domain';
+export { ActiveView, DetailsTab, RefundedState, RefundMode, RefundType } from '../../../domain/src';

@@ -1,7 +1,7 @@
 import { TagVariant } from '@integration-components/ui-components-preact/Tag/types';
 import { TransactionDetails } from './types';
 
-export { getAmountStyleForTransaction, getRefundTypeForTransaction } from '@integration-components/transactions/domain';
+export { getAmountStyleForTransaction, getRefundTypeForTransaction } from '../../../domain/src';
 
 export const getTagVariantForTransaction = (transaction?: TransactionDetails) => {
     switch (transaction?.status) {

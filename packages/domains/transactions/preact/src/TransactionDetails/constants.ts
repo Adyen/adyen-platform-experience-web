@@ -35,4 +35,4 @@ export {
     REFUND_REASONS,
     REFUND_REFERENCE_CHAR_LIMIT,
     sharedTransactionDetailsEventProperties,
-} from '@integration-components/transactions/domain';
+} from '../../../domain/src';

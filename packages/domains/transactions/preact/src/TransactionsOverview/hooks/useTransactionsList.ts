@@ -2,7 +2,7 @@ import { isFunction, hasCustomField, mergeRecords, normalizeCustomFields } from 
 import { ITransaction, CustomDataRetrieved } from '@integration-components/types';
 import { TransactionsFilters } from '../types';
 import { DEFAULT_PAGE_LIMIT, LIMIT_OPTIONS } from '@integration-components/ui-components-preact/Pagination/constants';
-import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../components/TransactionsTable/fields';
+import { TRANSACTION_FIELDS, TRANSACTION_FIELDS_REMAPS } from '../../../../domain/src';
 import { getTransactionsFilterParams, getTransactionsFilterQueryParams } from '../components/utils';
 import type { TransactionsOverviewComponentProps } from '../types';
 import { useCursorPaginatedRecords } from '@integration-components/ui-components-preact/Pagination/hooks';

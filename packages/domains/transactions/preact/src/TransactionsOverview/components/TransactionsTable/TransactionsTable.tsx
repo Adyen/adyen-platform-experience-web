@@ -18,7 +18,7 @@ import PaymentMethodCell from '@integration-components/ui-components-preact/Paym
 import { TransactionTableProps } from './types';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
 
-import { TRANSACTION_FIELDS, type TransactionsTableCols } from './fields';
+import { TRANSACTION_FIELDS, type TransactionsTableCols } from '../../../../../domain/src';
 
 const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',

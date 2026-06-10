@@ -1,7 +1,7 @@
 import { useMemo } from 'preact/hooks';
-import { createInputNormalizer } from '@integration-components/transactions/domain';
+import { createInputNormalizer } from '../../../../../domain/src';
 
-export { createInputNormalizer } from '@integration-components/transactions/domain';
+export { createInputNormalizer } from '../../../../../domain/src';
 
 export const useInputNormalizer = (maxChars = Infinity) => useMemo(() => createInputNormalizer(maxChars).normalize, [maxChars]);
 
