@@ -26,19 +26,6 @@ export const DYNAMIC_CAPITAL_OFFER = {
     step: 10000,
 } satisfies IDynamicOffersConfig;
 
-export const CAD_CAPITAL_OFFER = {
-    estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
-    minAmount: {
-        value: 100000,
-        currency: 'CAD',
-    },
-    maxAmount: {
-        value: 2500000,
-        currency: 'CAD',
-    },
-    step: 10000,
-} satisfies IDynamicOffersConfig;
-
 export const GRANT_NL_ACCOUNT = {
     beneficiaryName: 'Adyen N.V.',
     iban: 'NL69RABO1319778291',
@@ -256,6 +243,22 @@ export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
 
 export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = {
     dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasGrants: false,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
+    dynamicOffer: {
+        ...DYNAMIC_CAPITAL_OFFER,
+        minAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.minAmount,
+            currency: 'CAD',
+        },
+        maxAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.maxAmount,
+            currency: 'CAD',
+        },
+    },
     hasGrants: false,
     renewableGrants: [],
 };

@@ -12,12 +12,15 @@ import {
     WRITTEN_OFF_GRANT,
     GRANT_US_ACCOUNT,
     GRANT_GB_ACCOUNT,
-    CAD_CAPITAL_OFFER,
     ANACREDIT_ACTION_DETAILS,
     PENDING_GRANT_WITH_MULTIPLE_ACTIONS,
     GRANT_NL_ACCOUNT,
     ONBOARDING_CONFIGURATION,
     CAPITAL_STATE_UNQUALIFIED,
+    CAPITAL_STATE_FIRST_OFFER,
+    CAPITAL_STATE_FIRST_OFFER_CAD,
+    CAPITAL_STATE_GRANTS,
+    CAPITAL_STATE_GRANTS_WITH_OFFER,
 } from '../mock-data/capital';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateSelectedOffer, calculateOffers } from './utils/utils';
@@ -33,7 +36,6 @@ import { ICreateGrantOfferRequest } from '@integration-components/types';
 import { CAPITAL_ENDPOINTS } from '../endpoints';
 
 const mockEndpoints = CAPITAL_ENDPOINTS;
-const networkError = false;
 
 const ASYNC_ACTION_DELAY_MS = Number(process.env.TEST_ENV) === 1 ? 0 : 2000;
 
@@ -46,8 +48,6 @@ const EMPTY_GRANTS_LIST = getHandlerCallback({
         data: [],
     },
 });
-
-const EMPTY_OFFER = getHandlerCallback({ response: {} });
 
 let retries = 0;
 
@@ -83,13 +83,6 @@ const OFFER_REVIEW_HANDLER = async ({ request }: { request: StrictRequest<Defaul
 
 export const capitalMock = [
     http.get(mockEndpoints.capitalState, CAPITAL_STATE_UNQUALIFIED_HANDLER),
-    http.get(mockEndpoints.dynamicOfferConfig, async () => {
-        if (networkError) {
-            return HttpResponse.error();
-        }
-        await delay(400);
-        return HttpResponse.json({});
-    }),
     http.get(mockEndpoints.grants, EMPTY_GRANTS_LIST),
     http.get(mockEndpoints.dynamicOffer, DYNAMIC_OFFER_HANDLER),
     http.post(mockEndpoints.createOffer, OFFER_REVIEW_HANDLER),
@@ -118,18 +111,18 @@ const getAsyncGrantsHandler = () => {
 };
 
 const commonHandlers = {
-    errorDynamicOfferConfigNoCapability: [
+    errorStateNoOfferCapability: [
         {
-            endpoint: mockEndpoints.dynamicOfferConfig,
+            endpoint: mockEndpoints.capitalState,
             handler: getErrorHandler(
                 new AdyenPlatformExperienceError(ErrorTypes.ERROR, '825ac4ce59f0f159ad672d38d3291i55', 'Message', '30_016'),
                 422
             ),
         },
     ],
-    errorDynamicOfferConfigInactiveAccountHolder: [
+    errorStateInactiveAccountHolder: [
         {
-            endpoint: mockEndpoints.dynamicOfferConfig,
+            endpoint: mockEndpoints.capitalState,
             handler: getErrorHandler(
                 new AdyenPlatformExperienceError(ErrorTypes.ERROR, '769ac4ce59f0f159ad672d38d3291e92', 'Message', '30_011'),
                 422
@@ -144,21 +137,18 @@ const capitalFactory = mocksFactory<
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
-    default: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER }],
-    aprField: [{ endpoint: mockEndpoints.dynamicOfferConfig, response: CAD_CAPITAL_OFFER }],
-    errorDynamicOfferConfigNoConfig: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: getHandlerCallback({ response: undefined, status: 204 }) },
-    ],
+    default: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER }],
+    aprField: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER_CAD }],
     errorDynamicOfferExceededRetries: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 10)) as any },
     ],
     errorDynamicOfferTemporary: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         { endpoint: mockEndpoints.dynamicOffer, handler: ((req: any) => DYNAMIC_OFFER_HANDLER(req, 1)) as any },
     ],
     errorReviewOfferGeneric: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         {
             endpoint: mockEndpoints.createOffer,
             handler: getErrorHandler(genericError, 500),
@@ -166,7 +156,7 @@ export const CapitalOfferMockedResponses = capitalFactory({
         },
     ],
     errorRequestFundsGeneric: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         {
             endpoint: mockEndpoints.requestFunds as any,
             handler: getErrorHandler(genericError, 500),
@@ -174,7 +164,7 @@ export const CapitalOfferMockedResponses = capitalFactory({
         },
     ],
     errorRequestFundsGenericWithCode: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         {
             endpoint: mockEndpoints.requestFunds as any,
             handler: getErrorHandler(
@@ -185,7 +175,7 @@ export const CapitalOfferMockedResponses = capitalFactory({
         },
     ],
     errorRequestFundsNoPrimaryBalanceAccount: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         {
             endpoint: mockEndpoints.createOffer,
             handler: ((req: any) => OFFER_REVIEW_HANDLER(req)) as any,
@@ -204,47 +194,43 @@ export const CapitalOfferMockedResponses = capitalFactory({
 
 export const CapitalOverviewMockedResponses = capitalFactory({
     ...commonHandlers,
-    unqualified: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
-        { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
-    ],
     prequalified: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
     ],
     grantPending: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT] } },
     ],
     grantMultipleActionsEmbedded: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, handler: getAsyncGrantsHandler() },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
     grantMultipleActionsHosted: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, handler: getAsyncGrantsHandler() },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
         { endpoint: mockEndpoints.anaCredit, handler: getHandlerCallback({ response: ANACREDIT_ACTION_DETAILS, status: 200 }) },
     ],
     grantSingleActionEmbedded: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, response: ONBOARDING_CONFIGURATION },
     ],
     grantSingleActionHosted: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_SINGLE_ACTION] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
     ],
     grantActive: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [ACTIVE_GRANT] } },
     ],
     repaymentNL: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -253,7 +239,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentGB: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -262,7 +248,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentUS: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -271,7 +257,7 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     repaymentNoTransferInstruments: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         {
             endpoint: mockEndpoints.grants,
             response: {
@@ -280,40 +266,41 @@ export const CapitalOverviewMockedResponses = capitalFactory({
         },
     ],
     grantFailed: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [FAILED_GRANT] } },
     ],
     grantRepaid: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     grantRevoked: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [REVOKED_GRANT] } },
     ],
     grantWrittenOff: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
     ],
     newOffer: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: DYNAMIC_CAPITAL_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_OFFER },
         { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     grants: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, response: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
     ],
     errorActionsEmbedded: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         {
             endpoint: mockEndpoints.onboardingConfiguration,
             handler: getErrorHandler(new AdyenPlatformExperienceError(ErrorTypes.ERROR, 'Something went wrong', 'Message'), 500),
         },
+        { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: ANACREDIT_ACTION_DETAILS, status: 200 }) },
         { endpoint: mockEndpoints.signToS, handler: getHandlerCallback({ response: SIGN_TOS_ACTION_DETAILS, status: 200 }) },
     ],
     errorActionsHosted: [
-        { endpoint: mockEndpoints.dynamicOfferConfig, handler: EMPTY_OFFER },
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [PENDING_GRANT_WITH_MULTIPLE_ACTIONS] } },
         { endpoint: mockEndpoints.onboardingConfiguration, handler: getHandlerCallback({ response: undefined, status: 204 }) },
         {

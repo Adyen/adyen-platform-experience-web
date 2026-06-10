@@ -3,7 +3,7 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import Card from '@integration-components/ui-components-preact/Card/Card';
-import { ButtonVariant, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
+import { ButtonVariant, ICapitalState, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
@@ -117,9 +117,8 @@ const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponse
 };
 
 type CapitalOfferSelectionProps = {
-    dynamicOffersConfig: IDynamicOffersConfig | undefined;
-    dynamicOffersConfigError?: Error;
-    emptyGrantOffer: boolean;
+    capitalState: ICapitalState | undefined;
+    capitalStateError?: Error;
     selectedAmount: number | undefined;
     selectedTerm: number | undefined;
     onContactSupport?: () => void;
@@ -130,9 +129,8 @@ type CapitalOfferSelectionProps = {
 };
 
 export const CapitalOfferSelection = ({
-    dynamicOffersConfig,
-    dynamicOffersConfigError,
-    emptyGrantOffer,
+    capitalState,
+    capitalStateError,
     selectedAmount,
     selectedTerm,
     onContactSupport,
@@ -144,6 +142,7 @@ export const CapitalOfferSelection = ({
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
 
+    const dynamicOffersConfig = useMemo(() => capitalState?.dynamicOffer, [capitalState?.dynamicOffer]);
     const defaultAmount = useMemo(
         () =>
             dynamicOffersConfig &&
@@ -332,14 +331,16 @@ export const CapitalOfferSelection = ({
 
     const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
 
+    const isUnqualified = useMemo(() => capitalState !== undefined && !capitalState.dynamicOffer, [capitalState]);
+
     return (
         <div className="adyen-pe-capital-offer-selection">
-            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || emptyGrantOffer || dynamicOffersConfigError || termsError ? (
+            {reviewOfferMutation.error || getDynamicGrantOfferMutation.error || isUnqualified || capitalStateError || termsError ? (
                 <CapitalErrorMessageDisplay
-                    error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || dynamicOffersConfigError}
+                    error={reviewOfferMutation.error || getDynamicGrantOfferMutation.error || capitalStateError}
                     onBack={onOfferDismiss}
                     onContactSupport={onContactSupport}
-                    emptyGrantOffer={emptyGrantOffer}
+                    emptyGrantOffer={isUnqualified}
                 />
             ) : (
                 <>

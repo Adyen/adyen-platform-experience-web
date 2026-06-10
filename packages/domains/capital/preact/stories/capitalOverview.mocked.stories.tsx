@@ -53,11 +53,6 @@ export const Unqualified: ElementStory<typeof CapitalOverview, { mountIfUnqualif
         skipDecorators: true,
         mountIfUnqualified: true,
     },
-    parameters: {
-        msw: {
-            handlers: CapitalOverviewMockedResponses.unqualified,
-        },
-    },
     decorators: [
         (story, context) => {
             useEffect(() => {
@@ -253,26 +248,26 @@ export const Grants: ElementStory<typeof CapitalOverview> = {
     },
 };
 
-export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Dynamic offer config - No capability',
+export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - State - No offer capability',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigNoCapability,
+            handlers: CapitalOverviewMockedResponses.errorStateNoOfferCapability,
         },
     },
 };
 
-export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOverview> = {
-    name: 'Error - Dynamic offer config - Inactive account holder',
+export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOverview> = {
+    name: 'Error - State - Inactive account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOverviewMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
+            handlers: CapitalOverviewMockedResponses.errorStateInactiveAccountHolder,
         },
     },
 };

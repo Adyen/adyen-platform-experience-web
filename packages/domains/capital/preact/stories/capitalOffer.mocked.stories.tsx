@@ -21,6 +21,22 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
+    name: 'With APR field',
+    args: {
+        mockedApi: true,
+        legalEntity: {
+            countryCode: 'CA',
+            regions: [],
+        },
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOfferMockedResponses.aprField,
+        },
+    },
+};
+
 export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfInUnsupportedRegion: boolean; legalEntity: ILegalEntity }> = {
     name: 'Unsupported region',
     args: {
@@ -55,33 +71,12 @@ export const UnsupportedRegion: ElementStory<typeof CapitalOverview, { mountIfIn
     ],
 };
 
-export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
-    name: 'With APR field',
-    args: {
-        mockedApi: true,
-        legalEntity: {
-            countryCode: 'CA',
-            regions: [],
-        },
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOfferMockedResponses.aprField,
-        },
-    },
-};
-
-export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
-    name: 'Error - Dynamic offer config - No config',
+export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified: boolean }> = {
+    name: 'Unqualified',
     args: {
         mockedApi: true,
         skipDecorators: true,
         mountIfUnqualified: true,
-    },
-    parameters: {
-        msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoConfig,
-        },
     },
     decorators: [
         (story, context) => {
@@ -106,26 +101,26 @@ export const ErrorDynamicOfferConfigNoConfig: ElementStory<typeof CapitalOffer, 
     ],
 };
 
-export const ErrorDynamicOfferConfigNoCapability: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer config - No capability',
+export const ErrorStateNoOfferCapability: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - State - No offer capability',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigNoCapability,
+            handlers: CapitalOfferMockedResponses.errorStateNoOfferCapability,
         },
     },
 };
 
-export const ErrorDynamicOfferConfigInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
-    name: 'Error - Dynamic offer config - Inactive account holder',
+export const ErrorStateInactiveAccountHolder: ElementStory<typeof CapitalOffer> = {
+    name: 'Error - State - Inactive account holder',
     args: {
         mockedApi: true,
     },
     parameters: {
         msw: {
-            handlers: CapitalOfferMockedResponses.errorDynamicOfferConfigInactiveAccountHolder,
+            handlers: CapitalOfferMockedResponses.errorStateInactiveAccountHolder,
         },
     },
 };

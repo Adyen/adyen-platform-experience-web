@@ -6,7 +6,6 @@ export const CAPITAL_ENDPOINTS = {
     capitalState: `${MSW_BASE_URL}/capital/capitalState`,
     createOffer: `${MSW_BASE_URL}/capital/grantOffers/create`,
     onboardingConfiguration: `${MSW_BASE_URL}/capital/onboardingConfiguration`,
-    dynamicOfferConfig: `${MSW_BASE_URL}/capital/grantOffers/dynamic/configuration`,
     dynamicOffer: `${MSW_BASE_URL}/capital/grantOffers/dynamic`,
     grants: `${MSW_BASE_URL}/capital/grants`,
     requestFunds: `${MSW_BASE_URL}/capital/grants/:id`,

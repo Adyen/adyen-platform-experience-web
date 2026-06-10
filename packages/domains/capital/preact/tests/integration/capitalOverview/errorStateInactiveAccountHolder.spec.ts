@@ -1,15 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-dynamic-offer-config-inactive-account-holder';
+const STORY_ID = 'mocked-capital-capital-overview--error-state-inactive-account-holder';
 
-test.describe('Error - Dynamic offer config - Inactive account holder', () => {
+test.describe('Error - State - Inactive account holder', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
     });
 
     test('should render an error message', async ({ page }) => {
-        await expect(page.getByText('Business financing request')).toBeVisible();
+        await expect(page.getByText('Business financing')).toBeVisible();
         await expect(page.getByText('Loans are issued by Adyen N.V.')).toBeVisible();
         await expect(page.getByText('Your account is inactive')).toBeVisible();
         await expect(

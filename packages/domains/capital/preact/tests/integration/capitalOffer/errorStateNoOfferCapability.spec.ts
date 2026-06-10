@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-capital-capital-offer--error-dynamic-offer-config-no-capability';
+const STORY_ID = 'mocked-capital-capital-offer--error-state-no-offer-capability';
 
-test.describe('Error - Dynamic offer config - No capability', () => {
+test.describe('Error - State - No offer capability', () => {
     test.beforeEach(async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
     });
@@ -20,7 +20,7 @@ test.describe('Error - Dynamic offer config - No capability', () => {
 });
 
 test.describe('onContactSupport argument', () => {
-    test('should render ""Reach out to support"" button when argument is set', async ({ page }) => {
+    test('should render "Reach out to support" button when argument is set', async ({ page }) => {
         await goToStory(page, { id: STORY_ID, args: { onContactSupport: 'Enabled' } });
         await expect(page.getByRole('button', { name: 'Reach out to support' })).toBeVisible();
     });

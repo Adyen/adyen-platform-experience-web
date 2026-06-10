@@ -5,7 +5,6 @@ import { BaseList } from '@integration-components/ui-components-preact/BaseList/
 import { GrantItem } from '../GrantItem/GrantItem';
 import { getGrantConfig } from '../GrantItem/utils';
 import { FunctionalComponent } from 'preact';
-import { GrantsProps } from './types';
 import { GRANT_ADJUSTMENT_DETAILS } from '../GrantAdjustmentDetails/constants';
 import { GrantAdjustmentDetail, GrantAdjustmentDetailCallback } from '../GrantAdjustmentDetails/types';
 import { GrantRepaymentDetails } from '../GrantRepaymentDetails/GrantRepaymentDetails';
@@ -32,7 +31,14 @@ const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdj
     );
 };
 
-export const GrantsDisplay: FunctionalComponent<GrantsProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
+export interface GrantsDisplayProps {
+    grantList: IGrant[];
+    hideTitle?: boolean;
+    newOfferAvailable: boolean;
+    onNewOfferRequest: () => void;
+}
+
+export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
     const [selectedGrantDetail, setSelectedGrantDetail] = useState<GrantAdjustmentDetail>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
