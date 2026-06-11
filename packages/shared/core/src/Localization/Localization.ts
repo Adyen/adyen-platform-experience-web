@@ -24,7 +24,6 @@ import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './uti
 import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
-import { translations_dev_assets } from '../translations/local';
 import localSwapConfig from '../config/translations/swapConfig.json';
 
 export default class Localization {
@@ -53,9 +52,9 @@ export default class Localization {
     constructor(locale: string = FALLBACK_LOCALE, availableTranslations?: TranslationSourceRecord[], cdnTranslationsUrl = '', cdnConfigUrl = '') {
         this.watch(noop);
 
-        this.#fetchTranslationFromCdnPromise = (locale: string) =>
+        this.#fetchTranslationFromCdnPromise = (locale: SupportedLocales) =>
             process.env.VITE_LOCAL_ASSETS
-                ? translations_dev_assets[locale]!
+                ? import('../translations/local').then(({ translations_dev_assets }) => translations_dev_assets[locale]!)
                 : httpGet<any>({
                       loadingContext: cdnTranslationsUrl,
                       path: `/${locale}.json`,
