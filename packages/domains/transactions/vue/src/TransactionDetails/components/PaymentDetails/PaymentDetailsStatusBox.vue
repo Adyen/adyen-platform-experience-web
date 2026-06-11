@@ -18,7 +18,7 @@ import {
     RefundType,
 } from '../../../../../domain/src';
 import type { TransactionDetails } from '../../../../../domain/src';
-import { parsePaymentMethodType } from '@integration-components/utils';
+import { parsePaymentMethodType, DATE_FORMAT_TRANSACTION_DETAILS } from '@integration-components/utils';
 
 const props = defineProps<{
     refundedState: RefundedState;
@@ -29,18 +29,7 @@ const { i18n } = useCoreContext();
 
 const amountStyle = computed(() => getAmountStyleForTransaction(props.transaction));
 const refundType = computed(() => getRefundTypeForTransaction(props.transaction));
-const formattedDate = computed(() =>
-    i18n.date(props.transaction.createdAt, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-        timeZoneName: 'short',
-    })
-);
+const formattedDate = computed(() => i18n.date(props.transaction.createdAt, DATE_FORMAT_TRANSACTION_DETAILS));
 const formattedAmount = computed(() => i18n.amount(props.transaction.netAmount.value, props.transaction.netAmount.currency));
 
 const amountClass = computed(() => [`${TX_DATA_AMOUNT}--${amountStyle.value}`]);
