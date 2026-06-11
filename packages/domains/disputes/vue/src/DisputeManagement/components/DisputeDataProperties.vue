@@ -225,7 +225,7 @@ async function downloadEvidence(documentType: string) {
         link.href = url;
         link.download = response.filename || documentType;
         link.click();
-        URL.revokeObjectURL(url);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
     } catch {
         downloadErrors.value = new Set([...downloadErrors.value, documentType]);
     }
