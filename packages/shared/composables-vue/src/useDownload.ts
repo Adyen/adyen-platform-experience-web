@@ -53,7 +53,7 @@ export function useDownload(
 
     watch(fetchKey, newKey => {
         if (!newKey) {
-            // enabled became false — let any in-flight request complete naturally
+            // enabled became false — let any in-flight download complete so onSuccess can save the file
             return;
         }
         void runDownload();

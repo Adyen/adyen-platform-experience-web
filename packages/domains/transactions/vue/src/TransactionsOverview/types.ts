@@ -1,9 +1,16 @@
 import type { CoreInstance } from '@integration-components/core/vue';
-import type { IAmount, IBalanceAccountBase, ITransaction, ITransactionCategory, ITransactionStatus } from '@integration-components/types';
-import type { CustomDataRetrieved, DataCustomizationObject, DataGridCustomColumnConfig } from '@integration-components/types';
+import type {
+    IAmount,
+    IBalanceAccountBase,
+    ITransaction,
+    ITransactionCategory,
+    ITransactionStatus,
+    CustomDataRetrieved,
+    DataCustomizationObject,
+    DataGridCustomColumnConfig,
+} from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import type { TransactionsTableCols } from '@integration-components/transactions/domain';
-import type { TransactionDetailsCustomization } from '@integration-components/transactions/domain';
+import type { TransactionsTableCols, TransactionDetailsCustomization } from '../../../domain/src';
 
 export type TransactionsTableFields = StringWithAutocompleteOptions<TransactionsTableCols>;
 export type TransactionsCustomColumn = DataGridCustomColumnConfig<TransactionsTableFields>;
