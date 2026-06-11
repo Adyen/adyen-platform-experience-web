@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { ref, watch } from 'vue';
+import { useCoreContext } from '@integration-components/core/vue';
+import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoTypography, BentoLoadingIndicator, BentoButton } from '@adyen/bento-vue3';
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
@@ -17,7 +18,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const userEvents = useEventDispatcherContext();
 
 const { error, fetchingTransaction, refreshTransaction, transaction, transactionNavigator } = useTransaction(() => props.id);
 
@@ -62,9 +62,8 @@ watch(
     { immediate: true }
 );
 
-onMounted(() => {
-    userEvents.addEvent?.('Landed on page', sharedTransactionDetailsEventProperties);
-});
+useLandedPageEvent(sharedTransactionDetailsEventProperties);
+useDurationEvent(sharedTransactionDetailsEventProperties);
 </script>
 
 <template>
