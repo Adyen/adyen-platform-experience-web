@@ -20,7 +20,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2026-01-10T00:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -62,7 +62,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2026-01-09T00:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -118,7 +118,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2026-01-10T00:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -174,7 +174,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 100000,
                 currency: 'USD',
             },
-            createdAt: '2026-01-13T10:00:00Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -279,7 +279,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2026-01-10T00:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -321,7 +321,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-12-20T00:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -363,7 +363,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-12-12T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -405,7 +405,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2026-01-13T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -447,7 +447,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-01-20T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -489,7 +489,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-12-20T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -531,7 +531,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2024-11-21T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -573,7 +573,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-10-29T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [
@@ -622,7 +622,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: '2025-02-02T10:00:00.000Z',
+            createdAt: new Date().toISOString(),
             isSumOfSameDayPayouts: true,
         },
         amountBreakdowns: {

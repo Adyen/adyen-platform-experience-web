@@ -11,6 +11,9 @@ import {
 import {
     BASE_TRANSACTION,
     COMPLETE_TRANSACTION_DETAILS,
+    COMPLETED_REFUND_STATUSES,
+    DEFAULT_REFUND_STATUSES,
+    FAILED_REFUND_STATUSES,
     FULL_REFUND_TRANSACTION,
     FULLY_REFUNDABLE_TRANSACTION,
     FULLY_REFUNDED_TRANSACTION,
@@ -96,6 +99,16 @@ const enrichTransactionDataWithDetails = <T extends ITransaction>(
     switch (refundMode) {
         case 'non_refundable':
             refundableAmount = 0;
+            break;
+        case 'partially_refundable_any_amount':
+        case 'partially_refundable_with_line_items_required':
+            if (transaction.id === 'YVBUA4RGV6A14629') {
+                refundStatuses = FAILED_REFUND_STATUSES?.map(status => ({ ...status, amount: { value: -117500, currency } }));
+            } else if (transaction.id === '254X7TAUWB140HW0') {
+                refundStatuses = COMPLETED_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            } else {
+                refundStatuses = DEFAULT_REFUND_STATUSES?.map(status => ({ ...status, amount: { ...status.amount, currency } }));
+            }
             break;
     }
 

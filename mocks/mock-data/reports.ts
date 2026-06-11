@@ -3,405 +3,405 @@ import { IReport } from '../../src';
 export const REPORTS: { [balanceAccountId: string]: IReport[] } = {
     BA32272223222B5CTDQPM6W2H: [
         {
-            createdAt: '2025-12-16T15:58:50.992Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T03:10:43.543Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T05:31:45.708Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-10T01:50:37.155Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-03T16:43:39.649Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-05T05:02:47.944Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T23:51:59.800Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T08:03:48.396Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2024-07-17T08:23:36.167Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2024-07-16T20:34:27.806Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2024-07-17T06:01:56.072Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2024-07-16T15:37:27.138Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T10:44:33.669Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T09:25:20.115Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T06:56:55.447Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T21:56:04.262Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T11:29:35.679Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T01:39:40.441Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T13:28:57.206Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T04:09:52.010Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T15:17:32.538Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T23:20:13.131Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T17:23:11.487Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T09:30:09.302Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T07:20:25.331Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T16:01:15.114Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T05:33:21.590Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T22:27:04.417Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T05:41:55.076Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T00:18:33.954Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T12:49:58.341Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T02:51:53.640Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T00:18:39.335Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T18:42:09.028Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T22:44:59.881Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T02:14:57.813Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T15:40:56.365Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T21:15:08.582Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T02:23:50.241Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T22:34:39.232Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T05:11:19.384Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T14:55:45.657Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T16:22:24.940Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T06:15:10.814Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T05:00:07.591Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T11:31:06.626Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T09:51:19.966Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T04:26:53.367Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T12:47:53.651Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T11:45:10.561Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
     ],
     BA32272223222B5CTDQPM6W2G: [
         {
-            createdAt: '2026-02-16T23:17:27.666Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T11:42:11.188Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T09:51:40.824Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T14:46:58.491Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T13:16:14.289Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T22:48:23.259Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T21:29:21.192Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T09:47:29.782Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T15:06:12.716Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T01:34:54.818Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T23:27:29.703Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T16:11:21.758Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T20:54:19.222Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T03:50:35.402Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T05:40:39.592Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T22:48:37.787Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T11:19:04.207Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T09:42:10.483Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T22:40:27.934Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T06:54:04.457Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T18:01:40.153Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T11:41:36.594Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T09:41:13.979Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T23:03:34.107Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T01:05:07.427Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T07:06:33.732Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T03:01:00.562Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T21:16:55.459Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T16:50:11.099Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T06:58:53.564Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-16T20:19:25.595Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-02-17T13:54:41.372Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T14:26:35.854Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T15:25:35.742Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T03:26:37.751Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T13:34:16.037Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T22:04:49.054Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T07:15:58.902Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T23:22:25.057Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T17:51:47.867Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T12:38:16.560Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T22:59:28.153Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T02:12:46.759Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T23:22:06.632Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T07:42:15.341Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T07:12:50.427Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T02:33:43.279Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T01:56:46.647Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-16T21:42:58.664Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
         {
-            createdAt: '2026-01-17T00:12:30.840Z',
+            createdAt: new Date().toISOString(),
             type: 'payout',
         },
     ],

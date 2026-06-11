@@ -1,4 +1,4 @@
-import type { ITransaction, ITransactionRefundDetails, ITransactionWithDetails } from '../../src';
+import { ITransaction, ITransactionRefundDetails, ITransactionRefundStatus, ITransactionWithDetails } from '../../src';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 const TRANSACTION_DATE_RANGE_MAX_YEARS = 3;
@@ -2473,10 +2473,10 @@ export const TRANSACTIONS: ITransaction[] = [
     },
 ];
 
-const amount: IAmount = { currency: 'EUR', value: 60750 };
-const paymentMethod: IPaymentMethod = { lastFourDigits: '1945', type: 'mc' };
-const refundFullAmount: IAmount = { ...amount, value: -amount.value };
-const refundPartialAmount: IAmount = { ...amount, value: -47375 };
+const amount = { currency: 'EUR', value: 60750 };
+const paymentMethod = { lastFourDigits: '1945', type: 'mc' };
+const refundFullAmount = { ...amount, value: -amount.value };
+const refundPartialAmount = { ...amount, value: -47375 };
 
 export const ORIGINAL_PAYMENT_ID = 'W9R2T6M4L1P7V8X5';
 
@@ -2662,4 +2662,71 @@ export const COMPLETE_TRANSACTION_DETAILS: ITransactionWithDetails = {
             type: 'Payment',
         },
     ],
+};
+
+export const DEFAULT_REFUND_STATUSES: ITransactionRefundStatus = [
+    {
+        amount: { currency: 'USD', value: -500 },
+        status: 'in_progress',
+    },
+    {
+        amount: { currency: 'USD', value: -1500 },
+        status: 'in_progress',
+    },
+    {
+        amount: { currency: 'USD', value: -500 },
+        status: 'completed',
+    },
+    {
+        amount: { currency: 'USD', value: -100 },
+        status: 'failed',
+    },
+    {
+        amount: { currency: 'USD', value: -200 },
+        status: 'failed',
+    },
+    {
+        amount: { currency: 'USD', value: -200 },
+        status: 'failed',
+    },
+];
+
+export const FAILED_REFUND_STATUSES: ITransactionRefundStatus = [
+    {
+        amount: { currency: 'USD', value: -117500 },
+        status: 'failed',
+    },
+];
+
+export const IN_PROGRESS_REFUND_STATUSES: ITransactionRefundStatus = [
+    {
+        amount: { currency: 'USD', value: -1000000 },
+        status: 'in_progress',
+    },
+    {
+        amount: { currency: 'USD', value: -400000 },
+        status: 'in_progress',
+    },
+];
+
+export const COMPLETED_REFUND_STATUSES: ITransactionRefundStatus = [
+    {
+        amount: { currency: 'USD', value: -500 },
+        status: 'completed',
+    },
+    {
+        amount: { currency: 'USD', value: -500 },
+        status: 'completed',
+    },
+];
+
+export const DEFAULT_TRANSACTION: ITransaction = {
+    id: '1VVF0D5V3709DX6D',
+    amountBeforeDeductions: { currency: 'EUR', value: 100000 },
+    netAmount: { currency: 'EUR', value: 100000 },
+    balanceAccountId: '',
+    status: 'Booked',
+    category: 'Payment',
+    paymentMethod: { lastFourDigits: '1945', type: 'mc' },
+    createdAt: '2022-08-29T14:47:03+02:00',
 };
