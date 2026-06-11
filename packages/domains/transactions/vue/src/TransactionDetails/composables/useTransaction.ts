@@ -57,16 +57,6 @@ export function useTransaction(id: () => string) {
             if (!signal.aborted) {
                 transaction.value = result as TransactionDetails;
                 lastFetchedTransactionId = txId;
-
-                if (result && (result as TransactionDetails).category === 'Refund') {
-                    const tx = result as TransactionDetails;
-                    transactionNavigator.reset(tx.id, tx.refundMetadata?.originalPaymentId);
-                    transactionNavigator.onNavigation = ({ to: navId }) => {
-                        transactionId.value = navId;
-                    };
-                }
-
-                navigatorState.value = getNavigatorState(transactionNavigator);
             }
         } catch (e) {
             if (!signal.aborted) {
@@ -79,6 +69,16 @@ export function useTransaction(id: () => string) {
             }
         }
     }
+
+    watch(transaction, newTransaction => {
+        if (newTransaction?.category === 'Refund') {
+            transactionNavigator.reset(newTransaction.id, newTransaction.refundMetadata?.originalPaymentId);
+            transactionNavigator.onNavigation = ({ to: navId }) => {
+                transactionId.value = navId;
+            };
+        }
+        navigatorState.value = getNavigatorState(transactionNavigator);
+    });
 
     watch(
         transactionId,
