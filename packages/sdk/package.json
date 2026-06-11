@@ -4,7 +4,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build && tsc --project tsconfig-build.json"
+        "build": "vite build && tsc --project tsconfig-build.json && tsc-alias -p tsconfig-build.json"
     },
     "dependencies": {
         "@integration-components/sdk-internal": "workspace:*",
@@ -12,6 +12,7 @@
     },
     "devDependencies": {
         "@preact/preset-vite": "^2.10.2",
+        "tsc-alias": "^1.8.17",
         "vite": "catalog:",
         "vite-plugin-svgr": "^4.5.0"
     }
