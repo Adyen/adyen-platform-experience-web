@@ -22,7 +22,7 @@ export const getCapitalState = async (session: AuthSession): Promise<CapitalComp
 
     const hasGrants = !!capitalStateResponse?.hasGrants;
     const hasOffer = !!capitalStateResponse?.dynamicOffer;
-    const hasRenewableGrants = !!capitalStateResponse?.renewableGrants;
+    const hasRenewableGrants = !!capitalStateResponse?.renewableGrants.length;
     let state: CapitalComponentState['state'] = 'isUnqualified';
 
     if (hasGrants) {

@@ -86,7 +86,11 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onSessionCreate: getMySessionToken as any,
                     });
-                    const capitalOffer = new CapitalOffer({ core, onFundsRequest: () => undefined });
+                    const capitalOffer = new CapitalOffer({
+                        core,
+                        onFundsRequest: () => undefined,
+                        onContactSupport: context.args.onContactSupport,
+                    });
                     const { state } = await capitalOffer.getState();
 
                     if (state !== 'isUnqualified' || context.args.mountIfUnqualified) {
@@ -94,7 +98,7 @@ export const Unqualified: ElementStory<typeof CapitalOffer, { mountIfUnqualified
                     }
                 };
                 void getAdyenPlatformExperienceComponent();
-            }, [context.args.mountIfUnqualified]);
+            }, [context.args.mountIfUnqualified, context.args.onContactSupport]);
 
             return <div className="component-wrapper" id="capital-overview"></div>;
         },

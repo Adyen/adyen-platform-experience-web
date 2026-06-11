@@ -53,7 +53,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
             ) : (
                 <GrantsDisplay
                     grantList={grantList}
-                    newOfferAvailable={!!capitalState?.dynamicOffer && !capitalState.renewableGrants.length}
+                    newOfferAvailable={!!capitalState?.dynamicOffer && !capitalState?.renewableGrants.length}
                     onNewOfferRequest={goToNextStep}
                 />
             )}
