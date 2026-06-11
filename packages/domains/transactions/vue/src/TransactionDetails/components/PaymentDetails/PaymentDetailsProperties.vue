@@ -31,11 +31,18 @@ const paymentDataKeys = {
     refundReason: 'transactions.details.fields.refundReason',
 } as const;
 
+const paymentDataCopyButtonKeys = {
+    referenceId: 'transactions.details.actions.copyReferenceID',
+    merchantReference: 'transactions.details.actions.copyMerchantReference',
+    pspReference: 'transactions.details.actions.copyPspReference',
+} as const satisfies Record<string, TranslationKey>;
+
 interface ListItem {
     id?: string;
     key: TranslationKey;
     value: string;
     copyable?: boolean;
+    copyAriaLabelKey?: TranslationKey;
     trackingName?: string;
 }
 
@@ -56,13 +63,23 @@ const standardItems = computed<ListItem[]>(() => {
                   value: getTransactionRefundReason(i18n, refundMetadata.refundReason) as string,
               }
             : null,
-        isVisible('id') ? { id: 'id', key: paymentDataKeys.id as TranslationKey, value: id, copyable: true, trackingName: 'Reference ID' } : null,
+        isVisible('id')
+            ? {
+                  id: 'id',
+                  key: paymentDataKeys.id as TranslationKey,
+                  value: id,
+                  copyable: true,
+                  copyAriaLabelKey: paymentDataCopyButtonKeys.referenceId,
+                  trackingName: 'Reference ID',
+              }
+            : null,
         merchantReference && isVisible('merchantReference')
             ? {
                   id: 'merchantReference',
                   key: paymentDataKeys.merchantReference as TranslationKey,
                   value: merchantReference,
                   copyable: true,
+                  copyAriaLabelKey: paymentDataCopyButtonKeys.merchantReference,
                   trackingName: 'Merchant reference',
               }
             : null,
@@ -72,6 +89,7 @@ const standardItems = computed<ListItem[]>(() => {
                   key: paymentDataKeys.pspReference as TranslationKey,
                   value: paymentPspReference,
                   copyable: true,
+                  copyAriaLabelKey: paymentDataCopyButtonKeys.pspReference,
                   trackingName: 'PSP reference',
               }
             : null,
@@ -115,7 +133,7 @@ function onCopyText(text: string, trackingName?: string) {
                     <BentoTypography variant="body">{{ item.value }}</BentoTypography>
                     <BentoButton
                         variant="tertiary"
-                        :aria-label="i18n.get(`transactions.details.actions.copy${item.trackingName?.replace(' ', '') ?? ''}` as TranslationKey)"
+                        :aria-label="item.copyAriaLabelKey ? i18n.get(item.copyAriaLabelKey) : undefined"
                         @click="() => onCopyText(item.value, item.trackingName)"
                     >
                         <CopyIcon />
