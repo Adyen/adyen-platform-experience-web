@@ -11,12 +11,12 @@ import type { TranslationKey } from '@integration-components/core';
 import './TransactionsExport.scss';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 
+const props = defineProps<{ disabled?: boolean }>();
+
 const { i18n } = useCoreContext();
 const config = useConfigContext();
 const userEvents = useEventDispatcherContext();
-const { filters, transactionsListResult } = useTransactionsOverviewContext();
-
-const hasNoResults = computed(() => !transactionsListResult.records.value?.length);
+const { filters } = useTransactionsOverviewContext();
 
 const popoverOpen = ref(false);
 const exportError = ref<Error | undefined>(undefined);
@@ -181,7 +181,7 @@ const popoverActions = computed(() => [
             :id="exportButtonId"
             ref="targetElement"
             variant="secondary"
-            :disabled="isFetching || hasNoResults"
+            :disabled="props.disabled || isFetching"
             :aria-label="i18n.get('transactions.overview.export.button.label')"
             aria-haspopup="dialog"
             :aria-expanded="popoverOpen"

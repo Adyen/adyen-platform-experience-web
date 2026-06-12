@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useCoreContext } from '@integration-components/core/vue';
+import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
 import { BentoAlert, BentoButton } from '@adyen/bento-vue3';
 import TransactionTotals from '../TransactionTotals/TransactionTotals.vue';
 import Balances from '../Balances/Balances.vue';
@@ -22,7 +23,6 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const userEvents = useEventDispatcherContext();
 const { filters, currenciesLookupResult, accountBalancesResult, transactionsTotalsResult, transactionsListResult } = useTransactionsOverviewContext();
 
 const { currenciesDictionary, defaultCurrencySortedCurrencies, sortedCurrencies } = currenciesLookupResult;
@@ -47,7 +47,8 @@ const summaryEl = ref<HTMLElement | null>(null);
 const totalsSectionEl = ref<HTMLElement | null>(null);
 const balancesSectionEl = ref<HTMLElement | null>(null);
 
-let landedAt: number | undefined;
+useLandedPageEvent(sharedAnalyticsProps);
+useDurationEvent(sharedAnalyticsProps);
 
 function updateSummaryLayout() {
     const totalsHeight = totalsSectionEl.value?.clientHeight ?? 0;
@@ -81,16 +82,7 @@ watch([totalsError, balancesError], ([newTotalsError, newBalancesError], [oldTot
 });
 
 onMounted(() => {
-    landedAt = Date.now();
-    userEvents.addEvent?.('Landed on page', sharedAnalyticsProps);
-
     updateSummaryLayout();
-});
-
-onUnmounted(() => {
-    if (landedAt !== undefined) {
-        userEvents.addEvent?.('Duration on page', { ...sharedAnalyticsProps, duration: Date.now() - landedAt });
-    }
 });
 </script>
 

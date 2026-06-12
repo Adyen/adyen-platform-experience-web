@@ -66,14 +66,14 @@ function onRowClick(transaction: ITransaction) {
     }
 }
 
-const showExport = computed(() => state.isTransactionsView.value && state.transactionsListResult.hasFetchedOnce.value);
+const showExport = computed(() => state.isTransactionsView.value);
 </script>
 
 <template>
     <TransactionsOverviewShell :hide-title="props.hideTitle">
         <div role="toolbar" class="adyen-pe-transactions-overview__toolbar">
             <TransactionsFilters :balance-accounts="props.balanceAccounts" />
-            <TransactionsExport v-if="showExport" />
+            <TransactionsExport v-if="showExport" :disabled="!state.transactionsListResult.page.value" />
         </div>
         <TransactionsOverviewList
             v-if="state.isTransactionsView.value"

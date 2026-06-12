@@ -10,6 +10,7 @@ import {
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
     TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
 } from '@integration-components/transactions/domain';
+import type { FilterType } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import { TRANSACTION_CATEGORIES } from '../../constants';
 import type { IBalanceAccountBase, TransactionsFilters } from '../../types';
 
@@ -175,6 +176,27 @@ const filterValues = computed<BentoFilterValues>(() => {
     return values;
 });
 
+const FILTER_LABELS: Partial<Record<string, FilterType>> = {
+    balanceAccountId: 'Balance account filter',
+    dateRange: 'Date filter',
+    categories: 'Category filter',
+    currencies: 'Currency filter',
+    paymentPspReference: 'PSP reference filter',
+    insightsCurrency: 'Currency filter',
+};
+
+function fireFilterEvent(field: string, value: unknown) {
+    const label = FILTER_LABELS[field];
+    if (!label) return;
+    const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
+    userEvents.addModifyFilterEvent?.({
+        category: TRANSACTION_ANALYTICS_CATEGORY,
+        subCategory: eventSubCategory.value,
+        label,
+        actionType: isEmpty ? 'reset' : 'update',
+    });
+}
+
 function onFilterInput(updatedValues: BentoFilterValues) {
     for (const fv of updatedValues) {
         if (fv.field === 'balanceAccountId') {
@@ -188,12 +210,8 @@ function onFilterInput(updatedValues: BentoFilterValues) {
         } else if (fv.field === 'paymentPspReference') {
             selectedPspReference.value = (fv.value as string) || undefined;
         }
+        fireFilterEvent(fv.field, fv.value);
     }
-
-    userEvents.addEvent?.('Updated filter', {
-        category: TRANSACTION_ANALYTICS_CATEGORY,
-        subCategory: eventSubCategory.value,
-    });
 }
 
 // Propagate filter changes upward — watch individual local refs to avoid circular deps
@@ -251,12 +269,8 @@ function onInsightsFilterInput(updatedValues: BentoFilterValues) {
         } else if (fv.field === 'insightsCurrency') {
             setInsightsCurrency((fv.value as string) || undefined);
         }
+        fireFilterEvent(fv.field, fv.value);
     }
-
-    userEvents.addEvent?.('Updated filter', {
-        category: TRANSACTION_ANALYTICS_CATEGORY,
-        subCategory: eventSubCategory.value,
-    });
 }
 </script>
 

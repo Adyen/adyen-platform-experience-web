@@ -35,23 +35,16 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
 
         try {
             const { filters, applicableFilters } = props();
+            const hasApplicableFilter = (key: keyof TransactionsFilters) => !applicableFilters || applicableFilters.has(key);
             const query: { balanceAccountId: string; createdSince?: string; createdUntil?: string; [key: string]: any } = {
                 balanceAccountId: filters.balanceAccountId ?? '',
                 createdSince: filters.createdSince,
                 createdUntil: filters.createdUntil,
             };
-            if (!applicableFilters || applicableFilters.has('categories')) {
-                if (filters.categories.length) query.categories = filters.categories;
-            }
-            if (!applicableFilters || applicableFilters.has('currencies')) {
-                if (filters.currencies.length) query.currencies = filters.currencies;
-            }
-            if (!applicableFilters || applicableFilters.has('statuses')) {
-                if (filters.statuses.length) query.statuses = filters.statuses;
-            }
-            if (!applicableFilters || applicableFilters.has('paymentPspReference')) {
-                if (filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
-            }
+            if (hasApplicableFilter('categories') && filters.categories.length) query.categories = filters.categories;
+            if (hasApplicableFilter('currencies') && filters.currencies.length) query.currencies = filters.currencies;
+            if (hasApplicableFilter('statuses') && filters.statuses.length) query.statuses = filters.statuses;
+            if (hasApplicableFilter('paymentPspReference') && filters.paymentPspReference) query.paymentPspReference = filters.paymentPspReference;
 
             const json = await fn({ signal }, { query } as any);
             if (!signal.aborted) {
@@ -77,15 +70,16 @@ export function useTransactionsTotals(props: () => UseTransactionsTotalsProps) {
     const fetchKey = computed(() => {
         if (!canFetch.value) return null;
         const { filters, applicableFilters } = props();
+        const hasApplicableFilter = (key: keyof TransactionsFilters) => !applicableFilters || applicableFilters.has(key);
         const key: Record<string, any> = {
             balanceAccountId: filters.balanceAccountId,
             createdSince: filters.createdSince,
             createdUntil: filters.createdUntil,
         };
-        if (!applicableFilters || applicableFilters.has('categories')) key.categories = [...filters.categories].sort().join(',');
-        if (!applicableFilters || applicableFilters.has('currencies')) key.currencies = [...filters.currencies].sort().join(',');
-        if (!applicableFilters || applicableFilters.has('statuses')) key.statuses = [...filters.statuses].sort().join(',');
-        if (!applicableFilters || applicableFilters.has('paymentPspReference')) key.paymentPspReference = filters.paymentPspReference;
+        if (hasApplicableFilter('categories')) key.categories = [...filters.categories].sort().join(',');
+        if (hasApplicableFilter('currencies')) key.currencies = [...filters.currencies].sort().join(',');
+        if (hasApplicableFilter('statuses')) key.statuses = [...filters.statuses].sort().join(',');
+        if (hasApplicableFilter('paymentPspReference')) key.paymentPspReference = filters.paymentPspReference;
         return JSON.stringify(key);
     });
 
