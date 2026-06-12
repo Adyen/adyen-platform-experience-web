@@ -193,7 +193,7 @@ module.exports = [
 
     // Vue Composition API files written as plain .ts (not .vue SFCs)
     {
-        files: ['**/vue/src/**/*.{ts,tsx}', '**/composables-vue/src/**/*.{ts,tsx}'],
+        files: ['**/{vue,composables-vue}/src/**/*.{ts,tsx}'],
         rules: {
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',
