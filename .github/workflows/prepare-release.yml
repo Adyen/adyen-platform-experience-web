@@ -39,8 +39,9 @@ jobs:
 
       - name: Enter pre-release mode
         if: inputs.prerelease
+        env:
+          TAG: ${{ inputs.prerelease_tag }}
         run: |
-          TAG="${{ inputs.prerelease_tag }}"
           if [[ ! "$TAG" =~ ^[a-zA-Z]+$ ]]; then
             echo "::error::Pre-release tag must contain only letters (e.g. beta, alpha, rc)"
             exit 1
