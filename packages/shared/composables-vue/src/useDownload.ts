@@ -49,13 +49,8 @@ export function useDownload(
         }
     }
 
-    const fetchKey = computed(() => (canFetch.value ? JSON.stringify({ params: queryParam(), enabled: enabled() }) : null));
-
-    watch(fetchKey, newKey => {
-        if (!newKey) {
-            // enabled became false — let any in-flight download complete so onSuccess can save the file
-            return;
-        }
+    watch(canFetch, newCanFetch => {
+        if (!newCanFetch) return;
         void runDownload();
     });
 
