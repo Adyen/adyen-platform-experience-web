@@ -30,7 +30,13 @@ bump_branch="bump/$new_version"
 
 pnpm install
 git add .
-git commit -m "Bump to version $new_version"
+
+if [[ "$new_version" == *"-"* ]]; then
+  git commit -m "chore(release): bump to pre-release version $new_version"
+else
+  git commit -m "chore(release): bump to version $new_version"
+fi || { echo -e "${RED}Failed to commit changes${NC}"; exit 1; }
+
 git push origin "HEAD:$bump_branch" || { echo -e "${RED}Failed to push to remote branch $bump_branch${NC}"; exit 1; }
 git reset --hard HEAD~1
 

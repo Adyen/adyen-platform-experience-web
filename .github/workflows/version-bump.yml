@@ -12,7 +12,8 @@ jobs:
       github.repository == 'adyen/adyen-platform-experience-web' &&
       (github.event_name == 'workflow_dispatch' ||
        (github.event.pull_request.merged == true &&
-        startsWith(github.event.pull_request.title, 'Start release v')))
+        (startsWith(github.event.pull_request.title, 'Start release v') ||
+         startsWith(github.event.pull_request.title, 'Start pre-release v'))))
     name: Version bump
     runs-on: ubuntu-latest
     permissions:
@@ -35,6 +36,13 @@ jobs:
           pnpm changeset version
           NEW_VERSION=$(jq -r '.version' package.json)
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+
+          # Detect if this is a pre-release version
+          if [[ "$NEW_VERSION" == *"-"* ]]; then
+            echo "IS_PRERELEASE=true" >> "$GITHUB_ENV"
+          else
+            echo "IS_PRERELEASE=false" >> "$GITHUB_ENV"
+          fi
           git checkout -- .
 
       - name: Create Version Pull Request
