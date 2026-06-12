@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { useLandedPageEvent, useDurationEvent } from '@integration-components/composables-vue';
+import { useLandedPageEvent } from '@integration-components/composables-vue';
 import { BentoTypography, BentoLoadingIndicator, BentoButton } from '@adyen/bento-vue3';
 import TransactionData from './TransactionData/TransactionData.vue';
 import { useTransaction } from '../composables/useTransaction';
@@ -15,6 +15,7 @@ const props = defineProps<{
     dataCustomization?: { details?: TransactionDetailsCustomization };
     onContactSupport?: () => void;
     hideTitle?: boolean;
+    withinModal?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -62,8 +63,10 @@ watch(
     { immediate: true }
 );
 
-useLandedPageEvent(sharedTransactionDetailsEventProperties);
-useDurationEvent(sharedTransactionDetailsEventProperties);
+useLandedPageEvent({
+    ...sharedTransactionDetailsEventProperties,
+    ...(props.withinModal && { fromPage: 'Transactions overview' }),
+});
 </script>
 
 <template>

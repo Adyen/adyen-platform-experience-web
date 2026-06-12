@@ -104,6 +104,7 @@ const showExport = computed(() => state.isTransactionsView.value && state.transa
                 :data-customization="props.dataCustomization"
                 :on-contact-support="props.onContactSupport"
                 hide-title
+                within-modal
             />
         </template>
     </BentoModal>
