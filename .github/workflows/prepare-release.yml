@@ -9,10 +9,15 @@ on:
         type: boolean
         default: false
       prerelease_tag:
-        description: 'Pre-release tag (only used when prerelease is true). E.g. beta, alpha, rc'
+        description: 'Pre-release tag (only used when prerelease is true)'
         required: false
-        type: string
+        type: choice
         default: 'beta'
+        options:
+          - beta
+          - alpha
+          - rc
+          - next
 
 jobs:
   create-release-pr:
@@ -42,11 +47,6 @@ jobs:
         env:
           TAG: ${{ inputs.prerelease_tag }}
         run: |
-          if [[ ! "$TAG" =~ ^[a-zA-Z]+$ ]]; then
-            echo "::error::Pre-release tag must contain only letters (e.g. beta, alpha, rc)"
-            exit 1
-          fi
-
           if [ -f .changeset/pre.json ]; then
             echo "Pre-release mode already active, skipping enter."
           else
