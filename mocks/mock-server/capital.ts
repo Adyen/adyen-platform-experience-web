@@ -15,7 +15,7 @@ import { endpoints } from '../../endpoints/endpoints';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateGrant, delay } from './utils/utils';
 import { getHandlerCallback, mocksFactory } from './utils/mocksHandlerFactory';
-import { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
+import type { paths as CapitalPaths } from '../../src/types/api/resources/CapitalResource';
 import uuid from '../../src/utils/random/uuid';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';

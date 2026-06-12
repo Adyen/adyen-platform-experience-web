@@ -1,5 +1,5 @@
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
-import {
+import type {
     IDispute,
     IDisputeDefenseDocument,
     IDisputeDetail,

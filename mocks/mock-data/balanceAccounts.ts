@@ -1,4 +1,4 @@
-import type { IBalance, IBalanceAccountBase } from '../../src';
+import type { IBalance, IBalanceAccountBase } from '../../src/types/api/models/balanceAccounts';
 
 export const BALANCE_ACCOUNTS: readonly [IBalanceAccountBase, IBalanceAccountBase, IBalanceAccountBase] = [
     {

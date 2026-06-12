@@ -1,5 +1,5 @@
-import { TranslationKey } from '../../../translations';
-import { ITransaction, ITransactionCategory, ITransactionStatus } from '../../../types';
+import type { TranslationKey } from '../../../translations';
+import type { ITransaction, ITransactionCategory, ITransactionStatus } from '../../../types';
 import { TransactionsDateRange, TransactionsFilters, TransactionsView } from './types';
 import * as RangePreset from '../../internal/Calendar/calendar/timerange/presets';
 
@@ -17,6 +17,7 @@ export const classes = {
     filterBarSmall: BASE_CLASS + '__filter-bar-small',
     totalsError: BASE_CLASS + '__totals-error',
 } as const;
+
 
 export const TRANSACTION_DATE_RANGE_CUSTOM = 'common.filters.types.date.rangeSelect.options.custom' satisfies TransactionsDateRange;
 export const TRANSACTION_DATE_RANGE_LAST_7_DAYS = 'common.filters.types.date.rangeSelect.options.last7Days' satisfies TransactionsDateRange;
@@ -82,7 +83,7 @@ export const EXPORT_COLUMNS = [
     'currency',
     'netAmount',
     'amountBeforeDeductions',
-] as const satisfies (keyof ITransaction | 'currency')[];
+] as const;
 
 export const DEFAULT_EXPORT_COLUMNS: readonly (typeof EXPORT_COLUMNS)[number][] = [
     'createdAt',

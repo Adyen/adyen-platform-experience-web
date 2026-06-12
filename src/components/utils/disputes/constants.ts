@@ -1,5 +1,5 @@
-import { TranslationKey } from '../../../translations';
-import { IDispute, IDisputeStatus, IDisputeStatusGroup, IDisputeType } from '../../../types/api/models/disputes';
+import type { TranslationKey } from '../../../translations';
+import type { IDispute, IDisputeStatus, IDisputeStatusGroup, IDisputeType } from '../../../types/api/models/disputes';
 
 export const DISPUTE_ACTION_NEEDED_URGENTLY_THRESHOLD_DAYS = 10;
 

@@ -1,6 +1,6 @@
 import CURRENCY_CODES from '../constants/currency-codes';
 import CURRENCY_DECIMALS from '../constants/currency-decimals';
-import { CurrencyCode, CurrencyDecimalCode } from '../types';
+import type { CurrencyCode, CurrencyDecimalCode } from '../types';
 
 /**
  * @internal

@@ -1,4 +1,4 @@
-import { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src';
+import type { IDynamicOffersConfig, IGBCapitalFundsCollection, IGrant, INLCapitalFundsCollection, IUSCapitalFundsCollection } from '../../src/types/api/models/capital';
 
 export const DYNAMIC_CAPITAL_OFFER = {
     minAmount: {

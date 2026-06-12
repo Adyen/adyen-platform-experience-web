@@ -1,4 +1,4 @@
-import { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails } from '../../../src';
+import type { IPaymentLinkStatusGroup, IPaymentLinkItem, IPaymentLinkDetails } from '../../../src/types/api/models/payByLink';
 import getDate from '../utils/getDate';
 
 export interface IPaymentLinksListResponse {

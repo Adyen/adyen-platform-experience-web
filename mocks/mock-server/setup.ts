@@ -1,8 +1,8 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 import { delay } from './utils/utils';
-import { EndpointName } from '../../src/types/api/endpoints';
-import { HttpMethod } from '../../src/core/Http/types';
+import type { EndpointName } from '../../src/types/api/endpoints';
+import type { HttpMethod } from '../../src/core/Http/types';
 
 const networkError = false;
 const path = endpoints('mock').setup;

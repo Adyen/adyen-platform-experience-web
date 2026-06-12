@@ -1,4 +1,4 @@
-import { IReport } from '../../src';
+import type { IReport } from '../../src/types/api/models/reports';
 
 export const REPORTS: { [balanceAccountId: string]: IReport[] } = {
     BA32272223222B5CTDQPM6W2H: [

@@ -1,4 +1,4 @@
-import { ITransaction, ITransactionRefundDetails, ITransactionRefundStatus, ITransactionWithDetails } from '../../src';
+import type { ITransaction, ITransactionRefundDetails, ITransactionRefundStatus, ITransactionWithDetails } from '../../src/types/api/models/transactions';
 import { BALANCE_ACCOUNTS } from './balanceAccounts';
 
 const TRANSACTION_DATE_RANGE_MAX_YEARS = 3;

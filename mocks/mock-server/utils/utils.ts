@@ -1,5 +1,5 @@
 import { delay as mswDelay, DelayMode, HttpHandler } from 'msw';
-import { IGrantOfferResponseDTO } from '../../../src';
+import type { IGrantOfferResponseDTO } from '../../../src/types/api/models/capital';
 import uuid from '../../../src/utils/random/uuid';
 import { mockWorker } from '../index';
 

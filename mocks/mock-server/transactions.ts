@@ -1,4 +1,4 @@
-import {
+import type {
     ITransaction,
     IRefundMode,
     ITransactionExportColumn,
@@ -7,7 +7,7 @@ import {
     ITransactionWithDetails,
     ITransactionRefundStatus,
     ITransactionTotal,
-} from '../../src';
+} from '../../src/types/api/models/transactions';
 import {
     BASE_TRANSACTION,
     COMPLETE_TRANSACTION_DETAILS,

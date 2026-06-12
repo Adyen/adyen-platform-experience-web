@@ -1,7 +1,7 @@
 import { getDateRangeTimestamps } from '../../../internal/Calendar/calendar/timerange/utils';
-import { IPaymentMethod } from '../../../../types';
+import type { IPaymentMethod } from '../../../../types';
 import { EMPTY_OBJECT } from '../../../../utils';
-import { TransactionsFilters } from '../types';
+import type { TransactionsFilters } from '../types';
 import { INITIAL_FILTERS } from '../constants';
 
 const allFilters = Object.keys(INITIAL_FILTERS) as readonly (keyof TransactionsFilters)[];

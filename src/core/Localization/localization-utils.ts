@@ -3,7 +3,7 @@ import { isFunction, struct } from '../../utils';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { EXCLUDE_PROPS, FALLBACK_LOCALE } from './constants/localization';
 import type { CustomTranslations, Locale } from '../../translations';
-import { SupportedLocales } from './types';
+import type { SupportedLocales } from './types';
 
 export function createTranslationsLoader(this: Localization) {
     type TranslationsLoader = {

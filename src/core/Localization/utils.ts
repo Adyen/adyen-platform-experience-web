@@ -2,7 +2,7 @@ import { JSX } from 'preact';
 import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '../../utils';
 import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../../translations';
-import { SupportedLocales } from './types';
+import type { SupportedLocales } from './types';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;
 const LOCALE_FORMAT_REGEX = /^[a-z]{2}-[A-Z]{2}$/;

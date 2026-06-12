@@ -1,4 +1,4 @@
-import type { IPayout, IPayoutDetails } from '../../src';
+import type { IPayout, IPayoutDetails } from '../../src/types/api/models/payouts';
 
 export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string })[] = [
     {
@@ -573,7 +573,7 @@ export const PAYOUTS_WITH_DETAILS: (IPayoutDetails & { balanceAccountId: string 
                 value: 90000,
                 currency: 'EUR',
             },
-            createdAt: new Date().toISOString(),
+            createdAt: '2025-01-20T10:00:00.000Z',
         },
         amountBreakdowns: {
             fundsCapturedBreakdown: [

@@ -1,4 +1,4 @@
-import { DevEnvironment } from './types';
+import type { DevEnvironment } from './types';
 import { API_ENVIRONMENTS, CDN_ENVIRONMENTS } from './constants';
 import { httpGet } from './Http/http';
 

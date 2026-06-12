@@ -2,7 +2,7 @@ import { http, HttpResponse, PathParams, StrictResponse } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
 import { DISPUTE_PAYMENT_SCHEMES } from '../../src/components/utils/disputes/constants';
-import { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResponse } from '../../src/types/api/models/disputes';
+import type { IDisputeDetail, IDisputeListItem, IDisputeStatusGroup, IDisputeListResponse } from '../../src/types/api/models/disputes';
 import AdyenPlatformExperienceError from '../../src/core/Errors/AdyenPlatformExperienceError';
 import { ErrorTypes } from '../../src/core/Http/utils';
 import {

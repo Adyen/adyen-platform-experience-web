@@ -1,6 +1,6 @@
 import { isNullish } from '../../utils';
 import { API_VERSION } from './constants';
-import { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
+import type { AdyenErrorResponse, ErrorLevel, HttpOptions } from './types';
 import AdyenPlatformExperienceError, { InvalidField } from '../Errors/AdyenPlatformExperienceError';
 
 const FILENAME_EXTRACTION_REGEX = /^[^]*?filename[^;\n]*=\s*(?:UTF-\d['"]*)?(?:(['"])([^]*?)\1|([^;\n]*))?[^]*?$/;

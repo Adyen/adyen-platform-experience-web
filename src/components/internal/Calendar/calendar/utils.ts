@@ -2,7 +2,6 @@ import restamper, { systemToTimezone, timezoneToSystem } from '../../../../core/
 import { BASE_LOCALE, BASE_FORMAT_OPTIONS } from '../../../../core/Localization/datetime/restamper/constants';
 import { DEFAULT_DATETIME_FORMAT } from '../../../../core/Localization/constants/localization';
 import { EMPTY_ARRAY, EMPTY_OBJECT, identity, isInfinity, isUndefined, mod } from '../../../../utils';
-import type { Month, MonthDays, Time, WeekDay } from './types';
 
 const DATE_PARTS_REGEX = /^(\d{2})\/(\d{2})\/(-?\d+),\s+(\d{2}):(\d{2}):(\d{2}).(\d{3})/;
 
@@ -21,19 +20,19 @@ export const startOfDay = _startTimestamp();
 export const startOfMonth = _startTimestamp(date => date.setDate(1));
 export const startOfYear = _startTimestamp(date => date.setMonth(0, 1));
 
-export const startOfWeek = _startTimestamp((date, firstWeekDay?: WeekDay) => {
-    const dateOffset = getWeekDayIndex(date.getDay() as WeekDay, firstWeekDay ?? 0);
+export const startOfWeek = _startTimestamp((date, firstWeekDay?: any) => {
+    const dateOffset = getWeekDayIndex(date.getDay(), firstWeekDay ?? 0);
     return date.setDate(date.getDate() - dateOffset);
 });
 
 export const isLeapYear = (year: number) => (year % 100 ? year % 4 : year % 400) === 0;
 
-export const getMonthDays = (month: Month, year: number, offset = 0) => {
+export const getMonthDays = (month: number, year: number, offset = 0) => {
     const nextMonth = month + offset;
-    const monthIndex = mod(nextMonth, 12) as Month;
+    const monthIndex = mod(nextMonth, 12);
     const nextYear = year + Math.floor(nextMonth / 12);
 
-    let days: MonthDays = 31;
+    let days = 31;
 
     switch (monthIndex) {
         case 1:
@@ -50,7 +49,7 @@ export const getMonthDays = (month: Month, year: number, offset = 0) => {
     return [days, monthIndex, nextYear] as const;
 };
 
-export const getWeekDayIndex = (weekDay: WeekDay, firstWeekDay: WeekDay = 0) => ((7 - firstWeekDay + weekDay) % 7) as WeekDay;
+export const getWeekDayIndex = (weekDay: number, firstWeekDay: number = 0) => ((7 - firstWeekDay + weekDay) % 7);
 
 export const computeTimestampOffset = (timestamp: number, timezone?: string) =>
     isInfinity(timestamp) ? 0 : timestamp - startOfDay(timestamp, timezone);
@@ -69,7 +68,7 @@ export const getTimezoneDateParts = (date: number | string | Date, timeZone?: st
     return [+year, +month - 1, +day, +hours % 24, +minutes, +seconds, +ms] as const;
 };
 
-export const getEdgesDistance = (fromTime: Time, toTime: Time, timezone?: string) => {
+export const getEdgesDistance = (fromTime: any, toTime: any, timezone?: string) => {
     if (isInfinity(fromTime) || isInfinity(toTime)) return Infinity;
     const [fromYear, fromMonth] = getTimezoneDateParts(fromTime, timezone);
     const [toYear, toMonth] = getTimezoneDateParts(toTime, timezone);

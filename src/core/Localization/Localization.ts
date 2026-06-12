@@ -23,7 +23,7 @@ import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './uti
 import { createWatchlist } from '../../primitives/reactive/watchlist';
 import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '../../utils';
 import { httpGet } from '../Http/http';
-import { SupportedLocales } from './types';
+import type { SupportedLocales } from './types';
 import { translations_dev_assets } from '../../translations/local';
 import localSwapConfig from '../../config/translations/swapConfig.json';
 

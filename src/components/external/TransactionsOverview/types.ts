@@ -1,7 +1,6 @@
-import { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
-import { ExternalUIComponentProps, TransactionOverviewComponentProps } from '../../types';
-import { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
-import { TranslationKey } from '../../../translations';
+import type { IAmount, IBalanceAccountBase, ITransactionCategory, ITransactionStatus } from '../../../types';
+import type { RangeTimestamps } from '../../internal/Calendar/calendar/timerange';
+import type { TranslationKey } from '../../../translations';
 
 type _DateRangeKey<T extends TranslationKey> = T;
 
@@ -29,7 +28,3 @@ export const enum TransactionsView {
     TRANSACTIONS = 'transactions',
     INSIGHTS = 'insights',
 }
-
-export type TransactionOverviewProps = ExternalUIComponentProps<
-    TransactionOverviewComponentProps & { balanceAccounts: IBalanceAccountBase[] | undefined; isLoadingBalanceAccount: boolean }
->;

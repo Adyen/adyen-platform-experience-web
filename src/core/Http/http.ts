@@ -8,10 +8,10 @@ import {
     handleFetchError,
     isAdyenErrorResponse,
 } from './utils';
-import { EndpointDownloadStreamData } from '../../types/api/endpoints';
+import type { EndpointDownloadStreamData } from '../../types/api/endpoints';
 import { normalizeLoadingContext, normalizeUrl } from '../utils';
-import { HttpOptions } from './types';
-import { onErrorHandler } from '../types';
+import type { HttpOptions } from './types';
+import type { onErrorHandler } from '../types';
 
 const errorHandlerHelper = (errorHandler?: onErrorHandler, error?: any) => {
     // Always throws

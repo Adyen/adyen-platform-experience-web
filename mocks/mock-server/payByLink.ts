@@ -1,7 +1,7 @@
 import { http, HttpResponse, PathParams } from 'msw';
 import { compareDates, delay, getPaginationLinks } from './utils/utils';
 import { endpoints } from '../../endpoints/endpoints';
-import { IPaymentLinkStatusGroup } from '../../src';
+import type { IPaymentLinkStatusGroup } from '../../src/types/api/models/payByLink';
 import {
     PAY_BY_LINK_FILTERS,
     STORES,
