@@ -12,6 +12,11 @@ on:
         description: 'Run ID that produced the build artifact'
         required: true
         type: string
+      npm_tag:
+        description: 'npm dist-tag to publish under (latest, beta, alpha, rc, next)'
+        required: false
+        type: string
+        default: 'latest'
 
 jobs:
   npm-publish:
@@ -54,7 +59,7 @@ jobs:
       - name: Publish to the NPM registry
         if: github.event.inputs.dry-run-publish != 'true'
         run: |
-          npm publish "${{ env.PACKAGE_TARBALL }}" --tag=latest
+          npm publish "${{ env.PACKAGE_TARBALL }}" --tag=${{ inputs.npm_tag }}
 
       - name: Archive npm failure logs
         uses: ./.github/actions/publish-npm-logs
