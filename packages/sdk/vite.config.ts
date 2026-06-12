@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => ({
             entry: resolve(projectRoot, 'src/index.ts'),
             fileName: (format, entryName) => {
                 if (entryName.includes('node_modules')) {
-                    const normalized = entryName.replace(/.*node_modules\//g, '');
+                    const normalized = entryName.slice(entryName.lastIndexOf('node_modules/') + 'node_modules/'.length);
                     return `${format}/external/${normalized}.js`;
                 }
                 return `${format}/${entryName}.js`;
