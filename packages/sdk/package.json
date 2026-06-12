@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
     "scripts": {
         "build": "vite build && tsc --project tsconfig-build.json"
     },
