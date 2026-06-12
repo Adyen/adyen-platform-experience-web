@@ -73,9 +73,11 @@ export default defineConfig(({ mode }) => ({
             name: 'AdyenPlatformExperienceWeb',
             entry: resolve(projectRoot, 'src/index.ts'),
             fileName: (format, entryName) => {
-                return entryName.includes('node_modules')
-                    ? `${format}/${entryName.replace('node_modules', 'external')}.js`
-                    : `${format}/${entryName}.js`;
+                if (entryName.includes('node_modules')) {
+                    const normalized = entryName.replace(/.*node_modules\//g, '');
+                    return `${format}/external/${normalized}.js`;
+                }
+                return `${format}/${entryName}.js`;
             },
         },
         rollupOptions: {
