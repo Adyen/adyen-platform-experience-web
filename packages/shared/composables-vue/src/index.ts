@@ -28,3 +28,6 @@ export { default as useContainerQuery } from './useContainerQuery';
 
 export * from './useResponsiveContainer';
 export { default as useResponsiveContainer } from './useResponsiveContainer';
+
+export * from './useEventDispatcher/useLandedPageEvent';
+export * from './useEventDispatcher/useDurationEvent';
