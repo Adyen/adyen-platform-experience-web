@@ -14,7 +14,6 @@ const styleDir = resolve(rootDir, 'packages/shared/style');
 const enUsFile = resolve(assetsDir, 'translations/en-US.json');
 const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations');
 const translationsIndexFile = resolve(translationsDir, 'index.ts');
-const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
 const externalDependencies = Object.keys(rootPkgJson.dependencies);
 
@@ -27,7 +26,7 @@ const shouldExcludeAsset = (id: string) => {
         return false;
     }
 
-    if (id === translationsLocalFile || id.startsWith(assetsDir)) {
+    if (id.startsWith(assetsDir)) {
         return true;
     }
 
