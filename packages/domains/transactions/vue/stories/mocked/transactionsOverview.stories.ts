@@ -1,23 +1,30 @@
-import { TransactionsOverview } from '@integration-components/transactions/publish';
+import type { Meta } from '@storybook/vue3';
+import { TransactionsOverviewMeta } from '../components/transactionsOverview';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { TransactionsOverviewWrapper as TransactionsOverview } from '../../src';
 import { http, HttpResponse } from 'msw';
-import { TransactionsOverviewMeta } from './transactionsOverview.meta';
-import { Meta } from '@storybook/preact';
-import { TRANSACTIONS_ENDPOINTS } from '../../mocks/endpoints';
-import { getCustomListData, getCustomDetailsData } from '../../mocks/mock-data/customData';
-import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/transactions';
-import { TRANSACTIONS } from '../../mocks/mock-data/transactions';
+import { TRANSACTIONS_ENDPOINTS } from '../../../mocks/endpoints';
+import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/transactions';
+import { TRANSACTIONS } from '../../../mocks/mock-data/transactions';
+import { getCustomListData } from '../../../mocks/mock-data/customData';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = { ...TransactionsOverviewMeta, title: 'Mocked/Transactions/Transactions Overview' };
+const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
+    ...TransactionsOverviewMeta,
+    title: 'Mocked/Transactions/Transactions Overview',
+};
+
+export default meta;
+
+const DEFAULT_STORY_ARGS = { mockedApi: true } as const;
 
 export const Default: ElementStory<typeof TransactionsOverview> = {
     name: 'Default',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
 };
 
 export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
     name: 'Single balance account',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.singleBalanceAccount },
     },
@@ -25,7 +32,7 @@ export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
 
 export const SingleBalanceCurrency: ElementStory<typeof TransactionsOverview> = {
     name: 'Single balance currency',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.singleBalanceCurrency },
     },
@@ -33,7 +40,7 @@ export const SingleBalanceCurrency: ElementStory<typeof TransactionsOverview> = 
 
 export const EmptyList: ElementStory<typeof TransactionsOverview> = {
     name: 'Empty list',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.emptyList },
     },
@@ -41,7 +48,7 @@ export const EmptyList: ElementStory<typeof TransactionsOverview> = {
 
 export const ErrorList: ElementStory<typeof TransactionsOverview> = {
     name: 'Error - List',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorList },
     },
@@ -49,7 +56,7 @@ export const ErrorList: ElementStory<typeof TransactionsOverview> = {
 
 export const ErrorExport: ElementStory<typeof TransactionsOverview> = {
     name: 'Error - Export',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorExport },
     },
@@ -57,7 +64,7 @@ export const ErrorExport: ElementStory<typeof TransactionsOverview> = {
 
 export const ErrorBalances: ElementStory<typeof TransactionsOverview> = {
     name: 'Error - Balances',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorBalances },
     },
@@ -65,7 +72,7 @@ export const ErrorBalances: ElementStory<typeof TransactionsOverview> = {
 
 export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
     name: 'Error - Totals',
-    args: { mockedApi: true },
+    args: DEFAULT_STORY_ARGS,
     parameters: {
         msw: { ...TRANSACTIONS_OVERVIEW_HANDLERS.errorTotals },
     },
@@ -74,7 +81,7 @@ export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
 export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
     name: 'Data customization',
     args: {
-        mockedApi: true,
+        ...DEFAULT_STORY_ARGS,
         coreOptions: {
             translations: {
                 en_US: {
@@ -82,18 +89,13 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                     _product: 'Product',
                     _reference: 'Reference',
                     _button: 'Action',
-                    _country: 'Country',
-                    _summary: 'Summary',
                 },
             },
         },
         dataCustomization: {
             list: {
                 fields: [
-                    {
-                        key: '_store',
-                        flex: 1.5,
-                    },
+                    { key: '_store', flex: 1.5 },
                     { key: '_product' },
                     { key: '_reference', flex: 1.5 },
                     { key: 'transactionType', visibility: 'hidden' },
@@ -102,25 +104,7 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                 ],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
-                        setTimeout(() => {
-                            resolve(getCustomListData(data));
-                        }, 200);
-                    });
-                },
-            },
-            details: {
-                fields: [
-                    { key: 'paymentPspReference', visibility: 'hidden' },
-                    { key: '_store' },
-                    { key: '_product' },
-                    { key: '_reference' },
-                    { key: '_summary' },
-                    { key: '_button' },
-                    { key: '_country' },
-                ],
-                onDataRetrieve: data => {
-                    return new Promise(resolve => {
-                        return resolve(getCustomDetailsData(data?.id));
+                        setTimeout(() => resolve(getCustomListData(data)), 200);
                     });
                 },
             },
@@ -145,5 +129,3 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
         },
     },
 };
-
-export default meta;
