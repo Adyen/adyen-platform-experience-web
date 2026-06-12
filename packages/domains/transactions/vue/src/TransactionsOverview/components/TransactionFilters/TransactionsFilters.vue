@@ -10,7 +10,7 @@ import {
     TRANSACTION_ANALYTICS_SUBCATEGORY_LIST,
     TRANSACTION_ANALYTICS_SUBCATEGORY_INSIGHTS,
 } from '@integration-components/transactions/domain';
-import type { FilterType } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
+import type { FilterType, MixpanelProperty } from '@integration-components/core/EventDispatcher/eventDispatcher/user-events';
 import { TRANSACTION_CATEGORIES } from '../../constants';
 import type { IBalanceAccountBase, TransactionsFilters } from '../../types';
 
@@ -189,11 +189,15 @@ function fireFilterEvent(field: string, value: unknown) {
     const label = FILTER_LABELS[field];
     if (!label) return;
     const isEmpty = Array.isArray(value) ? value.length === 0 : !value;
+    const actionType = isEmpty ? 'reset' : 'update';
+    // PSP reference value is always null to avoid accidentally leaking PII
+    const eventValue = actionType === 'update' ? (field === 'paymentPspReference' ? null : (value as MixpanelProperty)) : undefined;
     userEvents.addModifyFilterEvent?.({
         category: TRANSACTION_ANALYTICS_CATEGORY,
         subCategory: eventSubCategory.value,
         label,
-        actionType: isEmpty ? 'reset' : 'update',
+        actionType,
+        ...(eventValue !== undefined && { value: eventValue }),
     });
 }
 
