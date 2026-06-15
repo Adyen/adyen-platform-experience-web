@@ -138,6 +138,38 @@ jobs:
       source_run_id: ${{ github.run_id }}
       npm_tag: ${{ needs.create-github-release.outputs.npm_tag }}
 
+  sync-develop:
+    if: needs.create-github-release.outputs.is_prerelease == 'true'
+    needs: [create-github-release, trigger-npm-publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Create PR to sync main into develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ needs.create-github-release.outputs.release_version }}
+        run: |
+          # Check if a sync PR already exists
+          EXISTING=$(gh pr list --base develop --head main --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "Sync PR #$EXISTING already exists, skipping."
+            exit 0
+          fi
+
+          gh pr create \
+            --base develop \
+            --head main \
+            --title "chore(release): sync main into develop after v$VERSION" \
+            --body "Syncs version bump and consumed changesets from pre-release v$VERSION into develop."
+
   upload-assets:
     if: needs.create-github-release.outputs.is_prerelease != 'true'
     permissions:
