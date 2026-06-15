@@ -9,6 +9,7 @@ on:
       - main
       - develop
       - group/*
+      - pre-release/*
 
 env:
   CI: true
