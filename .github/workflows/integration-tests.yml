@@ -24,23 +24,34 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - if: >-
+          github.event.pull_request.user.login == 'github-actions[bot]'
+          && github.event.pull_request.head.ref == 'main'
+          && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
+        id: skip
+        run: echo "Skipping integration tests (automated sync PR)"
+
+      - if: ${{ steps.skip.outcome != 'success' }}
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - id: check-approval
+      - if: ${{ steps.skip.outcome != 'success' }}
+        id: check-approval
         run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
 
-      - run: echo ${{ steps.check-approval.outcome == 'success' }}
+      - if: ${{ steps.skip.outcome != 'success' }}
+        run: echo ${{ steps.check-approval.outcome == 'success' }}
     outputs:
       approved: ${{ steps.check-approval.outcome == 'success' }}
+      skipped: ${{ steps.skip.outcome == 'success' }}
 
   build-storybook-static:
     needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.approved == 'true' && needs.is-pr-approved.outputs.skipped == 'false'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -74,7 +85,7 @@ jobs:
     needs:
       - is-pr-approved
       - build-storybook-static
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.approved == 'true' && needs.is-pr-approved.outputs.skipped == 'false'
     permissions:
       contents: read
     runs-on: ubuntu-latest
