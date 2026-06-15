@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.12.2-beta.1
+
+### Patch Changes
+
+- 70216b6: Remove balanceAccountId from payout details props
+
 ## 1.12.2-beta.0
 
 ### Patch Changes
