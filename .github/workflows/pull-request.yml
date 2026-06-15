@@ -26,16 +26,28 @@ jobs:
       contents: read
 
     steps:
+      - name: Check if automated sync PR
+        id: skip-check
+        if: >-
+          github.event.pull_request.user.login == 'github-actions[bot]'
+          && github.event.pull_request.head.ref == 'main'
+          && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
+        run: echo "Skipping build (automated sync PR)"
+
       - name: Checkout the repo
+        if: steps.skip-check.outcome != 'success'
         uses: actions/checkout@v4
 
       - name: Run the preliminary setup steps
+        if: steps.skip-check.outcome != 'success'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Run unit tests
+        if: steps.skip-check.outcome != 'success'
         run: pnpm run test
 
       - name: Build library
+        if: steps.skip-check.outcome != 'success'
         run: pnpm run build
