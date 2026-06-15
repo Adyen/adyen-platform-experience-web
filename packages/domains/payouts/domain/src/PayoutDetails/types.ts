@@ -6,7 +6,6 @@ export type PayoutDetailsCustomization = DetailsDataCustomizationObject<PayoutDe
 
 export interface PayoutDetailsProps extends UIElementProps {
     id: string;
-    balanceAccountId: string;
     date: string;
     onContactSupport?: () => void;
     dataCustomization?: {
