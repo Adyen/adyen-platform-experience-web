@@ -88,6 +88,36 @@ export const Prequalified: ElementStory<typeof CapitalOverview> = {
     },
 };
 
+export const Grants: ElementStory<typeof CapitalOverview> = {
+    name: 'Grants',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.grants,
+    },
+};
+
+export const EarlyRenewal: ElementStory<typeof CapitalOverview> = {
+    name: 'Early renewal',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.earlyRenewal,
+    },
+};
+
+export const NewOffer: ElementStory<typeof CapitalOverview> = {
+    name: 'New offer',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: CapitalOverviewMockedResponses.newOffer,
+    },
+};
+
 export const GrantPending: ElementStory<typeof CapitalOverview> = {
     name: 'Grant: Pending',
     args: {
@@ -225,26 +255,6 @@ export const GrantWrittenOff: ElementStory<typeof CapitalOverview> = {
     },
     parameters: {
         msw: CapitalOverviewMockedResponses.grantWrittenOff,
-    },
-};
-
-export const NewOffer: ElementStory<typeof CapitalOverview> = {
-    name: 'New offer',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.newOffer,
-    },
-};
-
-export const Grants: ElementStory<typeof CapitalOverview> = {
-    name: 'Grants',
-    args: {
-        mockedApi: true,
-    },
-    parameters: {
-        msw: CapitalOverviewMockedResponses.grants,
     },
 };
 

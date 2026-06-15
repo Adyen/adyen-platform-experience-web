@@ -21,6 +21,7 @@ import {
     CAPITAL_STATE_FIRST_OFFER_CAD,
     CAPITAL_STATE_GRANTS,
     CAPITAL_STATE_GRANTS_WITH_OFFER,
+    CAPITAL_STATE_GRANTS_WITH_RENEWAL_OFFER,
 } from '../mock-data/capital';
 import { DefaultBodyType, http, HttpResponse, StrictRequest } from 'msw';
 import { calculateSelectedOffer, calculateOffers } from './utils/utils';
@@ -137,7 +138,8 @@ const capitalFactory = mocksFactory<
 
 export const CapitalOfferMockedResponses = capitalFactory({
     ...commonHandlers,
-    default: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER }],
+    default: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_OFFER }],
+    earlyRenewal: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_RENEWAL_OFFER }],
     aprField: [{ endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER_CAD }],
     errorDynamicOfferExceededRetries: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
@@ -197,6 +199,18 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     prequalified: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_FIRST_OFFER },
         { endpoint: mockEndpoints.grants, handler: EMPTY_GRANTS_LIST },
+    ],
+    grants: [
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
+        { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
+    ],
+    earlyRenewal: [
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_RENEWAL_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
+    ],
+    newOffer: [
+        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_OFFER },
+        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
     ],
     grantPending: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
@@ -280,14 +294,6 @@ export const CapitalOverviewMockedResponses = capitalFactory({
     grantWrittenOff: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
         { endpoint: mockEndpoints.grants, response: { data: [WRITTEN_OFF_GRANT] } },
-    ],
-    newOffer: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS_WITH_OFFER },
-        { endpoint: mockEndpoints.grants, response: { data: [REPAID_GRANT] } },
-    ],
-    grants: [
-        { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },
-        { endpoint: mockEndpoints.grants, response: { data: GRANTS } },
     ],
     errorActionsEmbedded: [
         { endpoint: mockEndpoints.capitalState, response: CAPITAL_STATE_GRANTS },

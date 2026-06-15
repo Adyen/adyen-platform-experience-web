@@ -5,7 +5,7 @@ import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/Capi
 import { GrantsDisplay } from './GrantsDisplay';
 import { ICapitalState, IGrant } from '@integration-components/types';
 
-export interface GrantListProps {
+interface GrantListProps {
     capitalState?: ICapitalState;
     grantList: IGrant[];
     hideTitle?: boolean;
@@ -51,11 +51,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
             {isCapitalOfferVisible ? (
                 <CapitalOffer externalCapitalState={capitalState} onFundsRequest={handleFundsRequest} onOfferDismiss={goBackToList} />
             ) : (
-                <GrantsDisplay
-                    grantList={grantList}
-                    newOfferAvailable={!!capitalState?.dynamicOffer && !capitalState?.renewableGrants.length}
-                    onNewOfferRequest={goToNextStep}
-                />
+                <GrantsDisplay grantList={grantList} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
             )}
         </>
     );

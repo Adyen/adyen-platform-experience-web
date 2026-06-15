@@ -133,7 +133,7 @@ export const RENEWABLE_GRANT: IGrant = {
     renewal: {
         eligible: true,
         minimumRenewalAmount: {
-            value: 100000,
+            value: ACTIVE_GRANT.remainingGrantAmount.value * 1.5,
             currency: 'EUR',
         },
         targetRepaymentPercentage: 75,

@@ -84,6 +84,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
             {capitalOfferState === 'OfferSummary' && (
                 <CapitalOfferSummary
                     grantOffer={selectedOffer!}
+                    capitalState={state}
                     onBack={() => setSelectedOffer(undefined)}
                     onFundsRequest={onFundsRequest}
                     onContactSupport={onContactSupport}

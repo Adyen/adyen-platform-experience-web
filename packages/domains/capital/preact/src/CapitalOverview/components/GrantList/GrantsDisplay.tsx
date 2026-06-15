@@ -1,4 +1,4 @@
-import { ButtonVariant, IGrant } from '@integration-components/types';
+import { ICapitalState, IGrant } from '@integration-components/types';
 import { useCoreContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useLandedPageEvent } from '@integration-components/hooks-preact/useEventDispatcher/useLandedPageEvent';
 import { BaseList } from '@integration-components/ui-components-preact/BaseList/BaseList';
@@ -13,6 +13,9 @@ import SegmentedControl from '@integration-components/ui-components-preact/Segme
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalHeader } from '../../../internal/CapitalHeader';
 import Button from '@integration-components/ui-components-preact/Button/Button';
+import Typography from '@integration-components/ui-components-preact/Typography/Typography';
+import { TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
+import InfoBox from '@integration-components/ui-components-preact/InfoBox';
 
 const sharedAnalyticsEventProperties = {
     ...sharedCapitalOverviewAnalyticsEventProperties,
@@ -31,14 +34,14 @@ const List = ({ grants, showDetails }: { grants: IGrant[]; showDetails: GrantAdj
     );
 };
 
-export interface GrantsDisplayProps {
+interface GrantsDisplayProps {
+    capitalState?: ICapitalState;
     grantList: IGrant[];
     hideTitle?: boolean;
-    newOfferAvailable: boolean;
     onNewOfferRequest: () => void;
 }
 
-export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ grantList, hideTitle, newOfferAvailable, onNewOfferRequest }) => {
+export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ capitalState, grantList, hideTitle, onNewOfferRequest }) => {
     const [selectedGrantDetail, setSelectedGrantDetail] = useState<GrantAdjustmentDetail>();
     const [selectedGrant, setSelectedGrant] = useState<IGrant>();
     const { i18n } = useCoreContext();
@@ -65,9 +68,11 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ grantLi
         return 'UnifiedGrants';
     }, [activeGrants.length, grantList.length, inactiveGrants.length]);
 
-    const showNewOfferButton = useMemo(() => {
-        return newOfferAvailable && !activeGrants.some(grant => grant.status === 'Pending');
-    }, [activeGrants, newOfferAvailable]);
+    const isNewLoanButtonVisible = useMemo(() => {
+        return capitalState?.dynamicOffer && !activeGrants.some(grant => grant.status === 'Pending');
+    }, [activeGrants, capitalState]);
+
+    const maxAmount = useMemo(() => capitalState?.dynamicOffer?.maxAmount, [capitalState?.dynamicOffer?.maxAmount]);
 
     const onNewOfferRequestWithTracking = useCallback<typeof onNewOfferRequest>(() => {
         try {
@@ -111,14 +116,34 @@ export const GrantsDisplay: FunctionalComponent<GrantsDisplayProps> = ({ grantLi
 
     return (
         <div className="adyen-pe-grant-list">
-            <div className="adyen-pe-grant-list__header-container">
-                <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
-                {showNewOfferButton ? (
-                    <Button onClick={onNewOfferRequestWithTracking} className={'adyen-pe-grant-list__offer-button'} variant={ButtonVariant.SECONDARY}>
-                        {i18n.get('capital.overview.grants.list.actions.newOffer')}
+            <CapitalHeader hideTitle={hideTitle} titleKey={'capital.common.title'} />
+
+            {isNewLoanButtonVisible && maxAmount ? (
+                <InfoBox className="adyen-pe-grant-list__new-grant-banner">
+                    <Typography variant={TypographyVariant.BODY}>
+                        {i18n.get('capital.overview.grants.newGrant.title.part1')}
+                        <strong>
+                            {i18n.get('capital.overview.grants.newGrant.title.part2', {
+                                values: {
+                                    amount: i18n.amount(maxAmount.value, maxAmount.currency, {
+                                        minimumFractionDigits: 0,
+                                    }),
+                                },
+                            })}
+                        </strong>
+                    </Typography>
+
+                    {!!capitalState?.renewableGrants.length && (
+                        <Typography variant={TypographyVariant.CAPTION} className="adyen-pe-grant-list__early-renewal-notice">
+                            {i18n.get('capital.overview.grants.newGrant.earlyRenewalNotice')}
+                        </Typography>
+                    )}
+
+                    <Button onClick={onNewOfferRequestWithTracking} className={'adyen-pe-grant-list__offer-button'} align="center">
+                        {i18n.get('capital.overview.grants.newGrant.actions.newGrant')}
                     </Button>
-                ) : null}
-            </div>
+                </InfoBox>
+            ) : null}
 
             {displayMode === 'UnifiedGrants' && <List grants={grantList} showDetails={showGrantDetails} />}
             {displayMode === 'SegmentedGrants' && (

@@ -5,7 +5,7 @@ import { calculateProgress } from './calculateProgress';
 import cx from 'classnames';
 
 export function calculateSliderAdjustedMidValue(minValue: number, maxValue: number, step: number) {
-    const mid = maxValue / 2;
+    const mid = (maxValue - minValue) / 2 + minValue;
     let adjustedMid = Math.round(mid / step) * step;
 
     if (adjustedMid < minValue) {
