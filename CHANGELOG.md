@@ -1,5 +1,11 @@
 # @adyen/adyen-platform-experience-web
 
+## 1.12.2-beta.0
+
+### Patch Changes
+
+- 8c2627e: Fix build output: prevent dev-only translation assets from leaking into dist, rewrite private workspace aliases in declarations via tsc-alias, and normalize bundled dependency paths to remove pnpm store structure.
+
 ## 1.12.1
 
 ### Patch Changes
