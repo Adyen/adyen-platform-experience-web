@@ -87,14 +87,14 @@ jobs:
             echo "Pre-release mode detected on develop, promoting to stable..."
             PRERELEASE_BRANCH="pre-release/$TAG"
 
-            if ! git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
-              echo "::error::Pre-release mode is active but branch $PRERELEASE_BRANCH does not exist."
-              exit 1
+            # Reuse existing branch or create one from develop
+            if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
+              git fetch origin "$PRERELEASE_BRANCH"
+              git checkout "$PRERELEASE_BRANCH"
+              git merge origin/develop --no-edit
+            else
+              git checkout -b "$PRERELEASE_BRANCH"
             fi
-
-            git fetch origin "$PRERELEASE_BRANCH"
-            git checkout "$PRERELEASE_BRANCH"
-            git merge origin/develop --no-edit
 
             pnpm changeset pre exit
             git add .changeset/pre.json
