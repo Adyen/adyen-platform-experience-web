@@ -48,11 +48,10 @@ jobs:
     outputs:
       approved: ${{ steps.check-approval.outcome == 'success' }}
       skipped: ${{ steps.skip.outcome == 'success' }}
-      should_run: ${{ steps.skip.outcome != 'success' && steps.check-approval.outcome == 'success' }}
 
   build-storybook-static:
     needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true' || needs.is-pr-approved.outputs.skipped == 'true'
+    if: needs.is-pr-approved.outputs.approved == 'true' && needs.is-pr-approved.outputs.skipped == 'false'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -65,21 +64,17 @@ jobs:
       USE_CDN: false
     steps:
       - name: Checkout the repo
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Build Storybook static files
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         run: pnpm run storybook:build:${{ matrix.framework }}
 
       - name: Upload Storybook static artifact
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
@@ -90,7 +85,7 @@ jobs:
     needs:
       - is-pr-approved
       - build-storybook-static
-    if: needs.is-pr-approved.outputs.approved == 'true' || needs.is-pr-approved.outputs.skipped == 'true'
+    if: needs.is-pr-approved.outputs.approved == 'true' && needs.is-pr-approved.outputs.skipped == 'false'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -108,24 +103,20 @@ jobs:
       PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config packages/tools/storybook/vite.config.ts
     steps:
       - name: Checkout the repo
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Download Storybook static artifact
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         uses: actions/download-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
-        if: needs.is-pr-approved.outputs.should_run == 'true'
         run: pnpm run test:integration:${{ matrix.framework }} --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
