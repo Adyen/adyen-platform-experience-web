@@ -84,14 +84,15 @@ jobs:
           TAG: ${{ inputs.prerelease_tag }}
         run: |
           if [ -f .changeset/pre.json ]; then
-            echo "Pre-release mode detected on develop, promoting to stable..."
+            echo "Pre-release mode detected, promoting to stable from main..."
             PRERELEASE_BRANCH="pre-release/$TAG"
 
-            # Reuse existing branch or create one from develop
+            # Create the promote branch from main (pre-releases are already merged there)
+            git checkout main
             if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
               git fetch origin "$PRERELEASE_BRANCH"
               git checkout "$PRERELEASE_BRANCH"
-              git merge origin/develop --no-edit
+              git merge main --no-edit
             else
               git checkout -b "$PRERELEASE_BRANCH"
             fi
