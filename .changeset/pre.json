@@ -23,6 +23,7 @@
     "@integration-components/tools-storybook": "0.0.1"
   },
   "changesets": [
-    "fix-build-output-paths"
+    "fix-build-output-paths",
+    "sixty-peaches-scream"
   ]
 }
