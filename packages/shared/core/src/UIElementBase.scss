@@ -5,6 +5,17 @@
 .adyen-pe-component {
     --adyen-pe-content-padding: #{style.token(spacer-070)};
     --adyen-pe-data-details-padding: var(--adyen-pe-content-padding);
+    // Override Bento's font-family tokens with a single space so that when Bento resolves
+    // e.g. `font-family: var(--b-text-body-font-family)`, the substituted value is whitespace-only.
+    // Per the CSS spec, a whitespace-only substitution makes the declaration invalid at computed-value
+    // time, causing the browser to fall back to inheritance — using the host page's font instead of
+    // Bento's hardcoded 'Adyen Variable' stack. #{' '} prevents SCSS from stripping the space.
+    --b-text-caption-font-family: #{' '};
+    --b-text-body-font-family: #{' '};
+    --b-text-subtitle-font-family: #{' '};
+    --b-text-title-font-family: #{' '};
+    --b-text-title-m-font-family: #{' '};
+    --b-text-title-l-font-family: #{' '};
     container-type: inline-size;
     width: 100%;
 }

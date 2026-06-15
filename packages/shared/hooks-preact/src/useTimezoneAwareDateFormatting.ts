@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'preact/hooks';
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 
 const useAtomicTimezoneOperation = <Args extends any[], ReturnValue>(operation: (...args: Args) => ReturnValue) => {
     const { i18n } = useCoreContext();

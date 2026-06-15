@@ -12,15 +12,10 @@ export const ReportsOverviewMeta: Meta<ElementProps<typeof ReportsOverview>> = {
         preferredLimit: { control: { type: 'number', min: 1, max: 100 } },
         hideTitle: { control: 'boolean' },
         allowLimitSelection: { control: 'boolean' },
-        locale: {
-            control: 'select',
-            options: ['da-DK', 'de-DE', 'en-US', 'es-ES', 'fi-FI', 'fr-FR', 'it-IT', 'nl-NL', 'no-NO', 'pt-BR', 'sv-SE'],
-        },
     },
     args: {
         component: ReportsOverview,
         allowLimitSelection: true,
-        locale: 'en-US',
     },
     parameters: {
         controls: {

@@ -2,7 +2,7 @@ import Localization from './Localization';
 import { isFunction, struct } from '@integration-components/utils';
 import { formatLocale, loadTranslations, parseLocale } from './utils';
 import { EXCLUDE_PROPS, FALLBACK_LOCALE } from './constants/localization';
-import type { CustomTranslations, Locale } from '../../../../../src/translations';
+import type { CustomTranslations, Locale } from '../translations';
 import { SupportedLocales } from './types';
 
 export function createTranslationsLoader(this: Localization) {

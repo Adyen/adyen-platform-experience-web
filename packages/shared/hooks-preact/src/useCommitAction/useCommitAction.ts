@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import { ButtonVariant, type ButtonActionObject } from '@integration-components/types';
 import { CommitAction, CommitActionProperties, UseCommitActionConfig } from './types';
-import useCoreContext from '../../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { boolOrFalse, EMPTY_OBJECT } from '@integration-components/utils';
 
 const useCommitAction = ({

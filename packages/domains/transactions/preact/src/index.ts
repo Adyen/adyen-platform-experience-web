@@ -15,5 +15,5 @@ export type {
 } from './TransactionsOverview/types';
 export { TransactionsView } from './TransactionsOverview/types';
 export { default as PaymentMethodCell } from '@integration-components/ui-components-preact/PaymentMethodCell/PaymentMethodCell';
-export { parsePaymentMethodType } from '@integration-components/ui-components-preact/PaymentMethodCell/parsePaymentMethodType';
+export { parsePaymentMethodType } from '@integration-components/utils';
 export { default as MultiSelectionFilter, useMultiSelectionFilter } from '@integration-components/ui-components-preact/MultiSelectionFilter';

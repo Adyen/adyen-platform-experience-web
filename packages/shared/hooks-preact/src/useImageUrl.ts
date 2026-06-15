@@ -1,4 +1,4 @@
-import useCoreContext from '../../../../src/core/Context/useCoreContext';
+import { useCoreContext } from '@integration-components/core/preact';
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { useMemo } from 'preact/hooks';
 

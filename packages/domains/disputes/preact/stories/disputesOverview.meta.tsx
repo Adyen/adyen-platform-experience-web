@@ -1,7 +1,6 @@
 import { Meta } from '@storybook/preact';
-import { ElementProps } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 import { DisputesOverview } from '../src';
-import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const DisputesOverviewMeta: Meta<ElementProps<typeof DisputesOverview>> = {
     title: 'screens/DisputesOverview',

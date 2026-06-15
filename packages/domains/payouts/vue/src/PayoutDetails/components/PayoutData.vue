@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
-import { BentoTypography, BentoCard, BentoTag, BentoLink, BentoButtonActions, BentoDataGrid } from '@adyen/bento-vue3';
+import {
+    BentoTypography,
+    BentoCard,
+    BentoTag,
+    BentoLink,
+    BentoButtonActions,
+    BentoDataGrid,
+    BentoStructuredList,
+    BentoStructuredListItem,
+} from '@adyen/bento-vue3';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { IPayoutDetails } from '@integration-components/types';
 import { DATE_FORMAT_PAYOUT_DETAILS } from '@integration-components/utils';
+import { formatAmountWithCurrencyCode } from '@integration-components/core/Localization/amount/amount-util';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { getPayoutAdjustmentType, getPayoutFundsCapturedType } from '@integration-components/payouts/domain';
 import {
@@ -21,6 +31,7 @@ import {
     PD_SECTION_CLASS,
     PD_SECTION_GROSS_AMOUNT_CLASS,
     PD_SECTION_NET_AMOUNT_CLASS,
+    PD_PAGE_TITLE_CLASS,
     PD_SUMMARY_CARD_HEADER_CLASS,
     PD_TITLE_BA_CLASS,
     PD_TITLE_CLASS,
@@ -29,7 +40,7 @@ import {
     PD_UNPAID_AMOUNT,
 } from '../constants';
 import type { PayoutDetailsCustomization } from '../types';
-import '../styles/PayoutData.scss';
+import './PayoutData.scss';
 
 const props = defineProps<{
     payout?: IPayoutDetails;
@@ -37,6 +48,7 @@ const props = defineProps<{
     balanceAccountDescription?: string;
     extraFields?: Record<string, any> | undefined;
     dataCustomization?: { details?: PayoutDetailsCustomization };
+    hideTitle?: boolean;
 }>();
 
 const { i18n } = useCoreContext();
@@ -128,9 +140,7 @@ function formatPayoutDate(dateStr: string): string {
     return dateFormat(dateStr, DATE_FORMAT_PAYOUT_DETAILS);
 }
 
-function formatAmount(amount: { value: number; currency: string }): string {
-    return `${i18n.amount(amount.value, amount.currency, { hideCurrency: true })} ${amount.currency}`;
-}
+const formatAmount = (amount: { value: number; currency: string }) => formatAmountWithCurrencyCode(amount.value, i18n.locale, amount.currency);
 
 const fundsCapturedColumns = computed<BentoColumn[]>(() => [
     {
@@ -200,57 +210,63 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
 </script>
 
 <template>
+    <div v-if="!props.hideTitle" :class="PD_PAGE_TITLE_CLASS">
+        <BentoTypography variant="title">{{ i18n.get('payouts.details.title') }}</BentoTypography>
+    </div>
+
     <div v-if="payoutInner" :class="PD_BASE_CLASS">
         <!-- Title section -->
         <BentoCard>
-            <div :class="titleClass">
-                <div :class="PD_TITLE_CONTAINER_CLASS">
-                    <BentoTypography variant="subtitle" stronger>
-                        {{ i18n.get('payouts.details.tags.netPayout') }}
-                    </BentoTypography>
-                    <BentoTag v-if="payoutInner.isSumOfSameDayPayouts" variant="blue" :label="i18n.get('payouts.details.tags.sameDaySum')" />
-                </div>
-                <BentoTypography variant="title" large>
-                    {{ formatAmount(payoutInner.payoutAmount) }}
-                </BentoTypography>
-                <time v-if="payoutInner.createdAt" :datetime="payoutInner.createdAt">
-                    <BentoTypography variant="body">
-                        {{ formatPayoutDate(payoutInner.createdAt) }}
-                    </BentoTypography>
-                </time>
-                <div :class="PD_SECTION_CLASS">
-                    <BentoTypography v-if="balanceAccountDescription" variant="body" strongest wide>
-                        {{ balanceAccountDescription }}
-                    </BentoTypography>
-                    <BentoTypography variant="caption" :class="PD_TITLE_BA_CLASS">{{ balanceAccountId }}</BentoTypography>
-                </div>
-            </div>
-        </BentoCard>
-
-        <!-- Extra details (consumer-supplied) -->
-        <div v-if="extraDetails.length">
-            <ul :class="PD_EXTRA_DETAILS_CLASS">
-                <li v-for="item in extraDetails" :key="item.key">
-                    <div :class="PD_EXTRA_DETAILS_LABEL">{{ i18n.get(item.key as any) }}</div>
-                    <BentoLink
-                        v-if="item.type === 'link' && item.config"
-                        :class="item.config.className"
-                        :to="item.config.href"
-                        :target="item.config.target || '_blank'"
-                        isNotRouting
-                    >
-                        {{ item.value }}
-                    </BentoLink>
-                    <div v-else-if="item.type === 'icon' && item.config" :class="[PD_EXTRA_DETAILS_ICON, item.config.className]">
-                        <img :src="item.config.src" :alt="item.config.alt || item.value" />
-                        <BentoTypography variant="body">{{ item.value }}</BentoTypography>
+            <template #content>
+                <div :class="titleClass">
+                    <div :class="PD_TITLE_CONTAINER_CLASS">
+                        <BentoTypography variant="title" stronger>
+                            {{ i18n.get('payouts.details.tags.netPayout') }}
+                        </BentoTypography>
+                        <BentoTag v-if="payoutInner.isSumOfSameDayPayouts" variant="blue" :label="i18n.get('payouts.details.tags.sameDaySum')" />
                     </div>
-                    <BentoTypography v-else variant="body" :class="item.config?.className">
-                        {{ item.value }}
+                    <BentoTypography v-if="payoutInner.payoutAmount" variant="title" large>
+                        {{ formatAmount(payoutInner.payoutAmount) }}
                     </BentoTypography>
-                </li>
-            </ul>
-        </div>
+                    <time v-if="payoutInner.createdAt" :datetime="payoutInner.createdAt">
+                        <BentoTypography variant="body">
+                            {{ formatPayoutDate(payoutInner.createdAt) }}
+                        </BentoTypography>
+                    </time>
+                    <div :class="PD_SECTION_CLASS">
+                        <BentoTypography v-if="balanceAccountDescription" variant="body" strongest wide>
+                            {{ balanceAccountDescription }}
+                        </BentoTypography>
+                        <BentoTypography variant="caption" :class="PD_TITLE_BA_CLASS">{{ balanceAccountId }}</BentoTypography>
+                    </div>
+                </div>
+                <!-- Extra details (consumer-supplied) -->
+                <BentoStructuredList v-if="extraDetails.length" :class="PD_EXTRA_DETAILS_CLASS">
+                    <BentoStructuredListItem
+                        v-for="item in extraDetails"
+                        :key="item.key"
+                        :label="i18n.get(item.key as any)"
+                        :class="PD_EXTRA_DETAILS_LABEL"
+                    >
+                        <BentoLink
+                            v-if="item.type === 'link' && item.config"
+                            :class="item.config.className"
+                            :to="item.config.href"
+                            :target="item.config.target || '_blank'"
+                            rel="noopener noreferrer"
+                            external
+                        >
+                            {{ item.value }}
+                        </BentoLink>
+                        <div v-else-if="item.type === 'icon' && item.config" :class="[PD_EXTRA_DETAILS_ICON, item.config.className]">
+                            <img :src="item.config.src" :alt="item.config.alt || item.value" :class="item.config.className" />
+                            <BentoTypography variant="body">{{ item.value }}</BentoTypography>
+                        </div>
+                        <BentoTypography v-else variant="body" :class="item.config?.className">{{ item.value }}</BentoTypography>
+                    </BentoStructuredListItem>
+                </BentoStructuredList>
+            </template>
+        </BentoCard>
 
         <!-- Content: funds captured + adjustments + net payout -->
         <div :class="PD_CONTENT_CLASS">
@@ -313,7 +329,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
                             </BentoTypography>
-                            <BentoTypography variant="body">
+                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body">
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
                             </BentoTypography>
                         </div>
@@ -369,7 +385,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.adjustments') }}
                             </BentoTypography>
-                            <BentoTypography variant="body" stronger>
+                            <BentoTypography v-if="payoutInner.adjustmentAmount" variant="body" stronger>
                                 {{ formatAmount(payoutInner.adjustmentAmount) }}
                             </BentoTypography>
                         </div>
@@ -385,7 +401,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
                             <BentoTypography variant="body" strongest>
                                 {{ i18n.get('payouts.details.breakdown.fields.netPayout') }}
                             </BentoTypography>
-                            <BentoTypography variant="body" strongest>
+                            <BentoTypography v-if="payoutInner.payoutAmount" variant="body" strongest>
                                 {{ formatAmount(payoutInner.payoutAmount) }}
                             </BentoTypography>
                         </div>
@@ -395,7 +411,7 @@ const subtractionsRows = computed<BentoDatagridDataItem[]>(() =>
         </div>
 
         <!-- Unpaid amount -->
-        <BentoCard v-if="payoutInner.unpaidAmount" :class="PD_UNPAID_AMOUNT">
+        <BentoCard v-if="payoutInner.unpaidAmount" :class="PD_UNPAID_AMOUNT" :background="'secondary'">
             <template #content>
                 <div :class="[PD_CARD_HEADER_CLASS, PD_SUMMARY_CARD_HEADER_CLASS]">
                     <BentoTypography variant="body">{{ i18n.get('payouts.details.breakdown.fields.remainingAmount') }}</BentoTypography>

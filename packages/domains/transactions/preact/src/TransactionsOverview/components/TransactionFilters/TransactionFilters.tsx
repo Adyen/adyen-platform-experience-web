@@ -11,9 +11,8 @@ import { selectionOptionsFor } from '@integration-components/ui-components-preac
 import { TransactionsFilters as Filters } from '../../types';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useTransactionsOverviewContext } from '../../context/TransactionsOverviewContext';
-import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { containerQueries, useBalanceAccountSelection, useResponsiveContainer } from '@integration-components/hooks-preact';
 import BalanceAccountSelector from '@integration-components/ui-components-preact/FormFields/Select/BalanceAccountSelector';
-import { useBalanceAccountSelection } from '@integration-components/hooks-preact';
 import TransactionMultiSelectionFilter from './TransactionMultiSelectionFilter';
 import TransactionPspReferenceFilter from './TransactionPspReferenceFilter';
 import { useCoreContext } from '@integration-components/core/preact';

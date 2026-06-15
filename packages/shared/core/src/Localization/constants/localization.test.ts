@@ -16,7 +16,7 @@ type I18nConfig = {
 };
 
 describe('supported locales', async () => {
-    const translationsDir = path.resolve(__dirname, '../../../../../../src/assets/translations');
+    const translationsDir = path.resolve(__dirname, '../../../../assets/src/translations');
     const translationFiles = await fs.readdir(translationsDir);
 
     // prettier-ignore

@@ -14,19 +14,18 @@ import type {
     Translations,
     TranslationSource,
     TranslationSourceRecord,
-} from '../../../../../src/translations';
-import { en_US } from '../../../../../src/translations';
+} from '../translations';
+import { en_US } from '../translations';
 import { getLocalisedAmount } from './amount/amount-util';
 import restamper from '@integration-components/utils/datetime/restamper';
 import type { RestamperWithTimezone } from '@integration-components/utils/datetime/restamper';
 import { createTranslationsLoader, getLocalizationProxyDescriptors } from './localization-utils';
 import { formatCustomTranslations, getTranslation, toTwoLetterCode } from './utils';
-import { createWatchlist } from '@integration-components/utils';
-import { ALREADY_RESOLVED_PROMISE, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
+import { ALREADY_RESOLVED_PROMISE, createWatchlist, isNull, isNullish, isUndefined, noop, struct } from '@integration-components/utils';
 import { httpGet } from '../Http/http';
 import { SupportedLocales } from './types';
-import { translations_dev_assets } from '../../../../../src/translations/local';
-import localSwapConfig from '../../../../../src/config/translations/swapConfig.json';
+import { translations_dev_assets } from '../translations/local';
+import localSwapConfig from '../config/translations/swapConfig.json';
 
 export default class Localization {
     #locale: Locale = FALLBACK_LOCALE;

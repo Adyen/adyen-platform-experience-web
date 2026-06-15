@@ -4,7 +4,7 @@ import { useMemo } from 'preact/hooks';
 import { classes } from './constants';
 import { TranslationKey } from '@integration-components/core';
 import { ITransactionCategory } from '@integration-components/types';
-import { getTransactionCategory } from '@integration-components/transactions/domain';
+import { getTransactionCategory } from '../../../../../domain/src';
 import { StructuredListItem } from '@integration-components/ui-components-preact/StructuredList/types';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';

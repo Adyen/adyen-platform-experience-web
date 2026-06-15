@@ -1,10 +1,9 @@
 import { afterAll, afterEach, beforeAll, Mock, MockInstance, TestContext, vi } from 'vitest';
-import { createAbortable } from '@integration-components/utils';
+import { createAbortable, EMPTY_OBJECT } from '@integration-components/utils';
 import { SetupEndpoint } from '@integration-components/types/api/endpoints';
 import { SETUP_ENDPOINT_PATH } from '../constants';
 import { API_VERSION } from '../../Http/constants';
-import { EMPTY_OBJECT } from '@integration-components/utils';
-import { Core } from '../../../../../../src/core';
+import { Core } from '../../Core';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import AuthSession from '../AuthSession';

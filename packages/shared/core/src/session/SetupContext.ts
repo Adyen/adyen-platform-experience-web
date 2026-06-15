@@ -1,11 +1,11 @@
-import Core from '../../../../../src/core/core';
+import type { Core } from '../Core';
 import { SETUP_ENDPOINT_PATH, SETUP_ENDPOINTS_API_VERSIONS } from './constants';
 import { parseSearchParams } from '../Http/utils';
-import { SessionContext } from '../../../../../src/primitives/context/session';
-import { createPromisor } from '@integration-components/utils';
+import { SessionContext } from './SessionContext';
 import {
     abortSignalForAny,
     asPlainObject,
+    createPromisor,
     deepFreeze,
     EMPTY_OBJECT,
     isAbortSignal,

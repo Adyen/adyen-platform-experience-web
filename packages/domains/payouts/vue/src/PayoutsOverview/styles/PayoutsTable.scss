@@ -1,6 +1,7 @@
 @use '@integration-components/style' as style;
 
 .adyen-pe-payouts-table {
+    container-type: inline-size;
     position: relative;
 
     &__net-payout {
@@ -9,8 +10,6 @@
             font-weight: style.token(text-body-strongest-font-weight);
         }
     }
-
-    container-type: inline-size;
 
     // Mobile fallback for the responsive column collapse the Preact equivalent
     // implements via `useResponsiveContainer`. Hide secondary amount columns

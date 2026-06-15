@@ -1,5 +1,7 @@
 'use strict';
 
+const { existsSync, readdirSync } = require('node:fs');
+const { join, relative } = require('node:path');
 const js = require('@eslint/js');
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
@@ -12,7 +14,36 @@ const testingLib = require('eslint-plugin-testing-library');
 const vue = require('eslint-plugin-vue');
 const vueParser = require('vue-eslint-parser');
 
+const getWorkspacePackageDirs = (dir = join(__dirname, 'packages'), packageDirs = ['.']) => {
+    if (!existsSync(dir)) {
+        return packageDirs;
+    }
+
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        if (!entry.isDirectory() || entry.name.startsWith('.') || ['dist', 'node_modules', 'storybook-static'].includes(entry.name)) {
+            continue;
+        }
+
+        const entryPath = join(dir, entry.name);
+
+        if (existsSync(join(entryPath, 'package.json'))) {
+            packageDirs.push(relative(__dirname, entryPath));
+        }
+
+        getWorkspacePackageDirs(entryPath, packageDirs);
+    }
+
+    return packageDirs;
+};
+
+const workspacePackageDirs = getWorkspacePackageDirs();
+
 module.exports = [
+    // Global ignores
+    {
+        ignores: ['**/dist/**', '**/storybook-static/**', '**/coverage/**', '**/static/**'],
+    },
+
     // eslint:recommended base rules
     js.configs.recommended,
 
@@ -68,6 +99,7 @@ module.exports = [
             'class-methods-use-this': 'off',
             'no-underscore-dangle': 'off',
             'import-x/prefer-default-export': 'off',
+            'import-x/no-duplicates': 'error',
             'no-debugger': 'warn',
             indent: 'off',
             'import-x/extensions': [
@@ -86,17 +118,17 @@ module.exports = [
                     devDependencies: [
                         'stories/**/*',
                         'playwright.config.ts',
+                        'vite.config.ts',
                         'config/**/*.ts',
                         'envs/**/*.ts',
                         'mocks/**/*.ts',
-                        'tests/**/*.{ts,js}',
                         'packages/**/vite.config.ts',
                         '**/*.test.{ts,tsx}',
                         '{src,packages}/**/{__testing__,testing}/**/*.{ts,tsx}',
-                        'packages/domains/*/tests/**/*.{ts,tsx}',
+                        'packages/domains/*/{domain,preact,vue}/tests/**/*.{ts,tsx}',
                         'packages/domains/*/**/stories/**/*.{ts,tsx}',
                         'packages/domains/*/mocks/**/*.{ts,tsx}',
-                        'src/{hooks,components,constants,core}/**/*.{ts,tsx}',
+                        'src/**/*.{ts,tsx}',
                     ],
                     includeTypes: false,
                 },
@@ -161,10 +193,11 @@ module.exports = [
 
     // Vue Composition API files written as plain .ts (not .vue SFCs)
     {
-        files: ['**/vue/src/**/*.{ts,tsx}'],
+        files: ['**/{vue,composables-vue}/src/**/*.{ts,tsx}'],
         rules: {
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',
+            'react-hooks/purity': 'off',
         },
     },
 
@@ -184,6 +217,7 @@ module.exports = [
             'vue/html-indent': ['warn', 4],
             'vue/max-attributes-per-line': 'off',
             'vue/multi-word-component-names': 'off',
+            'vue/require-default-prop': 'off',
             'react/jsx-no-literals': 'off',
             'react/display-name': 'off',
             'react/prop-types': 'off',
@@ -233,13 +267,20 @@ module.exports = [
     {
         files: ['packages/**/vite.config.ts', 'packages/**/*.test.{ts,tsx}', 'packages/**/{__testing__,testing}/**/*.{ts,tsx}'],
         rules: {
-            'import-x/no-extraneous-dependencies': ['error', { devDependencies: true, packageDir: ['.'] }],
+            'import-x/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: true,
+                    peerDependencies: true,
+                    packageDir: workspacePackageDirs,
+                },
+            ],
         },
     },
 
     // Playwright fixtures: disable react-hooks rules
     {
-        files: ['packages/shared/testing/src/playwright/**/*.ts', 'tests/**/*.ts', 'packages/**/tests/**/*.ts'],
+        files: ['packages/shared/testing/src/playwright/**/*.ts', 'packages/**/tests/**/*.ts'],
         rules: {
             'react-hooks/rules-of-hooks': 'off',
             'react-hooks/exhaustive-deps': 'off',

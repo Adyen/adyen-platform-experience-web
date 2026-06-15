@@ -1,8 +1,7 @@
 import type { AuthSession } from './session/AuthSession';
 import type { ExternalComponentType } from '@integration-components/types';
 import sessionAwareComponentAvailability from './session/utils/sessionAwareComponentAvailability';
-import { isWatchlistUnsubscribeToken } from '@integration-components/utils';
-import { noop } from '@integration-components/utils';
+import { isWatchlistUnsubscribeToken, noop } from '@integration-components/utils';
 
 export function createConfigContextValue(session: AuthSession) {
     const { context, http, refresh } = session;

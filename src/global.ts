@@ -1,7 +1,7 @@
 // Pulls in the global augmentations (AdyenPlatformExperienceMetadata, Window) from the declaration file.
 // Using `import type` rather than a triple-slash reference to avoid @typescript-eslint/triple-slash-reference errors.
-import type {} from './declarations/global';
-import { Core } from './core';
+import type {} from '../declarations/global';
+import { Core } from '@integration-components/core';
 
 /** A property with this name will be exposed via the global (window) object. */
 const globalKey = 'AdyenPlatformExperienceMetadata' satisfies keyof typeof window;

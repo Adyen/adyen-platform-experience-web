@@ -1,8 +1,7 @@
-import { boolOrFalse } from '@integration-components/utils';
+import { boolOrFalse, normalizeCustomFields } from '@integration-components/utils';
 import { CustomColumn } from '@integration-components/types';
 import { TX_DETAILS_FIELDS_REMAPS, TX_DETAILS_RESERVED_FIELDS_SET } from '../../constants';
 import DataOverviewDetailsSkeleton from '@integration-components/ui-components-preact/DataOverviewDetails/DataOverviewDetailsSkeleton';
-import { normalizeCustomFields } from '@integration-components/utils';
 import TransactionDataContent from './TransactionDataContent';
 import { TransactionDetails, TransactionDetailsProps } from '../../types';
 import useTransaction from '../../hooks/useTransaction';
@@ -10,7 +9,7 @@ import { useModalContext } from '@integration-components/ui-components-preact/Mo
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { Header } from '@integration-components/ui-components-preact/Header';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
-import { getErrorMessage } from '../../../../../../../../src/components/utils/getErrorMessage';
+import { getErrorMessage } from '@integration-components/ui-components-preact/utils/getErrorMessage';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 
 export const TransactionData = ({ id, dataCustomization, hideTitle, onContactSupport }: TransactionDetailsProps) => {

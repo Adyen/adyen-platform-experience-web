@@ -1,4 +1,4 @@
-import { ERR_SESSION_EXPIRED, SessionSpecification } from '../../../../../src/primitives/context/session';
+import { ERR_SESSION_EXPIRED, SessionSpecification } from './SessionContext';
 import { abortSignalForAny, enumerable, isAbortSignal, isPlainObject, isString, isUndefined } from '@integration-components/utils';
 import { http as _http } from '../Http/http';
 import { ErrorTypes } from '../Http/utils';

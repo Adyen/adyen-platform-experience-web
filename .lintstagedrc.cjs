@@ -1,16 +1,16 @@
+const lintPlaywrightSelectors = filenames => [
+    `pnpm exec eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs ${filenames.join(' ')}`,
+];
+
 module.exports = {
-    '{src,packages}/**/translations/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
+    'packages/shared/assets/src/translations/*.json': filenames => [`pnpm run translations:sort ${filenames.join(' ')}`],
     // Fix Prettier formatting
     '{src,packages}/**/*.{ts,tsx,js,scss,css,md,json,html,vue}': filenames => [`pnpm exec prettier --write ${filenames.join(' ')}`],
     // Fix stylelint issues only (no checking/reporting)
-    '{src,packages}/**/*.scss': filenames => [`pnpm exec stylelint --fix ${filenames.join(' ')}`],
+    'packages/**/*.scss': filenames => [`pnpm exec stylelint --fix ${filenames.join(' ')}`],
     // Check ESLint for errors (will fail commit if errors found)
-    '{src,packages}/**/*.{js,ts,tsx,vue}': filenames => [`pnpm exec eslint --quiet ${filenames.join(' ')}`],
+    '{src,packages}/**/*.{js,ts,tsx,vue}': filenames => [`pnpm exec eslint ${filenames.join(' ')}`],
     // Check playwright selector usage (mirrors lint:playwright-selectors)
-    '{tests,packages/domains/*/tests}/**/*.{spec,test}.{ts,tsx}': filenames => [
-        `pnpm exec eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs ${filenames.join(' ')}`,
-    ],
-    'tests/models/**/*.{ts,tsx}': filenames => [
-        `pnpm exec eslint --no-config-lookup --config scripts/eslint-playwright-selectors.cjs ${filenames.join(' ')}`,
-    ],
+    'packages/domains/**/tests/**/*.{spec,test}.{ts,tsx}': lintPlaywrightSelectors,
+    'packages/shared/testing/**/*.{ts,tsx}': lintPlaywrightSelectors,
 };

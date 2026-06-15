@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, computed, onUnmounted, watch } from 'vue';
-import { BentoButton } from '@adyen/bento-vue3';
-import { DataGrid } from './DataGrid';
+import { BentoButton, BentoDataGrid, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, useTableColumns } from '@integration-components/composables-vue';
+import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
+import { useCustomColumnsData, useTableColumns, CustomDataCell } from '@integration-components/composables-vue';
+import { DATE_FORMAT_REPORTS } from '@integration-components/utils';
 import DownloadIcon from '@adyen/ui-assets-icons-16/vue/download';
 import type { BentoDatagridDataItem, BentoDataGridRowActionsProp } from '@adyen/bento-vue3';
 import type { CustomColumn, IReport, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { AdyenPlatformExperienceError } from '@integration-components/core';
+import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { getReportType, REPORTS_TABLE_CLASS_NAMES, REPORTS_DOWNLOAD_DISABLED_TIMEOUT, REPORTS_TABLE_FIELDS } from '../../../../domain/src';
 import '../styles/ReportsTable.scss';
 
@@ -124,7 +125,7 @@ const { columns, customFieldKeys, hasCustomColumn } = useTableColumns({
     },
     resolveCustomColumnLabel: key => {
         const labelKey = `reports.overview.list.fields.${key}` as any;
-        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as any);
+        return i18n.has(labelKey) ? i18n.get(labelKey) : i18n.get(key as TranslationKey);
     },
 });
 
@@ -203,6 +204,12 @@ function handleItemsPage(size: number) {
     props.updateLimit?.(size);
 }
 
+const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
+
+function formatDate(dateStr: string): string {
+    return dateFormat(dateStr, DATE_FORMAT_REPORTS);
+}
+
 // Clear alert whenever a new fetch begins. This must be a watcher; a top-level
 // `if (props.loading) ...` would only run once during component setup.
 watch(
@@ -233,17 +240,31 @@ watch(
             </BentoButton>
         </div>
 
-        <DataGrid
+        <BentoDataGrid
             v-else
+            outline
             :columns="columns"
             :data="gridData"
             :loading="isLoading"
             :pagination="paginationProps"
             :empty-state="emptyStateProps"
             :row-actions="getRowActions"
-            :custom-field-keys="customFieldKeys"
+            :has-resizable-columns="false"
+            :allow-column-drag-and-drop="false"
             @navigate="handleNavigate"
             @items-page="handleItemsPage"
-        />
+        >
+            <template #item-createdAt="{ item }">
+                <time v-if="item.createdAt" :datetime="item.createdAt">
+                    <BentoTypography variant="body">{{ formatDate(item.createdAt) }}</BentoTypography>
+                </time>
+            </template>
+            <template #item-reportType="{ item }">
+                {{ item.reportType }}
+            </template>
+            <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
+                <CustomDataCell :value="item[key]" />
+            </template>
+        </BentoDataGrid>
     </div>
 </template>

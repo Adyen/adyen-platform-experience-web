@@ -1,7 +1,6 @@
 import { Meta } from '@storybook/preact';
 import { DisputeManagement } from '../src';
-import { enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
-import { ElementProps } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
 export const DisputeManagementMeta: Meta<ElementProps<typeof DisputeManagement>> = {
     argTypes: {

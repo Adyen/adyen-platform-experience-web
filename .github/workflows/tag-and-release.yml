@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_version: ${{ steps.determine_version.outputs.version }}
+      npm_tag: ${{ steps.determine_version.outputs.npm_tag }}
+      is_prerelease: ${{ steps.determine_version.outputs.is_prerelease }}
     if: (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
       || (github.event.pull_request.merged == true && (startsWith(github.head_ref, 'bump/') || startsWith(github.head_ref, 'changeset-release/')))
     steps:
@@ -37,6 +39,21 @@ jobs:
           VERSION=$(jq -r .version package.json)
           echo "NEW_VERSION=$VERSION" >> $GITHUB_ENV
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # Detect pre-release: versions like 1.13.0-beta.0 contain a hyphen
+          if [[ "$VERSION" == *"-"* ]]; then
+            # Extract tag name from pre-release identifier (e.g. beta from 1.13.0-beta.0)
+            PRE_TAG=$(echo "$VERSION" | sed 's/.*-\([a-zA-Z]*\).*/\1/')
+            echo "npm_tag=$PRE_TAG" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=$PRE_TAG" >> $GITHUB_ENV
+            echo "IS_PRERELEASE=true" >> $GITHUB_ENV
+          else
+            echo "npm_tag=latest" >> "$GITHUB_OUTPUT"
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "NPM_TAG=latest" >> $GITHUB_ENV
+            echo "IS_PRERELEASE=false" >> $GITHUB_ENV
+          fi
 
       - name: Upload build as artifact for other jobs
         uses: actions/upload-artifact@v4
@@ -75,8 +92,12 @@ jobs:
           git tag -d "$SCOPED_TAG"
           git push origin --delete "$SCOPED_TAG"
 
-          # Update the GitHub release to point to the new tag
-          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG"
+          # Update the GitHub release to point to the new tag and publish it
+          PRERELEASE_FLAG=""
+          if [[ "${{ env.IS_PRERELEASE }}" == "true" ]]; then
+            PRERELEASE_FLAG="--prerelease"
+          fi
+          gh release edit "$SCOPED_TAG" --tag "$SEMVER_TAG" --title "$SEMVER_TAG" --draft=false $PRERELEASE_FLAG
 
       - name: Upload Release Asset
         env:
@@ -115,8 +136,10 @@ jobs:
     secrets: inherit
     with:
       source_run_id: ${{ github.run_id }}
+      npm_tag: ${{ needs.create-github-release.outputs.npm_tag }}
 
   upload-assets:
+    if: needs.create-github-release.outputs.is_prerelease != 'true'
     permissions:
       contents: write
       actions: write
@@ -126,11 +149,11 @@ jobs:
     with:
       environment_choice: 'live'
 
-  generate-sri-hashes:
-    permissions:
-      contents: read
-    needs: [trigger-npm-publish, upload-assets]
-    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
-    secrets: inherit
-    with:
-      version: v${{ needs.create-github-release.outputs.release_version }}
+#  generate-sri-hashes:
+#    permissions:
+#      contents: read
+#    needs: [create-github-release, trigger-npm-publish, upload-assets]
+#    uses: adyen/adyen-platform-experience-web/.github/workflows/generate-integrity-hash.yml@main
+#    secrets: inherit
+#    with:
+#      version: v${{ needs.create-github-release.outputs.release_version }}

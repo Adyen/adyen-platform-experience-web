@@ -6,7 +6,7 @@ import { getCustomTranslationsAnalyticsPayload } from './EventDispatcher/eventDi
 import { SERVER_SIDE_INITIALIZATION_WARNING, shouldWarnAboutServerSideInitialization } from './runtime';
 import { FALLBACK_ENV, getConfigFromCdn, getDatasetFromCdn, resolveEnvironment } from './utils';
 import type { CoreOptions, onErrorHandler, ResolvedEnvironment } from './types';
-import type { TranslationSourceRecord } from '../../../../src/translations';
+import type { TranslationSourceRecord } from './translations';
 
 /**
  * Minimal contract that framework-specific element classes (Preact BaseElement,

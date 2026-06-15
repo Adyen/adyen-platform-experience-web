@@ -1,6 +1,5 @@
 import { DisputesOverview } from '../src';
-import { ElementProps, ElementStory, SessionControls } from '@integration-components/testing/storybook-helpers';
-import { EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 import { DisputesOverviewMeta } from './disputesOverview.meta';
 import { Meta } from '@storybook/preact';
 

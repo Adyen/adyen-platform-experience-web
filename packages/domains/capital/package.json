@@ -1,0 +1,40 @@
+{
+    "name": "@integration-components/capital",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
+    "exports": {
+        "./publish": "./publish/src/index.ts",
+        "./preact": "./preact/src/index.ts",
+        "./domain": "./domain/src/index.ts"
+    },
+    "dependencies": {
+        "@adyen/kyc-components": ">=4.0.0-compact.9 <4.0.0",
+        "@integration-components/core": "workspace:*",
+        "@integration-components/hooks-preact": "workspace:*",
+        "@integration-components/sdk-internal": "workspace:*",
+        "@integration-components/style": "workspace:*",
+        "@integration-components/testing": "workspace:*",
+        "@integration-components/types": "workspace:*",
+        "@integration-components/ui-components-preact": "workspace:*",
+        "@integration-components/utils": "workspace:*",
+        "classnames": "catalog:"
+    },
+    "peerDependencies": {
+        "preact": "catalog:"
+    },
+    "devDependencies": {
+        "@playwright/test": "catalog:",
+        "@storybook/preact": "catalog:",
+        "@testing-library/preact": "catalog:",
+        "dotenv": "catalog:",
+        "msw": "catalog:",
+        "msw-storybook-addon": "^2.0.2",
+        "storybook": "catalog:",
+        "vitest": "catalog:"
+    }
+}

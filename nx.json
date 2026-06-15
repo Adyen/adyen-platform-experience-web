@@ -22,6 +22,7 @@
     },
     "targetDefaults": {
         "build": {
+            "dependsOn": ["^build"],
             "cache": true
         },
         "unit": {

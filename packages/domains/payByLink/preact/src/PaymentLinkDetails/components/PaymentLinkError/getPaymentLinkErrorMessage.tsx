@@ -1,5 +1,4 @@
-import { AdyenPlatformExperienceError } from '@integration-components/core';
-import { TranslationKey } from '@integration-components/core';
+import { AdyenPlatformExperienceError, TranslationKey } from '@integration-components/core';
 import { ErrorMessage, UNDEFINED_ERROR } from '@integration-components/ui-components-preact/utils/getCommonErrorCode';
 import CopyText from '@integration-components/ui-components-preact/CopyText/CopyText';
 

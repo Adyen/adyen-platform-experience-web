@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import { createRef, RefObject, JSX } from 'preact';
 import { FALLBACK_ENV } from '../utils';
-import type { ExternalComponentType } from '@integration-components/types';
-import type { BaseElementProps, IUIElement, UIElementProps, UIElementStatus } from '../../../../../src/components/types';
+import type { ExternalComponentType, UIElementProps, UIElementStatus } from '@integration-components/types';
+import type { BaseElementProps, IUIElement } from './types';
 import { EventDispatcherProvider } from './EventDispatcherProvider';
 import { ConfigProvider } from './ConfigContext';
 import CoreProvider from './CoreProvider';

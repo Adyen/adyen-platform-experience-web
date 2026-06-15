@@ -5,8 +5,8 @@ import type { onErrorHandler } from '@integration-components/core';
  * `src/core/core.ts`; we type `core` loosely here so shared packages don't
  * need to pull the runtime class into the type graph.
  */
-export interface BaseElementProps {
-    core: any;
+export interface BaseElementProps<TCore = any> {
+    core: TCore;
 }
 
 export type BaseElementState = {

@@ -2,7 +2,7 @@ import useBalanceAccountSelection from './useBalanceAccountSelection';
 import { MutableRef, useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { TIME_RANGE_SELECTION_PRESET_OPTION_KEYS, type TimeRangeOptions, type UseTimeRangeSelectionConfig } from '@integration-components/types';
 import { getTimeRangeSelectionDefaultPresetOptions as createDefaultTimeRangeSelectionOptions } from '@integration-components/utils/datetime/timeRangeSelection';
-import { FilterParam } from '../../../../src/components/types';
+import { FilterParam } from '@integration-components/types';
 
 type RangeTimestamps = { from: number; to: number; now?: number | Date | null; timezone?: unknown };
 

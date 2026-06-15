@@ -1,8 +1,7 @@
 import { Meta } from '@storybook/preact';
 import { DisputeManagement } from '../src';
 import { DisputeManagementMeta } from './disputeManagement.meta';
-import { CUSTOM_URL_EXAMPLE } from '@integration-components/testing/storybook-helpers';
-import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { DISPUTE_DETAILS_HANDLERS } from '../../mocks/mock-server/disputes';
 
 const meta: Meta<ElementProps<typeof DisputeManagement>> = { ...DisputeManagementMeta, title: 'Mocked/Disputes/Dispute Management' };

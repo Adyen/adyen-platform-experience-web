@@ -1,6 +1,6 @@
 import { DEFAULT_TRANSLATIONS, FALLBACK_LOCALE, SUPPORTED_LOCALES } from './constants/localization';
 import { asPlainObject, EMPTY_OBJECT, hasOwnProperty, isFunction } from '@integration-components/utils';
-import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../../../../../src/translations';
+import type { CustomTranslations, Locale, TranslationOptions, Translations } from '../translations';
 import { SupportedLocales } from './types';
 
 const DEFAULT_TRANSLATION_OPTIONS: TranslationOptions = { values: EMPTY_OBJECT, count: 0 } as const;

@@ -267,7 +267,7 @@ test('should forward reference to creation sub-component', async ({ page }) => {
 | `selectFirstUnselectedBalanceAccount(dialog)`       | `tests/utils/utils.ts`                          | Select first unselected BA option                                                                                         |
 | `applyDateFilter(page, options?)`                   | `tests/utils/utils.ts`                          | Apply a date range via the date picker                                                                                    |
 | `setTime(page)`                                     | `tests/utils/utils.ts`                          | Freeze time to `2025-01-01T00:00:00Z`                                                                                     |
-| ~~`getTranslatedKey(key)`~~                         | `tests/utils/utils.ts`                          | **Deprecated — do not use.** Look up the text in `src/assets/translations/en-US.json` and use the literal string instead. |
+| ~~`getTranslatedKey(key)`~~                         | `tests/utils/utils.ts`                          | **Deprecated — do not use.** Look up the text in `packages/shared/assets/src/translations/en-US.json` and use the literal string instead. |
 | `getComponentRoot(page)`                            | `tests/utils/utils.ts`                          | Get `.adyen-pe-component` root locator                                                                                    |
 | `getClipboardContent(page)`                         | `tests/utils/utils.ts`                          | Read clipboard text via `navigator.clipboard.readText()`                                                                  |
 | `sleep(ms?)`                                        | `tests/utils/utils.ts`                          | Wait for a given duration (default 100ms)                                                                                 |
@@ -294,7 +294,7 @@ For detailed guidance, consult the reference files. Key points:
 
 1. **One spec file per story variant** — do not combine multiple stories in one file
 2. **Use `test.beforeEach` for `goToStory`** — do not call it inside individual tests unless testing different args
-3. **Always use actual expected text in assertions** — look up the English translation value from `src/assets/translations/en-US.json` for the relevant i18n key and use the literal text string in assertions (e.g., `page.getByText('Reports')` instead of `page.getByText(getTranslatedKey('reports.overview.title'))`). Do not use `getTranslatedKey()`.
+3. **Always use actual expected text in assertions** — look up the English translation value from `packages/shared/assets/src/translations/en-US.json` for the relevant i18n key and use the literal text string in assertions (e.g., `page.getByText('Reports')` instead of `page.getByText(getTranslatedKey('reports.overview.title'))`). Do not use `getTranslatedKey()`.
 4. **Prefer role-based selectors** over CSS classes or test IDs
 5. **Use `Promise.all`** for independent parallel assertions
 6. **Do not import from `react`** — if needed, import from `@playwright/test` or the analytics fixture

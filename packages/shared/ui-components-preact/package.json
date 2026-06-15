@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "private": true,
     "type": "module",
+    "sideEffects": [
+        "**/*.css",
+        "**/*.scss"
+    ],
     "main": "./src/index.ts",
     "types": "./src/index.ts",
     "exports": {
@@ -256,7 +260,8 @@
         "./PaymentMethodCell/constants": "./src/PaymentMethodCell/constants.ts",
         "./PaymentMethodCell/PaymentMethodCell": "./src/PaymentMethodCell/PaymentMethodCell.tsx",
         "./PaymentMethodCell/parsePaymentMethodType": "./src/PaymentMethodCell/parsePaymentMethodType.ts",
-        "./utils/getCommonErrorCode": "./src/utils/getCommonErrorCode.ts"
+        "./utils/getCommonErrorCode": "./src/utils/getCommonErrorCode.ts",
+        "./utils/getErrorMessage": "./src/utils/getErrorMessage.tsx"
     },
     "dependencies": {
         "@integration-components/core": "workspace:*",

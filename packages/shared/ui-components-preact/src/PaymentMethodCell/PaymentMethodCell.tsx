@@ -6,7 +6,7 @@ import { TagVariant } from '../Tag/types';
 import { TypographyVariant } from '../Typography/types';
 import Typography from '../Typography/Typography';
 import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
-import { parsePaymentMethodType } from './parsePaymentMethodType';
+import { parsePaymentMethodType } from '@integration-components/utils';
 import { PAYMENT_METHOD_CLASS, PAYMENT_METHOD_LOGO_CLASS, PAYMENT_METHOD_LOGO_CONTAINER_CLASS } from './constants';
 
 const PaymentMethodCell = ({ paymentMethod, bankAccount }: { paymentMethod?: IPaymentMethod; bankAccount?: IBankAccount }) => {
