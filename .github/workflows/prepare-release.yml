@@ -3,13 +3,17 @@ name: Prepare Release
 on:
   workflow_dispatch:
     inputs:
-      prerelease:
-        description: 'Create a pre-release?'
-        required: false
-        type: boolean
-        default: false
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        default: 'stable'
+        options:
+          - stable
+          - pre-release
+          - promote
       prerelease_tag:
-        description: 'Pre-release tag (only used when prerelease is true)'
+        description: 'Pre-release tag (only for pre-release type)'
         required: false
         type: choice
         default: 'beta'
@@ -42,23 +46,69 @@ jobs:
       - name: Fetch main branch
         run: git fetch origin main:main
 
-      - name: Enter pre-release mode
-        if: inputs.prerelease
+      # ── Pre-release: create/update pre-release branch, enter pre-release mode ──
+      - name: Set up pre-release branch
+        if: inputs.release_type == 'pre-release'
         env:
           TAG: ${{ inputs.prerelease_tag }}
         run: |
-          if [ -f .changeset/pre.json ]; then
-            echo "Pre-release mode already active, skipping enter."
+          PRERELEASE_BRANCH="pre-release/$TAG"
+          echo "PRERELEASE_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create or update the pre-release branch from develop
+          if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
+            git fetch origin "$PRERELEASE_BRANCH"
+            git checkout "$PRERELEASE_BRANCH"
+            git merge origin/develop --no-edit
           else
-            pnpm changeset pre enter "$TAG"
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add .changeset/pre.json
-            git commit -m "chore(release): enter pre-release mode ($TAG)"
-            git push origin develop
+            git checkout -b "$PRERELEASE_BRANCH"
           fi
 
+          # Enter pre-release mode if not already active
+          if [ ! -f .changeset/pre.json ]; then
+            pnpm changeset pre enter "$TAG"
+            git add .changeset/pre.json
+            git commit -m "chore(release): enter pre-release mode ($TAG)"
+          fi
+
+          git push origin "$PRERELEASE_BRANCH"
+
+      # ── Promote: exit pre-release mode on the pre-release branch ──
+      - name: Promote pre-release to stable
+        if: inputs.release_type == 'promote'
+        env:
+          TAG: ${{ inputs.prerelease_tag }}
+        run: |
+          PRERELEASE_BRANCH="pre-release/$TAG"
+          echo "PRERELEASE_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Checkout the existing pre-release branch
+          if ! git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
+            echo "::error::Branch $PRERELEASE_BRANCH does not exist. Run a pre-release first."
+            exit 1
+          fi
+
+          git fetch origin "$PRERELEASE_BRANCH"
+          git checkout "$PRERELEASE_BRANCH"
+
+          if [ ! -f .changeset/pre.json ]; then
+            echo "::error::No pre.json found on $PRERELEASE_BRANCH. Pre-release mode is not active."
+            exit 1
+          fi
+
+          pnpm changeset pre exit
+          git add .changeset/pre.json
+          git commit -m "chore(release): exit pre-release mode"
+          git push origin "$PRERELEASE_BRANCH"
+
       - name: Validate changesets exist
+        if: inputs.release_type != 'promote'
         run: |
           pnpm changeset status || {
             echo "::error::No changesets found. Cannot proceed with release."
@@ -74,17 +124,27 @@ jobs:
 
       - name: Create Pull Request
         run: |
-          if [[ "${{ inputs.prerelease }}" == "true" ]]; then
-            TITLE="Start pre-release v${{ env.NEW_VERSION }}"
-            BODY="Merge develop into main for pre-release v${{ env.NEW_VERSION }}"
-          else
-            TITLE="Start release v${{ env.NEW_VERSION }}"
-            BODY="Merge develop into main for release v${{ env.NEW_VERSION }}"
-          fi
+          case "${{ inputs.release_type }}" in
+            pre-release)
+              HEAD_BRANCH="$PRERELEASE_BRANCH"
+              TITLE="Start pre-release v${{ env.NEW_VERSION }}"
+              BODY="Pre-release v${{ env.NEW_VERSION }} from \`$PRERELEASE_BRANCH\`"
+              ;;
+            promote)
+              HEAD_BRANCH="$PRERELEASE_BRANCH"
+              TITLE="Start release v${{ env.NEW_VERSION }}"
+              BODY="Promote pre-release to stable v${{ env.NEW_VERSION }}"
+              ;;
+            *)
+              HEAD_BRANCH="develop"
+              TITLE="Start release v${{ env.NEW_VERSION }}"
+              BODY="Merge develop into main for release v${{ env.NEW_VERSION }}"
+              ;;
+          esac
 
           gh pr create \
             --base main \
-            --head develop \
+            --head "$HEAD_BRANCH" \
             --title "$TITLE" \
             --body "$BODY"
         env:
