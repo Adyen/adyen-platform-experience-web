@@ -3,17 +3,24 @@ import { PaymentLinksOverview as PaymentLinksOverviewAdyen } from '@adyen/adyen-
 import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 
 export const PaymentLinksOverview = () => {
-    const initializeComponent = async () => {
-        const adyenInstance = await AdyenPlatformExperience.getInstance();
-
-        const paymentLinksOverview = new PaymentLinksOverviewAdyen({
-            core: adyenInstance.core,
-        });
-        paymentLinksOverview.mount('#payment-links-overview-container');
-    };
-
     useEffect(() => {
-        initializeComponent();
+        let isMounted = true;
+        let componentInstance: PaymentLinksOverviewAdyen | null = null;
+
+        (async () => {
+            const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
+
+            componentInstance = new PaymentLinksOverviewAdyen({
+                core: adyenInstance.core,
+            });
+            componentInstance.mount('#payment-links-overview-container');
+        })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, []);
 
     return <div id="payment-links-overview-container" />;

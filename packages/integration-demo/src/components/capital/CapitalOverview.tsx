@@ -3,18 +3,24 @@ import { CapitalOverview as CapitalOverviewAdyen } from '@adyen/adyen-platform-e
 import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 
 export const CapitalOverview = () => {
-    const initializeComponent = async () => {
-        const adyenInstance = await AdyenPlatformExperience.getInstance();
-
-        const capitalOverview = new CapitalOverviewAdyen({
-            core: adyenInstance.core,
-        });
-
-        capitalOverview.mount('#capital-overview-container');
-    };
-
     useEffect(() => {
-        initializeComponent();
+        let isMounted = true;
+        let componentInstance: CapitalOverviewAdyen | null = null;
+
+        (async () => {
+            const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
+
+            componentInstance = new CapitalOverviewAdyen({
+                core: adyenInstance.core,
+            });
+            componentInstance.mount('#capital-overview-container');
+        })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, []);
 
     return <div id="capital-overview-container" className="component-narrow"></div>;

@@ -3,17 +3,24 @@ import { DisputesOverview as DisputesOverviewAdyen } from '@adyen/adyen-platform
 import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 
 export const DisputesOverview = () => {
-    const initializeComponent = async () => {
-        const adyenInstance = await AdyenPlatformExperience.getInstance();
-
-        const disputesOverview = new DisputesOverviewAdyen({
-            core: adyenInstance.core,
-        });
-        disputesOverview.mount('#disputes-overview-container');
-    };
-
     useEffect(() => {
-        initializeComponent();
+        let isMounted = true;
+        let componentInstance: DisputesOverviewAdyen | null = null;
+
+        (async () => {
+            const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
+
+            componentInstance = new DisputesOverviewAdyen({
+                core: adyenInstance.core,
+            });
+            componentInstance.mount('#disputes-overview-container');
+        })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, []);
 
     return <div id="disputes-overview-container" />;

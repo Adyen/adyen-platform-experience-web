@@ -3,17 +3,24 @@ import { TransactionsOverview as TransactionsOverviewAdyen } from '@adyen/adyen-
 import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 
 export const TransactionsOverview = () => {
-    const initializeComponent = async () => {
-        const adyenInstance = await AdyenPlatformExperience.getInstance();
-
-        const transactionsOverview = new TransactionsOverviewAdyen({
-            core: adyenInstance.core,
-        });
-        transactionsOverview.mount('#transactions-overview-container');
-    };
-
     useEffect(() => {
-        initializeComponent();
+        let isMounted = true;
+        let componentInstance: TransactionsOverviewAdyen | null = null;
+
+        (async () => {
+            const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
+
+            componentInstance = new TransactionsOverviewAdyen({
+                core: adyenInstance.core,
+            });
+            componentInstance.mount('#transactions-overview-container');
+        })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, []);
 
     return <div id="transactions-overview-container" />;
