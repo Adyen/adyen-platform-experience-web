@@ -48,7 +48,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    z-index: 100;
 }
 
 .sidebar__header {
