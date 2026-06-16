@@ -13,26 +13,36 @@ export const CapitalOffer = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        let isMounted = true;
+        let componentInstance: CapitalOfferAdyen | null = null;
+
         (async () => {
             const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
 
             const capitalOverview = new CapitalOverviewAdyen({
                 core: adyenInstance.core,
             });
 
             const { state } = await capitalOverview.getState();
+            if (!isMounted) return;
             setCapitalState(state);
 
             if (state === 'isPreQualified') {
-                const capitalOffer = new CapitalOfferAdyen({
+                componentInstance = new CapitalOfferAdyen({
                     core: adyenInstance.core,
                     onFundsRequest: () => {
                         navigate('/');
                     },
                 });
-                capitalOffer.mount('#capital-offer-container');
+                componentInstance.mount('#capital-offer-container');
             }
         })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, [navigate]);
 
     if (capitalState === 'isUnqualified') {

@@ -3,17 +3,24 @@ import { PayoutsOverview as PayoutsOverviewAdyen } from '@adyen/adyen-platform-e
 import { AdyenPlatformExperience } from '../../AdyenPlatformExperience';
 
 export const PayoutsOverview = () => {
-    const initializeComponent = async () => {
-        const adyenInstance = await AdyenPlatformExperience.getInstance();
-
-        const payoutsOverview = new PayoutsOverviewAdyen({
-            core: adyenInstance.core,
-        });
-        payoutsOverview.mount('#payouts-overview-container');
-    };
-
     useEffect(() => {
-        initializeComponent();
+        let isMounted = true;
+        let componentInstance: PayoutsOverviewAdyen | null = null;
+
+        (async () => {
+            const adyenInstance = await AdyenPlatformExperience.getInstance();
+            if (!isMounted) return;
+
+            componentInstance = new PayoutsOverviewAdyen({
+                core: adyenInstance.core,
+            });
+            componentInstance.mount('#payouts-overview-container');
+        })();
+
+        return () => {
+            isMounted = false;
+            componentInstance?.unmount();
+        };
     }, []);
 
     return <div id="payouts-overview-container" />;
