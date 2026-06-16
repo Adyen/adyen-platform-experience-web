@@ -77,7 +77,7 @@ jobs:
 
           git push origin "$PRERELEASE_BRANCH"
 
-      # ── Stable: if pre-release mode is active, exit it on the pre-release branch (auto-promote) ──
+      # ── Stable: if pre-release mode is active, exit it on a promotion branch (auto-promote) ──
       - name: Prepare stable release
         if: inputs.release_type == 'stable'
         env:
@@ -85,24 +85,30 @@ jobs:
         run: |
           if [ -f .changeset/pre.json ]; then
             echo "Pre-release mode detected, promoting to stable from main..."
-            PRERELEASE_BRANCH="pre-release/$TAG"
+            PROMOTE_BRANCH="chore/promote-$TAG-to-stable"
 
             # Create the promote branch from main (pre-releases are already merged there)
             git checkout main
-            if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
-              git fetch origin "$PRERELEASE_BRANCH"
-              git checkout "$PRERELEASE_BRANCH"
+            if git ls-remote --heads origin "$PROMOTE_BRANCH" | grep -q "$PROMOTE_BRANCH"; then
+              git fetch origin "$PROMOTE_BRANCH"
+              git checkout "$PROMOTE_BRANCH"
               git merge main --no-edit
             else
-              git checkout -b "$PRERELEASE_BRANCH"
+              git checkout -b "$PROMOTE_BRANCH"
             fi
+
+            # Strip internal workspace packages from pre.json so that only the
+            # root package is bumped when exiting pre-release mode.
+            jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+              .changeset/pre.json > .changeset/pre.json.tmp \
+              && mv .changeset/pre.json.tmp .changeset/pre.json
 
             pnpm changeset pre exit
             git add .changeset/pre.json
             git commit -m "chore(release): exit pre-release mode"
-            git push origin "$PRERELEASE_BRANCH"
+            git push origin "$PROMOTE_BRANCH"
 
-            echo "HEAD_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
+            echo "HEAD_BRANCH=$PROMOTE_BRANCH" >> "$GITHUB_ENV"
           else
             echo "HEAD_BRANCH=develop" >> "$GITHUB_ENV"
           fi
