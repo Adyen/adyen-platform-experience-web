@@ -680,6 +680,37 @@ importers:
         specifier: 'catalog:'
         version: 3.5.31(typescript@5.8.3)
 
+  packages/integration-demo:
+    dependencies:
+      '@adyen/adyen-platform-experience-web':
+        specifier: 1.12.2
+        version: 1.12.2
+      react:
+        specifier: ^19.1.1
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.1.1
+        version: 19.2.0(react@19.2.0)
+      react-router:
+        specifier: ^6.30.1
+        version: 6.30.3(react@19.2.0)
+      react-router-dom:
+        specifier: ^6.30.1
+        version: 6.30.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.13
+        version: 19.2.15
+      '@types/react-dom':
+        specifier: ^19.1.2
+        version: 19.2.3(@types/react@19.2.15)
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+      vite:
+        specifier: 'catalog:'
+        version: 7.3.2(@types/node@24.10.13)(sass@1.79.3)(terser@5.46.2)(tsx@4.21.0)(yaml@2.8.3)
+
   packages/sdk:
     dependencies:
       '@integration-components/sdk-internal':
@@ -932,6 +963,9 @@ packages:
     resolution: {}
 
   '@adyen/adyen-document-viewer@1.4.2':
+    resolution: {}
+
+  '@adyen/adyen-platform-experience-web@1.12.2':
     resolution: {}
 
   '@adyen/bento-design-tokens@1.43.0':
@@ -2449,6 +2483,10 @@ packages:
     resolution: {}
     engines: {node: '>=18.17.0', npm: '>=9.5.0'}
 
+  '@remix-run/router@1.23.2':
+    resolution: {}
+    engines: {node: '>=14.0.0'}
+
   '@rolldown/pluginutils@1.0.0-rc.2':
     resolution: {}
 
@@ -2837,6 +2875,14 @@ packages:
     resolution: {}
 
   '@types/parse-json@4.0.2':
+    resolution: {}
+
+  '@types/react-dom@19.2.3':
+    resolution: {}
+    peerDependencies:
+      '@types/react': ^19.2.0
+
+  '@types/react@19.2.15':
     resolution: {}
 
   '@types/sortablejs@1.15.9':
@@ -5845,6 +5891,19 @@ packages:
   react-is@18.3.1:
     resolution: {}
 
+  react-router-dom@6.30.3:
+    resolution: {}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  react-router@6.30.3:
+    resolution: {}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+
   react@19.2.0:
     resolution: {}
     engines: {node: '>=0.10.0'}
@@ -6775,7 +6834,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.3.1:
+  vue-component-type-helpers@3.3.2:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -7038,6 +7097,10 @@ snapshots:
       preact: 10.29.1
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
+
+  '@adyen/adyen-platform-experience-web@1.12.2':
+    dependencies:
+      core-js: 3.41.0
 
   '@adyen/bento-design-tokens@1.43.0': {}
 
@@ -8845,6 +8908,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@remix-run/router@1.23.2': {}
+
   '@rolldown/pluginutils@1.0.0-rc.2': {}
 
   '@rollup/pluginutils@4.2.1':
@@ -9012,7 +9077,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.3.1
+      vue-component-type-helpers: 3.3.2
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -9211,6 +9276,14 @@ snapshots:
       undici-types: 7.16.0
 
   '@types/parse-json@4.0.2': {}
+
+  '@types/react-dom@19.2.3(@types/react@19.2.15)':
+    dependencies:
+      '@types/react': 19.2.15
+
+  '@types/react@19.2.15':
+    dependencies:
+      csstype: 3.2.3
 
   '@types/sortablejs@1.15.9': {}
 
@@ -12745,6 +12818,18 @@ snapshots:
 
   react-is@18.3.1: {}
 
+  react-router-dom@6.30.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+    dependencies:
+      '@remix-run/router': 1.23.2
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+      react-router: 6.30.3(react@19.2.0)
+
+  react-router@6.30.3(react@19.2.0):
+    dependencies:
+      '@remix-run/router': 1.23.2
+      react: 19.2.0
+
   react@19.2.0: {}
 
   read-yaml-file@1.1.0:
@@ -13821,7 +13906,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.3.1: {}
+  vue-component-type-helpers@3.3.2: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:
