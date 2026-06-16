@@ -24,34 +24,50 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - if: >-
-          github.event.pull_request.user.login == 'github-actions[bot]'
-          && startsWith(github.event.pull_request.head.ref, 'chore/sync-main-into-develop')
-          && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
-        id: skip
-        run: echo "Skipping integration tests (automated sync PR)"
+      - id: approval-status
+        run: |
+          REVIEWS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --paginate)
+          APPROVALS_FOR_HEAD=$(echo "$REVIEWS" | jq --arg head_sha "$HEAD_SHA" '[.[] | select(.state == "APPROVED" and .commit_id == $head_sha)] | length')
+          PRIOR_APPROVALS_FOR_HEAD=$(echo "$REVIEWS" | jq --arg head_sha "$HEAD_SHA" --arg review_id "$REVIEW_ID" '[.[] | select(.state == "APPROVED" and .commit_id == $head_sha and (.id | tostring) != $review_id)] | length')
 
-      - if: ${{ steps.skip.outcome != 'success' }}
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          if [[ "$PR_AUTHOR" == "github-actions[bot]" && "$HEAD_REF" == chore/sync-main-into-develop* && "$PR_TITLE" == "chore(release): sync main into develop"* ]]; then
+            echo "Skipping integration tests (automated sync PR)"
+            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-      - if: ${{ steps.skip.outcome != 'success' }}
-        id: check-approval
-        run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
+          if [[ "$EVENT_NAME" == "pull_request_review" && "$REVIEW_STATE" == "approved" && "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 ]]; then
+            echo "Skipping integration tests (additional approval without code changes)"
+            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$APPROVALS_FOR_HEAD" -gt 0 ]; then
+            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run_jobs=false" >> "$GITHUB_OUTPUT"
+            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
-        continue-on-error: true
-
-      - if: ${{ steps.skip.outcome != 'success' }}
-        run: echo ${{ steps.check-approval.outcome == 'success' }}
+          EVENT_NAME: ${{ github.event_name }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEW_ID: ${{ github.event.review.id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
     outputs:
-      approved: ${{ steps.check-approval.outcome == 'success' }}
-      skipped: ${{ steps.skip.outcome == 'success' }}
+      should_run_jobs: ${{ steps.approval-status.outputs.should_run_jobs }}
+      should_run_tests: ${{ steps.approval-status.outputs.should_run_tests }}
 
   build-storybook-static:
     needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.skipped == 'true' || needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.should_run_jobs == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -62,27 +78,28 @@ jobs:
     env:
       TEST_ENV: 1
       USE_CDN: false
+      SHOULD_RUN_TESTS: ${{ needs.is-pr-approved.outputs.should_run_tests }}
     steps:
-      - if: needs.is-pr-approved.outputs.skipped == 'true'
+      - if: env.SHOULD_RUN_TESTS != 'true'
         id: skip
-        run: echo "Skipping build (automated sync PR)"
+        run: echo "Skipping build (integration tests not required)"
 
       - name: Checkout the repo
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Build Storybook static files
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         run: pnpm run storybook:build:${{ matrix.framework }}
 
       - name: Upload Storybook static artifact
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
@@ -93,7 +110,7 @@ jobs:
     needs:
       - is-pr-approved
       - build-storybook-static
-    if: needs.is-pr-approved.outputs.skipped == 'true' || needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.should_run_jobs == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -109,34 +126,35 @@ jobs:
     env:
       PLAYWRIGHT_WORKERS: 1
       PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config packages/tools/storybook/vite.config.ts
+      SHOULD_RUN_TESTS: ${{ needs.is-pr-approved.outputs.should_run_tests }}
     steps:
-      - if: needs.is-pr-approved.outputs.skipped == 'true'
+      - if: env.SHOULD_RUN_TESTS != 'true'
         id: skip
-        run: echo "Skipping tests (automated sync PR)"
+        run: echo "Skipping tests (integration tests not required)"
 
       - name: Checkout the repo
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Download Storybook static artifact
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         uses: actions/download-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
-        if: steps.skip.outcome != 'success'
+        if: env.SHOULD_RUN_TESTS == 'true'
         run: pnpm run test:integration:${{ matrix.framework }} --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
-        if: failure() && steps.skip.outcome != 'success'
+        if: failure() && env.SHOULD_RUN_TESTS == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}
