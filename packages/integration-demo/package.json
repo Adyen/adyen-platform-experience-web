@@ -1,0 +1,25 @@
+{
+    "name": "@integration-components/integration-demo",
+    "version": "0.0.1",
+    "private": true,
+    "type": "module",
+    "description": "Standalone app for testing the published @adyen/adyen-platform-experience-web package integration",
+    "scripts": {
+        "demo:dev": "vite",
+        "demo:build": "vite build",
+        "demo:typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@adyen/adyen-platform-experience-web": "1.12.2",
+        "react": "^19.1.1",
+        "react-dom": "^19.1.1",
+        "react-router": "^6.30.1",
+        "react-router-dom": "^6.30.1"
+    },
+    "devDependencies": {
+        "@types/react": "^19.1.13",
+        "@types/react-dom": "^19.1.2",
+        "typescript": "catalog:",
+        "vite": "catalog:"
+    }
+}
