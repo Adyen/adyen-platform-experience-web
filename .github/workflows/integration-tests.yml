@@ -20,6 +20,7 @@ env:
 jobs:
   is-pr-approved:
     permissions:
+      actions: read
       contents: read
       pull-requests: read
     runs-on: ubuntu-latest
@@ -37,7 +38,9 @@ jobs:
             exit 0
           fi
 
-          if [[ "$EVENT_NAME" == "pull_request_review" && "$REVIEW_STATE" == "approved" && "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 ]]; then
+          SUCCESSFUL_RUNS_FOR_HEAD=$(gh run list --workflow "$WORKFLOW_NAME" --commit "$HEAD_SHA" --status completed --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
+
+          if [[ "$EVENT_NAME" == "pull_request_review" && "$REVIEW_STATE" == "approved" && "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 && "$SUCCESSFUL_RUNS_FOR_HEAD" -gt 0 ]]; then
             echo "Skipping integration tests (additional approval without code changes)"
             echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
             echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
@@ -56,6 +59,7 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           REVIEW_STATE: ${{ github.event.review.state }}
           REVIEW_ID: ${{ github.event.review.id }}
+          WORKFLOW_NAME: ${{ github.workflow }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
