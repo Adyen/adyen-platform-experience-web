@@ -26,7 +26,7 @@ jobs:
     steps:
       - if: >-
           github.event.pull_request.user.login == 'github-actions[bot]'
-          && github.event.pull_request.head.ref == 'main'
+          && startsWith(github.event.pull_request.head.ref, 'chore/sync-main-into-develop')
           && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
         id: skip
         run: echo "Skipping integration tests (automated sync PR)"
