@@ -27,34 +27,67 @@ jobs:
     steps:
       - id: approval-status
         run: |
-          REVIEWS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --paginate)
-
-          # Count approvals for the current commit only. Approvals for older commits
-          # should not allow integration tests to run after new code is pushed.
-          APPROVALS_FOR_HEAD=$(echo "$REVIEWS" | jq --arg head_sha "$HEAD_SHA" '[.[] | select(.state == "APPROVED" and .commit_id == $head_sha)] | length')
-
-          # Count previous approvals for the current commit, excluding the review
-          # that triggered this workflow. This identifies additional approvals
-          # where the reviewed code has not changed.
-          PRIOR_APPROVALS_FOR_HEAD=$(echo "$REVIEWS" | jq --arg head_sha "$HEAD_SHA" --arg review_id "$REVIEW_ID" '[.[] | select(.state == "APPROVED" and .commit_id == $head_sha and (.id | tostring) != $review_id)] | length')
-
           # Automated release sync PRs only merge already-released main changes back
           # into develop. Keep required checks green, but skip the expensive work.
-          if [[ "$PR_AUTHOR" == "github-actions[bot]" && "$HEAD_REF" == chore/sync-main-into-develop* && "$PR_TITLE" == "chore(release): sync main into develop"* ]]; then
+          if [[ "$PR_AUTHOR" == "github-actions[bot]" &&
+                "$HEAD_REF" == chore/sync-main-into-develop* &&
+                "$PR_TITLE" == "chore(release): sync main into develop"* ]]; then
             echo "Skipping integration tests (automated sync PR)"
             echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
             echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          
+          # Set safe defaults to prevent downstream script crashes
+          APPROVALS_FOR_HEAD=0
+          PRIOR_APPROVALS_FOR_HEAD=0
+
+          # Check if the command succeeded and returned valid JSON
+          if ! REVIEWS=$(gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/reviews" --paginate) \
+             || ! echo "$REVIEWS" | jq -e . >/dev/null 2>&1; then
+            echo "Failed to fetch reviews or received invalid JSON from GitHub API."
+          else
+            if ! read -r APPROVALS_FOR_HEAD PRIOR_APPROVALS_FOR_HEAD < <(
+              echo "$REVIEWS" | jq -r \
+                --arg head_sha "$HEAD_SHA" \
+                --arg review_id "$REVIEW_ID" \
+                '
+                  # Count approvals for the current commit only. Approvals for older commits
+                  # should not allow integration tests to run after new code is pushed.
+                  [ .[] | select(.state == "APPROVED" and .commit_id == $head_sha)] as $current
+                  
+                  # Count previous approvals for the current commit, excluding the review
+                  # that triggered this workflow. This identifies additional approvals
+                  # where the reviewed code has not changed.
+                  | [ $current[] | select((.id | tostring) != $review_id)] as $prior
+                
+                  # Return both lengths as a single space-separated string
+                  | ($current | length | tostring) + " " + ($prior | length | tostring)
+                '
+            ); then
+              echo "Failed to parse review counts from GitHub API response; defaulting to 0."
+            fi
+          fi
 
           # Check whether integration tests have already passed for this exact
           # commit. Additional approvals can skip tests only when the same code
           # has already been verified successfully.
-          SUCCESSFUL_RUNS_FOR_HEAD=$(gh run list --workflow "$WORKFLOW_NAME" --commit "$HEAD_SHA" --status completed --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
+          SUCCESSFUL_RUNS_FOR_HEAD=$(
+            gh run list \
+              --workflow "$WORKFLOW_NAME" \
+              --commit "$HEAD_SHA" \
+              --status completed \
+              --json conclusion \
+              --jq '[.[] | select(.conclusion == "success")] | length' \
+            || echo "0"
+          )
 
           # A second approval for unchanged, already-tested code should not spend
           # CI time again. Keep required checks green, but skip the expensive work.
-          if [[ "$EVENT_NAME" == "pull_request_review" && "$REVIEW_STATE" == "approved" && "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 && "$SUCCESSFUL_RUNS_FOR_HEAD" -gt 0 ]]; then
+          if [[ "$EVENT_NAME" == "pull_request_review" &&
+                "$REVIEW_STATE" == "approved" &&
+                "$PRIOR_APPROVALS_FOR_HEAD" -gt 0 &&
+                "$SUCCESSFUL_RUNS_FOR_HEAD" -gt 0 ]]; then
             echo "Skipping integration tests (additional approval without code changes)"
             echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
             echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
@@ -63,13 +96,10 @@ jobs:
 
           # Run integration tests when the current commit has at least one approval.
           # Otherwise skip the downstream jobs until the PR is approved.
-          if [ "$APPROVALS_FOR_HEAD" -gt 0 ]; then
-            echo "should_run_jobs=true" >> "$GITHUB_OUTPUT"
-            echo "should_run_tests=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "should_run_jobs=false" >> "$GITHUB_OUTPUT"
-            echo "should_run_tests=false" >> "$GITHUB_OUTPUT"
-          fi
+          SHOULD_RUN="false"
+          [[ "$APPROVALS_FOR_HEAD" -gt 0 ]] && SHOULD_RUN="true"
+          echo "should_run_jobs=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
+          echo "should_run_tests=$SHOULD_RUN" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT_NAME: ${{ github.event_name }}
