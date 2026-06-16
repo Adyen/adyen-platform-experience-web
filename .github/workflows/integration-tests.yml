@@ -9,6 +9,7 @@ on:
       - main
       - develop
       - group/*
+      - pre-release/*
 
 env:
   CI: true
@@ -23,23 +24,34 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - if: >-
+          github.event.pull_request.user.login == 'github-actions[bot]'
+          && startsWith(github.event.pull_request.head.ref, 'chore/sync-main-into-develop')
+          && startsWith(github.event.pull_request.title, 'chore(release): sync main into develop')
+        id: skip
+        run: echo "Skipping integration tests (automated sync PR)"
+
+      - if: ${{ steps.skip.outcome != 'success' }}
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - id: check-approval
+      - if: ${{ steps.skip.outcome != 'success' }}
+        id: check-approval
         run: gh pr status --json reviews -q '.currentBranch.reviews' | jq '.[]' | jq '.state' | grep APPROVED
         env:
           GH_TOKEN: ${{ github.token }}
         continue-on-error: true
 
-      - run: echo ${{ steps.check-approval.outcome == 'success' }}
+      - if: ${{ steps.skip.outcome != 'success' }}
+        run: echo ${{ steps.check-approval.outcome == 'success' }}
     outputs:
       approved: ${{ steps.check-approval.outcome == 'success' }}
+      skipped: ${{ steps.skip.outcome == 'success' }}
 
   build-storybook-static:
     needs: is-pr-approved
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.skipped == 'true' || needs.is-pr-approved.outputs.approved == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -51,18 +63,26 @@ jobs:
       TEST_ENV: 1
       USE_CDN: false
     steps:
+      - if: needs.is-pr-approved.outputs.skipped == 'true'
+        id: skip
+        run: echo "Skipping build (automated sync PR)"
+
       - name: Checkout the repo
+        if: steps.skip.outcome != 'success'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
+        if: steps.skip.outcome != 'success'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Build Storybook static files
+        if: steps.skip.outcome != 'success'
         run: pnpm run storybook:build:${{ matrix.framework }}
 
       - name: Upload Storybook static artifact
+        if: steps.skip.outcome != 'success'
         uses: actions/upload-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
@@ -73,7 +93,7 @@ jobs:
     needs:
       - is-pr-approved
       - build-storybook-static
-    if: needs.is-pr-approved.outputs.approved == 'true'
+    if: needs.is-pr-approved.outputs.skipped == 'true' || needs.is-pr-approved.outputs.approved == 'true'
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -90,25 +110,33 @@ jobs:
       PLAYWRIGHT_WORKERS: 1
       PLAYWRIGHT_WEB_SERVER_COMMAND: pnpm exec vite preview --outDir storybook-static --config packages/tools/storybook/vite.config.ts
     steps:
+      - if: needs.is-pr-approved.outputs.skipped == 'true'
+        id: skip
+        run: echo "Skipping tests (automated sync PR)"
+
       - name: Checkout the repo
+        if: steps.skip.outcome != 'success'
         uses: actions/checkout@v3
 
       - name: Run the preliminary setup steps
+        if: steps.skip.outcome != 'success'
         uses: ./.github/actions/setup-env
         with:
           NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
       - name: Download Storybook static artifact
+        if: steps.skip.outcome != 'success'
         uses: actions/download-artifact@v4
         with:
           name: storybook-static-${{ matrix.framework }}-${{ github.sha }}
           path: storybook-static
 
       - name: Run tests (shard ${{ matrix.shard.index }}/${{ matrix.shard.total }})
+        if: steps.skip.outcome != 'success'
         run: pnpm run test:integration:${{ matrix.framework }} --shard=${{ matrix.shard.index }}/${{ matrix.shard.total }}
 
       - name: Upload Playwright report (on failure)
-        if: failure()
+        if: failure() && steps.skip.outcome != 'success'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-${{ matrix.framework }}-${{ github.sha }}-shard-${{ matrix.shard.index }}

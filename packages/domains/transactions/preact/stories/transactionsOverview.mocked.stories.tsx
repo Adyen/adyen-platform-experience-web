@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { TransactionsOverviewMeta } from './transactionsOverview.meta';
 import { Meta } from '@storybook/preact';
 import { TRANSACTIONS_ENDPOINTS } from '../../mocks/endpoints';
-import { getCustomTransactionDataById, getMyCustomData } from './utils/customDataRequest';
+import { getCustomListData, getCustomDetailsData } from '../../mocks/mock-data/customData';
 import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../mocks/mock-server/transactions';
 import { TRANSACTIONS } from '../../mocks/mock-data/transactions';
 
@@ -103,7 +103,7 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
                         setTimeout(() => {
-                            resolve(getMyCustomData(data));
+                            resolve(getCustomListData(data));
                         }, 200);
                     });
                 },
@@ -120,7 +120,7 @@ export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
                 ],
                 onDataRetrieve: data => {
                     return new Promise(resolve => {
-                        return resolve(getCustomTransactionDataById(data?.id));
+                        return resolve(getCustomDetailsData(data?.id));
                     });
                 },
             },

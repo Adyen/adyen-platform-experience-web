@@ -11,14 +11,13 @@ import Pagination from '@integration-components/ui-components-preact/Pagination'
 import { Tooltip } from '@integration-components/ui-components-preact/Tooltip/Tooltip';
 import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import { getTransactionCategoryDescription, getTransactionCategory } from '@integration-components/transactions/domain';
+import { getTransactionCategoryDescription, getTransactionCategory, TRANSACTION_FIELDS } from '../../../../../domain/src';
+import type { TransactionsTableCols } from '../../../../../domain/src';
 import { AMOUNT_CLASS, BASE_CLASS, DATE_AND_PAYMENT_METHOD_CLASS, DATE_METHOD_CLASS } from './constants';
 import './TransactionTable.scss';
 import PaymentMethodCell from '@integration-components/ui-components-preact/PaymentMethodCell/PaymentMethodCell';
 import { TransactionTableProps } from './types';
 import { Tag } from '@integration-components/ui-components-preact/Tag/Tag';
-
-import { TRANSACTION_FIELDS, type TransactionsTableCols } from '../../../../../domain/src';
 
 const FIELDS_KEYS = {
     createdAt: 'transactions.overview.list.fields.createdAt',

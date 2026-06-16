@@ -17,7 +17,6 @@ const defaultPayoutDetails = PAYOUTS_WITH_DETAILS[0]!;
 const sharedArgs = {
     date: defaultPayoutDetails.payout!.createdAt,
     id: defaultPayoutDetails.balanceAccountId,
-    balanceAccountId: defaultPayoutDetails.balanceAccountId,
     mockedApi: true,
 };
 

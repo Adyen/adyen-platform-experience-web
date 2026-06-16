@@ -13,25 +13,12 @@ const assetsDir = resolve(rootDir, 'packages/shared/assets/src');
 const styleDir = resolve(rootDir, 'packages/shared/style');
 const enUsFile = resolve(assetsDir, 'translations/en-US.json');
 const translationsDir = resolve(rootDir, 'packages/shared/core/src/translations');
-const translationsIndexFile = resolve(translationsDir, 'index.ts');
 const translationsLocalFile = resolve(translationsDir, 'local.ts');
 
 const externalDependencies = Object.keys(rootPkgJson.dependencies);
 
 const shouldExcludeAsset = (id: string) => {
-    if (externalDependencies.includes(id)) {
-        return true;
-    }
-
-    if (id === enUsFile || id === translationsIndexFile) {
-        return false;
-    }
-
-    if (id === translationsLocalFile || id.startsWith(assetsDir)) {
-        return true;
-    }
-
-    return false;
+    return externalDependencies.includes(id);
 };
 
 export default defineConfig(({ mode }) => ({
@@ -74,9 +61,11 @@ export default defineConfig(({ mode }) => ({
             name: 'AdyenPlatformExperienceWeb',
             entry: resolve(projectRoot, 'src/index.ts'),
             fileName: (format, entryName) => {
-                return entryName.includes('node_modules')
-                    ? `${format}/${entryName.replace('node_modules', 'external')}.js`
-                    : `${format}/${entryName}.js`;
+                if (entryName.includes('node_modules')) {
+                    const normalized = entryName.slice(entryName.lastIndexOf('node_modules/') + 'node_modules/'.length);
+                    return `${format}/external/${normalized}.js`;
+                }
+                return `${format}/${entryName}.js`;
             },
         },
         rollupOptions: {
@@ -114,6 +103,20 @@ export default defineConfig(({ mode }) => ({
         stringify: true,
     },
     plugins: [
+        {
+            name: 'stub-dev-only-assets',
+            enforce: 'pre' as const,
+            load(id: string) {
+                if (id === translationsLocalFile) {
+                    return `export const translations_dev_assets = {};`;
+                }
+                // Asset translation JSON files (all locales except en-US which is bundled)
+                // are only used via local.ts (dev mode). Stub them out for production builds.
+                if (id !== enUsFile && id.startsWith(assetsDir)) {
+                    return `export default {};`;
+                }
+            },
+        },
         svgr({
             svgrOptions: { jsxRuntime: 'automatic', exportType: 'default' },
             esbuildOptions: { jsx: 'automatic' },
