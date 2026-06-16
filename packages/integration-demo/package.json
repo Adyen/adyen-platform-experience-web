@@ -10,7 +10,8 @@
         "demo:typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@adyen/adyen-platform-experience-web": "1.12.2",
+        "@adyen/adyen-platform-experience-web": "workspace:*",
+        "@playwright/test": "catalog:",
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "react-router": "^6.30.1",

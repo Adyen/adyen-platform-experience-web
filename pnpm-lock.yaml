@@ -601,8 +601,11 @@ importers:
   packages/integration-demo:
     dependencies:
       '@adyen/adyen-platform-experience-web':
-        specifier: 1.12.2
-        version: 1.12.2
+        specifier: workspace:*
+        version: link:../..
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.61.0
       react:
         specifier: ^19.1.1
         version: 19.2.0
@@ -831,9 +834,6 @@ packages:
     resolution: {}
 
   '@adyen/adyen-document-viewer@1.4.2':
-    resolution: {}
-
-  '@adyen/adyen-platform-experience-web@1.12.2':
     resolution: {}
 
   '@adyen/adyen-shared-web@0.4.0':
@@ -6200,10 +6200,6 @@ snapshots:
       preact: 10.29.1
     optionalDependencies:
       '@rollup/rollup-darwin-x64': 4.59.0
-
-  '@adyen/adyen-platform-experience-web@1.12.2':
-    dependencies:
-      core-js: 3.41.0
 
   '@adyen/adyen-shared-web@0.4.0':
     dependencies:
