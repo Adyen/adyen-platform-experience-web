@@ -71,9 +71,6 @@ jobs:
           # Enter pre-release mode if not already active
           if [ ! -f .changeset/pre.json ]; then
             pnpm changeset pre enter "$TAG"
-            jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
-              .changeset/pre.json > .changeset/pre.json.tmp \
-              && mv .changeset/pre.json.tmp .changeset/pre.json
             git add .changeset/pre.json
             git commit -m "chore(release): enter pre-release mode ($TAG)"
           fi
