@@ -97,6 +97,12 @@ jobs:
               git checkout -b "$PRERELEASE_BRANCH"
             fi
 
+            # Strip internal workspace packages from pre.json so that only the
+            # root package is bumped when exiting pre-release mode.
+            jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+              .changeset/pre.json > .changeset/pre.json.tmp \
+              && mv .changeset/pre.json.tmp .changeset/pre.json
+
             pnpm changeset pre exit
             git add .changeset/pre.json
             git commit -m "chore(release): exit pre-release mode"
