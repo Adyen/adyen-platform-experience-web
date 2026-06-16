@@ -1,146 +1,182 @@
 name: Prepare Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_type:
-        description: 'Release type'
-        required: true
-        type: choice
-        default: 'stable'
-        options:
-          - stable
-          - pre-release
-      prerelease_tag:
-        description: 'Pre-release tag (only for pre-release type)'
-        required: false
-        type: choice
-        default: 'beta'
-        options:
-          - beta
-          - alpha
-          - rc
-          - next
+    workflow_dispatch:
+        inputs:
+            release_type:
+                description: 'Release type'
+                required: true
+                type: choice
+                default: 'stable'
+                options:
+                    - stable
+                    - pre-release
+            prerelease_tag:
+                description: 'Pre-release tag (only for pre-release type)'
+                required: false
+                type: choice
+                default: 'beta'
+                options:
+                    - beta
+                    - alpha
+                    - rc
+                    - next
 
 jobs:
-  create-release-pr:
-    if: github.repository == 'adyen/adyen-platform-experience-web'
-    name: Create release PR
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - name: Checkout develop branch (full history)
-        uses: actions/checkout@v4
-        with:
-          ref: develop
-          fetch-depth: 0
+    integration-demo-tests:
+        if: github.repository == 'adyen/adyen-platform-experience-web'
+        name: Integration demo tests
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout develop branch
+              uses: actions/checkout@v4
+              with:
+                  ref: develop
 
-      - name: Run the preliminary setup steps
-        uses: ./.github/actions/setup-env
-        with:
-          NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
+            - name: Run the preliminary setup steps
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
-      - name: Fetch main branch
-        run: git fetch origin main:main
+            - name: Install Playwright browsers
+              run: pnpm exec playwright install --with-deps chromium
 
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            - name: Run integration-demo pre-release tests
+              run: pnpm run test:integration-demo --skip-render
 
-      # ── Pre-release: create/update pre-release branch, enter pre-release mode ──
-      - name: Set up pre-release branch
-        if: inputs.release_type == 'pre-release'
-        env:
-          TAG: ${{ inputs.prerelease_tag }}
-        run: |
-          PRERELEASE_BRANCH="pre-release/$TAG"
-          echo "HEAD_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
+            - name: Run integration-demo render tests
+              if: ${{ secrets.API_KEY != '' }}
+              env:
+                  API_KEY: ${{ secrets.API_KEY }}
+                  SESSION_ACCOUNT_HOLDER: ${{ secrets.SESSION_ACCOUNT_HOLDER }}
+                  CI: true
+              run: |
+                  mkdir -p envs
+                  echo "API_KEY=${API_KEY}" > envs/env.local
+                  echo "SESSION_ACCOUNT_HOLDER=${SESSION_ACCOUNT_HOLDER}" >> envs/env.local
+                  cd packages/integration-demo && pnpm run test:render
 
-          # Create or update the pre-release branch from develop
-          if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
-            git fetch origin "$PRERELEASE_BRANCH"
-            git checkout "$PRERELEASE_BRANCH"
-            git merge origin/develop --no-edit
-          else
-            git checkout -b "$PRERELEASE_BRANCH"
-          fi
+    create-release-pr:
+        needs: integration-demo-tests
+        if: github.repository == 'adyen/adyen-platform-experience-web'
+        name: Create release PR
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            pull-requests: write
+        steps:
+            - name: Checkout develop branch (full history)
+              uses: actions/checkout@v4
+              with:
+                  ref: develop
+                  fetch-depth: 0
 
-          # Enter pre-release mode if not already active
-          if [ ! -f .changeset/pre.json ]; then
-            pnpm changeset pre enter "$TAG"
-            git add .changeset/pre.json
-            git commit -m "chore(release): enter pre-release mode ($TAG)"
-          fi
+            - name: Run the preliminary setup steps
+              uses: ./.github/actions/setup-env
+              with:
+                  NPM_READ_ONLY_TOKEN: ${{ secrets.NPM_READ_ONLY_TOKEN }}
 
-          git push origin "$PRERELEASE_BRANCH"
+            - name: Fetch main branch
+              run: git fetch origin main:main
 
-      # ── Stable: if pre-release mode is active, exit it on a promotion branch (auto-promote) ──
-      - name: Prepare stable release
-        if: inputs.release_type == 'stable'
-        env:
-          TAG: ${{ inputs.prerelease_tag }}
-        run: |
-          if [ -f .changeset/pre.json ]; then
-            echo "Pre-release mode detected, promoting to stable from main..."
-            PROMOTE_BRANCH="chore/promote-$TAG-to-stable"
+            - name: Configure git
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
-            # Create the promote branch from main (pre-releases are already merged there)
-            git checkout main
-            if git ls-remote --heads origin "$PROMOTE_BRANCH" | grep -q "$PROMOTE_BRANCH"; then
-              git fetch origin "$PROMOTE_BRANCH"
-              git checkout "$PROMOTE_BRANCH"
-              git merge main --no-edit
-            else
-              git checkout -b "$PROMOTE_BRANCH"
-            fi
+            # ── Pre-release: create/update pre-release branch, enter pre-release mode ──
+            - name: Set up pre-release branch
+              if: inputs.release_type == 'pre-release'
+              env:
+                  TAG: ${{ inputs.prerelease_tag }}
+              run: |
+                  PRERELEASE_BRANCH="pre-release/$TAG"
+                  echo "HEAD_BRANCH=$PRERELEASE_BRANCH" >> "$GITHUB_ENV"
 
-            # Strip internal workspace packages from pre.json so that only the
-            # root package is bumped when exiting pre-release mode.
-            jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
-              .changeset/pre.json > .changeset/pre.json.tmp \
-              && mv .changeset/pre.json.tmp .changeset/pre.json
+                  # Create or update the pre-release branch from develop
+                  if git ls-remote --heads origin "$PRERELEASE_BRANCH" | grep -q "$PRERELEASE_BRANCH"; then
+                    git fetch origin "$PRERELEASE_BRANCH"
+                    git checkout "$PRERELEASE_BRANCH"
+                    git merge origin/develop --no-edit
+                  else
+                    git checkout -b "$PRERELEASE_BRANCH"
+                  fi
 
-            pnpm changeset pre exit
-            git add .changeset/pre.json
-            git commit -m "chore(release): exit pre-release mode"
-            git push origin "$PROMOTE_BRANCH"
+                  # Enter pre-release mode if not already active
+                  if [ ! -f .changeset/pre.json ]; then
+                    pnpm changeset pre enter "$TAG"
+                    git add .changeset/pre.json
+                    git commit -m "chore(release): enter pre-release mode ($TAG)"
+                  fi
 
-            echo "HEAD_BRANCH=$PROMOTE_BRANCH" >> "$GITHUB_ENV"
-          else
-            echo "HEAD_BRANCH=develop" >> "$GITHUB_ENV"
-          fi
+                  git push origin "$PRERELEASE_BRANCH"
 
-      - name: Validate changesets exist
-        run: |
-          pnpm changeset status || {
-            echo "::error::No changesets found. Cannot proceed with release."
-            exit 1
-          }
+            # ── Stable: if pre-release mode is active, exit it on a promotion branch (auto-promote) ──
+            - name: Prepare stable release
+              if: inputs.release_type == 'stable'
+              env:
+                  TAG: ${{ inputs.prerelease_tag }}
+              run: |
+                  if [ -f .changeset/pre.json ]; then
+                    echo "Pre-release mode detected, promoting to stable from main..."
+                    PROMOTE_BRANCH="chore/promote-$TAG-to-stable"
 
-      - name: Determine new version
-        run: |
-          pnpm changeset status --output=release.json
-          NEW_VERSION=$(jq -r '.releases[0].newVersion' release.json)
-          rm release.json
-          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+                    # Create the promote branch from main (pre-releases are already merged there)
+                    git checkout main
+                    if git ls-remote --heads origin "$PROMOTE_BRANCH" | grep -q "$PROMOTE_BRANCH"; then
+                      git fetch origin "$PROMOTE_BRANCH"
+                      git checkout "$PROMOTE_BRANCH"
+                      git merge main --no-edit
+                    else
+                      git checkout -b "$PROMOTE_BRANCH"
+                    fi
 
-      - name: Create Pull Request
-        run: |
-          if [[ "${{ inputs.release_type }}" == "pre-release" ]]; then
-            TITLE="Start pre-release v${{ env.NEW_VERSION }}"
-            BODY="Pre-release v${{ env.NEW_VERSION }} from \`${{ env.HEAD_BRANCH }}\`"
-          else
-            TITLE="Start release v${{ env.NEW_VERSION }}"
-            BODY="Merge \`${{ env.HEAD_BRANCH }}\` into main for release v${{ env.NEW_VERSION }}"
-          fi
+                    # Strip internal workspace packages from pre.json so that only the
+                    # root package is bumped when exiting pre-release mode.
+                    jq '.initialVersions |= with_entries(select(.key == "@adyen/adyen-platform-experience-web"))' \
+                      .changeset/pre.json > .changeset/pre.json.tmp \
+                      && mv .changeset/pre.json.tmp .changeset/pre.json
 
-          gh pr create \
-            --base main \
-            --head "${{ env.HEAD_BRANCH }}" \
-            --title "$TITLE" \
-            --body "$BODY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    pnpm changeset pre exit
+                    git add .changeset/pre.json
+                    git commit -m "chore(release): exit pre-release mode"
+                    git push origin "$PROMOTE_BRANCH"
+
+                    echo "HEAD_BRANCH=$PROMOTE_BRANCH" >> "$GITHUB_ENV"
+                  else
+                    echo "HEAD_BRANCH=develop" >> "$GITHUB_ENV"
+                  fi
+
+            - name: Validate changesets exist
+              run: |
+                  pnpm changeset status || {
+                    echo "::error::No changesets found. Cannot proceed with release."
+                    exit 1
+                  }
+
+            - name: Determine new version
+              run: |
+                  pnpm changeset status --output=release.json
+                  NEW_VERSION=$(jq -r '.releases[0].newVersion' release.json)
+                  rm release.json
+                  echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+
+            - name: Create Pull Request
+              run: |
+                  if [[ "${{ inputs.release_type }}" == "pre-release" ]]; then
+                    TITLE="Start pre-release v${{ env.NEW_VERSION }}"
+                    BODY="Pre-release v${{ env.NEW_VERSION }} from \`${{ env.HEAD_BRANCH }}\`"
+                  else
+                    TITLE="Start release v${{ env.NEW_VERSION }}"
+                    BODY="Merge \`${{ env.HEAD_BRANCH }}\` into main for release v${{ env.NEW_VERSION }}"
+                  fi
+
+                  gh pr create \
+                    --base main \
+                    --head "${{ env.HEAD_BRANCH }}" \
+                    --title "$TITLE" \
+                    --body "$BODY"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

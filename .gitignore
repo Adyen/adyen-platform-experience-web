@@ -43,6 +43,8 @@ storybook-static/
 
 playwright-report
 test-results
+.verdaccio-tmp
+*.bak
 
 scripts/generate-ts-schemas/variables
 scripts/*/variables
