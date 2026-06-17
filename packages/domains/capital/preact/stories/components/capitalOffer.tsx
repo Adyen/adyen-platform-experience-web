@@ -19,7 +19,7 @@ export const capitalOfferMeta: Meta<ElementProps<typeof CapitalOffer>> = {
     },
     args: {
         component: CapitalOffer,
-        onFundsRequest: action('onRequestFunds'),
+        onFundsRequest: action('onFundsRequest'),
     },
     parameters: {
         controls: {

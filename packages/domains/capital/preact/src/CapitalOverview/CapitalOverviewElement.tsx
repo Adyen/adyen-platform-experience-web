@@ -1,10 +1,8 @@
-import { isCapitalRegionSupported } from '../internal/CapitalHeader/helpers';
 import { _UIComponentProps, ExternalComponentType } from '@integration-components/types';
 import { UIElement } from '@integration-components/core/preact';
 import { CapitalComponentState, CapitalOverviewProps } from './types';
 import { CapitalOverview } from './components/CapitalOverview/CapitalOverview';
-import { EMPTY_OBJECT, noop } from '@integration-components/utils';
-import sessionReady from '@integration-components/core/session/utils/sessionReady';
+import { getCapitalState } from '../utils/capital/getCapitalState';
 
 export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
     public static type: ExternalComponentType = 'capitalOverview';
@@ -21,29 +19,7 @@ export class CapitalOverviewElement extends UIElement<CapitalOverviewProps> {
 
     public async getState(): Promise<CapitalComponentState> {
         const { session } = this.props.core;
-        await sessionReady(session);
-
-        const { getDynamicGrantOffersConfiguration, getGrants } = session.context.endpoints;
-        const legalEntity = session.context.extraConfig?.legalEntity;
-
-        if (!isCapitalRegionSupported(legalEntity)) {
-            return { state: 'isInUnsupportedRegion' };
-        }
-
-        const [config, grants] = await Promise.all([
-            getDynamicGrantOffersConfiguration?.(EMPTY_OBJECT, { query: EMPTY_OBJECT }).catch(noop as () => undefined),
-            getGrants?.(EMPTY_OBJECT).catch(noop as () => undefined),
-        ]);
-
-        let state: CapitalComponentState['state'] = 'isUnqualified';
-
-        if (grants && grants.data?.length > 0) {
-            state = 'hasRequestedGrants';
-        } else if (config && config.minAmount) {
-            state = 'isPreQualified';
-        }
-
-        return { state };
+        return await getCapitalState(session);
     }
 }
 

@@ -1,4 +1,5 @@
 import {
+    ICapitalState,
     IDynamicOffersConfig,
     IGBCapitalFundsCollection,
     IGrant,
@@ -21,19 +22,6 @@ export const DYNAMIC_CAPITAL_OFFER = {
     maxAmount: {
         value: 2500000,
         currency: 'EUR',
-    },
-    step: 10000,
-} satisfies IDynamicOffersConfig;
-
-export const CAD_CAPITAL_OFFER = {
-    estimatedRepaymentTermsInDays: REPAYMENT_TERMS,
-    minAmount: {
-        value: 100000,
-        currency: 'CAD',
-    },
-    maxAmount: {
-        value: 2500000,
-        currency: 'CAD',
     },
     step: 10000,
 } satisfies IDynamicOffersConfig;
@@ -140,6 +128,17 @@ export const ACTIVE_GRANT: IGrant = {
     },
 };
 
+export const RENEWABLE_GRANT: IGrant = {
+    ...ACTIVE_GRANT,
+    renewal: {
+        eligible: true,
+        minimumRenewalAmount: {
+            value: 100000,
+            currency: 'EUR',
+        },
+    },
+};
+
 export const FAILED_GRANT: IGrant = {
     ...DEFAULT_GRANT,
     id: '6d9d171783ba',
@@ -234,4 +233,48 @@ export const ANACREDIT_ACTION_DETAILS = {
 export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
     token: 'test-onboarding-token',
     legalEntityId: 'test-legal-entity-id',
+};
+
+export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
+    hasGrants: false,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = {
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasGrants: false,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
+    dynamicOffer: {
+        ...DYNAMIC_CAPITAL_OFFER,
+        minAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.minAmount,
+            currency: 'CAD',
+        },
+        maxAmount: {
+            ...DYNAMIC_CAPITAL_OFFER.maxAmount,
+            currency: 'CAD',
+        },
+    },
+    hasGrants: false,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_GRANTS: ICapitalState = {
+    hasGrants: true,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_GRANTS_WITH_OFFER: ICapitalState = {
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasGrants: true,
+    renewableGrants: [],
+};
+
+export const CAPITAL_STATE_GRANTS_WITH_RENEWAL_OFFER: ICapitalState = {
+    dynamicOffer: DYNAMIC_CAPITAL_OFFER,
+    hasGrants: true,
+    renewableGrants: [RENEWABLE_GRANT],
 };

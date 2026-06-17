@@ -1,15 +1,22 @@
 import { FunctionalComponent } from 'preact';
-import { GrantListProps } from './types';
 import './GrantList.scss';
 import { useCallback, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { GrantsDisplay } from './GrantsDisplay';
-import { IGrant } from '@integration-components/types';
+import { ICapitalState, IGrant } from '@integration-components/types';
+
+export interface GrantListProps {
+    capitalState?: ICapitalState;
+    grantList: IGrant[];
+    hideTitle?: boolean;
+    onFundsRequest?: (data: IGrant) => void;
+    onGrantListUpdateRequest: (data: IGrant) => void;
+    onOfferDismiss?: (goToPreviousStep: () => void) => void;
+}
 
 export const GrantList: FunctionalComponent<GrantListProps> = ({
-    externalDynamicOffersConfig,
+    capitalState,
     grantList,
-    newOfferAvailable,
     onFundsRequest,
     onGrantListUpdateRequest,
     onOfferDismiss,
@@ -42,13 +49,13 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
     return (
         <>
             {isCapitalOfferVisible ? (
-                <CapitalOffer
-                    externalDynamicOffersConfig={externalDynamicOffersConfig}
-                    onFundsRequest={handleFundsRequest}
-                    onOfferDismiss={goBackToList}
-                />
+                <CapitalOffer externalCapitalState={capitalState} onFundsRequest={handleFundsRequest} onOfferDismiss={goBackToList} />
             ) : (
-                <GrantsDisplay grantList={grantList} newOfferAvailable={newOfferAvailable} onNewOfferRequest={goToNextStep} />
+                <GrantsDisplay
+                    grantList={grantList}
+                    newOfferAvailable={!!capitalState?.dynamicOffer && !capitalState?.renewableGrants.length}
+                    onNewOfferRequest={goToNextStep}
+                />
             )}
         </>
     );
