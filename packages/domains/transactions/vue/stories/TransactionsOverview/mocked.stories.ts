@@ -2,26 +2,26 @@ import type { Meta } from '@storybook/vue3';
 import type { ITransaction } from '@integration-components/types';
 import { TransactionsOverviewMeta } from './meta';
 import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { TransactionsOverviewWrapper as TransactionsOverview } from '../../src';
+import type { TransactionsOverviewExternalProps } from '../../src';
 import { http, HttpResponse } from 'msw';
 import { TRANSACTIONS_ENDPOINTS } from '../../../mocks/endpoints';
 import { TRANSACTIONS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/transactions';
 import { TRANSACTIONS } from '../../../mocks/mock-data/transactions';
 import { getCustomListData } from '../../../mocks/mock-data/customData';
 
-const meta: Meta<ElementProps<typeof TransactionsOverview>> = {
+const meta: Meta<ElementProps<TransactionsOverviewExternalProps>> = {
     ...TransactionsOverviewMeta,
     title: 'Mocked/Transactions/Transactions Overview',
 };
 
 const DEFAULT_STORY_ARGS = { mockedApi: true } as const;
 
-export const Default: ElementStory<typeof TransactionsOverview> = {
+export const Default: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Default',
     args: DEFAULT_STORY_ARGS,
 };
 
-export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
+export const SingleBalanceAccount: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Single balance account',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -29,7 +29,7 @@ export const SingleBalanceAccount: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const SingleBalanceCurrency: ElementStory<typeof TransactionsOverview> = {
+export const SingleBalanceCurrency: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Single balance currency',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -37,7 +37,7 @@ export const SingleBalanceCurrency: ElementStory<typeof TransactionsOverview> = 
     },
 };
 
-export const EmptyList: ElementStory<typeof TransactionsOverview> = {
+export const EmptyList: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Empty list',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -45,7 +45,7 @@ export const EmptyList: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const ErrorList: ElementStory<typeof TransactionsOverview> = {
+export const ErrorList: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Error - List',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -53,7 +53,7 @@ export const ErrorList: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const ErrorExport: ElementStory<typeof TransactionsOverview> = {
+export const ErrorExport: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Error - Export',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -61,7 +61,7 @@ export const ErrorExport: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const ErrorBalances: ElementStory<typeof TransactionsOverview> = {
+export const ErrorBalances: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Error - Balances',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -69,7 +69,7 @@ export const ErrorBalances: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
+export const ErrorTotals: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Error - Totals',
     args: DEFAULT_STORY_ARGS,
     parameters: {
@@ -77,7 +77,7 @@ export const ErrorTotals: ElementStory<typeof TransactionsOverview> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof TransactionsOverview> = {
+export const DataCustomization: ElementStory<TransactionsOverviewExternalProps> = {
     name: 'Data customization',
     args: {
         ...DEFAULT_STORY_ARGS,

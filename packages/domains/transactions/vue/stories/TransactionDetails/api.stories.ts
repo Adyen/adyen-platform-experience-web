@@ -1,14 +1,14 @@
 import type { Meta } from '@storybook/vue3';
 import { TransactionDetailsMeta } from './meta';
-import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
-import TransactionDetails from '../../src/TransactionDetails/TransactionDetailsWrapper.vue';
+import type { TransactionDetailsExternalProps } from '../../src';
+import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = {
+const meta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
     ...TransactionDetailsMeta,
     title: 'API-connected/Transactions/Transaction Details',
 };
 
-export const Default: ElementStory<typeof TransactionDetails> = {
+export const Default: ElementStory<TransactionDetailsExternalProps, SessionControls> = {
     name: 'Default',
     argTypes: {
         session: { control: 'object' },
