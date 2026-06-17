@@ -123,8 +123,6 @@ export interface components {
         RenewalDTO: {
             eligible: boolean;
             minimumRenewalAmount?: components['schemas']['Amount'];
-            /** Format: int32 */
-            targetRepaymentPercentage: number;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */

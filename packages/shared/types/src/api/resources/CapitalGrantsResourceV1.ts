@@ -134,8 +134,9 @@ export interface components {
         RenewalDTO: {
             eligible: boolean;
             minimumRenewalAmount?: components['schemas']['Amount'];
-            /** Format: int32 */
-            targetRepaymentPercentage: number;
+        };
+        RequestFundsRequestDTO: {
+            renewGrantsId?: string;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */
@@ -192,7 +193,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                'application/json': components['schemas']['RequestFundsRequestDTO'];
+            };
+        };
         responses: {
             /** @description OK - the request has succeeded. */
             200: {

@@ -63,7 +63,13 @@ export const CapitalOfferSummary = ({
 
     const requestFundsCallback = useCallback(
         (id: string) => {
-            void requestFundsMutation.mutate(EMPTY_OBJECT, { path: { grantOfferId: id } });
+            void requestFundsMutation.mutate(
+                {
+                    body: EMPTY_OBJECT,
+                    contentType: 'application/json',
+                },
+                { path: { grantOfferId: id } }
+            );
         },
         [requestFundsMutation]
     );

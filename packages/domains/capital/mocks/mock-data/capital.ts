@@ -136,7 +136,6 @@ export const RENEWABLE_GRANT: IGrant = {
             value: 100000,
             currency: 'EUR',
         },
-        targetRepaymentPercentage: 75,
     },
 };
 
