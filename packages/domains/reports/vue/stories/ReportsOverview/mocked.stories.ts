@@ -1,13 +1,13 @@
 import type { Meta } from '@storybook/vue3';
 import { ReportsOverviewMeta } from './meta';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { ReportsOverview } from '../../../publish/src';
+import type { ReportsOverviewExternalProps } from '../../src';
 import type { IReport } from '@integration-components/types';
 import { REPORTS } from '../../../mocks/mock-data/reports';
 import { REPORTS_ENDPOINTS } from '../../../mocks/endpoints';
 import { http, HttpResponse } from 'msw';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = {
+const meta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
     ...ReportsOverviewMeta,
     title: 'Mocked/Reports/Reports Overview',
 };
@@ -53,15 +53,14 @@ const CUSTOM_COLUMNS_MOCK_HANDLER = {
     ],
 };
 
-export default meta;
 const DEFAULT_STORY_ARGS = { mockedApi: true } as const;
 
-export const Default: ElementStory<typeof ReportsOverview> = {
+export const Default: ElementStory<ReportsOverviewExternalProps> = {
     name: 'Default',
     args: DEFAULT_STORY_ARGS,
 };
 
-export const DataCustomization: ElementStory<typeof ReportsOverview> = {
+export const DataCustomization: ElementStory<ReportsOverviewExternalProps> = {
     name: 'Data customization',
     args: {
         coreOptions: {
@@ -96,3 +95,5 @@ export const DataCustomization: ElementStory<typeof ReportsOverview> = {
         msw: CUSTOM_COLUMNS_MOCK_HANDLER,
     },
 };
+
+export default meta;

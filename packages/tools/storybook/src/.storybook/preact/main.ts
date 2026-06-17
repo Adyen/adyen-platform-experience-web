@@ -19,15 +19,7 @@ const findChunk = (id: string, mappings: Record<string, string | string[]>, fall
 };
 
 const config: StorybookConfig = {
-    stories: [
-        // Transitional root-level glob
-        // [TODO]: Remove once every story lives under packages/domains/*/preact/stories/.
-        `${root}/stories/**/*.stories.*`,
-
-        // Framework-scoped under {domain}/preact
-        // The framework split is at the top level of each domain.
-        `${root}/packages/domains/*/preact/stories/**/*.stories.*`,
-    ],
+    stories: [`${root}/packages/domains/*/preact/stories/**/*.stories.*`],
     staticDirs: [
         '../../../static',
         { from: resolve(rootDir, 'packages/shared/assets/src/datasets'), to: '/datasets' },
@@ -56,14 +48,10 @@ const config: StorybookConfig = {
                 }),
             ],
             resolve: {
-                // Force a single copy of msw-storybook-addon across the tool package and repo root.
-                // pnpm otherwise creates separate virtual paths (one per resolved peer); each copy
-                // has its own module-scoped `api` variable, so initialize() and getWorker() read
-                // different state -> "[MSW] Failed to retrieve the worker" in the built preview.
                 alias: {
-                    'msw-storybook-addon': resolve(rootDir, 'node_modules/msw-storybook-addon'),
+                    msw: resolve(rootDir, 'packages/tools/storybook/node_modules/msw'),
+                    'msw-storybook-addon': resolve(rootDir, 'packages/tools/storybook/node_modules/msw-storybook-addon'),
                 },
-                dedupe: ['msw-storybook-addon', 'msw', 'msw/browser'],
             },
             css: {
                 preprocessorOptions: {

@@ -1,18 +1,18 @@
 import type { Meta } from '@storybook/vue3';
 import { ReportsOverviewMeta } from './meta';
-import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
-import ReportsOverview from '../../src/ReportsOverview/ReportsOverviewWrapper.vue';
+import type { ReportsOverviewExternalProps } from '../../src';
+import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
-const meta: Meta<ElementProps<typeof ReportsOverview>> = {
+const meta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
     ...ReportsOverviewMeta,
     title: 'API-connected/Reports/Reports Overview',
 };
 
-export default meta;
-
-export const Default: ElementStory<typeof ReportsOverview> = {
+export const Default: ElementStory<ReportsOverviewExternalProps, SessionControls> = {
     name: 'Default',
     args: {
         session: EMPTY_SESSION_OBJECT,
     },
 };
+
+export default meta;

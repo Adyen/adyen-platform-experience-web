@@ -1,18 +1,18 @@
 import type { Meta } from '@storybook/vue3';
 import { PayoutsOverviewMeta } from './meta';
-import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT } from '@integration-components/testing/storybook-helpers';
-import PayoutsOverview from '../../src/PayoutsOverview/PayoutsOverviewWrapper.vue';
+import type { PayoutsOverviewExternalProps } from '../../src';
+import { ElementProps, ElementStory, EMPTY_SESSION_OBJECT, SessionControls } from '@integration-components/testing/storybook-helpers';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
+const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     ...PayoutsOverviewMeta,
     title: 'API-connected/Payouts/Payouts Overview',
 };
 
-export default meta;
-
-export const Default: ElementStory<typeof PayoutsOverview> = {
+export const Default: ElementStory<PayoutsOverviewExternalProps, SessionControls> = {
     name: 'Default',
     args: {
         session: EMPTY_SESSION_OBJECT,
     },
 };
+
+export default meta;
