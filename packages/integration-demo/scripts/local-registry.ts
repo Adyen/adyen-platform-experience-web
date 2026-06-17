@@ -135,8 +135,12 @@ function cleanup() {
 
     // Clean up temp dir
     if (verdaccioTmpDir && existsSync(verdaccioTmpDir)) {
-        rmSync(verdaccioTmpDir, { recursive: true, force: true });
-        console.log('  ✓ Removed temp dir');
+        try {
+            rmSync(verdaccioTmpDir, { recursive: true, force: true });
+            console.log('  ✓ Removed temp dir');
+        } catch (err) {
+            console.warn('  ⚠ Failed to remove temp dir (non-fatal):', err);
+        }
     }
 
     // Reinstall to restore workspace links
