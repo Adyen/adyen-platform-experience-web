@@ -5,12 +5,13 @@ import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/Capi
 import { GrantsDisplay } from './GrantsDisplay';
 import { IGrant } from '@integration-components/types';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { OnFundsRequestCallback } from '../../../types';
 
-export interface GrantListProps {
+interface GrantListProps {
     capitalState?: EnhancedCapitalState;
     grantList: IGrant[];
     hideTitle?: boolean;
-    onFundsRequest?: (data: IGrant) => void;
+    onFundsRequest?: OnFundsRequestCallback;
     onGrantListUpdateRequest: (data: IGrant) => void;
     onOfferDismiss?: (goToPreviousStep: () => void) => void;
 }
@@ -35,12 +36,12 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
         }
     }, [goBackToPreviousStep, onOfferDismiss]);
 
-    const handleFundsRequest = useCallback(
-        (data: IGrant) => {
+    const handleFundsRequest = useCallback<OnFundsRequestCallback>(
+        (data, renewsGrantId) => {
             if (onFundsRequest) {
-                onFundsRequest(data);
+                onFundsRequest(data, renewsGrantId);
             } else {
-                onGrantListUpdateRequest(data);
+                onGrantListUpdateRequest({ ...data, renewsGrantId });
                 setIsCapitalOfferVisible(false);
             }
         },
@@ -52,11 +53,7 @@ export const GrantList: FunctionalComponent<GrantListProps> = ({
             {isCapitalOfferVisible ? (
                 <CapitalOffer externalCapitalState={capitalState} onFundsRequest={handleFundsRequest} onOfferDismiss={goBackToList} />
             ) : (
-                <GrantsDisplay
-                    grantList={grantList}
-                    newOfferAvailable={!!capitalState?.dynamicOffer && !capitalState?.renewableGrants.length}
-                    onNewOfferRequest={goToNextStep}
-                />
+                <GrantsDisplay grantList={grantList} capitalState={capitalState} onNewOfferRequest={goToNextStep} />
             )}
         </>
     );

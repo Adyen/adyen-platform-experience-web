@@ -1,24 +1,21 @@
-import Typography from '@integration-components/ui-components-preact/Typography/Typography';
-import { TypographyElement, TypographyVariant } from '@integration-components/ui-components-preact/Typography/types';
-import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import Card from '@integration-components/ui-components-preact/Card/Card';
-import { ButtonVariant, IGrantOfferResponseDTO } from '@integration-components/types';
+import { ButtonVariant, IDynamicOffersConfig, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
-import { containerQueries, useResponsiveContainer, useTimezoneAwareDateFormatting } from '@integration-components/hooks-preact';
-import { DATE_FORMAT_CAPITAL_OVERVIEW, EMPTY_OBJECT, debounce } from '@integration-components/utils';
+import { containerQueries, useResponsiveContainer } from '@integration-components/hooks-preact';
+import { EMPTY_OBJECT, debounce } from '@integration-components/utils';
 import './CapitalOfferSelection.scss';
 import { sharedCapitalOfferAnalyticsEventProperties } from '../CapitalOffer/constants';
-import { getMaximumRepaymentDate, getPercentage } from '../utils/utils';
 import CapitalSlider from '../../../internal/CapitalSlider';
 import { CapitalErrorMessageDisplay } from '../utils/CapitalErrorMessageDisplay';
-import { calculateSliderAdjustedMidValue } from '@integration-components/ui-components-preact/Slider/Slider';
+import { calculateSliderAdjustedMidValue, calculateSliderAdjustedMinValue } from '@integration-components/ui-components-preact/Slider/Slider';
 import { TermSelector } from '../TermSelector';
-import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 import { Fragment } from 'preact';
 import { getRelativeToDefault, getValuePercentage } from './utils';
+import { CapitalOfferInformation } from '../CapitalOfferInformation/CapitalOfferInformation';
+import { CapitalHighlightedFields } from '../CapitalHighlightedFields/CapitalHighlightedFields';
 import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 const DEFAULT_TERM = 180;
@@ -28,7 +25,16 @@ const sharedAnalyticsEventProperties = {
     subCategory: 'Business financing offer',
 } as const;
 
-const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
+const HighlightedFieldsLoadingSkeleton = () => {
+    return (
+        <>
+            <div className="adyen-pe-capital-offer-selection__highlighted-fields-loading-skeleton"></div>
+            <div className="adyen-pe-capital-offer-selection__highlighted-fields-loading-spacer"></div>
+        </>
+    );
+};
+
+const OfferInformationLoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
     const isSmContainer = useResponsiveContainer(containerQueries.down.xs);
     const listItems = [...Array(hasSingleTerm ? 5 : 4)];
     return (
@@ -53,67 +59,6 @@ const LoadingSkeleton = ({ hasSingleTerm }: { hasSingleTerm: boolean }) => {
                 </div>
             )}
         </>
-    );
-};
-
-const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponseDTO; hasSingleTerm: boolean }) => {
-    const { i18n } = useCoreContext();
-    const { dateFormat } = useTimezoneAwareDateFormatting();
-    const maximumRepaymentPeriodDate = useMemo(() => {
-        const days = data.maximumRepaymentPeriodDays;
-        const date = days && getMaximumRepaymentDate(days);
-        return date && dateFormat(date, DATE_FORMAT_CAPITAL_OVERVIEW);
-    }, [data.maximumRepaymentPeriodDays, dateFormat]);
-
-    const formatTermLabel = useFormatTermLabel();
-
-    return (
-        <div className="adyen-pe-capital-offer-selection__information">
-            <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION} stronger>
-                {i18n.get('capital.common.termsTitle')}
-            </Typography>
-            <StructuredList
-                renderValue={val => (
-                    <Typography el={TypographyElement.SPAN} stronger variant={TypographyVariant.CAPTION}>
-                        {val}
-                    </Typography>
-                )}
-                renderLabel={val => (
-                    <Typography el={TypographyElement.SPAN} variant={TypographyVariant.CAPTION}>
-                        {val}
-                    </Typography>
-                )}
-                items={[
-                    { key: 'capital.common.fields.fees', value: i18n.amount(data.feesAmount.value, data.feesAmount.currency) },
-                    {
-                        key: 'capital.common.fields.totalRepaymentAmount',
-                        value: i18n.amount(data.totalAmount.value, data.totalAmount.currency),
-                    },
-                    {
-                        key: 'capital.common.fields.dailyRepaymentRate',
-                        value: i18n.get('capital.common.values.percentage', {
-                            values: { percentage: getPercentage(data.repaymentRate) },
-                        }),
-                    },
-                    ...(hasSingleTerm
-                        ? [
-                              {
-                                  key: 'capital.common.fields.expectedRepaymentPeriod' as const,
-                                  value: formatTermLabel(data.expectedRepaymentPeriodDays),
-                              },
-                          ]
-                        : []),
-                    ...(data.maximumRepaymentPeriodDays
-                        ? [
-                              {
-                                  key: 'capital.common.fields.maximumRepaymentDate' as const,
-                                  value: maximumRepaymentPeriodDate,
-                              },
-                          ]
-                        : []),
-                ]}
-            />
-        </div>
     );
 };
 
@@ -143,7 +88,23 @@ export const CapitalOfferSelection = ({
     const { i18n } = useCoreContext();
     const userEvents = useEventDispatcherContext();
 
-    const dynamicOffersConfig = useMemo(() => capitalState?.dynamicOffer, [capitalState?.dynamicOffer]);
+    const dynamicOffersConfig = useMemo((): IDynamicOffersConfig | undefined => {
+        const config = capitalState?.dynamicOffer;
+        const minimumRenewalAmountValue = capitalState?.renewableGrants[0]?.renewal?.minimumRenewalAmount?.value;
+
+        if (capitalState?.renewableGrants.length && config && minimumRenewalAmountValue) {
+            const minValue = Math.max(minimumRenewalAmountValue, config.minAmount.value);
+            const adjustedMinValue = calculateSliderAdjustedMinValue(minValue, config.step);
+
+            return {
+                ...config,
+                minAmount: { ...config.minAmount, value: adjustedMinValue },
+            };
+        }
+
+        return config;
+    }, [capitalState]);
+
     const defaultAmount = useMemo(
         () =>
             dynamicOffersConfig &&
@@ -332,7 +293,42 @@ export const CapitalOfferSelection = ({
 
     const hasSingleTerm = useMemo(() => allTerms.length === 1, [allTerms.length]);
 
-    const isUnqualified = useMemo(() => capitalState !== undefined && !capitalState.dynamicOffer, [capitalState]);
+    const isUnqualified = useMemo(
+        () => !capitalStateError && capitalState !== undefined && !capitalState.dynamicOffer,
+        [capitalState, capitalStateError]
+    );
+
+    const highlightedFields = useMemo(() => {
+        const currency = matchedOffer?.grantAmount.currency;
+        const newGrantAmount = matchedOffer?.grantAmount.value;
+        const existingGrantAmount = capitalState?.renewableGrants[0]?.remainingGrantAmount.value;
+
+        if (!currency || !newGrantAmount || !existingGrantAmount) return [];
+
+        const amountToReceive = newGrantAmount - existingGrantAmount;
+        const amountConfig = { minimumFractionDigits: 0 };
+
+        return [
+            {
+                label: i18n.get('capital.offer.selection.earlyRenewal.newGrantAmount'),
+                value: i18n.amount(newGrantAmount, currency, amountConfig),
+            },
+            {
+                value: '-',
+            },
+            {
+                label: i18n.get('capital.offer.selection.earlyRenewal.currentGrantAmount'),
+                value: i18n.amount(existingGrantAmount, currency, amountConfig),
+            },
+            {
+                value: '=',
+            },
+            {
+                label: i18n.get('capital.offer.selection.earlyRenewal.amountToReceive'),
+                value: i18n.amount(amountToReceive, currency, amountConfig),
+            },
+        ];
+    }, [capitalState, i18n, matchedOffer?.grantAmount.currency, matchedOffer?.grantAmount.value]);
 
     return (
         <div className="adyen-pe-capital-offer-selection">
@@ -346,12 +342,21 @@ export const CapitalOfferSelection = ({
             ) : (
                 <>
                     {dynamicOffersConfig && (
-                        <CapitalSlider
-                            value={selectedAmount}
-                            dynamicOffersConfig={dynamicOffersConfig}
-                            onValueChange={onChangeHandler}
-                            onRelease={handleSliderRelease}
-                        />
+                        <>
+                            <CapitalSlider
+                                value={selectedAmount}
+                                dynamicOffersConfig={dynamicOffersConfig}
+                                onValueChange={onChangeHandler}
+                                onRelease={handleSliderRelease}
+                            />
+                            {capitalState?.renewableGrants.length ? (
+                                isLoadingIndicatorVisible ? (
+                                    <HighlightedFieldsLoadingSkeleton />
+                                ) : (
+                                    <CapitalHighlightedFields fields={highlightedFields} />
+                                )
+                            ) : null}
+                        </>
                     )}
                     {allTerms.length > 1 && (
                         <TermSelector
@@ -365,9 +370,9 @@ export const CapitalOfferSelection = ({
                     )}
                     <Card filled noOutline noPadding classNameModifiers={['adyen-pe-capital-offer-selection__details']}>
                         {isLoadingIndicatorVisible ? (
-                            <LoadingSkeleton hasSingleTerm={hasSingleTerm} />
+                            <OfferInformationLoadingSkeleton hasSingleTerm={hasSingleTerm} />
                         ) : matchedOffer ? (
-                            <InformationDisplay data={matchedOffer} hasSingleTerm={hasSingleTerm} />
+                            <CapitalOfferInformation data={matchedOffer} hasSingleTerm={hasSingleTerm} />
                         ) : null}
                     </Card>
                     <div className="adyen-pe-capital-offer-selection__buttons">

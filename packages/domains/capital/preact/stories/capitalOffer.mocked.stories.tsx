@@ -21,6 +21,18 @@ export const Default: ElementStory<typeof CapitalOffer> = {
     },
 };
 
+export const EarlyRenewal: ElementStory<typeof CapitalOffer> = {
+    name: 'Early renewal',
+    args: {
+        mockedApi: true,
+    },
+    parameters: {
+        msw: {
+            handlers: CapitalOfferMockedResponses.earlyRenewal,
+        },
+    },
+};
+
 export const WithAPRField: ElementStory<typeof CapitalOffer, { legalEntity: ILegalEntity }> = {
     name: 'With APR field',
     args: {

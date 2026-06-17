@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { isCapitalRegionSupported } from '../../../internal/CapitalHeader/helpers';
-import { ExternalUIComponentProps, IGrant } from '@integration-components/types';
+import { ExternalUIComponentProps, ICapitalState, IGrant } from '@integration-components/types';
 import { useConfigContext } from '@integration-components/core/preact';
 import { AdyenPlatformExperienceError } from '@integration-components/core';
 import { useFetch } from '@integration-components/hooks-preact';
@@ -17,6 +17,7 @@ import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
 import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
+import { OnFundsRequestCallback } from '../../../types';
 
 type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
@@ -40,27 +41,47 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         }, [capitalStateEndpointCall]),
     });
 
-    const capitalState = getEnhancedCapitalState(capitalStateQuery.data);
+    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
+
+    const capitalState = useMemo(
+        () =>
+            getEnhancedCapitalState(
+                capitalStateQuery.data &&
+                    ({
+                        ...capitalStateQuery.data,
+                        activeOrPendingGrants: requestedGrant
+                            ? [requestedGrant, ...capitalStateQuery.data.activeOrPendingGrants]
+                            : capitalStateQuery.data.activeOrPendingGrants,
+                    } as ICapitalState)
+            ),
+        [capitalStateQuery.data, requestedGrant]
+    );
+
+    const hasGrantsOnServer = useMemo(
+        () => !!(capitalStateQuery.data?.activeOrPendingGrants?.length || capitalStateQuery.data?.hasClosedGrants),
+        [capitalStateQuery.data]
+    );
 
     const grantsQuery = useFetch({
-        fetchOptions: { enabled: isRegionSupported && !!capitalState?.hasGrants && !!grantsEndpointCall },
+        fetchOptions: {
+            enabled: isRegionSupported && hasGrantsOnServer && !!grantsEndpointCall,
+        },
         queryFn: useCallback(async () => {
             return grantsEndpointCall?.(EMPTY_OBJECT);
         }, [grantsEndpointCall]),
     });
 
-    const [requestedGrant, setRequestedGrant] = useState<IGrant>();
-    const grantList = useMemo(
-        () => (requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data),
-        [grantsQuery.data?.data, requestedGrant]
-    );
+    const grantList = useMemo(() => {
+        const grants = requestedGrant ? [requestedGrant, ...(grantsQuery.data?.data || [])] : grantsQuery.data?.data;
+        return grants?.filter(grant => !capitalState.renewsGrantIds.has(grant.id));
+    }, [capitalState.renewsGrantIds, grantsQuery.data?.data, requestedGrant]);
 
-    const handlePreQualifiedFundsRequest = useCallback(
-        (data: IGrant) => {
+    const handlePreQualifiedFundsRequest = useCallback<OnFundsRequestCallback>(
+        (data, renewsGrantId) => {
             if (onFundsRequest) {
                 onFundsRequest(data);
             } else {
-                setRequestedGrant(data);
+                setRequestedGrant({ ...data, renewsGrantId });
             }
         },
         [onFundsRequest]
