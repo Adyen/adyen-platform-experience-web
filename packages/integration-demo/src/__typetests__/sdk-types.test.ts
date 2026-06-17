@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Compile-only type assertions for the @adyen/adyen-platform-experience-web public API.
  *
@@ -67,12 +68,9 @@ async function testCapital() {
     offer.unmount();
 
     const state: CapitalComponentState = { state: 'isPreQualified' };
-    void state;
 
     const _overviewProps: CapitalOverviewProps = {};
     const _offerProps: CapitalOfferProps = { onFundsRequest: () => {} };
-    void _overviewProps;
-    void _offerProps;
 }
 
 // ── Transactions ───────────────────────────────────────────────────────────────
@@ -90,8 +88,6 @@ async function testTransactions() {
 
     const _overviewProps: TransactionsOverviewComponentProps = {};
     const _detailsProps: TransactionDetailsProps = { id: 'tx-123' };
-    void _overviewProps;
-    void _detailsProps;
 }
 
 // ── Payouts ────────────────────────────────────────────────────────────────────
@@ -116,8 +112,6 @@ async function testPayouts() {
         id: 'BA32CKZ223227T5L6834T3LBX',
         date: '2025-06-13T00:00:00.000+00:00',
     };
-    void _overviewProps;
-    void _detailsProps;
 }
 
 // ── Reports ────────────────────────────────────────────────────────────────────
@@ -130,7 +124,6 @@ async function testReports() {
     overview.unmount();
 
     const _props: ReportsOverviewProps = {};
-    void _props;
 }
 
 // ── Disputes ───────────────────────────────────────────────────────────────────
@@ -148,8 +141,6 @@ async function testDisputes() {
 
     const _overviewProps: DisputesOverviewProps = {};
     const _managementProps: DisputeManagementProps = { id: 'D2CT6C4NZM27Z5V5' };
-    void _overviewProps;
-    void _managementProps;
 }
 
 // ── Pay by Link ────────────────────────────────────────────────────────────────
@@ -177,17 +168,6 @@ async function testPayByLink() {
     const _creationProps: PaymentLinkCreationProps = {};
     const _detailsProps: PaymentLinkDetailsProps = { id: 'PL123' };
     const _settingsProps: PaymentLinkSettingsProps = {};
-    void _overviewProps;
-    void _creationProps;
-    void _detailsProps;
-    void _settingsProps;
 }
 
-// Force usage to suppress unused warnings
-void testCoreFactory;
-void testCapital;
-void testTransactions;
-void testPayouts;
-void testReports;
-void testDisputes;
-void testPayByLink;
+export { testCoreFactory, testCapital, testTransactions, testPayouts, testReports, testDisputes, testPayByLink };
