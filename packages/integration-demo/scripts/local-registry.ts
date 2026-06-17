@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync, copyFileSync, existsSync, mkdirSync, rmSyn
 import { resolve, dirname } from 'node:path';
 import { createServer } from 'node:net';
 
-const DEMO_DIR = resolve(import.meta.dirname!, '..');
+const DEMO_DIR = resolve(import.meta.dirname, '..');
 const ROOT = resolve(DEMO_DIR, '../..');
 const DEMO_PKG_PATH = resolve(DEMO_DIR, 'package.json');
 const DEMO_PKG_BACKUP_PATH = resolve(DEMO_DIR, 'package.json.bak');
