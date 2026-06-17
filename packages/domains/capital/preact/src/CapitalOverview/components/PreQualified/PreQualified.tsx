@@ -1,10 +1,11 @@
-import { ICapitalState, IGrant } from '@integration-components/types';
+import { IGrant } from '@integration-components/types';
 import PreQualifiedIntro from '../PreQualifiedIntro';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
+import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 type PreQualifiedProps = {
-    capitalState: ICapitalState;
+    capitalState: EnhancedCapitalState;
     hideTitle: boolean | undefined;
     onFundsRequest: (data: IGrant) => void;
     onOfferDismiss?: () => void;

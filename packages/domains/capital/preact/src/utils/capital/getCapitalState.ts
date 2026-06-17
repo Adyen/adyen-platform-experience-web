@@ -3,6 +3,24 @@ import sessionReady from '@integration-components/core/session/utils/sessionRead
 import { EMPTY_OBJECT } from '@integration-components/utils';
 import { AuthSession } from '@integration-components/core';
 import { isCapitalRegionSupported } from '../../internal/CapitalHeader/helpers';
+import { ICapitalState } from '@integration-components/types';
+
+export type EnhancedCapitalState = {
+    hasGrants: boolean;
+    dynamicOffer: ICapitalState['dynamicOffer'];
+    renewableGrants: ICapitalState['activeOrPendingGrants'];
+};
+
+export const getEnhancedCapitalState = (state: ICapitalState | undefined): EnhancedCapitalState => {
+    const hasGrants = !!(state?.activeOrPendingGrants.length || state?.hasClosedGrants);
+    const renewableGrants = state?.activeOrPendingGrants.filter(grant => grant.renewal?.eligible) || [];
+
+    return {
+        hasGrants,
+        dynamicOffer: state?.dynamicOffer,
+        renewableGrants,
+    };
+};
 
 export const getCapitalState = async (session: AuthSession): Promise<CapitalComponentState> => {
     await sessionReady(session);
@@ -20,9 +38,9 @@ export const getCapitalState = async (session: AuthSession): Promise<CapitalComp
     const { getCapitalState } = session.context.endpoints;
     const capitalStateResponse = await getCapitalState?.(EMPTY_OBJECT, { query: EMPTY_OBJECT }).catch(() => undefined);
 
-    const hasGrants = !!capitalStateResponse?.hasGrants;
-    const hasOffer = !!capitalStateResponse?.dynamicOffer;
-    const hasRenewableGrants = !!capitalStateResponse?.renewableGrants.length;
+    const { hasGrants, dynamicOffer, renewableGrants } = getEnhancedCapitalState(capitalStateResponse);
+    const hasOffer = !!dynamicOffer;
+    const hasRenewableGrants = !!renewableGrants.length;
     let state: CapitalComponentState['state'] = 'isUnqualified';
 
     if (hasGrants) {

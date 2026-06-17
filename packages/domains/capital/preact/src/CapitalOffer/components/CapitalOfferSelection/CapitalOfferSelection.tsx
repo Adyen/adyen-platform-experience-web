@@ -3,7 +3,7 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import StructuredList from '@integration-components/ui-components-preact/StructuredList';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import Card from '@integration-components/ui-components-preact/Card/Card';
-import { ButtonVariant, ICapitalState, IGrantOfferResponseDTO } from '@integration-components/types';
+import { ButtonVariant, IGrantOfferResponseDTO } from '@integration-components/types';
 import { useCoreContext, useConfigContext, useEventDispatcherContext } from '@integration-components/core/preact';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import useMutation from '@integration-components/hooks-preact/useMutation/useMutation';
@@ -19,6 +19,7 @@ import { TermSelector } from '../TermSelector';
 import { useFormatTermLabel } from '../hooks/useFormatTermLabel';
 import { Fragment } from 'preact';
 import { getRelativeToDefault, getValuePercentage } from './utils';
+import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 const DEFAULT_TERM = 180;
 
@@ -117,7 +118,7 @@ const InformationDisplay = ({ data, hasSingleTerm }: { data: IGrantOfferResponse
 };
 
 type CapitalOfferSelectionProps = {
-    capitalState: ICapitalState | undefined;
+    capitalState: EnhancedCapitalState | undefined;
     capitalStateError?: Error;
     selectedAmount: number | undefined;
     selectedTerm: number | undefined;

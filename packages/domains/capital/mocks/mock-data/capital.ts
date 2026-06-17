@@ -236,17 +236,18 @@ export const ONBOARDING_CONFIGURATION: IOnboardingConfiguration = {
 };
 
 export const CAPITAL_STATE_UNQUALIFIED: ICapitalState = {
-    hasGrants: false,
-    renewableGrants: [],
+    activeOrPendingGrants: [],
+    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_FIRST_OFFER: ICapitalState = {
+    activeOrPendingGrants: [],
     dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasGrants: false,
-    renewableGrants: [],
+    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
+    activeOrPendingGrants: [],
     dynamicOffer: {
         ...DYNAMIC_CAPITAL_OFFER,
         minAmount: {
@@ -258,23 +259,22 @@ export const CAPITAL_STATE_FIRST_OFFER_CAD: ICapitalState = {
             currency: 'CAD',
         },
     },
-    hasGrants: false,
-    renewableGrants: [],
+    hasClosedGrants: false,
 };
 
 export const CAPITAL_STATE_GRANTS: ICapitalState = {
-    hasGrants: true,
-    renewableGrants: [],
+    activeOrPendingGrants: [ACTIVE_GRANT],
+    hasClosedGrants: true,
 };
 
 export const CAPITAL_STATE_GRANTS_WITH_OFFER: ICapitalState = {
     dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasGrants: true,
-    renewableGrants: [],
+    activeOrPendingGrants: [ACTIVE_GRANT],
+    hasClosedGrants: true,
 };
 
 export const CAPITAL_STATE_GRANTS_WITH_RENEWAL_OFFER: ICapitalState = {
+    activeOrPendingGrants: [RENEWABLE_GRANT],
     dynamicOffer: DYNAMIC_CAPITAL_OFFER,
-    hasGrants: true,
-    renewableGrants: [RENEWABLE_GRANT],
+    hasClosedGrants: true,
 };

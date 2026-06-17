@@ -38,9 +38,9 @@ export interface components {
             value: number;
         };
         CapitalStateDTO: {
+            activeOrPendingGrants: components['schemas']['GrantResponseDTO'][];
             dynamicOffer?: components['schemas']['DynamicOffersResponseV2DTO'];
-            hasGrants: boolean;
-            renewableGrants: components['schemas']['GrantResponseDTO'][];
+            hasClosedGrants: boolean;
         };
         DynamicOffersResponseV2DTO: {
             estimatedRepaymentTermsInDays: number[];
@@ -85,6 +85,7 @@ export interface components {
             remainingGrantAmount: components['schemas']['Amount'];
             remainingTotalAmount: components['schemas']['Amount'];
             renewal?: components['schemas']['RenewalDTO'];
+            renewsGrantId?: string;
             repaidFeesAmount: components['schemas']['Amount'];
             repaidGrantAmount: components['schemas']['Amount'];
             repaidTotalAmount: components['schemas']['Amount'];

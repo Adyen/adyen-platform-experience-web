@@ -93,6 +93,7 @@ export interface components {
             remainingGrantAmount: components['schemas']['Amount'];
             remainingTotalAmount: components['schemas']['Amount'];
             renewal?: components['schemas']['RenewalDTO'];
+            renewsGrantId?: string;
             repaidFeesAmount: components['schemas']['Amount'];
             repaidGrantAmount: components['schemas']['Amount'];
             repaidTotalAmount: components['schemas']['Amount'];
@@ -136,7 +137,7 @@ export interface components {
             minimumRenewalAmount?: components['schemas']['Amount'];
         };
         RequestFundsRequestDTO: {
-            renewGrantsId?: string;
+            renewsGrantId?: string;
         };
         TransferInstrumentReference: {
             /** @description The masked IBAN or bank account number. */

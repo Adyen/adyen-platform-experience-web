@@ -13,6 +13,7 @@ import { CapitalHeader } from '../../../internal/CapitalHeader';
 import { CapitalOfferSelection } from '../CapitalOfferSelection/CapitalOfferSelection';
 import { CapitalOfferSummary } from '../CapitalOfferSummary/CapitalOfferSummary';
 import './CapitalOffer.scss';
+import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 type CapitalOfferState = 'OfferSelection' | 'OfferSummary';
 
@@ -42,7 +43,7 @@ const DynamicCapitalOffer: FunctionalComponent<ExternalUIComponentProps<CapitalO
         }, [getCapitalState]),
     });
 
-    const state = externalCapitalState || internalCapitalState;
+    const state = externalCapitalState || getEnhancedCapitalState(internalCapitalState);
 
     const onOfferSelectHandler = useCallback(
         (data: IGrantOfferResponseDTO) => {

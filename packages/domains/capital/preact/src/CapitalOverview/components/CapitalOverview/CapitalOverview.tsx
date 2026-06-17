@@ -16,6 +16,7 @@ import { PreQualified } from '../PreQualified/PreQualified';
 import { GrantList } from '../GrantList/GrantList';
 import { ErrorMessageDisplay } from '@integration-components/ui-components-preact/ErrorMessageDisplay/ErrorMessageDisplay';
 import { getCapitalErrorMessage } from '../../../utils/capital/getCapitalErrorMessage';
+import { getEnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 type CapitalOverviewState = 'Loading' | 'Error' | 'Unqualified' | 'PreQualified' | 'GrantList' | 'UnsupportedRegion';
 
@@ -39,7 +40,7 @@ export const CapitalOverview: FunctionalComponent<ExternalUIComponentProps<Capit
         }, [capitalStateEndpointCall]),
     });
 
-    const capitalState = capitalStateQuery.data;
+    const capitalState = getEnhancedCapitalState(capitalStateQuery.data);
 
     const grantsQuery = useFetch({
         fetchOptions: { enabled: isRegionSupported && !!capitalState?.hasGrants && !!grantsEndpointCall },

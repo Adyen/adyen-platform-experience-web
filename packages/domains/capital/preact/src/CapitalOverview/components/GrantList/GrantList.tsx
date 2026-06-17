@@ -3,10 +3,11 @@ import './GrantList.scss';
 import { useCallback, useState } from 'preact/hooks';
 import { CapitalOffer } from '../../../CapitalOffer/components/CapitalOffer/CapitalOffer';
 import { GrantsDisplay } from './GrantsDisplay';
-import { ICapitalState, IGrant } from '@integration-components/types';
+import { IGrant } from '@integration-components/types';
+import { EnhancedCapitalState } from '../../../utils/capital/getCapitalState';
 
 export interface GrantListProps {
-    capitalState?: ICapitalState;
+    capitalState?: EnhancedCapitalState;
     grantList: IGrant[];
     hideTitle?: boolean;
     onFundsRequest?: (data: IGrant) => void;
