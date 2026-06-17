@@ -13,7 +13,7 @@ export const PaymentLinkDetails = () => {
 
             componentInstance = new PaymentLinkDetailsAdyen({
                 core: adyenInstance.core,
-                id: 'PL05C5E49B25663349EA672A0',
+                id: 'PL8D69B30E23D36CF74F2520D',
             });
             componentInstance.mount('#payment-link-details-container');
         })();

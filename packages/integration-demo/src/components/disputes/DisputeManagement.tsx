@@ -13,7 +13,7 @@ export const DisputeManagement = () => {
 
             componentInstance = new DisputeManagementAdyen({
                 core: adyenInstance.core,
-                id: 'D2CT6C4NZM27Z5V5',
+                id: 'RX8VWGR5HTX9MH75',
             });
             componentInstance.mount('#dispute-management-container');
         })();
