@@ -1,6 +1,5 @@
 // import { SessionRequest } from "@adyen/adyen-platform-experience-web/dist/types/core/ConfigContext";
 
-declare const __API_KEY__: string;
 declare const __SESSION_ACCOUNT_HOLDER__: string;
 declare const __DEMO_PORT__: string;
 
@@ -33,7 +32,6 @@ export const getSessionToken = async () => {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'x-api-key': __API_KEY__,
         },
         body: JSON.stringify(requestData),
     })

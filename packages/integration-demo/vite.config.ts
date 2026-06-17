@@ -7,7 +7,6 @@ export default defineConfig(({ mode }) => {
 
     return {
         define: {
-            __API_KEY__: JSON.stringify(env.API_KEY),
             __SESSION_ACCOUNT_HOLDER__: JSON.stringify(env.SESSION_ACCOUNT_HOLDER),
             __DEMO_PORT__: JSON.stringify(env.DEMO_PORT ?? '3031'),
         },
@@ -18,6 +17,9 @@ export default defineConfig(({ mode }) => {
                     target: 'https://test.adyen.com',
                     changeOrigin: true,
                     rewrite: path => path.replace(/^\/api\/sessions/, '/authe/api/v1/sessions'),
+                    headers: {
+                        'x-api-key': env.API_KEY || '',
+                    },
                 },
             },
         },
