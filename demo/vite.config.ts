@@ -1,10 +1,31 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { defineConfig, UserConfig } from 'vite';
+import { resolve, dirname } from 'node:path';
+import { lstat, readdir } from 'node:fs/promises';
+import { fileURLToPath } from 'url';
 import version from '../config/version';
 
 import { realApiProxies } from './endpoints/realApiProxies';
 import { getEnvironment } from './envs/getEnvs';
 const currentVersion = version();
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pagesDir = resolve(__dirname, 'pages');
+
+async function getEntrypoints() {
+    const pages = await readdir(pagesDir);
+    const entries = await Promise.all(
+        pages.map(async page => {
+            if (!(await lstat(resolve(pagesDir, page))).isDirectory()) return;
+            return [page, resolve(pagesDir, page, 'index.html')];
+        })
+    );
+    const availableEntries = entries.filter((entry): entry is string[] => Boolean(entry));
+    return {
+        ...Object.fromEntries(availableEntries),
+        index: resolve(__dirname, 'index.html'),
+    };
+}
 
 export default defineConfig(async ({ mode }): Promise<UserConfig> => {
     const { apiConfigs, demo } = getEnvironment(mode);
@@ -13,6 +34,15 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
         base: '',
         json: {
             stringify: true,
+        },
+        build: {
+            outDir: resolve(__dirname, '..', '.demo'),
+            emptyOutDir: true,
+            target: 'esnext',
+            rollupOptions: {
+                input: await getEntrypoints(),
+            },
+            minify: false,
         },
         define: {
             'process.env.VITE_VERSION': JSON.stringify(currentVersion.ADYEN_FP_VERSION),

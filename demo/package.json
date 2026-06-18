@@ -6,6 +6,7 @@
     "scripts": {
         "start": "vite dev --mode demo --port 3030 --config ./vite.config.ts",
         "dev": "vite --port 3143",
+        "build": "vite build --mode demo --config ./vite.config.ts",
         "preview": "vite preview"
     },
     "devDependencies": {
