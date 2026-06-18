@@ -3,17 +3,15 @@ import { http, HttpResponse } from 'msw';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { IPayout } from '@integration-components/types';
 import { PayoutsOverviewMeta } from './meta';
-import PayoutsOverview from '../../src/PayoutsOverview/PayoutsOverviewWrapper.vue';
+import type { PayoutsOverviewExternalProps } from '../../src';
 import { PAYOUTS_WITH_DETAILS } from '../../../mocks/mock-data/payouts';
 import { PAYOUTS_OVERVIEW_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_ENDPOINTS } from '../../../mocks/endpoints';
 
-const meta: Meta<ElementProps<typeof PayoutsOverview>> = {
+const meta: Meta<ElementProps<PayoutsOverviewExternalProps>> = {
     ...PayoutsOverviewMeta,
     title: 'Mocked/Payouts/Payouts Overview',
 };
-
-export default meta;
 
 const getCustomPayoutsData = async (data: IPayout[]) => {
     return data.map(payouts => {
@@ -45,14 +43,14 @@ const getCustomPayoutsData = async (data: IPayout[]) => {
     });
 };
 
-export const Default: ElementStory<typeof PayoutsOverview> = {
+export const Default: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Default',
     args: {
         mockedApi: true,
     },
 };
 
-export const EmptyList: ElementStory<typeof PayoutsOverview> = {
+export const EmptyList: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Empty list',
     args: { mockedApi: true },
     parameters: {
@@ -60,7 +58,7 @@ export const EmptyList: ElementStory<typeof PayoutsOverview> = {
     },
 };
 
-export const ErrorList: ElementStory<typeof PayoutsOverview> = {
+export const ErrorList: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Error - List',
     args: { mockedApi: true },
     parameters: {
@@ -68,7 +66,7 @@ export const ErrorList: ElementStory<typeof PayoutsOverview> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
+export const DataCustomization: ElementStory<PayoutsOverviewExternalProps> = {
     name: 'Data customization',
     args: {
         coreOptions: {
@@ -112,3 +110,5 @@ export const DataCustomization: ElementStory<typeof PayoutsOverview> = {
         },
     },
 };
+
+export default meta;

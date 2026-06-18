@@ -11,7 +11,11 @@ const rootDir = resolve(import.meta.dirname, root);
 
 const config: StorybookConfig = {
     stories: [`${root}/packages/domains/*/vue/stories/**/*.stories.*`],
-    staticDirs: ['../../../static'],
+    staticDirs: [
+        '../../../static',
+        { from: resolve(rootDir, 'packages/shared/assets/src/datasets'), to: '/datasets' },
+        { from: resolve(rootDir, 'packages/shared/assets/src'), to: '/src/assets' },
+    ],
     framework: {
         name: '@storybook/vue3-vite',
         options: {},
@@ -36,8 +40,9 @@ const config: StorybookConfig = {
                 })(),
             ],
             resolve: {
-                dedupe: ['vue', 'vue-i18n'],
                 alias: {
+                    msw: resolve(rootDir, 'packages/tools/storybook/node_modules/msw'),
+                    'msw-storybook-addon': resolve(rootDir, 'packages/tools/storybook/node_modules/msw-storybook-addon'),
                     vue: resolve(rootDir, 'packages/tools/storybook/node_modules/vue'),
                     'vue-i18n': resolve(rootDir, 'packages/tools/storybook/node_modules/vue-i18n'),
                 },

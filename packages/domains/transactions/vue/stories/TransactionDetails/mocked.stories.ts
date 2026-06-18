@@ -2,17 +2,17 @@ import type { Meta } from '@storybook/vue3';
 import type { ITransactionWithDetails } from '@integration-components/types';
 import { TransactionDetailsMeta } from './meta';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
-import { TransactionDetailsWrapper as TransactionDetails } from '../../src';
+import type { TransactionDetailsExternalProps } from '../../src';
 import { TRANSACTION_DETAILS_HANDLERS } from '../../../mocks/mock-server/transactions';
 
-const meta: Meta<ElementProps<typeof TransactionDetails>> = {
+const meta: Meta<ElementProps<TransactionDetailsExternalProps>> = {
     ...TransactionDetailsMeta,
     title: 'Mocked/Transactions/Transaction Details',
 };
 
 const sharedArgs = { id: '4B7N9Q2Y6R1W5M8T', mockedApi: true };
 
-export const Default: ElementStory<typeof TransactionDetails> = {
+export const Default: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Default',
     args: sharedArgs,
     parameters: {
@@ -20,7 +20,7 @@ export const Default: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const TabbedDetails: ElementStory<typeof TransactionDetails> = {
+export const TabbedDetails: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Tabbed details',
     args: sharedArgs,
     parameters: {
@@ -28,7 +28,7 @@ export const TabbedDetails: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const FullRefund: ElementStory<typeof TransactionDetails> = {
+export const FullRefund: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Full refund',
     args: sharedArgs,
     parameters: {
@@ -36,7 +36,7 @@ export const FullRefund: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const PartialRefund: ElementStory<typeof TransactionDetails> = {
+export const PartialRefund: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Partial refund',
     args: sharedArgs,
     parameters: {
@@ -44,7 +44,7 @@ export const PartialRefund: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const UnlinkedRefund: ElementStory<typeof TransactionDetails> = {
+export const UnlinkedRefund: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Unlinked refund',
     args: sharedArgs,
     parameters: {
@@ -52,7 +52,7 @@ export const UnlinkedRefund: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundNotAvailable: ElementStory<typeof TransactionDetails> = {
+export const RefundNotAvailable: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refund - Not available',
     args: sharedArgs,
     parameters: {
@@ -60,7 +60,7 @@ export const RefundNotAvailable: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundLocked: ElementStory<typeof TransactionDetails> = {
+export const RefundLocked: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refund - Locked',
     args: sharedArgs,
     parameters: {
@@ -68,7 +68,7 @@ export const RefundLocked: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundFails: ElementStory<typeof TransactionDetails> = {
+export const RefundFails: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refund - Fails',
     args: sharedArgs,
     parameters: {
@@ -76,7 +76,7 @@ export const RefundFails: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundableFullAmount: ElementStory<typeof TransactionDetails> = {
+export const RefundableFullAmount: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refundable - Full amount',
     args: sharedArgs,
     parameters: {
@@ -84,7 +84,7 @@ export const RefundableFullAmount: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundablePartialAmount: ElementStory<typeof TransactionDetails> = {
+export const RefundablePartialAmount: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refundable - Partial amount',
     args: sharedArgs,
     parameters: {
@@ -92,7 +92,7 @@ export const RefundablePartialAmount: ElementStory<typeof TransactionDetails> = 
     },
 };
 
-export const NotRefundable: ElementStory<typeof TransactionDetails> = {
+export const NotRefundable: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Not refundable',
     args: sharedArgs,
     parameters: {
@@ -100,7 +100,7 @@ export const NotRefundable: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundedFully: ElementStory<typeof TransactionDetails> = {
+export const RefundedFully: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refunded - Fully',
     args: sharedArgs,
     parameters: {
@@ -108,7 +108,7 @@ export const RefundedFully: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundedPartially: ElementStory<typeof TransactionDetails> = {
+export const RefundedPartially: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refunded - Partially',
     args: sharedArgs,
     parameters: {
@@ -116,7 +116,7 @@ export const RefundedPartially: ElementStory<typeof TransactionDetails> = {
     },
 };
 
-export const RefundedPartiallyWithStatuses: ElementStory<typeof TransactionDetails> = {
+export const RefundedPartiallyWithStatuses: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Refunded - Partially (statuses)',
     args: sharedArgs,
     parameters: {
@@ -124,7 +124,7 @@ export const RefundedPartiallyWithStatuses: ElementStory<typeof TransactionDetai
     },
 };
 
-export const DataCustomization: ElementStory<typeof TransactionDetails> = {
+export const DataCustomization: ElementStory<TransactionDetailsExternalProps> = {
     name: 'Data customization',
     args: {
         ...sharedArgs,

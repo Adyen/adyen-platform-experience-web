@@ -9,9 +9,11 @@ type GlobalStoriesProps = {
     skipDecorators?: boolean;
 };
 
-export type ElementProps<T extends new (...args: any) => any> = Omit<ConstructorParameters<T>[0] & GlobalStoriesProps, 'core'>;
+type ComponentPropsOf<T> = T extends new (...args: any) => any ? ConstructorParameters<T>[0] : T;
 
-export type ElementStory<T extends new (...args: any) => any, ExtraProps = object> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
+export type ElementProps<T> = Omit<ComponentPropsOf<T> & GlobalStoriesProps, 'core'>;
+
+export type ElementStory<T, ExtraProps = object> = StoryObj<ExtraProps & ElementProps<T> & GlobalStoriesProps>;
 
 export type SessionControls = { session: { roles: string[]; accountHolderId?: string } };
 
