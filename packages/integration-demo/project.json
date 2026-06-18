@@ -26,6 +26,13 @@
             },
             "outputs": [],
             "cache": true
+        },
+        "test:pre-release": {
+            "executor": "nx:run-script",
+            "options": {
+                "script": "test:pre-release"
+            },
+            "cache": false
         }
     }
 }
