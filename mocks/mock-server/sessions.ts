@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { endpoints } from '../../endpoints/endpoints';
 
-const PREFIX = endpoints('mock').sessions;
+const PREFIX = endpoints('netlify').sessions;
 
 export const sessionsMock = [
     http.post(`${PREFIX}`, () => {
