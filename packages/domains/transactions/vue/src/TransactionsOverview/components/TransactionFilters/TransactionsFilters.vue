@@ -105,7 +105,11 @@ const sharedFilterItems = computed<BentoFilterBarModel>(() => {
             type: BentoFilterItemType.SELECT,
             defaultValue: props.balanceAccounts[0]?.id,
             options: {
-                listboxItems: props.balanceAccounts.map((a: IBalanceAccountBase) => ({ label: a.description || a.id, value: a.id })),
+                listboxItems: props.balanceAccounts.map((a: IBalanceAccountBase) => ({
+                    label: a.description || a.id,
+                    value: a.id,
+                    description: a.description ? a.id : undefined,
+                })),
             },
         });
     }

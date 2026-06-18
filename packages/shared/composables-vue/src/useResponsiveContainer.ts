@@ -1,4 +1,3 @@
-import type { Ref } from 'vue';
 import { BREAKPOINTS } from '@integration-components/utils';
 import type { ValueOfRecord } from '@integration-components/utils/types';
 import { useContainerQuery } from './useContainerQuery';
@@ -28,8 +27,6 @@ export type ResponsiveViewportContainerQuery = ValueOfRecord<{
     [K in keyof _ContainerQueries]: ValueOfRecord<_ContainerQueries[K]>;
 }>;
 
-export function useResponsiveContainer(containerRef: Ref<HTMLElement | null>, query: ResponsiveViewportContainerQuery) {
-    return useContainerQuery(containerRef, query);
-}
+export const useResponsiveContainer = useContainerQuery<ResponsiveViewportContainerQuery>;
 
 export default useResponsiveContainer;
