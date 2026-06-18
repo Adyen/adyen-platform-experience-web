@@ -7,7 +7,7 @@ import sessionRequest from '../../utils/sessionRequest';
 const DEFAULT_PAYOUT_DATE = '2025-01-20T10:00:00.000Z';
 const DEFAULT_PAYOUT_ID = 'BA32272223222B5CTDQPM6W2G';
 
-enableServerInMockedMode()
+enableServerInMockedMode(true)
     .then(async () => {
         const { id } = Object.fromEntries(new URLSearchParams(DEFAULT_PAYOUT_ID).entries());
 

@@ -8,7 +8,7 @@ const DEFAULT_TRANSACTION_ID = 'SRZ2J8AND6K2W3YF';
 
 const { id } = Object.fromEntries(new URLSearchParams(DEFAULT_TRANSACTION_ID).entries());
 
-enableServerInMockedMode()
+enableServerInMockedMode(true)
     .then(async () => {
         const core = await AdyenPlatformExperience({
             availableTranslations: [all_locales],

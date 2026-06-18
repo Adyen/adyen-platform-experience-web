@@ -4,7 +4,7 @@ import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 import '../../assets/style/reset.scss';
 import sessionRequest from '../../utils/sessionRequest';
 
-enableServerInMockedMode()
+enableServerInMockedMode(true)
     .then(async () => {
         const core = await AdyenPlatformExperience({
             availableTranslations: [all_locales],

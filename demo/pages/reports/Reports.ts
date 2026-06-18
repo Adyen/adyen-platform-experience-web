@@ -4,7 +4,7 @@ import '@adyen/adyen-platform-experience-web/adyen-platform-experience-web.css';
 import sessionRequest from '../../utils/sessionRequest';
 import '../../assets/style/reset.scss';
 
-enableServerInMockedMode()
+enableServerInMockedMode(true)
     .then(async () => {
         const core = await AdyenPlatformExperience({
             environment: 'test',
