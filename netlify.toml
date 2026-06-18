@@ -3,7 +3,7 @@
 
 [context."chore/level-access-demo"]
     [context."chore/level-access-demo".build]
-        command = "cd demo && pnpm install && pnpm run build"
+        command = "pnpm install && pnpm --filter demo run build"
         publish = ".demo"
 
 [[edge_functions]]

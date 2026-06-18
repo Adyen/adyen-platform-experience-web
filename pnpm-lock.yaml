@@ -187,13 +187,48 @@ importers:
         specifier: ^0.30.1
         version: 0.30.1(jsdom@20.0.3)(playwright@1.56.0)(sass@1.79.3)(terser@5.46.2)
 
+  demo:
+    dependencies:
+      '@adyen/adyen-platform-experience-web':
+        specifier: 1.11.0
+        version: 1.11.0(preact@10.29.1)(react@19.2.0)(typescript@5.2.2)
+    devDependencies:
+      vite:
+        specifier: ^4.3.2
+        version: 4.5.14(@types/node@20.19.41)(sass@1.79.3)(terser@5.46.2)
+
 packages:
 
   '@adobe/css-tools@4.4.2':
     resolution: {integrity: sha512-baYZExFpsdkBNuvGKTKWCwKH57HRZLVtycZS05WTQNVOiXVSeAki3nU35zlRbToeMW8aHlJfyS+1C4BOv27q0A==}
 
+  '@adyen/adyen-document-viewer@1.4.4':
+    resolution: {integrity: sha512-mKod0pDg/gLXmXnx5W4AKcBBVMZFOFUUS9Sy/O5Hc7gxf+5UR26W4lcCXcYg2BLw4c4jEKcajvKPCMI9SKFbDg==}
+    engines: {node: '>=24', pnpm: '>=10.33.0'}
+
+  '@adyen/adyen-platform-experience-web@1.11.0':
+    resolution: {integrity: sha512-KoldFuy/aADsqAIN0EIBA8/USfp4h1quzSCr82h983OK/8YiI0plmNfJGs2VrMFgUHhwGf7T9779WWT60cP+aw==}
+    peerDependencies:
+      preact: ^10.28.2
+
   '@adyen/bento-design-tokens@1.43.0':
     resolution: {integrity: sha512-f9Z3q0qz2C3nxf1z90ywEIjhF+lGa0/wx7jTJycJ4uudgj0ji0bmnMDqHplamTh+3zSED8qA7y7QHY90tBhSHg==}
+
+  '@adyen/kyc-components@4.0.0-compact.9':
+    resolution: {integrity: sha512-/5UvKcjaKjrLY9Ol+Mmyt3Bi+WvptQsbODQCRJWF57uCe+euwEQdQud5v+YsE1541k1BZhQFouduEpWF7S8QjQ==}
+    engines: {node: '>=20', pnpm: '>=10.16.0'}
+
+  '@adyen/openbankingsdk@0.2.3':
+    resolution: {integrity: sha512-UFOlLOoMWjG1WFMWheBJFxJh+oXcSMnLD0WeW1Z5XejQWpFWQsOUTEe5o/OH1+78Ajpxyc64mmO+uC4/qRo+zA==}
+    engines: {node: '>=18'}
+
+  '@adyen/ui-assets-icons-16@7.9.4':
+    resolution: {integrity: sha512-TBKv4S2dhN1SSkqyao5Ktxrc4Hb+MGMeRtw65WQGiG4FR/612zbpXm+vw2K9VybCAxrjd8a3rIHHvefgY2efsQ==}
+    peerDependencies:
+      vue: ~2.7 || ~3
+    peerDependenciesMeta:
+      vue:
+        optional: true
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -731,6 +766,14 @@ packages:
     peerDependencies:
       '@babel/core': 7.x
       vite: 2.x || 3.x || 4.x || 5.x || 6.x || 7.x
+
+  '@preact/signals-core@1.14.2':
+    resolution: {integrity: sha512-RZHdBj9ZF4n40Rp4jS052EHHjBWf96P9oNdXPfhQTovCuWY9iQn3Gq+gOTJSgBO9A/JBuPfMOWsSX/lIU9Pc/A==}
+
+  '@preact/signals@2.9.1':
+    resolution: {integrity: sha512-xVqN8mJjbSN5IB/8Ubmd9NN+Ew6zJswoRxrjZbH3YsgkMshFeO6d8zxEFpHRTq9GJZx7cnPs2CnCpFqtGXGNsw==}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
 
   '@prefresh/babel-plugin@0.5.1':
     resolution: {integrity: sha512-uG3jGEAysxWoyG3XkYfjYHgaySFrSsaEb4GagLzYaxlydbuREtaX+FTxuIidp241RaLl85XoHg9Ej6E4+V1pcg==}
@@ -1413,6 +1456,14 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@svgr/core': '*'
+
+  '@tanstack/preact-query@5.100.14':
+    resolution: {integrity: sha512-6pVJHPKazgsD1k7sAXIBs83tuUHIGvSN7j7VLCQ2+kDxpyYeDz/3F8y3HeO3BOktqjDNX2rDlg8wGVv/Nah0/g==}
+    peerDependencies:
+      preact: ^10.0.0
+
+  '@tanstack/query-core@5.100.14':
+    resolution: {integrity: sha512-5X41dGpxgeaHISCRW2oYwcSycZeULZzAunaudXT9ov1KOTj9xwt0CH6hbwqP1/z74ZWF7rYFnDpyYH07XFcZew==}
 
   '@testing-library/dom@8.20.1':
     resolution: {integrity: sha512-/DiOQ5xBxgdYRC8LNk7U+RWat0S3qRLeIw3ZIkMQ9kkVlRmwD/Eg8k8CqIpD6GW7u20JIUOfMKbxtiLutpjQ4g==}
@@ -2313,6 +2364,9 @@ packages:
 
   confbox@0.1.8:
     resolution: {integrity: sha512-RMtmw0iFkeR4YV+fUOSucriAQNb9g8zFR52MWCtl+cCZOFRNL6zeB395vPzFhEjjn4fMxXudmELnl/KF/WrK6w==}
+
+  container-query-polyfill@1.0.2:
+    resolution: {integrity: sha512-YjbsYHidpX0vgHRjTXfWV5Sai4EbocVuXuhL/lcVzRKcwlvVhU92yUqZwO6rRjMQMk08unLLBkQhu60u31LCIQ==}
 
   content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
@@ -3218,6 +3272,14 @@ packages:
     engines: {node: '>=12'}
     hasBin: true
 
+  i18next@25.10.10:
+    resolution: {integrity: sha512-cqUW2Z3EkRx7NqSyywjkgCLK7KLCL6IFVFcONG7nVYIJ3ekZ1/N5jUsihHV6Bq37NfhgtczxJcxduELtjTwkuQ==}
+    peerDependencies:
+      typescript: ^5 || ^6
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -3848,8 +3910,29 @@ packages:
     resolution: {integrity: sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==}
     engines: {node: '>=16 || 14 >=14.17'}
 
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+
   mlly@1.8.2:
     resolution: {integrity: sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==}
+
+  monogon@0.3.6:
+    resolution: {integrity: sha512-oxREcxV/8zWn2PGJN30TkyN//d2AtHfuJ6MokNnfvWMqaJSYrDLmDLOfCcrdlMWCZznfvM2x4GfulNbJoyX4yw==}
+    engines: {node: '>=24', pnpm: '>=11'}
+    peerDependencies:
+      preact: ^10.0.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      solid-js: ^1.0.0
+      vue: ^3.0.0 || ^2.0.0
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
+      solid-js:
+        optional: true
+      vue:
+        optional: true
 
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -3879,6 +3962,20 @@ packages:
   mute-stream@2.0.0:
     resolution: {integrity: sha512-WWdIxpyjEn+FhQJQQv9aQAYlHoNVdzIzUySNV1gHUPDSdZJ3yZn7pAAbQcV7B56Mvu881q9FZV+0Vx2xC44VWA==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  named-slots@0.4.3:
+    resolution: {integrity: sha512-bT8tHSBDRIpo8Fyc26QAXyTvrAFWKuLB4pLlqTnkzyeexebbZLziM3Kz52FqyzOcedB/jvH539fvcytG7bBhiw==}
+    peerDependencies:
+      preact: '>=10'
+      react: '>=17'
+      solid-js: '>=1'
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
+      solid-js:
+        optional: true
 
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
@@ -4022,6 +4119,9 @@ packages:
   onetime@6.0.0:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
+
+  onfido-sdk-ui@14.55.0:
+    resolution: {integrity: sha512-Kk+05XD7+OJiQwSI3p5+FuPIEbQdwTScapXmB+nVunHWkJHxa0qAMitgR7cnI4ol1eNHzvA99HyBF5MwwEejfQ==}
 
   open@8.4.2:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
@@ -4267,6 +4367,11 @@ packages:
     resolution: {integrity: sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact-custom-element@4.6.0:
+    resolution: {integrity: sha512-RhPMuFpEIsbpEwnF+MoRbddzX0y8AdLn1dSpJSbpc6Nx3aSAPXSW9t2xAqQyGfEH1sl/bcsi8Vf0XbvStUy/Ug==}
+    peerDependencies:
+      preact: '>= 10.25.0 || >=11.0.0-0'
+
   preact@10.29.1:
     resolution: {integrity: sha512-gQCLc/vWroE8lIpleXtdJhTFDogTdZG9AjMUpVkDf2iTCNwYNWA+u16dL41TqUDJO4gm2IgrcMv3uTpjd4Pwmg==}
 
@@ -4433,6 +4538,10 @@ packages:
   regexp.prototype.flags@1.5.4:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
+
+  regexparam@3.0.0:
+    resolution: {integrity: sha512-RSYAtP31mvYLkAHrOlh25pCNQ5hWnT106VukGaaFfuJrZFkGRX5GhUAdPqpSDXxOhA2c4akmRuplv1mRqnBn6Q==}
+    engines: {node: '>=8'}
 
   remark-external-links@8.0.0:
     resolution: {integrity: sha512-5vPSX0kHoSsqtdftSHhIYofVINC8qmp0nctkeU9YoJwV3YfiBRiI6cbFRJ0oI/1F9xS+bopXG0m2KS8VFscuKA==}
@@ -5449,6 +5558,11 @@ packages:
   wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}
 
+  wouter-preact@3.10.0:
+    resolution: {integrity: sha512-4a1kd1XX2N1APGOSNXwTNKr0Jgsl1vIdvuyZ+MGlPfZs3uXmDSz70kUfDa8+2O3MXhZNaEa1c6mHzSihdtdpiw==}
+    peerDependencies:
+      preact: ^10.0.0
+
   wrap-ansi@6.2.0:
     resolution: {integrity: sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==}
     engines: {node: '>=8'}
@@ -5538,7 +5652,50 @@ snapshots:
 
   '@adobe/css-tools@4.4.2': {}
 
+  '@adyen/adyen-document-viewer@1.4.4':
+    dependencies:
+      classnames: 2.5.1
+      preact: 10.29.1
+
+  '@adyen/adyen-platform-experience-web@1.11.0(preact@10.29.1)(react@19.2.0)(typescript@5.2.2)':
+    dependencies:
+      '@adyen/kyc-components': 4.0.0-compact.9(react@19.2.0)(typescript@5.2.2)
+      classnames: 2.5.1
+      core-js: 3.41.0
+      preact: 10.29.1
+    transitivePeerDependencies:
+      - react
+      - solid-js
+      - typescript
+      - vue
+
   '@adyen/bento-design-tokens@1.43.0': {}
+
+  '@adyen/kyc-components@4.0.0-compact.9(react@19.2.0)(typescript@5.2.2)':
+    dependencies:
+      '@adyen/adyen-document-viewer': 1.4.4
+      '@adyen/openbankingsdk': 0.2.3
+      '@adyen/ui-assets-icons-16': 7.9.4
+      '@preact/signals': 2.9.1(preact@10.29.1)
+      '@tanstack/preact-query': 5.100.14(preact@10.29.1)
+      classnames: 2.5.1
+      container-query-polyfill: 1.0.2
+      i18next: 25.10.10(typescript@5.2.2)
+      monogon: 0.3.6(preact@10.29.1)(react@19.2.0)
+      named-slots: 0.4.3(preact@10.29.1)(react@19.2.0)
+      onfido-sdk-ui: 14.55.0
+      preact: 10.29.1
+      preact-custom-element: 4.6.0(preact@10.29.1)
+      wouter-preact: 3.10.0(preact@10.29.1)
+    transitivePeerDependencies:
+      - react
+      - solid-js
+      - typescript
+      - vue
+
+  '@adyen/openbankingsdk@0.2.3': {}
+
+  '@adyen/ui-assets-icons-16@7.9.4': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -6194,6 +6351,13 @@ snapshots:
     transitivePeerDependencies:
       - preact
       - supports-color
+
+  '@preact/signals-core@1.14.2': {}
+
+  '@preact/signals@2.9.1(preact@10.29.1)':
+    dependencies:
+      '@preact/signals-core': 1.14.2
+      preact: 10.29.1
 
   '@prefresh/babel-plugin@0.5.1': {}
 
@@ -7052,6 +7216,13 @@ snapshots:
       svg-parser: 2.0.4
     transitivePeerDependencies:
       - supports-color
+
+  '@tanstack/preact-query@5.100.14(preact@10.29.1)':
+    dependencies:
+      '@tanstack/query-core': 5.100.14
+      preact: 10.29.1
+
+  '@tanstack/query-core@5.100.14': {}
 
   '@testing-library/dom@8.20.1':
     dependencies:
@@ -8077,6 +8248,8 @@ snapshots:
       yargs: 17.7.2
 
   confbox@0.1.8: {}
+
+  container-query-polyfill@1.0.2: {}
 
   content-disposition@0.5.4:
     dependencies:
@@ -9255,6 +9428,12 @@ snapshots:
 
   husky@7.0.4: {}
 
+  i18next@25.10.10(typescript@5.2.2):
+    dependencies:
+      '@babel/runtime': 7.29.2
+    optionalDependencies:
+      typescript: 5.2.2
+
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
@@ -9909,12 +10088,19 @@ snapshots:
 
   minipass@7.1.3: {}
 
+  mitt@3.0.1: {}
+
   mlly@1.8.2:
     dependencies:
       acorn: 8.16.0
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.3
+
+  monogon@0.3.6(preact@10.29.1)(react@19.2.0):
+    optionalDependencies:
+      preact: 10.29.1
+      react: 19.2.0
 
   mri@1.2.0: {}
 
@@ -9953,6 +10139,11 @@ snapshots:
       - '@types/node'
 
   mute-stream@2.0.0: {}
+
+  named-slots@0.4.3(preact@10.29.1)(react@19.2.0):
+    optionalDependencies:
+      preact: 10.29.1
+      react: 19.2.0
 
   nanoid@3.3.11: {}
 
@@ -10097,6 +10288,8 @@ snapshots:
   onetime@6.0.0:
     dependencies:
       mimic-fn: 4.0.0
+
+  onfido-sdk-ui@14.55.0: {}
 
   open@8.4.2:
     dependencies:
@@ -10318,6 +10511,10 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  preact-custom-element@4.6.0(preact@10.29.1):
+    dependencies:
+      preact: 10.29.1
+
   preact@10.29.1: {}
 
   prelude-ls@1.2.1: {}
@@ -10484,6 +10681,8 @@ snapshots:
       get-proto: 1.0.1
       gopd: 1.2.0
       set-function-name: 2.0.2
+
+  regexparam@3.0.0: {}
 
   remark-external-links@8.0.0:
     dependencies:
@@ -11606,6 +11805,12 @@ snapshots:
   word-wrap@1.2.5: {}
 
   wordwrap@1.0.0: {}
+
+  wouter-preact@3.10.0(preact@10.29.1):
+    dependencies:
+      mitt: 3.0.1
+      preact: 10.29.1
+      regexparam: 3.0.0
 
   wrap-ansi@6.2.0:
     dependencies:
