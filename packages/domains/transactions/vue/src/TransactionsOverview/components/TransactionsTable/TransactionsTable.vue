@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useCoreContext } from '@integration-components/core/vue';
 import { useTimezoneAwareDateFormatting, useResponsiveContainer, containerQueries, CustomDataCell } from '@integration-components/composables-vue';
 import { BentoDataGrid, BentoTypography, BentoTag, BentoPaymentMethod, BentoButton, BentoColumnOverflow } from '@adyen/bento-vue3';
@@ -38,8 +38,7 @@ const props = defineProps<{
 const { i18n } = useCoreContext();
 const { dateFormat } = useTimezoneAwareDateFormatting(props.activeBalanceAccount?.timeZone);
 
-const containerRef = ref<HTMLElement | null>(null);
-const isMobile = useResponsiveContainer(containerRef, containerQueries.down.sm);
+const isMobile = useResponsiveContainer(containerQueries.down.sm);
 
 const STANDARD_FIELDS = new Set<string>(TRANSACTION_FIELDS);
 
@@ -175,7 +174,7 @@ function formatAmount(amount: { value: number; currency: string } | null | undef
 </script>
 
 <template>
-    <div ref="containerRef" :class="TABLE_CLASS">
+    <div :class="TABLE_CLASS">
         <div v-if="props.error" class="adyen-pe-data-overview-error">
             <p>{{ i18n.get('transactions.overview.errors.listUnavailable') }}</p>
             <BentoButton v-if="props.onContactSupport" variant="tertiary" @click="props.onContactSupport">

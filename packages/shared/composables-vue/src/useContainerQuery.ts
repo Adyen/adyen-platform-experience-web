@@ -1,8 +1,10 @@
-import { ref, computed, watch, onUnmounted, type Ref, type ComputedRef } from 'vue';
+import { ref, computed, watch, onUnmounted, inject } from 'vue';
+import { COMPONENT_REF_KEY } from '@integration-components/core/vue/Context/constants';
 
 type ContainerQuery = readonly [string, number, { min?: number; max?: number }?];
 
-export function useContainerQuery<T extends ContainerQuery>(containerRef: Ref<HTMLElement | null>, query: T): ComputedRef<boolean> {
+export const useContainerQuery = <T extends ContainerQuery>(query: T) => {
+    const containerRef = inject(COMPONENT_REF_KEY, ref<HTMLElement | null>(null));
     const width = ref(0);
     const [type, breakpoint, minMax] = query;
 
@@ -54,6 +56,6 @@ export function useContainerQuery<T extends ContainerQuery>(containerRef: Ref<HT
     onUnmounted(cleanup);
 
     return matches;
-}
+};
 
 export default useContainerQuery;

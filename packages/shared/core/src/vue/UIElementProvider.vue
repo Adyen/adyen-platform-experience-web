@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { ref, provide } from 'vue';
 import type { CoreInstance } from './types';
 import CoreProvider from './Context/CoreProvider.vue';
 import ConfigProvider from './ConfigContext/ConfigProvider.vue';
 import EventDispatcherProvider from './Context/eventDispatcher/EventDispatcherProvider.vue';
+import { COMPONENT_REF_KEY } from './Context/constants';
 import './UIElement.scss';
 
 interface Props {
@@ -12,6 +14,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const componentRef = ref<HTMLDivElement | null>(null);
+provide(COMPONENT_REF_KEY, componentRef);
 </script>
 
 <template>
@@ -24,7 +29,7 @@ const props = defineProps<Props>();
     >
         <ConfigProvider :session="props.core.session">
             <EventDispatcherProvider :component-name="props.componentName" :analytics-enabled="props.core.analyticsEnabled ?? true">
-                <section :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
+                <section ref="componentRef" :class="['adyen-pe-component', props.customClassNames]" data-testid="component-root">
                     <div class="adyen-pe-component__container">
                         <slot />
                     </div>
