@@ -1,0 +1,47 @@
+@use '@integration-components/style' as style;
+
+.adyen-pe-disputes-table {
+    position: relative;
+
+    &__cell-content {
+        align-items: center;
+        display: flex;
+
+        &--vstack {
+            align-items: stretch;
+            flex-direction: column;
+            gap: style.token(spacer-040);
+            justify-content: flex-start;
+        }
+    }
+
+    &__cell-text {
+        &--grey {
+            color: style.token(color-label-secondary);
+        }
+    }
+
+    &__status-content {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+
+        &--urgent {
+            color: style.token(color-label-critical);
+        }
+    }
+
+    &__date-content {
+        &--urgent {
+            align-items: center;
+            display: flex;
+            gap: style.token(spacer-030);
+        }
+    }
+
+    &__payment-method {
+        align-items: center;
+        display: flex;
+        gap: style.token(spacer-030);
+    }
+}
