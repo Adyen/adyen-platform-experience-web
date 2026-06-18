@@ -3,6 +3,7 @@ import { defineComponent, ref, type PropType } from 'vue';
 import { http, HttpResponse } from 'msw';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import type { CoreInstance } from '@integration-components/core/vue';
+import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import { DisputeManagement } from '../../src';
 import { DisputeManagementMeta } from '../components/disputeManagement';
 import { AcceptFlowWithDelayedDisputeDetails as AcceptFlowWithDelayedDisputeDetailsComponent } from '../components/AcceptFlowWithDelayedDisputeDetails';
@@ -361,7 +362,7 @@ export const DataCustomization: ElementStory<typeof DisputeManagement> = {
                     { key: '_sendEmail' },
                     { key: '_country' },
                 ],
-                onDataRetrieve: data =>
+                onDataRetrieve: (data: IDisputeDetail) =>
                     Promise.resolve({
                         ...data,
                         _store: 'Sydney',
