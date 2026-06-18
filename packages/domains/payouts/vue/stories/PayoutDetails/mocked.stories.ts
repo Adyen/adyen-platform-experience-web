@@ -1,16 +1,14 @@
 import type { Meta } from '@storybook/vue3';
 import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
 import { PayoutDetailsMeta } from './meta';
-import { PayoutDetails } from '../../src';
+import type { PayoutDetailsExternalProps } from '../../src';
 import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PAYOUTS_WITH_DETAILS } from '../../../mocks/mock-data/payouts';
 
-const meta: Meta<ElementProps<typeof PayoutDetails>> = {
+const meta: Meta<ElementProps<PayoutDetailsExternalProps>> = {
     ...PayoutDetailsMeta,
     title: 'Mocked/Payouts/Payout Details',
 };
-
-export default meta;
 
 const defaultPayoutDetails = PAYOUTS_WITH_DETAILS[0]!;
 
@@ -20,7 +18,7 @@ const sharedArgs = {
     mockedApi: true,
 };
 
-export const Default: ElementStory<typeof PayoutDetails> = {
+export const Default: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Default',
     args: {
         ...sharedArgs,
@@ -30,7 +28,7 @@ export const Default: ElementStory<typeof PayoutDetails> = {
     },
 };
 
-export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
+export const ErrorDetails: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Error - Details',
     args: sharedArgs,
     parameters: {
@@ -38,7 +36,7 @@ export const ErrorDetails: ElementStory<typeof PayoutDetails> = {
     },
 };
 
-export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
+export const SumOfSameDayPayouts: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Sum of same-day payouts',
     args: sharedArgs,
     parameters: {
@@ -46,7 +44,7 @@ export const SumOfSameDayPayouts: ElementStory<typeof PayoutDetails> = {
     },
 };
 
-export const DataCustomization: ElementStory<typeof PayoutDetails> = {
+export const DataCustomization: ElementStory<PayoutDetailsExternalProps> = {
     name: 'Data customization',
     args: {
         ...sharedArgs,
@@ -101,3 +99,5 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
         msw: { ...PAYOUT_DETAILS_HANDLERS.default },
     },
 };
+
+export default meta;

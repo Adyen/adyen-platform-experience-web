@@ -1,9 +1,9 @@
 import type { Meta } from '@storybook/vue3';
+import type { ReportsOverviewExternalProps } from '../../src';
 import ReportsOverview from '../../src/ReportsOverview/ReportsOverviewWrapper.vue';
-
 import { ElementProps, enabledDisabledCallbackRadioControls } from '@integration-components/testing/storybook-helpers';
 
-export const ReportsOverviewMeta: Meta<ElementProps<typeof ReportsOverview>> = {
+export const ReportsOverviewMeta: Meta<ElementProps<ReportsOverviewExternalProps>> = {
     title: 'Components/Reports/Reports Overview',
     component: ReportsOverview,
     argTypes: {
