@@ -83,15 +83,16 @@ const isLoading = computed(() => props.loading || config.refreshing || loadingCu
 function standardColumn(field: DisputesTableFields, defaults: Partial<BentoColumn> & { visible: boolean }): BentoColumn {
     const override = customColumnByKey.value.get(field);
     const visible = override?.visibility === 'hidden' ? false : defaults.visible;
-    return {
+    const column: BentoColumn = {
         field,
         label: i18n.get(FIELD_KEYS[field]),
-        flex: 1,
         ...defaults,
         visible,
         ...(override?.flex !== undefined ? { flex: override.flex } : {}),
         ...(override?.align === 'right' ? { numeric: true } : {}),
     };
+    if (column.flex === undefined) column.autoWidth = true;
+    return column;
 }
 
 const columns = computed<BentoColumn[]>(() => {
@@ -103,9 +104,9 @@ const columns = computed<BentoColumn[]>(() => {
         standardColumn('respondBy', { visible: sg === 'CHARGEBACKS' }),
         standardColumn('createdAt', { visible: !mobile || sg === 'FRAUD_ALERTS' }),
         standardColumn('paymentMethod', { visible: !mobile }),
-        standardColumn('disputeReason', { visible: sg !== 'FRAUD_ALERTS' && !mobile }),
+        standardColumn('disputeReason', { visible: sg !== 'FRAUD_ALERTS' && !mobile, flex: 1 }),
         standardColumn('reason', { visible: sg === 'FRAUD_ALERTS' && !mobile, flex: 2 }),
-        standardColumn('currency', { visible: !mobile, flex: 0.5 }),
+        standardColumn('currency', { visible: !mobile }),
         standardColumn('disputedAmount', { visible: sg !== 'FRAUD_ALERTS', numeric: true }),
         standardColumn('totalPaymentAmount', { visible: sg === 'FRAUD_ALERTS', numeric: true }),
     ];
