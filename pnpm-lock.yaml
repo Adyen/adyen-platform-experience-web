@@ -929,7 +929,7 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2(msw@2.7.3(@types/node@24.10.13)(typescript@5.8.3))
       storybook:
-        specifier: 10.2.12
+        specifier: 'catalog:'
         version: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       typescript:
         specifier: 5.8.3
@@ -6987,7 +6987,7 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {}
 
-  vue-component-type-helpers@3.3.1:
+  vue-component-type-helpers@3.3.2:
     resolution: {}
 
   vue-demi@0.14.10:
@@ -9298,7 +9298,7 @@ snapshots:
       storybook: 10.2.12(@testing-library/dom@8.20.1)(prettier@3.6.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       type-fest: 2.19.0
       vue: 3.5.31(typescript@5.8.3)
-      vue-component-type-helpers: 3.3.1
+      vue-component-type-helpers: 3.3.2
 
   '@stylistic/stylelint-plugin@5.0.1(stylelint@17.5.0(typescript@5.8.3))':
     dependencies:
@@ -14194,7 +14194,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.3.1: {}
+  vue-component-type-helpers@3.3.2: {}
 
   vue-demi@0.14.10(vue@3.5.31(typescript@5.8.3)):
     dependencies:
