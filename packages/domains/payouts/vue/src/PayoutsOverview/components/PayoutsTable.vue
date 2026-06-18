@@ -7,7 +7,7 @@ import useTimezoneAwareDateFormatting from '@integration-components/composables-
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, NET_PAYOUT_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { TABLE_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
 import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import '../styles/PayoutsTable.scss';
 import { TranslationKey } from '@integration-components/core';
@@ -40,7 +40,7 @@ const config = useConfigContext();
 // ── Date formatting ──
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
-const isMobile = useResponsiveContainer(containerQueries.down.sm);
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
 
 function formatPayoutDate(dateStr: string): string {
     return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
@@ -215,7 +215,7 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template #item-payoutAmount="{ item }">
-                <BentoTypography v-if="item.payoutAmount" variant="body" :class="[NET_PAYOUT_CLASS, { [`${NET_PAYOUT_CLASS}--strong`]: isMobile }]">
+                <BentoTypography v-if="item.payoutAmount" variant="body" :stronger="isMobile">
                     {{ formatAmount(item.payoutAmount, !isMobile) }}
                 </BentoTypography>
             </template>
