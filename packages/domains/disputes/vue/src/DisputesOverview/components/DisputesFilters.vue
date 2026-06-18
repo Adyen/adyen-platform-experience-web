@@ -26,9 +26,10 @@ const { i18n } = useCoreContext();
 const DAY_MS = 24 * 60 * 60 * 1000;
 const earliestDate = startOfDay(new Date(EARLIEST_DISPUTES_SINCE_DATE));
 
-const defaultDateRange: BentoDateRangePickerValue = {
-    startDate: new Date(Math.max(startOfDay(new Date(now.getTime() - 89 * DAY_MS)).getTime(), earliestDate.getTime())),
+const last90DaysRange: BentoDateRangePickerValue = {
+    startDate: startOfDay(new Date(now.getTime() - 89 * DAY_MS)),
     endDate: new Date(now),
+    range: 'last90Days',
 };
 
 function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
@@ -39,9 +40,26 @@ function cloneDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerV
     };
 }
 
+function normalizeDateRange(value: BentoDateRangePickerValue): BentoDateRangePickerValue {
+    const normalizedRange = {
+        startDate: startOfDay(value.startDate),
+        endDate: endOfDay(value.endDate),
+        ...(value.range ? { range: value.range } : {}),
+    } satisfies BentoDateRangePickerValue;
+
+    const matchingQuickSelectRange = [...Object.values(quickSelectDateRanges), last90DaysRange].find(
+        range => range.startDate.getTime() === normalizedRange.startDate.getTime() && range.endDate.getTime() === normalizedRange.endDate.getTime()
+    );
+
+    return cloneDateRange(matchingQuickSelectRange ?? normalizedRange);
+}
+
+const defaultDateRange: BentoDateRangePickerValue = cloneDateRange(last90DaysRange);
+
 const quickSelectRanges = [
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last7Days'), value: 'last7Days', data: quickSelectDateRanges.last7Days },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last30Days'), value: 'last30Days', data: quickSelectDateRanges.last30Days },
+    { label: i18n.get('common.filters.types.date.rangeSelect.options.last90Days'), value: 'last90Days', data: last90DaysRange },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.last180Days'), value: 'last180Days', data: quickSelectDateRanges.last180Days },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.thisWeek'), value: 'thisWeek', data: quickSelectDateRanges.thisWeek },
     { label: i18n.get('common.filters.types.date.rangeSelect.options.lastWeek'), value: 'lastWeek', data: quickSelectDateRanges.lastWeek },
@@ -140,12 +158,7 @@ function onFilterInput(updatedValues: BentoFilterValues) {
         if (fv.field === 'balanceAccountId') {
             selectedBalanceAccountId.value = fv.value as string | undefined;
         } else if (fv.field === 'dateRange') {
-            selectedDateRange.value = fv.value
-                ? {
-                      startDate: startOfDay((fv.value as BentoDateRangePickerValue).startDate),
-                      endDate: endOfDay((fv.value as BentoDateRangePickerValue).endDate),
-                  }
-                : cloneDateRange(defaultDateRange);
+            selectedDateRange.value = fv.value ? normalizeDateRange(fv.value as BentoDateRangePickerValue) : cloneDateRange(defaultDateRange);
         } else if (fv.field === 'schemeCodes') {
             selectedSchemes.value = (fv.value as string[]) ?? [];
         } else if (fv.field === 'reasonCategories') {
