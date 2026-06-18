@@ -2,13 +2,13 @@
 import { computed } from 'vue';
 import { BentoDataGrid, BentoButton, BentoTypography } from '@adyen/bento-vue3';
 import { useCoreContext, useConfigContext } from '@integration-components/core/vue';
-import { useCustomColumnsData, CustomDataCell } from '@integration-components/composables-vue';
+import { useCustomColumnsData, CustomDataCell, useResponsiveContainer, containerQueries } from '@integration-components/composables-vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import type { BentoColumn, BentoDatagridDataItem } from '@adyen/bento-vue3';
 import type { CustomColumn, IPayout, OnDataRetrievedCallback, CustomDataRetrieved } from '@integration-components/types';
 import type { StringWithAutocompleteOptions } from '@integration-components/utils/types';
-import { TABLE_CLASS, NET_PAYOUT_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
-import { DATE_FORMAT_PAYOUTS } from '@integration-components/utils';
+import { TABLE_CLASS, PAYOUT_TABLE_FIELDS, type PayoutsTableFields } from '../constants';
+import { DATE_FORMAT_PAYOUTS, DATE_FORMAT_PAYOUTS_MOBILE } from '@integration-components/utils';
 import '../styles/PayoutsTable.scss';
 import { TranslationKey } from '@integration-components/core';
 
@@ -40,8 +40,10 @@ const config = useConfigContext();
 // ── Date formatting ──
 const { dateFormat } = useTimezoneAwareDateFormatting('UTC');
 
+const isMobile = useResponsiveContainer(containerQueries.down.xs);
+
 function formatPayoutDate(dateStr: string): string {
-    return dateFormat(dateStr, DATE_FORMAT_PAYOUTS);
+    return dateFormat(dateStr, isMobile.value ? DATE_FORMAT_PAYOUTS_MOBILE : DATE_FORMAT_PAYOUTS);
 }
 
 // ── Custom columns ──
@@ -78,11 +80,18 @@ function amountLabel(key: 'fundsCapturedAmount' | 'adjustmentAmount' | 'payoutAm
 }
 
 const columns = computed<BentoColumn[]>(() => {
+    if (isMobile.value) {
+        return [
+            { field: 'createdAt', label: i18n.get('payouts.overview.list.fields.createdAt'), flex: 1 },
+            { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1, numeric: true },
+        ];
+    }
+
     const cols: BentoColumn[] = [
         { field: 'createdAt', label: i18n.get('payouts.overview.list.fields.createdAt'), flex: 1 },
-        { field: 'fundsCapturedAmount', label: amountLabel('fundsCapturedAmount'), flex: 1 },
-        { field: 'adjustmentAmount', label: amountLabel('adjustmentAmount'), flex: 1 },
-        { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1 },
+        { field: 'fundsCapturedAmount', label: amountLabel('fundsCapturedAmount'), flex: 1, numeric: true },
+        { field: 'adjustmentAmount', label: amountLabel('adjustmentAmount'), flex: 1, numeric: true },
+        { field: 'payoutAmount', label: amountLabel('payoutAmount'), flex: 1, numeric: true },
     ];
 
     if (Array.isArray(props.customColumns)) {
@@ -206,8 +215,8 @@ function formatAmount(value: { value: number; currency: string } | null | undefi
                 </BentoTypography>
             </template>
             <template #item-payoutAmount="{ item }">
-                <BentoTypography v-if="item.payoutAmount" variant="body" :class="NET_PAYOUT_CLASS">
-                    {{ formatAmount(item.payoutAmount) }}
+                <BentoTypography v-if="item.payoutAmount" variant="body" :stronger="isMobile">
+                    {{ formatAmount(item.payoutAmount, !isMobile) }}
                 </BentoTypography>
             </template>
             <template v-for="key in customFieldKeys" #[`item-${key}`]="{ item }" :key="key">
