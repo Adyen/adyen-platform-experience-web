@@ -209,7 +209,7 @@ function getCopyValue(item: DetailItem) {
 }
 
 async function downloadEvidence(documentType: string) {
-    const downloadDefenseDocument = config.endpoints.downloadDefenseDocument;
+    const downloadDefenseDocument = config.endpoints?.downloadDefenseDocument;
     if (!isFunction(downloadDefenseDocument)) return;
 
     try {
@@ -226,6 +226,11 @@ async function downloadEvidence(documentType: string) {
         link.download = response.filename || documentType;
         link.click();
         setTimeout(() => URL.revokeObjectURL(url), 100);
+        if (downloadErrors.value.has(documentType)) {
+            const nextErrors = new Set(downloadErrors.value);
+            nextErrors.delete(documentType);
+            downloadErrors.value = nextErrors;
+        }
     } catch {
         downloadErrors.value = new Set([...downloadErrors.value, documentType]);
     }

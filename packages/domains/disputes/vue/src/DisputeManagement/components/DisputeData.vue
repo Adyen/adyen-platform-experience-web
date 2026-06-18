@@ -25,9 +25,8 @@ import DisputeDataAlert from './DisputeDataAlert.vue';
 import DisputeDataProperties from './DisputeDataProperties.vue';
 import DisputeIssuerComments from './DisputeIssuerComments.vue';
 import DisputeStatusTag from './DisputeStatusTag.vue';
-import type { DisputeManagementProps } from '../types';
+import type { DisputeDataAlertMode, DisputeManagementProps } from '../types';
 
-type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
 type DisputeError = Error & {
     errorCode?: string;
     requestId?: string;
@@ -55,8 +54,8 @@ watch(data, nextData => {
 
 const dispute = computed(() => storedDispute.value || data.value);
 const defensibility = computed(() => dispute.value?.dispute.defensibility);
-const acceptAuthorization = computed(() => isFunction(config.endpoints.acceptDispute));
-const defendAuthorization = computed(() => isFunction(config.endpoints.getApplicableDefenseDocuments));
+const acceptAuthorization = computed(() => isFunction(config.endpoints?.acceptDispute));
+const defendAuthorization = computed(() => isFunction(config.endpoints?.getApplicableDefenseDocuments));
 const showLoadingPlaceholder = computed(() => (!dispute.value && !error.value) || isFetching.value);
 const disputeType = computed(() => getDisputeType(i18n, dispute.value?.dispute.type));
 const isFraudNotification = computed(() => dispute.value?.dispute.type === 'NOTIFICATION_OF_FRAUD');
@@ -78,7 +77,7 @@ const issuerComments = computed(() => {
         if (!commentGroup) return;
         ['LIABILITY_NOT_ACCEPTED_FULLY', 'PRE_ARB_REASON', 'NOTE'].forEach(commentKey => {
             const raw = commentGroup[commentKey];
-            const trimmed = raw?.trim();
+            const trimmed = typeof raw === 'string' ? raw.trim() : '';
             if (trimmed) comments.push(trimmed);
         });
     });
@@ -120,21 +119,25 @@ watch(
             return;
         }
 
-        const retrieved = (await detailsCustomization.onDataRetrieve(nextDispute)) as CustomDataRetrieved | undefined;
-        if (requestId !== extraFieldsRequestId) return;
-        if (!retrieved) {
-            extraFields.value = undefined;
-            return;
-        }
+        try {
+            const retrieved = (await detailsCustomization.onDataRetrieve(nextDispute)) as CustomDataRetrieved | undefined;
+            if (requestId !== extraFieldsRequestId) return;
+            if (!retrieved) {
+                extraFields.value = undefined;
+                return;
+            }
 
-        extraFields.value = (detailsCustomization.fields ?? []).reduce<Record<string, unknown>>((acc, field) => {
-            const key = typeof field?.key === 'string' ? field.key : '';
-            if (!key) return acc;
-            if (DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as never)) return acc;
-            if (field?.visibility === 'hidden') return acc;
-            if (retrieved[key] !== undefined) acc[key] = retrieved[key];
-            return acc;
-        }, {});
+            extraFields.value = (detailsCustomization.fields ?? []).reduce<Record<string, unknown>>((acc, field) => {
+                const key = typeof field?.key === 'string' ? field.key : '';
+                if (!key) return acc;
+                if (DISPUTE_DETAILS_RESERVED_FIELDS_SET.has(key as never)) return acc;
+                if (field?.visibility === 'hidden') return acc;
+                if (retrieved[key] !== undefined) acc[key] = retrieved[key];
+                return acc;
+            }, {});
+        } catch {
+            extraFields.value = undefined;
+        }
     },
     { immediate: true }
 );

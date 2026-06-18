@@ -137,19 +137,24 @@ export function provideDisputeFlow(dispute: Ref<IDisputeDetail | undefined>) {
     };
 
     const getDisputesConfig = async () => {
-        const nextDefenseReasonConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
-            subFolder: 'disputes',
-            name: 'defenseReasonConfig',
-            fallback: localDefenseReasonConfig,
-        });
-        const nextDefenseDocumentConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
-            subFolder: 'disputes',
-            name: 'defenseDocumentConfig',
-            fallback: localDefenseDocumentConfig,
-        });
+        try {
+            const nextDefenseReasonConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
+                subFolder: 'disputes',
+                name: 'defenseReasonConfig',
+                fallback: localDefenseReasonConfig,
+            });
+            const nextDefenseDocumentConfig = await getCdnConfig?.<Record<string, TranslationConfigItem>>({
+                subFolder: 'disputes',
+                name: 'defenseDocumentConfig',
+                fallback: localDefenseDocumentConfig,
+            });
 
-        defenseReasonConfig.value = nextDefenseReasonConfig ?? localDefenseReasonConfig;
-        defenseDocumentConfig.value = nextDefenseDocumentConfig ?? localDefenseDocumentConfig;
+            defenseReasonConfig.value = nextDefenseReasonConfig ?? localDefenseReasonConfig;
+            defenseDocumentConfig.value = nextDefenseDocumentConfig ?? localDefenseDocumentConfig;
+        } catch {
+            defenseReasonConfig.value = localDefenseReasonConfig;
+            defenseDocumentConfig.value = localDefenseDocumentConfig;
+        }
     };
 
     watch(selectedDefenseReason, reason => {

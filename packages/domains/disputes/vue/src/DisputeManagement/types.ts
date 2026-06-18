@@ -12,3 +12,5 @@ export type {
 export interface DisputeManagementExternalProps extends DisputeManagementProps {
     core: CoreInstance;
 }
+
+export type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';

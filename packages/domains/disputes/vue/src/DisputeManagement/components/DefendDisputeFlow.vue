@@ -24,7 +24,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { getApplicableDefenseDocuments, defendDispute } = useConfigContext().endpoints;
+const { getApplicableDefenseDocuments, defendDispute } = useConfigContext().endpoints || {};
 const {
     addFileToDefendPayload,
     applicableDocuments,

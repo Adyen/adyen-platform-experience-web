@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const { i18n } = useCoreContext();
-const { acceptDispute } = useConfigContext().endpoints;
+const { acceptDispute } = useConfigContext().endpoints || {};
 const { dispute, clearStates, goBack } = useDisputeFlow();
 const cachedDispute = ref(dispute.value);
 

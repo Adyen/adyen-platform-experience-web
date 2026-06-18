@@ -5,8 +5,7 @@ import { useCoreContext } from '@integration-components/core/vue';
 import useTimezoneAwareDateFormatting from '@integration-components/composables-vue/useTimezoneAwareDateFormatting';
 import { DATE_FORMAT_RESPONSE_DEADLINE } from '@integration-components/utils';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
-
-type DisputeDataAlertMode = 'contactSupport' | 'autoDefended' | 'notDefended' | 'notDefendable';
+import type { DisputeDataAlertMode } from '../types';
 
 const props = defineProps<{
     alertMode: DisputeDataAlertMode;
