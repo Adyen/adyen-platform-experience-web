@@ -1,10 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } from '@integration-components/testing/playwright/utils';
-import {
-    resetDatePicker,
-    selectDateRangeResetFromDatePicker,
-    selectTodayDateFromDatePicker,
-} from '@integration-components/testing/playwright/datePicker';
+import { datePickerUtils } from '@integration-components/testing/playwright/datePicker';
 import { openPayoutDetailsModal } from './shared/utils';
 
 const STORY_ID = 'mocked-payouts-payouts-overview--default';
@@ -209,23 +205,23 @@ test.describe('Default', () => {
 
         test('should select another date range option', async ({ page }) => {
             const datePicker = page.getByRole('dialog').nth(0);
-            await selectDateRangeResetFromDatePicker(datePicker, { selection: 'Year to date' });
+            await datePickerUtils.selectPreset(datePicker, { selection: 'Year to date' });
         });
 
         test('should select custom date range', async ({ page }) => {
             const datePicker = page.getByRole('dialog').nth(0);
-            await selectTodayDateFromDatePicker(datePicker);
+            await datePickerUtils.selectTodayDate(datePicker);
         });
 
         test('should reset date range', async ({ page }) => {
             const datePicker = page.getByRole('dialog').nth(0);
 
             // Select today's date from the calendar
-            await selectTodayDateFromDatePicker(datePicker);
+            await datePickerUtils.selectTodayDate(datePicker);
 
             // Reopen datepicker and reset date range selection
             await page.getByRole('button', { name: 'Date range', exact: true, expanded: false }).click();
-            await resetDatePicker(datePicker, { defaultSelection: 'Last 30 days' });
+            await datePickerUtils.reset(datePicker, { defaultSelection: 'Last 30 days' });
         });
 
         test('should close datepicker when the filter button is clicked again', async ({ page }) => {

@@ -1,10 +1,6 @@
 import { type Page, test, expect } from '@playwright/test';
 import { clickOutsideDialog, goToStory, selectFirstUnselectedBalanceAccount } from '@integration-components/testing/playwright/utils';
-import {
-    resetDatePicker,
-    selectDateRangeResetFromDatePicker,
-    selectTodayDateFromDatePicker,
-} from '@integration-components/testing/playwright/datePicker';
+import { datePickerUtils } from '@integration-components/testing/playwright/datePicker';
 
 const STORY_ID = 'mocked-reports-reports-overview--default';
 const INITIAL_DATETIME = '2024-07-17T00:00:00.000Z';
@@ -32,12 +28,10 @@ test.describe('Default', () => {
         test('should render table with correct columns', async ({ page }) => {
             const table = getReportsTable(page);
 
-            await Promise.all([
-                expect(table.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible(),
-                expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible(),
-                expect(table.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible(),
-                expect(table.getByRole('columnheader')).toHaveCount(3),
-            ]);
+            await expect(table.getByRole('columnheader', { name: 'Date', exact: true })).toBeVisible();
+            await expect(table.getByRole('columnheader', { name: 'Report', exact: true })).toBeVisible();
+            await expect(table.getByRole('columnheader', { name: 'File', exact: true })).toBeVisible();
+            await expect(table.getByRole('columnheader')).toHaveCount(3);
         });
 
         test('should render report rows', async ({ page }) => {
@@ -51,17 +45,10 @@ test.describe('Default', () => {
         test('should render pagination controls', async ({ page }) => {
             const pagination = page.getByLabel('Reports pagination');
 
-            await Promise.all([
-                expect(pagination.getByText('Showing ')).toBeVisible(),
-                expect(
-                    pagination.getByRole('button', {
-                        name: 'Reports per page',
-                        exact: true,
-                    })
-                ).toBeVisible(),
-                expect(pagination.getByRole('button', { name: 'Previous page', exact: true })).toBeVisible(),
-                expect(pagination.getByRole('button', { name: 'Next page', exact: true })).toBeVisible(),
-            ]);
+            await expect(pagination.getByText('Showing ')).toBeVisible();
+            await expect(pagination.getByRole('button', { name: 'Reports per page', exact: true })).toBeVisible();
+            await expect(pagination.getByRole('button', { name: 'Previous page', exact: true })).toBeVisible();
+            await expect(pagination.getByRole('button', { name: 'Next page', exact: true })).toBeVisible();
         });
     });
 
@@ -85,12 +72,10 @@ test.describe('Default', () => {
 
             const filterDialog = page.getByRole('dialog');
 
-            await Promise.all([
-                expect(filterDialog.getByRole('option', { selected: true })).toHaveText(/S\. Hopper - Main Account/),
-                expect(filterDialog.getByRole('option', { selected: true })).toHaveText(/BA32272223222B5CTDQPM6W2H/),
-                expect(filterDialog.getByText('S. Hopper - Secondary Account', { exact: true })).toBeVisible(),
-                expect(filterDialog.getByText('BA32272223222B5CTDQPM6W2G', { exact: true })).toBeVisible(),
-            ]);
+            await expect(filterDialog.getByRole('option', { selected: true })).toHaveText(/S\. Hopper - Main Account/);
+            await expect(filterDialog.getByRole('option', { selected: true })).toHaveText(/BA32272223222B5CTDQPM6W2H/);
+            await expect(filterDialog.getByText('S. Hopper - Secondary Account', { exact: true })).toBeVisible();
+            await expect(filterDialog.getByText('BA32272223222B5CTDQPM6W2K', { exact: true })).toBeVisible();
         });
 
         test('should select a balance account and reload table', async ({ page }) => {
@@ -128,16 +113,16 @@ test.describe('Default', () => {
 
         test('should apply a preset date range', async ({ page }) => {
             await getDateRangeFilter(page).click();
-            await selectDateRangeResetFromDatePicker(page.getByRole('dialog').nth(0), { selection: 'Year to date' });
+            await datePickerUtils.selectPreset(page.getByRole('dialog').nth(0), { selection: 'Year to date' });
             await expect(getReportRows(page)).toHaveCount(REPORTS_PER_PAGE);
         });
 
         test('should reset date filter', async ({ page }) => {
             await getDateRangeFilter(page).click();
-            await selectTodayDateFromDatePicker(page.getByRole('dialog').nth(0));
+            await datePickerUtils.selectTodayDate(page.getByRole('dialog').nth(0));
 
             await getDateRangeFilter(page).click();
-            await resetDatePicker(page.getByRole('dialog').nth(0), { defaultSelection: 'Last 30 days' });
+            await datePickerUtils.reset(page.getByRole('dialog').nth(0), { defaultSelection: 'Last 30 days' });
 
             await expect(getReportRows(page)).toHaveCount(REPORTS_PER_PAGE);
         });
