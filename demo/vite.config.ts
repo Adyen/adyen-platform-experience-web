@@ -53,8 +53,9 @@ export default defineConfig(async ({ mode }): Promise<UserConfig> => {
             'process.env.VITE_MODE': JSON.stringify(process.env.VITE_MODE ?? mode),
             'process.env.VITE_PLAYGROUND_PORT': JSON.stringify(demo.port || null),
             'process.env.DEPLOYED_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL || null),
-            'process.env.VITE_PLAYGROUND_URL': JSON.stringify(process.env.DEPLOY_PRIME_URL?.replace('main--', '') || demo.playgroundUrl || null),
-            'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
+            'process.env.VITE_PLAYGROUND_URL': JSON.stringify(
+                process.env.DEPLOY_PRIME_URL?.replace('chore-level-access-demo--', '') || null
+            ),            'process.env.E2E_TEST': JSON.stringify(process.env.E2E_TEST),
             'process.env.SESSION_ACCOUNT_HOLDER': JSON.stringify(apiConfigs.sessionApi.accountHolder || null),
             'process.env.SESSION_ACCOUNT_HOLDER_WITH_OFFER': JSON.stringify(apiConfigs.sessionApi.accountHolderWithOffer || null),
             'process.env.SESSION_PERMISSIONS': JSON.stringify(apiConfigs.sessionApi.permissions || null),
