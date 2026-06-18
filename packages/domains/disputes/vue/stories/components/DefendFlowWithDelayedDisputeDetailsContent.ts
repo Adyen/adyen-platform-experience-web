@@ -4,8 +4,8 @@ import DefendDisputeFlow from '../../src/DisputeManagement/components/DefendDisp
 import { provideDisputeFlow } from '../../src/DisputeManagement/composables/useDisputeFlow';
 import { CHARGEBACK_DEFENDABLE } from '../../../mocks/mock-data/disputes';
 
-export const AsyncDefendDisputeFlowContent = defineComponent({
-    name: 'AsyncDefendDisputeFlowContent',
+export const DefendFlowWithDelayedDisputeDetailsContent = defineComponent({
+    name: 'DefendFlowWithDelayedDisputeDetailsContent',
     components: { DefendDisputeFlow },
     setup() {
         const dispute = ref<IDisputeDetail | undefined>();

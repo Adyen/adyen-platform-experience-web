@@ -1,10 +1,10 @@
 import { defineComponent, type PropType } from 'vue';
 import { UIElementProvider, type CoreInstance } from '@integration-components/core/vue';
-import { AsyncAcceptDisputeFlowContent } from './AsyncAcceptDisputeFlowContent';
+import { DefendFlowWithDelayedDisputeDetailsContent } from './DefendFlowWithDelayedDisputeDetailsContent';
 
-export const AsyncAcceptDisputeFlow = defineComponent({
-    name: 'AsyncAcceptDisputeFlow',
-    components: { AsyncAcceptDisputeFlowContent, UIElementProvider },
+export const DefendFlowWithDelayedDisputeDetails = defineComponent({
+    name: 'DefendFlowWithDelayedDisputeDetails',
+    components: { DefendFlowWithDelayedDisputeDetailsContent, UIElementProvider },
     inheritAttrs: false,
     props: {
         core: {
@@ -14,7 +14,7 @@ export const AsyncAcceptDisputeFlow = defineComponent({
     },
     template: `
         <UIElementProvider :core="core" component-name="DisputeManagement">
-            <AsyncAcceptDisputeFlowContent />
+            <DefendFlowWithDelayedDisputeDetailsContent />
         </UIElementProvider>
     `,
 });

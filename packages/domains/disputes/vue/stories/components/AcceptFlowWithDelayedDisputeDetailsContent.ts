@@ -4,8 +4,8 @@ import AcceptDisputeFlow from '../../src/DisputeManagement/components/AcceptDisp
 import { provideDisputeFlow } from '../../src/DisputeManagement/composables/useDisputeFlow';
 import { RFI_ACCEPTABLE } from '../../../mocks/mock-data/disputes';
 
-export const AsyncAcceptDisputeFlowContent = defineComponent({
-    name: 'AsyncAcceptDisputeFlowContent',
+export const AcceptFlowWithDelayedDisputeDetailsContent = defineComponent({
+    name: 'AcceptFlowWithDelayedDisputeDetailsContent',
     components: { AcceptDisputeFlow },
     setup() {
         const dispute = ref<IDisputeDetail | undefined>();

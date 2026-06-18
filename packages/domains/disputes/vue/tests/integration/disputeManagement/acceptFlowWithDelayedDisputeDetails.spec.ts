@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
 
-const STORY_ID = 'mocked-disputes-dispute-management--async-accept-flow';
+const STORY_ID = 'mocked-disputes-dispute-management--accept-flow-with-delayed-dispute-details';
 
-test.describe('Async accept flow', () => {
+test.describe('Accept flow with delayed dispute details', () => {
     test('should react to dispute details loaded after the accept flow is mounted', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 

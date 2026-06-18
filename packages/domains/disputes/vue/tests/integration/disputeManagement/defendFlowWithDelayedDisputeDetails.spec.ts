@@ -3,9 +3,9 @@ import { goToStory } from '@integration-components/testing/playwright/utils';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const STORY_ID = 'mocked-disputes-dispute-management--async-defend-flow';
+const STORY_ID = 'mocked-disputes-dispute-management--defend-flow-with-delayed-dispute-details';
 
-test.describe('Async defend flow', () => {
+test.describe('Defend flow with delayed dispute details', () => {
     test('should react to dispute details loaded after the defend flow is mounted', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
