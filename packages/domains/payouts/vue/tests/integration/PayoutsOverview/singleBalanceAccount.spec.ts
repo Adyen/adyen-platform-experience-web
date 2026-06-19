@@ -7,9 +7,9 @@ test.describe('Single balance account', () => {
     test('should not render balance account selector in the filter bar', async ({ page }) => {
         await goToStory(page, { id: STORY_ID });
 
-        const filters = page.getByRole('group', { name: 'Payouts filters', exact: true });
+        const toolbar = page.getByRole('toolbar');
 
-        await expect(filters.getByRole('button', { name: 'Balance account', exact: true })).toBeHidden();
-        await expect(filters.getByRole('button', { name: 'Date range', exact: true, disabled: false, expanded: false })).toBeVisible();
+        await expect(toolbar.getByRole('button', { name: /^Balance account/ })).toBeHidden();
+        await expect(toolbar.getByRole('button', { name: /^Date range/, disabled: false })).toBeVisible();
     });
 });
