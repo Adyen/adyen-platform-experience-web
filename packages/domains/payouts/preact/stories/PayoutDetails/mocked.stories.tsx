@@ -1,16 +1,15 @@
 import { Meta } from '@storybook/preact';
-import { CUSTOM_URL_EXAMPLE, ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { ElementProps, ElementStory } from '@integration-components/testing/storybook-helpers';
+import { CUSTOM_TRANSLATIONS, DATA_CUSTOMIZATION, DEFAULT_PAYOUT_DETAILS } from '../../../fixtures/data/PayoutDetails';
+import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
 import { PayoutDetails } from '../../src';
 import { PayoutDetailsMeta } from './meta';
-import { PAYOUTS_WITH_DETAILS } from '../../../mocks/mock-data/payouts';
-import { PAYOUT_DETAILS_HANDLERS } from '../../../mocks/mock-server/payouts';
 
 const meta: Meta<ElementProps<typeof PayoutDetails>> = { ...PayoutDetailsMeta, title: 'Mocked/Payouts/Payout Details' };
-const defaultPayoutDetails = PAYOUTS_WITH_DETAILS[0]!;
 
 const sharedArgs = {
-    date: defaultPayoutDetails.payout!.createdAt,
-    id: defaultPayoutDetails.balanceAccountId,
+    date: DEFAULT_PAYOUT_DETAILS.payout!.createdAt,
+    id: DEFAULT_PAYOUT_DETAILS.balanceAccountId,
     mockedApi: true,
 };
 
@@ -43,51 +42,9 @@ export const DataCustomization: ElementStory<typeof PayoutDetails> = {
     args: {
         ...sharedArgs,
         coreOptions: {
-            translations: {
-                en_US: {
-                    _store: 'Store',
-                    _product: 'Product',
-                    _summary: 'Summary',
-                    _sendEmail: 'Email',
-                    _country: 'Country',
-                },
-            },
+            translations: { en_US: CUSTOM_TRANSLATIONS },
         },
-        dataCustomization: {
-            details: {
-                fields: [{ key: '_store' }, { key: '_product' }, { key: '_summary' }, { key: '_sendEmail' }, { key: '_country' }],
-                onDataRetrieve: data => {
-                    return new Promise(resolve => {
-                        return resolve({
-                            ...data,
-                            _store: 'Sydney',
-                            _product: 'Coffee',
-                            _summary: {
-                                type: 'link',
-                                value: 'See summary',
-                                config: {
-                                    href: CUSTOM_URL_EXAMPLE,
-                                },
-                            },
-                            _sendEmail: {
-                                type: 'button',
-                                value: 'Send email',
-                                config: {
-                                    action: () => console.log('Action'),
-                                },
-                            },
-                            _country: {
-                                type: 'icon',
-                                value: '',
-                                config: {
-                                    src: `https://flagicons.lipis.dev/flags/4x3/es.svg`,
-                                },
-                            },
-                        });
-                    });
-                },
-            },
-        },
+        dataCustomization: { details: DATA_CUSTOMIZATION },
     },
     parameters: {
         msw: { ...PAYOUT_DETAILS_HANDLERS.default },

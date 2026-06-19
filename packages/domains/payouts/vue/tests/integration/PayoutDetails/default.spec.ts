@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { goToStory } from '@integration-components/testing/playwright/utils';
-import { DefaultPayoutBreakdown } from '../../../../fixtures/utils/breakdown';
+import { BentoPayoutBreakdown } from '../../../../fixtures/utils/breakdown';
 import { getFormattedPayoutDate } from '../../../../fixtures/utils/dateFormat';
 
 const STORY_ID = 'mocked-payouts-payout-details--default';
@@ -24,18 +24,18 @@ test.describe('Default', () => {
         await expect(page.getByText('BA32272223222B5CTDQPM6W2H', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Funds captured', { exact: true })).toBeVisible();
-        await expect(page.getByText('€1,000.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('1,000.00 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Adjustments', { exact: true })).toBeVisible();
-        await expect(page.getByText('- €100.00', { exact: true })).toBeVisible();
+        await expect(page.getByText('- 100.00 EUR', { exact: true })).toBeVisible();
 
         await expect(page.getByText('Remaining amount', { exact: true })).toBeVisible();
-        await expect(page.getByText('€900.00', { exact: true }).first()).toBeVisible();
+        await expect(page.getByText('900.00 EUR', { exact: true }).nth(1)).toBeVisible();
     });
 
     test('should render expandable payout breakdowns', async ({ page }) => {
-        const fundsCaptured = new DefaultPayoutBreakdown(page, 'Funds captured');
-        const adjustments = new DefaultPayoutBreakdown(page, 'Adjustments');
+        const fundsCaptured = new BentoPayoutBreakdown(page, 'Funds captured');
+        const adjustments = new BentoPayoutBreakdown(page, 'Adjustments');
 
         await fundsCaptured.expectToBeCollapsed();
         await adjustments.expectToBeCollapsed();
@@ -72,70 +72,71 @@ test.describe('Default', () => {
     });
 
     test('should render "Funds captured" breakdown', async ({ page }) => {
-        const breakdown = new DefaultPayoutBreakdown(page, 'Funds captured');
+        const breakdown = new BentoPayoutBreakdown(page, 'Funds captured');
         const list = breakdown.toggleContent;
 
         const locators = [
-            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Captured', '1,200.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Chargebacks', '- 300.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Corrections', '- 10.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(list, ['Refunds', '110.00']),
+            list.getByRole('columnheader', { name: 'Funds captured', exact: true }),
+            ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Captured', '1,200.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Chargebacks', '- 300.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Corrections', '- 10.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(list, ['Refunds', '110.00 EUR']),
         ];
 
         await breakdown.expectToBeCollapsed();
-        await expect(list).toBeInViewport();
-        for (const locator of locators) await expect(locator).not.toBeInViewport();
+        await expect(list).toBeHidden();
+        for (const locator of locators) await expect(locator).toBeHidden();
 
         await breakdown.toggle();
 
         await breakdown.expectToBeExpanded();
-        await expect(list).toBeInViewport();
-        for (const locator of locators) await expect(locator).toBeInViewport();
+        await expect(list).toBeVisible();
+        for (const locator of locators) await expect(locator).toBeVisible();
 
         await breakdown.toggle();
 
         await breakdown.expectToBeCollapsed();
-        await expect(list).toBeInViewport();
-        for (const locator of locators) await expect(locator).not.toBeInViewport();
+        await expect(list).toBeHidden();
+        for (const locator of locators) await expect(locator).toBeHidden();
     });
 
     test('should render "Adjustments" breakdown', async ({ page }) => {
-        const breakdown = new DefaultPayoutBreakdown(page, 'Adjustments');
-        const additions = breakdown.toggleContent.getByTestId('payout-adjustments-additions-breakdown');
-        const subtractions = breakdown.toggleContent.getByTestId('payout-adjustments-subtractions-breakdown');
+        const breakdown = new BentoPayoutBreakdown(page, 'Adjustments');
+        const additions = breakdown.toggleContent.nth(0);
+        const subtractions = breakdown.toggleContent.nth(1);
 
         const locators = [
             // Additions
-            breakdown.toggleContent.getByText('Additions', { exact: true }),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Corrections', '10.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Grant repayments', '600.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(additions, ['Refunds', '100.00']),
+            additions.getByRole('columnheader', { name: 'Additions', exact: true }),
+            ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Corrections', '10.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Grant repayments', '600.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(additions, ['Refunds', '100.00 EUR']),
 
             // Subtractions
-            breakdown.toggleContent.getByText('Subtractions', { exact: true }),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Fees', '- 100.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Grant issued', '- 550.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Other', '- 10.00']),
-            ...DefaultPayoutBreakdown.getPairwiseLocators(subtractions, ['Transfers', '- 150.00']),
+            subtractions.getByRole('columnheader', { name: 'Subtractions', exact: true }),
+            ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Fees', '- 100.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Grant issued', '- 550.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Other', '- 10.00 EUR']),
+            ...BentoPayoutBreakdown.getPairwiseLocators(subtractions, ['Transfers', '- 150.00 EUR']),
         ];
 
         await breakdown.expectToBeCollapsed();
-        await expect(additions).not.toBeInViewport();
-        await expect(subtractions).not.toBeInViewport();
-        for (const locator of locators) await expect(locator).not.toBeInViewport();
+        await expect(additions).toBeHidden();
+        await expect(subtractions).toBeHidden();
+        for (const locator of locators) await expect(locator).toBeHidden();
 
         await breakdown.toggle();
 
         await breakdown.expectToBeExpanded();
-        await expect(additions).toBeInViewport();
-        await expect(subtractions).toBeInViewport();
-        for (const locator of locators) await expect(locator).toBeInViewport();
+        await expect(additions).toBeVisible();
+        await expect(subtractions).toBeVisible();
+        for (const locator of locators) await expect(locator).toBeVisible();
 
         await breakdown.toggle();
 
         await breakdown.expectToBeCollapsed();
-        await expect(additions).not.toBeInViewport();
-        await expect(subtractions).not.toBeInViewport();
-        for (const locator of locators) await expect(locator).not.toBeInViewport();
+        await expect(additions).toBeHidden();
+        await expect(subtractions).toBeHidden();
+        for (const locator of locators) await expect(locator).toBeHidden();
     });
 });
