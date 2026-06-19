@@ -114,6 +114,7 @@ const filterConfig = computed<BentoFilterBarModel>(() => {
                 listboxItems: props.balanceAccounts.map((a: IBalanceAccountBase) => ({
                     label: a.description || a.id,
                     value: a.id,
+                    description: a.description ? a.id : undefined,
                 })),
             },
         });
