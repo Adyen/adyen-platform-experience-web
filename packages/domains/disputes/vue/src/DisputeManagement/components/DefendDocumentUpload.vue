@@ -241,17 +241,21 @@ const uploadActionButtons = computed(() => [
             class="adyen-pe-defend-dispute-document-upload-box"
         >
             <div class="adyen-pe-defend-dispute-document-upload">
-                <BentoTypography variant="body" strongest>
-                    {{ i18n.get('disputes.management.defend.common.documentTypes.optional') }}
-                </BentoTypography>
-                <BentoButton
-                    :aria-label="i18n.get('disputes.management.defend.common.actions.deleteOptionalDocument')"
-                    :disabled="isSubmittingDefense"
-                    variant="tertiary"
-                    @click="removeSelectedOptionalDocument(index)"
-                >
-                    <BinIcon aria-hidden="true" />
-                </BentoButton>
+                <div class="adyen-pe-defend-dispute-document-upload__delete-button-container">
+                    <BentoTypography variant="body" strongest>
+                        {{ i18n.get('disputes.management.defend.common.documentTypes.optional') }}
+                    </BentoTypography>
+                    <BentoButton
+                        :aria-label="i18n.get('disputes.management.defend.common.actions.deleteOptionalDocument')"
+                        :disabled="isSubmittingDefense"
+                        variant="tertiary"
+                        @click="removeSelectedOptionalDocument(index)"
+                    >
+                        <template #iconLeft>
+                            <BinIcon aria-hidden="true" />
+                        </template>
+                    </BentoButton>
+                </div>
                 <SelectDropdown
                     :items="availableOptionalDocuments"
                     :model-value="documentType"
@@ -273,7 +277,9 @@ const uploadActionButtons = computed(() => [
         </div>
 
         <BentoButton v-if="canAddOptionalDocument" variant="secondary" @click="addEmptyOptionalDocument">
-            <PlusIcon aria-hidden="true" />
+            <template #iconLeft>
+                <PlusIcon aria-hidden="true" />
+            </template>
             {{ i18n.get('disputes.management.defend.common.actions.addOptionalDocument') }}
         </BentoButton>
     </div>
