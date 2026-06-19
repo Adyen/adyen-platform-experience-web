@@ -2,7 +2,7 @@ import { createContext } from 'preact';
 import { memo, PropsWithChildren, useEffect } from 'preact/compat';
 import { useCallback, useContext, useState } from 'preact/hooks';
 import { IDisputeDefenseDocument, IDisputeDetail } from '@integration-components/types/api/models/disputes';
-import { TranslationConfigItem } from '../../utils';
+import { TranslationConfigItem } from '@integration-components/disputes/domain';
 import { useCoreContext } from '@integration-components/core/preact';
 import localDefenseDocumentConfig from '../../../../../domain/src/config/defenseDocumentConfig.json';
 import localDefenseReasonConfig from '../../../../../domain/src/config/defenseReasonConfig.json';

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography } from '@adyen/bento-vue3';
+import { BentoAlert, BentoButton, BentoButtonActions, BentoCheckbox, BentoTypography, type BentoButtonActionsList } from '@adyen/bento-vue3';
 import SuccessIcon from '@adyen/ui-assets-icons-16/vue/checkmark-circle-fill';
 import { useConfigContext, useCoreContext } from '@integration-components/core/vue';
+import { DISPUTE_TYPE } from '@integration-components/disputes/domain';
 import { isFunction } from '@integration-components/utils';
 import { useDisputeFlow } from '../composables/useDisputeFlow';
 import type { DisputeManagementProps } from '../types';
@@ -25,7 +26,7 @@ watch(
 );
 
 const disputePspReference = computed(() => cachedDispute.value?.dispute.pspReference);
-const isRequestForInformation = computed(() => cachedDispute.value?.dispute.type === 'REQUEST_FOR_INFORMATION');
+const isRequestForInformation = computed(() => cachedDispute.value?.dispute.type === DISPUTE_TYPE.REQUEST_FOR_INFORMATION);
 
 const termsAgreed = ref(false);
 const disputeAccepted = ref(false);
@@ -58,7 +59,7 @@ const actionButtons = computed(() => [
     {
         title: acceptButtonTitle.value,
         disabled: !canAcceptDispute.value,
-        event: () => void acceptDisputeCallback(),
+        event: acceptDisputeCallback,
         state: isLoading.value ? 'loading' : 'start',
     },
     {
@@ -125,7 +126,7 @@ watch(disputeAccepted, accepted => {
                 </template>
             </BentoAlert>
             <div class="adyen-pe-accept-dispute__actions">
-                <BentoButtonActions :actions="actionButtons" />
+                <BentoButtonActions :actions="actionButtons as BentoButtonActionsList" />
             </div>
         </template>
     </div>

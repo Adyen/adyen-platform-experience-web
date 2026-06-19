@@ -1,0 +1,56 @@
+@use '@integration-components/style';
+
+.adyen-pe-defend-dispute-reason {
+    &__selector {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-040);
+    }
+
+    &__description {
+        color: style.token(color-label-secondary);
+        font-size: style.token(text-caption-font-size);
+    }
+
+    &__secondary-description-items-container {
+        margin: 0;
+        padding: 0 style.token(spacer-080);
+    }
+
+    &__secondary-description-item::marker {
+        color: style.token(color-label-secondary);
+    }
+}
+
+.adyen-pe-defend-dispute-document-requirements {
+    flex: 1;
+}
+
+.adyen-pe-defend-dispute-file-uploader {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-080);
+    }
+}
+
+.adyen-pe-defend-dispute-document-upload {
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+}
+
+.adyen-pe-defend-dispute-document-upload-box {
+    border: style.token(border-width-s) solid style.token(color-outline-primary);
+    border-radius: style.token(border-radius-l);
+    display: flex;
+    flex-direction: column;
+    gap: style.token(spacer-060);
+    padding: style.token(spacer-080);
+
+    &__required-documents {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-110);
+    }
+}

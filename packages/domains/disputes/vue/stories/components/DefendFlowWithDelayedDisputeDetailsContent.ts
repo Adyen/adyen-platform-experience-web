@@ -1,7 +1,7 @@
 import { defineComponent, ref } from 'vue';
 import type { IDisputeDetail } from '@integration-components/types/api/models/disputes';
 import DefendDisputeFlow from '../../src/DisputeManagement/components/DefendDisputeFlow.vue';
-import { provideDisputeFlow } from '../../src/DisputeManagement/composables/useDisputeFlow';
+import { DisputeFlowState, provideDisputeFlow } from '../../src/DisputeManagement/composables/useDisputeFlow';
 import { CHARGEBACK_DEFENDABLE } from '../../../mocks/mock-data/disputes';
 
 export const DefendFlowWithDelayedDisputeDetailsContent = defineComponent({
@@ -14,7 +14,7 @@ export const DefendFlowWithDelayedDisputeDetailsContent = defineComponent({
 
         const loadDispute = () => {
             dispute.value = CHARGEBACK_DEFENDABLE;
-            setFlowState('defendReasonSelectionView');
+            setFlowState(DisputeFlowState.DefendReasonSelection);
         };
 
         const onDisputeDefend = ({ id }: { id: string }) => {

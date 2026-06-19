@@ -16,7 +16,13 @@ import { TypographyElement, TypographyVariant } from '@integration-components/ui
 import Typography from '@integration-components/ui-components-preact/Typography/Typography';
 import type { CustomColumn } from '@integration-components/types';
 import { DisputeDetailsCustomization } from '../../types';
-import { getDisputeReason, isDisputeActionNeeded } from '@integration-components/disputes/domain';
+import {
+    getDefenseDocumentContent,
+    getDefenseReasonContent,
+    getDisputeReason,
+    isDisputeActionNeeded,
+    TranslationConfigItem,
+} from '@integration-components/disputes/domain';
 import {
     DISPUTE_DATA_LABEL,
     DISPUTE_DATA_LIST,
@@ -26,7 +32,6 @@ import {
 } from './constants';
 import { useCoreContext } from '@integration-components/core/preact';
 import SVGIcon from '@integration-components/ui-components-preact/Icon';
-import { getDefenseDocumentContent, getDefenseReasonContent, TranslationConfigItem } from '../../utils';
 import { useDisputeFlow } from '../../context/dispute/context';
 
 type DisputeDataPropertiesProps = {

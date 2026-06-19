@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { BentoDropdown } from '@adyen/bento-vue3';
-
-interface SelectDropdownItem {
-    id: string;
-    name: string;
-    disabled?: boolean;
-}
+import type { SelectDropdownItem } from '../types';
 
 const props = defineProps<{
     items: SelectDropdownItem[];

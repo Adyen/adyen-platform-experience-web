@@ -8,10 +8,15 @@ interface UseDisputeDetailsProps {
     fetchEnabled: boolean;
 }
 
+export type DisputeError = Error & {
+    errorCode?: string;
+    requestId?: string;
+};
+
 export function useDisputeDetails(props: () => UseDisputeDetailsProps) {
     const config = useConfigContext();
     const data = ref<IDisputeDetail | undefined>(undefined);
-    const error = ref<Error | undefined>(undefined);
+    const error = ref<DisputeError | undefined>(undefined);
     const isFetching = ref(false);
     let abortController: AbortController | null = null;
 
@@ -37,7 +42,7 @@ export function useDisputeDetails(props: () => UseDisputeDetailsProps) {
             }
         } catch (e) {
             if (!signal.aborted) {
-                error.value = e as Error;
+                error.value = e as DisputeError;
             }
         } finally {
             if (!signal.aborted) {

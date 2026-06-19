@@ -1,0 +1,47 @@
+@use '@integration-components/style';
+
+.adyen-pe-accept-dispute,
+.adyen-pe-defend-dispute {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        width: 100%;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: style.token(spacer-040);
+    }
+
+    &__response {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        padding: style.token(spacer-100) 0;
+        text-align: center;
+    }
+
+    &__success,
+    &__error {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: style.token(spacer-070);
+        justify-content: center;
+    }
+
+    &__success-description {
+        max-width: 350px;
+    }
+
+    &__success-icon {
+        color: style.token(color-background-success-strong);
+    }
+
+    &__error-icon {
+        color: style.token(color-background-critical-strong);
+    }
+}

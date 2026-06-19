@@ -5,8 +5,18 @@ import { type TranslationConfigItem } from '@integration-components/disputes/dom
 import localDefenseDocumentConfig from '../../../../domain/src/config/defenseDocumentConfig.json';
 import localDefenseReasonConfig from '../../../../domain/src/config/defenseReasonConfig.json';
 
-export type DisputeFlowState = 'details' | 'accept' | 'defendReasonSelectionView' | 'uploadDefenseFilesView' | 'defenseSubmitResponseView';
-export type DefendResponse = 'error' | 'success' | null;
+export enum DisputeFlowState {
+    Details = 'details',
+    Accept = 'accept',
+    DefendReasonSelection = 'defendReasonSelectionView',
+    UploadDefenseFiles = 'uploadDefenseFilesView',
+    DefenseSubmitResponse = 'defenseSubmitResponseView',
+}
+
+export enum DefendResponse {
+    Error = 'error',
+    Success = 'success',
+}
 
 export interface DisputeFlowContextValue {
     flowState: Ref<DisputeFlowState>;
@@ -24,8 +34,8 @@ export interface DisputeFlowContextValue {
     addFileToDefendPayload: (name: string, file: File) => void;
     moveFieldInDefendPayload: (from: string, to: string) => void;
     removeFieldFromDefendPayload: (field: string) => void;
-    defendResponse: Ref<DefendResponse>;
-    onDefendSubmit: (response: Exclude<DefendResponse, null>) => void;
+    defendResponse: Ref<DefendResponse | null>;
+    onDefendSubmit: (response: DefendResponse) => void;
     getDisputesConfig: () => Promise<void>;
     defenseReasonConfig: Ref<Record<string, TranslationConfigItem>>;
     defenseDocumentConfig: Ref<Record<string, TranslationConfigItem>>;
@@ -47,11 +57,11 @@ const cloneFormData = (formData: FormData) => {
 
 export function provideDisputeFlow(dispute: Ref<IDisputeDetail | undefined>) {
     const { getCdnConfig } = useCoreContext();
-    const flowState = ref<DisputeFlowState>('details');
+    const flowState = ref<DisputeFlowState>(DisputeFlowState.Details);
     const selectedDefenseReason = ref<string | null>(null);
     const applicableDocuments = ref<IDisputeDefenseDocument[] | null>([]);
     const defendDisputePayload = ref<FormData | null>(null);
-    const defendResponse = ref<DefendResponse>(null);
+    const defendResponse = ref<DefendResponse | null>(null);
     const defenseReasonConfig = ref<Record<string, TranslationConfigItem>>(localDefenseReasonConfig);
     const defenseDocumentConfig = ref<Record<string, TranslationConfigItem>>(localDefenseDocumentConfig);
 
@@ -74,16 +84,16 @@ export function provideDisputeFlow(dispute: Ref<IDisputeDetail | undefined>) {
 
     const goBack = () => {
         switch (flowState.value) {
-            case 'defendReasonSelectionView':
-            case 'accept':
-                flowState.value = 'details';
+            case DisputeFlowState.DefendReasonSelection:
+            case DisputeFlowState.Accept:
+                flowState.value = DisputeFlowState.Details;
                 break;
-            case 'uploadDefenseFilesView':
+            case DisputeFlowState.UploadDefenseFiles:
                 clearFiles();
-                flowState.value = 'defendReasonSelectionView';
+                flowState.value = DisputeFlowState.DefendReasonSelection;
                 break;
             default:
-                flowState.value = 'details';
+                flowState.value = DisputeFlowState.Details;
                 break;
         }
     };

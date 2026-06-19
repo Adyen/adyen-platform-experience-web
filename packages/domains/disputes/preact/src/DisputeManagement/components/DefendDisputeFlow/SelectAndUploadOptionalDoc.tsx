@@ -7,7 +7,7 @@ import FileInput from '@integration-components/ui-components-preact/FormFields/F
 import { useCoreContext } from '@integration-components/core/preact';
 import { SelectItem } from '@integration-components/ui-components-preact/FormFields/Select/types';
 import { useDisputeFlow } from '../../context/dispute/context';
-import { getDefenseDocumentContent } from '../../utils';
+import { getDefenseDocumentContent } from '@integration-components/disputes/domain';
 import { useCallback, useEffect, useMemo } from 'preact/hooks';
 import Button from '@integration-components/ui-components-preact/Button/Button';
 import { ButtonVariant } from '@integration-components/ui-components-preact/Button/types';

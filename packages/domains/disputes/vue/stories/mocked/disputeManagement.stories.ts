@@ -347,7 +347,7 @@ export const DataCustomization: ElementStory<typeof DisputeManagement> = {
                 },
             },
         },
-        id: 'a1b2c3d4-e5f6-4789-abcd-000000000001',
+        id: INITIAL_DISPUTE_ID,
         mockedApi: true,
         dataCustomization: {
             details: {
